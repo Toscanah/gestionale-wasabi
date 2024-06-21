@@ -2,8 +2,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OnSite from "../services/on-site/OnSite";
 import ToHome from "../services/to-home/ToHome";
 import getOrders from "../sql/orders/getOrders";
+import createOrder from "../sql/orders/createOrder";
 
 export default async function Home() {
+  await createOrder();
+
   return (
     <div className="w-screen p-8 h-screen">
       <Tabs defaultValue="to-home" className="w-full h-full flex flex-col ">
@@ -21,7 +24,7 @@ export default async function Home() {
             Domicilio
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="on-site" className="w-full h-[90%]">
           <OnSite />
         </TabsContent>
