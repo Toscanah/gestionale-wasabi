@@ -3,14 +3,9 @@
 import { VisibilityState } from "@tanstack/react-table";
 import getColumns from "./getColumns";
 import { useEffect, useState } from "react";
-import { Order } from "../../Order";
+import { OrderType } from "../../types/OrderType";
 import getTable from "./getTable";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 
 import {
   Table,
@@ -21,25 +16,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import OrderCell from "../order/OrderCell";
+import Order from "../order/Order";
 
-export default function ToHome({ orders }: { orders: Order[] }) {
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>(orders);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+export default function ToHome({ orders }: { orders: OrderType[] }) {
+  const [filteredOrders, setFilteredOrders] = useState<OrderType[]>(orders);
 
   useEffect(() => {
     setFilteredOrders(orders.filter((order) => order.type === "TO_HOME"));
   }, []);
 
-  useEffect(() => console.log(filteredOrders), [filteredOrders]);
-
   const columns = getColumns();
-  const table = getTable(
-    filteredOrders,
-    columns,
-    columnVisibility,
-    setColumnVisibility
-  );
+  const table = getTable(filteredOrders, columns);
 
   return (
     <div className="rounded-md border max-h-full overflow-y-scroll">
@@ -74,7 +61,7 @@ export default function ToHome({ orders }: { orders: Order[] }) {
                 className="hover:cursor-pointer h-12 text-2xl"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <OrderCell key={cell.id} cell={cell} />
+                  <Order key={cell.id} cell={cell} />
                 ))}
               </TableRow>
             ))

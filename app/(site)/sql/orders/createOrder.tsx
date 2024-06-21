@@ -1,23 +1,37 @@
-import { Order } from "@prisma/client";
 import prisma from "./../db";
 
 export default async function createOrder() {
-  // await prisma.order.deleteMany();
-  // await prisma.product.deleteMany();
+  await prisma.productsOnOrder.deleteMany();
+  await prisma.order.deleteMany();
 
-  // const a = await prisma.order.create({
-  //   data: {
-  //     type: "ASPORTO",
-  //     total: 3259,
-  //     products: { create: [{ name: "Magic" }, { name: "Butterflies" }] },
-  //   },
-  // });
+  const a = await prisma.order.create({
+    data: {
+      type: "TO_HOME",
+      total: 24234,
+      customer_id: 1,
+      address_id: 1,
+      products: {
+        create: [
+          {
+            notes: "Stronzo",
+            quantity: 243,
+            total: 243,
+            product: {
+              connect: { id: 1 },
+            },
+          },
+          {
+            notes: "Another note",
+            quantity: 100,
+            total: 500,
+            product: {
+              connect: { id: 2 },
+            },
+          },
+        ],
+      },
+    },
+  });
 
-  // const b = await prisma.order.findMany({
-  //   include: {
-  //     products: true,
-  //   },
-  // })
   return [];
-  // return b;
 }

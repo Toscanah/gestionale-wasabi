@@ -32,29 +32,46 @@ model Table {
     orders Order[]
 }
 
-model Product {
-    id     Int     @id @default(autoincrement())
-    name   String
-    orders Order[] @relation("OrderToProduct")
-}
-
-model Order {
-    id          Int       @id @default(autoincrement())
-    customer_id Int?
-    table_id    Int?
-    type        OrderType
-    created_at  DateTime? @default(now())
-    total       Float?
-    pickup_time DateTime?
-    address_id  Int?
-    address     Address?  @relation(fields: [address_id], references: [id])
-    customer    Customer? @relation(fields: [customer_id], references: [id])
-    table       Table?    @relation(fields: [table_id], references: [id])
-    products    Product[] @relation("OrderToProduct")
-}
-
 enum OrderType {
     TABLE
     TO_HOME
     PICK_UP
+}
+
+model Product {
+    id     Int               @id @default(autoincrement())
+    name   String
+    code   String
+    desc   String
+    price  Float
+    orders ProductsOnOrder[]
+}
+
+model Order {
+    id          Int               @id @default(autoincrement())
+    customer_id Int?
+    table_id    Int?
+    type        OrderType
+    created_at  DateTime?         @default(now())
+    total       Float?
+    pickup_time DateTime?
+    address_id  Int?
+    address     Address?          @relation(fields: [address_id], references: [id])
+    customer    Customer?         @relation(fields: [customer_id], references: [id])
+    table       Table?            @relation(fields: [table_id], references: [id])
+    products    ProductsOnOrder[]
+}
+
+model ProductsOnOrder {
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    product    Product  @relation(fields: [product_id], references: [id])
+    product_id Int
+    order_id   Int
+    order      Order    @relation(fields: [order_id], references: [id])
+    quantity   Int
+    total      Float
+    notes      String?
+
+    @@id([product_id, order_id])
 }

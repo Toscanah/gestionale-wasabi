@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Order } from "../../Order";
+import { OrderType } from "../../types/OrderType";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowsDownUp } from "@phosphor-icons/react";
 import { addDays, format, subDays, subHours } from "date-fns";
 import { it } from "date-fns/locale";
 
 type CreateColumnParams = {
-  accessorKey: keyof Order | string; // Allow string for nested properties
+  accessorKey: keyof OrderType | string; // Allow string for nested properties
   headerLabel: string;
-  cellContent?: (row: Order) => React.ReactNode; // Optional cell renderer
+  cellContent?: (row: OrderType) => React.ReactNode; // Optional cell renderer
 };
 
 function getProperty(obj: any, path: string): any {
@@ -21,7 +21,7 @@ function createColumn({
   accessorKey,
   headerLabel,
   cellContent,
-}: CreateColumnParams): ColumnDef<Order> {
+}: CreateColumnParams): ColumnDef<OrderType> {
   return {
     accessorKey,
     header: ({ column }) => (
@@ -40,7 +40,7 @@ function createColumn({
   };
 }
 
-export default function getColumns(): ColumnDef<Order>[] {
+export default function getColumns(): ColumnDef<OrderType>[] {
   return [
     createColumn({
       accessorKey: "created_at",
