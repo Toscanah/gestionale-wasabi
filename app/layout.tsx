@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./(site)/components/theme-provider";
+import { ChangeTheme } from "./(site)/components/ChangeTheme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <div className="fixed bottom-4 right-4 hover:cursor-pointer">
+            <ChangeTheme />
+          </div>
         </ThemeProvider>
       </body>
     </html>

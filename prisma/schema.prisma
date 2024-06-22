@@ -63,6 +63,7 @@ model Order {
 }
 
 model ProductsOnOrder {
+    id         Int      @id @default(autoincrement())
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
     product    Product  @relation(fields: [product_id], references: [id])
@@ -72,6 +73,4 @@ model ProductsOnOrder {
     quantity   Int
     total      Float
     notes      String?
-
-    @@id([product_id, order_id])
 }
