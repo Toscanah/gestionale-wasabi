@@ -22,7 +22,6 @@ export default function getTable(
     getCoreRowModel: getCoreRowModel(),
     autoResetPageIndex: false,
     getSortedRowModel: getSortedRowModel(),
-
     initialState: {
       pagination: {
         pageSize: 1234,

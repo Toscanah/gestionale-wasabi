@@ -4,11 +4,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowsDownUp } from "@phosphor-icons/react";
 import { addDays, format, subDays, subHours } from "date-fns";
 import { it } from "date-fns/locale";
+import { ProductsInOrderType } from "../../types/ProductsInOrderType";
 
 type CreateColumnParams = {
   accessorKey: keyof OrderType | string; // Allow string for nested properties
   headerLabel: string;
-  cellContent?: (row: OrderType) => React.ReactNode; // Optional cell renderer
+  cellContent?: (row: any) => React.ReactNode; // Optional cell renderer
 };
 
 function getProperty(obj: any, path: string): any {
@@ -108,14 +109,11 @@ export default function getColumns(): ColumnDef<OrderType>[] {
     }),
 
     createColumn({
-      accessorKey: "customer",
+      accessorKey: "total",
       headerLabel: "Totale",
-      cellContent: (original) => {
-        return (
-          <div className="text-right">
-            {"€ " + original.total}
-          </div>
-        );
+      cellContent: (original: OrderType) => {
+        console.log(original);
+        return <div className="text-right">{"€ " + original.total}</div>;
       },
     }),
   ];

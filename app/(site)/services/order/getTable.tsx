@@ -9,12 +9,13 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction } from "react";
-import { ProductsType } from "../../types/ProductsInOrderType";
+import { ProductsInOrderType } from "../../types/ProductsInOrderType";
 
 export default function getTable(
-  products: ProductsType[],
-  columns: ColumnDef<ProductsType>[]
+  products: ProductsInOrderType[],
+  columns: ColumnDef<ProductsInOrderType>[]
 ) {
+  
   return useReactTable({
     getFilteredRowModel: getFilteredRowModel(),
     data: products,

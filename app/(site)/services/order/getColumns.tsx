@@ -1,16 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { OrderType } from "../../types/OrderType";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { ArrowsDownUp } from "@phosphor-icons/react";
-import { addDays, format, subDays, subHours } from "date-fns";
-import { it } from "date-fns/locale";
-import { Product, ProductsOnOrder } from "@prisma/client";
+
 import { ProductsInOrderType } from "../../types/ProductsInOrderType";
+import { Input } from "@/components/ui/input";
 
 type CreateColumnParams = {
   accessorKey: keyof ProductsInOrderType | string; // Allow string for nested properties
   headerLabel: string;
-  cellContent?: (row: ProductsInOrderType) => React.ReactNode; // Optional cell renderer
+  cellContent: (row: Row<ProductsInOrderType>) => React.ReactNode; // Optional cell renderer
 };
 
 function createColumn({
@@ -29,58 +27,110 @@ function createColumn({
         <ArrowsDownUp className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => (cellContent ? cellContent(row.original) : row.original),
+    cell: ({ row }) => {
+      return cellContent(row);
+    },
   };
 }
 
-export default function getColumns(): ColumnDef<ProductsInOrderType>[] {
+export default function getColumns(
+  handleFieldChange: (
+    key: string,
+    value: any,
+    id: number,
+    rowIndex: number
+  ) => void,
+  products: ProductsInOrderType[]
+): ColumnDef<ProductsInOrderType>[] {
   return [
     createColumn({
       accessorKey: "code",
       headerLabel: "Codice",
-      cellContent: (original) => {
-        return <div className="text-left">{original.product.code}</div>;
+      cellContent: (row) => {
+        const value = products[row.index].product.code;
+
+        return (
+          <Input
+            className="h-16 text-4xl uppercase"
+            defaultValue={value}
+            autoFocus={row.original.id == -1}
+            onKeyDown={(e: any) => {
+              if (e.key === "Enter") {
+                handleFieldChange(
+                  "code",
+                  e.target.value.toString(),
+                  row.original.id,
+                  row.index
+                );
+              }
+            }}
+          />
+        );
       },
     }),
 
     createColumn({
       accessorKey: "quantity",
       headerLabel: "Quantità",
-      cellContent: (original) => {
-        return <div className="">{original.quantity}</div>;
+      cellContent: (row) => {
+        const value =
+          products[row.index].quantity == 0
+            ? undefined
+            : products[row.index].quantity;
+
+        return (
+          <Input
+            className="h-16 text-4xl"
+            defaultValue={value}
+            onKeyDown={(e: any) => {
+              if (e.key === "Enter") {
+                handleFieldChange(
+                  "quantity",
+                  e.target.value,
+                  row.original.id,
+                  row.index
+                );
+              }
+            }}
+          />
+        );
       },
     }),
 
     createColumn({
       accessorKey: "desc",
       headerLabel: "Descrizione",
-      cellContent: (original) => {
-        return <div className="">{original.product.desc}</div>;
+      cellContent: (row) => {
+        return (
+          <div className="flex items-center justify-start overflow-hidden text-ellipsis max-h-20 w-full text-xl">
+            {row.original.product.desc}
+          </div>
+        );
       },
     }),
 
     createColumn({
       accessorKey: "price",
       headerLabel: "Unità",
-      cellContent: (original) => {
-        return <div className="">{original.product.price}</div>;
-      },
-    }),
-
-    createColumn({
-      accessorKey: "pricce",
-      headerLabel: "Unità",
-      cellContent: (original) => {
-        return <div className="">{original.product.price}</div>;
-      },
-    }),
-
-    createColumn({
-      accessorKey: "pricce",
-      headerLabel: "Totale",
-      cellContent: (original) => {
+      cellContent: (row) => {
         return (
-          <div className="">{original.product.price * original.quantity}</div>
+          <div className="text-4xl">
+            {row.original.product.price == 0
+              ? ""
+              : "€ " + row.original.product.price * 54}
+          </div>
+        );
+      },
+    }),
+
+    createColumn({
+      accessorKey: "total",
+      headerLabel: "Totale",
+      cellContent: (row) => {
+        return (
+          <div className="text-4xl">
+            {row.original.total == 0 ? "" : "€ " + row.original.total * 456}
+          </div>
         );
       },
     }),
