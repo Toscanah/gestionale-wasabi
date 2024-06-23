@@ -5,7 +5,7 @@ export async function handler(request: Request) {
   const body: {
     requestType: string;
     content?: {
-      
+      // TODO:
     };
   } = await request.json();
 
