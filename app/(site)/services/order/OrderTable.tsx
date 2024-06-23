@@ -43,6 +43,7 @@ export default function OrderTable({
   order: OrderType;
   handleUpdatedOrder: (updatedOrder: OrderType) => void;
 }) {
+  
   const [newCode, setNewCode] = useState<string>("");
   const [newQuantity, setNewQuantity] = useState<number | undefined>(undefined);
   const [products, setProducts] = useState<ProductsInOrderType[]>([
