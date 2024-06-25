@@ -7,9 +7,9 @@ import { it } from "date-fns/locale";
 import { ProductsInOrderType } from "../../types/ProductsInOrderType";
 
 type CreateColumnParams = {
-  accessorKey: keyof OrderType | string; // Allow string for nested properties
+  accessorKey: keyof OrderType | string;
   headerLabel: string;
-  cellContent?: (row: any) => React.ReactNode; // Optional cell renderer
+  cellContent?: (row: any) => React.ReactNode;
 };
 
 function getProperty(obj: any, path: string): any {
