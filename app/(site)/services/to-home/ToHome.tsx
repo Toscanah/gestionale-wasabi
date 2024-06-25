@@ -18,6 +18,8 @@ import {
 import { cn } from "@/lib/utils";
 import Order from "../order/Order";
 import { Button } from "@/components/ui/button";
+import { Gear, Plus } from "@phosphor-icons/react";
+import PhoneDialog from "./PhoneDialog";
 
 export default function ToHome({ orders }: { orders: OrderType[] }) {
   const [filteredOrders, setFilteredOrders] = useState<OrderType[]>(orders);
@@ -42,8 +44,8 @@ export default function ToHome({ orders }: { orders: OrderType[] }) {
       body: JSON.stringify({
         requestType: "create",
         content: {
-          type: "TO_HOME", 
-        }
+          type: "TO_HOME",
+        },
       }),
     })
       .then((response) => response.json())
@@ -59,7 +61,13 @@ export default function ToHome({ orders }: { orders: OrderType[] }) {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <Button onClick={createOrder}>Crea ordine</Button>
+      <div className="w-full flex items-center justify-between">
+        <PhoneDialog />
+
+        <Button className="rounded-full h-20 w-40">
+          <Gear className="h-16 w-16" />
+        </Button>
+      </div>
       <div className="rounded-md border max-h-full overflow-y-auto">
         <Table>
           <TableHeader className="sticky top-0 z-30 bg-background">
@@ -106,7 +114,7 @@ export default function ToHome({ orders }: { orders: OrderType[] }) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Nessun ordine!
                 </TableCell>
               </TableRow>
             )}

@@ -110,7 +110,7 @@ export default function AddressForm({
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 items-center">
+    <div className="w-full h-full flex flex-col gap-4 items-center justify-center">
       <h1 className="text-4xl">{getTitle()}</h1>
 
       <Form {...form}>
