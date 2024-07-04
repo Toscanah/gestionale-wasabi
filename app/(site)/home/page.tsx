@@ -1,35 +1,71 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import OnSite from "../services/on-site/OnSite";
-import ToHome from "../services/to-home/ToHome";
-import getOrders from "../sql/orders/getOrders";
-import createOrder from "../sql/orders/createOrder";
+"use client";
 
-export default async function Home() {
+import OrdersTable from "../orders/OrdersTable";
+import { TypesOfOrder } from "../types/TypesOfOrder";
+import { useState, useEffect } from "react";
+import { OrderType } from "../types/OrderType";
+
+import Actions from "./Actions";
+import { OrderProvider } from "../orders/OrderContext";
+
+export default function Home() {
+  const [tableOrders, setTableOrders] = useState<OrderType[]>([]);
+  const [pickupOrders, setPickupOrders] = useState<OrderType[]>([]);
+  const [homeOrders, setHomeOrders] = useState<OrderType[]>([]);
+
+  const fetchOrders = (type: TypesOfOrder) => {
+    fetch(`/api/orders/?requestType=getOrdersByType&type=${type}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((orders: OrderType[]) => {
+        switch (type) {
+          case TypesOfOrder.TABLE:
+            setTableOrders(orders);
+            return;
+          case TypesOfOrder.PICK_UP:
+            setPickupOrders(orders);
+            return;
+          case TypesOfOrder.TO_HOME:
+            setHomeOrders(orders);
+            return;
+        }
+      });
+  };
+
+  const onOrdersUpdate = (type: TypesOfOrder) => {
+    
+
+    switch (type) {
+      case TypesOfOrder.TABLE:
+        fetchOrders(TypesOfOrder.TABLE);
+        return;
+      case TypesOfOrder.PICK_UP:
+        fetchOrders(TypesOfOrder.PICK_UP);
+        return;
+      case TypesOfOrder.TO_HOME:
+        fetchOrders(TypesOfOrder.TO_HOME);
+        return;
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders(TypesOfOrder.TABLE);
+    //fetchOrders(TypesOfOrder.TO_HOME);
+    //fetchOrders(TypesOfOrder.PICK_UP);
+  }, []);
+
   return (
-    <div className="w-screen p-8 h-screen">
-      <Tabs defaultValue="to-home" className="w-full h-full flex flex-col gap-4">
-        <TabsList className="w-full h-14">
-          <TabsTrigger
-            value="on-site"
-            className="w-1/2 flex justify-center items-center text-4xl h-12"
-          >
-            In loco
-          </TabsTrigger>
-          <TabsTrigger
-            value="to-home"
-            className="w-1/2 flex justify-center items-center text-4xl h-12"
-          >
-            Domicilio
-          </TabsTrigger>
-        </TabsList>
+    <OrderProvider onOrdersUpdate={onOrdersUpdate}>
+      <div className="w-screen p-4 h-screen flex flex-col gap-2 ">
+        <Actions />
 
-        <TabsContent value="on-site" className="w-full h-[90%] mt-0">
-          <OnSite />
-        </TabsContent>
-        <TabsContent value="to-home" className="w-full h-[90%] mt-0">
-          <ToHome orders={await getOrders()} />
-        </TabsContent>
-      </Tabs>
-    </div>
+        <div className="flex gap-4 h-[90%]">
+          <OrdersTable data={tableOrders} type={TypesOfOrder.TABLE} />
+          <OrdersTable data={homeOrders} type={TypesOfOrder.TO_HOME} />
+          <OrdersTable data={pickupOrders} type={TypesOfOrder.PICK_UP} />
+        </div>
+      </div>
+    </OrderProvider>
   );
 }

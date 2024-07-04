@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -13,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import getCustomerForm, { FormValues } from "./getCustomerForm";
 import { Textarea } from "@/components/ui/textarea";
+import { AddressChoice, AddressChoiceType } from "../AddressChoice";
 
 type FormFieldProps = {
   control: any;
@@ -53,33 +53,32 @@ function FormFieldWrapper({
 export default function AddressForm({
   address,
   customer,
-  addressChoice,
+  choice,
   setAddress,
 }: {
+  choice: AddressChoiceType;
   address: Address | undefined;
   customer: Customer;
-  addressChoice: string;
   setAddress: Dispatch<SetStateAction<Address | undefined>>;
 }) {
   function onSubmit(values: FormValues) {
     const { name, surname, notes, ...addressValues } = values;
 
-    switch (addressChoice) {
-      case "new": {
-        fetch("api/addresses/", {
-          method: "POST",
-          body: JSON.stringify({
-            requestType: "create",
-            content: {
-              customer_id: customer.id,
-              ...addressValues,
-            },
-          }),
-        })
-          .then((response) => response.json())
-          .then((address) => console.log(address));
-      }
-    }
+    fetch("api/addresses/", {
+      method: "POST",
+      body: JSON.stringify({
+        requestType: "create",
+        content: {
+          customer_id: customer.id,
+          ...addressValues,
+          temporary: choice == AddressChoice.TEMPORARY ? true : false,
+        },
+      }),
+    })
+      .then((response) => response.json())
+      .then((address) => {
+        setAddress(address);
+      });
   }
 
   const form = getCustomerForm(address, customer);
@@ -99,25 +98,26 @@ export default function AddressForm({
   }, [address]);
 
   const getTitle = () => {
-    switch (addressChoice) {
-      case "normal":
-        return "Dati cliente";
-      case "new":
-        return "Nuovo domicilio";
-      case "temp":
-        return "Domicilio temporaneo";
-    }
+    return "Dati";
+    // TODO:
+    // switch (addressChoice) {
+    //   case "normal":
+    //     return "Dati cliente";
+    //   case "new":
+    //     return "Nuovo domicilio";
+    //   case "temp":
+    //     return "Domicilio temporaneo";
+    // }
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 items-center justify-center">
-      <h1 className="text-4xl">{getTitle()}</h1>
-
+    <div className="w-full h-full flex flex-col items-center justify-center">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full flex flex-col space-y-2"
+          className="w-full flex flex-col space-y-7"
         >
+          <h1 className="text-4xl w-full text-center">{getTitle()}</h1>
           <div className="flex justify-between gap-4">
             <FormFieldWrapper
               control={form.control}

@@ -1,146 +1,178 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Address, Customer } from "@prisma/client";
-import { Dispatch, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useCallback,
+  KeyboardEvent,
+} from "react";
 import { CustomerWithAddresses } from "../types/CustomerWithAddresses";
-import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { useEffect } from "react";
+import { AddressChoice, AddressChoiceType } from "./AddressChoice";
+
+interface OverviewProps {
+  customer: CustomerWithAddresses | undefined;
+  address: Address | undefined;
+  phone: string;
+  setAddress: Dispatch<SetStateAction<Address | undefined>>;
+  setPhone: Dispatch<SetStateAction<string>>;
+  setChoice: Dispatch<SetStateAction<AddressChoiceType>>;
+}
 
 export default function Overview({
-  setPhone,
-  phone,
   customer,
+  setChoice,
+  address,
+  phone,
   setAddress,
-  setAddressChoice,
-}: {
-  setPhone: Dispatch<SetStateAction<string>>;
-  phone: string;
-  customer: CustomerWithAddresses | undefined;
-  setAddress: Dispatch<SetStateAction<Address | undefined>>;
-  setAddressChoice: Dispatch<SetStateAction<string>>;
-}) {
-  const [higlight, setHighlight] = useState<string>("");
+  setPhone,
+}: OverviewProps) {
+  const [highlight, setHighlight] = useState<string>("");
+  const [permAddresses, setPermAddresses] = useState<Address[]>([]);
+
+  useEffect(() => {
+    if (customer) {
+      setPermAddresses(
+        customer.addresses.filter((address) => !address.temporary)
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    // si potrebbe fare che prende il domicilio utilizzato nell'ultimo ordine
+    // anzi probabilmente 100% Lin chiede una cosa così
+    if (permAddresses.length > 0) {
+      setHighlight(permAddresses[0].id.toString());
+      setAddress(permAddresses[0]);
+    }
+  }, [permAddresses]);
 
   return (
-    <div className="h-full flex flex-col justify-evenly w-[30%] p-4">
-      <div className="flex w-full items-center justify-center">
+    <div
+      className={cn(
+        "h-full flex flex-col w-[40%] p-4 max-w-[40%]  min-w-[40%]",
+        phone === "" || !customer ? "justify-center" : "justify-between"
+      )}
+    >
+      <div className="flex w-full justify-center flex-col space-y-4">
+        <Label htmlFor="phone" className="text-xl">
+          Numero tel. cliente
+        </Label>
+
         <Input
-        className="w-full text-center text-6xl h-16"
+          id="phone"
+          className="w-full text-center text-6xl h-16"
           defaultValue={phone}
+          autoFocus
           onKeyDown={(e: any) => {
-            if ((e.key = "Enter")) {
+            if (e.key == "Enter") {
               setPhone(e.target.value);
             }
           }}
         />
       </div>
 
-      {customer && (
-        <RadioGroup className="flex flex-col gap-2 w-full">
-          {customer.addresses.map((address, index: number) => (
+      {/**questo non può funzionare se ci sono 0 domicili all'inizio ??? */}
+      {customer && permAddresses.length > 0 && (
+        <RadioGroup
+          className="flex flex-col gap-2 w-full max-h-[25rem] overflow-y-auto p-2"
+          defaultValue={permAddresses[0].id.toString()}
+        >
+          <span className="text-xl font-medium">Domicili:</span>
+
+          <Separator className="my-4" />
+
+          {permAddresses.map((address, index) => (
             <div
               key={index}
               className={cn(
-                "flex items-center gap-4 w-ful p-2 rounded",
-                higlight === address.id.toString() ? "bg-[#450a0a]" : "bg-none"
+                "flex items-center w-full p-3 rounded gap-4 justify-between",
+                highlight === address.id.toString()
+                  ? "bg-muted-foreground/15"
+                  : "bg-none"
               )}
             >
-              <Label
-                htmlFor={index.toString()}
-                className="flex items-center w-4/5 "
-              >
-                <span className="w-1/4">{index + 1 + " domicilio: "}</span>
+              <span>{`${index + 1} domicilio:`}</span>
 
-                <Button
-                  onClick={() => {
-                    setAddressChoice("normal");
-                    setAddress(address);
-                  }}
-                  className="w-3/4 max-w-72"
-                >
-                  <span className="truncate">
-                    {address.street} {address.civic}
-                  </span>
-                </Button>
-              </Label>
-              <div className="w-1/5">
-                <RadioGroupItem
-                  value={address.id.toString()}
-                  onClick={() => {
-                    setHighlight(address.id.toString());
-                    setAddress(address);
-                    setAddressChoice("");
-                  }}
-                  id={index.toString()}
-                  className="w-8 h-8"
-                />
-              </div>
+              {/** */}
+
+              <Button className="max-w-[70%] w-[70%]" variant={"outline"}>
+                <span className="truncate">
+                  {address.street} {address.civic}
+                </span>
+              </Button>
+
+              <RadioGroupItem
+                value={address.id.toString()}
+                onClick={() => {
+                  setHighlight(address.id.toString());
+                  setAddress(address);
+                  setChoice(AddressChoice.NORMAL);
+                }}
+                id={index.toString()}
+              />
             </div>
           ))}
 
           <div
             className={cn(
-              "flex items-center gap-4 w-full p-2 rounded",
-              higlight === "new" ? "bg-[#450a0a]" : "bg-none"
+              "flex items-center w-full p-3 rounded gap-4 justify-between",
+              highlight === "new" ? "bg-muted-foreground/15" : "bg-none"
             )}
           >
-            <Label htmlFor={"new"} className="flex items-center w-4/5 ">
-              <span className="w-1/4">
-                {customer.addresses.length + 1 + " domicilio: "}
-              </span>
+            <span>{`${permAddresses.length + 1} domicilio:`}</span>
 
-              <Button
-                onClick={() => {
-                  setAddress(undefined);
-                  setAddressChoice("new");
-                }}
-                className="w-3/4 max-w-72"
-              >
-                <span className="truncate">Crea nuova domicilio</span>
-              </Button>
-            </Label>
-            <div className="w-1/5"></div>
+            <Button
+              onClick={() => {
+                setChoice(AddressChoice.NEW);
+              }}
+              className="max-w-[70%] w-[70%]"
+            >
+              <span className="truncate">Crea un nuovo domicilio</span>
+            </Button>
+
+            <div className="w-4 h-4"></div>
           </div>
 
           <div
             className={cn(
-              "flex items-center gap-4 w-full p-2 rounded",
-              higlight === "temp" ? "bg-[#450a0a]" : "bg-none"
+              "flex items-center w-full p-3 rounded gap-4 justify-between",
+              highlight === "temp" ? "bg-muted-foreground/15" : "bg-none"
             )}
           >
-            <Label htmlFor="temp" className="flex items-center w-4/5 ">
-              <div className="w-1/4">Provvisorio:</div>
-              <Button
-                variant="secondary"
-                className="w-3/4 max-w-72"
-                onClick={() => {
-                  setAddress(undefined);
-                  setAddressChoice("temp");
-                }}
-              >
-                Crea domicilio provvisorio
-              </Button>
-            </Label>
-            <div className="w-[20%]">
-              <RadioGroupItem
-                value="temp"
-                id="temp"
-                className="w-8 h-8"
-                onClick={() => {
-                  setHighlight("temp");
-                  setAddressChoice("");
-                }}
-              />
-            </div>
+            <span>Provvisorio:</span>
+            <Button className="max-w-[70%] w-[70%]">
+              {address && address.temporary
+                ? `${address.street} ${address.civic}`
+                : "Crea domicilio provvisorio"}
+            </Button>
+
+            <RadioGroupItem
+              value="temp"
+              id="temp"
+              onClick={() => {
+                setHighlight("temp");
+                setAddress(undefined);
+                setChoice(AddressChoice.TEMPORARY);
+              }}
+            />
           </div>
         </RadioGroup>
       )}
 
-      <div className="w-full">
-        <Button className="text-4xl h-16 w-full">CONFERMA</Button>
-      </div>
+      {phone !== "" && customer && (
+        <div className="w-full space-y-2">
+          <Button className="text-4xl h-16 w-full" disabled={!address}>
+            CONFERMA
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

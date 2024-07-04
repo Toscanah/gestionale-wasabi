@@ -16,10 +16,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import Order from "../order/Order";
+import Order from "../../orders/order/Order";
 import { Button } from "@/components/ui/button";
 import { Gear, Plus } from "@phosphor-icons/react";
-import PhoneDialog from "./PhoneDialog";
+import AddressDialog from "../../customer/AddressDialog";
 
 export default function ToHome({ orders }: { orders: OrderType[] }) {
   const [filteredOrders, setFilteredOrders] = useState<OrderType[]>(orders);
@@ -62,11 +62,9 @@ export default function ToHome({ orders }: { orders: OrderType[] }) {
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="w-full flex items-center justify-between">
-        <PhoneDialog />
+        <AddressDialog/>
 
-        <Button className="rounded-full h-20 w-40">
-          <Gear className="h-16 w-16" />
-        </Button>
+        
       </div>
       <div className="rounded-md border max-h-full overflow-y-auto">
         <Table>
