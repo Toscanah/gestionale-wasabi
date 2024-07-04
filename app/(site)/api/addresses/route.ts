@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
 
   switch (body.requestType) {
     case "create":
-      
       return NextResponse.json(await createAddress(body.content as Address));
   }
 }

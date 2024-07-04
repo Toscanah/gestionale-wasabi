@@ -35,22 +35,24 @@ model Address {
 }
 
 model Order {
-    id          Int               @id @default(autoincrement())
-    customer_id Int?
-    table_id    Int?
-    type        OrderType
-    created_at  DateTime?         @default(now())
-    total       Float?
-    notes       String?
-    when        String?
-    address_id  Int?
-    customer    Customer?         @relation(fields: [customer_id], references: [id])
-    table       Table?            @relation(fields: [table_id], references: [id])
-    address     Address?          @relation(fields: [address_id], references: [id])
-    products    ProductsOnOrder[]
-    paid        Boolean           @default(false)
-    payment     Payment[]
-    phones      PhonesOnOrder[]
+    id               Int               @id @default(autoincrement())
+    customer_id      Int?
+    table_id         Int?
+    type             OrderType
+    created_at       DateTime          @default(now())
+    total            Float?
+    notes            String?
+    when             String?           @default("immediate")
+    address_id       Int?
+    customer         Customer?         @relation(fields: [customer_id], references: [id])
+    table            Table?            @relation(fields: [table_id], references: [id])
+    address          Address?          @relation(fields: [address_id], references: [id])
+    products         ProductsOnOrder[]
+    paid             Boolean           @default(false)
+    contact_phone    Phone?            @relation(fields: [contact_phone_id], references: [id])
+    payment          Payment[]
+    phones           PhonesOnOrder[]
+    contact_phone_id Int?
 }
 
 model Customer {
@@ -68,6 +70,7 @@ model Phone {
     customer_id Int
     customer    Customer        @relation(fields: [customer_id], references: [id])
     orders      PhonesOnOrder[]
+    Order       Order[]
 }
 
 model Table {
@@ -87,8 +90,7 @@ model Product {
 }
 
 model ProductsOnOrder {
-    id Int @id @default(autoincrement())
-
+    id         Int     @id @default(autoincrement())
     product    Product @relation(fields: [product_id], references: [id])
     product_id Int
     order      Order   @relation(fields: [order_id], references: [id])
