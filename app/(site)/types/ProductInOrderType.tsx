@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-export type ProductsInOrderType = Prisma.ProductsOnOrderGetPayload<{
+export type ProductInOrderType = Prisma.ProductOnOrderGetPayload<{
   include: {
     product: true;
   };

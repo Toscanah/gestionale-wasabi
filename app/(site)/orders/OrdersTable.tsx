@@ -12,38 +12,26 @@ import getColumns from "./getColumns";
 import { TypesOfOrder } from "../types/TypesOfOrder";
 import getTable from "./getTable";
 import { flexRender } from "@tanstack/react-table";
-import { OrderType } from "../types/OrderType";
+import { AnyOrder } from "../types/OrderType";
 import Order from "./order/Order";
 
 type TableProps = {
   type: TypesOfOrder;
-  data: OrderType[];
+  data: AnyOrder[];
 };
 
 export default function OrdersTable({ type, data }: TableProps) {
- 
-
   const columns = getColumns(type);
   const table = getTable(data, columns);
+
   const formatAddress = (index: number) => {
     if (index == 2 && type == TypesOfOrder.TO_HOME) {
       return "flex w-full max-h-16 h-16 max-w-64 line-clamp-2 items-center p-1";
     } else return "";
   };
-  const getTableName = () => {
-    switch (type) {
-      case TypesOfOrder.PICK_UP:
-        return "Ordini asporto";
-      case TypesOfOrder.TABLE:
-        return "Tavoli";
-      case TypesOfOrder.TO_HOME:
-        return "Ordini a domicilio";
-    }
-  };
 
   return (
-    <div className="w-1/3 h-full">
-      <div className="w-full text-center mb-4 text-xl">{getTableName()}</div>
+    <div className="w-full h-full">
       <div className="rounded-md border w-full overflow-y-auto max-h-[90%] h-[90%]">
         <TanstackTable>
           <TableHeader className="sticky top-0 z-30 bg-background">

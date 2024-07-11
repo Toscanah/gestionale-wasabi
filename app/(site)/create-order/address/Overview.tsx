@@ -8,21 +8,22 @@ import {
   useCallback,
   KeyboardEvent,
 } from "react";
-import { CustomerWithAddresses } from "../types/CustomerWithAddresses";
+import { CustomerWithAddresses } from "../../types/CustomerWithAddresses";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
-import { AddressChoice, AddressChoiceType } from "./AddressChoice";
+import { AddressChoice } from "./AddressChoice";
 
 interface OverviewProps {
   customer: CustomerWithAddresses | undefined;
   address: Address | undefined;
   phone: string;
+
   setAddress: Dispatch<SetStateAction<Address | undefined>>;
   setPhone: Dispatch<SetStateAction<string>>;
-  setChoice: Dispatch<SetStateAction<AddressChoiceType>>;
+  setChoice: Dispatch<SetStateAction<AddressChoice | undefined>>;
 }
 
 export default function Overview({
@@ -41,23 +42,29 @@ export default function Overview({
       setPermAddresses(
         customer.addresses.filter((address) => !address.temporary)
       );
+    } else {
+      setPermAddresses([]);
     }
-  }, []);
+  }, [customer]);
 
   useEffect(() => {
-    // si potrebbe fare che prende il domicilio utilizzato nell'ultimo ordine
-    // anzi probabilmente 100% Lin chiede una cosa così
     if (permAddresses.length > 0) {
       setHighlight(permAddresses[0].id.toString());
       setAddress(permAddresses[0]);
+    }
+    if (!address?.temporary && address) {
+      setHighlight(address.id.toString());
+    }
+    if (address?.temporary && address) {
+      setHighlight("temp");
     }
   }, [permAddresses]);
 
   return (
     <div
       className={cn(
-        "h-full flex flex-col w-[40%] p-4 max-w-[40%]  min-w-[40%]",
-        phone === "" || !customer ? "justify-center" : "justify-between"
+        "h-full flex flex-col w-[40%] max-w-[40%]  min-w-[40%]",
+        phone === "" ? "justify-between" : "justify-between"
       )}
     >
       <div className="flex w-full justify-center flex-col space-y-4">
@@ -70,19 +77,19 @@ export default function Overview({
           className="w-full text-center text-6xl h-16"
           defaultValue={phone}
           autoFocus
-          onKeyDown={(e: any) => {
-            if (e.key == "Enter") {
-              setPhone(e.target.value);
-            }
+          type="number"
+          onChange={(e: any) => {
+            setPhone(e.target.value);
           }}
         />
       </div>
 
-      {/**questo non può funzionare se ci sono 0 domicili all'inizio ??? */}
-      {customer && permAddresses.length > 0 && (
+      {phone !== "" && (
         <RadioGroup
           className="flex flex-col gap-2 w-full max-h-[25rem] overflow-y-auto p-2"
-          defaultValue={permAddresses[0].id.toString()}
+          defaultValue={permAddresses[0]?.id.toString() ?? ""}
+          value={highlight}
+          onValueChange={(value) => setHighlight(value)}
         >
           <span className="text-xl font-medium">Domicili:</span>
 
@@ -100,9 +107,15 @@ export default function Overview({
             >
               <span>{`${index + 1} domicilio:`}</span>
 
-              {/** */}
-
-              <Button className="max-w-[70%] w-[70%]" variant={"outline"}>
+              <Button
+                className="max-w-[70%] w-[70%]"
+                variant={"outline"}
+                onClick={() => {
+                  setHighlight(address.id.toString());
+                  setAddress(address);
+                  setChoice(AddressChoice.NORMAL);
+                }}
+              >
                 <span className="truncate">
                   {address.street} {address.civic}
                 </span>
@@ -131,6 +144,8 @@ export default function Overview({
             <Button
               onClick={() => {
                 setChoice(AddressChoice.NEW);
+                setHighlight("");
+                setAddress(undefined);
               }}
               className="max-w-[70%] w-[70%]"
             >
@@ -147,7 +162,14 @@ export default function Overview({
             )}
           >
             <span>Provvisorio:</span>
-            <Button className="max-w-[70%] w-[70%]">
+            <Button
+              className="max-w-[70%] w-[70%]"
+              onClick={() => {
+                setChoice(AddressChoice.TEMPORARY);
+                setHighlight("temp");
+                setAddress(undefined);
+              }}
+            >
               {address && address.temporary
                 ? `${address.street} ${address.civic}`
                 : "Crea domicilio provvisorio"}
@@ -166,10 +188,17 @@ export default function Overview({
         </RadioGroup>
       )}
 
-      {phone !== "" && customer && (
+      {phone !== "" && (
         <div className="w-full space-y-2">
-          <Button className="text-4xl h-16 w-full" disabled={!address}>
-            CONFERMA
+          <Button
+            className="text-4xl h-16 w-full"
+            disabled={!address}
+            onClick={() => {
+              console.log(address);
+              console.log(customer);
+            }}
+          >
+            CREA ORDINE
           </Button>
         </div>
       )}

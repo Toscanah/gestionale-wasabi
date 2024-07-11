@@ -1,7 +1,5 @@
-import { Product, ProductsOnOrder } from "@prisma/client";
 import {
   ColumnDef,
-  VisibilityState,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -9,11 +7,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction } from "react";
-import { ProductsInOrderType } from "../../types/ProductsInOrderType";
+import { ProductInOrderType } from "../../types/ProductInOrderType";
+
 
 export default function getTable(
-  products: ProductsInOrderType[],
-  columns: ColumnDef<ProductsInOrderType>[],
+  products: ProductInOrderType[],
+  columns: ColumnDef<ProductInOrderType>[],
   rowSelection: any,
   setRowSelection: Dispatch<SetStateAction<any>>
 ) {

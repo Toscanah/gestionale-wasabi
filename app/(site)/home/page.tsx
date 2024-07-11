@@ -1,69 +1,83 @@
 "use client";
 
-import OrdersTable from "../orders/OrdersTable";
-import { TypesOfOrder } from "../types/TypesOfOrder";
 import { useState, useEffect } from "react";
-import { OrderType } from "../types/OrderType";
-
-import Actions from "./Actions";
 import { OrderProvider } from "../orders/OrderContext";
+import { TypesOfOrder } from "../types/TypesOfOrder";
+import Actions from "./Actions";
+import OrdersTable from "../orders/OrdersTable";
+import ChoiceDialog from "../create-order/CreateOrder";
+import { RefreshCcwIcon } from "lucide-react";
 
 export default function Home() {
-  const [tableOrders, setTableOrders] = useState<OrderType[]>([]);
-  const [pickupOrders, setPickupOrders] = useState<OrderType[]>([]);
-  const [homeOrders, setHomeOrders] = useState<OrderType[]>([]);
+  const [orders, setOrders] = useState({
+    [TypesOfOrder.TABLE]: [],
+    [TypesOfOrder.TO_HOME]: [],
+    [TypesOfOrder.PICK_UP]: [],
+  });
 
   const fetchOrders = (type: TypesOfOrder) => {
     fetch(`/api/orders/?requestType=getOrdersByType&type=${type}`, {
       method: "GET",
     })
       .then((response) => response.json())
-      .then((orders: OrderType[]) => {
-        switch (type) {
-          case TypesOfOrder.TABLE:
-            setTableOrders(orders);
-            return;
-          case TypesOfOrder.PICK_UP:
-            setPickupOrders(orders);
-            return;
-          case TypesOfOrder.TO_HOME:
-            setHomeOrders(orders);
-            return;
-        }
-      });
+      .then((data) => {
+        setOrders((prevOrders) => ({
+          ...prevOrders,
+          [type]: data,
+        }));
+      })
   };
 
   const onOrdersUpdate = (type: TypesOfOrder) => {
-    
-
-    switch (type) {
-      case TypesOfOrder.TABLE:
-        fetchOrders(TypesOfOrder.TABLE);
-        return;
-      case TypesOfOrder.PICK_UP:
-        fetchOrders(TypesOfOrder.PICK_UP);
-        return;
-      case TypesOfOrder.TO_HOME:
-        fetchOrders(TypesOfOrder.TO_HOME);
-        return;
-    }
+    fetchOrders(type);
   };
 
   useEffect(() => {
     fetchOrders(TypesOfOrder.TABLE);
-    //fetchOrders(TypesOfOrder.TO_HOME);
-    //fetchOrders(TypesOfOrder.PICK_UP);
+    fetchOrders(TypesOfOrder.PICK_UP);
+    fetchOrders(TypesOfOrder.TO_HOME);
   }, []);
+
+  const getTableName = (type: TypesOfOrder) => {
+    switch (type) {
+      case TypesOfOrder.TABLE:
+        return "Tavoli";
+      case TypesOfOrder.TO_HOME:
+        return "Ordini a domicilio";
+      case TypesOfOrder.PICK_UP:
+        return "Ordini asporto";
+      default:
+        return "";
+    }
+  };
 
   return (
     <OrderProvider onOrdersUpdate={onOrdersUpdate}>
-      <div className="w-screen p-4 h-screen flex flex-col gap-2 ">
+      <div className="w-screen p-4 h-screen flex flex-col gap-2">
         <Actions />
 
-        <div className="flex gap-4 h-[90%]">
-          <OrdersTable data={tableOrders} type={TypesOfOrder.TABLE} />
-          <OrdersTable data={homeOrders} type={TypesOfOrder.TO_HOME} />
-          <OrdersTable data={pickupOrders} type={TypesOfOrder.PICK_UP} />
+        <RefreshCcwIcon
+          className="cursor-pointer"
+          onClick={() => {
+            fetchOrders(TypesOfOrder.TABLE);
+            fetchOrders(TypesOfOrder.PICK_UP);
+            fetchOrders(TypesOfOrder.TO_HOME);
+          }}
+        />
+
+        <div className="flex gap-8 h-[90%] w-full">
+          {Object.values(TypesOfOrder).map((type) => (
+            <div
+              key={type}
+              className="h-full flex gap-2 flex-col w-1/3 items-center"
+            >
+              <div className="flex w-full justify-between items-center">
+                <div className="text-xl">{getTableName(type)}</div>
+                <ChoiceDialog type={type} />
+              </div>
+              <OrdersTable data={orders[type]} type={type} />
+            </div>
+          ))}
         </div>
       </div>
     </OrderProvider>

@@ -6,9 +6,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { OrderType } from "../types/OrderType";
+import { AnyOrder } from "../types/OrderType";
 
-export default function getTable(data: OrderType[], columns: ColumnDef<OrderType>[]) {
+export default function getTable(
+  data: AnyOrder[],
+  columns: ColumnDef<any>[]
+) {
   return useReactTable({
     getFilteredRowModel: getFilteredRowModel(),
     data: data,
