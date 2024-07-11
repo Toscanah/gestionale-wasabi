@@ -21,7 +21,7 @@ enum PaymentType {
 }
 
 model Address {
-    id          Int      @id @default(autoincrement())
+    id          Int         @id @default(autoincrement())
     customer_id Int
     street      String
     civic       String
@@ -29,67 +29,97 @@ model Address {
     floor       String?
     stair       String?
     street_info String?
-    customer    Customer @relation(fields: [customer_id], references: [id])
-    order       Order[]
+    customer    Customer    @relation(fields: [customer_id], references: [id])
     temporary   Boolean
+    HomeOrder   HomeOrder[]
 }
 
 model Order {
-    id               Int               @id @default(autoincrement())
-    customer_id      Int?
-    table_id         Int?
-    type             OrderType
-    created_at       DateTime          @default(now())
-    total            Float?
+    id           Int              @id @default(autoincrement())
+    created_at   DateTime         @default(now())
+    type         OrderType
+    total        Float?
+    products     ProductOnOrder[]
+    paid         Boolean          @default(false)
+    payment      Payment[]
+    table_order  TableOrder?
+    home_order   HomeOrder?
+    pickup_order PickupOrder?
+}
+
+model TableOrder {
+    id       Int     @id @default(autoincrement())
+    order_id Int     @unique
+    table_id Int?
+    res_name String?
+    people   Int
+    order    Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    table    Table?  @relation(fields: [table_id], references: [id])
+}
+
+model HomeOrder {
+    id               Int      @id @default(autoincrement())
+    order_id         Int      @unique
+    address_id       Int
+    customer_id      Int
+    when             String?  @default("immediate")
     notes            String?
-    when             String?           @default("immediate")
-    address_id       Int?
-    customer         Customer?         @relation(fields: [customer_id], references: [id])
-    table            Table?            @relation(fields: [table_id], references: [id])
-    address          Address?          @relation(fields: [address_id], references: [id])
-    products         ProductsOnOrder[]
-    paid             Boolean           @default(false)
-    contact_phone    Phone?            @relation(fields: [contact_phone_id], references: [id])
-    payment          Payment[]
-    phones           PhonesOnOrder[]
+    customer         Customer @relation(fields: [customer_id], references: [id])
     contact_phone_id Int?
+    contact_phone    Phone?   @relation(fields: [contact_phone_id], references: [id])
+    order            Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    address          Address  @relation(fields: [address_id], references: [id])
+}
+
+model PickupOrder {
+    id          Int       @id @default(autoincrement())
+    order_id    Int       @unique
+    when        String?   @default("immediate")
+    name        String
+    customer_id Int?
+    customer    Customer? @relation(fields: [customer_id], references: [id])
+    order       Order     @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }
 
 model Customer {
-    id        Int       @id @default(autoincrement())
-    name      String
-    surname   String
-    orders    Order[]
-    phone     Phone[]
-    addresses Address[]
+    id            Int           @id @default(autoincrement())
+    name          String
+    surname       String
+    addresses     Address[]
+    home_orders   HomeOrder[]
+    pickup_orders PickupOrder[]
+    Phone         Phone[]
 }
 
 model Phone {
-    id          Int             @id @default(autoincrement())
+    id          Int         @id @default(autoincrement())
     phone       String
     customer_id Int
-    customer    Customer        @relation(fields: [customer_id], references: [id])
-    orders      PhonesOnOrder[]
-    Order       Order[]
+    customer    Customer    @relation(fields: [customer_id], references: [id])
+    orders      HomeOrder[]
 }
 
 model Table {
-    id     Int     @id @default(autoincrement())
-    name   String
-    orders Order[]
+    id     Int          @id @default(autoincrement())
+    number String
+    orders TableOrder[]
 }
 
 model Product {
-    id     Int               @id @default(autoincrement())
-    name   String
-    code   String
-    desc   String
-    price  Float
-    rice   Float
-    orders ProductsOnOrder[]
+    id          Int               @id @default(autoincrement())
+    category_id Int
+    name        String
+    code        String
+    desc        String
+    site_price  Float
+    home_price  Float
+    rice        Float
+    orders      ProductOnOrder[]
+    category    ProductCategory   @relation(fields: [category_id], references: [id])
+    options     OptionOnProduct[]
 }
 
-model ProductsOnOrder {
+model ProductOnOrder {
     id         Int     @id @default(autoincrement())
     product    Product @relation(fields: [product_id], references: [id])
     product_id Int
@@ -97,14 +127,6 @@ model ProductsOnOrder {
     order_id   Int
     quantity   Int
     total      Float
-}
-
-model PhonesOnOrder {
-    id       Int   @id @default(autoincrement())
-    phone    Phone @relation(fields: [phone_id], references: [id])
-    phone_id Int
-    order    Order @relation(fields: [order_id], references: [id])
-    order_id Int
 }
 
 model Payment {
@@ -123,9 +145,31 @@ model Admin {
 }
 
 model Rice {
-    id        Int   @id @default(autoincrement())
+    id        Int    @id @default(autoincrement())
     amount    Float
     threshold Float
+    warning   String @default("Attenzione, la soglia è stata raggiunta")
+}
 
-    warning String @default("Attenzione, la soglia è stata raggiunta")
+model ProductCategory {
+    id       Int              @id @default(autoincrement())
+    category String
+    product  Product[]
+    options  CategoryOption[]
+}
+
+model CategoryOption {
+    id          Int               @id @default(autoincrement())
+    category_id Int
+    option_name String
+    category    ProductCategory   @relation(fields: [category_id], references: [id])
+    products    OptionOnProduct[]
+}
+
+model OptionOnProduct {
+    id         Int            @id @default(autoincrement())
+    product_id Int
+    option_id  Int
+    product    Product        @relation(fields: [product_id], references: [id])
+    option     CategoryOption @relation(fields: [option_id], references: [id])
 }

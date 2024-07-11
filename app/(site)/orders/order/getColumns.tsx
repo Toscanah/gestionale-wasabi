@@ -1,50 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { ColumnDef, Row } from "@tanstack/react-table";
-import { ArrowsDownUp } from "@phosphor-icons/react";
+import { ColumnDef} from "@tanstack/react-table";
 
-import { ProductsInOrderType } from "../../types/ProductsInOrderType";
+import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { Input } from "@/components/ui/input";
 import { useRef } from "react";
-
-type CreateColumnParams = {
-  accessorKey: keyof ProductsInOrderType | string;
-  headerLabel: string;
-  cellContent: (row: Row<ProductsInOrderType>, refs: any) => React.ReactNode;
-};
-
-function createColumn({
-  accessorKey,
-  headerLabel,
-  cellContent,
-}: CreateColumnParams): ColumnDef<ProductsInOrderType> {
-  return {
-    accessorKey,
-    header: ({ column }) => (
-      // <Button
-      //   variant="secondary"
-      //   onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      // >
-
-      <>{headerLabel}</>
-    ),
-
-    //   <ArrowsDownUp className="ml-2 h-4 w-4" />
-    // </Button>
-    cell: ({ row, column }) => {
-      return cellContent(row, column);
-    },
-  };
-}
+import { TypesOfOrder } from "../../types/TypesOfOrder";
+import TableColumn from "../../util/TableColumn";
 
 export default function getColumns(
   handleFieldChange: (key: string, value: any, index: number) => void,
-): ColumnDef<ProductsInOrderType>[] {
+  type: TypesOfOrder
+): ColumnDef<ProductInOrderType>[] {
   const columns = [
-    createColumn({
+    TableColumn<ProductInOrderType>({
       accessorKey: "code",
       headerLabel: "Codice",
       cellContent: (row) => {
-        console.log(row.original)
         return (
           <Input
             ref={(ref) => setInputRef(ref, row.index, 0)}
@@ -63,7 +33,7 @@ export default function getColumns(
       },
     }),
 
-    createColumn({
+    TableColumn<ProductInOrderType>({
       accessorKey: "quantity",
       headerLabel: "Quantità",
       cellContent: (row) => {
@@ -73,9 +43,7 @@ export default function getColumns(
             type="number"
             className="max-w-20 text-2xl"
             defaultValue={
-              row.original.quantity == 0
-                ? 1
-                : (row.original.quantity as number)
+              row.original.quantity == 0 ? 1 : (row.original.quantity as number)
             }
             onKeyDown={(e: any) => {
               handleFocus(e, row.index, 1);
@@ -88,7 +56,7 @@ export default function getColumns(
       },
     }),
 
-    createColumn({
+    TableColumn<ProductInOrderType>({
       accessorKey: "desc",
       headerLabel: "Descrizione",
       cellContent: (row) => {
@@ -100,21 +68,25 @@ export default function getColumns(
       },
     }),
 
-    createColumn({
+    TableColumn<ProductInOrderType>({
       accessorKey: "price",
       headerLabel: "Unità",
       cellContent: (row) => {
         return (
           <>
-            {row.original.product?.price == 0
+            {row.original.product?.home_price == 0 &&
+            row.original.product.site_price == 0
               ? ""
-              : "€ " + row.original.product?.price}
+              : "€ " +
+                (type == TypesOfOrder.TO_HOME
+                  ? row.original.product.home_price
+                  : row.original.product.site_price)}
           </>
         );
       },
     }),
 
-    createColumn({
+    TableColumn<ProductInOrderType>({
       accessorKey: "total",
       headerLabel: "Totale",
       cellContent: (row) => {
@@ -134,7 +106,7 @@ export default function getColumns(
       e.preventDefault();
 
       if (colIndex === 1) {
-        moveToInput(rowIndex + 1, 0); // vai alla riga dopo, all'inizio
+        moveToInput(rowIndex + 1, 0);
       } else {
         moveToInput(rowIndex, colIndex + 1);
       }
@@ -147,7 +119,7 @@ export default function getColumns(
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
       if (colIndex === 0) {
-        moveToInput(rowIndex - 1, 1); // vai alla riga prima, alla fine
+        moveToInput(rowIndex - 1, 1);
       } else {
         moveToInput(rowIndex, colIndex - 1);
       }

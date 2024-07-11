@@ -9,23 +9,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Table as TanstackTable, flexRender } from "@tanstack/react-table";
-import { ProductsInOrderType } from "../../types/ProductsInOrderType";
+import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { useEffect, useState, ReactNode } from "react";
-import { OrderType } from "../../types/OrderType";
+import { BaseOrder } from "../../types/OrderType";
 import { cn } from "@/lib/utils";
 import { useOrderContext } from "../OrderContext";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import { toast } from "sonner";
 import Actions from "./Actions";
 
-const createNewProduct = (): ProductsInOrderType => {
+const createNewProduct = (): ProductInOrderType => {
   return {
     product: {
       id: -1,
       name: "",
       code: "",
       desc: "",
-      price: 0,
+      home_price: 0,
+      site_price: 0,
+      category_id: -1,
       rice: 0,
     },
     product_id: -1,
@@ -36,13 +38,12 @@ const createNewProduct = (): ProductsInOrderType => {
   };
 };
 
-export default function OrderTable({ order }: { order: OrderType }) {
-  const [products, setProducts] = useState<ProductsInOrderType[]>([
+export default function OrderTable({ order }: { order: BaseOrder }) {
+  const [products, setProducts] = useState<ProductInOrderType[]>([
     ...order.products,
     createNewProduct(),
   ]);
 
-  console.log(products)
   const { onOrdersUpdate } = useOrderContext();
   const [newCode, setNewCode] = useState<string>("");
   const [newQuantity, setNewQuantity] = useState<number>(0);
@@ -68,7 +69,7 @@ export default function OrderTable({ order }: { order: OrderType }) {
   };
 
   const updateProduct = (
-    prevProducts: ProductsInOrderType[],
+    prevProducts: ProductInOrderType[],
     key: string,
     value: any,
     index: number
@@ -105,8 +106,8 @@ export default function OrderTable({ order }: { order: OrderType }) {
       .then((response) => response.json())
       .then(
         (result: {
-          updatedProduct?: ProductsInOrderType;
-          deletedProduct?: ProductsInOrderType;
+          updatedProduct?: ProductInOrderType;
+          deletedProduct?: ProductInOrderType;
         }) => {
           const { updatedProduct, deletedProduct } = result;
 
@@ -145,7 +146,7 @@ export default function OrderTable({ order }: { order: OrderType }) {
   };
 
   const codeChange = (
-    products: ProductsInOrderType[],
+    products: ProductInOrderType[],
     value: string,
     index: number
   ) => {
@@ -156,7 +157,7 @@ export default function OrderTable({ order }: { order: OrderType }) {
   };
 
   const quantityChange = (
-    products: ProductsInOrderType[],
+    products: ProductInOrderType[],
     value: number,
     index: number
   ) => {
@@ -190,7 +191,7 @@ export default function OrderTable({ order }: { order: OrderType }) {
       }),
     })
       .then((response) => response.json())
-      .then((productOnOrder: ProductsInOrderType) => {
+      .then((productOnOrder: ProductInOrderType) => {
         if (productOnOrder) {
           setProducts((prevProducts) => {
             const updatedProducts = [...prevProducts.slice(0, -1)];
@@ -201,8 +202,10 @@ export default function OrderTable({ order }: { order: OrderType }) {
                 name: productOnOrder.product.name,
                 code: newCode,
                 desc: productOnOrder.product.desc,
-                price: productOnOrder.product.price,
+                home_price: productOnOrder.product.home_price,
+                site_price: productOnOrder.product.site_price,
                 rice: productOnOrder.product.rice,
+                category_id: productOnOrder.product.category_id,
               },
               product_id: productOnOrder.product_id,
               order_id: order.id,
@@ -236,7 +239,7 @@ export default function OrderTable({ order }: { order: OrderType }) {
 
   const [rowSelection, setRowSelection] = useState({});
 
-  const deleteRows = async (table: TanstackTable<ProductsInOrderType>) => {
+  const deleteRows = async (table: TanstackTable<ProductInOrderType>) => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     const selectedProductIds = selectedRows.map((row) => row.original.id);
 
@@ -245,7 +248,7 @@ export default function OrderTable({ order }: { order: OrderType }) {
         method: "DELETE",
         body: JSON.stringify({
           requestType: "delete",
-          content: { productIds: selectedProductIds },
+          content: { productIds: selectedProductIds, orderId: order.id },
         }),
       })
         .then((response) => response.json)
@@ -261,12 +264,12 @@ export default function OrderTable({ order }: { order: OrderType }) {
     }
   };
 
-  const columns = getColumns(handleFieldChange);
+  const columns = getColumns(handleFieldChange, order.type as TypesOfOrder);
   const table = getTable(products, columns, rowSelection, setRowSelection);
 
   return (
-    <div className="w-full flex space-x-10" tabIndex={-1}>
-      <div className="h-full w-[80%] rounded-md border " tabIndex={-1}>
+    <div className="w-full h-full flex space-x-10">
+      <div className="h-full w-[80%] rounded-md border">
         <Table>
           <TableHeader className="sticky top-0 z-30 bg-background">
             {table.getRowModel().rows?.length > 0 &&

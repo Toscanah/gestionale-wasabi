@@ -1,4 +1,4 @@
-import { ProductsInOrderType } from "../../types/ProductsInOrderType";
+import { ProductsInOrderType } from "../../types/ProductInOrderType";
 import prisma from "../db";
 
 export default async function updateFieldProduct(
@@ -8,47 +8,79 @@ export default async function updateFieldProduct(
   product: ProductsInOrderType
 ) {
   switch (key) {
-    case "code":
-      const updatedProduct = await prisma.productsOnOrder.update({
-        where: {
-          id: product.id,
-        },
-        data: {
-          product_id: Number(value),
-        },
-        include: { product: true },
-      });
+    // case "code":
+    //   const updatedProduct = await prisma.productsOnOrder.update({
+    //     where: {
+    //       id: product.id,
+    //     },
+    //     data: {
+    //       product_id: Number(value),
+    //     },
+    //     include: { product: true },
+    //   });
 
-      return {
-        updatedProduct,
-        deletedProduct: undefined,
-      };
+    //   return {
+    //     updatedProduct,
+    //     deletedProduct: undefined,
+    //   };
 
     case "quantity":
-      if (Number(value) == 0) {
-        return {
-          deletedProduct: await prisma.productsOnOrder.delete({
-            where: {
-              id: product.id,
-            },
-          }),
-        };
-      }
+      const newQuantity = Number(value);
 
-      return {
-        updatedProduct: await prisma.productsOnOrder.update({
+      if (newQuantity == 0) {
+        const deletedProduct = await prisma.productsOnOrder.delete({
+          where: {
+            id: product.id,
+          },
+        });
+
+        await prisma.order.update({
+          where: {
+            id: orderId,
+          },
+          data: {
+            total: {
+              decrement: product.total,
+            },
+          },
+        });
+
+        return {
+          deletedProduct,
+          updatedProduct: undefined,
+        };
+      } else {
+        const newTotal = newQuantity * product.product.price;
+        const difference = newTotal - product.total;
+
+        const updatedProduct = await prisma.productsOnOrder.update({
           where: {
             id: product.id,
           },
           data: {
-            quantity: Number(value),
-            total: Number(value * product.product.price),
+            quantity: newQuantity,
+            total: newTotal,
           },
-
           include: {
             product: true,
           },
-        }),
-      };
+        });
+
+        await prisma.order.update({
+          where: {
+            id: orderId,
+          },
+          data: {
+            total: {
+              increment: difference,
+            },
+          },
+        });
+
+        return {
+          updatedProduct,
+          deletedProduct: undefined,
+        };
+      }
   }
 }

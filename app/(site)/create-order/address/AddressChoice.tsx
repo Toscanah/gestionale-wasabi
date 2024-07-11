@@ -3,5 +3,3 @@ export enum AddressChoice {
   NEW = "NEW",
   TEMPORARY = "TEMPORARY",
 }
-
-export type AddressChoiceType = keyof typeof AddressChoice;

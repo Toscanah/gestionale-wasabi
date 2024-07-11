@@ -11,33 +11,35 @@ const optionalField = z.string().optional();
 const formSchema = z.object({
   street: requiredField,
   civic: requiredField,
-  cap: z.coerce.number().optional(),
+  cap: optionalField,
   name: requiredField,
   surname: requiredField,
   floor: requiredField,
   stair: optionalField,
   street_info: optionalField,
   notes: optionalField,
+  contact_phone: optionalField,
 });
 
 export type FormValues = z.infer<typeof formSchema>;
 
 export default function getCustomerForm(
   address: Address | undefined,
-  customer: Customer
+  customer: Customer | undefined
 ) {
   return useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       street: address?.street,
       civic: address?.civic,
-      cap: address?.cap ?? undefined,
-      name: customer?.name,
-      surname: customer?.surname,
+      cap: address?.cap?.toString() ?? undefined,
+      name: customer?.name ?? undefined,
+      surname: customer?.surname ?? undefined,
       floor: address?.floor ?? undefined,
       stair: address?.stair ?? undefined,
       street_info: address?.street_info ?? undefined,
       notes: "",
+      contact_phone: "",
     },
   });
 }
