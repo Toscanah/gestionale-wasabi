@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Address, Customer } from "@prisma/client";
-import { UseFormReturn, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const requiredField = z
@@ -12,6 +12,7 @@ const formSchema = z.object({
   street: requiredField,
   civic: requiredField,
   cap: optionalField,
+  doorbell: requiredField,
   name: requiredField,
   surname: requiredField,
   floor: requiredField,
@@ -40,6 +41,8 @@ export default function getCustomerForm(
       street_info: address?.street_info ?? undefined,
       notes: "",
       contact_phone: "",
+      // TODO: sarebbe da prendere l'ultimo ordine fatto (to home) e prendere l'ultimo campanello usato
+      doorbell: "",
     },
   });
 }

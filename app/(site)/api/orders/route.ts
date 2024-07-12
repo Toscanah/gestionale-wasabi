@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import getOrdersByType from "../../sql/orders/getOrdersByType";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import createPickupOrder from "../../sql/orders/createPickupOrder";
+import createHomeOrder from "../../sql/orders/createHomeOrder";
 
 export async function POST(request: Request) {
   const body: {
@@ -15,6 +16,8 @@ export async function POST(request: Request) {
       return NextResponse.json(await createTableOrder(body.content as any));
     case "createPickupOrder":
       return NextResponse.json(await createPickupOrder(body.content as any));
+    case "createHomeOrder":
+      return NextResponse.json(await createHomeOrder(body.content as any));
   }
 }
 
