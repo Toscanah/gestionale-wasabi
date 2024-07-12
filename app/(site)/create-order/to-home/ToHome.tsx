@@ -1,19 +1,44 @@
 import { Separator } from "@/components/ui/separator";
-import Overview from "../address/Overview";
-import AddressForm from "../address/AddressForm";
-import { useCallback, useEffect, useState } from "react";
-import { AddressChoice } from "../address/AddressChoice";
-import { Address } from "@prisma/client";
+import Overview from "./address/Overview";
+import AddressForm from "./address/AddressForm";
+import { useEffect, useState } from "react";
+import { AddressChoice } from "./address/AddressChoice";
+import { Address, Customer } from "@prisma/client";
 import { CustomerWithAddresses } from "../../types/CustomerWithAddresses";
-import { debounce } from "lodash";
 
 export default function ToHome() {
-  const [choice, setChoice] = useState<AddressChoice>();
-  const [address, setAddress] = useState<Address | undefined>(undefined);
-  const [phone, setPhone] = useState<string>("");
-  const [customer, setCustomer] = useState<CustomerWithAddresses | undefined>(
+  const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(
     undefined
   );
+  const [customer, setCustomer] = useState<Customer | undefined>(undefined);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [phone, setPhone] = useState<string>("");
+  const [addInfo, setAddInfo] = useState<{
+    notes: string | undefined;
+    when: string | undefined;
+    contactPhone: string | undefined;
+  }>({ notes: "", when: "", contactPhone: "" });
+
+  const fetchAddresses = () => {
+    if (customer) {
+      fetch(
+        `/api/addresses?customerId=${encodeURIComponent(
+          customer.id
+        )}&requestType=getAddressesByCustomer`,
+        {
+          method: "GET",
+        }
+      )
+        .then((response) => response.json())
+        .then((addresses: Address[]) => {
+          if (addresses.length > 0) {
+            setAddresses(addresses);
+          } else {
+            setAddresses([]);
+          }
+        });
+    }
+  };
 
   const fetchCustomer = () => {
     fetch(
@@ -25,6 +50,10 @@ export default function ToHome() {
       .then((response) => response.json())
       .then((customer) => {
         setCustomer(customer ? customer : undefined);
+        // clear old possible addresses from other phones
+        if (!customer) {
+          setAddresses([]);
+        }
       });
   };
 
@@ -34,15 +63,35 @@ export default function ToHome() {
     }
   }, [phone]);
 
+  useEffect(() => fetchAddresses(), [customer]);
+
+  const createHomeOrder = () => {
+    fetch("/api/orders/", {
+      method: "POST",
+      body: JSON.stringify({
+        requestType: "createHomeOrder",
+        content: {
+          customer: customer,
+          address: address,
+          notes: notes,
+          when: when,
+          contact_phone: contactPhone,
+        },
+      }),
+    })
+      .then((response) => response.json())
+      .then((order) => {});
+  };
+
   return (
     <div className="w-full flex gap-6 h-full">
       <Overview
-        address={address}
+        selectedAddress={selectedAddress}
+        setSelectedAddress={setSelectedAddress}
+        addresses={addresses}
         setPhone={setPhone}
         phone={phone}
-        customer={customer}
-        setAddress={setAddress}
-        setChoice={setChoice}
+        createHomeOrder={createHomeOrder}
       />
 
       <Separator orientation="vertical" />
@@ -50,12 +99,9 @@ export default function ToHome() {
       <div className="w-[60%] h-full ">
         {phone.length > 0 && (
           <AddressForm
-            phone={phone}
-            choice={choice}
-            address={address ?? undefined}
-            setAddress={setAddress}
+            setAddInfo={setAddInfo}
             customer={customer}
-            setCustomer={setCustomer}
+            selectedAddress={selectedAddress}
           />
         )}
       </div>

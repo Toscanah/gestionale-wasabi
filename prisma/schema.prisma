@@ -58,17 +58,17 @@ model TableOrder {
 }
 
 model HomeOrder {
-    id               Int      @id @default(autoincrement())
-    order_id         Int      @unique
-    address_id       Int
-    customer_id      Int
-    when             String?  @default("immediate")
-    notes            String?
-    customer         Customer @relation(fields: [customer_id], references: [id])
-    contact_phone_id Int?
-    contact_phone    Phone?   @relation(fields: [contact_phone_id], references: [id])
-    order            Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
-    address          Address  @relation(fields: [address_id], references: [id])
+    id            Int      @id @default(autoincrement())
+    order_id      Int      @unique
+    address_id    Int
+    customer_id   Int
+    doorbell      String?
+    when          String?  @default("immediate")
+    notes         String?
+    customer      Customer @relation(fields: [customer_id], references: [id])
+    contact_phone String?
+    order         Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    address       Address  @relation(fields: [address_id], references: [id])
 }
 
 model PickupOrder {
@@ -83,20 +83,19 @@ model PickupOrder {
 
 model Customer {
     id            Int           @id @default(autoincrement())
-    name          String
-    surname       String
+    name          String?
+    surname       String?
     addresses     Address[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
-    Phone         Phone[]
+    phone         Phone[]
 }
 
 model Phone {
-    id          Int         @id @default(autoincrement())
+    id          Int      @id @default(autoincrement())
     phone       String
     customer_id Int
-    customer    Customer    @relation(fields: [customer_id], references: [id])
-    orders      HomeOrder[]
+    customer    Customer @relation(fields: [customer_id], references: [id])
 }
 
 model Table {

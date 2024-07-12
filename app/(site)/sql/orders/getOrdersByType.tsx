@@ -11,7 +11,7 @@ export default async function getOrdersByType(type: TypesOfOrder) {
       },
       payment: true,
       home_order: {
-        include: { address: true, contact_phone: true, customer: true },
+        include: { address: true, customer: true },
       },
       pickup_order: {
         include: { customer: true },

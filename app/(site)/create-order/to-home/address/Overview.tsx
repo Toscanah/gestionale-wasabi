@@ -1,72 +1,68 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Address, Customer } from "@prisma/client";
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useCallback,
-  KeyboardEvent,
-} from "react";
-import { CustomerWithAddresses } from "../../types/CustomerWithAddresses";
+import { Address } from "@prisma/client";
+import { Dispatch, SetStateAction, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
-import { AddressChoice } from "./AddressChoice";
 
 interface OverviewProps {
-  customer: CustomerWithAddresses | undefined;
-  address: Address | undefined;
+  selectedAddress: Address | undefined;
+  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>;
+  addresses: Address[];
+
+  setPhone: Dispatch<SetStateAction<string>>;
   phone: string;
 
-  setAddress: Dispatch<SetStateAction<Address | undefined>>;
-  setPhone: Dispatch<SetStateAction<string>>;
-  setChoice: Dispatch<SetStateAction<AddressChoice | undefined>>;
+  createHomeOrder: () => void;
 }
 
 export default function Overview({
-  customer,
-  setChoice,
-  address,
-  phone,
-  setAddress,
+  selectedAddress,
+  setSelectedAddress,
+  addresses,
+
   setPhone,
+  phone,
+
+  createHomeOrder,
 }: OverviewProps) {
-  const [highlight, setHighlight] = useState<string>("");
   const [permAddresses, setPermAddresses] = useState<Address[]>([]);
+  const [highlight, setHighlight] = useState<string>("");
 
   useEffect(() => {
-    if (customer) {
-      setPermAddresses(
-        customer.addresses.filter((address) => !address.temporary)
-      );
-    } else {
-      setPermAddresses([]);
-    }
-  }, [customer]);
+    setPermAddresses(
+      addresses.length > 0
+        ? addresses.filter((address) => !address.temporary)
+        : []
+    );
+  }, [addresses]);
 
   useEffect(() => {
-    if (permAddresses.length > 0) {
-      setHighlight(permAddresses[0].id.toString());
-      setAddress(permAddresses[0]);
-    }
-    if (!address?.temporary && address) {
-      setHighlight(address.id.toString());
-    }
-    if (address?.temporary && address) {
-      setHighlight("temp");
-    }
+    setHighlight(permAddresses[0]?.id.toString() ?? "");
   }, [permAddresses]);
 
+  useEffect(() => {
+    switch (highlight) {
+      case "temp":
+        setSelectedAddress(undefined);
+        break;
+      case "new": {
+        break;
+      }
+      default: {
+        setSelectedAddress(
+          permAddresses.find((address) => highlight == address.id.toString())
+        );
+        break;
+      }
+    }
+  }, [highlight]);
+
   return (
-    <div
-      className={cn(
-        "h-full flex flex-col w-[40%] max-w-[40%]  min-w-[40%]",
-        phone === "" ? "justify-between" : "justify-between"
-      )}
-    >
+    <div className="h-full flex flex-col w-[40%] max-w-[40%]  min-w-[40%] justify-between">
       <div className="flex w-full justify-center flex-col space-y-4">
         <Label htmlFor="phone" className="text-xl">
           Numero tel. cliente
@@ -87,9 +83,15 @@ export default function Overview({
       {phone !== "" && (
         <RadioGroup
           className="flex flex-col gap-2 w-full max-h-[25rem] overflow-y-auto p-2"
-          defaultValue={permAddresses[0]?.id.toString() ?? ""}
+          defaultValue={highlight}
           value={highlight}
-          onValueChange={(value) => setHighlight(value)}
+          onValueChange={(value) =>
+            //  setSelectedAddress(
+            //    addresses.find((address) => address.id.toString() == value)
+            //  )
+
+            setHighlight(value)
+          }
         >
           <span className="text-xl font-medium">Domicili:</span>
 
@@ -112,8 +114,6 @@ export default function Overview({
                 variant={"outline"}
                 onClick={() => {
                   setHighlight(address.id.toString());
-                  setAddress(address);
-                  setChoice(AddressChoice.NORMAL);
                 }}
               >
                 <span className="truncate">
@@ -121,15 +121,7 @@ export default function Overview({
                 </span>
               </Button>
 
-              <RadioGroupItem
-                value={address.id.toString()}
-                onClick={() => {
-                  setHighlight(address.id.toString());
-                  setAddress(address);
-                  setChoice(AddressChoice.NORMAL);
-                }}
-                id={index.toString()}
-              />
+              <RadioGroupItem value={address.id.toString()} />
             </div>
           ))}
 
@@ -143,9 +135,7 @@ export default function Overview({
 
             <Button
               onClick={() => {
-                setChoice(AddressChoice.NEW);
-                setHighlight("");
-                setAddress(undefined);
+                setHighlight("new");
               }}
               className="max-w-[70%] w-[70%]"
             >
@@ -164,26 +154,14 @@ export default function Overview({
             <span>Provvisorio:</span>
             <Button
               className="max-w-[70%] w-[70%]"
-              onClick={() => {
-                setChoice(AddressChoice.TEMPORARY);
-                setHighlight("temp");
-                setAddress(undefined);
-              }}
+              onClick={() => setHighlight("temp")}
             >
-              {address && address.temporary
-                ? `${address.street} ${address.civic}`
+              {selectedAddress && selectedAddress.temporary
+                ? `${selectedAddress.street} ${selectedAddress.civic}`
                 : "Crea domicilio provvisorio"}
             </Button>
 
-            <RadioGroupItem
-              value="temp"
-              id="temp"
-              onClick={() => {
-                setHighlight("temp");
-                setAddress(undefined);
-                setChoice(AddressChoice.TEMPORARY);
-              }}
-            />
+            <RadioGroupItem value="temp" />
           </div>
         </RadioGroup>
       )}
@@ -192,10 +170,9 @@ export default function Overview({
         <div className="w-full space-y-2">
           <Button
             className="text-4xl h-16 w-full"
-            disabled={!address}
+            disabled={!selectedAddress}
             onClick={() => {
-              console.log(address);
-              console.log(customer);
+              createHomeOrder();
             }}
           >
             CREA ORDINE

@@ -51,32 +51,21 @@ export default function OrdersTable({ type, data }: TableProps) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className="hover:cursor-pointer w-full h-16 text-xl"
-                >
-                  {row.getVisibleCells().map((cell, index) => (
-                    <Order
-                      key={cell.id}
-                      cell={cell}
-                      className={formatAddress(index)}
-                    />
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Nessun ordine!
-                </TableCell>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                className="hover:cursor-pointer w-full h-16 text-xl"
+              >
+                {row.getVisibleCells().map((cell, index) => (
+                  <Order
+                    key={cell.id}
+                    cell={cell}
+                    className={formatAddress(index)}
+                  />
+                ))}
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </TanstackTable>
       </div>
