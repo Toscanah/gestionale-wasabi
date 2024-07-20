@@ -12,25 +12,25 @@ interface OverviewProps {
   selectedAddress: Address | undefined;
   setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>;
   addresses: Address[];
-
   setPhone: Dispatch<SetStateAction<string>>;
   phone: string;
-
   createHomeOrder: () => void;
+  highlight: string;
+  setHighlight: Dispatch<SetStateAction<string>>;
 }
 
 export default function Overview({
   selectedAddress,
   setSelectedAddress,
   addresses,
-
   setPhone,
   phone,
-
   createHomeOrder,
+  highlight,
+  setHighlight,
 }: OverviewProps) {
   const [permAddresses, setPermAddresses] = useState<Address[]>([]);
-  const [highlight, setHighlight] = useState<string>("");
+  const [tempAddress, setTempAddress] = useState<Address | undefined>();
 
   useEffect(() => {
     setPermAddresses(
@@ -38,26 +38,37 @@ export default function Overview({
         ? addresses.filter((address) => !address.temporary)
         : []
     );
+
+    setTempAddress(addresses.find((address) => address.temporary) ?? undefined)
   }, [addresses]);
 
   useEffect(() => {
-    setHighlight(permAddresses[0]?.id.toString() ?? "");
+    if (selectedAddress) {
+      setHighlight(
+        selectedAddress.temporary ? "temp" : selectedAddress.id.toString()
+      );
+    } else {
+      setHighlight(permAddresses[0]?.id.toString() ?? "");
+    }
   }, [permAddresses]);
 
   useEffect(() => {
     switch (highlight) {
       case "temp":
+        const temp =
+          addresses.find((address) => address.temporary) ?? undefined;
+        setSelectedAddress(temp);
+        setTempAddress(temp);
+        break;
+      case "new":
         setSelectedAddress(undefined);
         break;
-      case "new": {
-        break;
-      }
-      default: {
+      default:
         setSelectedAddress(
-          permAddresses.find((address) => highlight == address.id.toString())
+          addresses.find((address) => highlight === address.id.toString()) ??
+            undefined
         );
         break;
-      }
     }
   }, [highlight]);
 
@@ -85,13 +96,7 @@ export default function Overview({
           className="flex flex-col gap-2 w-full max-h-[25rem] overflow-y-auto p-2"
           defaultValue={highlight}
           value={highlight}
-          onValueChange={(value) =>
-            //  setSelectedAddress(
-            //    addresses.find((address) => address.id.toString() == value)
-            //  )
-
-            setHighlight(value)
-          }
+          onValueChange={(value) => setHighlight(value)}
         >
           <span className="text-xl font-medium">Domicili:</span>
 
@@ -156,8 +161,8 @@ export default function Overview({
               className="max-w-[70%] w-[70%]"
               onClick={() => setHighlight("temp")}
             >
-              {selectedAddress && selectedAddress.temporary
-                ? `${selectedAddress.street} ${selectedAddress.civic}`
+              {tempAddress
+                ? `${tempAddress.street} ${tempAddress.civic}`
                 : "Crea domicilio provvisorio"}
             </Button>
 
@@ -172,7 +177,7 @@ export default function Overview({
             className="text-4xl h-16 w-full"
             disabled={!selectedAddress}
             onClick={() => {
-              createHomeOrder();
+              console.log(selectedAddress);
             }}
           >
             CREA ORDINE

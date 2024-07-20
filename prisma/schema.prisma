@@ -32,6 +32,7 @@ model Address {
     customer    Customer    @relation(fields: [customer_id], references: [id])
     temporary   Boolean
     HomeOrder   HomeOrder[]
+    doorbell    String?
 }
 
 model Order {
@@ -62,7 +63,6 @@ model HomeOrder {
     order_id      Int      @unique
     address_id    Int
     customer_id   Int
-    doorbell      String?
     when          String?  @default("immediate")
     notes         String?
     customer      Customer @relation(fields: [customer_id], references: [id])

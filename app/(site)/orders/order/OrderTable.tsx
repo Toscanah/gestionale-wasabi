@@ -13,10 +13,11 @@ import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { useEffect, useState, ReactNode } from "react";
 import { BaseOrder } from "../../types/OrderType";
 import { cn } from "@/lib/utils";
-import { useOrderContext } from "../OrderContext";
+import { useWasabiContext } from "../WasabiContext";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import { toast } from "sonner";
 import Actions from "./Actions";
+import { Button } from "@/components/ui/button";
 
 const createNewProduct = (): ProductInOrderType => {
   return {
@@ -44,7 +45,7 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
     createNewProduct(),
   ]);
 
-  const { onOrdersUpdate } = useOrderContext();
+  const { onOrdersUpdate } = useWasabiContext();
   const [newCode, setNewCode] = useState<string>("");
   const [newQuantity, setNewQuantity] = useState<number>(0);
 
@@ -268,66 +269,72 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
   const table = getTable(products, columns, rowSelection, setRowSelection);
 
   return (
-    <div className="w-full h-full flex space-x-10">
-      <div className="h-full w-[80%] rounded-md border">
-        <Table>
-          <TableHeader className="sticky top-0 z-30 bg-background">
-            {table.getRowModel().rows?.length > 0 &&
-              table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header, index) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
+    <div className="w-full h-full flex space-x-6 justify-between">
+      <div className="w-[80%] h-full flex flex-col gap-6">
+        <div>
+          <Button onClick={() => deleteRows(table)}>
+            Cancella prodotti selezionati
+          </Button>
+        </div>
+
+        <div className="w-full rounded-md border flex-grow">
+          <Table>
+            <TableHeader className="sticky top-0 z-30 bg-background">
+              {table.getRowModel().rows?.length > 0 &&
+                table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header, index) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell, index) => (
+                    <TableCell
+                      key={cell.id}
+                      onClick={() => {
+                        if (index > 1) {
+                          row.toggleSelected();
+                        }
+                      }}
+                      className={cn(
+                        "h-12 text-2xl",
+                        index == 2 && "p-0",
+                        index > 1 && "hover:cursor-pointer"
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell, index) => (
-                  <TableCell
-                    key={cell.id}
-                    onClick={() => {
-                      if (index > 1) {
-                        row.toggleSelected();
-                      }
-                    }}
-                    className={cn(
-                      "h-12 text-2xl",
-                      index == 2 && "p-0",
-                      index > 1 && "hover:cursor-pointer"
-                    )}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-            {table.getRowModel().rows.length === 0 && (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Nessun risultato!
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
-      <Actions deleteRows={() => deleteRows(table)} />
+      {/* <Actions deleteRows={() => deleteRows(table)} /> */}
+
+      <div className="w-[20%] flex flex-col justify-end space-y-4">
+        <div className="text-center text-4xl">Totale: {order.total}</div>
+        <Button className="w-full">Chiudi e paga</Button>
+      </div>
     </div>
   );
 }

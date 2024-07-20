@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AnyOrder, TableOrder } from "../../types/OrderType";
-import { useOrderContext } from "../../orders/OrderContext";
+import { useWasabiContext } from "../../orders/WasabiContext";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import { toast } from "sonner";
 
@@ -18,7 +18,7 @@ export default function Table({
 }: {
   setOrder: Dispatch<SetStateAction<AnyOrder | undefined>>;
 }) {
-  const { onOrdersUpdate } = useOrderContext();
+  const { onOrdersUpdate } = useWasabiContext();
 
   const tableRef = useRef<HTMLInputElement>(null);
   const pplRef = useRef<HTMLInputElement>(null);
@@ -54,6 +54,7 @@ export default function Table({
       });
       return;
     }
+
 
     fetch("/api/orders/", {
       method: "POST",

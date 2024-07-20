@@ -9,7 +9,7 @@ import {
   PickupOrder,
   BaseOrder,
 } from "../types/OrderType";
-import TableColumn from "../util/TableColumn";
+import TableColumn from "../components/TableColumn";
 
 export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
