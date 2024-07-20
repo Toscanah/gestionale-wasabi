@@ -1,10 +1,10 @@
-import { ColumnDef} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { Input } from "@/components/ui/input";
 import { useRef } from "react";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
-import TableColumn from "../../util/TableColumn";
+import TableColumn from "../../components/TableColumn";
 
 export default function getColumns(
   handleFieldChange: (key: string, value: any, index: number) => void,
@@ -91,6 +91,16 @@ export default function getColumns(
       headerLabel: "Totale",
       cellContent: (row) => {
         return row.original.total == 0 ? "" : "€ " + row.original.total;
+      },
+    }),
+
+    TableColumn<ProductInOrderType>({
+      accessorKey: "product.rice",
+      headerLabel: "Riso",
+      cellContent: (row) => {
+        return row.original.product_id !== -1
+          ? row.original.product.rice * row.original.quantity + "g"
+          : "";
       },
     }),
   ];

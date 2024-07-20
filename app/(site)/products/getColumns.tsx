@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableColumn from "../util/TableColumn";
+import TableColumn from "../components/TableColumn";
 import { ProductWithInfo } from "../types/ProductWithInfo";
+import EditProduct from "./actions/EditProduct";
 
 export default function getColumns(): ColumnDef<ProductWithInfo>[] {
   return [
@@ -21,12 +22,18 @@ export default function getColumns(): ColumnDef<ProductWithInfo>[] {
 
     TableColumn({
       accessorKey: "home_price",
-      headerLabel: "Prezzo asporto",
+      headerLabel: "Asporto",
+      cellContent: (row) => {
+        return "€ " + row.original.home_price;
+      },
     }),
 
     TableColumn({
       accessorKey: "site_price",
-      headerLabel: "Prezzo in loco",
+      headerLabel: "In loco",
+      cellContent: (row) => {
+        return "€ " + row.original.site_price;
+      },
     }),
 
     TableColumn({
@@ -37,6 +44,18 @@ export default function getColumns(): ColumnDef<ProductWithInfo>[] {
     TableColumn({
       accessorKey: "rice",
       headerLabel: "Riso",
+    }),
+
+    TableColumn({
+      accessorKey: "actions",
+      headerLabel: "Azioni",
+      cellContent: (row) => {
+        return (
+          <>
+            <EditProduct />
+          </>
+        );
+      },
     }),
   ];
 }

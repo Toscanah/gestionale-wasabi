@@ -2,19 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import createAddress from "../../sql/addresses/createAddress";
 import updateAddress from "../../sql/addresses/updateAddress";
 import getAddressesByCustomer from "../../sql/addresses/getAddressesByCustomer";
+import { Address, Customer } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   const body: {
     requestType: string;
-    content: {};
+    content: object;
   } = await request.json();
-  console.log(body.requestType);
 
   switch (body.requestType) {
-    case "create":
-      return NextResponse.json(await createAddress(body.content as any));
-    case "update":
-      return NextResponse.json(await updateAddress(body.content as any));
+    case "createAddress":
+      return NextResponse.json(await createAddress(body.content as Address));
+    case "updateAddress":
+      return NextResponse.json(await updateAddress(body.content as Address));
   }
 }
 

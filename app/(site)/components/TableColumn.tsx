@@ -1,15 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
 import { ColumnDef, Row } from "@tanstack/react-table";
-
-function getNestedValue<T>(obj: T, path: string): any {
-  return path
-    .split(".")
-    .reduce(
-      (acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined),
-      obj as any
-    );
-}
+import getNestedValue from "../util/getNestedValue";
 
 type TableColumnProps<T> = {
   sortable?: boolean;

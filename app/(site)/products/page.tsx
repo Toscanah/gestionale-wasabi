@@ -16,6 +16,8 @@ import { ProductWithInfo } from "../types/ProductWithInfo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "@phosphor-icons/react";
+import fetchRequest from "../util/fetchRequest";
+
 
 export default function ProductsList() {
   const [products, setProducts] = useState<ProductWithInfo[]>([]);
@@ -23,17 +25,14 @@ export default function ProductsList() {
   const columns = getColumns();
   const table = getTable(products, columns, globalFilter, setGlobalFilter);
 
-  const fetchProducts = () => {
-    fetch("/api/products/?requestType=get", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((products: ProductWithInfo[]) => setProducts(products));
-  };
+  // const fetchProducts = () => {
+    
+  // };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  // useEffect(() => {
+  //   fetchRequest("GET", "/api/products/?requestType=get")
+  //     .then((products: ProductWithInfo[]) => setProducts(products));
+  // }, []);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
@@ -101,5 +100,5 @@ export default function ProductsList() {
         </div>
       </div>
     </div>
-  );
+  ); 
 }
