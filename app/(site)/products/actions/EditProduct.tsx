@@ -19,13 +19,13 @@ export default function EditProduct() {
           <DialogTitle className="mb-4">
             Modifica ragazzo per le consegne
           </DialogTitle>
-          <Form {...form}>
+          {/* <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="flex justify-end">
                 <DialogFooter></DialogFooter>
               </div>
             </form>
-          </Form>
+          </Form> */}
         </DialogHeader>
       </DialogContent>
     </Dialog>

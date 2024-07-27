@@ -2,30 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import createAddress from "../../sql/addresses/createAddress";
 import updateAddress from "../../sql/addresses/updateAddress";
 import getAddressesByCustomer from "../../sql/addresses/getAddressesByCustomer";
-import { Address, Customer } from "@prisma/client";
+import { Address } from "@prisma/client";
+import getPostBody from "../../util/getPostBody";
 
 export async function POST(request: NextRequest) {
-  const body: {
-    requestType: string;
-    content: object;
-  } = await request.json();
+  const { action, content } = await getPostBody(request);
 
-  switch (body.requestType) {
+  switch (action) {
     case "createAddress":
-      return NextResponse.json(await createAddress(body.content as Address));
+      return NextResponse.json(await createAddress(content as Address));
     case "updateAddress":
-      return NextResponse.json(await updateAddress(body.content as Address));
+      return NextResponse.json(await updateAddress(content as Address));
   }
 }
 
 export async function GET(request: NextRequest) {
-  const url = new URL(request.url);
-  const requestType = url.searchParams.get("requestType");
+  const params = request.nextUrl.searchParams;
 
-  switch (requestType) {
+  switch (params.get("action")) {
     case "getAddressesByCustomer": {
       return NextResponse.json(
-        await getAddressesByCustomer(Number(url.searchParams.get("customerId")))
+        await getAddressesByCustomer(Number(params.get("customerId")))
       );
     }
   }

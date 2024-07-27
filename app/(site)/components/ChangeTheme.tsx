@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 export function ChangeTheme() {
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
@@ -23,14 +23,20 @@ export function ChangeTheme() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" >
-        <DropdownMenuItem onClick={() => setTheme("light")} className="hover:cursor-pointer">
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem
+          onClick={() => setTheme("light")}
+          className="hover:cursor-pointer"
+        >
           Chiaro
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")} className="hover:cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => setTheme("dark")}
+          className="hover:cursor-pointer"
+        >
           Scuro
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

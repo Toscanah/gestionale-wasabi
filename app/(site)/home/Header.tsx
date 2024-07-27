@@ -6,7 +6,7 @@ import RiceSummary from "../rice/RiceSummary";
 export default function Header() {
   const { fetchRice } = useWasabiContext();
 
-  useEffect(fetchRice, []);
+  useEffect(() => fetchRice, []);
 
   return (
     <>

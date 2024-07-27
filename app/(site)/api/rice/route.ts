@@ -1,28 +1,24 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import getRice from "../../sql/rice/getRice";
 import updateRice from "../../sql/rice/updateRice";
+import getPostBody from "../../util/getPostBody";
 
-export async function GET(request: Request) {
-  const requestType = new URL(request.url).searchParams.get("requestType");
+export async function GET(request: NextRequest) {
+  const params = request.nextUrl.searchParams;
 
-  switch (requestType) {
-    case "get": {
+  switch (params.get("action")) {
+    case "getRice": {
       return NextResponse.json(await getRice());
     }
   }
 }
 
-export async function POST(request: Request) {
-  const {
-    requestType,
-    content,
-  }: { requestType: string; content: { rice: number } } = await request.json();
+export async function POST(request: NextRequest) {
+  const { action, content } = await getPostBody(request);
 
-  switch (requestType) {
+  switch (action) {
     case "update": {
-      return NextResponse.json(await updateRice(content.rice));
+      return NextResponse.json(await updateRice(content as number));
     }
   }
 }
-
-

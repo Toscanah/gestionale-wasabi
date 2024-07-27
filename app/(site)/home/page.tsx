@@ -8,6 +8,7 @@ import RiceSummary from "../rice/RiceSummary";
 import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../create-order/CreateOrder";
 import Header from "./Header";
+import fetchRequest from "../util/fetchRequest";
 
 export default function Home() {
   const [orders, setOrders] = useState({
@@ -17,16 +18,15 @@ export default function Home() {
   });
 
   const fetchOrders = (type: TypesOfOrder) => {
-    fetch(`/api/orders/?requestType=getOrdersByType&type=${type}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setOrders((prevOrders) => ({
-          ...prevOrders,
-          [type]: data,
-        }));
-      });
+    fetchRequest(
+      "GET",
+      `/api/orders/?action=getOrdersByType&type=${type}`
+    ).then((data) => {
+      setOrders((prevOrders) => ({
+        ...prevOrders,
+        [type]: data,
+      }));
+    });
   };
 
   const onOrdersUpdate = (type: TypesOfOrder) => {

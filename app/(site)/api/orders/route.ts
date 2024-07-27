@@ -1,34 +1,31 @@
 import createTableOrder from "@/app/(site)/sql/orders/createTableOrder";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import getOrdersByType from "../../sql/orders/getOrdersByType";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import createPickupOrder from "../../sql/orders/createPickupOrder";
 import createHomeOrder from "../../sql/orders/createHomeOrder";
+import getPostBody from "../../util/getPostBody";
 
-export async function POST(request: Request) {
-  const body: {
-    requestType: string;
-    content: {};
-  } = await request.json();
-
-  switch (body.requestType) {
+export async function POST(request: NextRequest) {
+  const { action, content } = await getPostBody(request);
+  
+  switch (action) {
     case "createTableOrder":
-      return NextResponse.json(await createTableOrder(body.content as any));
+      return NextResponse.json(await createTableOrder(content as any));
     case "createPickupOrder":
-      return NextResponse.json(await createPickupOrder(body.content as any));
+      return NextResponse.json(await createPickupOrder(content as any));
     case "createHomeOrder":
-      return NextResponse.json(await createHomeOrder(body.content as any));
+      return NextResponse.json(await createHomeOrder(content as any));
   }
 }
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const requestType = url.searchParams.get("requestType");
+export async function GET(request: NextRequest) {
+  const params = request.nextUrl.searchParams;
 
-  switch (requestType) {
+  switch (params.get("action")) {
     case "getOrdersByType":
       return NextResponse.json(
-        await getOrdersByType(url.searchParams.get("type") as TypesOfOrder)
+        await getOrdersByType(params.get("type") as TypesOfOrder)
       );
   }
 }
