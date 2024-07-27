@@ -25,7 +25,6 @@ model Address {
     customer_id Int
     street      String
     civic       String
-    cap         Int?
     floor       String?
     stair       String?
     street_info String?
@@ -74,9 +73,9 @@ model HomeOrder {
 model PickupOrder {
     id          Int       @id @default(autoincrement())
     order_id    Int       @unique
+    customer_id Int?
     when        String?   @default("immediate")
     name        String
-    customer_id Int?
     customer    Customer? @relation(fields: [customer_id], references: [id])
     order       Order     @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }
@@ -85,6 +84,7 @@ model Customer {
     id            Int           @id @default(autoincrement())
     name          String?
     surname       String?
+    preferences   String?
     addresses     Address[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
@@ -145,9 +145,7 @@ model Admin {
 
 model Rice {
     id        Int    @id @default(autoincrement())
-    amount    Float
-    threshold Float
-    warning   String @default("Attenzione, la soglia è stata raggiunta")
+    amount    Float    
 }
 
 model ProductCategory {

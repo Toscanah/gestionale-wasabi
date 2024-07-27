@@ -93,16 +93,6 @@ export default function getColumns(
         return row.original.total == 0 ? "" : "€ " + row.original.total;
       },
     }),
-
-    TableColumn<ProductInOrderType>({
-      accessorKey: "product.rice",
-      headerLabel: "Riso",
-      cellContent: (row) => {
-        return row.original.product_id !== -1
-          ? row.original.product.rice * row.original.quantity + "g"
-          : "";
-      },
-    }),
   ];
 
   const inputRefs = useRef(new Map<string, HTMLInputElement | null>()).current;

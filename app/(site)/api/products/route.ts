@@ -6,6 +6,7 @@ import getProducts from "../../sql/products/getProducts";
 import getPostBody from "../../util/getPostBody";
 import createProduct from "../../sql/products/createProduct";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
+import editProduct from "../../sql/products/editProduct";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -22,6 +23,8 @@ export async function POST(request: NextRequest) {
   switch (action) {
     case "createProduct":
       return NextResponse.json(await createProduct(content as ProductWithInfo));
+    case "editProduct":
+      return NextResponse.json(await editProduct(content as any));
     case "add":
       return NextResponse.json(
         await addProductToOrder(

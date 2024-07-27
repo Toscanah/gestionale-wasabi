@@ -21,12 +21,12 @@ export default function ToHome() {
 
   const fetchAddresses = () => {
     if (customer) {
-      fetchRequest(
+      fetchRequest<Address[]>(
         "GET",
         `/api/addresses?customerId=${encodeURIComponent(
           customer.id
-        )}&requestType=getAddressesByCustomer`
-      ).then((addresses: Address[]) =>
+        )}&action=getAddressesByCustomer`
+      ).then((addresses) =>
         setAddresses(
           addresses.length > 0
             ? addresses.filter((address) => !address.temporary)
@@ -37,9 +37,9 @@ export default function ToHome() {
   };
 
   const fetchCustomer = () => {
-    fetchRequest(
+    fetchRequest<Customer>(
       "GET",
-      `/api/customers?phone=${encodeURIComponent(phone)}&requestType=getSingle`
+      `/api/customers?phone=${encodeURIComponent(phone)}&action=getSingle`
     ).then((customer) => {
       setCustomer(customer ? customer : undefined);
       // clear old possible addresses from other phones
@@ -90,7 +90,7 @@ export default function ToHome() {
 
       <Separator orientation="vertical" />
 
-      <div className="w-[60%] h-full ">
+      <div className="w-[70%] h-full ">
         {phone.length > 0 && (
           <AddressForm
             setAddInfo={setAddInfo}

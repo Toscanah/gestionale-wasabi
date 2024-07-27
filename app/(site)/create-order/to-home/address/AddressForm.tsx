@@ -2,7 +2,9 @@ import { Address, Customer } from "@prisma/client";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import getCustomerForm, { FormValues } from "./getCustomerForm";
+import getCustomerForm, {
+  FormValues,
+} from "../../../components/forms/getCustomerForm";
 import { Textarea } from "@/components/ui/textarea";
 import WhenSelector from "@/app/(site)/components/WhenSelector";
 import FormField from "@/app/(site)/components/FormField";
@@ -60,31 +62,31 @@ export default function AddressForm({
       street: values.street,
       civic: values.civic,
       floor: values.floor,
-      cap: values.cap,
       stair: values.stair,
       street_info: values.street_info,
       temporary: highlight === "temp",
       id: selectedAddress?.id,
     };
 
-    fetchRequest("POST", "/api/customers/", {
-      requestType:
-        actionCustomer === "create" ? "createCustomer" : "updateCustomer",
-      content:
-        actionCustomer === "create"
-          ? { phone, customer: customerContent }
-          : customerContent,
-    })
-      .then((updatedCustomer: Customer) => {
+    fetchRequest<Customer>(
+      "POST",
+      "/api/customers/",
+      actionCustomer === "create" ? "createCustomer" : "updateCustomer",
+      actionCustomer === "create"
+        ? { phone, customer: customerContent }
+        : customerContent
+    )
+      .then((updatedCustomer) => {
         setCustomer(updatedCustomer);
 
-        return fetchRequest("POST", "/api/addresses/", {
-          requestType:
-            actionAddress === "create" ? "createAddress" : "updateAddress",
-          content: addressContent,
-        });
+        return fetchRequest<Address>(
+          "POST",
+          "/api/addresses/",
+          actionAddress === "create" ? "createAddress" : "updateAddress",
+          addressContent
+        );
       })
-      .then((updatedAddress: Address) => {
+      .then((updatedAddress) => {
         setSelectedAddress(updatedAddress);
 
         setAddresses((prevAddresses) => {
@@ -109,7 +111,6 @@ export default function AddressForm({
     form.reset({
       street: selectedAddress?.street || "",
       civic: selectedAddress?.civic || "",
-      cap: selectedAddress?.cap?.toString() ?? "",
       name: customer?.name || "",
       surname: customer?.surname || "",
       floor: selectedAddress?.floor || "",
@@ -117,8 +118,9 @@ export default function AddressForm({
       street_info: selectedAddress?.street_info || "",
       notes: "",
       contact_phone: "",
-      doorbell: "",
+      doorbell: selectedAddress?.doorbell || "",
       when: "immediate",
+      // TODO: prendere le preferenze dal cliente  preferences: customer.preferences || "",
     });
     form.clearErrors();
   }, [selectedAddress, customer]);
@@ -148,28 +150,26 @@ export default function AddressForm({
         >
           {/* <h1 className="text-4xl w-full text-center">{getTitle()}</h1> */}
 
-          <FormField control={form.control} name="street" label="Via" />
-
-          <div className="flex justify-between gap-4">
-            <FormField control={form.control} name="civic" label="Civico" />
-
-            <FormField
-              control={form.control}
-              name="cap"
-              label="CAP"
-              type="number"
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="street"
+            label="Via"
+            className="h-14 text-2xl"
+            example="(es. Via dei Giacinti 41) "
+          />
 
           <div className="flex justify-between gap-4">
             <FormField
               control={form.control}
               name="doorbell"
+              className="h-14 text-2xl"
               label="Campanello"
+              example="(es. Rossi)"
             />
             <FormField
               control={form.control}
               name="contact_phone"
+              className="h-14 text-2xl"
               label="Num. telefono addizionale"
             />
           </div>
@@ -177,38 +177,65 @@ export default function AddressForm({
           <div className="flex justify-between gap-4">
             <FormField
               control={form.control}
+              name="floor"
+              label="Piano"
+              className="h-14 text-2xl"
+            />
+            <FormField
+              control={form.control}
+              name="scala"
+              label="Scala"
+              className="h-14 text-2xl"
+              example="(dx / sx)"
+            />
+          </div>
+
+          <div className="flex justify-between gap-4">
+            <FormField
+              control={form.control}
               name="name"
-              label="Nome cliente"
+              label="Nome"
+              className="h-14 text-2xl"
             />
             <FormField
               control={form.control}
               name="surname"
-              label="Cognome cliente"
+              label="Cognome"
+              className="h-14 text-2xl"
             />
           </div>
-
-          <FormField control={form.control} name="floor" label="Piano" />
-          <FormField control={form.control} name="scala" label="Scala" />
 
           <div className="flex justify-between gap-4">
             <FormField
               control={form.control}
               name="street_info"
               label="Informazioni stradali"
+              example="(es. Arrivare da Via Udine..)"
             >
-              <Textarea />
+              <Textarea className="resize-none text-xl" />
             </FormField>
+
             <FormField
               control={form.control}
               name="notes"
               label="Note sull'ordine"
+              example="(es. Extra wasabi, no zenzero)"
             >
-              <Textarea />
+              <Textarea className="resize-none text-xl" />
+            </FormField>
+
+            <FormField
+              control={form.control}
+              name="preferences"
+              label="Preferenze cliente"
+              example="(es. Intollerante, coca zero)"
+            >
+              <Textarea className="resize-none text-xl" />
             </FormField>
           </div>
 
           <FormField control={form.control} name="when" label="Quando?">
-            <WhenSelector className="h-10" isForm />
+            <WhenSelector isForm className="h-14 text-2xl" />
           </FormField>
 
           <Button type="submit">GO</Button>
