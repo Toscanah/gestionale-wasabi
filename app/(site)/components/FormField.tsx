@@ -13,26 +13,49 @@ type FormFieldProps = {
   control: Control<any>;
   name: string;
   label: string;
+  example?: string;
   children?: ReactNode;
   type?: string;
   handleKeyDown?: (e: React.KeyboardEvent) => void;
+  className?: string;
 };
 
 const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ control, name, label, children, type = "text", handleKeyDown }, ref) => {
+  (
+    {
+      control,
+      name,
+      label,
+      example,
+      children,
+      type = "text",
+      handleKeyDown,
+      className,
+    },
+    ref
+  ) => {
     return (
       <Field
         control={control}
         name={name}
         render={({ field }) => (
           <FormItem className="w-full">
-            <FormLabel>{label}</FormLabel>
+            <FormLabel>
+              {label}
+              {example && (
+                <>
+                  {" "}
+                  <span className="text-muted-foreground">{example}</span>
+                </>
+              )}
+            </FormLabel>
             <FormControl>
               {!children ? (
                 <Input
                   {...field}
                   type={type}
                   ref={ref}
+                  className={className || ""}
                   onKeyDown={(e: any) => {
                     if (handleKeyDown) {
                       handleKeyDown(e);

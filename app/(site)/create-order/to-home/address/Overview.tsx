@@ -73,7 +73,7 @@ export default function Overview({
   }, [highlight]);
 
   return (
-    <div className="h-full flex flex-col w-[40%] max-w-[40%]  min-w-[40%] justify-between">
+    <div className="h-full flex flex-col w-[30%] max-w-[30%]  min-w-[30%] justify-between">
       <div className="flex w-full justify-center flex-col space-y-4">
         <Label htmlFor="phone" className="text-xl">
           Numero tel. cliente

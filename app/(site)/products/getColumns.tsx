@@ -2,8 +2,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../components/TableColumn";
 import { ProductWithInfo } from "../types/ProductWithInfo";
 import EditProduct from "./actions/EditProduct";
+import DeleteProduct from "./actions/DeleteProduct";
 
-export default function getColumns(): ColumnDef<ProductWithInfo>[] {
+export default function getColumns(
+  onEdit: (editedProduct: ProductWithInfo) => void,
+  onDelete: (deletedProduct: ProductWithInfo) => void,
+): ColumnDef<ProductWithInfo>[] {
   return [
     TableColumn({
       accessorKey: "code",
@@ -49,13 +53,12 @@ export default function getColumns(): ColumnDef<ProductWithInfo>[] {
     TableColumn({
       accessorKey: "actions",
       headerLabel: "Azioni",
-      cellContent: (row) => {
-        return (
-          <>
-            <EditProduct />
-          </>
-        );
-      },
+      cellContent: (row) => (
+        <div className="flex space-x-2">
+          <EditProduct product={row.original} onEdit={onEdit} />
+          <DeleteProduct product={row.original} onDelete={onDelete}/>
+        </div>
+      ),
     }),
   ];
 }

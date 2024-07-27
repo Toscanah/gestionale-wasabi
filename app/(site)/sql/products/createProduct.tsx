@@ -3,6 +3,8 @@ import prisma from "../db";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 
 export default async function createProduct(product: ProductWithInfo) {
+  console.log(product);
+
   return (await prisma.product.findFirst({
     where: {
       code: product.code,
@@ -19,7 +21,7 @@ export default async function createProduct(product: ProductWithInfo) {
           rice: product.rice,
           category: {
             connect: {
-              id: product.category_id,
+              id: Number(product.category),
             },
           },
         },

@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   const { action, content } = await getPostBody(request);
 
   switch (action) {
-    case "update": {
+    case "updateRice": {
       return NextResponse.json(await updateRice(content as number));
     }
   }
