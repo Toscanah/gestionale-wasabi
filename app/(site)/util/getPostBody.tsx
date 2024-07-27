@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 
 type BodyPost = {
-  requestType: string;
-  content: object;
+  action: string;
+  content: object | any;
 };
 
 export default async function getPostBody(request: NextRequest) {

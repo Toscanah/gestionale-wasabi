@@ -36,8 +36,8 @@ export const WasabiProvider = ({
   const [rice, setRice] = useState<number>(0);
 
   const fetchRice = () =>
-    fetchRequest("GET", "/api/rice/?requestType=get").then(
-      (riceData: { amount: number }) => {
+    fetchRequest<{ amount: number }>("GET", "/api/rice/?requestType=get").then(
+      (riceData) => {
         setRice(riceData.amount);
       }
     );

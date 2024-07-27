@@ -1,12 +1,18 @@
-export default async function fetchRequest(
-  method: "POST" | "GET" | "DELETE",
+type HttpMethod = "POST" | "GET" | "DELETE";
+
+export default async function fetchRequest<T>(
+  method: HttpMethod,
   path: string,
-  body?: { requestType: string; content?: {} } | undefined
-): Promise<any> {
+  action?: string,
+  content?: object | undefined
+): Promise<T> {
+  // quando ho una richiesta GET non si dovrebbe avere la proprietà body anche se è undefined
+  // ma alla fine che cazzo me ne frega, tanto l'API la faccio io
+
   return await (
     await fetch(path, {
       method: method,
-      body: body ? JSON.stringify(body) : undefined,
+      body: content && action ? JSON.stringify({ action, content }) : undefined,
     })
   ).json();
 }

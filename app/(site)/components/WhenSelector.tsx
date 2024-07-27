@@ -16,16 +16,14 @@ import generateTimeSlots from "../util/generateTimeSlots";
 const WhenSelector = forwardRef<
   HTMLButtonElement,
   {
-    nextRef?: RefObject<HTMLInputElement | HTMLButtonElement> | null;
     handleKeyDown?: (
-      e: KeyboardEvent<HTMLInputElement | HTMLButtonElement>,
-      nextRef: RefObject<HTMLInputElement | HTMLButtonElement> | null
+      e: KeyboardEvent<HTMLInputElement | HTMLButtonElement>
     ) => void;
     className?: string;
     isForm?: boolean;
     field?: ControllerRenderProps;
   }
->(({ nextRef, handleKeyDown, className, isForm, field }, ref) => {
+>(({ handleKeyDown, className, isForm, field }, ref) => {
   return (
     <Select
       onValueChange={isForm && field ? field.onChange : undefined}
@@ -36,7 +34,7 @@ const WhenSelector = forwardRef<
         ref={ref}
         onKeyDown={(e) => {
           if (handleKeyDown) {
-            handleKeyDown(e, nextRef ?? null);
+            handleKeyDown(e);
           }
         }}
       >

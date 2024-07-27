@@ -1,57 +1,54 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import addProductToOrder from "../../sql/products/addProductToOrder";
 import updateFieldProduct from "../../sql/products/updateFieldProduct";
 import deleteProduct from "../../sql/products/deleteProduct";
 import getProducts from "../../sql/products/getProducts";
+import getPostBody from "../../util/getPostBody";
+import createProduct from "../../sql/products/createProduct";
+import { ProductWithInfo } from "../../types/ProductWithInfo";
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const requestType = url.searchParams.get("requestType");
+export async function GET(request: NextRequest) {
+  const params = request.nextUrl.searchParams;
 
-  switch (requestType) {
-    case "get":
+  switch (params.get("action")) {
+    case "getProducts":
       return NextResponse.json(await getProducts());
   }
 }
 
-export async function POST(request: Request) {
-  const body: {
-    requestType: string;
-    content?: any;
-  } = await request.json();
+export async function POST(request: NextRequest) {
+  const { action, content } = await getPostBody(request);
 
-  switch (body.requestType) {
+  switch (action) {
+    case "createProduct":
+      return NextResponse.json(await createProduct(content as ProductWithInfo));
     case "add":
       return NextResponse.json(
         await addProductToOrder(
-          body.content?.orderId,
-          body.content?.productCode,
-          body.content?.quantity
+          content?.orderId,
+          content?.productCode,
+          content?.quantity
         )
       );
-
     case "update":
       return NextResponse.json(
         await updateFieldProduct(
-          body.content?.orderId,
-          body.content?.key,
-          body.content?.value,
-          body.content?.product
+          content?.orderId,
+          content?.key,
+          content?.value,
+          content?.product
         )
       );
   }
 }
 
-export async function DELETE(request: Request) {
-  const body: {
-    requestType: string;
-    content?: any;
-  } = await request.json();
+export async function DELETE(request: NextRequest) {
+  const { action, content } = await getPostBody(request);
 
-  switch (body.requestType) {
+  switch (action) {
     case "delete":
       return NextResponse.json(
-        await deleteProduct(body.content?.productIds, body.content?.orderId)
+        await deleteProduct(content?.productIds, content?.orderId)
       );
   }
 }

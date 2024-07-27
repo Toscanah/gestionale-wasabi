@@ -14,6 +14,8 @@ import { TypesOfOrder } from "../../types/TypesOfOrder";
 import { toast } from "sonner";
 import WhenSelector from "../../components/WhenSelector";
 import { useWasabiContext } from "../../orders/WasabiContext";
+import { useFocusCycle } from "../../components/hooks/useFocusCycle";
+import fetchRequest from "../../util/fetchRequest";
 
 export default function PickUp({
   setOrder,
@@ -26,16 +28,7 @@ export default function PickUp({
   const phoneRef = useRef<HTMLInputElement>(null);
   const selectRef = useRef<HTMLButtonElement>(null);
 
-  const handleKeyDown = (
-    e: KeyboardEvent<HTMLInputElement | HTMLButtonElement>,
-    nextRef: RefObject<HTMLInputElement | HTMLButtonElement> | null
-  ) => {
-    if (e.key === "Enter") {
-      if (nextRef && nextRef.current) {
-        nextRef.current.focus();
-      }
-    }
-  };
+  const { handleKeyDown } = useFocusCycle([nameRef, phoneRef, selectRef]);
 
   const createPickupOrder = () => {
     const name = nameRef.current?.value;
@@ -49,22 +42,14 @@ export default function PickUp({
       return;
     }
 
-    fetch("/api/orders/", {
-      method: "POST",
-      body: JSON.stringify({
-        requestType: "createPickupOrder",
-        content: {
-          name,
-          when,
-          phone,
-        },
-      }),
-    })
-      .then((response) => response.json())
-      .then((order: PickupOrder) => {
-        onOrdersUpdate(TypesOfOrder.PICK_UP);
-        setOrder(order);
-      });
+    fetchRequest<PickupOrder>("POST", "/api/orders/", "createPickupOrder", {
+      name,
+      when,
+      phone,
+    }).then((order) => {
+      onOrdersUpdate(TypesOfOrder.PICK_UP);
+      setOrder(order);
+    });
   };
 
   return (
@@ -78,7 +63,7 @@ export default function PickUp({
           id="name"
           className="w-full text-center text-6xl h-16"
           ref={nameRef}
-          onKeyDown={(e) => handleKeyDown(e, phoneRef)}
+          onKeyDown={(e) => handleKeyDown(e)}
         />
       </div>
 
@@ -91,7 +76,7 @@ export default function PickUp({
           id="phone"
           className="w-full text-center text-6xl h-16"
           ref={phoneRef}
-          onKeyDown={(e) => handleKeyDown(e, selectRef)}
+          onKeyDown={(e) => handleKeyDown(e)}
         />
       </div>
 
@@ -99,11 +84,7 @@ export default function PickUp({
         <Label htmlFor="when" className="text-xl">
           Quando?
         </Label>
-        <WhenSelector
-          ref={selectRef}
-          handleKeyDown={handleKeyDown}
-          nextRef={null}
-        />
+        <WhenSelector ref={selectRef} handleKeyDown={handleKeyDown} />
       </div>
 
       <Button type="submit" className="w-full" onClick={createPickupOrder}>

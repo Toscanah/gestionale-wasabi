@@ -6,25 +6,26 @@ import { Customer } from "@prisma/client";
 import createCustomer from "../../sql/customers/createCustomer";
 
 export async function GET(request: NextRequest) {
-  switch (request.nextUrl.searchParams.get("requestType")) {
+  const params = request.nextUrl.searchParams;
+
+  switch (params.get("action")) {
     case "getSingle":
-      const phone = request.nextUrl.searchParams.get("phone");
-      return NextResponse.json(await getCustomerByPhone(phone ?? ""));
+      return NextResponse.json(
+        await getCustomerByPhone(params.get("phone") ?? "")
+      );
   }
 }
 
 export async function POST(request: NextRequest) {
-  const body = await getPostBody(request);
+  const { action, content } = await getPostBody(request);
 
-  switch (body.requestType) {
+  switch (action) {
     case "updateCustomer": {
-      return NextResponse.json(await updateCustomer(body.content as any));
+      return NextResponse.json(await updateCustomer(content as any));
     }
     case "createCustomer": {
       return NextResponse.json(
-        await createCustomer(
-          body.content as { customer: Customer; phone: string }
-        )
+        await createCustomer(content as { customer: Customer; phone: string })
       );
     }
   }

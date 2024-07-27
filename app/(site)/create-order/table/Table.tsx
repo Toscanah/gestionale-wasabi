@@ -12,6 +12,8 @@ import { AnyOrder, TableOrder } from "../../types/OrderType";
 import { useWasabiContext } from "../../orders/WasabiContext";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import { toast } from "sonner";
+import { useFocusCycle } from "../../components/hooks/useFocusCycle";
+import fetchRequest from "../../util/fetchRequest";
 
 export default function Table({
   setOrder,
@@ -25,18 +27,12 @@ export default function Table({
   const nameRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleKeyDown = (
-    e: KeyboardEvent<HTMLInputElement>,
-    nextRef: RefObject<HTMLInputElement> | null
-  ) => {
-    if (e.key === "Enter") {
-      if (nextRef && nextRef.current) {
-        nextRef.current.focus();
-      } else if (buttonRef.current) {
-        buttonRef.current.click();
-      }
-    }
-  };
+  const { handleKeyDown } = useFocusCycle([
+    tableRef,
+    pplRef,
+    nameRef,
+    buttonRef,
+  ]);
 
   const createTableOrder = () => {
     const ppl = Number(pplRef.current?.value);
@@ -55,31 +51,22 @@ export default function Table({
       return;
     }
 
-
-    fetch("/api/orders/", {
-      method: "POST",
-      body: JSON.stringify({
-        requestType: "createTableOrder",
-        content: {
-          table: table,
-          people: ppl,
-          res_name: nameRef.current?.value,
-        },
-      }),
-    })
-      .then((response) => response.json())
-      .then((order: TableOrder) => {
-        if (order) {
-          onOrdersUpdate(TypesOfOrder.TABLE);
-          setOrder(order);
-        } else {
-          toast.error("Qualcuno è andato storto...", {
-            description: (
-              <>L'ordine non è stato creato. Sei sicuro che il tavolo esista?</>
-            ),
-          });
-        }
-      });
+    fetchRequest<TableOrder>("POST", "/api/orders/", "createTableOrder", {
+      table: table,
+      people: ppl,
+      res_name: nameRef.current?.value,
+    }).then((order) => {
+      if (order) {
+        onOrdersUpdate(TypesOfOrder.TABLE);
+        setOrder(order);
+      } else {
+        toast.error("Qualcuno è andato storto...", {
+          description: (
+            <>L'ordine non è stato creato. Sei sicuro che il tavolo esista?</>
+          ),
+        });
+      }
+    });
   };
 
   return (
@@ -93,7 +80,7 @@ export default function Table({
           id="table"
           className="w-full text-center text-6xl h-16"
           ref={tableRef}
-          onKeyDown={(e) => handleKeyDown(e, pplRef)}
+          onKeyDown={(e) => handleKeyDown(e)}
         />
       </div>
       <div className="w-full space-y-2">
@@ -105,7 +92,7 @@ export default function Table({
           id="ppl"
           className="w-full text-center text-6xl h-16"
           ref={pplRef}
-          onKeyDown={(e) => handleKeyDown(e, nameRef)}
+          onKeyDown={(e) => handleKeyDown(e)}
         />
       </div>
       <div className="w-full space-y-2">
@@ -117,7 +104,7 @@ export default function Table({
           id="name"
           className="w-full text-center text-6xl h-16"
           ref={nameRef}
-          onKeyDown={(e) => handleKeyDown(e, null)}
+          onKeyDown={(e) => handleKeyDown(e)}
         />
       </div>
 
