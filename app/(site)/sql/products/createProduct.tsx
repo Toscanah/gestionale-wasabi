@@ -3,8 +3,6 @@ import prisma from "../db";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 
 export default async function createProduct(product: ProductWithInfo) {
-  console.log(product);
-
   return (await prisma.product.findFirst({
     where: {
       code: product.code,

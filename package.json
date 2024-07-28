@@ -35,6 +35,7 @@
     "next-themes": "^0.3.0",
     "re-resizable": "^6.9.17",
     "react": "^18",
+    "react-clock": "^5.0.0",
     "react-dom": "^18",
     "react-hook-form": "^7.52.0",
     "react-lorem-ipsum": "^1.4.10",

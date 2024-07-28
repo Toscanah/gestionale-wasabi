@@ -1,11 +1,20 @@
 import { Separator } from "@/components/ui/separator";
 import Overview from "./address/Overview";
+import { debounce } from "lodash";
 import AddressForm from "./address/AddressForm";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Address, Customer } from "@prisma/client";
 import fetchRequest from "../../util/fetchRequest";
+import { AnyOrder, HomeOrder } from "../../types/OrderType";
+import { useWasabiContext } from "../../orders/WasabiContext";
+import { TypesOfOrder } from "../../types/TypesOfOrder";
 
-export default function ToHome() {
+export default function ToHome({
+  setOrder,
+}: {
+  setOrder: Dispatch<SetStateAction<AnyOrder | undefined>>;
+}) {
+  const { onOrdersUpdate } = useWasabiContext();
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(
     undefined
   );
@@ -50,38 +59,37 @@ export default function ToHome() {
     );
   };
 
+  const debouncedFetchCustomer = debounce(async () => {
+    const customer = await fetchCustomer();
+    if (customer) {
+      fetchAddresses(customer.id);
+    }
+  }, 300);
+
   useEffect(() => {
     if (phone) {
       setSelectedAddress(undefined);
       setAddresses([]);
       setAddInfo({ notes: "", contactPhone: "", when: "immediate" });
-
-      fetchCustomer().then((customer) => {
-        if (customer) {
-          fetchAddresses(customer.id);
-        }
-      });
+      debouncedFetchCustomer();
     }
+
+    return () => {
+      debouncedFetchCustomer.cancel();
+    };
   }, [phone]);
 
   const createHomeOrder = () => {
-    console.log(selectedAddress);
-
-    // fetch("/api/orders/", {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     requestType: "createHomeOrder",
-    //     content: {
-    //       customer: customer,
-    //       address: address,
-    //       notes: notes,
-    //       when: when,
-    //       contact_phone: contactPhone,
-    //     },
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((order) => {});
+    fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {
+      customer: customer,
+      address: selectedAddress,
+      notes: addInfo.notes,
+      when: addInfo.when,
+      contact_phone: addInfo.contactPhone,
+    }).then((order) => {
+      setOrder(order);
+      onOrdersUpdate(TypesOfOrder.TO_HOME)
+    });
   };
 
   return (

@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
+import fetchRequest from "@/app/(site)/util/fetchRequest";
+import { HomeOrder } from "@/app/(site)/types/OrderType";
 
 interface OverviewProps {
   selectedAddress: Address | undefined;
@@ -31,45 +33,39 @@ export default function Overview({
 }: OverviewProps) {
   const [permAddresses, setPermAddresses] = useState<Address[]>([]);
   const [tempAddress, setTempAddress] = useState<Address | undefined>();
+  const [lastAddressId, setLastAddressId] = useState<string>("");
 
   useEffect(() => {
-    setTempAddress(addresses.find((address) => address.temporary) ?? undefined)
-    setPermAddresses(
-      addresses.length > 0
-        ? addresses.filter((address) => !address.temporary)
-        : []
-    );
+    fetchRequest<HomeOrder>("GET", "/api/addresses/", "getLastAddressOfCustomer", {
+      phone,
+    }).then((address) => {
+      if (address && address.home_order) {
+        setLastAddressId(address.home_order?.address_id.toString());
+      }
+    });
+  }, [permAddresses]);
+
+  useEffect(() => {
+    setTempAddress(addresses.find((address) => address.temporary));
+    setPermAddresses(addresses.filter((address) => !address.temporary));
   }, [addresses]);
 
   useEffect(() => {
     if (selectedAddress) {
-      setHighlight(
-        selectedAddress.temporary ? "temp" : selectedAddress.id.toString()
-      );
+      setHighlight(selectedAddress.temporary ? "temp" : selectedAddress.id.toString());
     } else {
-      // TODO: dovrei beccare l'ultimo address utilizzasto dal cliente
-      setHighlight(permAddresses[0]?.id.toString() ?? "");
+      setHighlight(lastAddressId || permAddresses[0]?.id.toString() || "");
     }
   }, [permAddresses]);
 
   useEffect(() => {
-    switch (highlight) {
-      case "temp":
-        const temp =
-          addresses.find((address) => address.temporary) ?? undefined;
-        setSelectedAddress(temp);
-        setTempAddress(temp);
-        break;
-      case "new":
-        setSelectedAddress(undefined);
-        break;
-      default:
-        setSelectedAddress(
-          addresses.find((address) => highlight === address.id.toString()) ??
-            undefined
-        );
-        break;
-    }
+    const address =
+      highlight === "temp"
+        ? tempAddress
+        : highlight === "new"
+        ? undefined
+        : addresses.find((addr) => highlight === addr.id.toString());
+    setSelectedAddress(address);
   }, [highlight]);
 
   return (
@@ -107,9 +103,7 @@ export default function Overview({
               key={index}
               className={cn(
                 "flex items-center w-full p-3 rounded gap-4 justify-between",
-                highlight === address.id.toString()
-                  ? "bg-muted-foreground/15"
-                  : "bg-none"
+                highlight === address.id.toString() ? "bg-muted-foreground/15" : "bg-none"
               )}
             >
               <span>{`${index + 1} domicilio:`}</span>
@@ -157,13 +151,8 @@ export default function Overview({
             )}
           >
             <span>Provvisorio:</span>
-            <Button
-              className="max-w-[70%] w-[70%]"
-              onClick={() => setHighlight("temp")}
-            >
-              {tempAddress
-                ? `${tempAddress.street} ${tempAddress.civic}`
-                : "Crea domicilio provvisorio"}
+            <Button className="max-w-[70%] w-[70%]" onClick={() => setHighlight("temp")}>
+              {tempAddress ? `${tempAddress.street} ${tempAddress.civic}` : "Crea domicilio provvisorio"}
             </Button>
 
             <RadioGroupItem value="temp" />
@@ -173,13 +162,7 @@ export default function Overview({
 
       {phone !== "" && (
         <div className="w-full space-y-2">
-          <Button
-            className="text-4xl h-16 w-full"
-            disabled={!selectedAddress}
-            onClick={() => {
-              console.log(selectedAddress);
-            }}
-          >
+          <Button className="text-4xl h-16 w-full" disabled={!selectedAddress} onClick={() => createHomeOrder()}>
             CREA ORDINE
           </Button>
         </div>

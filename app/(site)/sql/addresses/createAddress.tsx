@@ -2,7 +2,6 @@ import { Address, Customer } from "@prisma/client";
 import prisma from "../db";
 
 export default async function createAddress(address: Address) {
-  console.log(address);
   return await prisma.address.create({
     data: {
       civic: address.civic,

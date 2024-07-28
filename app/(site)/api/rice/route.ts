@@ -18,7 +18,8 @@ export async function POST(request: NextRequest) {
 
   switch (action) {
     case "updateRice": {
-      return NextResponse.json(await updateRice(content as number));
+      const { rice } = content;
+      return NextResponse.json(await updateRice(rice as number));
     }
   }
 }
