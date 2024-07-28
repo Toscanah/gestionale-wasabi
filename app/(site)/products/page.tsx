@@ -28,7 +28,8 @@ export default function ProductsList() {
   const fetchProducts = () => {
     fetchRequest<ProductWithInfo[]>(
       "GET",
-      "/api/products/?action=getProducts"
+      "/api/products/",
+      "getProducts"
     ).then((products) => setProducts(products));
   };
 

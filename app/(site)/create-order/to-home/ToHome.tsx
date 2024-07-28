@@ -19,45 +19,54 @@ export default function ToHome() {
     contactPhone: string | undefined;
   }>({ notes: "", when: "", contactPhone: "" });
 
-  const fetchAddresses = () => {
-    if (customer) {
-      fetchRequest<Address[]>(
-        "GET",
-        `/api/addresses?customerId=${encodeURIComponent(
-          customer.id
-        )}&action=getAddressesByCustomer`
-      ).then((addresses) =>
-        setAddresses(
-          addresses.length > 0
-            ? addresses.filter((address) => !address.temporary)
-            : []
-        )
-      );
+  const fetchCustomer = async () => {
+    const customer = await fetchRequest<Customer>(
+      "GET",
+      "/api/customers",
+      "getSingle",
+      {
+        phone,
+      }
+    );
+    setCustomer(customer ? customer : undefined);
+    if (!customer) {
+      setAddresses([]);
     }
+    return customer;
   };
 
-  const fetchCustomer = () => {
-    fetchRequest<Customer>(
+  const fetchAddresses = (customerId: number) => {
+    fetchRequest<Address[]>(
       "GET",
-      `/api/customers?phone=${encodeURIComponent(phone)}&action=getSingle`
-    ).then((customer) => {
-      setCustomer(customer ? customer : undefined);
-      // clear old possible addresses from other phones
-      if (!customer) {
-        setAddresses([]);
-      }
-    });
+      "/api/addresses/",
+      "getAddressesByCustomer",
+      { customerId: customerId }
+    ).then((addresses) =>
+      setAddresses(
+        addresses.length > 0
+          ? addresses.filter((address) => !address.temporary)
+          : []
+      )
+    );
   };
 
   useEffect(() => {
     if (phone) {
-      fetchCustomer();
+      setSelectedAddress(undefined);
+      setAddresses([]);
+      setAddInfo({ notes: "", contactPhone: "", when: "immediate" });
+
+      fetchCustomer().then((customer) => {
+        if (customer) {
+          fetchAddresses(customer.id);
+        }
+      });
     }
   }, [phone]);
 
-  useEffect(() => fetchAddresses(), [customer]);
-
   const createHomeOrder = () => {
+    console.log(selectedAddress);
+
     // fetch("/api/orders/", {
     //   method: "POST",
     //   body: JSON.stringify({
@@ -93,6 +102,7 @@ export default function ToHome() {
       <div className="w-[70%] h-full ">
         {phone.length > 0 && (
           <AddressForm
+            addInfo={addInfo}
             setAddInfo={setAddInfo}
             customer={customer}
             selectedAddress={selectedAddress}

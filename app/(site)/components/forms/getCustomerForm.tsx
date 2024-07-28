@@ -5,7 +5,6 @@ import getZodField from "../../util/getZodField";
 
 const formSchema = z.object({
   street: getZodField("string"),
-  civic: getZodField("string"),
   doorbell: getZodField("string"),
   name: getZodField("string"),
   surname: getZodField("string"),

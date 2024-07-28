@@ -6,92 +6,54 @@ export default async function createPickupOrder(content: {
   phone?: string;
 }) {
   const { name, when, phone } = content;
+  let customerData = undefined;
 
-  let createdOrder;
-
+  // Check if the phone already exists
   if (phone) {
-    // Check if the phone already exists
     const existingPhone = await prisma.phone.findFirst({
       where: { phone: phone },
+      include: { customer: true },
     });
 
+    // Phone exists, connect the existing customer
     if (existingPhone) {
-      // Phone exists, create the order with the existing phone
-      createdOrder = await prisma.order.create({
-        data: {
-          type: "PICK_UP",
-          total: 0,
-          pickup_order: {
-            create: {
-              name: name,
-              when: when,
-              customer: {
-                connectOrCreate: {
-                  where: { id: existingPhone.id },
-                  create: {
-                    name: name,
-                    surname: "",
-                    phone: {
-                      create: { phone: phone },
-                    },
-                  },
-                },
-              },
-            },
-          },
+      customerData = {
+        connect: {
+          id: existingPhone.customer.id,
         },
-        include: {
-          pickup_order: true,
-          products: true,
-        },
-      });
+      };
     } else {
-      // Phone does not exist, create the phone and the order
-      createdOrder = await prisma.order.create({
-        data: {
-          type: "PICK_UP",
-          total: 0,
-          pickup_order: {
-            create: {
-              name: name,
-              when: when,
-              customer: {
-                create: {
-                  name: name,
-                  surname: "",
-                  phone: {
-                    create: { phone: phone },
-                  },
-                },
-              },
-            },
+      // Phone does not exist, create new customer and phone
+      customerData = {
+        create: {
+          name: name,
+          surname: "",
+          phone: {
+            create: { phone: phone },
           },
         },
-        include: {
-          pickup_order: true,
-          products: true,
-        },
-      });
+      };
     }
-  } else {
-    // No phone provided, create the order without customer details
-    createdOrder = await prisma.order.create({
-      data: {
-        type: "PICK_UP",
-        total: 0,
-        pickup_order: {
-          create: {
-            name: name,
-            when: when,
-          },
+  }
+
+  // Create the order with or without customer data
+  const createdOrder = await prisma.order.create({
+    data: {
+      type: "PICK_UP",
+      total: 0,
+      pickup_order: {
+        create: {
+          name: name,
+          when: when,
+          customer: customerData,
         },
       },
-      include: {
-        pickup_order: true,
-        products: true,
-      },
-    });
-  }
+    },
+    include: {
+      pickup_order: true,
+      products: true,
+    },
+  });
 
   return createdOrder;
 }

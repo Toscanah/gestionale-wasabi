@@ -1,4 +1,4 @@
-import { ColumnDef} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { TypesOfOrder } from "../types/TypesOfOrder";
@@ -83,6 +83,19 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
         TableColumn<PickupOrder>({
           accessorKey: "pickup_order.when",
           headerLabel: "Quando",
+        })
+      );
+      break;
+
+    case TypesOfOrder.TABLE:
+      columns.push(
+        TableColumn<TableOrder>({
+          accessorKey: "table_order.res_name",
+          headerLabel: "Nome",
+          cellContent: (row) =>
+            row.original.table_order?.res_name
+              ? row.original.table_order?.res_name
+              : "",
         })
       );
       break;

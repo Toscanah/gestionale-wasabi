@@ -33,13 +33,12 @@ export default function Overview({
   const [tempAddress, setTempAddress] = useState<Address | undefined>();
 
   useEffect(() => {
+    setTempAddress(addresses.find((address) => address.temporary) ?? undefined)
     setPermAddresses(
       addresses.length > 0
         ? addresses.filter((address) => !address.temporary)
         : []
     );
-
-    setTempAddress(addresses.find((address) => address.temporary) ?? undefined)
   }, [addresses]);
 
   useEffect(() => {
@@ -48,6 +47,7 @@ export default function Overview({
         selectedAddress.temporary ? "temp" : selectedAddress.id.toString()
       );
     } else {
+      // TODO: dovrei beccare l'ultimo address utilizzasto dal cliente
       setHighlight(permAddresses[0]?.id.toString() ?? "");
     }
   }, [permAddresses]);
