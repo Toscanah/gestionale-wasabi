@@ -4,7 +4,7 @@ export default async function deleteProduct(
   productIds: number[],
   orderId: number
 ) {
-  const productsToDelete = await prisma.productsOnOrder.findMany({
+  const productsToDelete = await prisma.productOnOrder.findMany({
     where: {
       id: {
         in: productIds,
@@ -20,7 +20,7 @@ export default async function deleteProduct(
     0
   );
 
-  const deletedProducts = await prisma.productsOnOrder.deleteMany({
+  const deletedProducts = await prisma.productOnOrder.deleteMany({
     where: {
       id: {
         in: productIds,

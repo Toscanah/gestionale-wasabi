@@ -1,11 +1,11 @@
-import { ProductsInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrderType } from "../../types/ProductInOrderType";
 import prisma from "../db";
 
 export default async function updateFieldProduct(
   orderId: number,
   key: string,
   value: any,
-  product: ProductsInOrderType
+  product: ProductInOrderType
 ) {
   switch (key) {
     // case "code":
@@ -28,7 +28,7 @@ export default async function updateFieldProduct(
       const newQuantity = Number(value);
 
       if (newQuantity == 0) {
-        const deletedProduct = await prisma.productsOnOrder.delete({
+        const deletedProduct = await prisma.productOnOrder.delete({
           where: {
             id: product.id,
           },
@@ -50,10 +50,11 @@ export default async function updateFieldProduct(
           updatedProduct: undefined,
         };
       } else {
-        const newTotal = newQuantity * product.product.price;
+        // TODO: vedere che tipo siamo e usare home_price o site_price
+        const newTotal = newQuantity * product.product.home_price;
         const difference = newTotal - product.total;
 
-        const updatedProduct = await prisma.productsOnOrder.update({
+        const updatedProduct = await prisma.productOnOrder.update({
           where: {
             id: product.id,
           },
