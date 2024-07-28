@@ -203,6 +203,7 @@ export default function AddressForm({
               control={form.control}
               name="contact_phone"
               ref={contactRef}
+              type="number"
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl"
               label="Num. telefono addizionale"

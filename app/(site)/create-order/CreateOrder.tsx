@@ -9,11 +9,24 @@ import Table from "./table/Table";
 import ToHome from "./to-home/ToHome";
 import PickUp from "./pick-up/PickUp";
 import { cn } from "@/lib/utils";
-import { AnyOrder} from "../types/OrderType";
+import { AnyOrder } from "../types/OrderType";
 import OrderTable from "../orders/order/OrderTable";
 
 export default function CreateOrder({ type }: { type: TypesOfOrder }) {
   const [order, setOrder] = useState<AnyOrder | undefined>(undefined);
+
+  const getOrderName = (type: TypesOfOrder) => {
+    switch (type) {
+      case TypesOfOrder.TABLE:
+        return "Ordine al tavolo";
+      case TypesOfOrder.TO_HOME:
+        return "Ordine a domicilio";
+      case TypesOfOrder.PICK_UP:
+        return "Ordine per asporto";
+      default:
+        return "";
+    }
+  };
 
   const renderOrderComponent = (type: TypesOfOrder) => {
     const componentsMap: { [key in TypesOfOrder]: React.ElementType } = {
@@ -33,8 +46,8 @@ export default function CreateOrder({ type }: { type: TypesOfOrder }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> Crea
+        <Button className="w-full text-2xl h-12">
+          <Plus className="mr-2 h-5 w-5" /> {getOrderName(type)}
         </Button>
       </DialogTrigger>
       <DialogContent

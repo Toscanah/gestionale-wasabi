@@ -32,5 +32,9 @@ export default async function createHomeOrder(content: {
         },
       },
     },
+    include: {
+      products: true,
+      home_order: true,
+    }
   });
 }

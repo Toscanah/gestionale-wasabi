@@ -75,6 +75,14 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
             `${row.original.home_order?.address?.street ?? ""} ${
               row.original.home_order?.address?.civic ?? ""
             }`,
+        }),
+        TableColumn<HomeOrder>({
+          accessorKey: "home_order.when",
+          headerLabel: "Quando",
+          cellContent: (row) =>
+            row.original.home_order?.when == "immediate"
+              ? "Subito"
+              : row.original.home_order?.when,
         })
       );
       break;

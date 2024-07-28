@@ -4,6 +4,7 @@ import updateAddress from "../../sql/addresses/updateAddress";
 import getAddressesByCustomer from "../../sql/addresses/getAddressesByCustomer";
 import { Address } from "@prisma/client";
 import getPostBody from "../../util/getPostBody";
+import getLastAddressOfCustomer from "../../sql/addresses/getLastAddressOfCustomer";
 
 export async function POST(request: NextRequest) {
   const { action, content } = await getPostBody(request);
@@ -21,9 +22,10 @@ export async function GET(request: NextRequest) {
 
   switch (params.get("action")) {
     case "getAddressesByCustomer": {
-      return NextResponse.json(
-        await getAddressesByCustomer(Number(params.get("customerId")))
-      );
+      return NextResponse.json(await getAddressesByCustomer(Number(params.get("customerId"))));
+    }
+    case "getLastAddressOfCustomer": {
+      return NextResponse.json(await getLastAddressOfCustomer(params.get("phone") ?? ""));
     }
   }
 }
