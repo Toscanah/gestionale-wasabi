@@ -18,15 +18,14 @@ export default function Home() {
   });
 
   const fetchOrders = (type: TypesOfOrder) => {
-    fetchRequest(
-      "GET",
-      `/api/orders/?action=getOrdersByType&type=${type}`
-    ).then((data) => {
-      setOrders((prevOrders) => ({
-        ...prevOrders,
-        [type]: data,
-      }));
-    });
+    fetchRequest("GET", "/api/orders/", "getOrdersByType", { type }).then(
+      (data) => {
+        setOrders((prevOrders) => ({
+          ...prevOrders,
+          [type]: data,
+        }));
+      }
+    );
   };
 
   const onOrdersUpdate = (type: TypesOfOrder) => {

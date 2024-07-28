@@ -4,6 +4,8 @@ import {
   RefObject,
   Dispatch,
   SetStateAction,
+  useState,
+  useEffect,
 } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,12 +16,15 @@ import { TypesOfOrder } from "../../types/TypesOfOrder";
 import { toast } from "sonner";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
 import fetchRequest from "../../util/fetchRequest";
+import { toastError, toastSuccess } from "../../util/toast";
+import { Table as PrismaTable } from "@prisma/client";
 
 export default function Table({
   setOrder,
 }: {
   setOrder: Dispatch<SetStateAction<AnyOrder | undefined>>;
 }) {
+  const [tables, setTables] = useState<PrismaTable[]>([]);
   const { onOrdersUpdate } = useWasabiContext();
 
   const tableRef = useRef<HTMLInputElement>(null);
@@ -34,21 +39,26 @@ export default function Table({
     buttonRef,
   ]);
 
+  useEffect(() => {
+    fetchRequest<PrismaTable[]>("GET", "/api/tables/", "getTables").then(
+      (tables) => setTables(tables)
+    );
+  }, []);
+
   const createTableOrder = () => {
     const ppl = Number(pplRef.current?.value);
     const table = tableRef.current?.value;
 
     if (table == "") {
-      toast.error("Errore", {
-        description: <>Assicurati di aver aggiunto un tavolo</>,
-      });
-      return;
+      return toastError("Assicurati di aver aggiunto un tavolo");
     }
+
+    if (!tables.some((t) => t.number === table)) {
+      return toastError("Il tavolo specificato non esiste");
+    }
+
     if (ppl < 1) {
-      toast.error("Errore", {
-        description: <>Il tavolo deve avere almeno una persona</>,
-      });
-      return;
+      return toastError("Il tavolo deve avere almeno una persona");
     }
 
     fetchRequest<TableOrder>("POST", "/api/orders/", "createTableOrder", {
@@ -57,14 +67,13 @@ export default function Table({
       res_name: nameRef.current?.value,
     }).then((order) => {
       if (order) {
-        onOrdersUpdate(TypesOfOrder.TABLE);
+        toastSuccess("Ordine creato con successo", "Successo");
         setOrder(order);
+        onOrdersUpdate(TypesOfOrder.TABLE);
       } else {
-        toast.error("Qualcuno è andato storto...", {
-          description: (
-            <>L'ordine non è stato creato. Sei sicuro che il tavolo esista?</>
-          ),
-        });
+        toastError(
+          "L'ordine non è stato creato. Sei sicuro che il tavolo esista?"
+        );
       }
     });
   };
@@ -112,6 +121,7 @@ export default function Table({
         ref={buttonRef}
         type="submit"
         className="w-full"
+        //onKeyDown={(e) => handleKeyDown(e)}
         onClick={() => {
           createTableOrder();
         }}

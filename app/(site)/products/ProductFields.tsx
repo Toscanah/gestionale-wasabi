@@ -38,7 +38,8 @@ export default function ProductFields({
   useEffect(() => {
     fetchRequest<ProductCategory[]>(
       "GET",
-      "/api/categories/?action=getCategories"
+      "/api/categories/",
+      "getCategories"
     ).then((categories) => setCategories(categories));
   }, []);
 

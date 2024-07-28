@@ -16,6 +16,7 @@ import WhenSelector from "../../components/WhenSelector";
 import { useWasabiContext } from "../../orders/WasabiContext";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
 import fetchRequest from "../../util/fetchRequest";
+import { toastError } from "../../util/toast";
 
 export default function PickUp({
   setOrder,
@@ -33,13 +34,10 @@ export default function PickUp({
   const createPickupOrder = () => {
     const name = nameRef.current?.value;
     const phone = phoneRef.current?.value ?? "";
-    const when = selectRef.current?.innerText ?? "immediate";
+    const when = selectRef.current?.innerText;
 
     if (name === "") {
-      toast.error("Errore", {
-        description: <>L'ordine deve avere un nome di un cliente</>,
-      });
-      return;
+      return toastError("L'ordine deve avere un nome di un cliente");
     }
 
     fetchRequest<PickupOrder>("POST", "/api/orders/", "createPickupOrder", {
@@ -47,8 +45,8 @@ export default function PickUp({
       when,
       phone,
     }).then((order) => {
-      onOrdersUpdate(TypesOfOrder.PICK_UP);
       setOrder(order);
+      onOrdersUpdate(TypesOfOrder.PICK_UP);
     });
   };
 
@@ -87,6 +85,15 @@ export default function PickUp({
         <WhenSelector ref={selectRef} handleKeyDown={handleKeyDown} />
       </div>
 
+      <div className="text-muted-foreground text-sm">
+        <b>NB:</b> Se viene inserito un numero di telefono, il programma
+        controlla se esiste già un cliente con questo numero. Se sì, utilizzerà
+        il cognome del cliente esistente. Se no, creerà un nuovo cliente con il
+        numero di telefono inserito e utilizzerà il nome per l'ordine. <br></br>
+        <br></br>
+        Se non viene inserito un numero di telefono, il programma: Utilizzerà il
+        nome inserito per l'ordine.
+      </div>
       <Button type="submit" className="w-full" onClick={createPickupOrder}>
         CREA ORDINE
       </Button>
