@@ -16,7 +16,7 @@ import { ProductWithInfo } from "../types/ProductWithInfo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "@phosphor-icons/react";
-import fetchRequest from "../util/fetchRequest";
+import fetchRequest from "../util/functions/fetchRequest";
 import AddProduct from "./actions/AddProduct";
 import GoBack from "../components/GoBack";
 import EditProduct from "./actions/EditProduct";

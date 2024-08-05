@@ -2,15 +2,14 @@ import { Address, Customer } from "@prisma/client";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import getCustomerForm, {
-  FormValues,
-} from "../../../components/forms/getCustomerForm";
+import getToHomeForm, { FormValues } from "../../../components/forms/getToHomeForm";
 import { Textarea } from "@/components/ui/textarea";
 import WhenSelector from "@/app/(site)/components/WhenSelector";
 import FormField from "@/app/(site)/components/FormField";
-import fetchRequest from "@/app/(site)/util/fetchRequest";
-import parseAddress from "@/app/(site)/util/parseAddress";
+import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
+import parseAddress from "@/app/(site)/util/functions/parseAddress";
 import { useFocusCycle } from "@/app/(site)/components/hooks/useFocusCycle";
+import { UseFormReturn } from "react-hook-form";
 
 export default function AddressForm({
   addInfo,
@@ -22,6 +21,8 @@ export default function AddressForm({
   setCustomer,
   phone,
   setAddresses,
+  formRef,
+  setShouldCreateOrder,
 }: {
   addInfo: {
     notes: string | undefined;
@@ -43,6 +44,8 @@ export default function AddressForm({
   phone: string;
   setHighlight: Dispatch<SetStateAction<string>>;
   setAddresses: Dispatch<SetStateAction<Address[]>>;
+  formRef: any;
+  setShouldCreateOrder: Dispatch<SetStateAction<boolean>>;
 }) {
   const streetRef = useRef<HTMLInputElement>(null);
   const bellRef = useRef<HTMLInputElement>(null);
@@ -51,6 +54,7 @@ export default function AddressForm({
   const stairRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const surnameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
   const infoRef = useRef<HTMLInputElement>(null);
   const notesRef = useRef<HTMLInputElement>(null);
   const prefRef = useRef<HTMLInputElement>(null);
@@ -67,6 +71,8 @@ export default function AddressForm({
     notesRef,
     prefRef,
   ]);
+
+  const form = getToHomeForm();
 
   function onSubmit(values: FormValues) {
     const { street, civic } = parseAddress(values.street);
@@ -107,9 +113,7 @@ export default function AddressForm({
       "POST",
       "/api/customers/",
       actionCustomer === "create" ? "createCustomer" : "updateCustomer",
-      actionCustomer === "create"
-        ? { phone, customer: customerContent }
-        : customerContent
+      actionCustomer === "create" ? { phone, customer: customerContent } : customerContent
     )
       .then((updatedCustomer) => {
         setCustomer(updatedCustomer);
@@ -125,11 +129,8 @@ export default function AddressForm({
         setSelectedAddress(updatedAddress);
 
         setAddresses((prevAddresses) => {
-          const addressExists = prevAddresses.some(
-            (address) => address.id === updatedAddress.id
-          );
+          const addressExists = prevAddresses.some((address) => address.id === updatedAddress.id);
 
-          // se esiste già, allora aggiornalo nell'array, altrimenti aggiungilo nuovo
           const newAddresses = addressExists
             ? prevAddresses.map((address) =>
                 address.id === updatedAddress.id ? updatedAddress : address
@@ -138,22 +139,17 @@ export default function AddressForm({
 
           return newAddresses;
         });
-      });
+      })
+      .then(() => {setShouldCreateOrder(true)});
   }
-
-  const form = getCustomerForm();
 
   useEffect(() => {
     let street;
 
-    if (
-      selectedAddress?.street == undefined ||
-      selectedAddress?.civic == undefined
-    ) {
+    if (selectedAddress?.street == undefined || selectedAddress?.civic == undefined) {
       street = "";
     } else {
-      street =
-        (selectedAddress?.street || "") + " " + (selectedAddress?.civic || "");
+      street = (selectedAddress?.street || "") + " " + (selectedAddress?.civic || "");
     }
 
     form.reset({
@@ -166,6 +162,7 @@ export default function AddressForm({
       notes: addInfo.notes,
       contact_phone: addInfo.contactPhone,
       doorbell: selectedAddress?.doorbell || "",
+      email: customer?.email || "",
       when: addInfo.when || "immediate",
       preferences: customer?.preferences || "",
     });
@@ -176,6 +173,7 @@ export default function AddressForm({
     <div className="w-full h-full flex flex-col items-center justify-center">
       <Form {...form}>
         <form
+          ref={formRef}
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full flex flex-col justify-between h-full"
         >
@@ -185,7 +183,7 @@ export default function AddressForm({
             ref={streetRef}
             label="Via"
             handleKeyDown={handleKeyDown}
-            className="h-14 text-2xl"
+            className="h-14 text-2xl uppercase"
             example="(es. Via dei Giacinti 41) "
           />
 
@@ -195,7 +193,7 @@ export default function AddressForm({
               name="doorbell"
               ref={bellRef}
               handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl"
+              className="h-14 text-2xl uppercase"
               label="Campanello"
               example="(es. Rossi)"
             />
@@ -205,7 +203,7 @@ export default function AddressForm({
               ref={contactRef}
               type="number"
               handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl"
+              className="h-14 text-2xl uppercase"
               label="Num. telefono addizionale"
             />
           </div>
@@ -217,7 +215,7 @@ export default function AddressForm({
               label="Piano"
               ref={floorRef}
               handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl"
+              className="h-14 text-2xl uppercase"
             />
             <FormField
               control={form.control}
@@ -225,7 +223,7 @@ export default function AddressForm({
               label="Scala"
               ref={stairRef}
               handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl"
+              className="h-14 text-2xl uppercase"
               example="(dx / sx)"
             />
           </div>
@@ -237,7 +235,7 @@ export default function AddressForm({
               label="Nome"
               ref={nameRef}
               handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl"
+              className="h-14 text-2xl uppercase"
             />
             <FormField
               control={form.control}
@@ -245,9 +243,19 @@ export default function AddressForm({
               ref={surnameRef}
               handleKeyDown={handleKeyDown}
               label="Cognome"
-              className="h-14 text-2xl"
+              className="h-14 text-2xl uppercase"
             />
           </div>
+
+          <FormField
+            control={form.control}
+            name="email"
+            ref={emailRef}
+            label="Email"
+            handleKeyDown={handleKeyDown}
+            className="h-14 text-2xl uppercase"
+            example="(es. mario.rossi@gmail.com)"
+          />
 
           <div className="flex justify-between gap-4">
             <FormField
@@ -258,7 +266,7 @@ export default function AddressForm({
               label="Informazioni stradali"
               example="(es. Arrivare da Via Udine..)"
             >
-              <Textarea className="resize-none text-xl" />
+              <Textarea className="resize-none text-xl uppercase" />
             </FormField>
 
             <FormField
@@ -269,7 +277,7 @@ export default function AddressForm({
               label="Note sull'ordine"
               example="(es. Extra wasabi, no zenzero)"
             >
-              <Textarea className="resize-none text-xl" />
+              <Textarea className="resize-none text-xl uppercase" />
             </FormField>
 
             <FormField
@@ -280,17 +288,13 @@ export default function AddressForm({
               label="Preferenze cliente"
               example="(es. Intollerante, coca zero)"
             >
-              <Textarea className="resize-none text-xl" />
+              <Textarea className="resize-none text-xl uppercase" />
             </FormField>
           </div>
 
           <FormField control={form.control} name="when" label="Quando?">
-            <WhenSelector isForm className="h-14 text-2xl" />
+            <WhenSelector isForm className="h-14 text-2xl uppercase" />
           </FormField>
-
-          <Button type="submit" className="h-16 text-4xl">
-            Salva
-          </Button>
         </form>
       </Form>
     </div>

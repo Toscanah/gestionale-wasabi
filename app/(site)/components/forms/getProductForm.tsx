@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import getZodField from "../../util/getZodField";
+import getZodField from "../../util/functions/getZodField";
 
 const formSchema = z.object({
   code: getZodField("string"),

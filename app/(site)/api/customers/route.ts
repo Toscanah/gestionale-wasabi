@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import getCustomerByPhone from "../../sql/customers/getCustomerByPhone";
-import getPostBody from "../../util/getPostBody";
+import getPostBody from "../../util/functions/getPostBody";
 import updateCustomer from "../../sql/customers/updateCustomer";
 import { Customer } from "@prisma/client";
 import createCustomer from "../../sql/customers/createCustomer";

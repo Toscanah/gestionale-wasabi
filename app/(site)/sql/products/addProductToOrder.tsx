@@ -1,23 +1,14 @@
+import { Order } from "@prisma/client";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import prisma from "../db";
 
 export default async function addProductToOrder(
-  orderId: number,
+  order: Order,
   productCode: string,
   quantity: number
 ) {
   const product = await prisma.product.findFirst({
     where: { code: productCode },
-  });
-
-  // TODO: bad, should pass the order type as function parameter instead
-  const order = await prisma.order.findUnique({
-    where: {
-      id: orderId,
-    },
-    select: {
-      type: true,
-    },
   });
 
   if (product) {
@@ -28,7 +19,7 @@ export default async function addProductToOrder(
 
     await prisma.order.update({
       where: {
-        id: orderId,
+        id: order.id,
       },
       data: {
         total: {
@@ -40,7 +31,7 @@ export default async function addProductToOrder(
     return await prisma.productOnOrder.create({
       data: {
         product_id: product.id,
-        order_id: orderId,
+        order_id: order.id,
         quantity: Number(quantity),
         total: productTotalPrice,
       },

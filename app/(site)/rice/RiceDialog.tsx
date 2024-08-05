@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
 import { Rice } from "@prisma/client";
 import { useWasabiContext } from "../orders/WasabiContext";
-import fetchRequest from "../util/fetchRequest";
+import fetchRequest from "../util/functions/fetchRequest";
 
 export default function RiceDialog() {
   const { rice, setRice } = useWasabiContext();

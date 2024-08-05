@@ -84,6 +84,7 @@ model Customer {
     id            Int           @id @default(autoincrement())
     name          String?
     surname       String?
+    email         String?
     preferences   String?
     addresses     Address[]
     home_orders   HomeOrder[]
@@ -144,8 +145,8 @@ model Admin {
 }
 
 model Rice {
-    id        Int    @id @default(autoincrement())
-    amount    Float    
+    id     Int   @id @default(autoincrement())
+    amount Float
 }
 
 model ProductCategory {

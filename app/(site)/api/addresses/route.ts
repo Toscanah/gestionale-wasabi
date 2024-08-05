@@ -3,7 +3,7 @@ import createAddress from "../../sql/addresses/createAddress";
 import updateAddress from "../../sql/addresses/updateAddress";
 import getAddressesByCustomer from "../../sql/addresses/getAddressesByCustomer";
 import { Address } from "@prisma/client";
-import getPostBody from "../../util/getPostBody";
+import getPostBody from "../../util/functions/getPostBody";
 import getLastAddressOfCustomer from "../../sql/addresses/getLastAddressOfCustomer";
 
 export async function POST(request: NextRequest) {

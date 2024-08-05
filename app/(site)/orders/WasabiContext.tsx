@@ -7,7 +7,7 @@ import {
   ReactNode,
 } from "react";
 import { TypesOfOrder } from "../types/TypesOfOrder";
-import fetchRequest from "../util/fetchRequest";
+import fetchRequest from "../util/functions/fetchRequest";
 
 interface WasabiContextProps {
   onOrdersUpdate: (type: TypesOfOrder) => void;
