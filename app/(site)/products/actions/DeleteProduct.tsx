@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Trash } from "@phosphor-icons/react";
-import fetchRequest from "../../util/fetchRequest";
+import fetchRequest from "../../util/functions/fetchRequest";
 import { toast } from "sonner";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import { Button } from "@/components/ui/button";

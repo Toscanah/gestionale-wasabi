@@ -6,7 +6,7 @@ import { WasabiProvider } from "../orders/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../create-order/CreateOrder";
 import Header from "./Header";
-import fetchRequest from "../util/fetchRequest";
+import fetchRequest from "../util/functions/fetchRequest";
 import { cn } from "@/lib/utils";
 
 export default function Home() {

@@ -9,7 +9,7 @@ import { Pencil } from "@phosphor-icons/react";
 import { FormValues } from "../../components/forms/getProductForm";
 import ProductFields from "../ProductFields";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
-import fetchRequest from "../../util/fetchRequest";
+import fetchRequest from "../../util/functions/fetchRequest";
 import { toast } from "sonner";
 import { ReactNode } from "react";
 

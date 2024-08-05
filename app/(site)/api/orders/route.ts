@@ -4,7 +4,7 @@ import getOrdersByType from "../../sql/orders/getOrdersByType";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import createPickupOrder from "../../sql/orders/createPickupOrder";
 import createHomeOrder from "../../sql/orders/createHomeOrder";
-import getPostBody from "../../util/getPostBody";
+import getPostBody from "../../util/functions/getPostBody";
 
 export async function POST(request: NextRequest) {
   const { action, content } = await getPostBody(request);

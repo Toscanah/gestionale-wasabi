@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
-import fetchRequest from "@/app/(site)/util/fetchRequest";
+import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { HomeOrder } from "@/app/(site)/types/OrderType";
 
 interface OverviewProps {
@@ -16,9 +16,9 @@ interface OverviewProps {
   addresses: Address[];
   setPhone: Dispatch<SetStateAction<string>>;
   phone: string;
-  createHomeOrder: () => void;
   highlight: string;
   setHighlight: Dispatch<SetStateAction<string>>;
+  formRef: any;
 }
 
 export default function Overview({
@@ -27,9 +27,9 @@ export default function Overview({
   addresses,
   setPhone,
   phone,
-  createHomeOrder,
   highlight,
   setHighlight,
+  formRef,
 }: OverviewProps) {
   const [permAddresses, setPermAddresses] = useState<Address[]>([]);
   const [tempAddress, setTempAddress] = useState<Address | undefined>();
@@ -152,7 +152,9 @@ export default function Overview({
           >
             <span>Provvisorio:</span>
             <Button className="max-w-[70%] w-[70%]" onClick={() => setHighlight("temp")}>
-              {tempAddress ? `${tempAddress.street} ${tempAddress.civic}` : "Crea domicilio provvisorio"}
+              {tempAddress
+                ? `${tempAddress.street} ${tempAddress.civic}`
+                : "Crea domicilio provvisorio"}
             </Button>
 
             <RadioGroupItem value="temp" />
@@ -162,7 +164,15 @@ export default function Overview({
 
       {phone !== "" && (
         <div className="w-full space-y-2">
-          <Button className="text-4xl h-16 w-full" disabled={!selectedAddress} onClick={() => createHomeOrder()}>
+          <Button
+            className="text-4xl h-16 w-full"
+            disabled={!selectedAddress}
+            onClick={() => {
+              formRef.current.dispatchEvent(
+                new Event("submit", { cancelable: true, bubbles: true })
+              );
+            }}
+          >
             CREA ORDINE
           </Button>
         </div>

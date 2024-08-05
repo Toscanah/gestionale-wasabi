@@ -3,7 +3,7 @@ import addProductToOrder from "../../sql/products/addProductToOrder";
 import updateFieldProduct from "../../sql/products/updateFieldProduct";
 import deleteProduct from "../../sql/products/deleteProduct";
 import getProducts from "../../sql/products/getProducts";
-import getPostBody from "../../util/getPostBody";
+import getPostBody from "../../util/functions/getPostBody";
 import createProduct from "../../sql/products/createProduct";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import editProduct from "../../sql/products/editProduct";
@@ -25,22 +25,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(await createProduct(content as ProductWithInfo));
     case "editProduct":
       return NextResponse.json(await editProduct(content as any));
-    case "add":
+    case "addProductToOrder":
       return NextResponse.json(
-        await addProductToOrder(
-          content?.orderId,
-          content?.productCode,
-          content?.quantity
-        )
+        await addProductToOrder(content?.order, content?.productCode, content?.quantity)
       );
-    case "update":
+    case "updateProduct":
       return NextResponse.json(
-        await updateFieldProduct(
-          content?.orderId,
-          content?.key,
-          content?.value,
-          content?.product
-        )
+        await updateFieldProduct(content?.orderId, content?.key, content?.value, content?.product)
       );
   }
 }
@@ -49,9 +40,7 @@ export async function DELETE(request: NextRequest) {
   const { action, content } = await getPostBody(request);
 
   switch (action) {
-    case "delete":
-      return NextResponse.json(
-        await deleteProduct(content?.productIds, content?.orderId)
-      );
+    case "deleteProduct":
+      return NextResponse.json(await deleteProduct(content?.productIds, content?.orderId));
   }
 }

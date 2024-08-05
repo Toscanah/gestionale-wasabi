@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import WhenSelector from "../../components/WhenSelector";
 import { useWasabiContext } from "../../orders/WasabiContext";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
-import fetchRequest from "../../util/fetchRequest";
+import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError } from "../../util/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

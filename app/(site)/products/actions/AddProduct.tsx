@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Plus } from "@phosphor-icons/react";
 import { FormValues } from "../../components/forms/getProductForm";
-import fetchRequest from "../../util/fetchRequest";
+import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import { toast } from "sonner";
 import ProductFields from "../ProductFields";

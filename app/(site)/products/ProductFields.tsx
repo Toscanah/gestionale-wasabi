@@ -19,7 +19,7 @@ import { useFocusCycle } from "../components/hooks/useFocusCycle";
 import { useEffect, useRef, useState } from "react";
 import getProductForm, { FormValues } from "../components/forms/getProductForm";
 import { ProductCategory } from "@prisma/client";
-import fetchRequest from "../util/fetchRequest";
+import fetchRequest from "../util/functions/fetchRequest";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 

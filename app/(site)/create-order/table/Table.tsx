@@ -15,7 +15,7 @@ import { useWasabiContext } from "../../orders/WasabiContext";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import { toast } from "sonner";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
-import fetchRequest from "../../util/fetchRequest";
+import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../util/toast";
 import { Table as PrismaTable } from "@prisma/client";
 

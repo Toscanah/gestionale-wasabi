@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import getRice from "../../sql/rice/getRice";
 import updateRice from "../../sql/rice/updateRice";
-import getPostBody from "../../util/getPostBody";
+import getPostBody from "../../util/functions/getPostBody";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
