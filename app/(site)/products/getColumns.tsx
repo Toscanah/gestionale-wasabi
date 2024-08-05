@@ -11,22 +11,22 @@ export default function getColumns(
   return [
     TableColumn({
       accessorKey: "code",
-      headerLabel: "Codice",
+      header: "Codice",
     }),
 
     TableColumn({
       accessorKey: "name",
-      headerLabel: "Nome",
+      header: "Nome",
     }),
 
     TableColumn({
       accessorKey: "desc",
-      headerLabel: "Descrizione",
+      header: "Descrizione",
     }),
 
     TableColumn({
       accessorKey: "home_price",
-      headerLabel: "Asporto",
+      header: "Asporto",
       cellContent: (row) => {
         return "€ " + row.original.home_price;
       },
@@ -34,7 +34,7 @@ export default function getColumns(
 
     TableColumn({
       accessorKey: "site_price",
-      headerLabel: "In loco",
+      header: "In loco",
       cellContent: (row) => {
         return "€ " + row.original.site_price;
       },
@@ -42,17 +42,17 @@ export default function getColumns(
 
     TableColumn({
       accessorKey: "category.category",
-      headerLabel: "Categoria",
+      header: "Categoria",
     }),
 
     TableColumn({
       accessorKey: "rice",
-      headerLabel: "Riso",
+      header: "Riso",
     }),
 
     TableColumn({
       accessorKey: "actions",
-      headerLabel: "Azioni",
+      header: "Azioni",
       cellContent: (row) => (
         <div className="flex space-x-2">
           <EditProduct product={row.original} onEdit={onEdit} />

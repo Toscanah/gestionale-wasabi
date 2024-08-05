@@ -26,8 +26,7 @@ export default async function fetchRequest<T>(
     case "POST":
     case "DELETE":
       url = new URL(path, window.location.origin);
-      requestOptions.body =
-        content && action ? JSON.stringify({ action, content }) : undefined;
+      requestOptions.body = content && action ? JSON.stringify({ action, content }) : undefined;
 
       break;
 

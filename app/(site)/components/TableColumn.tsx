@@ -2,18 +2,19 @@ import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import getNestedValue from "../util/functions/getNestedValue";
+import { ReactNode } from "react";
 
 type TableColumnProps<T> = {
   sortable?: boolean;
   accessorKey: string;
-  headerLabel: string;
-  cellContent?: (row: Row<T>) => React.ReactNode;
+  header: string | ReactNode;
+  cellContent?: (row: Row<T>) => ReactNode;
 };
 
 export default function TableColumn<T>({
   sortable = true,
   accessorKey,
-  headerLabel,
+  header,
   cellContent,
 }: TableColumnProps<T>): ColumnDef<T> {
   return {
@@ -24,11 +25,11 @@ export default function TableColumn<T>({
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          {headerLabel}
+          {header}
           <ArrowsDownUp className="ml-2 h-4 w-4" />
         </Button>
       ) : (
-        headerLabel
+        header
       ),
     cell: ({ row }) =>
       cellContent

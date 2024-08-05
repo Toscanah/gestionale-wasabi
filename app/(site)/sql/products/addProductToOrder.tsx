@@ -13,9 +13,7 @@ export default async function addProductToOrder(
 
   if (product) {
     const productTotalPrice =
-      (order?.type == TypesOfOrder.TO_HOME
-        ? product.home_price
-        : product.site_price) * quantity;
+      (order?.type == TypesOfOrder.TO_HOME ? product.home_price : product.site_price) * quantity;
 
     await prisma.order.update({
       where: {
@@ -35,7 +33,26 @@ export default async function addProductToOrder(
         quantity: Number(quantity),
         total: productTotalPrice,
       },
-      include: { product: true },
+      include: {
+        product: {
+          include: {
+            options: {
+              include: {
+                option: true,
+              },
+            },
+            category: {
+              include: {
+                options: {
+                  include: {
+                    option: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
   } else {
     return null;

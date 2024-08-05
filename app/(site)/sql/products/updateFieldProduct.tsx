@@ -5,24 +5,71 @@ export default async function updateFieldProduct(
   orderId: number,
   key: string,
   value: any,
-  product: ProductInOrderType
+  productInOrder: ProductInOrderType
 ) {
   switch (key) {
-    // case "code":
-    //   const updatedProduct = await prisma.productsOnOrder.update({
-    //     where: {
-    //       id: product.id,
-    //     },
-    //     data: {
-    //       product_id: Number(value),
-    //     },
-    //     include: { product: true },
-    //   });
+    case "code":
+      const newProductCode = value;
 
-    //   return {
-    //     updatedProduct,
-    //     deletedProduct: undefined,
-    //   };
+      const newProduct = await prisma.product.findFirst({
+        where: { code: newProductCode },
+      });
+      console.log(newProduct);
+      if (!newProduct) {
+        return { error: "Product not found" };
+      }
+
+      const newTotal = productInOrder.quantity * newProduct.home_price;
+
+      // TODO: vedere che tipo siamo e usare home_price o site_price
+      const updatedProduct = await prisma.productOnOrder.update({
+        where: {
+          id: productInOrder.id,
+        },
+        data: {
+          product_id: newProduct.id,
+          total: newTotal,
+        },
+        include: {
+          product: {
+            include: {
+              options: {
+                include: {
+                  option: true,
+                },
+              },
+              category: {
+                include: {
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const currentOrder = await prisma.order.findUnique({
+        where: { id: orderId },
+        select: { total: true },
+      });
+
+      const difference = newTotal - productInOrder.total;
+      await prisma.order.update({
+        where: {
+          id: orderId,
+        },
+        data: {
+          total: (currentOrder?.total ?? 0) + difference,
+        },
+      });
+
+      return {
+        updatedProduct,
+      };
 
     case "quantity":
       const newQuantity = Number(value);
@@ -30,7 +77,7 @@ export default async function updateFieldProduct(
       if (newQuantity == 0) {
         const deletedProduct = await prisma.productOnOrder.delete({
           where: {
-            id: product.id,
+            id: productInOrder.id,
           },
         });
 
@@ -40,30 +87,46 @@ export default async function updateFieldProduct(
           },
           data: {
             total: {
-              decrement: product.total,
+              decrement: productInOrder.total,
             },
           },
         });
 
         return {
           deletedProduct,
-          updatedProduct: undefined,
         };
       } else {
         // TODO: vedere che tipo siamo e usare home_price o site_price
-        const newTotal = newQuantity * product.product.home_price;
-        const difference = newTotal - product.total;
+        const newTotal = newQuantity * productInOrder.product.home_price;
+        const difference = newTotal - productInOrder.total;
 
         const updatedProduct = await prisma.productOnOrder.update({
           where: {
-            id: product.id,
+            id: productInOrder.id,
           },
           data: {
             quantity: newQuantity,
             total: newTotal,
           },
           include: {
-            product: true,
+            product: {
+              include: {
+                options: {
+                  include: {
+                    option: true,
+                  },
+                },
+                category: {
+                  include: {
+                    options: {
+                      include: {
+                        option: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         });
 
@@ -80,7 +143,6 @@ export default async function updateFieldProduct(
 
         return {
           updatedProduct,
-          deletedProduct: undefined,
         };
       }
   }

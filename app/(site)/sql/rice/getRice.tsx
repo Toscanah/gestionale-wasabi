@@ -1,9 +1,11 @@
 import prisma from "../db";
 
 export default async function getRice() {
-  return await prisma.rice.findUnique({
+  const rice = await prisma.rice.findUnique({
     where: {
       id: 1,
     },
   });
+
+  return rice?.amount;
 }

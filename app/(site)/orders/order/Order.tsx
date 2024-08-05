@@ -18,7 +18,7 @@ export default function Order({
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
         </TableCell>
       </DialogTrigger>
-      <DialogContent className="w-[90vw] max-w-screen max-h-screen h-[90vh] flex space-x-10">
+      <DialogContent className="w-[90vw] max-w-screen max-h-screen h-[90vh] flex space-x-10" showCloseButton={false}>
         <OrderTable order={cell.row.original} />
       </DialogContent>
     </Dialog>

@@ -32,14 +32,14 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
 
     TableColumn<BaseOrder>({
       accessorKey: "created_at",
-      headerLabel: "Ora",
+      header: "Ora",
       cellContent: (row) =>
         format(new Date(row.original.created_at), "HH:mm", { locale: it }),
     }),
 
     TableColumn<AnyOrder>({
       accessorKey: "who",
-      headerLabel: type === TypesOfOrder.TABLE ? "Tavolo" : "Cliente",
+      header: type === TypesOfOrder.TABLE ? "Tavolo" : "Cliente",
       cellContent: (row) => {
         switch (type) {
           case TypesOfOrder.TABLE: {
@@ -70,7 +70,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
       columns.push(
         TableColumn<HomeOrder>({
           accessorKey: "address.street",
-          headerLabel: "Indirizzo",
+          header: "Indirizzo",
           cellContent: (row) =>
             `${row.original.home_order?.address?.street ?? ""} ${
               row.original.home_order?.address?.civic ?? ""
@@ -78,7 +78,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
         }),
         TableColumn<HomeOrder>({
           accessorKey: "home_order.when",
-          headerLabel: "Quando",
+          header: "Quando",
           cellContent: (row) =>
             row.original.home_order?.when == "immediate"
               ? "Subito"
@@ -90,7 +90,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
       columns.push(
         TableColumn<PickupOrder>({
           accessorKey: "pickup_order.when",
-          headerLabel: "Quando",
+          header: "Quando",
         })
       );
       break;
@@ -99,7 +99,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
       columns.push(
         TableColumn<TableOrder>({
           accessorKey: "table_order.res_name",
-          headerLabel: "Nome",
+          header: "Nome",
           cellContent: (row) =>
             row.original.table_order?.res_name
               ? row.original.table_order?.res_name
@@ -112,7 +112,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
   columns.push(
     TableColumn<BaseOrder>({
       accessorKey: "total",
-      headerLabel: "Totale",
+      header: "Totale",
       cellContent: (row) => `€ ${row.original.total}`,
     })
   );

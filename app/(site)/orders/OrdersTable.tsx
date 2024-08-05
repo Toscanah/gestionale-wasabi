@@ -26,7 +26,7 @@ export default function OrdersTable({ type, data }: TableProps) {
 
   const formatAddress = (index: number) => {
     if (index == 2 && type == TypesOfOrder.TO_HOME) {
-      return "flex w-full max-h-16 h-16 max-w-64 line-clamp-2 items-center p-1";
+      return "flex items-center justify-start overflow-hidden text-ellipsis w-full";
     } else return "";
   };
 

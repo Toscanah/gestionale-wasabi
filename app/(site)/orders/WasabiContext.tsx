@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   ReactNode,
+  useEffect,
 } from "react";
 import { TypesOfOrder } from "../types/TypesOfOrder";
 import fetchRequest from "../util/functions/fetchRequest";
@@ -14,6 +15,7 @@ interface WasabiContextProps {
   rice: number;
   setRice: Dispatch<SetStateAction<number>>;
   fetchRice: () => void;
+  updateRice: (amount: number) => void;
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);
@@ -36,16 +38,16 @@ export const WasabiProvider = ({
   const [rice, setRice] = useState<number>(0);
 
   const fetchRice = () =>
-    fetchRequest<{ amount: number }>("GET", "/api/rice/", "getRice").then(
-      (riceData) => {
-        setRice(riceData.amount);
-      }
-    );
+    fetchRequest<number>("GET", "/api/rice/", "getRice").then((amount) => {
+      setRice(amount);
+    });
+
+  const updateRice = (amount: number) => {
+    fetchRequest("POST", "/api/rice/", "updateRice", { rice: amount });
+  };
 
   return (
-    <WasabiContext.Provider
-      value={{ onOrdersUpdate, rice, setRice, fetchRice }}
-    >
+    <WasabiContext.Provider value={{ onOrdersUpdate, rice, setRice, fetchRice, updateRice }}>
       {children}
     </WasabiContext.Provider>
   );

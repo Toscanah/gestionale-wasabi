@@ -6,7 +6,24 @@ export default async function getOrdersByType(type: TypesOfOrder) {
     include: {
       products: {
         include: {
-          product: true,
+          product: {
+            include: {
+              options: {
+                include: {
+                  option: true,
+                },
+              },
+              category: {
+                include: {
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
       payment: true,
