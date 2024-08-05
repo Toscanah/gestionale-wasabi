@@ -1,9 +1,6 @@
 import prisma from "../db";
 
-export default async function deleteProduct(
-  productIds: number[],
-  orderId: number
-) {
+export default async function deleteProduct(productIds: number[], orderId: number) {
   const productsToDelete = await prisma.productOnOrder.findMany({
     where: {
       id: {
@@ -11,16 +8,14 @@ export default async function deleteProduct(
       },
     },
     select: {
+      id: true,
       total: true,
     },
   });
 
-  const totalToDecrement = productsToDelete.reduce(
-    (acc, product) => acc + product.total,
-    0
-  );
+  const totalToDecrement = productsToDelete.reduce((acc, product) => acc + product.total, 0);
 
-  const deletedProducts = await prisma.productOnOrder.deleteMany({
+  await prisma.productOnOrder.deleteMany({
     where: {
       id: {
         in: productIds,
@@ -28,7 +23,7 @@ export default async function deleteProduct(
     },
   });
 
-  await prisma.order.update({
+  return await prisma.order.update({
     where: {
       id: orderId,
     },
@@ -38,6 +33,4 @@ export default async function deleteProduct(
       },
     },
   });
-
-  return deletedProducts;
 }

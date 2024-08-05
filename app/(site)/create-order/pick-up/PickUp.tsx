@@ -57,7 +57,7 @@ export default function PickUp({
         <Input
           type="text"
           id="name"
-          className="w-full text-center text-6xl h-16"
+          className="w-full text-center text-6xl h-16 uppercase"
           ref={nameRef}
           onKeyDown={(e) => handleKeyDown(e)}
         />
@@ -104,7 +104,7 @@ export default function PickUp({
         <Input
           type="number"
           id="phone"
-          className="w-full text-center text-6xl h-16"
+          className="w-full text-center text-6xl h-16 uppercase"
           ref={phoneRef}
           onKeyDown={(e) => handleKeyDown(e)}
         />
@@ -114,7 +114,7 @@ export default function PickUp({
         <Label htmlFor="when" className="text-xl">
           Quando?
         </Label>
-        <WhenSelector ref={selectRef} handleKeyDown={handleKeyDown} />
+        <WhenSelector ref={selectRef} handleKeyDown={handleKeyDown}/>
       </div>
 
       <Button type="submit" className="w-full" onClick={createPickupOrder}>

@@ -51,7 +51,24 @@ export type BaseOrder = Prisma.OrderGetPayload<{
     table_order: true;
     products: {
       include: {
-        product: true;
+        product: {
+          include: {
+            options: {
+              include: {
+                option: true;
+              };
+            };
+            category: {
+              include: {
+                options: {
+                  include: {
+                    option: true;
+                  };
+                };
+              };
+            };
+          };
+        };
       };
     };
   };

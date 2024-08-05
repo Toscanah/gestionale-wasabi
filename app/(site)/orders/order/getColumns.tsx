@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import TableColumn from "../../components/TableColumn";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function getColumns(
   handleFieldChange: (key: string, value: any, index: number) => void,
@@ -70,7 +71,7 @@ export default function getColumns(
   const moveToInput = (rowIndex: number, colIndex: number) => {
     const refKey = `${rowIndex}-${colIndex}`;
     inputRefs.get(refKey)?.focus();
-    console.log();
+    inputRefs.get(refKey)?.select();
   };
 
   const setInputRef = (ref: HTMLInputElement | null, rowIndex: number, colIndex: number) => {
@@ -85,11 +86,12 @@ export default function getColumns(
   return [
     TableColumn<ProductInOrderType>({
       sortable: false,
-      accessorKey: "lock-unlock",
-      headerLabel: "",
+      accessorKey: "lock-unlock-code",
+      header: "",
       cellContent: (row) =>
         row.original.product_id !== -1 && (
           <Switch
+            defaultChecked={false}
             onCheckedChange={() => {
               const codeField = inputRefs.get(`${row.index}-${0}`);
               if (codeField) {
@@ -102,12 +104,12 @@ export default function getColumns(
 
     TableColumn<ProductInOrderType>({
       accessorKey: "code",
-      headerLabel: "Codice",
+      header: "Codice",
       cellContent: (row) => (
         <Input
           onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 0 })}
           ref={(ref) => setInputRef(ref, row.index, 0)}
-          className="max-w-28 text-2xl"
+          className="max-w-28 text-2xl uppercase"
           defaultValue={row.original.product?.code ?? ""}
           disabled={row.original.id !== -1}
           autoFocus={
@@ -125,14 +127,15 @@ export default function getColumns(
         />
       ),
     }),
+    
     TableColumn<ProductInOrderType>({
       accessorKey: "quantity",
-      headerLabel: "Quantità",
+      header: "Quantità",
       cellContent: (row) => (
         <Input
           ref={(ref) => setInputRef(ref, row.index, 1)}
           type="number"
-          className="max-w-20 text-2xl"
+          className="max-w-20 text-2xl uppercase"
           autoFocus={focusedInput.rowIndex === row.index && focusedInput.colIndex === 1}
           defaultValue={row.original.quantity == 0 ? 1 : row.original.quantity}
           onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 1 })}
@@ -148,7 +151,7 @@ export default function getColumns(
 
     TableColumn<ProductInOrderType>({
       accessorKey: "desc",
-      headerLabel: "Descrizione",
+      header: "Descrizione",
       cellContent: (row) => (
         <div className="flex items-center justify-start overflow-hidden text-ellipsis w-full text-2xl">
           {row.original.product?.desc}
@@ -157,8 +160,33 @@ export default function getColumns(
     }),
 
     TableColumn<ProductInOrderType>({
+      accessorKey: "options",
+      header: "Opzioni",
+      cellContent: (row) => {
+        console.log(row.original)
+        const options = row.original.product?.category?.options;
+
+        return (
+          <div className="space-y-2">
+            {options && options.map((option, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <Checkbox />
+                <label
+                  htmlFor="terms"
+                  className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {option.option.option_name}
+                </label>
+              </div>
+            ))}
+          </div>
+        );
+      },
+    }),
+
+    TableColumn<ProductInOrderType>({
       accessorKey: "price",
-      headerLabel: "Unità",
+      header: "Unità",
       cellContent: (row) => (
         <>
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
@@ -174,8 +202,25 @@ export default function getColumns(
 
     TableColumn<ProductInOrderType>({
       accessorKey: "total",
-      headerLabel: "Totale",
+      header: "Totale",
       cellContent: (row) => (row.original.total == 0 ? "" : `€ ${row.original.total}`),
+    }),
+
+    TableColumn<ProductInOrderType>({
+      accessorKey: "select",
+      header: "Seleziona",
+      sortable: false,
+      cellContent: (row) =>
+        row.original.product_id !== -1 && (
+          <div className="flex justify-center items-center">
+            <Checkbox
+            className="h-6 w-6"
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+            />
+          </div>
+        ),
     }),
   ];
 }

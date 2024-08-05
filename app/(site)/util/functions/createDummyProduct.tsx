@@ -3,6 +3,11 @@ import { ProductInOrderType } from "../../types/ProductInOrderType";
 export default function createDummyProduct(): ProductInOrderType {
   return {
     product: {
+      category: {
+        id: -1,
+        category: "nothing",
+        options: [],
+      },
       id: -1,
       name: "",
       code: "",
@@ -11,6 +16,7 @@ export default function createDummyProduct(): ProductInOrderType {
       site_price: 0,
       category_id: -1,
       rice: 0,
+      options: [],
     },
     product_id: -1,
     order_id: -1,

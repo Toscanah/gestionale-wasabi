@@ -41,7 +41,7 @@ const WhenSelector = forwardRef<
       defaultValue={isForm && field ? field.value : "immediate"}
     >
       <SelectTrigger
-        className={cn(className ? className : "w-full text-3xl h-16")}
+        className={cn(className, "w-full text-3xl h-16")}
         ref={ref}
         onKeyDown={(e) => {
           if (handleKeyDown) {

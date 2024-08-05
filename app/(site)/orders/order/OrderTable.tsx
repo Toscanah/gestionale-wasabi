@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import createDummyProduct from "../../util/functions/createDummyProduct";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../util/toast";
+import formatRice from "../../util/functions/formatRice";
 
 export default function OrderTable({ order }: { order: BaseOrder }) {
   const [products, setProducts] = useState<ProductInOrderType[]>([
@@ -46,26 +47,29 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
   const updateProduct = (key: string, value: any, index: number) => {
     let productToUpdate = products[index];
 
-    if ((key === "code" && value < 0) || (key === "quantity" && value < 0)) {
-      const errorMsg =
-        key === "code"
-          ? `Il prodotto con codice ${value} non è stato trovato`
-          : "La quantità non può essere negativa";
-      return toastError(<>{errorMsg}</>);
+    if (key == "quantity" && value < 0) {
+      return toastError("La quantità non può essere negativa");
     }
 
-    fetchRequest<{ updatedProduct?: ProductInOrderType; deletedProduct?: ProductInOrderType }>(
-      "POST",
-      "/api/products/",
-      "updateProduct",
-      {
-        orderId: order.id,
-        key: key,
-        value: value,
-        product: productToUpdate,
+    fetchRequest<{
+      updatedProduct?: ProductInOrderType;
+      deletedProduct?: ProductInOrderType;
+      error?: string;
+    }>("POST", "/api/products/", "updateProduct", {
+      orderId: order.id,
+      key: key,
+      value: value,
+      product: productToUpdate,
+    }).then((result) => {
+      const { updatedProduct, deletedProduct, error } = result;
+
+      if (error) {
+        return toastError(
+          <>
+            Il codice <b>{value}</b> non corrisponde a nessun prodotto
+          </>
+        );
       }
-    ).then((result) => {
-      const { updatedProduct, deletedProduct } = result;
 
       setProducts((prevProducts) => {
         let updatedProducts = [...prevProducts];
@@ -124,6 +128,7 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
 
           updatedProducts.push({
             product: {
+              category: productOnOrder.product.category,
               id: productOnOrder.product_id,
               name: productOnOrder.product.name,
               code: newCode,
@@ -132,6 +137,7 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
               site_price: productOnOrder.product.site_price,
               rice: productOnOrder.product.rice,
               category_id: productOnOrder.product.category_id,
+              options: productOnOrder.product.options,
             },
             product_id: productOnOrder.product_id,
             order_id: order.id,
@@ -166,7 +172,8 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
 
     if (selectedProductIds.length > 0) {
       fetchRequest("DELETE", "/api/products/", "deleteProduct", {
-        content: { productIds: selectedProductIds, orderId: order.id },
+        productIds: selectedProductIds,
+        orderId: order.id,
       }).then(() => {
         setProducts((prevProducts) =>
           prevProducts.filter((p) => !selectedProductIds.includes(p.id))
@@ -184,15 +191,19 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
     setFocusedInput
   );
   const table = getTable(products, columns, rowSelection, setRowSelection);
+  const { rice } = useWasabiContext();
+  const [usedRice, setUsedRice] = useState<number>(0);
+
+  useEffect(() => {
+    setUsedRice(
+      order.products.reduce((total, product) => total + product.product.rice * product.quantity, 0)
+    );
+  }, [order.products]);
 
   return (
     <div className="w-full h-full flex space-x-6 justify-between">
-      <div className="w-[80%] h-full flex flex-col gap-6">
-        <div>
-          <Button onClick={() => deleteRows(table)}>Cancella prodotti selezionati</Button>
-        </div>
-
-        <div className="w-full rounded-md border flex-grow">
+      <div className="w-[80%] h-full flex flex-col gap-4">
+        <div className="w-full rounded-md border flex-grow overflow-y-auto max-h-max">
           <Table>
             <TableHeader className="sticky top-0 z-30 bg-background">
               {table.getRowModel().rows?.length > 0 &&
@@ -210,21 +221,13 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className={cn(row.original.product_id == -1 && "hover:bg-background")}
+                >
                   {row.getVisibleCells().map((cell, index) => (
-                    <TableCell
-                      key={cell.id}
-                      onClick={() => {
-                        if (index > 1) {
-                          row.toggleSelected();
-                        }
-                      }}
-                      className={cn(
-                        "h-12 text-2xl",
-                        index == 2 && "p-0",
-                        index > 1 && "hover:cursor-pointer"
-                      )}
-                    >
+                    <TableCell key={cell.id} className={cn("h-12 text-2xl", index == 2 && "p-0")}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -237,9 +240,68 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
 
       {/* <Actions deleteRows={() => deleteRows(table)} /> */}
 
-      <div className="w-[20%] flex flex-col justify-end space-y-4">
-        <div className="text-center text-4xl">Totale: {order.total}</div>
-        <Button className="w-full">Chiudi e paga</Button>
+      <div className="w-[20%] flex flex-col gap-6 h-full">
+        <Button
+          className="w-full h-12 text-xl"
+          variant={"destructive"}
+          onClick={() => deleteRows(table)}
+          disabled={table.getFilteredSelectedRowModel().rows.length == 0}
+        >
+          Cancella prodotti selezionati
+        </Button>
+
+        <Button className="w-full h-12 text-xl" variant={"destructive"} onClick={() => {}}>
+          Elimina ordine
+        </Button>
+
+        <div className="mt-auto flex flex-col gap-6">
+          <div className="w-full flex flex-col overflow-hidden border-foreground">
+            <div className="w-full text-center text-2xl border rounded-t bg-foreground text-primary-foreground h-12 p-2">
+              RISO
+            </div>
+
+            <div className="w-full text-center text-2xl h-12 max-h-12 font-bold border-x flex ">
+              <div
+                className={cn(
+                  "w-1/2 border-r p-2 h-12",
+                  rice - usedRice < 100 && "text-destructive"
+                )}
+              >
+                Rimanente
+              </div>
+              <div className="w-1/2 p-2 h-12">Ordine</div>
+            </div>
+
+            <div className="w-full text-center text-2xl h-12 border flex max-h-12">
+              <div
+                className={cn(
+                  "w-1/2 border-r p-2 h-12",
+                  rice - usedRice < 100 && "text-destructive"
+                )}
+              >
+                {formatRice(rice - usedRice)}
+              </div>
+              <div className="w-1/2 p-2 h-12">{formatRice(usedRice)}</div>
+            </div>
+          </div>
+
+          <div className="w-full flex flex-col  *:p-2 overflow-hidden border-foreground">
+            <div className="w-full text-center text-2xl border rounded-t bg-foreground text-primary-foreground h-12">
+              TOTALE
+            </div>
+            <div className="w-full text-center text-2xl h-12 font-bold border-x border-b rounded-b ">
+              € {order.total}
+            </div>
+          </div>
+
+          <div className="flex gap-6">
+            <Button className="w-full text-3xl h-24">Dividi</Button>
+            <Button className="w-full text-3xl h-24">Stampa</Button>
+          </div>
+
+          {/* bg-[#4BB543] */}
+          <Button className="w-full text-3xl h-24 ">PAGA</Button>
+        </div>
       </div>
     </div>
   );

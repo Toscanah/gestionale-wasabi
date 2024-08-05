@@ -22,7 +22,15 @@ export default async function editProduct(product: ProductWithInfo) {
       // },
     },
     include: {
-      category: true,
+      category: {
+        include: {
+          options: {
+            include: {
+              option: true,
+            },
+          },
+        },
+      },
       options: true,
     },
   });

@@ -106,7 +106,7 @@ model Table {
 }
 
 model Product {
-    id          Int               @id @default(autoincrement())
+    id          Int              @id @default(autoincrement())
     category_id Int
     name        String
     code        String
@@ -115,7 +115,7 @@ model Product {
     home_price  Float
     rice        Float
     orders      ProductOnOrder[]
-    category    ProductCategory   @relation(fields: [category_id], references: [id])
+    category    ProductCategory  @relation(fields: [category_id], references: [id])
     options     OptionOnProduct[]
 }
 
@@ -150,18 +150,25 @@ model Rice {
 }
 
 model ProductCategory {
-    id       Int              @id @default(autoincrement())
+    id       Int                @id @default(autoincrement())
     category String
-    product  Product[]
-    options  CategoryOption[]
+    products Product[]
+    options  OptionOnCategory[]
+}
+
+model OptionOnCategory {
+    id          Int             @id @default(autoincrement())
+    category_id Int
+    option_id   Int
+    category    ProductCategory @relation(fields: [category_id], references: [id])
+    option      CategoryOption  @relation(fields: [option_id], references: [id])
 }
 
 model CategoryOption {
-    id          Int               @id @default(autoincrement())
-    category_id Int
+    id          Int                @id @default(autoincrement())
     option_name String
-    category    ProductCategory   @relation(fields: [category_id], references: [id])
-    products    OptionOnProduct[]
+    categories  OptionOnCategory[]
+    options     OptionOnProduct[]
 }
 
 model OptionOnProduct {

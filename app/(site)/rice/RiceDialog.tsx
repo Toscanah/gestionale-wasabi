@@ -15,11 +15,7 @@ import { useWasabiContext } from "../orders/WasabiContext";
 import fetchRequest from "../util/functions/fetchRequest";
 
 export default function RiceDialog() {
-  const { rice, setRice } = useWasabiContext();
-
-  const updateRice = () => {
-    fetchRequest("POST", "/api/rice/", "updateRice", { rice });
-  };
+  const { rice, setRice, updateRice } = useWasabiContext();
 
   return (
     <Dialog>
@@ -45,7 +41,7 @@ export default function RiceDialog() {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={updateRice}>
+          <Button type="submit" onClick={() => updateRice(rice)}>
             Salva
           </Button>
         </DialogFooter>
