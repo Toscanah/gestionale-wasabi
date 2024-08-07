@@ -15,11 +15,9 @@ import { flexRender } from "@tanstack/react-table";
 import { ProductWithInfo } from "../types/ProductWithInfo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus } from "@phosphor-icons/react";
 import fetchRequest from "../util/functions/fetchRequest";
 import AddProduct from "./actions/AddProduct";
 import GoBack from "../components/GoBack";
-import EditProduct from "./actions/EditProduct";
 
 export default function ProductsList() {
   const [products, setProducts] = useState<ProductWithInfo[]>([]);
@@ -50,7 +48,6 @@ export default function ProductsList() {
   };
 
   const onDelete = (deletedProduct: ProductWithInfo) => {};
-
   const columns = getColumns(onEdit, onDelete);
   const table = getTable(products, columns, globalFilter, setGlobalFilter);
 

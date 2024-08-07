@@ -14,11 +14,9 @@ import { toast } from "sonner";
 import { ReactNode } from "react";
 
 export default function EditProduct({
-  trigger,
   product,
   onEdit,
 }: {
-  trigger?: ReactNode;
   product: ProductWithInfo;
   onEdit: (editedProduct: ProductWithInfo) => void;
 }) {
@@ -28,10 +26,10 @@ export default function EditProduct({
       ...values,
     }).then((product) => {
       if (product) {
+        onEdit(product);
         toast.success("Successo", {
           description: "Il prodotto è stato modificato correttamente",
         });
-        onEdit(product);
       } else {
         toast.error("Errore", {
           description: "Qualcosa è andato storto",
@@ -43,16 +41,9 @@ export default function EditProduct({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        {trigger ? (
-          trigger
-        ) : (
-          <Pencil size={24} className="hover:cursor-pointer" />
-        )}
+        <Pencil size={24} className="hover:cursor-pointer" />
       </DialogTrigger>
-      <DialogContent
-        className="max-w-screen w-[40vw]"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
+      <DialogContent className="max-w-screen w-[40vw]" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="mb-4">Modifica prodotto</DialogTitle>
           <ProductFields

@@ -5,15 +5,10 @@ export type ProductWithInfo = Prisma.ProductGetPayload<{
     category: {
       include: {
         options: {
-          include: {
+          select: {
             option: true;
           };
         };
-      };
-    };
-    options: {
-      include: {
-        option: true;
       };
     };
   };

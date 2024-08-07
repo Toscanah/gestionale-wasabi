@@ -6,12 +6,15 @@ import { TypesOfOrder } from "../../types/TypesOfOrder";
 import TableColumn from "../../components/TableColumn";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
+import fetchRequest from "../../util/functions/fetchRequest";
+import { Label } from "@/components/ui/label";
 
 export default function getColumns(
   handleFieldChange: (key: string, value: any, index: number) => void,
   type: TypesOfOrder,
   focusedInput: { rowIndex: number; colIndex: number },
-  setFocusedInput: Dispatch<SetStateAction<{ rowIndex: number; colIndex: number }>>
+  setFocusedInput: Dispatch<SetStateAction<{ rowIndex: number; colIndex: number }>>,
+  selectOption: (productInOrderId: number, optionId: number) => void
 ): ColumnDef<ProductInOrderType>[] {
   const inputRefs = useRef<Map<string, HTMLInputElement | null>>(new Map()).current;
 
@@ -127,7 +130,7 @@ export default function getColumns(
         />
       ),
     }),
-    
+
     TableColumn<ProductInOrderType>({
       accessorKey: "quantity",
       header: "Quantità",
@@ -163,22 +166,31 @@ export default function getColumns(
       accessorKey: "options",
       header: "Opzioni",
       cellContent: (row) => {
-        console.log(row.original)
-        const options = row.original.product?.category?.options;
+        if (row.original.product_id == -1) {
+          return <></>;
+        }
+
+        const avalOptions = row.original.product.category.options ?? [];
+        const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
 
         return (
-          <div className="space-y-2">
-            {options && options.map((option, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <Checkbox />
-                <label
-                  htmlFor="terms"
-                  className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {option.option.option_name}
-                </label>
-              </div>
-            ))}
+          <div className="space-y-2 max-h-20 overflow-auto">
+            {avalOptions &&
+              avalOptions.map((option) => (
+                <div key={option.option.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    defaultChecked={selectedOptions.includes(option.option.id)}
+                    onCheckedChange={(e) => selectOption(row.original.id, option.option.id)}
+                    id={`option-${option.option.id}`}
+                  />
+                  <Label
+                    htmlFor={`option-${option.option.id}`}
+                    className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    {option.option.option_name}
+                  </Label>
+                </div>
+              ))}
           </div>
         );
       },
@@ -214,7 +226,7 @@ export default function getColumns(
         row.original.product_id !== -1 && (
           <div className="flex justify-center items-center">
             <Checkbox
-            className="h-6 w-6"
+              className="h-6 w-6"
               checked={row.getIsSelected()}
               onCheckedChange={(value) => row.toggleSelected(!!value)}
               aria-label="Select row"

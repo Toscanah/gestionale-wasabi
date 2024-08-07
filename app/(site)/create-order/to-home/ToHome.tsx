@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Address, Customer } from "@prisma/client";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { AnyOrder, HomeOrder } from "../../types/OrderType";
-import { useWasabiContext } from "../../orders/WasabiContext";
+import { useWasabiContext } from "../../components/WasabiContext";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import getToHomeForm from "../../components/forms/getToHomeForm";
 

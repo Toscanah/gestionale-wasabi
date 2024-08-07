@@ -3,7 +3,6 @@
 import {
   Table as TanstackTable,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,

@@ -2,39 +2,30 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { TypesOfOrder } from "../types/TypesOfOrder";
-import {
-  AnyOrder,
-  TableOrder,
-  HomeOrder,
-  PickupOrder,
-  BaseOrder,
-} from "../types/OrderType";
+import { AnyOrder, TableOrder, HomeOrder, PickupOrder, BaseOrder } from "../types/OrderType";
 import TableColumn from "../components/TableColumn";
 
 export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
-    /*createColumn({
+    {
       accessorKey: "#",
-      cellContent: (row, table) => {
+      cell: ({ row, table }) => {
         if (table) {
           const index =
             table
               .getSortedRowModel()
-              ?.flatRows?.findIndex(
-                (flatRow) => flatRow.id === String(row.id)
-              ) || 0;
-          return index + 2;
+              ?.flatRows?.findIndex((flatRow) => flatRow.id === String(row.id)) || 0;
+          return <div className="text-muted-foreground">{index + 1}</div>;
         } else {
           return "";
         }
       },
-    }),*/
+    },
 
     TableColumn<BaseOrder>({
       accessorKey: "created_at",
       header: "Ora",
-      cellContent: (row) =>
-        format(new Date(row.original.created_at), "HH:mm", { locale: it }),
+      cellContent: (row) => format(new Date(row.original.created_at), "HH:mm", { locale: it }),
     }),
 
     TableColumn<AnyOrder>({
@@ -80,9 +71,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
           accessorKey: "home_order.when",
           header: "Quando",
           cellContent: (row) =>
-            row.original.home_order?.when == "immediate"
-              ? "Subito"
-              : row.original.home_order?.when,
+            row.original.home_order?.when == "immediate" ? "Subito" : row.original.home_order?.when,
         })
       );
       break;
@@ -101,9 +90,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
           accessorKey: "table_order.res_name",
           header: "Nome",
           cellContent: (row) =>
-            row.original.table_order?.res_name
-              ? row.original.table_order?.res_name
-              : "",
+            row.original.table_order?.res_name ? row.original.table_order?.res_name : "",
         })
       );
       break;
