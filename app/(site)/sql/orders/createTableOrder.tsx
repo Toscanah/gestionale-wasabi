@@ -1,6 +1,5 @@
 import prisma from "../db";
 
-
 export default async function createTableOrder(content: {
   table: string;
   people: number;

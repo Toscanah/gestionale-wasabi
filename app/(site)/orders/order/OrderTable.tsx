@@ -10,18 +10,17 @@ import {
 } from "@/components/ui/table";
 import { Table as TanstackTable, flexRender } from "@tanstack/react-table";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { BaseOrder } from "../../types/OrderType";
 import { cn } from "@/lib/utils";
-import { useWasabiContext } from "../WasabiContext";
+import { useWasabiContext } from "../../components/WasabiContext";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
-import { toast } from "sonner";
-import Actions from "./Actions";
 import { Button } from "@/components/ui/button";
 import createDummyProduct from "../../util/functions/createDummyProduct";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../util/toast";
 import formatRice from "../../util/functions/formatRice";
+import { Option, OptionInProductOrder } from "@prisma/client";
 
 export default function OrderTable({ order }: { order: BaseOrder }) {
   const [products, setProducts] = useState<ProductInOrderType[]>([
@@ -33,6 +32,37 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
   const [newQuantity, setNewQuantity] = useState<number>(0);
   const { onOrdersUpdate } = useWasabiContext();
   const [focusedInput, setFocusedInput] = useState({ rowIndex: products.length - 1, colIndex: 0 });
+
+  const selectOption = (productInOrderId: number, optionId: number) => {
+    const content = { productInOrderId, optionId };
+    fetchRequest<OptionInProductOrder & { option: Option }>(
+      "POST",
+      "/api/products/",
+      "updateProductOptionsInOrder",
+      content
+    ).then((newOption) => {
+      setProducts((prevProducts) =>
+        prevProducts.map((product: ProductInOrderType) =>
+          product.id === productInOrderId
+            ? {
+                ...product,
+                options: product.options.some(
+                  (selectedOption: { option: Option }) =>
+                    selectedOption.option.id === newOption.option_id
+                )
+                  ? product.options.filter(
+                      (selectedOption: { option: Option }) =>
+                        selectedOption.option.id !== newOption.option_id
+                    )
+                  : [...product.options, { option: newOption.option }],
+              }
+            : product
+        )
+      );
+
+      onOrdersUpdate(order.type as TypesOfOrder);
+    });
+  };
 
   const handleFieldChange = (key: string, value: any, index: number) => {
     const productToUpdate = products[index];
@@ -55,7 +85,7 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
       updatedProduct?: ProductInOrderType;
       deletedProduct?: ProductInOrderType;
       error?: string;
-    }>("POST", "/api/products/", "updateProduct", {
+    }>("POST", "/api/products/", "updateProductInOrder", {
       orderId: order.id,
       key: key,
       value: value,
@@ -137,8 +167,8 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
               site_price: productOnOrder.product.site_price,
               rice: productOnOrder.product.rice,
               category_id: productOnOrder.product.category_id,
-              options: productOnOrder.product.options,
             },
+            options: productOnOrder.options,
             product_id: productOnOrder.product_id,
             order_id: order.id,
             quantity: productOnOrder.quantity,
@@ -188,7 +218,8 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
     handleFieldChange,
     order.type as TypesOfOrder,
     focusedInput,
-    setFocusedInput
+    setFocusedInput,
+    selectOption
   );
   const table = getTable(products, columns, rowSelection, setRowSelection);
   const { rice } = useWasabiContext();
@@ -237,8 +268,6 @@ export default function OrderTable({ order }: { order: BaseOrder }) {
           </Table>
         </div>
       </div>
-
-      {/* <Actions deleteRows={() => deleteRows(table)} /> */}
 
       <div className="w-[20%] flex flex-col gap-6 h-full">
         <Button

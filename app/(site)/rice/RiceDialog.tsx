@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
 import { Rice } from "@prisma/client";
-import { useWasabiContext } from "../orders/WasabiContext";
+import { useWasabiContext } from "../components/WasabiContext";
 import fetchRequest from "../util/functions/fetchRequest";
 
 export default function RiceDialog() {

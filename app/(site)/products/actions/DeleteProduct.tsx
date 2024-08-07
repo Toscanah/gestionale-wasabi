@@ -21,6 +21,11 @@ export default function DeleteProduct({
   product: ProductWithInfo;
   onDelete: (deletedProduct: ProductWithInfo) => void;
 }) {
+  function handleDelete() {
+    fetchRequest("POST", "/api/products/")
+    onDelete();
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -44,7 +49,7 @@ export default function DeleteProduct({
               </Button>
             </DialogClose>
 
-            <Button type="submit" className="w-full" variant={"destructive"}>
+            <Button type="submit" className="w-full" variant={"destructive"} onClick={() => handleDelete()}>
               Elimina
             </Button>
           </DialogFooter>

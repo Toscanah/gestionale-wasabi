@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AnyOrder, TableOrder } from "../../types/OrderType";
-import { useWasabiContext } from "../../orders/WasabiContext";
+import { useWasabiContext } from "../../components/WasabiContext";
 import { TypesOfOrder } from "../../types/TypesOfOrder";
 import { toast } from "sonner";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";

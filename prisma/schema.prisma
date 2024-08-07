@@ -39,7 +39,7 @@ model Order {
     created_at   DateTime         @default(now())
     type         OrderType
     total        Float?
-    products     ProductOnOrder[]
+    products     ProductInOrder[]
     paid         Boolean          @default(false)
     payment      Payment[]
     table_order  TableOrder?
@@ -105,30 +105,6 @@ model Table {
     orders TableOrder[]
 }
 
-model Product {
-    id          Int              @id @default(autoincrement())
-    category_id Int
-    name        String
-    code        String
-    desc        String
-    site_price  Float
-    home_price  Float
-    rice        Float
-    orders      ProductOnOrder[]
-    category    ProductCategory  @relation(fields: [category_id], references: [id])
-    options     OptionOnProduct[]
-}
-
-model ProductOnOrder {
-    id         Int     @id @default(autoincrement())
-    product    Product @relation(fields: [product_id], references: [id])
-    product_id Int
-    order      Order   @relation(fields: [order_id], references: [id])
-    order_id   Int
-    quantity   Int
-    total      Float
-}
-
 model Payment {
     id        Int         @id @default(autoincrement())
     amount    Float?
@@ -149,32 +125,56 @@ model Rice {
     amount Float
 }
 
-model ProductCategory {
+model Product {
+    id          Int              @id @default(autoincrement())
+    category_id Int
+    name        String
+    code        String
+    desc        String
+    site_price  Float
+    home_price  Float
+    rice        Float
+    orders      ProductInOrder[]
+    category    Category         @relation(fields: [category_id], references: [id])
+}
+
+model ProductInOrder {
+    id         Int                    @id @default(autoincrement())
+    product    Product                @relation(fields: [product_id], references: [id])
+    product_id Int
+    order      Order                  @relation(fields: [order_id], references: [id])
+    order_id   Int
+    quantity   Int
+    total      Float
+    options    OptionInProductOrder[]
+}
+
+model Category {
     id       Int                @id @default(autoincrement())
     category String
     products Product[]
-    options  OptionOnCategory[]
+    options  CategoryOnOption[]
 }
 
-model OptionOnCategory {
-    id          Int             @id @default(autoincrement())
+model CategoryOnOption {
+    id          Int      @id @default(autoincrement())
     category_id Int
     option_id   Int
-    category    ProductCategory @relation(fields: [category_id], references: [id])
-    option      CategoryOption  @relation(fields: [option_id], references: [id])
+    category    Category @relation(fields: [category_id], references: [id])
+    option      Option   @relation(fields: [option_id], references: [id])
 }
 
-model CategoryOption {
-    id          Int                @id @default(autoincrement())
+model Option {
+    id          Int                    @id @default(autoincrement())
     option_name String
-    categories  OptionOnCategory[]
-    options     OptionOnProduct[]
+    categories  CategoryOnOption[]
+    products    OptionInProductOrder[]
 }
 
-model OptionOnProduct {
-    id         Int            @id @default(autoincrement())
-    product_id Int
-    option_id  Int
-    product    Product        @relation(fields: [product_id], references: [id])
-    option     CategoryOption @relation(fields: [option_id], references: [id])
+model OptionInProductOrder {
+    id                  Int            @id @default(autoincrement())
+    product_in_order_id Int
+    option_id           Int
+    productInOrder      ProductInOrder @relation(fields: [product_in_order_id], references: [id])
+    option              Option         @relation(fields: [option_id], references: [id])
 }

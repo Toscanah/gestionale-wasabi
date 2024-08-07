@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useWasabiContext } from "../orders/WasabiContext";
+import { useWasabiContext } from "../components/WasabiContext";
 import formatRice from "../util/functions/formatRice";
 
 export default function RiceSummary() {

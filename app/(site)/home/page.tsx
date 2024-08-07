@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TypesOfOrder } from "../types/TypesOfOrder";
-import { WasabiProvider } from "../orders/WasabiContext";
+import { WasabiProvider } from "../components/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../create-order/CreateOrder";
 import Header from "./Header";

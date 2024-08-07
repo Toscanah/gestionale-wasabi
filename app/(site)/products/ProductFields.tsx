@@ -18,7 +18,7 @@ import { FormField as BaseFormField } from "@/components/ui/form";
 import { useFocusCycle } from "../components/hooks/useFocusCycle";
 import { useEffect, useRef, useState } from "react";
 import getProductForm, { FormValues } from "../components/forms/getProductForm";
-import { ProductCategory } from "@prisma/client";
+import { Category } from "@prisma/client";
 import fetchRequest from "../util/functions/fetchRequest";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -32,11 +32,11 @@ export default function ProductFields({
   footerName: string;
   productValues?: FormValues;
 }) {
-  const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const form = getProductForm(productValues);
 
   useEffect(() => {
-    fetchRequest<ProductCategory[]>(
+    fetchRequest<Category[]>(
       "GET",
       "/api/categories/",
       "getCategories"

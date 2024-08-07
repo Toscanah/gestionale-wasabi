@@ -7,7 +7,7 @@ import { TypesOfOrder } from "../../types/TypesOfOrder";
 
 import { toast } from "sonner";
 import WhenSelector from "../../components/WhenSelector";
-import { useWasabiContext } from "../../orders/WasabiContext";
+import { useWasabiContext } from "../../components/WasabiContext";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError } from "../../util/toast";

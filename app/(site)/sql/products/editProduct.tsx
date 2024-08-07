@@ -7,7 +7,11 @@ export default async function editProduct(product: ProductWithInfo) {
       id: product.id,
     },
     data: {
-      category_id: product.category_id,
+      category: {
+        connect: {
+          id: Number(product.category)
+        }
+      },
       name: product.name,
       code: product.code,
       desc: product.desc,
@@ -31,7 +35,6 @@ export default async function editProduct(product: ProductWithInfo) {
           },
         },
       },
-      options: true,
     },
   });
 }

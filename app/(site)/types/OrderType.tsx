@@ -53,20 +53,20 @@ export type BaseOrder = Prisma.OrderGetPayload<{
       include: {
         product: {
           include: {
-            options: {
-              include: {
-                option: true;
-              };
-            };
             category: {
               include: {
                 options: {
-                  include: {
+                  select: {
                     option: true;
                   };
                 };
               };
             };
+          };
+        };
+        options: {
+          select: {
+            option: true;
           };
         };
       };
