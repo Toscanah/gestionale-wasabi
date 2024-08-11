@@ -1,5 +1,5 @@
 import { Order } from "@prisma/client";
-import { TypesOfOrder } from "../../types/TypesOfOrder";
+import { OrderType } from "../../types/OrderType";
 import prisma from "../db";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
@@ -9,8 +9,14 @@ export default async function addProductToOrder(
   productCode: string,
   quantity: number
 ): Promise<ProductInOrderType | null> {
+
   const product: ProductWithInfo | null = await prisma.product.findFirst({
-    where: { code: productCode },
+    where: {
+      code: {
+        equals: productCode,
+        mode: "insensitive",
+      },
+    },
     include: { category: { include: { options: { select: { option: true } } } } },
   });
 
@@ -19,7 +25,7 @@ export default async function addProductToOrder(
   }
 
   const productTotalPrice =
-    (order?.type == TypesOfOrder.TO_HOME ? product.home_price : product.site_price) * quantity;
+    (order?.type == OrderType.TO_HOME ? product.home_price : product.site_price) * quantity;
 
   const productInOrder = await prisma.productInOrder.create({
     data: {

@@ -1,11 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { TypesOfOrder } from "../types/TypesOfOrder";
-import { AnyOrder, TableOrder, HomeOrder, PickupOrder, BaseOrder } from "../types/OrderType";
-import TableColumn from "../components/TableColumn";
+import { OrderType } from "../types/OrderType";
+import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
+import TableColumn from "../components/table/TableColumn";
 
-export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
+export default function getColumns(type: OrderType): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "#",
@@ -22,7 +22,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
       },
     },
 
-    TableColumn<BaseOrder>({
+    TableColumn<AnyOrder>({
       accessorKey: "created_at",
       header: "Ora",
       cellContent: (row) => format(new Date(row.original.created_at), "HH:mm", { locale: it }),
@@ -30,15 +30,16 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
 
     TableColumn<AnyOrder>({
       accessorKey: "who",
-      header: type === TypesOfOrder.TABLE ? "Tavolo" : "Cliente",
+      header:
+        type === OrderType.TABLE ? "Tavolo" : type === OrderType.PICK_UP ? "Cliente" : "Campanello",
       cellContent: (row) => {
         switch (type) {
-          case TypesOfOrder.TABLE: {
+          case OrderType.TABLE: {
             const parsedRow = row.original as TableOrder;
 
             return parsedRow.table_order?.table?.number;
           }
-          case TypesOfOrder.PICK_UP: {
+          case OrderType.PICK_UP: {
             const parsedRow = row.original as PickupOrder;
 
             if (parsedRow.pickup_order?.customer?.surname !== "") {
@@ -47,9 +48,9 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
               return parsedRow.pickup_order.name;
             }
           }
-          case TypesOfOrder.TO_HOME: {
+          case OrderType.TO_HOME: {
             const parsedRow = row.original as HomeOrder;
-            return parsedRow.home_order?.customer.surname;
+            return parsedRow.home_order?.address.doorbell;
           }
         }
       },
@@ -57,7 +58,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
   ];
 
   switch (type) {
-    case TypesOfOrder.TO_HOME:
+    case OrderType.TO_HOME:
       columns.push(
         TableColumn<HomeOrder>({
           accessorKey: "address.street",
@@ -75,7 +76,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
         })
       );
       break;
-    case TypesOfOrder.PICK_UP:
+    case OrderType.PICK_UP:
       columns.push(
         TableColumn<PickupOrder>({
           accessorKey: "pickup_order.when",
@@ -84,7 +85,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
       );
       break;
 
-    case TypesOfOrder.TABLE:
+    case OrderType.TABLE:
       columns.push(
         TableColumn<TableOrder>({
           accessorKey: "table_order.res_name",
@@ -97,7 +98,7 @@ export default function getColumns(type: TypesOfOrder): ColumnDef<any>[] {
   }
 
   columns.push(
-    TableColumn<BaseOrder>({
+    TableColumn<AnyOrder>({
       accessorKey: "total",
       header: "Totale",
       cellContent: (row) => `€ ${row.original.total}`,

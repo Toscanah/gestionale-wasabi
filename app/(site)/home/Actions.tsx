@@ -1,29 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { List, PiggyBank, UsersFour } from "@phosphor-icons/react";
+import { List, PiggyBank, Shield, UsersFour } from "@phosphor-icons/react";
 import RiceDialog from "../rice/RiceDialog";
 import Link from "next/link";
-import { useRouter } from 'next/navigation'
 
 export default function Actions() {
   return (
     <div className="flex gap-4 justify-center items-center">
-      {/* <ChoiceDialog /> */}
-
       <RiceDialog />
 
       <Button className="" variant={"outline"}>
         <PiggyBank className="mr-2 h-4 w-4" /> Pagamenti
       </Button>
 
-      <Button className="" variant={"outline"}>
-        <UsersFour className="mr-2 h-4 w-4" /> Gestisci clienti
-      </Button>
-
-      <Link href={"../products"}>
+      <Link href={"../backend"}>
         <Button className="" variant={"outline"}>
-          <List className="mr-2 h-4 w-4" /> Prodotti
+          <Shield className="mr-2 h-4 w-4" /> Admin
         </Button>
       </Link>
     </div>

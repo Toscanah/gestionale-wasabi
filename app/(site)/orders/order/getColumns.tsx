@@ -2,8 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { Input } from "@/components/ui/input";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import { TypesOfOrder } from "../../types/TypesOfOrder";
-import TableColumn from "../../components/TableColumn";
+import { OrderType } from "../../types/OrderType";
+import TableColumn from "../../components/table/TableColumn";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import fetchRequest from "../../util/functions/fetchRequest";
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 
 export default function getColumns(
   handleFieldChange: (key: string, value: any, index: number) => void,
-  type: TypesOfOrder,
+  type: OrderType,
   focusedInput: { rowIndex: number; colIndex: number },
   setFocusedInput: Dispatch<SetStateAction<{ rowIndex: number; colIndex: number }>>,
   selectOption: (productInOrderId: number, optionId: number) => void
@@ -99,6 +99,8 @@ export default function getColumns(
               const codeField = inputRefs.get(`${row.index}-${0}`);
               if (codeField) {
                 codeField.disabled = !codeField.disabled;
+                codeField.focus();
+                codeField.select();
               }
             }}
           />
@@ -204,7 +206,7 @@ export default function getColumns(
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
             : `€ ${
-                type == TypesOfOrder.TO_HOME
+                type == OrderType.TO_HOME
                   ? row.original.product.home_price
                   : row.original.product.site_price
               }`}

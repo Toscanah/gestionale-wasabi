@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
-import { HomeOrder } from "@/app/(site)/types/OrderType";
+import { HomeOrder } from "@/app/(site)/types/PrismaOrders";
 
 interface OverviewProps {
   selectedAddress: Address | undefined;
@@ -36,13 +36,15 @@ export default function Overview({
   const [lastAddressId, setLastAddressId] = useState<string>("");
 
   useEffect(() => {
-    fetchRequest<HomeOrder>("GET", "/api/addresses/", "getLastAddressOfCustomer", {
-      phone,
-    }).then((address) => {
-      if (address && address.home_order) {
-        setLastAddressId(address.home_order?.address_id.toString());
-      }
-    });
+    if (phone !== "") {
+      fetchRequest<HomeOrder>("GET", "/api/addresses/", "getLastAddressOfCustomer", {
+        phone,
+      }).then((address) => {
+        if (address && address.home_order) {
+          setLastAddressId(address.home_order.address_id.toString());
+        }
+      });
+    }
   }, [permAddresses]);
 
   useEffect(() => {
@@ -166,7 +168,6 @@ export default function Overview({
         <div className="w-full space-y-2">
           <Button
             className="text-4xl h-16 w-full"
-            disabled={!selectedAddress}
             onClick={() => {
               formRef.current.dispatchEvent(
                 new Event("submit", { cancelable: true, bubbles: true })

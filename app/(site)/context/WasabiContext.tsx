@@ -7,15 +7,17 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-import { TypesOfOrder } from "../types/TypesOfOrder";
+import { OrderType } from "../types/OrderType";
 import fetchRequest from "../util/functions/fetchRequest";
+import { Rice } from "@prisma/client";
+import { toastSuccess } from "../util/toast";
 
 interface WasabiContextProps {
-  onOrdersUpdate: (type: TypesOfOrder) => void;
-  rice: number;
-  setRice: Dispatch<SetStateAction<number>>;
+  onOrdersUpdate: (type: OrderType) => void;
+  rice: Rice;
+  setRice: Dispatch<SetStateAction<Rice>>;
   fetchRice: () => void;
-  updateRice: (amount: number) => void;
+  updateRice: (rice: Rice) => void;
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);
@@ -33,17 +35,21 @@ export const WasabiProvider = ({
   onOrdersUpdate,
 }: {
   children: ReactNode;
-  onOrdersUpdate: (type: TypesOfOrder) => void;
+  onOrdersUpdate: (type: OrderType) => void;
 }) => {
-  const [rice, setRice] = useState<number>(0);
+  const [rice, setRice] = useState<Rice>({
+    id: 1,
+    amount: 0,
+    threshold: 0,
+  });
 
   const fetchRice = () =>
-    fetchRequest<number>("GET", "/api/rice/", "getRice").then((amount) => {
-      setRice(amount);
-    });
+    fetchRequest<Rice>("GET", "/api/rice/", "getRice").then((rice) => setRice(rice));
 
-  const updateRice = (amount: number) => {
-    fetchRequest("POST", "/api/rice/", "updateRice", { rice: amount });
+  const updateRice = (rice: Rice) => {
+    fetchRequest("POST", "/api/rice/", "updateRice", { rice }).then(() => {
+      toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
+    });
   };
 
   return (

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import getToHomeForm, { FormValues } from "../../../components/forms/getToHomeForm";
 import { Textarea } from "@/components/ui/textarea";
-import WhenSelector from "@/app/(site)/components/WhenSelector";
+import WhenSelector from "@/app/(site)/components/select/WhenSelector";
 import FormField from "@/app/(site)/components/FormField";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import parseAddress from "@/app/(site)/util/functions/parseAddress";
@@ -140,7 +140,9 @@ export default function AddressForm({
           return newAddresses;
         });
       })
-      .then(() => {setShouldCreateOrder(true)});
+      .then(() => {
+        setShouldCreateOrder(true);
+      });
   }
 
   useEffect(() => {

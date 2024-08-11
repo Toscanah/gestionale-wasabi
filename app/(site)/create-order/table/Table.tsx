@@ -10,9 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AnyOrder, TableOrder } from "../../types/OrderType";
-import { useWasabiContext } from "../../components/WasabiContext";
-import { TypesOfOrder } from "../../types/TypesOfOrder";
+import { AnyOrder, TableOrder } from "../../types/PrismaOrders";
+import { useWasabiContext } from "../../context/WasabiContext";
+import { OrderType } from "../../types/OrderType";
 import { toast } from "sonner";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
 import fetchRequest from "../../util/functions/fetchRequest";
@@ -69,7 +69,7 @@ export default function Table({
       if (order) {
         toastSuccess("Ordine creato con successo", "Successo");
         setOrder(order);
-        onOrdersUpdate(TypesOfOrder.TABLE);
+        onOrdersUpdate(OrderType.TABLE);
       } else {
         toastError(
           "L'ordine non è stato creato. Sei sicuro che il tavolo esista?"

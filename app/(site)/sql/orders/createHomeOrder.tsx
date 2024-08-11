@@ -1,4 +1,4 @@
-import { Address, Customer } from "@prisma/client";
+import { Address, Customer, OrderType } from "@prisma/client";
 import prisma from "../db";
 
 export default async function createHomeOrder(content: {
@@ -12,7 +12,7 @@ export default async function createHomeOrder(content: {
 
   return await prisma.order.create({
     data: {
-      type: "TO_HOME",
+      type: OrderType.TO_HOME,
       total: 0,
       home_order: {
         create: {
@@ -35,6 +35,6 @@ export default async function createHomeOrder(content: {
     include: {
       products: true,
       home_order: true,
-    }
+    },
   });
 }

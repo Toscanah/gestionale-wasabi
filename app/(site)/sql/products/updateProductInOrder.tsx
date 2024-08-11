@@ -1,5 +1,5 @@
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { TypesOfOrder } from "../../types/TypesOfOrder";
+import { OrderType } from "../../types/OrderType";
 import prisma from "../db";
 
 export default async function updateProductInOrder(
@@ -20,7 +20,10 @@ export default async function updateProductInOrder(
     case "code":
       const newProductCode = value;
       const newProduct = await prisma.product.findFirst({
-        where: { code: newProductCode },
+        where: { code: {
+          equals: newProductCode,
+          mode: "insensitive",
+        }, },
         include: { category: { include: { options: { select: { option: true } } } } },
       });
 
@@ -30,7 +33,7 @@ export default async function updateProductInOrder(
 
       const newTotal =
         productInOrder.quantity *
-        (currentOrder.type === TypesOfOrder.TO_HOME
+        (currentOrder.type === OrderType.TO_HOME
           ? newProduct.home_price
           : newProduct.site_price);
 
@@ -98,7 +101,7 @@ export default async function updateProductInOrder(
       } else {
         const newTotal =
           newQuantity *
-          (currentOrder.type === TypesOfOrder.TO_HOME
+          (currentOrder.type === OrderType.TO_HOME
             ? productInOrder.product.home_price
             : productInOrder.product.site_price);
         const difference = newTotal - productInOrder.total;

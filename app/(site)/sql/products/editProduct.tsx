@@ -1,23 +1,22 @@
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import prisma from "../db";
 
-export default async function editProduct(product: ProductWithInfo) {
+export default async function editProduct(newProduct: ProductWithInfo) {
   return await prisma.product.update({
     where: {
-      id: product.id,
+      id: newProduct.id,
     },
     data: {
       category: {
         connect: {
-          id: Number(product.category)
+          id: Number(newProduct.category)
         }
       },
-      name: product.name,
-      code: product.code,
-      desc: product.desc,
-      site_price: product.site_price,
-      home_price: product.home_price,
-      rice: product.rice,
+      code: newProduct.code,
+      desc: newProduct.desc,
+      site_price: newProduct.site_price,
+      home_price: newProduct.home_price,
+      rice: newProduct.rice,
       // TODO:
       // options: {
       //   set: product.options.map((option) => ({

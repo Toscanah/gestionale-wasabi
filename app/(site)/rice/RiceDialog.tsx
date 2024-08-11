@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogClose,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -11,11 +12,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
 import { Rice } from "@prisma/client";
-import { useWasabiContext } from "../components/WasabiContext";
+import { useWasabiContext } from "../context/WasabiContext";
 import fetchRequest from "../util/functions/fetchRequest";
+import { useEffect, useState } from "react";
 
 export default function RiceDialog() {
-  const { rice, setRice, updateRice } = useWasabiContext();
+  const { updateRice, rice, setRice } = useWasabiContext();
 
   return (
     <Dialog>
@@ -25,25 +27,46 @@ export default function RiceDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
+        {/* <DialogHeader>
           <DialogTitle className="mb-4">Gestione riso</DialogTitle>
-        </DialogHeader>
+        </DialogHeader> */}
 
         <div className="flex flex-col gap-4">
           <div className="space-y-2">
-            <Label htmlFor="rice">Riso attuale</Label>
+            <Label htmlFor="rice" className="text-xl">
+              Riso attuale <span className="text-muted-foreground">(grammi)</span>
+            </Label>
             <Input
+              className="h-10 text-2xl"
               type="number"
               id="rice"
-              value={rice}
-              onChange={(e) => setRice(Number(e.target.value))}
+              value={rice.amount}
+              onChange={(e) =>
+                setRice({ id: 1, amount: Number(e.target.value), threshold: rice.threshold })
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="threshold" className="text-xl">
+              Soglia avviso <span className="text-muted-foreground">(grammi)</span>
+            </Label>
+            <Input
+              className="h-10 text-2xl"
+              type="number"
+              id="threshold"
+              value={rice.threshold}
+              onChange={(e) =>
+                setRice({ id: 1, amount: rice.amount, threshold: Number(e.target.value) })
+              }
             />
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={() => updateRice(rice)}>
-            Salva
-          </Button>
+          <DialogClose asChild>
+            <Button type="submit" onClick={() => updateRice(rice)} className="w-full">
+              Salva
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

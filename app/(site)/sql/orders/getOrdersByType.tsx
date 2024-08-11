@@ -1,7 +1,8 @@
-import { TypesOfOrder } from "../../types/TypesOfOrder";
+import { OrderType } from "../../types/OrderType";
+import { AnyOrder, TableOrder } from "../../types/PrismaOrders";
 import prisma from "../db";
 
-export default async function getOrdersByType(type: TypesOfOrder) {
+export default async function getOrdersByType(type: OrderType): Promise<AnyOrder[] | undefined> {
   return await prisma.order.findMany({
     include: {
       products: {
@@ -26,7 +27,7 @@ export default async function getOrdersByType(type: TypesOfOrder) {
           },
         },
       },
-      payment: true,
+      payments: true,
       home_order: {
         include: { address: true, customer: true },
       },

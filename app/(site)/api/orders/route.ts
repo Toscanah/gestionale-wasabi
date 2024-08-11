@@ -1,7 +1,7 @@
 import createTableOrder from "@/app/(site)/sql/orders/createTableOrder";
 import { NextRequest, NextResponse } from "next/server";
 import getOrdersByType from "../../sql/orders/getOrdersByType";
-import { TypesOfOrder } from "../../types/TypesOfOrder";
+import { OrderType } from "../../types/OrderType";
 import createPickupOrder from "../../sql/orders/createPickupOrder";
 import createHomeOrder from "../../sql/orders/createHomeOrder";
 import getPostBody from "../../util/functions/getPostBody";
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   switch (params.get("action")) {
     case "getOrdersByType":
       return NextResponse.json(
-        await getOrdersByType(params.get("type") as TypesOfOrder)
+        await getOrdersByType(params.get("type") as OrderType)
       );
   }
 }

@@ -10,7 +10,12 @@ export default async function getLastAddressOfCustomer(phone: string) {
 
   const lastOrderWithAddress = await prisma.order.findFirst({
     where: {
-      home_order: { customer_id: customer.id },
+      home_order: {
+        customer_id: customer.id,
+        address: {
+          temporary: false,
+        },
+      },
     },
     orderBy: {
       created_at: "desc",
