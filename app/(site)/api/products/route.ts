@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     case "createNewProduct":
       return NextResponse.json(await createNewProduct(content as ProductWithInfo));
     case "editProduct":
-      return NextResponse.json(await editProduct(content as any));
+      return NextResponse.json(await editProduct(content as ProductWithInfo));
     case "addProductToOrder":
       return NextResponse.json(
         await addProductToOrder(content?.order, content?.productCode, content?.quantity)

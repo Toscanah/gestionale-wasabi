@@ -5,9 +5,9 @@ import AddressForm from "./address/AddressForm";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Address, Customer } from "@prisma/client";
 import fetchRequest from "../../util/functions/fetchRequest";
-import { AnyOrder, HomeOrder } from "../../types/OrderType";
-import { useWasabiContext } from "../../components/WasabiContext";
-import { TypesOfOrder } from "../../types/TypesOfOrder";
+import { AnyOrder, HomeOrder } from "../../types/PrismaOrders";
+import { useWasabiContext } from "../../context/WasabiContext";
+import { OrderType } from "../../types/OrderType";
 import getToHomeForm from "../../components/forms/getToHomeForm";
 
 export default function ToHome({
@@ -77,7 +77,7 @@ export default function ToHome({
       contact_phone: addInfo.contactPhone,
     }).then((order) => {
       setOrder(order);
-      onOrdersUpdate(TypesOfOrder.TO_HOME);
+      onOrdersUpdate(OrderType.TO_HOME);
     });
   };
 

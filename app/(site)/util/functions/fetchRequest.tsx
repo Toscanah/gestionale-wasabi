@@ -9,6 +9,9 @@ export default async function fetchRequest<T>(
   let url: URL;
   let requestOptions: RequestInit = {
     method: method,
+    headers: {
+      "Content-Type": "application/json",
+    },
   };
 
   switch (method) {
@@ -26,7 +29,7 @@ export default async function fetchRequest<T>(
     case "POST":
     case "DELETE":
       url = new URL(path, window.location.origin);
-      requestOptions.body = content && action ? JSON.stringify({ action, content }) : undefined;
+      requestOptions.body = content ? JSON.stringify({ action, content }) : undefined;
 
       break;
 

@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import getNestedValue from "../util/functions/getNestedValue";
 import { ReactNode } from "react";
+import getNestedValue from "../../util/functions/getNestedValue";
 
 type TableColumnProps<T> = {
   sortable?: boolean;

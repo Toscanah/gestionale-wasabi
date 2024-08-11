@@ -1,13 +1,13 @@
 import { Dispatch, KeyboardEvent, RefObject, SetStateAction, useRef } from "react";
-import { AnyOrder, PickupOrder } from "../../types/OrderType";
+import { AnyOrder, PickupOrder } from "../../types/PrismaOrders";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TypesOfOrder } from "../../types/TypesOfOrder";
+import { OrderType } from "../../types/OrderType";
 
 import { toast } from "sonner";
-import WhenSelector from "../../components/WhenSelector";
-import { useWasabiContext } from "../../components/WasabiContext";
+import WhenSelector from "../../components/select/WhenSelector";
+import { useWasabiContext } from "../../context/WasabiContext";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError } from "../../util/toast";
@@ -44,7 +44,7 @@ export default function PickUp({
       phone,
     }).then((order) => {
       setOrder(order);
-      onOrdersUpdate(TypesOfOrder.PICK_UP);
+      onOrdersUpdate(OrderType.PICK_UP);
     });
   };
 

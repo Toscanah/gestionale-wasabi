@@ -5,6 +5,6 @@ type BodyPost = {
   content: object | any;
 };
 
-export default async function getPostBody(request: NextRequest) {
-  return (await request.json()) as BodyPost;
+export default async function getPostBody(request: NextRequest): Promise<BodyPost> {
+  return (await request.json());
 }

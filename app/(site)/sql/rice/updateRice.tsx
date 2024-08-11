@@ -1,8 +1,9 @@
+import { Rice } from "@prisma/client";
 import prisma from "../db";
 
-export default async function updateRice(amount: number) {
+export default async function updateRice(rice: Rice) {
   return await prisma.rice.update({
-    data: { amount },
+    data: { ...rice },
     where: { id: 1 },
   });
 }

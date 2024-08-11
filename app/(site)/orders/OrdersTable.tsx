@@ -1,73 +1,41 @@
 "use client";
 
-import {
-  Table as TanstackTable,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import getColumns from "./getColumns";
-import { TypesOfOrder } from "../types/TypesOfOrder";
-import getTable from "./getTable";
-import { flexRender } from "@tanstack/react-table";
-import { AnyOrder } from "../types/OrderType";
+import { OrderType } from "../types/OrderType";
+import { Cell } from "@tanstack/react-table";
+import { AnyOrder } from "../types/PrismaOrders";
 import Order from "./order/Order";
+import getTable from "../util/functions/getTable";
+import Table from "../components/table/Table";
 
-type TableProps = {
-  type: TypesOfOrder;
+interface TableProps {
   data: AnyOrder[];
-};
+  type: OrderType;
+}
 
-export default function OrdersTable({ type, data }: TableProps) {
+export default function OrdersTable({ data, type }: TableProps) {
   const columns = getColumns(type);
-  const table = getTable(data, columns);
+  const table = getTable<AnyOrder>({ data, columns });
 
-  const formatAddress = (index: number) => {
-    if (index == 2 && type == TypesOfOrder.TO_HOME) {
-      return "flex items-center justify-start overflow-hidden text-ellipsis w-full";
-    } else return "";
-  };
+  const CustomCell = ({
+    cell,
+    className,
+  }: {
+    cell: Cell<AnyOrder, unknown>;
+    className: string;
+  }) => <Order cell={cell} className={className} />;
 
   return (
     <div className="w-full h-full">
-      <div className="rounded-md border w-full overflow-y-auto max-h-[90%] h-[90%]">
-        <TanstackTable>
-          <TableHeader className="sticky top-0 z-30 bg-background">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header, index) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="hover:cursor-pointer w-full h-16 text-xl"
-              >
-                {row.getVisibleCells().map((cell, index) => (
-                  <Order
-                    key={cell.id}
-                    cell={cell}
-                    className={formatAddress(index)}
-                  />
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </TanstackTable>
-      </div>
+      <Table
+        table={table}
+        tableClassName="max-h-[90%] h-[90%]"
+        rowClassName="hover:cursor-pointer w-full h-16 max-h-16 text-xl"
+        cellClassName={(index: number) =>
+          index == 3 && type == OrderType.TO_HOME ? "max-w-42 truncate" : ""
+        }
+        CustomCell={CustomCell}
+      />
     </div>
   );
 }

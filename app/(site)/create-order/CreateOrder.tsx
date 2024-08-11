@@ -1,67 +1,45 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { ReactNode, useState } from "react";
+
 import { Plus } from "@phosphor-icons/react";
-import { TypesOfOrder } from "../types/TypesOfOrder";
+import { OrderType } from "../types/OrderType";
 import Table from "./table/Table";
 import ToHome from "./to-home/ToHome";
 import PickUp from "./pick-up/PickUp";
 import { cn } from "@/lib/utils";
-import { AnyOrder } from "../types/OrderType";
+import { AnyOrder } from "../types/PrismaOrders";
 import OrderTable from "../orders/order/OrderTable";
+import DialogWrapper from "../components/dialog/DialogWrapper";
+import { Button } from "@/components/ui/button";
 
-export default function CreateOrder({ type }: { type: TypesOfOrder }) {
+export default function CreateOrder({ type }: { type: OrderType }) {
   const [order, setOrder] = useState<AnyOrder | undefined>(undefined);
 
-  const getOrderName = (type: TypesOfOrder) => {
-    switch (type) {
-      case TypesOfOrder.TABLE:
-        return "Ordine al tavolo";
-      case TypesOfOrder.TO_HOME:
-        return "Ordine a domicilio";
-      case TypesOfOrder.PICK_UP:
-        return "Ordine per asporto";
-      default:
-        return "";
-    }
-  };
-
-  const renderOrderComponent = (type: TypesOfOrder) => {
-    const componentsMap: { [key in TypesOfOrder]: React.ElementType } = {
-      [TypesOfOrder.TABLE]: Table,
-      [TypesOfOrder.TO_HOME]: ToHome,
-      [TypesOfOrder.PICK_UP]: PickUp,
-    };
-
-    const Component = componentsMap[type];
-    return <Component setOrder={setOrder} />;
-  };
+  const components = new Map<OrderType, { name: string; component: ReactNode }>([
+    [OrderType.TABLE, { name: "Ordine al tavolo", component: <Table setOrder={setOrder} /> }],
+    [OrderType.TO_HOME, { name: "Ordine a domicilio", component: <ToHome setOrder={setOrder} /> }],
+    [OrderType.PICK_UP, { name: "Ordine per asporto", component: <PickUp setOrder={setOrder} /> }],
+  ]);
 
   return (
-    <Dialog
-      onOpenChange={() => {
-        setOrder(undefined);
-      }}
-    >
-      <DialogTrigger asChild>
+    <DialogWrapper
+      onOpenChange={() => setOrder(undefined)}
+      contentClassName={cn(
+        "flex flex-col gap-6 items-center",
+        type === OrderType.TO_HOME || order ? "w-[90vw] h-[90vh]" : "w-[40vw] "
+      )}
+      trigger={
         <Button className="w-full text-2xl h-12">
-          <Plus className="mr-2 h-5 w-5" /> {getOrderName(type)}
+          <Plus className="mr-2 h-5 w-5" /> {components.get(type)?.name}
         </Button>
-      </DialogTrigger>
-      <DialogContent
-        className={cn(
-          (type === TypesOfOrder.TO_HOME || order) &&
-            "w-[90vw] max-w-screen max-h-screen h-[90vh] flex flex-col gap-6 items-center"
-        )}
-      >
-        {!order ? (
-          <div className="w-full h-full ">{renderOrderComponent(type)}</div>
-        ) : (
-          <OrderTable order={order as any} />
-        )}
-      </DialogContent>
-    </Dialog>
+      }
+    >
+      {!order ? (
+        <div className="w-full h-full ">{components.get(type)?.component}</div>
+      ) : (
+        <OrderTable order={order as any} />
+      )}
+    </DialogWrapper>
   );
 }

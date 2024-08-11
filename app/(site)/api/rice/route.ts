@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import getRice from "../../sql/rice/getRice";
 import updateRice from "../../sql/rice/updateRice";
 import getPostBody from "../../util/functions/getPostBody";
+import { Rice } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
   switch (action) {
     case "updateRice": {
       const { rice } = content;
-      return NextResponse.json(await updateRice(rice as number));
+      return NextResponse.json(await updateRice(rice as Rice));
     }
   }
 }

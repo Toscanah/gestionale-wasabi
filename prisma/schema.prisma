@@ -41,7 +41,7 @@ model Order {
     total        Float?
     products     ProductInOrder[]
     paid         Boolean          @default(false)
-    payment      Payment[]
+    payments     Payment[]
     table_order  TableOrder?
     home_order   HomeOrder?
     pickup_order PickupOrder?
@@ -121,14 +121,14 @@ model Admin {
 }
 
 model Rice {
-    id     Int   @id @default(autoincrement())
-    amount Float
+    id        Int   @id @default(autoincrement())
+    amount    Float
+    threshold Float
 }
 
 model Product {
     id          Int              @id @default(autoincrement())
     category_id Int
-    name        String
     code        String
     desc        String
     site_price  Float

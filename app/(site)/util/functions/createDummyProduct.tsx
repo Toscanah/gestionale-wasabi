@@ -9,7 +9,6 @@ export default function createDummyProduct(): ProductInOrderType {
         options: [],
       },
       id: -1,
-      name: "",
       code: "",
       desc: "",
       home_price: 0,

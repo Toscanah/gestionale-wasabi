@@ -6,78 +6,80 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cloneElement, ReactNode, forwardRef } from "react";
-import { Control } from "react-hook-form";
+import React, {
+  ReactNode,
+  forwardRef,
+  ComponentType,
+  KeyboardEvent,
+  ForwardedRef,
+  ReactElement,
+} from "react";
+import { Control, ControllerRenderProps } from "react-hook-form";
 
 type FormFieldProps = {
   control: Control<any>;
   name: string;
   label: string;
   example?: string;
-  children?: ReactNode;
+  children?: ComponentType<{ field: ControllerRenderProps; className?: string }> | ReactElement;
   type?: string;
-  handleKeyDown?: (e: React.KeyboardEvent) => void;
+  handleKeyDown?: (e: KeyboardEvent) => void;
   className?: string;
 };
 
-const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  (
-    {
-      control,
-      name,
-      label,
-      example,
-      children,
-      type = "text",
-      handleKeyDown,
-      className,
-    },
-    ref
-  ) => {
+const FormField = forwardRef<any, FormFieldProps>(
+  ({ control, name, label, example, children, type = "text", handleKeyDown, className }, ref) => {
     return (
       <Field
         control={control}
         name={name}
-        render={({ field }) => (
-          <FormItem className="w-full">
-            <FormLabel>
-              {label}
-              {example && (
-                <>
-                  {" "}
-                  <span className="text-muted-foreground">{example}</span>
-                </>
-              )}
-            </FormLabel>
-            <FormControl>
-              {!children ? (
-                <Input
-                  {...field}
-                  type={type}
-                  ref={ref}
-                  className={className || ""}
-                  onKeyDown={(e: any) => {
-                    if (handleKeyDown) {
-                      handleKeyDown(e);
-                    }
-                  }}
-                />
-              ) : (
-                cloneElement(children as React.ReactElement, {
-                  ...field,
-                  ref,
-                  field,
-                  onKeyDown: (e: React.KeyboardEvent) => {
-                    if (handleKeyDown) {
-                      handleKeyDown(e);
-                    }
-                  },
-                })
-              )}
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        render={({ field }) => {
+          return (
+            <FormItem className="w-full">
+              <FormLabel>
+                {label}
+                {example && (
+                  <>
+                    {" "}
+                    <span className="text-muted-foreground">{example}</span>
+                  </>
+                )}
+              </FormLabel>
+              <FormControl>
+                {children ? (
+                  typeof children === "function" ? (
+                    React.createElement(children, { field, className })
+                  ) : (
+                    React.cloneElement(children as ReactElement, {
+                      ...field,
+                      ref,
+                      onBlur: () => {},
+                      onKeyDown: (e: React.KeyboardEvent) => {
+                        if (handleKeyDown) {
+                          handleKeyDown(e);
+                        }
+                      },
+                    })
+                  )
+                ) : (
+                  <Input
+                    {...field}
+                    onBlur={() => {}}
+                    type={type}
+                    ref={ref}
+                    className={className}
+                    onKeyDown={(e) => {
+                      if (handleKeyDown) {
+                        handleKeyDown(e);
+                      }
+                    }}
+                  />
+                )}
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
     );
   }
