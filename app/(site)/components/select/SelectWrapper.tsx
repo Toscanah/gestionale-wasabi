@@ -21,21 +21,36 @@ interface SelectWrapperProps {
   className?: string;
   handleKeyDown?: (e: KeyboardEvent<any>) => void;
   groups: { label?: string; items: { value: string; name: string }[] | string[] }[];
+  placeholder?: string;
+  fixedValue?: boolean;
 }
 
 const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
-  ({ field, defaultValue, className, handleKeyDown, onValueChange, groups }, ref) => {
+  (
+    {
+      field,
+      defaultValue,
+      className,
+      handleKeyDown,
+      onValueChange,
+      groups,
+      placeholder,
+      fixedValue,
+    },
+    ref
+  ) => {
     return (
       <Select
         onValueChange={field ? field.onChange : onValueChange}
         defaultValue={field ? field.value : defaultValue}
+        value={fixedValue ? "" : undefined}
       >
         <SelectTrigger
           className={cn(className ? className : "w-full text-3xl h-16")}
           ref={ref}
           onKeyDown={(e) => (handleKeyDown ? handleKeyDown(e) : e.preventDefault())}
         >
-          <SelectValue />
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 
         <SelectContent>
