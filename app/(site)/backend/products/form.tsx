@@ -15,9 +15,8 @@ export const formSchema = z.object({
   category: getZodField("any"),
 });
 
-export function getFormFields(
+export function getProductFields(
   categories: CategoryWithOptions[],
-  defaultCategoryId: number
 ): FormFieldType[] {
   return [
     {
@@ -55,7 +54,7 @@ export function getFormFields(
               })),
             },
           ]}
-          defaultValue={defaultCategoryId.toString()}
+          defaultValue={field.value.toString()}
         />
       ),
       unique: true,

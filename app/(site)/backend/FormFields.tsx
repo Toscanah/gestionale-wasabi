@@ -4,18 +4,10 @@ import { z } from "zod";
 import getForm from "../util/functions/getForm";
 import { ControllerRenderProps, DefaultValues } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import React, {
-  ComponentType,
-  HTMLInputTypeAttribute,
-  ReactNode,
-  ReactElement,
-  RefObject,
-  useRef,
-} from "react";
-import FormField from "../components/FormField";
-import { useFocusCycle } from "../components/hooks/useFocusCycle";
+import React, { ComponentType, HTMLInputTypeAttribute, ReactElement, useRef } from "react";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import FormField from "../components/FormField";
 
 export type FormFieldType = {
   name: string;
@@ -48,9 +40,9 @@ export default function FormFields<T extends Partial<T>>({
     handleSubmit(values);
   };
 
-  let fieldIndex = 0;
+  console.log("default", defaultValues)
 
-  console.log("fields partito")
+  let fieldIndex = 0;
 
   return (
     <div>

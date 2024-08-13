@@ -4,33 +4,96 @@ import { useEffect, useState } from "react";
 import { CategoryWithOptions } from "../../types/CategoryWithOptions";
 import fetchRequest from "../../util/functions/fetchRequest";
 import columns from "./columns";
+import Manager from "../Manager";
+import GoBack from "../../components/GoBack";
+import FormFields from "../FormFields";
+import { formSchema, getCategoryFields } from "./form";
+import { Option } from "../../types/Option";
+import { Triangle } from "react-loader-spinner";
+
+type FormValues = Partial<CategoryWithOptions>;
 
 export default function CategoryDashboard() {
   const [categories, setCategories] = useState<CategoryWithOptions[]>([]);
+  const [options, setOptions] = useState<Option[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchRequest<CategoryWithOptions[]>("GET", "/api/categories/", "getCategories").then(
-      (categories) => setCategories(categories)
+      (categories) => {
+        setCategories(categories);
+        setLoading(false);
+      }
     );
   }, []);
 
-  const onCategoryDelete = (objectToDelete: ProductWithInfo) => {
+  useEffect(() => {
+    fetchRequest<Option[]>("GET", "/api/options/", "getAllOptions").then((options) =>
+      setOptions(options)
+    );
+  }, []);
+
+  const onCategoryDelete = (categoryToDelete: CategoryWithOptions) => {
     // TODO:
   };
 
-  const onCategoryUpdate = async (newValues: FormValues, productToUpdate: ProductWithInfo) => {
-    return await fetchRequest<ProductWithInfo>("POST", "/api/categories/", "editCategory", {
-      id: productToUpdate.id,
+  const onCategoryUpdate = async (newValues: FormValues, categoryToUpdate: CategoryWithOptions) => {
+    return await fetchRequest<CategoryWithOptions>("POST", "/api/categories/", "editCategory", {
+      id: categoryToUpdate.id,
       ...newValues,
     });
   };
 
   const onCategoryAdd = async (values: FormValues) => {
-    return await fetchRequest<ProductWithInfo>(
+    return await fetchRequest<CategoryWithOptions>(
       "POST",
-      "/api/products/",
-      "createNewProduct",
+      "/api/categories/",
+      "createNewCategory",
       values
     );
   };
+
+  const Fields = ({
+    handleSubmit,
+    object,
+    footerName,
+  }: {
+    handleSubmit: (values: FormValues) => void;
+    object?: CategoryWithOptions;
+    footerName: string;
+  }) => (
+    <FormFields<CategoryWithOptions>
+      handleSubmit={handleSubmit}
+      footerName={footerName}
+      defaultValues={{ ...object }}
+      layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
+      formFields={getCategoryFields(options)}
+      formSchema={formSchema}
+    />
+  );
+
+  return (
+    <div className="w-screen h-screen flex items-center justify-center">
+      <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
+        {loading ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <Triangle height="360" width="360" color="red" />
+          </div>
+        ) : (
+          categories.length > 0 && (
+            <Manager<CategoryWithOptions>
+              receivedData={categories}
+              columns={columns}
+              FormFields={Fields}
+              onObjectDelete={onCategoryDelete}
+              onObjectAdd={onCategoryAdd}
+              onObjectUpdate={onCategoryUpdate}
+            />
+          )
+        )}
+      </div>
+
+      <GoBack path="/backend" />
+    </div>
+  );
 }

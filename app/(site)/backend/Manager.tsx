@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentType, useState } from "react";
+import { ComponentType, useEffect, useState } from "react";
 import useGlobalFilter from "../components/hooks/useGlobalFilter";
 import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -36,20 +36,21 @@ export default function Manager<T>({
   FormFields,
 }: ManagerProps<T>) {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
-  const [data, setData] = useState<T[]>(receivedData);
+  const [data, setData] = useState<T[]>(receivedData)
 
   const triggerIcons = {
     delete: <Trash size={24} className="hover:cursor-pointer" />,
     edit: <Pencil size={24} className="hover:cursor-pointer" />,
     add: (
       <>
-        <Plus size={24} className="hover:cursor-pointer mr-2" /> Aggiungi prodotto
+        <Plus size={24} className="hover:cursor-pointer" />
       </>
     ),
   };
 
   const handleDelete = (objectToDelete: T) => {
     onObjectDelete(objectToDelete);
+    
     setData((prevData) => prevData.filter((item) => item !== objectToDelete));
   };
 
@@ -81,7 +82,7 @@ export default function Manager<T>({
 
   const actions = {
     edit: ({ object }: { object: T }) => (
-      <DialogWrapper title="Modifica prodotto" trigger={getTrigger("edit")} variant="delete">
+      <DialogWrapper title="Modifica elemento" trigger={getTrigger("edit")} variant="delete">
         <FormFields
           object={object}
           handleSubmit={(values) => handleUpdate(values, object)}
@@ -100,7 +101,7 @@ export default function Manager<T>({
       </DialogWrapper>
     ),
     add: (
-      <DialogWrapper title="Aggiungi prodotto" trigger={getTrigger("add")}>
+      <DialogWrapper title="Aggiungi elemento" trigger={getTrigger("add")}>
         <FormFields handleSubmit={handleAdd} footerName="Aggiungi" />
       </DialogWrapper>
     ),

@@ -6,7 +6,7 @@ import { CategoryWithOptions } from "../../types/CategoryWithOptions";
 const columns: ColumnDef<CategoryWithOptions>[] = [
   TableColumn({
     accessorKey: "category",
-    header: "Codice",
+    header: "Categoria",
   }),
 
   TableColumn<CategoryWithOptions>({

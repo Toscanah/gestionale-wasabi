@@ -19,7 +19,7 @@ export default function TableControls({
       {AddComponent}
 
       <Input
-        placeholder="Cerca prodotto"
+        placeholder="Cerca"
         value={globalFilter ?? ""}
         onChange={(event) => setGlobalFilter(String(event.target.value))}
         className="max-w-sm"

@@ -13,6 +13,7 @@ import React, {
   KeyboardEvent,
   ForwardedRef,
   ReactElement,
+  RefObject,
 } from "react";
 import { Control, ControllerRenderProps } from "react-hook-form";
 
@@ -21,68 +22,77 @@ type FormFieldProps = {
   name: string;
   label: string;
   example?: string;
-  children?: ComponentType<{ field: ControllerRenderProps; className?: string }> | ReactElement;
+  children?:
+    | ComponentType<{ field: ControllerRenderProps; className?: string; onBlur: () => void }>
+    | ReactElement;
   type?: string;
   handleKeyDown?: (e: KeyboardEvent) => void;
   className?: string;
+  ref?: RefObject<any>;
 };
 
-const FormField = forwardRef<any, FormFieldProps>(
-  ({ control, name, label, example, children, type = "text", handleKeyDown, className }, ref) => {
-    return (
-      <Field
-        control={control}
-        name={name}
-        render={({ field }) => {
-          return (
-            <FormItem className="w-full">
-              <FormLabel>
-                {label}
-                {example && (
-                  <>
-                    {" "}
-                    <span className="text-muted-foreground">{example}</span>
-                  </>
-                )}
-              </FormLabel>
-              <FormControl>
-                {children ? (
-                  typeof children === "function" ? (
-                    React.createElement(children, { field, className })
-                  ) : (
-                    React.cloneElement(children as ReactElement, {
-                      ...field,
-                      ref,
-                      onBlur: () => {},
-                      onKeyDown: (e: React.KeyboardEvent) => {
-                        if (handleKeyDown) {
-                          handleKeyDown(e);
-                        }
-                      },
-                    })
-                  )
+export default function FormField({
+  control,
+  name,
+  label,
+  example,
+  children,
+  handleKeyDown,
+  className,
+  type = "text",
+  ref,
+}: FormFieldProps) {
+  return (
+    <Field
+      control={control}
+      name={name}
+      render={({ field }) => {
+        return (
+          <FormItem className="w-full">
+            <FormLabel>
+              {label}
+              {example && (
+                <>
+                  {" "}
+                  <span className="text-muted-foreground">{example}</span>
+                </>
+              )}
+            </FormLabel>
+            <FormControl>
+              {children ? (
+                typeof children === "function" ? (
+                  React.createElement(children, { field, className, onBlur: () => {} })
                 ) : (
-                  <Input
-                    {...field}
-                    onBlur={() => {}}
-                    type={type}
-                    ref={ref}
-                    className={className}
-                    onKeyDown={(e) => {
+                  React.cloneElement(children as ReactElement, {
+                    ...field,
+                    ref,
+                    onBlur: () => {},
+                    onKeyDown: (e: React.KeyboardEvent) => {
                       if (handleKeyDown) {
                         handleKeyDown(e);
                       }
-                    }}
-                  />
-                )}
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          );
-        }}
-      />
-    );
-  }
-);
-
-export default FormField;
+                    },
+                  })
+                )
+              ) : (
+                <Input
+                  {...field}
+                  onBlur={() => {}}
+                  type={type}
+                  ref={ref}
+                  className={className}
+                  onKeyDown={(e) => {
+                    if (handleKeyDown) {
+                      handleKeyDown(e);
+                    }
+                  }}
+                />
+              )}
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
+  );
+}
