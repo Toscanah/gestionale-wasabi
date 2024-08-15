@@ -16,12 +16,14 @@ export default function Table<T>({
   rowClassName,
   cellClassName,
   CustomCell,
+  onRowClick,
 }: {
   table: TanstackTable<T>;
   tableClassName?: string;
   rowClassName?: string;
   cellClassName?: (index: number) => string;
   CustomCell?: ({ cell, className }: { cell: Cell<T, any>; className: string }) => JSX.Element;
+  onRowClick?: (orginal: T) => void;
 }) {
   return (
     <div className={cn("rounded-md border w-full overflow-y-auto max-h-max", tableClassName)}>
@@ -46,6 +48,7 @@ export default function Table<T>({
               table.getRowModel().rows?.map((row) => {
                 return (
                   <TableRow
+                    onClick={() => (onRowClick ? onRowClick(row.original) : undefined)}
                     key={row.id}
                     className={cn("h-8 max-h-8", rowClassName)}
                     data-state={row.getIsSelected() && "selected"}

@@ -27,8 +27,11 @@ export default function getColumns(
     rowIndex: number,
     colIndex: number
   ) => {
+    const currentInputValue = inputRefs.get(`${rowIndex}-0`)?.value;
+
     const keyActions: Record<string, () => void> = {
       Enter: () => {
+        if (colIndex === 0 && currentInputValue === "") return;
         if (colIndex === 1) {
           moveToInput(rowIndex + 1, 0);
           setFocusedInput({ rowIndex: rowIndex + 1, colIndex: 0 });

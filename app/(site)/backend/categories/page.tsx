@@ -10,6 +10,8 @@ import FormFields from "../FormFields";
 import { formSchema, getCategoryFields } from "./form";
 import { Option } from "../../types/Option";
 import { Triangle } from "react-loader-spinner";
+import logo from "../../../../public/logo.png"
+import Image from "next/image";
 
 type FormValues = Partial<CategoryWithOptions>;
 
@@ -32,26 +34,6 @@ export default function CategoryDashboard() {
       setOptions(options)
     );
   }, []);
-
-  const onCategoryDelete = (categoryToDelete: CategoryWithOptions) => {
-    // TODO:
-  };
-
-  const onCategoryUpdate = async (newValues: FormValues, categoryToUpdate: CategoryWithOptions) => {
-    return await fetchRequest<CategoryWithOptions>("POST", "/api/categories/", "editCategory", {
-      id: categoryToUpdate.id,
-      ...newValues,
-    });
-  };
-
-  const onCategoryAdd = async (values: FormValues) => {
-    return await fetchRequest<CategoryWithOptions>(
-      "POST",
-      "/api/categories/",
-      "createNewCategory",
-      values
-    );
-  };
 
   const Fields = ({
     handleSubmit,
@@ -77,7 +59,7 @@ export default function CategoryDashboard() {
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
         {loading ? (
           <div className="w-full h-full flex items-center justify-center">
-            <Triangle height="360" width="360" color="red" />
+            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin"/>
           </div>
         ) : (
           categories.length > 0 && (
@@ -85,9 +67,12 @@ export default function CategoryDashboard() {
               receivedData={categories}
               columns={columns}
               FormFields={Fields}
-              onObjectDelete={onCategoryDelete}
-              onObjectAdd={onCategoryAdd}
-              onObjectUpdate={onCategoryUpdate}
+              path="/api/categories/"
+              fetchActions={{
+                add: "createNewCategory",
+                delete: "deleteCategory",
+                update: "updateCategory",
+              }}
             />
           )
         )}

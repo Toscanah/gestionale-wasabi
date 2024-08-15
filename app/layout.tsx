@@ -27,7 +27,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster richColors position="top-left" />
+          <Toaster richColors position="top-right" duration={3000} />
           <div className="fixed bottom-4 right-4 hover:cursor-pointer">
             <ChangeTheme />
           </div>

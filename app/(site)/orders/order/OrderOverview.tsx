@@ -4,24 +4,31 @@ import formatRice from "../../util/functions/formatRice";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { Table } from "@tanstack/react-table";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AnyOrder } from "../../types/PrismaOrders";
 
 export default function OrderSummary({
   order,
   table,
   deleteRows,
+  setPayDialog,
+  setDivide,
 }: {
   order: AnyOrder;
   table: Table<ProductInOrderType>;
   deleteRows: (table: Table<ProductInOrderType>) => void;
+  setPayDialog: Dispatch<SetStateAction<boolean>>;
+  setDivide: Dispatch<SetStateAction<boolean>>;
 }) {
   const { rice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
 
   useEffect(() => {
     setUsedRice(
-      order.products.reduce((total, product) => total + product.product.rice * product.quantity, 0)
+      order.products.reduce(
+        (total, product) => total + (product.product.rice ?? 0) * product.quantity,
+        0
+      )
     );
   }, [order.products]);
 
@@ -81,12 +88,14 @@ export default function OrderSummary({
         </div>
 
         <div className="flex gap-6">
-          <Button className="w-full text-3xl h-24">Dividi</Button>
-          <Button className="w-full text-3xl h-24">Stampa</Button>
+          <Button className="w-full text-3xl h-24" onClick={() => setDivide(true)}>Dividi</Button>
+          <Button className="w-full text-3xl h-24">
+            Stampa
+          </Button>
         </div>
 
         {/* bg-[#4BB543] */}
-        <Button className="w-full text-3xl h-24 ">PAGA</Button>
+        <Button className="w-full text-3xl h-24" onClick={() => setPayDialog(true)}>PAGA</Button>
       </div>
     </div>
   );

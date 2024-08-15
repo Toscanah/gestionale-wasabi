@@ -4,10 +4,12 @@ import { FormFieldType } from "../FormFields";
 import CategoryOptions from "./CategoryOptions";
 import { ControllerRenderProps } from "react-hook-form";
 import { Option } from "../../types/Option";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export const formSchema = z.object({
   category: getZodField("string"),
-  options: z.array(z.any()).optional()
+  options: z.array(z.any()).optional(),
 });
 
 export function getCategoryFields(options: Option[]): FormFieldType[] {
@@ -21,8 +23,9 @@ export function getCategoryFields(options: Option[]): FormFieldType[] {
       label: "Opzioni",
       unique: true,
       children: ({ field }: { field: ControllerRenderProps }) => (
-        <CategoryOptions field={field} options={options} selectedOptions={field.value} />
+        <CategoryOptions field={field} options={options}/>
       ),
     },
+    
   ];
 }

@@ -89,14 +89,15 @@ model Customer {
     addresses     Address[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
-    phone         Phone[]
+    phone_id      Int?
+    phone         Phone?        @relation(fields: [phone_id], references: [id])
+    active        Boolean       @default(true)
 }
 
 model Phone {
-    id          Int      @id @default(autoincrement())
-    phone       String
-    customer_id Int
-    customer    Customer @relation(fields: [customer_id], references: [id])
+    id       Int        @id @default(autoincrement())
+    phone    String
+    Customer Customer[]
 }
 
 model Table {
@@ -133,9 +134,10 @@ model Product {
     desc        String
     site_price  Float
     home_price  Float
-    rice        Float
+    rice        Float?
     orders      ProductInOrder[]
     category    Category         @relation(fields: [category_id], references: [id])
+    active      Boolean          @default(true)
 }
 
 model ProductInOrder {
@@ -154,6 +156,7 @@ model Category {
     category String
     products Product[]
     options  CategoryOnOption[]
+    active   Boolean            @default(true)
 }
 
 model CategoryOnOption {
@@ -169,6 +172,7 @@ model Option {
     option_name String
     categories  CategoryOnOption[]
     products    OptionInProductOrder[]
+    active      Boolean                @default(true)
 }
 
 model OptionInProductOrder {
