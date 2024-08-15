@@ -11,7 +11,7 @@ export const formSchema = z.object({
   desc: getZodField("string"),
   site_price: getZodField("number"),
   home_price: getZodField("number"),
-  rice: getZodField("number"),
+  rice: getZodField("number", false),
   category: getZodField("any"),
 });
 
@@ -58,6 +58,10 @@ export function getProductFields(
         />
       ),
       unique: true,
+    },
+    {
+      name: "active",
+      label: "Attivo?",
     },
   ];
 }

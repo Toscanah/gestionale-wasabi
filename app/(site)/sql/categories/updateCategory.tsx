@@ -1,7 +1,7 @@
 import { CategoryWithOptions } from "../../types/CategoryWithOptions";
 import prisma from "../db";
 
-export default async function editCategory(category: CategoryWithOptions) {
+export default async function updateCategory(category: CategoryWithOptions) {
   const currentOptions = await prisma.categoryOnOption.findMany({
     where: { category_id: category.id },
     select: { option_id: true },

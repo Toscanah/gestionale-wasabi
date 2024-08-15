@@ -1,18 +1,17 @@
-import React, { useEffect, useImperativeHandle, useState, forwardRef, useCallback } from "react";
+import React, {useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import SelectWrapper from "../../components/select/SelectWrapper";
 import { Button } from "@/components/ui/button";
 import { X } from "@phosphor-icons/react";
 import { Option } from "../../types/Option";
-import { debounce } from "lodash";
 
 interface CategoryOptionsProps {
   field: ControllerRenderProps;
   options: Option[];
-  selectedOptions: Option[];
 }
 
 export default function CategoryOptions({ field, options }: CategoryOptionsProps) {
+  console.log("rende4rato")
   const [allOptions, setAllOptions] = useState<Option[]>(options);
   const [currentOptions, setCurrentOptions] = useState<Option[]>(field.value ?? []);
 

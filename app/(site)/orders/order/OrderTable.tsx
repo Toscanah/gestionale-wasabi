@@ -12,6 +12,8 @@ import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
 import { AnyOrder } from "../../types/PrismaOrders";
 import OrderOverview from "./OrderOverview";
+import Payment from "../../payments/Payment";
+import DivideOrder from "./divide-order/DivideOrder";
 
 export default function OrderTable({ order }: { order: AnyOrder }) {
   const [products, setProducts] = useState<ProductInOrderType[]>([
@@ -149,6 +151,7 @@ export default function OrderTable({ order }: { order: AnyOrder }) {
 
           updatedProducts.push({
             product: {
+              active: productOnOrder.product.active,
               category: productOnOrder.product.category,
               id: productOnOrder.product_id,
               code: newCode,
@@ -218,13 +221,32 @@ export default function OrderTable({ order }: { order: AnyOrder }) {
     setRowSelection,
   });
 
-  return (
+  const [payDialog, setPayDialog] = useState<boolean>(false);
+  const [divide, setDivide] = useState<boolean>(false);
+
+  //useEffect(() => console.log(payDialog), [payDialog])
+
+  return !payDialog && !divide ? (
     <div className="w-full h-full flex space-x-6 justify-between">
       <div className="w-[80%] h-full">
         <Table table={table} tableClassName="h-full max-h-full" />
       </div>
 
-      <OrderOverview deleteRows={deleteRows} table={table} order={order} />
+      <OrderOverview
+        deleteRows={deleteRows}
+        table={table}
+        order={order}
+        setPayDialog={setPayDialog}
+        setDivide={setDivide}
+      />
     </div>
+  ) : payDialog ? (
+    <Payment setPayDialog={setPayDialog} order={order} />
+  ) : (
+    <DivideOrder
+      order={order}
+      products={products.filter((product) => product.product_id !== -1)}
+      setDivide={setDivide}
+    />
   );
 }

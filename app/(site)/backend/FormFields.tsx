@@ -8,6 +8,8 @@ import React, { ComponentType, HTMLInputTypeAttribute, ReactElement, useRef } fr
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import FormField from "../components/FormField";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export type FormFieldType = {
   name: string;
@@ -37,10 +39,10 @@ export default function FormFields<T extends Partial<T>>({
 }: FormFieldsProps<T>) {
   const form = getForm<T>(formSchema, defaultValues);
   const onSubmit = (values: Partial<T>) => {
+    console.log("Valori nuovi: ", values);
     handleSubmit(values);
   };
 
-  console.log("default", defaultValues)
 
   let fieldIndex = 0;
 

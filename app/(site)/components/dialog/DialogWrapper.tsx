@@ -42,7 +42,7 @@ export default function DialogWrapper({
     <Dialog onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
-        className={cn("max-w-screen max-h-scren w-auto", contentClassName)}
+        className={cn("max-w-screen max-h-screen w-auto", contentClassName)}
         showCloseButton={showCloseButton}
       >
         {header && (
@@ -63,7 +63,7 @@ export default function DialogWrapper({
               </DialogClose>
 
               <Button type="button" className="w-full" variant={"destructive"} onClick={onDelete}>
-                Elimina
+                Confermo
               </Button>
             </div>
           </DialogFooter>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentType, useEffect, useState } from "react";
+import { ComponentType, useState } from "react";
 import useGlobalFilter from "../components/hooks/useGlobalFilter";
 import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -11,51 +11,78 @@ import { ColumnDef } from "@tanstack/react-table";
 import getColumns from "./getColumns";
 import getTable from "../util/functions/getTable";
 import { toastError, toastSuccess } from "../util/toast";
+import fetchRequest from "../util/functions/fetchRequest";
 
-interface ManagerProps<T> {
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+
+enum Actions {
+  UPDATE = "update",
+  ADD = "add",
+  DELETE = "delete",
+}
+
+export type ActionsType = {
+  [key in Actions]: string;
+};
+
+interface ManagerProps<T extends { id: number; active: boolean }> {
   receivedData: T[];
-  onObjectDelete: (objectToDelete: T) => void;
-  onObjectUpdate: (newValues: Partial<T>, objectToUpdate: T) => Promise<T>;
-  onObjectAdd: (values: Partial<T>) => Promise<T>;
+  path: string;
+  fetchActions: ActionsType;
   FormFields: ComponentType<FormFieldsProps<T>>;
   columns: ColumnDef<T>[];
 }
 
-interface FormFieldsProps<T> {
+interface FormFieldsProps<T extends { id: number; active: boolean }> {
   handleSubmit: (values: Partial<T>) => void;
   footerName: string;
   object?: T;
 }
 
-export default function Manager<T>({
+export default function Manager<T extends { id: number; active: boolean }>({
   receivedData,
-  onObjectAdd,
-  onObjectDelete,
-  onObjectUpdate,
+  path,
+  fetchActions,
   columns,
   FormFields,
 }: ManagerProps<T>) {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
-  const [data, setData] = useState<T[]>(receivedData)
+  const [data, setData] = useState<T[]>(receivedData);
+  const [onlyActive, setOnlyActive] = useState<boolean>(true);
 
-  const triggerIcons = {
-    delete: <Trash size={24} className="hover:cursor-pointer" />,
-    edit: <Pencil size={24} className="hover:cursor-pointer" />,
-    add: (
-      <>
-        <Plus size={24} className="hover:cursor-pointer" />
-      </>
-    ),
+  const triggerIcons = (disabled: boolean) => {
+    return {
+      delete: disabled ? "Attiva" : "Disattiva",
+      update: <Pencil size={24} className="hover:cursor-pointer" />,
+      add: <Plus size={24} className="hover:cursor-pointer" />,
+    };
   };
 
   const handleDelete = (objectToDelete: T) => {
-    onObjectDelete(objectToDelete);
-    
-    setData((prevData) => prevData.filter((item) => item !== objectToDelete));
+    fetchRequest<T>("DELETE", path, fetchActions.delete, {
+      id: objectToDelete.id,
+    }).then(() => {
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === objectToDelete.id
+            ? { ...objectToDelete, active: !objectToDelete.active }
+            : item
+        )
+      );
+
+      toastSuccess(
+        <>L'elemento è stato {objectToDelete.active ? "disattivato" : "attivato"} correttamente</>,
+        "Successo"
+      );
+    });
   };
 
   const handleUpdate = (newValues: Partial<T>, objectToUpdate: T) => {
-    onObjectUpdate(newValues, objectToUpdate).then((updatedObject) => {
+    fetchRequest<T>("POST", path, fetchActions.update, {
+      id: objectToUpdate.id,
+      ...newValues,
+    }).then((updatedObject) => {
       if (!updatedObject) {
         return toastError("Qualcosa è andato storto", "Errore");
       }
@@ -66,7 +93,7 @@ export default function Manager<T>({
   };
 
   const handleAdd = (values: Partial<T>) => {
-    onObjectAdd(values).then((newObject) => {
+    fetchRequest<T>("POST", path, fetchActions.add, values).then((newObject) => {
       if (!newObject) {
         return toastError("Questo elemento esiste già", "Errore");
       }
@@ -76,13 +103,13 @@ export default function Manager<T>({
     });
   };
 
-  const getTrigger = (action: keyof typeof triggerIcons) => (
-    <Button type="button">{triggerIcons[action]}</Button>
+  const getTrigger = (action: "delete" | "update" | "add", disabled: boolean = false) => (
+    <Button type="button">{triggerIcons(disabled)[action]}</Button>
   );
 
   const actions = {
     edit: ({ object }: { object: T }) => (
-      <DialogWrapper title="Modifica elemento" trigger={getTrigger("edit")} variant="delete">
+      <DialogWrapper title="Modifica elemento" trigger={getTrigger("update")} variant="delete">
         <FormFields
           object={object}
           handleSubmit={(values) => handleUpdate(values, object)}
@@ -93,11 +120,13 @@ export default function Manager<T>({
     delete: ({ object }: { object: T }) => (
       <DialogWrapper
         title="Attenzione!"
-        trigger={getTrigger("delete")}
+        trigger={getTrigger("delete", !object.active)}
         variant="delete"
         onDelete={() => handleDelete(object)}
       >
-        <div>Stai per eliminare questo elemento. Sei sicuro?</div>
+        <div>
+          Stai per <b>{object.active ? "disattivare" : "attivare"}</b> questo elemento. Sei sicuro?
+        </div>
       </DialogWrapper>
     ),
     add: (
@@ -107,8 +136,13 @@ export default function Manager<T>({
     ),
   };
 
-  const tableColumns = getColumns(columns, actions.edit, actions.delete);
-  const table = getTable({ data, columns: tableColumns, globalFilter, setGlobalFilter });
+  const tableColumns = getColumns<T>(columns, actions.edit, actions.delete);
+  const table = getTable({
+    data: onlyActive ? data.filter((item) => item.active) : data,
+    columns: tableColumns,
+    globalFilter,
+    setGlobalFilter,
+  });
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -117,7 +151,17 @@ export default function Manager<T>({
         AddComponent={actions.add}
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
-      />
+      >
+        <div className="space-x-2 flex items-center ml-auto">
+          <Checkbox
+            checked={onlyActive}
+            onCheckedChange={() => {
+              setOnlyActive(!onlyActive);
+            }}
+          />
+          <Label>Solo attivi?</Label>
+        </div>
+      </TableControls>
 
       <Table<T> table={table} />
     </div>

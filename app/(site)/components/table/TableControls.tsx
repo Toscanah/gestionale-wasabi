@@ -8,11 +8,13 @@ export default function TableControls({
   globalFilter,
   setGlobalFilter,
   AddComponent,
+  children,
 }: {
   table: Table<any>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   AddComponent: ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <div className="flex gap-4 items-center">
@@ -34,6 +36,8 @@ export default function TableControls({
       >
         Reimposta
       </Button>
+
+      {children}
     </div>
   );
 }

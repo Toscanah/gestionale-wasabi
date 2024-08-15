@@ -18,7 +18,7 @@ export default function Backend() {
               </Button>
             </Link>
 
-            <Link href={"../backend"}>
+            <Link href={"../backend/customers"}>
               <Button className="w-60 h-24 text-3xl gap-3" variant={"outline"}>
                 <UsersFour className="mr-2 h-8 w-8" /> Clienti
               </Button>
@@ -32,7 +32,7 @@ export default function Backend() {
               </Button>
             </Link>
 
-            <Link href={"../backend"}>
+            <Link href={"../backend/options"}>
               <Button className="w-60 h-24 text-3xl gap-3" variant={"outline"}>
                 <Hash className="mr-2 h-8 w-8" /> Opzioni
               </Button>

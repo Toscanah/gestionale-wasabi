@@ -4,9 +4,7 @@ export default async function getCustomerByPhone(phone: string) {
   return await prisma.customer.findFirst({
     where: {
       phone: {
-        some: {
-          phone: phone,
-        },
+        phone: phone,
       },
     },
     include: {

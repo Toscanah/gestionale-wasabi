@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-const getZodField = (type: "number" | "string" | "any" | "array", required: boolean = true) => {
+const getZodField = (
+  type: "number" | "string" | "any" | "array" | "boolean",
+  required: boolean = true
+) => {
   const requiredMsg = "Questo campo è richiesto";
 
   switch (type) {
@@ -16,6 +19,8 @@ const getZodField = (type: "number" | "string" | "any" | "array", required: bool
       return required
         ? z.any().array().min(1, { message: requiredMsg })
         : z.any().array().optional();
+    case "boolean":
+      return z.coerce.boolean();
     case "any":
       return required ? z.any({ required_error: requiredMsg }) : z.any().optional();
   }

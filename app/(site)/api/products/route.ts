@@ -5,7 +5,7 @@ import deleteProduct from "../../sql/products/deleteProduct";
 import getProducts from "../../sql/products/getProducts";
 import getPostBody from "../../util/functions/getPostBody";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
-import editProduct from "../../sql/products/editProduct";
+import updateProduct from "../../sql/products/updateProduct";
 import updateProductOptionsInOrder from "../../sql/products/updateProductOptionsInOrder";
 import createNewProduct from "../../sql/products/createNewProduct";
 
@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
   switch (action) {
     case "createNewProduct":
       return NextResponse.json(await createNewProduct(content as ProductWithInfo));
-    case "editProduct":
-      return NextResponse.json(await editProduct(content as ProductWithInfo));
+    case "updateProduct":
+      return NextResponse.json(await updateProduct(content as ProductWithInfo));
     case "addProductToOrder":
       return NextResponse.json(
         await addProductToOrder(content?.order, content?.productCode, content?.quantity)

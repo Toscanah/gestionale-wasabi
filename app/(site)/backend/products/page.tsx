@@ -12,6 +12,8 @@ import { formSchema } from "./form";
 import { getProductFields } from "./form";
 import { Textarea } from "@/components/ui/textarea";
 import { BallTriangle, Grid, LineWave, Triangle } from "react-loader-spinner";
+import logo from "../../../../public/logo.png"
+import Image from "next/image";
 
 type ProductAndCategory = Omit<ProductWithInfo, "category"> & {
   category: string;
@@ -33,28 +35,9 @@ export default function ProductDashboard() {
   useEffect(() => {
     fetchRequest<ProductAndCategory[]>("GET", "/api/products/", "getProducts").then((products) => {
       setProducts(products);
-      setLoading(false)
+      setLoading(false);
     });
   }, []);
-
-  // TODO:
-  const onProductDelete = (productToDelete: ProductAndCategory) => {};
-
-  const onProductUpdate = async (newValues: FormValues, productToUpdate: ProductAndCategory) => {
-    return await fetchRequest<ProductAndCategory>("POST", "/api/products/", "editProduct", {
-      ...newValues,
-      id: productToUpdate.id,
-    });
-  };
-
-  const onProductAdd = async (values: FormValues) => {
-    return await fetchRequest<ProductAndCategory>(
-      "POST",
-      "/api/products/",
-      "createNewProduct",
-      values
-    );
-  };
 
   const Fields = ({
     handleSubmit,
@@ -83,12 +66,7 @@ export default function ProductDashboard() {
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
         {loading ? (
           <div className="w-full h-full flex items-center justify-center">
-            <Triangle
-              height="360"
-              width="360"
-              color="red"
-              //wrapperClass="w-full h-full flex items-center justify-center"
-            />
+            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin"/>
           </div>
         ) : (
           products.length > 0 && (
@@ -96,9 +74,12 @@ export default function ProductDashboard() {
               receivedData={products}
               columns={columns}
               FormFields={Fields}
-              onObjectDelete={onProductDelete}
-              onObjectAdd={onProductAdd}
-              onObjectUpdate={onProductUpdate}
+              path="/api/products/"
+              fetchActions={{
+                add: "createNewProduct",
+                delete: "deleteProduct",
+                update: "updateProduct",
+              }}
             />
           )
         )}
