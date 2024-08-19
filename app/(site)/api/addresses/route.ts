@@ -3,11 +3,11 @@ import createAddress from "../../sql/addresses/createAddress";
 import updateAddress from "../../sql/addresses/updateAddress";
 import getAddressesByCustomer from "../../sql/addresses/getAddressesByCustomer";
 import { Address } from "@prisma/client";
-import getPostBody from "../../util/functions/getPostBody";
+import getRequestBody from "../../util/functions/getRequestBody";
 import getLastAddressOfCustomer from "../../sql/addresses/getLastAddressOfCustomer";
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getPostBody(request);
+  const { action, content } = await getRequestBody(request);
 
   switch (action) {
     case "createAddress":

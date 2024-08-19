@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import getRice from "../../sql/rice/getRice";
 import updateRice from "../../sql/rice/updateRice";
-import getPostBody from "../../util/functions/getPostBody";
+import getRequestBody from "../../util/functions/getRequestBody";
 import { Rice } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getPostBody(request);
+  const { action, content } = await getRequestBody(request);
 
   switch (action) {
     case "updateRice": {

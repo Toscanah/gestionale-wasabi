@@ -10,7 +10,7 @@ import FormFields from "../FormFields";
 import { formSchema, getCategoryFields } from "./form";
 import { Option } from "../../types/Option";
 import { Triangle } from "react-loader-spinner";
-import logo from "../../../../public/logo.png"
+import logo from "../../../../public/logo.png";
 import Image from "next/image";
 
 type FormValues = Partial<CategoryWithOptions>;
@@ -31,7 +31,7 @@ export default function CategoryDashboard() {
 
   useEffect(() => {
     fetchRequest<Option[]>("GET", "/api/options/", "getAllOptions").then((options) =>
-      setOptions(options)
+      setOptions(options.filter((p) => p.option.active))
     );
   }, []);
 
@@ -59,7 +59,7 @@ export default function CategoryDashboard() {
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
         {loading ? (
           <div className="w-full h-full flex items-center justify-center">
-            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin"/>
+            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
           </div>
         ) : (
           categories.length > 0 && (
@@ -70,7 +70,7 @@ export default function CategoryDashboard() {
               path="/api/categories/"
               fetchActions={{
                 add: "createNewCategory",
-                delete: "deleteCategory",
+                toggle: "toggleCategory",
                 update: "updateCategory",
               }}
             />

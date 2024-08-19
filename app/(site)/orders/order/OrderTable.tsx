@@ -226,6 +226,8 @@ export default function OrderTable({ order }: { order: AnyOrder }) {
 
   //useEffect(() => console.log(payDialog), [payDialog])
 
+  console.log("ordine grande");
+
   return !payDialog && !divide ? (
     <div className="w-full h-full flex space-x-6 justify-between">
       <div className="w-[80%] h-full">

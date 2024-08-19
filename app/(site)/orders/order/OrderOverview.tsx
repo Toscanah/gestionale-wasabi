@@ -88,14 +88,22 @@ export default function OrderSummary({
         </div>
 
         <div className="flex gap-6">
-          <Button className="w-full text-3xl h-24" onClick={() => setDivide(true)}>Dividi</Button>
-          <Button className="w-full text-3xl h-24">
-            Stampa
+          <Button
+            className="w-full text-3xl h-24"
+            onClick={() => setDivide(true)}
+            disabled={order.products.length == 1 && order.products[0].quantity == 1}
+          >
+            Dividi
           </Button>
+          <Button className="w-full text-3xl h-24">Romana</Button>
         </div>
 
         {/* bg-[#4BB543] */}
-        <Button className="w-full text-3xl h-24" onClick={() => setPayDialog(true)}>PAGA</Button>
+
+        <Button className="w-full text-3xl h-24">Stampa</Button>
+        <Button className="w-full text-3xl h-24" onClick={() => setPayDialog(true)}>
+          PAGA
+        </Button>
       </div>
     </div>
   );

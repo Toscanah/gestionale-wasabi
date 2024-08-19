@@ -5,6 +5,8 @@ import { FormFieldType } from "../FormFields";
 import { ControllerRenderProps } from "react-hook-form";
 import { CategoryWithOptions } from "../../types/CategoryWithOptions";
 import SelectWrapper from "../../components/select/SelectWrapper";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Button } from "@/components/ui/button";
 
 export const formSchema = z.object({
   code: getZodField("string"),
@@ -15,9 +17,7 @@ export const formSchema = z.object({
   category: getZodField("any"),
 });
 
-export function getProductFields(
-  categories: CategoryWithOptions[],
-): FormFieldType[] {
+export function getProductFields(categories: CategoryWithOptions[]): FormFieldType[] {
   return [
     {
       name: "code",
@@ -42,26 +42,42 @@ export function getProductFields(
     {
       name: "category",
       label: "Categoria",
-      children: ({ field }: { field: ControllerRenderProps }) => (
-        <SelectWrapper
-          className="h-10"
-          field={field}
-          groups={[
-            {
-              items: categories.map((cat) => ({
-                value: cat.id.toString(),
-                name: cat.category,
-              })),
-            },
-          ]}
-          defaultValue={field.value.toString()}
-        />
-      ),
+      children: ({ field }: { field: ControllerRenderProps }) => {
+        const activeCategory = categories.find((cat) => cat.id.toString() === field.value);
+
+        return (
+          <div className="space-y-2 text-center">
+            <SelectWrapper
+              className="h-10"
+              field={field}
+              groups={[
+                {
+                  items: categories.map((cat) => ({
+                    value: cat.id.toString(),
+                    name: cat.category,
+                  })),
+                },
+              ]}
+              defaultValue={field.value.toString()}
+              //placeholder={!activeCategory ? "Categorie inattiva" : undefined}
+            />
+            {!activeCategory && (
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <div className="text-sm hover:underline hover:cursor-pointer text-red-500">
+                  Metti il cursore qua
+                  </div>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                  La categoria di questo prodotto non è attiva e non è presente nell'elenco. Se la
+                  rimuovi dovrai andare a riattivarla per poi re-impostarla di nuovo qua
+                </HoverCardContent>
+              </HoverCard>
+            )}
+          </div>
+        );
+      },
       unique: true,
-    },
-    {
-      name: "active",
-      label: "Attivo?",
     },
   ];
 }

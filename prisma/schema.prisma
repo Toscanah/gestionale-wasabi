@@ -97,7 +97,7 @@ model Customer {
 model Phone {
     id       Int        @id @default(autoincrement())
     phone    String
-    Customer Customer[]
+    customers Customer[]
 }
 
 model Table {

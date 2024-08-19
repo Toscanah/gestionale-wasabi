@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import getAllOptions from "../../sql/options/getAllOptions";
-import getPostBody from "../../util/functions/getPostBody";
+import getRequestBody from "../../util/functions/getRequestBody";
 import editOptionsOfCategory from "../../sql/options/editOptionsOfCategory";
 import getAllOptionsWithCategories from "../../sql/options/getAllOptionsWithCategories";
 import updateOption from "../../sql/options/updateOption";
 import { Option } from "@prisma/client";
 import createNewOption from "../../sql/options/createNewOption";
 import deleteOption from "../../sql/options/deleteOption";
+import toggleOption from "../../sql/options/toggleOption";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getPostBody(request);
+  const { action, content } = await getRequestBody(request);
 
   switch (action) {
     case "editOptionsOfCategory":
@@ -30,11 +31,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(await updateOption(content as Option));
     case "createNewOption":
       return NextResponse.json(await createNewOption(content as Option));
+      case "toggleOption": 
+      return NextResponse.json(await toggleOption(content?.id));
   }
 }
 
 export async function DELETE(request: NextRequest) {
-  const { action, content } = await getPostBody(request);
+  const { action, content } = await getRequestBody(request);
 
   switch (action) {
     case "deleteOption":

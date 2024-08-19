@@ -12,14 +12,15 @@ export default async function createPickupOrder(content: {
   if (phone) {
     const existingPhone = await prisma.phone.findFirst({
       where: { phone: phone },
-      include: { customer: true },
+      include: { customers: true },
     });
 
     // Phone exists, connect the existing customer
     if (existingPhone) {
+      const firstCustomer = existingPhone.customers[0];
       customerData = {
         connect: {
-          id: existingPhone.customer.id,
+          id: firstCustomer.id,
         },
       };
     } else {
