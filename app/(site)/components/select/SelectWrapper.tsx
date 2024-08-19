@@ -42,7 +42,7 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
     return (
       <Select
         onValueChange={field ? field.onChange : onValueChange}
-        defaultValue={field ? field.value : defaultValue}
+        defaultValue={placeholder ? undefined : field ? field.value : defaultValue}
         value={fixedValue ? "" : undefined}
       >
         <SelectTrigger

@@ -225,11 +225,11 @@ export default function getColumns(
 
     TableColumn<ProductInOrderType>({
       accessorKey: "select",
-      header: "Seleziona",
+      header: "",
       sortable: false,
       cellContent: (row) =>
         row.original.product_id !== -1 && (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center mr-4">
             <Checkbox
               className="h-6 w-6"
               checked={row.getIsSelected()}

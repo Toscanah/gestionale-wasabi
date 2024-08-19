@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import addProductToOrder from "../../sql/products/addProductToOrder";
 import updateProductInOrder from "../../sql/products/updateProductInOrder";
-import deleteProduct from "../../sql/products/deleteProduct";
+import deleteProductFromOrder from "../../sql/products/deleteProductFromOrder";
 import getProducts from "../../sql/products/getProducts";
-import getPostBody from "../../util/functions/getPostBody";
+import getRequestBody from "../../util/functions/getRequestBody";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import updateProduct from "../../sql/products/updateProduct";
 import updateProductOptionsInOrder from "../../sql/products/updateProductOptionsInOrder";
 import createNewProduct from "../../sql/products/createNewProduct";
+import toggleProduct from "../../sql/products/toggleProduct";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getPostBody(request);
+  const { action, content } = await getRequestBody(request);
 
   switch (action) {
     case "createNewProduct":
@@ -38,14 +39,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         await updateProductOptionsInOrder(content?.productInOrderId, content?.optionId)
       );
+    case "toggleProduct":
+      return NextResponse.json(await toggleProduct(content?.id));
   }
 }
 
 export async function DELETE(request: NextRequest) {
-  const { action, content } = await getPostBody(request);
+  const { action, content } = await getRequestBody(request);
 
   switch (action) {
-    case "deleteProduct":
-      return NextResponse.json(await deleteProduct(content?.productIds, content?.orderId));
+    case "deleteProductFromOrder":
+      return NextResponse.json(await deleteProductFromOrder(content?.productIds, content?.orderId));
   }
 }

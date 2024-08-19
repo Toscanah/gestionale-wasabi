@@ -1,6 +1,6 @@
 import prisma from "../db";
 
-export default async function deleteProduct(productIds: number[], orderId: number) {
+export default async function deleteProductFromOrder(productIds: number[], orderId: number) {
   const productsToDelete = await prisma.productInOrder.findMany({
     where: {
       id: {

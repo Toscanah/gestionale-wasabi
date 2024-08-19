@@ -12,7 +12,7 @@ import { formSchema } from "./form";
 import { getProductFields } from "./form";
 import { Textarea } from "@/components/ui/textarea";
 import { BallTriangle, Grid, LineWave, Triangle } from "react-loader-spinner";
-import logo from "../../../../public/logo.png"
+import logo from "../../../../public/logo.png";
 import Image from "next/image";
 
 type ProductAndCategory = Omit<ProductWithInfo, "category"> & {
@@ -28,7 +28,7 @@ export default function ProductDashboard() {
 
   useEffect(() => {
     fetchRequest<CategoryWithOptions[]>("GET", "/api/categories/", "getCategories").then(
-      (categories) => setCategories(categories)
+      (categories) => setCategories(categories.filter((c) => c.active))
     );
   }, []);
 
@@ -66,7 +66,7 @@ export default function ProductDashboard() {
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
         {loading ? (
           <div className="w-full h-full flex items-center justify-center">
-            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin"/>
+            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
           </div>
         ) : (
           products.length > 0 && (
@@ -77,7 +77,7 @@ export default function ProductDashboard() {
               path="/api/products/"
               fetchActions={{
                 add: "createNewProduct",
-                delete: "deleteProduct",
+                toggle: "toggleProduct",
                 update: "updateProduct",
               }}
             />

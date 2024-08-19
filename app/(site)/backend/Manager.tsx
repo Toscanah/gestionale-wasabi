@@ -19,7 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 enum Actions {
   UPDATE = "update",
   ADD = "add",
-  DELETE = "delete",
+  TOGGLE = "toggle",
 }
 
 export type ActionsType = {
@@ -59,21 +59,20 @@ export default function Manager<T extends { id: number; active: boolean }>({
     };
   };
 
-  const handleDelete = (objectToDelete: T) => {
-    fetchRequest<T>("DELETE", path, fetchActions.delete, {
-      id: objectToDelete.id,
+  const handleToggle = (objectToToggle: T) => {
+    fetchRequest<T>("POST", path, fetchActions.toggle, {
+      id: objectToToggle.id,
     }).then(() => {
       setData((prevData) =>
         prevData.map((item) =>
-          item.id === objectToDelete.id
-            ? { ...objectToDelete, active: !objectToDelete.active }
+          item.id === objectToToggle.id
+            ? { ...objectToToggle, active: !objectToToggle.active }
             : item
         )
       );
 
       toastSuccess(
-        <>L'elemento è stato {objectToDelete.active ? "disattivato" : "attivato"} correttamente</>,
-        "Successo"
+        <>L'elemento è stato {objectToToggle.active ? "disattivato" : "attivato"} correttamente</>
       );
     });
   };
@@ -84,22 +83,22 @@ export default function Manager<T extends { id: number; active: boolean }>({
       ...newValues,
     }).then((updatedObject) => {
       if (!updatedObject) {
-        return toastError("Qualcosa è andato storto", "Errore");
+        return toastError("Qualcosa è andato storto");
       }
 
       setData((prevData) => prevData.map((el) => (el === objectToUpdate ? updatedObject : el)));
-      toastSuccess("L'elemento è stato modificato correttamente", "Successo");
+      toastSuccess("L'elemento è stato modificato correttamente");
     });
   };
 
   const handleAdd = (values: Partial<T>) => {
     fetchRequest<T>("POST", path, fetchActions.add, values).then((newObject) => {
       if (!newObject) {
-        return toastError("Questo elemento esiste già", "Errore");
+        return toastError("Questo elemento esiste già");
       }
 
       setData((prevData) => [...prevData, newObject]);
-      toastSuccess("Elemento aggiunto correttamente", "Successo");
+      toastSuccess("Elemento aggiunto correttamente");
     });
   };
 
@@ -122,7 +121,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
         title="Attenzione!"
         trigger={getTrigger("delete", !object.active)}
         variant="delete"
-        onDelete={() => handleDelete(object)}
+        onDelete={() => handleToggle(object)}
       >
         <div>
           Stai per <b>{object.active ? "disattivare" : "attivare"}</b> questo elemento. Sei sicuro?
@@ -159,7 +158,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
               setOnlyActive(!onlyActive);
             }}
           />
-          <Label>Solo attivi?</Label>
+          <Label className="text-xl">Solo attivi?</Label>
         </div>
       </TableControls>
 

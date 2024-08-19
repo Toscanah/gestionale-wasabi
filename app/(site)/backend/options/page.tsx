@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import fetchRequest from "../../util/functions/fetchRequest";
-import { Triangle } from "react-loader-spinner";
 import Manager from "../Manager";
 import GoBack from "../../components/GoBack";
 import { OptionWithCategories } from "../../types/OptionWithCategories";
@@ -63,7 +62,7 @@ export default function OptionsDashboard() {
             path="/api/options/"
             fetchActions={{
               add: "createNewOption",
-              delete: "deleteOption",
+              toggle: "toggleOption",
               update: "updateOption",
             }}
           />

@@ -79,7 +79,7 @@ export default function Overview({
 
         <Input
           id="phone"
-          className="w-full text-center text-6xl h-16"
+          className="w-full text-center text-3xl h-16"
           defaultValue={phone}
           autoFocus
           type="number"
