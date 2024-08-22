@@ -43,7 +43,12 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
       name: "category",
       label: "Categoria",
       children: ({ field }: { field: ControllerRenderProps }) => {
-        const activeCategory = categories.find((cat) => cat.id.toString() === field.value);
+        let hoverCondition = false;
+
+        if (field.value !== "undefined") {
+          hoverCondition =
+            categories.find((cat) => cat.id.toString() === field.value) == undefined ? true : false;
+        }
 
         return (
           <div className="space-y-2 text-center">
@@ -61,11 +66,11 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
               defaultValue={field.value.toString()}
               //placeholder={!activeCategory ? "Categorie inattiva" : undefined}
             />
-            {!activeCategory && (
+            {hoverCondition && (
               <HoverCard>
                 <HoverCardTrigger asChild>
                   <div className="text-sm hover:underline hover:cursor-pointer text-red-500">
-                  Metti il cursore qua
+                    Metti il cursore qua
                   </div>
                 </HoverCardTrigger>
                 <HoverCardContent className="w-80">

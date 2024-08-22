@@ -20,10 +20,12 @@ export default async function updateProductInOrder(
     case "code":
       const newProductCode = value;
       const newProduct = await prisma.product.findFirst({
-        where: { code: {
-          equals: newProductCode,
-          mode: "insensitive",
-        }, },
+        where: {
+          code: {
+            equals: newProductCode,
+            mode: "insensitive",
+          },
+        },
         include: { category: { include: { options: { select: { option: true } } } } },
       });
 
@@ -33,9 +35,7 @@ export default async function updateProductInOrder(
 
       const newTotal =
         productInOrder.quantity *
-        (currentOrder.type === OrderType.TO_HOME
-          ? newProduct.home_price
-          : newProduct.site_price);
+        (currentOrder.type === OrderType.TO_HOME ? newProduct.home_price : newProduct.site_price);
 
       const updatedProduct = await prisma.productInOrder.update({
         where: { id: productInOrder.id },
@@ -79,38 +79,85 @@ export default async function updateProductInOrder(
     case "quantity":
       const newQuantity = Number(value);
 
+      const quantityDifference = newQuantity - productInOrder.quantity;
+      const totalDifference =
+        quantityDifference *
+        (currentOrder.type === OrderType.TO_HOME
+          ? productInOrder.product.home_price
+          : productInOrder.product.site_price);
+
       if (newQuantity == 0) {
-        await prisma.optionInProductOrder.deleteMany({
-          where: { product_in_order_id: productInOrder.id },
-        });
+        if (productInOrder.paidQuantity === 0) {
+          await prisma.optionInProductOrder.deleteMany({
+            where: { product_in_order_id: productInOrder.id },
+          });
 
-        const deletedProduct = await prisma.productInOrder.delete({
-          where: { id: productInOrder.id },
-        });
+          const deletedProduct = await prisma.productInOrder.delete({
+            where: { id: productInOrder.id },
+          });
 
-        await prisma.order.update({
-          where: { id: orderId },
-          data: {
-            total: {
-              decrement: productInOrder.total,
+          await prisma.order.update({
+            where: { id: orderId },
+            data: {
+              total: {
+                decrement: productInOrder.total,
+              },
             },
-          },
-        });
+          });
 
-        return { deletedProduct };
+          return { deletedProduct };
+        } else {
+          const quantityDifference = productInOrder.quantity;
+          const totalDifference =
+            quantityDifference *
+            (currentOrder.type === OrderType.TO_HOME
+              ? productInOrder.product.home_price
+              : productInOrder.product.site_price);
+
+          const isPaidFully =
+            productInOrder.paidQuantity + quantityDifference >= productInOrder.quantity;
+
+          const updatedProduct = await prisma.productInOrder.update({
+            where: { id: productInOrder.id },
+            data: {
+              quantity: { decrement: quantityDifference },
+              total: { decrement: totalDifference },
+              isPaidFully: isPaidFully,
+            },
+            include: {
+              product: {
+                include: {
+                  category: {
+                    include: {
+                      options: { select: { option: true } },
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          await prisma.order.update({
+            where: { id: orderId },
+            data: {
+              total: { decrement: totalDifference },
+            },
+          });
+
+          return {
+            deletedProduct: {
+              ...updatedProduct,
+              quantity: 0,
+              total: 0,
+            },
+          };
+        }
       } else {
-        const newTotal =
-          newQuantity *
-          (currentOrder.type === OrderType.TO_HOME
-            ? productInOrder.product.home_price
-            : productInOrder.product.site_price);
-        const difference = newTotal - productInOrder.total;
-
         const updatedProduct = await prisma.productInOrder.update({
           where: { id: productInOrder.id },
           data: {
-            quantity: newQuantity,
-            total: newTotal,
+            quantity: { increment: quantityDifference },
+            total: { increment: totalDifference },
           },
           include: {
             product: {
@@ -128,14 +175,20 @@ export default async function updateProductInOrder(
         await prisma.order.update({
           where: { id: orderId },
           data: {
-            total: {
-              increment: difference,
-            },
+            total: { increment: totalDifference },
           },
         });
 
         return {
-          updatedProduct,
+          updatedProduct: {
+            ...updatedProduct,
+            quantity: newQuantity,
+            total:
+              newQuantity *
+              (currentOrder.type === OrderType.TO_HOME
+                ? productInOrder.product.home_price
+                : productInOrder.product.site_price),
+          },
         };
       }
   }

@@ -60,7 +60,7 @@ export default function CustomersDashboard() {
             path="/api/options/"
             fetchActions={{
               add: "",
-              delete: "",
+              toggle: "",
               update: "",
             }}
           />

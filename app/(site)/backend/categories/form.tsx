@@ -24,12 +24,22 @@ export function getCategoryFields(options: Option[]): FormFieldType[] {
       label: "Opzioni",
       unique: true,
       children: ({ field }: { field: ControllerRenderProps }) => {
-        const activeOption = options.find((opt) => opt.option.id.toString() === field.value);
+        console.log(field.value)
+        let hoverCondition = false;
+
+        if (field.value !== undefined) {
+          console.log(options.find((opt) => opt.option.id.toString() === field.value))
+
+          hoverCondition =
+            options.find((opt) => opt.option.id.toString() === field.value) == undefined
+              ? true
+              : false;
+        }
 
         return (
           <div className="space-y-2 text-center">
             <CategoryOptions field={field} options={options} />
-            {!activeOption && (
+            {hoverCondition && (
               <HoverCard>
                 <HoverCardTrigger asChild>
                   <div className="text-sm hover:underline hover:cursor-pointer text-red-500">

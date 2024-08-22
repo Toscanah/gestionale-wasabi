@@ -11,7 +11,6 @@ interface CategoryOptionsProps {
 }
 
 export default function CategoryOptions({ field, options }: CategoryOptionsProps) {
-  console.log("rende4rato")
   const [allOptions, setAllOptions] = useState<Option[]>(options);
   const [currentOptions, setCurrentOptions] = useState<Option[]>(field.value ?? []);
 

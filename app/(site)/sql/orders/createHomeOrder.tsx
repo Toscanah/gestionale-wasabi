@@ -33,7 +33,28 @@ export default async function createHomeOrder(content: {
       },
     },
     include: {
-      products: true,
+      products: {
+        include: {
+          product: {
+            include: {
+              category: {
+                include: {
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          options: {
+            include: {
+              option: true,
+            },
+          },
+        },
+      },
       home_order: true,
     },
   });
