@@ -16,8 +16,8 @@ enum OrderType {
 enum PaymentType {
     CASH
     CARD
-    VOUCHERS
-    OTHER
+    VOUCH
+    CREDIT
 }
 
 model Address {
@@ -95,8 +95,8 @@ model Customer {
 }
 
 model Phone {
-    id       Int        @id @default(autoincrement())
-    phone    String
+    id        Int        @id @default(autoincrement())
+    phone     String
     customers Customer[]
 }
 
@@ -141,14 +141,16 @@ model Product {
 }
 
 model ProductInOrder {
-    id         Int                    @id @default(autoincrement())
-    product    Product                @relation(fields: [product_id], references: [id])
-    product_id Int
-    order      Order                  @relation(fields: [order_id], references: [id])
-    order_id   Int
-    quantity   Int
-    total      Float
-    options    OptionInProductOrder[]
+    id           Int                    @id @default(autoincrement())
+    product      Product                @relation(fields: [product_id], references: [id])
+    product_id   Int
+    order        Order                  @relation(fields: [order_id], references: [id])
+    order_id     Int
+    quantity     Int
+    total        Float
+    isPaidFully  Boolean                @default(false)
+    paidQuantity Int                    @default(0)
+    options      OptionInProductOrder[]
 }
 
 model Category {

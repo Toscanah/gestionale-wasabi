@@ -51,8 +51,30 @@ export default async function createPickupOrder(content: {
       },
     },
     include: {
+      
       pickup_order: true,
-      products: true,
+      products: {
+        include: {
+          product: {
+            include: {
+              category: {
+                include: {
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          options: {
+            include: {
+              option: true,
+            },
+          },
+        },
+      },
     },
   });
 

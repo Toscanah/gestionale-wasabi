@@ -29,6 +29,7 @@ type FormFieldProps = {
   handleKeyDown?: (e: KeyboardEvent) => void;
   className?: string;
   ref?: RefObject<any>;
+  autofocus?: boolean;
 };
 
 export default function FormField({
@@ -40,6 +41,7 @@ export default function FormField({
   handleKeyDown,
   className,
   type = "text",
+  autofocus = false,
   ref,
 }: FormFieldProps) {
   return (
@@ -80,6 +82,7 @@ export default function FormField({
                   onBlur={() => {}}
                   type={type}
                   ref={ref}
+                  autoFocus={autofocus}
                   className={className}
                   onKeyDown={(e) => {
                     if (handleKeyDown) {

@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-
 import { Plus } from "@phosphor-icons/react";
 import { OrderType } from "../types/OrderType";
 import Table from "./table/Table";
@@ -15,7 +14,7 @@ import { Button } from "@/components/ui/button";
 
 export default function CreateOrder({ type }: { type: OrderType }) {
   const [order, setOrder] = useState<AnyOrder | undefined>(undefined);
-
+  const [open, setOpen] = useState<boolean>(false);
   const components = new Map<OrderType, { name: string; component: ReactNode }>([
     [OrderType.TABLE, { name: "Ordine al tavolo", component: <Table setOrder={setOrder} /> }],
     [OrderType.TO_HOME, { name: "Ordine a domicilio", component: <ToHome setOrder={setOrder} /> }],
@@ -24,7 +23,11 @@ export default function CreateOrder({ type }: { type: OrderType }) {
 
   return (
     <DialogWrapper
-      onOpenChange={() => setOrder(undefined)}
+      open={open}
+      onOpenChange={() => {
+        setOrder(undefined);
+        setOpen(!open);
+      }}
       contentClassName={cn(
         "flex flex-col gap-6 items-center",
         type === OrderType.TO_HOME || order ? "w-[90vw] h-[90vh]" : "w-[40vw] "
@@ -38,7 +41,7 @@ export default function CreateOrder({ type }: { type: OrderType }) {
       {!order ? (
         <div className="w-full h-full ">{components.get(type)?.component}</div>
       ) : (
-        <OrderTable order={order as any} />
+        <OrderTable order={order as AnyOrder} setOrder={setOrder} setOpen={setOpen} />
       )}
     </DialogWrapper>
   );

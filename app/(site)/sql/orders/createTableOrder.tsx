@@ -31,7 +31,28 @@ export default async function createTableOrder(content: {
     },
     include: {
       table_order: true,
-      products: true,
+      products: {
+        include: {
+          product: {
+            include: {
+              category: {
+                include: {
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          options: {
+            include: {
+              option: true,
+            },
+          },
+        },
+      },
     },
   });
 

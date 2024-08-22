@@ -1,23 +1,15 @@
-import {
-  useRef,
-  KeyboardEvent,
-  RefObject,
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-} from "react";
+import { useRef, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AnyOrder, TableOrder } from "../../types/PrismaOrders";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { OrderType } from "../../types/OrderType";
-import { toast } from "sonner";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../util/toast";
 import { Table as PrismaTable } from "@prisma/client";
+import { Triangle } from "react-loader-spinner";
 
 export default function Table({
   setOrder,
@@ -32,17 +24,12 @@ export default function Table({
   const nameRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const { handleKeyDown } = useFocusCycle([
-    tableRef,
-    pplRef,
-    nameRef,
-    buttonRef,
-  ]);
+  const { handleKeyDown } = useFocusCycle([tableRef, pplRef, nameRef, buttonRef]);
 
   useEffect(() => {
-    fetchRequest<PrismaTable[]>("GET", "/api/tables/", "getTables").then(
-      (tables) => setTables(tables)
-    );
+    fetchRequest<PrismaTable[]>("GET", "/api/tables/", "getTables").then((tables) => {
+      setTables(tables);
+    });
   }, []);
 
   const createTableOrder = () => {
@@ -67,16 +54,18 @@ export default function Table({
       res_name: nameRef.current?.value,
     }).then((order) => {
       if (order) {
-        toastSuccess("Ordine creato con successo", "Successo");
+        toastSuccess("Ordine creato con successo");
         setOrder(order);
         onOrdersUpdate(OrderType.TABLE);
       } else {
-        toastError(
-          "L'ordine non è stato creato. Sei sicuro che il tavolo esista?"
-        );
+        toastError("L'ordine non è stato creato. Sei sicuro che il tavolo esista?");
       }
     });
   };
+
+  if (tables.length == 0) {
+    return <></>;
+  }
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -85,6 +74,7 @@ export default function Table({
           Tavolo*
         </Label>
         <Input
+          autoFocus
           type="text"
           id="table"
           className="w-full text-center text-6xl h-16"
@@ -117,15 +107,7 @@ export default function Table({
         />
       </div>
 
-      <Button
-        ref={buttonRef}
-        type="submit"
-        className="w-full"
-        //onKeyDown={(e) => handleKeyDown(e)}
-        onClick={() => {
-          createTableOrder();
-        }}
-      >
+      <Button ref={buttonRef} type="submit" className="w-full" onClick={createTableOrder}>
         CREA ORDINE
       </Button>
     </div>

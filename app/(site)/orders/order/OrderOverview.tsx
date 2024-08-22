@@ -6,19 +6,18 @@ import { Table } from "@tanstack/react-table";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AnyOrder } from "../../types/PrismaOrders";
+import { Actions } from "./OrderTable";
 
 export default function OrderSummary({
   order,
   table,
   deleteRows,
-  setPayDialog,
-  setDivide,
+  setAction,
 }: {
   order: AnyOrder;
   table: Table<ProductInOrderType>;
   deleteRows: (table: Table<ProductInOrderType>) => void;
-  setPayDialog: Dispatch<SetStateAction<boolean>>;
-  setDivide: Dispatch<SetStateAction<boolean>>;
+  setAction: Dispatch<SetStateAction<Actions>>;
 }) {
   const { rice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
@@ -49,7 +48,7 @@ export default function OrderSummary({
 
       <div className="mt-auto flex flex-col gap-6">
         <div className="w-full flex flex-col overflow-hidden border-foreground">
-          <div className="w-full text-center text-2xl border rounded-t bg-foreground text-primary-foreground h-12 p-2">
+          <div className="w-full text-center text-2xl border rounded-t-lg bg-foreground text-primary-foreground h-12 p-2">
             RISO
           </div>
 
@@ -65,7 +64,7 @@ export default function OrderSummary({
             <div className="w-1/2 p-2 h-12">Ordine</div>
           </div>
 
-          <div className="w-full text-center text-2xl h-12 border flex max-h-12">
+          <div className="w-full text-center text-2xl h-12 border flex max-h-12 rounded-b-lg">
             <div
               className={cn(
                 "w-1/2 border-r p-2 h-12",
@@ -78,11 +77,11 @@ export default function OrderSummary({
           </div>
         </div>
 
-        <div className="w-full flex flex-col  *:p-2 overflow-hidden border-foreground">
-          <div className="w-full text-center text-2xl border rounded-t bg-foreground text-primary-foreground h-12">
+        <div className="w-full flex flex-col *:p-2 overflow-hidden border-foreground">
+          <div className="w-full text-center text-2xl border rounded-t-lg bg-foreground text-primary-foreground h-12">
             TOTALE
           </div>
-          <div className="w-full text-center text-2xl h-12 font-bold border-x border-b rounded-b ">
+          <div className="w-full text-center text-2xl h-12 font-bold border-x border-b rounded-b-lg ">
             € {order.total}
           </div>
         </div>
@@ -90,18 +89,25 @@ export default function OrderSummary({
         <div className="flex gap-6">
           <Button
             className="w-full text-3xl h-24"
-            onClick={() => setDivide(true)}
-            disabled={order.products.length == 1 && order.products[0].quantity == 1}
+            onClick={() => setAction("payPart")}
+            disabled={
+              order.products.length === 0 || // Disable if there are no products
+              (order.products.length === 1 && order.products[0].quantity <= 1) // Disable if there is one product and its quantity is 1 or less
+            }
           >
             Dividi
           </Button>
-          <Button className="w-full text-3xl h-24">Romana</Button>
+          <Button className="w-full text-3xl h-24" disabled={order.products.length <= 0}>
+            Romana
+          </Button>
         </div>
 
-        {/* bg-[#4BB543] */}
-
         <Button className="w-full text-3xl h-24">Stampa</Button>
-        <Button className="w-full text-3xl h-24" onClick={() => setPayDialog(true)}>
+        <Button
+          className="w-full text-3xl h-24"
+          onClick={() => setAction("payFull")}
+          disabled={order.total == 0}
+        >
           PAGA
         </Button>
       </div>

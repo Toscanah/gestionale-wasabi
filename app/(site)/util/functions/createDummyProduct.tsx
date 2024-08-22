@@ -3,7 +3,9 @@ import { ProductInOrderType } from "../../types/ProductInOrderType";
 export default function createDummyProduct(): ProductInOrderType {
   return {
     product: {
+      active: true,
       category: {
+        active: false,
         id: -1,
         category: "nothing",
         options: [],
@@ -22,5 +24,7 @@ export default function createDummyProduct(): ProductInOrderType {
     quantity: 0,
     total: 0,
     id: -1,
+    isPaidFully: false,
+    paidQuantity: 0,
   };
 }

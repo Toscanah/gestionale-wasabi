@@ -7,9 +7,9 @@ export default async function createCustomer(data: { customer: Customer; phone: 
   return await prisma.customer.create({
     data: {
       phone: {
-        create: {
-          phone: phone,
-        },
+        connect: {
+          phone: phone
+        }
       },
       ...customer,
     },

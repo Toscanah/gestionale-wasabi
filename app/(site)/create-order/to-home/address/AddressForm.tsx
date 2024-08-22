@@ -180,6 +180,7 @@ export default function AddressForm({
           className="w-full flex flex-col justify-between h-full"
         >
           <FormField
+            autofocus
             control={form.control}
             name="street"
             ref={streetRef}
