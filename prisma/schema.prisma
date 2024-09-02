@@ -32,6 +32,7 @@ model Address {
     temporary   Boolean
     HomeOrder   HomeOrder[]
     doorbell    String?
+    active      Boolean     @default(true)
 }
 
 model Order {

@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Input } from "@/components/ui/input";
 import { Address } from "@prisma/client";
+import { Dispatch, SetStateAction, useState } from "react";
+import fetchRequest from "../../util/functions/fetchRequest";
 
 export const formSchema = z.object({
   name: getZodField("string", false),
@@ -16,7 +18,7 @@ export const formSchema = z.object({
   phone: getZodField("string", false),
   email: getZodField("string", false),
   preferences: getZodField("string", false),
-  addresses: z.any().optional(),
+  //addresses: z.any(),
 });
 
 export function getCustomerFields(): FormFieldType[] {
@@ -31,7 +33,7 @@ export function getCustomerFields(): FormFieldType[] {
     },
     {
       name: "phone",
-      label: "Nummero di telefono",
+      label: "Numero di telefono",
       type: "text",
     },
     {
@@ -43,13 +45,13 @@ export function getCustomerFields(): FormFieldType[] {
       label: "Preferenze",
       children: <Textarea className="resize-none" />,
     },
-    {
-      name: "addresses",
-      label: "Indirizzi",
-      unique: true,
-      children: ({ field }: { field: ControllerRenderProps }) => (
-        <CustomerAddresses field={field} />
-      ),
-    },
+    // {
+    //   name: "addresses",
+    //   label: "Indirizzi",
+    //   unique: true,
+    //   children: ({ field }: { field: ControllerRenderProps }) => {
+    //     return <CustomerAddresses field={field} />;
+    //   },
+    // },
   ];
 }

@@ -23,7 +23,12 @@ type FormFieldProps = {
   label: string;
   example?: string;
   children?:
-    | ComponentType<{ field: ControllerRenderProps; className?: string; onBlur?: () => void }>
+    | ComponentType<{
+        field: ControllerRenderProps;
+        className?: string;
+        onBlur?: () => void;
+        onKeyDown: (e: React.KeyboardEvent) => void;
+      }>
     | ReactElement;
   type?: string;
   handleKeyDown?: (e: KeyboardEvent) => void;
@@ -63,12 +68,21 @@ export default function FormField({
             <FormControl>
               {children ? (
                 typeof children === "function" ? (
-                  React.createElement(children, { field, className, onBlur: undefined })
+                  React.createElement(children, {
+                    field,
+                    className,
+                    onBlur: () => {},
+                    onKeyDown: (e: React.KeyboardEvent) => {
+                      if (handleKeyDown) {
+                        handleKeyDown(e);
+                      }
+                    },
+                  })
                 ) : (
                   React.cloneElement(children as ReactElement, {
                     ...field,
                     ref,
-                    onBlur: undefined,
+                    onBlur: () => {},
                     onKeyDown: (e: React.KeyboardEvent) => {
                       if (handleKeyDown) {
                         handleKeyDown(e);

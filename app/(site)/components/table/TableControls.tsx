@@ -13,7 +13,7 @@ export default function TableControls({
   table: Table<any>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
-  AddComponent: ReactNode;
+  AddComponent?: ReactNode;
   children?: ReactNode;
 }) {
   return (

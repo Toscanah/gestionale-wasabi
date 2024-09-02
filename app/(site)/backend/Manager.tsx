@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentType, useState } from "react";
+import { ComponentType, useEffect, useState } from "react";
 import useGlobalFilter from "../components/hooks/useGlobalFilter";
 import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ export type ActionsType = {
 
 interface ManagerProps<T extends { id: number; active: boolean }> {
   receivedData: T[];
-  path: string;
+  path: `/api/${string}`;
   fetchActions: ActionsType;
   FormFields: ComponentType<FormFieldsProps<T>>;
   columns: ColumnDef<T>[];
@@ -47,6 +47,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
   columns,
   FormFields,
 }: ManagerProps<T>) {
+
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
   const [data, setData] = useState<T[]>(receivedData);
   const [onlyActive, setOnlyActive] = useState<boolean>(true);

@@ -23,6 +23,7 @@ interface SelectWrapperProps {
   groups: { label?: string; items: { value: string; name: string }[] | string[] }[];
   placeholder?: string;
   fixedValue?: boolean;
+  value?: string;
 }
 
 const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
@@ -36,6 +37,7 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
       groups,
       placeholder,
       fixedValue,
+      value,
     },
     ref
   ) => {
@@ -43,7 +45,7 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
       <Select
         onValueChange={field ? field.onChange : onValueChange}
         defaultValue={placeholder ? undefined : field ? field.value : defaultValue}
-        value={fixedValue ? "" : undefined}
+        value={value ? value : fixedValue ? "" : undefined}
       >
         <SelectTrigger
           className={cn(className ? className : "w-full text-3xl h-16")}
