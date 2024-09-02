@@ -112,7 +112,7 @@ export default function CustomerAddresses({
                     )}
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="space-y-8 ml-2">
+                <AccordionContent className="space-y-8 mx-2">
                   <div className="space-y-2">
                     <Label>Indirizzo</Label>
                     <Input
