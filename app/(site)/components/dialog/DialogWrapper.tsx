@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 interface DialogWrapperProps {
-  children: ReactNode;
+  children?: ReactNode;
   title?: string;
   trigger: ReactNode | JSX.Element;
   showCloseButton?: boolean;

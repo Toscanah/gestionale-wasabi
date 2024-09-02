@@ -2,7 +2,7 @@ type HttpMethod = "POST" | "GET" | "DELETE";
 
 export default async function fetchRequest<T>(
   method: HttpMethod,
-  path: string,
+  path: `/api/${string}`,
   action: string,
   content?: object
 ): Promise<T> {

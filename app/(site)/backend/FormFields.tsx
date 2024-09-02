@@ -4,7 +4,14 @@ import { z } from "zod";
 import getForm from "../util/functions/getForm";
 import { ControllerRenderProps, DefaultValues } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import React, { ComponentType, HTMLInputTypeAttribute, ReactElement, useRef } from "react";
+import React, {
+  ComponentType,
+  HTMLInputTypeAttribute,
+  ReactElement,
+  RefObject,
+  useEffect,
+  useRef,
+} from "react";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import FormField from "../components/FormField";
@@ -39,10 +46,8 @@ export default function FormFields<T extends Partial<T>>({
 }: FormFieldsProps<T>) {
   const form = getForm<T>(formSchema, defaultValues);
   const onSubmit = (values: Partial<T>) => {
-    console.log("Valori nuovi: ", values);
     handleSubmit(values);
   };
-
 
   let fieldIndex = 0;
 
@@ -59,7 +64,7 @@ export default function FormFields<T extends Partial<T>>({
                 {rowFields.map((formField, index) => {
                   return !formField.children ? (
                     <FormField
-                      key={formField.name}
+                      key={index}
                       control={form.control}
                       name={formField.name}
                       label={formField.label}
@@ -68,7 +73,7 @@ export default function FormFields<T extends Partial<T>>({
                     />
                   ) : formField.unique == true ? (
                     <FormField
-                      key={formField.name}
+                      key={index}
                       control={form.control}
                       name={formField.name}
                       label={formField.label}
@@ -86,7 +91,7 @@ export default function FormFields<T extends Partial<T>>({
                     </FormField>
                   ) : (
                     <FormField
-                      key={formField.name}
+                      key={index}
                       control={form.control}
                       name={formField.name}
                       label={formField.label}

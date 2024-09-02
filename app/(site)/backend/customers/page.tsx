@@ -10,6 +10,7 @@ import Manager from "../Manager";
 import columns from "./columns";
 import GoBack from "../../components/GoBack";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
+import { Address } from "@prisma/client";
 
 type FormValues = Partial<CustomerWithDetails>;
 
@@ -55,13 +56,13 @@ export default function CustomersDashboard() {
         ) : (
           <Manager<CustomerWithDetails>
             receivedData={customers}
-            columns={columns}
+            columns={columns(customers, setCustomers)}
             FormFields={Fields}
-            path="/api/options/"
+            path="/api/customers/"
             fetchActions={{
-              add: "",
-              toggle: "",
-              update: "",
+              add: "createNewCustomer",
+              toggle: "toggleCustomer",
+              update: "updateCustomer",
             }}
           />
         )}
