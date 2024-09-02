@@ -93,6 +93,8 @@ export default function Manager<T extends { id: number; active: boolean }>({
   };
 
   const handleAdd = (values: Partial<T>) => {
+    console.log(values);
+
     fetchRequest<T>("POST", path, fetchActions.add, values).then((newObject) => {
       if (!newObject) {
         return toastError("Questo elemento esiste già");
