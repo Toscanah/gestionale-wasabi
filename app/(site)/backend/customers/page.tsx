@@ -21,6 +21,7 @@ export default function CustomersDashboard() {
   useEffect(() => {
     fetchRequest<CustomerWithDetails[]>("GET", "/api/customers/", "getCustomersWithDetails").then(
       (customers) => {
+        console.log(customers);
         setCustomers(customers);
         setLoading(false);
       }
@@ -39,8 +40,12 @@ export default function CustomersDashboard() {
     <FormFields
       handleSubmit={handleSubmit}
       footerName={footerName}
-      defaultValues={{ ...object }}
-      layout={[{ fieldsPerRow: 2 }, { fieldsPerRow: 2 }, { fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
+      defaultValues={{
+        ...object,
+        phone: (object?.phone?.phone ?? "") as any,
+        email: object?.email ?? "",
+      }}
+      layout={[{ fieldsPerRow: 2 }, { fieldsPerRow: 2 }, { fieldsPerRow: 1 }]}
       formFields={getCustomerFields()}
       formSchema={formSchema}
     />
@@ -60,7 +65,7 @@ export default function CustomersDashboard() {
             FormFields={Fields}
             path="/api/customers/"
             fetchActions={{
-              add: "createNewCustomer",
+              add: "createCustomer",
               toggle: "toggleCustomer",
               update: "updateCustomer",
             }}

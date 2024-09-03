@@ -1,3 +1,12 @@
+import React, {
+  ReactNode,
+  forwardRef,
+  ComponentType,
+  KeyboardEvent,
+  ReactElement,
+  RefObject,
+} from "react";
+import { Control, ControllerRenderProps } from "react-hook-form";
 import {
   FormField as Field,
   FormControl,
@@ -6,16 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import React, {
-  ReactNode,
-  forwardRef,
-  ComponentType,
-  KeyboardEvent,
-  ForwardedRef,
-  ReactElement,
-  RefObject,
-} from "react";
-import { Control, ControllerRenderProps } from "react-hook-form";
 
 type FormFieldProps = {
   control: Control<any>;
@@ -33,28 +32,29 @@ type FormFieldProps = {
   type?: string;
   handleKeyDown?: (e: KeyboardEvent) => void;
   className?: string;
-  ref?: RefObject<any>;
   autofocus?: boolean;
 };
 
-export default function FormField({
-  control,
-  name,
-  label,
-  example,
-  children,
-  handleKeyDown,
-  className,
-  type = "text",
-  autofocus = false,
-  ref,
-}: FormFieldProps) {
-  return (
-    <Field
-      control={control}
-      name={name}
-      render={({ field }) => {
-        return (
+const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
+  (
+    {
+      control,
+      name,
+      label,
+      example,
+      children,
+      handleKeyDown,
+      className,
+      type = "text",
+      autofocus = false,
+    },
+    ref
+  ) => {
+    return (
+      <Field
+        control={control}
+        name={name}
+        render={({ field }) => (
           <FormItem className="w-full">
             <FormLabel>
               {label}
@@ -108,8 +108,10 @@ export default function FormField({
             </FormControl>
             <FormMessage />
           </FormItem>
-        );
-      }}
-    />
-  );
-}
+        )}
+      />
+    );
+  }
+);
+
+export default FormField;

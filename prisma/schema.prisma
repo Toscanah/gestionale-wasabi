@@ -20,28 +20,14 @@ enum PaymentType {
     CREDIT
 }
 
-model Address {
-    id          Int         @id @default(autoincrement())
-    customer_id Int
-    street      String
-    civic       String
-    floor       String?
-    stair       String?
-    street_info String?
-    customer    Customer    @relation(fields: [customer_id], references: [id])
-    temporary   Boolean
-    HomeOrder   HomeOrder[]
-    doorbell    String?
-    active      Boolean     @default(true)
-}
-
 model Order {
     id           Int              @id @default(autoincrement())
     created_at   DateTime         @default(now())
-    type         OrderType
-    total        Float?
-    products     ProductInOrder[]
+    updated_at   DateTime         @default(now()) @updatedAt
+    total        Float            @default(0)
     paid         Boolean          @default(false)
+    type         OrderType
+    products     ProductInOrder[]
     payments     Payment[]
     table_order  TableOrder?
     home_order   HomeOrder?
@@ -51,11 +37,11 @@ model Order {
 model TableOrder {
     id       Int     @id @default(autoincrement())
     order_id Int     @unique
-    table_id Int?
+    table_id Int
     res_name String?
     people   Int
     order    Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
-    table    Table?  @relation(fields: [table_id], references: [id])
+    table    Table   @relation(fields: [table_id], references: [id])
 }
 
 model HomeOrder {
@@ -63,12 +49,12 @@ model HomeOrder {
     order_id      Int      @unique
     address_id    Int
     customer_id   Int
-    when          String?  @default("immediate")
+    when          String   @default("immediate")
     notes         String?
-    customer      Customer @relation(fields: [customer_id], references: [id])
     contact_phone String?
     order         Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
     address       Address  @relation(fields: [address_id], references: [id])
+    customer      Customer @relation(fields: [customer_id], references: [id])
 }
 
 model PickupOrder {
@@ -81,24 +67,39 @@ model PickupOrder {
     order       Order     @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }
 
+model Address {
+    id          Int         @id @default(autoincrement())
+    customer_id Int
+    street      String
+    civic       String
+    doorbell    String
+    floor       String?
+    stair       String?
+    street_info String?
+    active      Boolean     @default(true)
+    temporary   Boolean     @default(false)
+    customer    Customer    @relation(fields: [customer_id], references: [id])
+    HomeOrder   HomeOrder[]
+}
+
 model Customer {
     id            Int           @id @default(autoincrement())
     name          String?
     surname       String?
     email         String?
     preferences   String?
+    active        Boolean       @default(true)
+    phone_id      Int?          @unique
+    phone         Phone?        @relation(fields: [phone_id], references: [id], onDelete: SetNull)
     addresses     Address[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
-    phone_id      Int?
-    phone         Phone?        @relation(fields: [phone_id], references: [id])
-    active        Boolean       @default(true)
 }
 
 model Phone {
-    id        Int        @id @default(autoincrement())
-    phone     String
-    customers Customer[]
+    id       Int       @id @default(autoincrement())
+    phone    String
+    Customer Customer?
 }
 
 model Table {
@@ -108,18 +109,12 @@ model Table {
 }
 
 model Payment {
-    id        Int         @id @default(autoincrement())
-    amount    Float?
-    type      PaymentType
-    order_id  Int
-    order     Order       @relation(fields: [order_id], references: [id])
-    create_at DateTime    @default(now())
-}
-
-model Admin {
-    id       Int    @id @default(autoincrement())
-    username String
-    password String
+    id         Int         @id @default(autoincrement())
+    amount     Float       @default(0)
+    order_id   Int
+    created_at DateTime    @default(now())
+    type       PaymentType
+    order      Order       @relation(fields: [order_id], references: [id])
 }
 
 model Rice {
@@ -135,31 +130,31 @@ model Product {
     desc        String
     site_price  Float
     home_price  Float
-    rice        Float?
+    rice        Float            @default(0)
+    active      Boolean          @default(true)
     orders      ProductInOrder[]
     category    Category         @relation(fields: [category_id], references: [id])
-    active      Boolean          @default(true)
 }
 
 model ProductInOrder {
     id           Int                    @id @default(autoincrement())
-    product      Product                @relation(fields: [product_id], references: [id])
     product_id   Int
-    order        Order                  @relation(fields: [order_id], references: [id])
     order_id     Int
-    quantity     Int
-    total        Float
+    quantity     Int                    @default(0)
+    total        Float                  @default(0)
     isPaidFully  Boolean                @default(false)
     paidQuantity Int                    @default(0)
     options      OptionInProductOrder[]
+    product      Product                @relation(fields: [product_id], references: [id])
+    order        Order                  @relation(fields: [order_id], references: [id])
 }
 
 model Category {
     id       Int                @id @default(autoincrement())
     category String
+    active   Boolean            @default(true)
     products Product[]
     options  CategoryOnOption[]
-    active   Boolean            @default(true)
 }
 
 model CategoryOnOption {
@@ -173,9 +168,9 @@ model CategoryOnOption {
 model Option {
     id          Int                    @id @default(autoincrement())
     option_name String
+    active      Boolean                @default(true)
     categories  CategoryOnOption[]
     products    OptionInProductOrder[]
-    active      Boolean                @default(true)
 }
 
 model OptionInProductOrder {
