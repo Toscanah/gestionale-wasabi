@@ -13,12 +13,12 @@ import { Dispatch, SetStateAction, useState } from "react";
 import fetchRequest from "../../util/functions/fetchRequest";
 
 export const formSchema = z.object({
-  name: getZodField("string", false),
-  surname: getZodField("string", false),
+  name: getZodField("string", true),
+  surname: getZodField("string", true),
   phone: getZodField("string", false),
   email: getZodField("string", false),
   preferences: getZodField("string", false),
-  //addresses: z.any(),
+  phone_id: getZodField("any", false),
 });
 
 export function getCustomerFields(): FormFieldType[] {
@@ -45,6 +45,7 @@ export function getCustomerFields(): FormFieldType[] {
       label: "Preferenze",
       children: <Textarea className="resize-none" />,
     },
+    { name: "phone_id", label: "phone_id" },
     // {
     //   name: "addresses",
     //   label: "Indirizzi",

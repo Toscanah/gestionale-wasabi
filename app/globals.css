@@ -49,6 +49,14 @@
     --ring: 240 4.9% 83.9%;
   }
 
+  :root {
+    --custom-green-light: 120, 100%, 50%; /* Example light green color */
+  }
+
+  .dark {
+    --custom-green-dark: 120, 100%, 40%; /* Example dark green color */
+  }
+
   /* :root {
     --background: 355 100% 95%; 
     --foreground: 355 5% 0%;

@@ -47,7 +47,6 @@ export default function Manager<T extends { id: number; active: boolean }>({
   columns,
   FormFields,
 }: ManagerProps<T>) {
-
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
   const [data, setData] = useState<T[]>(receivedData);
   const [onlyActive, setOnlyActive] = useState<boolean>(true);
@@ -93,12 +92,12 @@ export default function Manager<T extends { id: number; active: boolean }>({
   };
 
   const handleAdd = (values: Partial<T>) => {
-    console.log(values);
-
     fetchRequest<T>("POST", path, fetchActions.add, values).then((newObject) => {
       if (!newObject) {
         return toastError("Questo elemento esiste già");
       }
+
+      console.log(newObject)
 
       setData((prevData) => [...prevData, newObject]);
       toastSuccess("Elemento aggiunto correttamente");

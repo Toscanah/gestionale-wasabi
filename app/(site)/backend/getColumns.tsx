@@ -2,6 +2,8 @@ import React, { ComponentType } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../components/table/TableColumn";
 import { Check, X } from "@phosphor-icons/react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export default function getColumns<T extends { id: number; active: boolean }>(
   columns: ColumnDef<T>[],
@@ -14,12 +16,11 @@ export default function getColumns<T extends { id: number; active: boolean }>(
     TableColumn<T>({
       accessorKey: "active",
       header: "Attivo?",
-      cellContent: (row) =>
-        row.original.active == true ? (
-          <Check className="text-lime-500 h-6 w-6" />
-        ) : (
-          <X className="text-red-600 h-6 w-6" />
-        ),
+      cellContent: (row) => (
+        <Badge variant={row.original.active ? "default" : "destructive"}>
+          {row.original.active ? "Attivo" : "Non attivo"}
+        </Badge>
+      ),
     }),
 
     TableColumn<T>({

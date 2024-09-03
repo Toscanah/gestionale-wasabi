@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Address } from "@prisma/client";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, KeyboardEvent, RefObject, SetStateAction, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
@@ -19,6 +19,8 @@ interface OverviewProps {
   highlight: string;
   setHighlight: Dispatch<SetStateAction<string>>;
   formRef: any;
+  phoneRef: RefObject<any>;
+  handleKeyDown: (e: KeyboardEvent) => void;
 }
 
 export default function Overview({
@@ -30,6 +32,8 @@ export default function Overview({
   highlight,
   setHighlight,
   formRef,
+  phoneRef,
+  handleKeyDown,
 }: OverviewProps) {
   const [permAddresses, setPermAddresses] = useState<Address[]>([]);
   const [tempAddress, setTempAddress] = useState<Address | undefined>();
@@ -79,10 +83,11 @@ export default function Overview({
 
         <Input
           id="phone"
+          ref={phoneRef}
           className="w-full text-center text-3xl h-16"
           defaultValue={phone}
-          autoFocus
           type="number"
+          onKeyDown={(e) => handleKeyDown(e)}
           onChange={(e: any) => {
             setPhone(e.target.value);
           }}

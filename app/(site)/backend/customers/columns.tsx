@@ -23,7 +23,7 @@ const columns = (
   }),
 
   TableColumn({
-    accessorKey: "phone",
+    accessorKey: "phone.phone",
     header: "Num. di telefono",
   }),
 
@@ -49,7 +49,7 @@ const columns = (
           title="Gestisci indirizzi"
           trigger={
             <Button type="button" variant={"link"}>
-              {customer?.addresses.length !== 0
+              {customer?.addresses && customer?.addresses.length !== 0
                 ? `Vedi indirizzi (${customer?.addresses.length})`
                 : "Nessun indirizzo"}
             </Button>

@@ -1,5 +1,5 @@
 import { Address, Customer } from "@prisma/client";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, KeyboardEvent, RefObject, SetStateAction, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import getToHomeForm, { FormValues } from "../../../components/forms/getToHomeForm";
@@ -23,6 +23,8 @@ export default function AddressForm({
   setAddresses,
   formRef,
   setShouldCreateOrder,
+  handleKeyDown,
+  refs
 }: {
   addInfo: {
     notes: string | undefined;
@@ -46,32 +48,9 @@ export default function AddressForm({
   setAddresses: Dispatch<SetStateAction<Address[]>>;
   formRef: any;
   setShouldCreateOrder: Dispatch<SetStateAction<boolean>>;
+  handleKeyDown: (e: KeyboardEvent) => void;
+  refs: RefObject<any>[]
 }) {
-  const streetRef = useRef<HTMLInputElement>(null);
-  const bellRef = useRef<HTMLInputElement>(null);
-  const contactRef = useRef<HTMLInputElement>(null);
-  const floorRef = useRef<HTMLInputElement>(null);
-  const stairRef = useRef<HTMLInputElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const surnameRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const infoRef = useRef<HTMLInputElement>(null);
-  const notesRef = useRef<HTMLInputElement>(null);
-  const prefRef = useRef<HTMLInputElement>(null);
-
-  const { handleKeyDown } = useFocusCycle([
-    streetRef,
-    bellRef,
-    contactRef,
-    floorRef,
-    stairRef,
-    nameRef,
-    surnameRef,
-    infoRef,
-    notesRef,
-    prefRef,
-  ]);
-
   const form = getToHomeForm();
 
   function onSubmit(values: FormValues) {
@@ -180,30 +159,30 @@ export default function AddressForm({
           className="w-full flex flex-col justify-between h-full"
         >
           <FormField
-            autofocus
             control={form.control}
             name="street"
-            ref={streetRef}
+            ref={refs[0]}
+            //autofocus={phone.length >= 9}
             label="Via"
             handleKeyDown={handleKeyDown}
             className="h-14 text-2xl uppercase"
-            example="(es. Via dei Giacinti 41) "
+            example="(es. Via dei Giacinti 41)"
           />
 
           <div className="flex justify-between gap-4">
             <FormField
+              ref={refs[1]}
               control={form.control}
               name="doorbell"
-              ref={bellRef}
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl uppercase"
               label="Campanello"
               example="(es. Rossi)"
             />
             <FormField
+              ref={refs[2]}
               control={form.control}
               name="contact_phone"
-              ref={contactRef}
               type="number"
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl uppercase"
@@ -213,18 +192,18 @@ export default function AddressForm({
 
           <div className="flex justify-between gap-4">
             <FormField
+              ref={refs[3]}
               control={form.control}
               name="floor"
               label="Piano"
-              ref={floorRef}
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl uppercase"
             />
             <FormField
+              ref={refs[4]}
               control={form.control}
               name="stair"
               label="Scala"
-              ref={stairRef}
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl uppercase"
               example="(dx / sx)"
@@ -235,15 +214,15 @@ export default function AddressForm({
             <FormField
               control={form.control}
               name="name"
+              ref={refs[5]}
               label="Nome"
-              ref={nameRef}
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl uppercase"
             />
             <FormField
               control={form.control}
               name="surname"
-              ref={surnameRef}
+              ref={refs[6]}
               handleKeyDown={handleKeyDown}
               label="Cognome"
               className="h-14 text-2xl uppercase"
@@ -253,8 +232,8 @@ export default function AddressForm({
           <FormField
             control={form.control}
             name="email"
-            ref={emailRef}
             label="Email"
+            ref={refs[7]}
             handleKeyDown={handleKeyDown}
             className="h-14 text-2xl uppercase"
             example="(es. mario.rossi@gmail.com)"
@@ -264,7 +243,7 @@ export default function AddressForm({
             <FormField
               control={form.control}
               name="street_info"
-              ref={infoRef}
+              ref={refs[8]}
               handleKeyDown={handleKeyDown}
               label="Informazioni stradali"
               example="(es. Arrivare da Via Udine..)"
@@ -275,7 +254,7 @@ export default function AddressForm({
             <FormField
               control={form.control}
               name="notes"
-              ref={notesRef}
+              ref={refs[9]}
               handleKeyDown={handleKeyDown}
               label="Note sull'ordine"
               example="(es. Extra wasabi, no zenzero)"
@@ -286,7 +265,7 @@ export default function AddressForm({
             <FormField
               control={form.control}
               name="preferences"
-              ref={prefRef}
+              ref={refs[10]}
               handleKeyDown={handleKeyDown}
               label="Preferenze cliente"
               example="(es. Intollerante, coca zero)"
@@ -295,9 +274,9 @@ export default function AddressForm({
             </FormField>
           </div>
 
-          <FormField control={form.control} name="when" label="Quando?">
+          {/* <FormField control={form.control} name="when" label="Quando?">
             <WhenSelector isForm className="h-14 text-2xl uppercase" />
-          </FormField>
+          </FormField> */}
         </form>
       </Form>
     </div>
