@@ -34,7 +34,7 @@ const columns = (
 
   TableColumn({
     accessorKey: "preferences",
-    header: "Prefernze",
+    header: "Preferenze",
   }),
 
   TableColumn({
@@ -48,7 +48,7 @@ const columns = (
         <DialogWrapper
           title="Gestisci indirizzi"
           trigger={
-            <Button type="button" variant={"link"}>
+            <Button type="button" variant={"outline"}>
               {customer?.addresses && customer?.addresses.length !== 0
                 ? `Vedi indirizzi (${customer?.addresses.length})`
                 : "Nessun indirizzo"}

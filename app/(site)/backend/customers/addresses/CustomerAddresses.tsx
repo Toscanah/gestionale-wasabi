@@ -48,7 +48,7 @@ export default function CustomerAddresses({
         street: "",
         street_info: "",
         temporary: false,
-        id: -1,
+        id: -1 * prevAddresses.length,
         active: true,
       },
       ...prevAddresses,
@@ -92,16 +92,16 @@ export default function CustomerAddresses({
       <Accordion
         type="single"
         collapsible
-        className="max-h-96 w-[40vw] overflow-y-auto overflow-x-hidden pr-4"
+        className="max-h-[450px] w-[40vw] overflow-y-auto overflow-x-hidden pr-4"
       >
         {currentAddresses.length > 0 ? (
-          currentAddresses.map((address) => (
+          currentAddresses.map((address, index) => (
             <div className="w-full flex gap-4 items-center">
               <AccordionItem value={address.id.toString()} key={address.id} className={cn("grow")}>
                 <AccordionTrigger className="text-xl ">
                   <div className="flex gap-4 items-center">
-                    {address.id == -1 ? (
-                      "Nuovo indirizzo"
+                    {address.id < 0 ? (
+                      `Nuovo indirizzo #${index + 1}`
                     ) : (
                       <>
                         <Badge variant={address.active ? "default" : "destructive"}>

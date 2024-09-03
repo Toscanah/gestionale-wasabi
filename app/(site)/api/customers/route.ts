@@ -4,6 +4,7 @@ import getRequestBody from "../../util/functions/getRequestBody";
 import updateCustomer from "../../sql/customers/updateCustomer";
 import { Address, Customer } from "@prisma/client";
 import createCustomer from "../../sql/customers/createCustomer";
+import toggleCustomer from "../../sql/customers/toggleCustomer";
 import getCustomersWithDetails from "../../sql/customers/getCustomersWithDetails";
 import updateAddressesOfCustomer from "../../sql/customers/updateAddressesOfCustomer";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
@@ -24,8 +25,6 @@ export async function POST(request: NextRequest) {
 
   switch (action) {
     case "updateCustomer":
-      console.log(content);
-
       return NextResponse.json(
         await updateCustomer({
           ...content,
@@ -49,6 +48,7 @@ export async function POST(request: NextRequest) {
       );
 
     case "toggleCustomer":
+      return NextResponse.json(await toggleCustomer(content?.id));
 
     case "updateAddressesOfCustomer":
       return NextResponse.json(
