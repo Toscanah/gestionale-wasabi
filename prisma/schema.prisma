@@ -125,7 +125,7 @@ model Rice {
 
 model Product {
     id          Int              @id @default(autoincrement())
-    category_id Int
+    category_id Int?
     code        String
     desc        String
     site_price  Float
@@ -133,7 +133,7 @@ model Product {
     rice        Float            @default(0)
     active      Boolean          @default(true)
     orders      ProductInOrder[]
-    category    Category         @relation(fields: [category_id], references: [id])
+    category    Category?        @relation(fields: [category_id], references: [id])
 }
 
 model ProductInOrder {

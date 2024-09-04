@@ -10,18 +10,14 @@ export default async function createNewProduct(product: ProductWithInfo) {
 
   if (existingProduct) return null;
 
-  return  await prisma.product.create({
+  return await prisma.product.create({
     data: {
       code: product.code,
       desc: product.desc,
-      site_price: product.site_price,
-      home_price: product.home_price,
+      site_price: Number(product.site_price),
+      home_price: Number(product.home_price),
       rice: product.rice,
-      category: {
-        connect: {
-          id: Number(product.category),
-        },
-      },
+      category_id: Number(product.category_id) ?? null,
     },
     include: {
       category: true,

@@ -9,8 +9,7 @@ export default async function addProductToOrder(
   productCode: string,
   quantity: number
 ): Promise<ProductInOrderType | null> {
-
-  const product: ProductWithInfo | null = await prisma.product.findFirst({
+  const product = await prisma.product.findFirst({
     where: {
       code: {
         equals: productCode,
@@ -37,15 +36,20 @@ export default async function addProductToOrder(
   });
 
   // creo i record con le opzioni di quel prodotto
-  await prisma.optionInProductOrder.createMany({
-    data: product.category.options.map((option) => ({
-      product_in_order_id: productInOrder.id,
-      option_id: option.option.id,
-    })),
-  });
+  if (product.category) {
+    await prisma.optionInProductOrder.createMany({
+      data: product.category.options.map((option) => ({
+        product_in_order_id: productInOrder.id,
+        option_id: option.option.id,
+      })),
+    });
+  }
 
   // aggiusto il totale dell'ordine
-  await prisma.order.update({
+  
+  console.log("Order ID:", order.id);
+
+  const updatedOrder = await prisma.order.update({
     where: {
       id: order.id,
     },
@@ -55,6 +59,7 @@ export default async function addProductToOrder(
       },
     },
   });
+
 
   // ritorno il prodotto ora con i vari record delle opzioni che ho aggiunto sopra
   return await prisma.productInOrder.findUnique({

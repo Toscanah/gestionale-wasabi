@@ -7,6 +7,7 @@ import { Buildings, Pencil } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
+import OrderHistory from "../../components/OrderHistory";
 
 const columns = (
   customers: CustomerWithDetails[],
@@ -35,6 +36,27 @@ const columns = (
   TableColumn({
     accessorKey: "preferences",
     header: "Preferenze",
+  }),
+
+  TableColumn({
+    accessorKey: "orderHistory",
+    header: "Storico ordini",
+    cellContent: (row) => {
+      const customer = row.original;
+
+      return (
+        <DialogWrapper
+          title="Storico ordini"
+          trigger={
+            <Button type="button" variant={"outline"}>
+              Vedi ordini precedenti
+            </Button>
+          }
+        >
+          <OrderHistory customer={customer}/>
+        </DialogWrapper>
+      );
+    },
   }),
 
   TableColumn({

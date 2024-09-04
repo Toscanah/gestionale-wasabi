@@ -40,10 +40,10 @@ export default function Payment({
 }) {
   const { onOrdersUpdate } = useWasabiContext();
   const [paymentAmounts, setPaymentAmounts] = useState({
-    [TYPE_OF_PAYMENT.CASH]: 0,
-    [TYPE_OF_PAYMENT.CARD]: 0,
-    [TYPE_OF_PAYMENT.VOUCH]: 0,
-    [TYPE_OF_PAYMENT.CREDIT]: 0,
+    [TYPE_OF_PAYMENT.CASH]: undefined,
+    [TYPE_OF_PAYMENT.CARD]: undefined,
+    [TYPE_OF_PAYMENT.VOUCH]: undefined,
+    [TYPE_OF_PAYMENT.CREDIT]: undefined,
   });
 
   const [payAll, setPayAll] = useState<TYPE_OF_PAYMENT | undefined>(undefined);
@@ -51,19 +51,21 @@ export default function Payment({
   const handlePayAll = () => {
     if (payAll) {
       setPaymentAmounts({
-        [TYPE_OF_PAYMENT.CASH]: 0,
-        [TYPE_OF_PAYMENT.CARD]: 0,
-        [TYPE_OF_PAYMENT.VOUCH]: 0,
-        [TYPE_OF_PAYMENT.CREDIT]: 0,
-        [payAll]: order.total ?? 0,
+        [TYPE_OF_PAYMENT.CASH]: undefined,
+        [TYPE_OF_PAYMENT.CARD]: undefined,
+        [TYPE_OF_PAYMENT.VOUCH]: undefined,
+        [TYPE_OF_PAYMENT.CREDIT]: undefined,
+        [payAll]: order.total ?? undefined,
       });
     }
   };
 
   const handlePaymentChange = (type: TYPE_OF_PAYMENT, value: number) => {
+    console.log(value);
+
     setPaymentAmounts((prev) => ({
       ...prev,
-      [type]: value,
+      [type]: isNaN(value) ? undefined : value,
     }));
   };
 
@@ -86,7 +88,7 @@ export default function Payment({
 
   const payOrder = () => {
     const payments = Object.entries(paymentAmounts)
-      .filter(([_, amount]) => amount > 0)
+      .filter(([_, amount]) => amount && amount > 0)
       .map(([type, amount]) => ({
         amount,
         type: type.toUpperCase(),
@@ -137,7 +139,7 @@ export default function Payment({
     });
   };
 
-  const totalPaid = Object.values(paymentAmounts).reduce((sum, amount) => sum + amount, 0);
+  const totalPaid = Object.values(paymentAmounts).reduce((sum, amount) => sum + (amount ?? 0), 0);
   const remainingAmount = (order.total ?? 0) - totalPaid;
 
   return (
@@ -163,7 +165,8 @@ export default function Payment({
                 <Label className="text-lg">{label}</Label>
                 <Input
                   value={paymentAmounts[type]}
-                  onChange={(e) => handlePaymentChange(type, Number(e.target.value))}
+                  type="number"
+                  onChange={(e) => handlePaymentChange(type, e.target.valueAsNumber)}
                 />
               </div>
             </div>
@@ -179,7 +182,9 @@ export default function Payment({
             <b>RIEPILOGO:</b>
           </div>
 
-          {paymentMethods.filter(({ type }) => paymentAmounts[type] !== 0).length > 0 && (
+          {paymentMethods.filter(
+            ({ type }) => paymentAmounts[type] !== undefined && paymentAmounts[type] !== 0
+          ).length > 0 && (
             <ul className="list-disc list-inside">
               {paymentMethods.map(
                 ({ type }) =>
@@ -207,7 +212,9 @@ export default function Payment({
         <div className="flex flex-col gap-6 w-1/2 text-4xl items-center text-center h-full justify-center">
           <h1>
             {!payAll ? (
-              <>Vuoi procedere con l'incasso di <b>€ {order.total}</b>?</>
+              <>
+                Vuoi procedere con l'incasso di <b>€ {order.total}</b>?
+              </>
             ) : (
               <>
                 Stai per pagare <b>€ {order.total}</b> con {getPaymentName(payAll)}, sei sicuro?

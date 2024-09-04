@@ -53,7 +53,7 @@ export default function ProductDashboard() {
       footerName={footerName}
       defaultValues={{
         ...object,
-        category: String(object?.category_id),
+        category: String(object?.category_id) ?? undefined,
       }}
       layout={[{ fieldsPerRow: 2 }, { fieldsPerRow: 1 }, { fieldsPerRow: 3 }]}
       formFields={getProductFields(categories)}

@@ -39,10 +39,12 @@ export default function OrderTable({
 
   const updateOrder = (updatedProducts: ProductInOrderType[]) => {
     setOrder &&
-      setOrder((prevOrder) =>
-        prevOrder
+      setOrder((prevOrder) => {
+        console.log(prevOrder);
+        return prevOrder
           ? {
               ...prevOrder,
+              id: prevOrder.id,
               products: updatedProducts,
               total: updatedProducts.reduce((acc, product) => {
                 const productPrice =
@@ -53,8 +55,8 @@ export default function OrderTable({
                 return acc + product.quantity * productPrice;
               }, 0),
             }
-          : prevOrder
-      );
+          : prevOrder;
+      });
   };
 
   const selectOption = (productInOrderId: number, optionId: number) => {
@@ -173,14 +175,22 @@ export default function OrderTable({
     }
   }, [newCode, newQuantity]);
 
+
+  //useEffect(() => console.log(order.id), [order])
+
   // FATTO
   const addProduct = () => {
+
+
     fetchRequest<ProductInOrderType>("POST", "/api/products/", "addProductToOrder", {
       order: order,
       productCode: newCode,
       quantity: newQuantity,
     }).then((productOnOrder) => {
+        
+
       if (productOnOrder) {
+        //console.log(productOnOrder)
         setProducts((prevProducts) => {
           const updatedProducts = [...prevProducts.slice(0, -1)];
 
@@ -200,9 +210,7 @@ export default function OrderTable({
           });
 
           updatedProducts.push(createDummyProduct());
-
           updateOrder(updatedProducts);
-
           return updatedProducts;
         });
 
