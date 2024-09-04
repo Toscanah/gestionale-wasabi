@@ -10,10 +10,12 @@ import { toastError, toastSuccess } from "../../util/toast";
 import { Option, OptionInProductOrder } from "@prisma/client";
 import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder, HomeOrder, PickupOrder } from "../../types/PrismaOrders";
 import OrderOverview from "./OrderOverview";
 import Payment from "../../payments/Payment";
 import DivideOrder from "./divide-order/DivideOrder";
+import { useProductManager } from "../../components/hooks/useProductManager";
+import { useOrderManager } from "../../components/hooks/useOrderManager";
 
 export type Actions = "" | "payFull" | "payPart" | "paidFull" | "paidPart";
 
@@ -26,148 +28,22 @@ export default function OrderTable({
   setOpen: Dispatch<SetStateAction<boolean>>;
   setOrder?: Dispatch<SetStateAction<AnyOrder | undefined>>;
 }) {
-  const [products, setProducts] = useState<ProductInOrderType[]>([
-    ...order.products,
-    createDummyProduct(),
-  ]);
+  const { onOrdersUpdate } = useWasabiContext();
+  const { copyFromOrder, updateOrder } = useOrderManager(order, setOrder);
+  const {
+    products,
+    setProducts,
+    addProduct,
+    newCode,
+    newQuantity,
+    updateProduct,
+    updateProductField,
+    deleteProducts,
+    updateProductOption,
+  } = useProductManager(order, updateOrder);
   const [action, setAction] = useState<Actions>("");
   const [rowSelection, setRowSelection] = useState({});
-  const [newCode, setNewCode] = useState<string>("");
-  const [newQuantity, setNewQuantity] = useState<number>(0);
-  const { onOrdersUpdate } = useWasabiContext();
   const [focusedInput, setFocusedInput] = useState({ rowIndex: products.length - 1, colIndex: 0 });
-
-  const updateOrder = (updatedProducts: ProductInOrderType[]) => {
-    setOrder &&
-      setOrder((prevOrder) => {
-        console.log(prevOrder);
-        return prevOrder
-          ? {
-              ...prevOrder,
-              id: prevOrder.id,
-              products: updatedProducts,
-              total: updatedProducts.reduce((acc, product) => {
-                const productPrice =
-                  order.type === OrderType.TO_HOME
-                    ? product.product.home_price
-                    : product.product.site_price;
-
-                return acc + product.quantity * productPrice;
-              }, 0),
-            }
-          : prevOrder;
-      });
-  };
-
-  const selectOption = (productInOrderId: number, optionId: number) => {
-    fetchRequest<OptionInProductOrder & { option: Option }>(
-      "POST",
-      "/api/products/",
-      "updateProductOptionsInOrder",
-      { productInOrderId, optionId }
-    ).then((newOption) => {
-      setProducts((prevProducts) =>
-        prevProducts.map((product: ProductInOrderType) =>
-          product.id === productInOrderId
-            ? {
-                ...product,
-                options: product.options.some(
-                  (selectedOption: { option: Option }) =>
-                    selectedOption.option.id === newOption.option_id
-                )
-                  ? product.options.filter(
-                      (selectedOption: { option: Option }) =>
-                        selectedOption.option.id !== newOption.option_id
-                    )
-                  : [...product.options, { option: newOption.option }],
-              }
-            : product
-        )
-      );
-
-      onOrdersUpdate(order.type as OrderType);
-    });
-  };
-
-  const handleFieldChange = (key: string, value: any, index: number) => {
-    const productToUpdate = products[index];
-
-    if (productToUpdate.product_id !== -1) {
-      updateProduct(key, value, index);
-    } else {
-      changeField(key, value, index);
-    }
-  };
-
-  // FATTO
-  const updateProduct = (key: string, value: any, index: number) => {
-    let productToUpdate = products[index];
-
-    if (key == "quantity" && value < 0) {
-      return toastError("La quantità non può essere negativa");
-    }
-
-    fetchRequest<{
-      updatedProduct?: ProductInOrderType;
-      deletedProduct?: ProductInOrderType;
-      error?: string;
-    }>("POST", "/api/products/", "updateProductInOrder", {
-      orderId: order.id,
-      key: key,
-      value: value,
-      product: productToUpdate,
-    }).then((result) => {
-      const { updatedProduct, deletedProduct, error } = result;
-
-      if (error) {
-        return toastError(
-          <>
-            Il codice <b>{value}</b> non corrisponde a nessun prodotto
-          </>
-        );
-      }
-
-      setProducts((prevProducts) => {
-        let updatedProducts = [...prevProducts];
-
-        if (deletedProduct) {
-          updatedProducts = updatedProducts.filter((p) => p.id !== deletedProduct.id);
-        }
-
-        if (updatedProduct) {
-          const existingIndex = updatedProducts.findIndex((p) => p.id === updatedProduct.id);
-
-          if (existingIndex === -1) {
-            updatedProducts[index] = updatedProduct;
-          } else {
-            updatedProducts[existingIndex] = updatedProduct;
-          }
-        }
-
-        updateOrder(updatedProducts);
-
-        return updatedProducts;
-      });
-
-      toastSuccess("Il prodotto è stato aggiornato correttamente", "Prodotto aggiornato");
-      onOrdersUpdate(order.type as OrderType);
-    });
-  };
-
-  const changeField = (key: string, value: any, index: number) => {
-    setProducts((prevProducts) => {
-      const updatedProducts = [...prevProducts];
-
-      if (key === "code") {
-        updatedProducts[index].product.code = value;
-        setNewCode(value);
-      } else if (key === "quantity") {
-        updatedProducts[index].quantity = value;
-        setNewQuantity(value);
-      }
-      return updatedProducts;
-    });
-  };
 
   useEffect(() => {
     if (newCode !== "" && newQuantity > 0) {
@@ -175,82 +51,13 @@ export default function OrderTable({
     }
   }, [newCode, newQuantity]);
 
+  const handleFieldChange = (key: string, value: any, index: number) => {
+    const productToUpdate = products[index];
 
-  //useEffect(() => console.log(order.id), [order])
-
-  // FATTO
-  const addProduct = () => {
-
-
-    fetchRequest<ProductInOrderType>("POST", "/api/products/", "addProductToOrder", {
-      order: order,
-      productCode: newCode,
-      quantity: newQuantity,
-    }).then((productOnOrder) => {
-        
-
-      if (productOnOrder) {
-        //console.log(productOnOrder)
-        setProducts((prevProducts) => {
-          const updatedProducts = [...prevProducts.slice(0, -1)];
-
-          updatedProducts.push({
-            product: {
-              ...productOnOrder.product,
-              code: newCode,
-            },
-            options: productOnOrder.options,
-            product_id: productOnOrder.product_id,
-            order_id: order.id,
-            quantity: productOnOrder.quantity,
-            total: productOnOrder.total,
-            id: productOnOrder.id,
-            isPaidFully: false,
-            paidQuantity: 0,
-          });
-
-          updatedProducts.push(createDummyProduct());
-          updateOrder(updatedProducts);
-          return updatedProducts;
-        });
-
-        setNewCode("");
-        setNewQuantity(0);
-        onOrdersUpdate(order.type as OrderType);
-
-        toastSuccess("Il prodotto è stato aggiunto correttamente", "Prodotto aggiunto");
-      } else {
-        toastError(
-          <>
-            Il prodotto con codice <b>{newCode}</b> non è stato trovato
-          </>,
-          "Prodotto non trovato"
-        );
-      }
-    });
-  };
-
-  // FATTO
-  const deleteRows = async (table: TanstackTable<ProductInOrderType>) => {
-    const selectedRows = table.getFilteredSelectedRowModel().rows;
-    const selectedProductIds = selectedRows.map((row) => row.original.id);
-
-    if (selectedProductIds.length > 0) {
-      fetchRequest("DELETE", "/api/products/", "deleteProductFromOrder", {
-        productIds: selectedProductIds,
-        orderId: order.id,
-      }).then(() => {
-        setProducts((prevProducts) => {
-          const updatedProducts = prevProducts.filter((p) => !selectedProductIds.includes(p.id));
-
-          updateOrder(updatedProducts);
-
-          return updatedProducts;
-        });
-
-        table.resetRowSelection();
-        onOrdersUpdate(order.type as OrderType);
-      });
+    if (productToUpdate.product_id !== -1) {
+      updateProduct(key, value, index);
+    } else {
+      updateProductField(key, value, index);
     }
   };
 
@@ -259,7 +66,7 @@ export default function OrderTable({
     order.type as OrderType,
     focusedInput,
     setFocusedInput,
-    selectOption
+    updateProductOption
   );
   const table = getTable<ProductInOrderType>({
     data: products,
@@ -281,7 +88,13 @@ export default function OrderTable({
         <Table table={table} tableClassName="h-full max-h-full" />
       </div>
 
-      <OrderOverview deleteRows={deleteRows} table={table} order={order} setAction={setAction} />
+      <OrderOverview
+        deleteProducts={() => deleteProducts(table)}
+        table={table}
+        order={order}
+        setAction={setAction}
+        copyFromOrder={copyFromOrder}
+      />
     </div>
   ) : action == "payFull" ? (
     <Payment

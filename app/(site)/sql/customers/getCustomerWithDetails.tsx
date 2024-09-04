@@ -1,8 +1,13 @@
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import prisma from "../db";
 
-export default async function getCustomersWithDetails(): Promise<CustomerWithDetails[]> {
-  return await prisma.customer.findMany({
+export default async function getCustomerWithDetails(
+  customerId: number
+): Promise<CustomerWithDetails | null> {
+  return await prisma.customer.findUnique({
+    where: {
+      id: customerId,
+    },
     include: {
       addresses: true,
       phone: true,

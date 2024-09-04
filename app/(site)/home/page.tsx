@@ -9,6 +9,7 @@ import Header from "./Header";
 import fetchRequest from "../util/functions/fetchRequest";
 import { cn } from "@/lib/utils";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
+import { Rice } from "@prisma/client";
 
 export default function Home() {
   const [orders, setOrders] = useState<{
@@ -36,10 +37,16 @@ export default function Home() {
     fetchOrders(type);
   };
 
+  const createDefaultRice = () => {
+    fetchRequest<Rice | {}>("POST", "/api/rice/", "createDefaultRice");
+  };
+
   useEffect(() => {
     fetchOrders(OrderType.TABLE);
     fetchOrders(OrderType.PICK_UP);
     fetchOrders(OrderType.TO_HOME);
+
+    //createDefaultRice();
   }, []);
 
   return (
