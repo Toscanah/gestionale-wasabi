@@ -69,19 +69,17 @@ export default function ProductDashboard() {
             <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
           </div>
         ) : (
-          products.length > 0 && (
-            <Manager<ProductAndCategory>
-              receivedData={products}
-              columns={columns}
-              FormFields={Fields}
-              path="/api/products/"
-              fetchActions={{
-                add: "createNewProduct",
-                toggle: "toggleProduct",
-                update: "updateProduct",
-              }}
-            />
-          )
+          <Manager<ProductAndCategory>
+            receivedData={products}
+            columns={columns}
+            FormFields={Fields}
+            path="/api/products/"
+            fetchActions={{
+              add: "createNewProduct",
+              toggle: "toggleProduct",
+              update: "updateProduct",
+            }}
+          />
         )}
       </div>
 
