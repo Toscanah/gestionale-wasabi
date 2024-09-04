@@ -62,19 +62,17 @@ export default function CategoryDashboard() {
             <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
           </div>
         ) : (
-          
-            <Manager<CategoryWithOptions>
-              receivedData={categories}
-              columns={columns}
-              FormFields={Fields}
-              path="/api/categories/"
-              fetchActions={{
-                add: "createNewCategory",
-                toggle: "toggleCategory",
-                update: "updateCategory",
-              }}
-            />
-          
+          <Manager<CategoryWithOptions>
+            receivedData={categories}
+            columns={columns}
+            FormFields={Fields}
+            path="/api/categories/"
+            fetchActions={{
+              add: "createNewCategory",
+              toggle: "toggleCategory",
+              update: "updateCategory",
+            }}
+          />
         )}
       </div>
 

@@ -3,7 +3,6 @@ import { Prisma } from "@prisma/client";
 type CommonOrderPayload = Prisma.OrderGetPayload<{
   include: {
     payments: true;
-
     products: {
       include: {
         product: {

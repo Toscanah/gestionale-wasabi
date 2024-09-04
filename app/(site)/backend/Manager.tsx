@@ -97,8 +97,6 @@ export default function Manager<T extends { id: number; active: boolean }>({
         return toastError("Questo elemento esiste già");
       }
 
-      console.log(newObject)
-
       setData((prevData) => [...prevData, newObject]);
       toastSuccess("Elemento aggiunto correttamente");
     });

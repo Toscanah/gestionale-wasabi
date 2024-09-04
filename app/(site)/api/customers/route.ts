@@ -8,6 +8,7 @@ import toggleCustomer from "../../sql/customers/toggleCustomer";
 import getCustomersWithDetails from "../../sql/customers/getCustomersWithDetails";
 import updateAddressesOfCustomer from "../../sql/customers/updateAddressesOfCustomer";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
+import getCustomerWithDetails from "../../sql/customers/getCustomerWithDetails";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -17,6 +18,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(await getCustomerByPhone(params.get("phone") ?? ""));
     case "getCustomersWithDetails":
       return NextResponse.json(await getCustomersWithDetails());
+    case "getCustomerWithDetails":
+      console.log(params.get("customerId"));
+
+      return NextResponse.json(
+        await getCustomerWithDetails(Number(params.get("customerId")) ?? -1)
+      );
   }
 }
 

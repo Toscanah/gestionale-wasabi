@@ -37,5 +37,6 @@ export default async function fetchRequest<T>(
       throw new Error(`Unsupported HTTP method: ${method}`);
   }
 
+
   return await (await fetch(url.toString(), requestOptions)).json();
 }

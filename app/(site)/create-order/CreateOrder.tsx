@@ -24,13 +24,16 @@ export default function CreateOrder({ type }: { type: OrderType }) {
   return (
     <DialogWrapper
       open={open}
+      header={false}
       onOpenChange={() => {
         setOrder(undefined);
         setOpen(!open);
       }}
       contentClassName={cn(
         "flex flex-col gap-6 items-center",
-        type === OrderType.TO_HOME || order ? "w-[90vw] h-[90vh]" : "w-[40vw] "
+        type === OrderType.TO_HOME || order
+          ? "w-[97.5vw] max-w-screen max-h-screen h-[95vh]"
+          : "w-[40vw] "
       )}
       trigger={
         <Button className="w-full text-2xl h-12">

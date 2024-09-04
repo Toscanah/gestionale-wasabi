@@ -45,9 +45,6 @@ export default async function addProductToOrder(
     });
   }
 
-  // aggiusto il totale dell'ordine
-  
-  console.log("Order ID:", order.id);
 
   const updatedOrder = await prisma.order.update({
     where: {

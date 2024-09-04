@@ -10,7 +10,19 @@ export type CustomerWithDetails = Prisma.CustomerGetPayload<{
           include: {
             products: {
               include: {
-                product: true;
+                product: {
+                  include: {
+                    category: {
+                      include: {
+                        options: {
+                          select: {
+                            option: true;
+                          };
+                        };
+                      };
+                    };
+                  };
+                };
                 options: {
                   include: {
                     option: true;
@@ -28,7 +40,19 @@ export type CustomerWithDetails = Prisma.CustomerGetPayload<{
           include: {
             products: {
               include: {
-                product: true;
+                product: {
+                  include: {
+                    category: {
+                      include: {
+                        options: {
+                          select: {
+                            option: true;
+                          };
+                        };
+                      };
+                    };
+                  };
+                };
                 options: {
                   include: {
                     option: true;

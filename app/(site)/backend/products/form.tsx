@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button";
 export const formSchema = z.object({
   code: getZodField("string"),
   desc: getZodField("string"),
-  site_price: getZodField("string"),
-  home_price: getZodField("string"),
+  site_price: getZodField("any"),
+  home_price: getZodField("any"),
   rice: getZodField("number", false),
   category: getZodField("any", false),
 });

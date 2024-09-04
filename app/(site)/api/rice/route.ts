@@ -3,6 +3,7 @@ import getRice from "../../sql/rice/getRice";
 import updateRice from "../../sql/rice/updateRice";
 import getRequestBody from "../../util/functions/getRequestBody";
 import { Rice } from "@prisma/client";
+import createDefaultRice from "../../sql/rice/createDefaultRice";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -17,10 +18,13 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const { action, content } = await getRequestBody(request);
 
+
   switch (action) {
-    case "updateRice": {
+    case "updateRice":
       const { rice } = content;
       return NextResponse.json(await updateRice(rice as Rice));
-    }
+
+    case "createDefaultRice":
+      return NextResponse.json(await createDefaultRice());
   }
 }

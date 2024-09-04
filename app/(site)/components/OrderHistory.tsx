@@ -9,6 +9,8 @@ import {
 import { useEffect, useState } from "react";
 import { ProductWithInfo } from "../types/ProductWithInfo";
 import { Separator } from "@/components/ui/separator";
+import { HomeOrder, PickupOrder } from "../types/PrismaOrders";
+import { Button } from "@/components/ui/button";
 
 type ProductStats = {
   desc: string;
@@ -24,7 +26,13 @@ type OrderStats = {
   avgOrderCost: number;
 };
 
-export default function OrderHistory({ customer }: { customer: CustomerWithDetails }) {
+export default function OrderHistory({
+  customer,
+  onCreate,
+}: {
+  customer: CustomerWithDetails;
+  onCreate?: (order: HomeOrder | PickupOrder) => void;
+}) {
   const orderTypes = [
     { type: "Domicilio", orders: customer.home_orders },
     { type: "Asporto", orders: customer.pickup_orders },
@@ -103,17 +111,36 @@ export default function OrderHistory({ customer }: { customer: CustomerWithDetai
     });
   }, [customer]);
 
+  const formatDateWithDay = (dateString: Date) => {
+    const date = new Date(dateString);
+
+    // Create a formatter for the day of the week and date
+    const dayFormatter = new Intl.DateTimeFormat("it-IT", { weekday: "long" });
+    const dateFormatter = new Intl.DateTimeFormat("it-IT", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+    const dayOfWeek = dayFormatter.format(date);
+    const formattedDate = dateFormatter.format(date);
+
+    // Capitalize the first letter of the day of the week
+    const capitalizedDay = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+
+    return `${capitalizedDay}, ${formattedDate}`;
+  };
+
   return (
     <div className="w-full h-full flex flex-col gap-4">
       {!orderTypes.some(({ orders }) => orders.length > 0) ? (
         <p className="text-xl text-center mt-4">Nessun ordine registrato</p>
       ) : (
         <Accordion
-          type="single"
-          collapsible
+          type="multiple"
           className="max-h-[450px] w-[40vw] overflow-y-auto overflow-x-hidden pr-4"
         >
-          <AccordionItem value={"stats"} key={-1}>
+          <AccordionItem value={"stats"} key={"stats"}>
             <AccordionTrigger className="text-xl">Vedi statistiche</AccordionTrigger>
             <AccordionContent className="space-y-4">
               {orderTypes.some(({ orders }) => orders.length > 0) && (
@@ -166,10 +193,12 @@ export default function OrderHistory({ customer }: { customer: CustomerWithDetai
               return (
                 <AccordionItem value={`${type}-${id}`} key={`${type}-${id}`}>
                   <AccordionTrigger className="text-xl">
-                    <div className="flex gap-4 items-center">
-                      <Badge>{type}</Badge>
-                      {new Date(order.created_at).toLocaleDateString("it-IT")} -{" "}
-                      {"€ " + order.total}
+                    <div className="flex gap-4 items-center justify-between">
+                      <span>
+                        <Badge>{type}</Badge>
+                        {formatDateWithDay(order.created_at)} - {"€ " + order.total}
+                      </span>
+                      {onCreate && <Button onClick={() => onCreate(order as any)}>Ricrea</Button>}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="space-y-4">
@@ -180,8 +209,18 @@ export default function OrderHistory({ customer }: { customer: CustomerWithDetai
                             key={product.id}
                             className="text-xl flex justify-between items-center"
                           >
-                            <span className="max-w-96 truncate">
+                            <span className="">
                               {product.quantity} x {product.product.desc}
+                              {product.options.length > 0 && (
+                                <span>
+                                  {" "}
+                                  (
+                                  {product.options
+                                    .map((option) => option.option.option_name)
+                                    .join(", ")}
+                                  )
+                                </span>
+                              )}
                             </span>
                             <span className="font-semibold">
                               {type === "Domicilio"
