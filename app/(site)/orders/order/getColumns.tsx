@@ -175,7 +175,7 @@ export default function getColumns(
           return <></>;
         }
 
-        const avalOptions = row.original.product.category.options ?? [];
+        const avalOptions = row.original.product?.category?.options ?? [];
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
 
         return (

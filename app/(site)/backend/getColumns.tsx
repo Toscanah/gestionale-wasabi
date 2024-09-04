@@ -17,7 +17,10 @@ export default function getColumns<T extends { id: number; active: boolean }>(
       accessorKey: "active",
       header: "Attivo?",
       cellContent: (row) => (
-        <Badge variant={row.original.active ? "default" : "destructive"}>
+        <Badge
+          //variant={row.original.active ? "default" : "destructive"}
+          className={cn(row.original.active ? "bg-successGreen-light text-foreground" : "bg-destructive")}
+        >
           {row.original.active ? "Attivo" : "Non attivo"}
         </Badge>
       ),

@@ -48,6 +48,42 @@ export default async function updateCustomer(
     include: {
       phone: true,
       addresses: true,
+      home_orders: {
+        include: {
+          order: {
+            include: {
+              products: {
+                include: {
+                  product: true,
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      pickup_orders: {
+        include: {
+          order: {
+            include: {
+              products: {
+                include: {
+                  product: true,
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 }

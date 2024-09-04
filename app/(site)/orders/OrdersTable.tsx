@@ -17,6 +17,8 @@ export default function OrdersTable({ data, type }: TableProps) {
   const columns = getColumns(type);
   const table = getTable<AnyOrder>({ data, columns });
 
+  //console.log(data)
+
   const CustomCell = ({
     cell,
     className,

@@ -6,6 +6,42 @@ export default async function getCustomersWithDetails(): Promise<CustomerWithDet
     include: {
       addresses: true,
       phone: true,
+      home_orders: {
+        include: {
+          order: {
+            include: {
+              products: {
+                include: {
+                  product: true,
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      pickup_orders: {
+        include: {
+          order: {
+            include: {
+              products: {
+                include: {
+                  product: true,
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 }

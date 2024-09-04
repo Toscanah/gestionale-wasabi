@@ -47,6 +47,9 @@ export default async function getOrdersByType(type: OrderType) {
       type: type,
       paid: false,
     },
+    orderBy: {
+      created_at: 'asc',  // Ordering by creation date in ascending order
+    },
   });
 
 

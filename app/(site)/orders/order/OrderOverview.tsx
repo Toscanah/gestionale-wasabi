@@ -31,7 +31,7 @@ export default function OrderSummary({
     );
   }, [order.products]);
 
-  console.log(order)
+
 
   return (
     <div className="w-[20%] flex flex-col gap-6 h-full">
