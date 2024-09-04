@@ -62,7 +62,7 @@ export default function CategoryDashboard() {
             <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
           </div>
         ) : (
-          categories.length > 0 && (
+          
             <Manager<CategoryWithOptions>
               receivedData={categories}
               columns={columns}
@@ -74,7 +74,7 @@ export default function CategoryDashboard() {
                 update: "updateCategory",
               }}
             />
-          )
+          
         )}
       </div>
 
