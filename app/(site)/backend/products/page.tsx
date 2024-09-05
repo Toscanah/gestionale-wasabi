@@ -10,8 +10,6 @@ import FormFields from "../FormFields";
 import { CategoryWithOptions } from "../../types/CategoryWithOptions";
 import { formSchema } from "./form";
 import { getProductFields } from "./form";
-import { Textarea } from "@/components/ui/textarea";
-import { BallTriangle, Grid, LineWave, Triangle } from "react-loader-spinner";
 import logo from "../../../../public/logo.png";
 import Image from "next/image";
 
@@ -55,6 +53,8 @@ export default function ProductDashboard() {
         ...object,
         category: object?.category ?? "",
         category_id: object?.category_id ? Number(object?.category_id) : undefined,
+        // home_price: object?.home_price || undefined,
+        // site_price: object?.site_price || undefined,
       }}
       layout={[{ fieldsPerRow: 2 }, { fieldsPerRow: 1 }, { fieldsPerRow: 3 }]}
       formFields={getProductFields(categories)}
