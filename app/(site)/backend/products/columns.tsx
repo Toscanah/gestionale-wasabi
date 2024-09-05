@@ -18,18 +18,18 @@ const columns: ColumnDef<ProductAndCategory>[] = [
   }),
 
   TableColumn({
-    accessorKey: "home_price",
-    header: "Asporto",
-    cellContent: (row) => {
-      return "€ " + row.original.home_price;
-    },
-  }),
-
-  TableColumn({
     accessorKey: "site_price",
     header: "In loco",
     cellContent: (row) => {
       return "€ " + row.original.site_price;
+    },
+  }),
+
+  TableColumn({
+    accessorKey: "home_price",
+    header: "Asporto",
+    cellContent: (row) => {
+      return "€ " + row.original.home_price;
     },
   }),
 

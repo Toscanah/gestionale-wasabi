@@ -7,14 +7,15 @@ import { CategoryWithOptions } from "../../types/CategoryWithOptions";
 import SelectWrapper from "../../components/select/SelectWrapper";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
+import { X } from "@phosphor-icons/react";
 
 export const formSchema = z.object({
   code: getZodField("string"),
   desc: getZodField("string"),
-  site_price: getZodField("any"),
-  home_price: getZodField("any"),
+  site_price: getZodField("number"),
+  home_price: getZodField("number"),
   rice: getZodField("number", false),
-  category: getZodField("any", false),
+  category_id: getZodField("any", false),
 });
 
 export function getProductFields(categories: CategoryWithOptions[]): FormFieldType[] {
@@ -40,10 +41,12 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
       type: "number",
     },
     {
-      name: "category",
+      name: "category_id",
       label: "Categoria",
       children: ({ field }: { field: ControllerRenderProps }) => {
         let hoverCondition = false;
+
+        console.log(field.value);
 
         if (field.value !== "undefined") {
           hoverCondition =
@@ -51,22 +54,25 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
         }
 
         return (
-          <div className="space-y-2 text-center">
+          <div className="space-y-2 space-x-2 text-center">
             <SelectWrapper
               className="h-10"
               field={field}
               groups={[
                 {
-                  items: categories.map((cat) => ({
-                    value: cat.id.toString(),
-                    name: cat.category,
-                  })),
+                  items: [
+                    { value: "-1", name: "Nessuna categoria" },
+                    ...categories.map((cat) => ({
+                      value: cat.id.toString(),
+                      name: cat.category,
+                    })),
+                  ],
                 },
               ]}
-              defaultValue={field.value.toString()}
-              //placeholder={!activeCategory ? "Categorie inattiva" : undefined}
+              //defaultValue={field.value?.toString() == undefined ? "-1" : field.value?.toString()}
+              value={field.value?.toString() || "-1"}
             />
-            {hoverCondition && (
+            {/* {hoverCondition && (
               <HoverCard>
                 <HoverCardTrigger asChild>
                   <div className="text-sm hover:underline hover:cursor-pointer text-red-500">
@@ -78,7 +84,7 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
                   rimuovi dovrai andare a riattivarla per poi re-impostarla di nuovo qua
                 </HoverCardContent>
               </HoverCard>
-            )}
+            )} */}
           </div>
         );
       },
