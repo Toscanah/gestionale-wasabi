@@ -45,7 +45,7 @@ export default function OrderHistory({
     avgOrdersPerYear: 0,
     avgOrderCost: 0,
   });
-
+ 
   useEffect(() => {
     const allOrders = [...customer.home_orders, ...customer.pickup_orders];
 
@@ -114,7 +114,6 @@ export default function OrderHistory({
   const formatDateWithDay = (dateString: Date) => {
     const date = new Date(dateString);
 
-    // Create a formatter for the day of the week and date
     const dayFormatter = new Intl.DateTimeFormat("it-IT", { weekday: "long" });
     const dateFormatter = new Intl.DateTimeFormat("it-IT", {
       day: "2-digit",
@@ -124,8 +123,6 @@ export default function OrderHistory({
 
     const dayOfWeek = dayFormatter.format(date);
     const formattedDate = dateFormatter.format(date);
-
-    // Capitalize the first letter of the day of the week
     const capitalizedDay = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
 
     return `${capitalizedDay}, ${formattedDate}`;
@@ -133,7 +130,7 @@ export default function OrderHistory({
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
-      {!orderTypes.some(({ orders }) => orders.length > 0) ? (
+      {!orderTypes.some(({ orders }) => orders && orders.length > 0) ? (
         <p className="text-xl text-center mt-4">Nessun ordine registrato</p>
       ) : (
         <Accordion

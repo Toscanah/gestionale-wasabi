@@ -64,9 +64,9 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
           accessorKey: "address.street",
           header: "Indirizzo",
           cellContent: (row) =>
-            `${row.original.home_order?.address?.street ?? ""} ${
+            `${(row.original.home_order?.address?.street ?? "").toUpperCase()} ${(
               row.original.home_order?.address?.civic ?? ""
-            }`,
+            ).toUpperCase()}`,
         }),
         TableColumn<HomeOrder>({
           accessorKey: "home_order.when",

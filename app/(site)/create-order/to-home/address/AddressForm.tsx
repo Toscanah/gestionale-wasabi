@@ -24,7 +24,7 @@ export default function AddressForm({
   formRef,
   setShouldCreateOrder,
   handleKeyDown,
-  refs
+  refs,
 }: {
   addInfo: {
     notes: string | undefined;
@@ -49,7 +49,7 @@ export default function AddressForm({
   formRef: any;
   setShouldCreateOrder: Dispatch<SetStateAction<boolean>>;
   handleKeyDown: (e: KeyboardEvent) => void;
-  refs: RefObject<any>[]
+  refs: RefObject<any>[];
 }) {
   const form = getToHomeForm();
 
@@ -91,7 +91,7 @@ export default function AddressForm({
     fetchRequest<Customer>(
       "POST",
       "/api/customers/",
-      actionCustomer === "create" ? "createCustomer" : "updateCustomer",
+      actionCustomer === "create" ? "createCustomer" : "updateCustomerFromOrder",
       actionCustomer === "create" ? { phone, customer: customerContent } : customerContent
     )
       .then((updatedCustomer) => {

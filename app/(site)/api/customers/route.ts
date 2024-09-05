@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import getCustomerByPhone from "../../sql/customers/getCustomerByPhone";
 import getRequestBody from "../../util/functions/getRequestBody";
-import updateCustomer from "../../sql/customers/updateCustomer";
 import { Address, Customer } from "@prisma/client";
 import createCustomer from "../../sql/customers/createCustomer";
 import toggleCustomer from "../../sql/customers/toggleCustomer";
 import getCustomersWithDetails from "../../sql/customers/getCustomersWithDetails";
 import updateAddressesOfCustomer from "../../sql/customers/updateAddressesOfCustomer";
+import updateCustomerFromOrder from "../../sql/customers/updateCustomerFromOrder"
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import getCustomerWithDetails from "../../sql/customers/getCustomerWithDetails";
+import updateCustomerFromAdmin from "../../sql/customers/updateCustomerFromAdmin";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -19,8 +20,6 @@ export async function GET(request: NextRequest) {
     case "getCustomersWithDetails":
       return NextResponse.json(await getCustomersWithDetails());
     case "getCustomerWithDetails":
-      console.log(params.get("customerId"));
-
       return NextResponse.json(
         await getCustomerWithDetails(Number(params.get("customerId")) ?? -1)
       );
@@ -31,13 +30,16 @@ export async function POST(request: NextRequest) {
   const { action, content } = await getRequestBody(request);
 
   switch (action) {
-    case "updateCustomer":
+    case "updateCustomerFromAdmin":
       return NextResponse.json(
-        await updateCustomer({
+        await updateCustomerFromAdmin({
           ...content,
           phone: { phone: content?.phone, id: content?.phone_id },
         } as CustomerWithDetails)
       );
+
+    case "updateCustomerFromOrder":
+      return NextResponse.json(await updateCustomerFromOrder(content as any));
 
     case "createCustomer":
       return NextResponse.json(

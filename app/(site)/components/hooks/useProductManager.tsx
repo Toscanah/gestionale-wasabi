@@ -1,18 +1,15 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { AnyOrder } from "../../types/PrismaOrders";
 import createDummyProduct from "../../util/functions/createDummyProduct";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../util/toast";
-import { OrderType } from "../../types/OrderType";
-import { useWasabiContext } from "../../context/WasabiContext";
-import { useOrderManager } from "./useOrderManager";
 import { Table } from "@tanstack/react-table";
 import { Option, OptionInProductOrder } from "@prisma/client";
 
 export function useProductManager(
   order: AnyOrder,
-  updateOrder?: (updatedProducts: ProductInOrderType[]) => void
+  updateOrder: (updatedProducts: ProductInOrderType[]) => void
 ) {
   const [products, setProducts] = useState<ProductInOrderType[]>([
     ...order.products,
@@ -109,22 +106,25 @@ export function useProductManager(
       "updateProductOptionsInOrder",
       { productInOrderId, optionId }
     ).then((newOption) => {
-      const updatedProducts = products.map((product: ProductInOrderType) =>
-        product.id === productInOrderId
-          ? {
-              ...product,
-              options: product.options.some(
+      const updatedProducts = products.map((product: ProductInOrderType) => {
+        if (product.id !== productInOrderId) {
+          return product;
+        }
+
+        const isOptionPresent = product.options.some(
+          (selectedOption: { option: Option }) => selectedOption.option.id === newOption.option_id
+        );
+
+        return {
+          ...product,
+          options: isOptionPresent
+            ? product.options.filter(
                 (selectedOption: { option: Option }) =>
-                  selectedOption.option.id === newOption.option_id
+                  selectedOption.option.id !== newOption.option_id
               )
-                ? product.options.filter(
-                    (selectedOption: { option: Option }) =>
-                      selectedOption.option.id !== newOption.option_id
-                  )
-                : [...product.options, { option: newOption.option }],
-            }
-          : product
-      );
+            : [...product.options, { option: newOption.option }],
+        };
+      });
 
       updateProductsList({ updatedProducts });
     });
@@ -145,22 +145,17 @@ export function useProductManager(
       if (isDummyUpdate) {
         return [...prevProducts];
       }
-      
-      // rimuovo i prodotti eliminati + il dummy
+
       const filteredProducts = prevProducts
         .filter((p) => !deletedProducts.some((deleted) => deleted.id === p.id))
         .filter((p) => p.id !== -1);
-
-      // aggiorno i nuovi prodotti
       const productsWithUpdates = filteredProducts.map((product) => {
         const update = updatedProducts.find((p) => p.id === product.id);
         return update ? { ...product, ...update } : product;
       });
-
-      // costruisco l'array finale con i prodotti aggiornati, quelli nuovi e il dummy
       const updatedProductList = [...productsWithUpdates, ...newProducts, createDummyProduct()];
-      updateOrder?.(updatedProductList);
 
+      updateOrder(updatedProductList);
       return updatedProductList;
     });
   };
