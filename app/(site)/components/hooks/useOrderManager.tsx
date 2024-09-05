@@ -2,30 +2,30 @@ import { Dispatch, SetStateAction } from "react";
 import { AnyOrder, HomeOrder, PickupOrder } from "../../types/PrismaOrders";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import createDummyProduct from "../../util/functions/createDummyProduct";
 import { OrderType } from "../../types/OrderType";
 import { useProductManager } from "./useProductManager";
-import updateProduct from "../../sql/products/updateProduct";
 import { useWasabiContext } from "../../context/WasabiContext";
+import { update } from "lodash";
 
 export function useOrderManager(
   order: AnyOrder,
   setOrder?: Dispatch<SetStateAction<AnyOrder | undefined>>
 ) {
   const { onOrdersUpdate } = useWasabiContext();
-  const { updateProductsList } = useProductManager(order);
 
   const copyFromOrder = (orderToCopy: HomeOrder | PickupOrder) => {
-    fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "copyFromOrder", orderToCopy).then(
-      (newProducts) => {
-        if (newProducts) {
-          updateProductsList({ newProducts });
-        }
+    fetchRequest<ProductInOrderType[]>("POST", "/api/orders/", "copyFromOrder", {
+      sourceOrder: orderToCopy,
+      order: order,
+    }).then((newProducts) => {
+      if (newProducts) {
+        updateProductsList({ newProducts });
       }
-    );
+    });
   };
 
   const updateOrder = (updatedProducts: ProductInOrderType[]) => {
+    onOrdersUpdate(order.type as OrderType);
     setOrder?.((prevOrder) => {
       if (!prevOrder) return prevOrder;
 
@@ -35,9 +35,9 @@ export function useOrderManager(
         total: calculateTotal(updatedProducts),
       };
     });
-
-    onOrdersUpdate(order.type as OrderType);
   };
+
+  const { updateProductsList } = useProductManager(order, updateOrder);
 
   const calculateTotal = (products: ProductInOrderType[]) => {
     return products.reduce((acc, product) => {

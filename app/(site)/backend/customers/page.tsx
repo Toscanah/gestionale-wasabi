@@ -67,7 +67,7 @@ export default function CustomersDashboard() {
             fetchActions={{
               add: "createCustomer",
               toggle: "toggleCustomer",
-              update: "updateCustomer",
+              update: "updateCustomerFromAdmin",
             }}
           />
         )}

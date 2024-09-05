@@ -18,6 +18,66 @@ export default async function createCustomer(customer: Customer, phone: string) 
         },
       },
       addresses: true,
+      home_orders: {
+        include: {
+          order: {
+            include: {
+              products: {
+                include: {
+                  product: {
+                    include: {
+                      category: {
+                        include: {
+                          options: {
+                            select: {
+                              option: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      pickup_orders: {
+        include: {
+          order: {
+            include: {
+              products: {
+                include: {
+                  product: {
+                    include: {
+                      category: {
+                        include: {
+                          options: {
+                            select: {
+                              option: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 }

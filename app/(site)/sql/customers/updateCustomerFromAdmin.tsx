@@ -2,12 +2,10 @@ import { Customer, Phone } from "@prisma/client";
 import prisma from "../db";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 
-export default async function updateCustomer(
+export default async function updateCustomerFromAdmin(
   customer: CustomerWithDetails
 ): Promise<CustomerWithDetails> {
   let phoneId: number | null = customer.phone_id ?? null;
-
-  console.log(customer);
 
   // Handle phone updates or creation
   if (phoneId) {
