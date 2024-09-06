@@ -9,16 +9,20 @@ export default function TableControls({
   setGlobalFilter,
   AddComponent,
   children,
+  title,
 }: {
   table: Table<any>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   AddComponent?: ReactNode;
   children?: ReactNode;
+  title?: ReactNode;
 }) {
   return (
     <div className="flex gap-4 items-center">
+      {title}
       {AddComponent}
+
 
       <Input
         placeholder="Cerca"

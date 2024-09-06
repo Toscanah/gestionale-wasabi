@@ -7,7 +7,7 @@ import getColumns from "./getColumns";
 import { OrderType } from "@/app/(site)/types/OrderType";
 import { Button } from "@/components/ui/button";
 import { Actions } from "../OrderTable";
-import Payment from "@/app/(site)/payments/Payment";
+import OrderPayment from "@/app/(site)/payments/OrderPayment";
 
 export default function DivideOrder({
   products,
@@ -92,7 +92,7 @@ export default function DivideOrder({
       </div>
     </div>
   ) : (
-    <Payment
+    <OrderPayment
       setProducts={setProducts}
       type="partial"
       order={{

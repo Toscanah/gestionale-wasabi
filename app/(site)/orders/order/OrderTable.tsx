@@ -12,7 +12,7 @@ import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
 import { AnyOrder, HomeOrder, PickupOrder } from "../../types/PrismaOrders";
 import OrderOverview from "./OrderOverview";
-import Payment from "../../payments/Payment";
+import OrderPayment from "../../payments/OrderPayment";
 import DivideOrder from "./divide-order/DivideOrder";
 import { useProductManager } from "../../components/hooks/useProductManager";
 import { useOrderManager } from "../../components/hooks/useOrderManager";
@@ -98,7 +98,7 @@ export default function OrderTable({
       />
     </div>
   ) : action == "payFull" ? (
-    <Payment
+    <OrderPayment
       handleOrderPaid={() => setAction("paidFull")}
       handleBackButton={() => setAction("")}
       order={order}
