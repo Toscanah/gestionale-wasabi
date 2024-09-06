@@ -18,6 +18,7 @@ export default function TableColumn<T>({
   cellContent,
 }: TableColumnProps<T>): ColumnDef<T> {
   return {
+    //accessorFn,
     accessorKey,
     header: ({ column }) =>
       sortable ? (
@@ -32,8 +33,7 @@ export default function TableColumn<T>({
         header
       ),
     cell: ({ row }) =>
-      cellContent
-        ? cellContent(row)
-        : String(getNestedValue(row.original, accessorKey)),
+      cellContent ? cellContent(row) : String(getNestedValue(row.original, accessorKey)),
+
   };
 }

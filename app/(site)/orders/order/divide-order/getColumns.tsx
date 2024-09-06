@@ -41,7 +41,7 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrderTyp
           return <></>;
         }
 
-        const avalOptions = row.original.product.category.options ?? [];
+        const avalOptions = row.original.product?.category?.options ?? [];
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
 
         return (

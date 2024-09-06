@@ -10,9 +10,11 @@ export default function Actions() {
     <div className="flex gap-4 justify-center items-center">
       <RiceDialog />
 
-      <Button className="" variant={"outline"}>
-        <PiggyBank className="mr-2 h-4 w-4" /> Pagamenti
-      </Button>
+      <Link href={"../payments"}>
+        <Button className="" variant={"outline"}>
+          <PiggyBank className="mr-2 h-4 w-4" /> Pagamenti
+        </Button>
+      </Link>
 
       <Link href={"../backend"}>
         <Button className="" variant={"outline"}>

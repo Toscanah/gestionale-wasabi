@@ -142,7 +142,6 @@ export default function OrderHistory({
   };
 
   const handleRecreate = () => {
-    console.log(selectedProducts);
     onCreate?.(selectedProducts);
   };
 

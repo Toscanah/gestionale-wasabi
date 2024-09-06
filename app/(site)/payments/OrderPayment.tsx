@@ -25,7 +25,7 @@ const paymentMethods = [
   { type: TYPE_OF_PAYMENT.CREDIT, label: "Credito", icon: Coins },
 ];
 
-export default function Payment({
+export default function OrderPayment({
   handleBackButton,
   handleOrderPaid,
   order,
