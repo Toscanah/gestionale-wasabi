@@ -44,15 +44,6 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
       name: "category_id",
       label: "Categoria",
       children: ({ field }: { field: ControllerRenderProps }) => {
-        let hoverCondition = false;
-
-        console.log(field.value);
-
-        if (field.value !== "undefined") {
-          hoverCondition =
-            categories.find((cat) => cat.id.toString() === field.value) == undefined ? true : false;
-        }
-
         return (
           <div className="space-y-2 space-x-2 text-center">
             <SelectWrapper
@@ -72,19 +63,6 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
               //defaultValue={field.value?.toString() == undefined ? "-1" : field.value?.toString()}
               value={field.value?.toString() || "-1"}
             />
-            {/* {hoverCondition && (
-              <HoverCard>
-                <HoverCardTrigger asChild>
-                  <div className="text-sm hover:underline hover:cursor-pointer text-red-500">
-                    Metti il cursore qua
-                  </div>
-                </HoverCardTrigger>
-                <HoverCardContent className="w-80">
-                  La categoria di questo prodotto non è attiva e non è presente nell'elenco. Se la
-                  rimuovi dovrai andare a riattivarla per poi re-impostarla di nuovo qua
-                </HoverCardContent>
-              </HoverCard>
-            )} */}
           </div>
         );
       },

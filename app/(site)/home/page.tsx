@@ -25,6 +25,7 @@ export default function Home() {
   const fetchOrders = (type: OrderType) => {
     fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrdersByType", { type }).then((data) => {
       if (data) {
+        //console.log(data)
         setOrders((prevOrders) => ({
           ...prevOrders,
           [type]: data,

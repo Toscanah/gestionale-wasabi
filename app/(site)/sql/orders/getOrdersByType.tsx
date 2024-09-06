@@ -48,10 +48,9 @@ export default async function getOrdersByType(type: OrderType) {
       paid: false,
     },
     orderBy: {
-      created_at: 'asc',  // Ordering by creation date in ascending order
+      created_at: "asc", // Ordering by creation date in ascending order
     },
   });
-
 
   const adjustedOrders = orders.map((order) => {
     const unpaidProducts = order.products.map((product) => {
@@ -76,6 +75,10 @@ export default async function getOrdersByType(type: OrderType) {
       );
     }, 0);
 
+    // if (type == OrderType.TO_HOME) {
+    //   console.log(unpaidOrderTotal);
+    // }
+
     return {
       ...order,
       products: unpaidProducts,
@@ -84,64 +87,4 @@ export default async function getOrdersByType(type: OrderType) {
   });
 
   return adjustedOrders;
-
-
-  // for (const order of orders) {
-  //   const calculatedTotal = order.products.reduce(
-  //     (sum, productInOrder) => sum + productInOrder.total,
-  //     0
-  //   );
-
-  //   if (order.total !== calculatedTotal) {
-  //     await prisma.order.update({
-  //       where: { id: order.id },
-  //       data: { total: calculatedTotal },
-  //     });
-  //   }
-  // }
-
-  // // Fetch orders again to get updated totals if any were changed
-  // const updatedOrders = await prisma.order.findMany({
-  //   include: {
-  //     products: {
-  //       include: {
-  //         product: {
-  //           include: {
-  //             category: {
-  //               include: {
-  //                 options: {
-  //                   include: {
-  //                     option: true,
-  //                   },
-  //                 },
-  //               },
-  //             },
-  //           },
-  //         },
-  //         options: {
-  //           include: {
-  //             option: true,
-  //           },
-  //         },
-  //       },
-  //     },
-  //     payments: true,
-  //     home_order: {
-  //       include: { address: true, customer: true },
-  //     },
-  //     pickup_order: {
-  //       include: { customer: true },
-  //     },
-  //     table_order: {
-  //       include: {
-  //         table: true,
-  //       },
-  //     },
-  //   },
-  //   where: {
-  //     type: type,
-  //   },
-  // });
-
-  // return updatedOrders;
 }

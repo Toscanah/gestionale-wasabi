@@ -12,23 +12,33 @@ import OrderHistory from "../../components/OrderHistory";
 import { OrderType } from "../../types/OrderType";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import fetchRequest from "../../util/functions/fetchRequest";
+import WhenSelector from "../../components/select/WhenSelector";
 
 export default function OrderSummary({
   order,
   table,
   deleteProducts,
   setAction,
-  copyFromOrder,
+  addProducts,
 }: {
   order: AnyOrder;
   table: Table<ProductInOrderType>;
   deleteProducts: () => void;
   setAction: Dispatch<SetStateAction<Actions>>;
-  copyFromOrder: (order: HomeOrder | PickupOrder) => void;
+  addProducts: (newProducts: ProductInOrderType[]) => void;
 }) {
   const { rice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
   const [customer, setCustomer] = useState<CustomerWithDetails | undefined>(undefined);
+  
+
+  const [orderTime, setOrderTime] = useState<string>(
+    order.type !== OrderType.TABLE
+      ? order.type == OrderType.PICK_UP
+        ? (order as PickupOrder).pickup_order?.when ?? ""
+        : (order as HomeOrder).home_order?.when ?? ""
+      : ""
+  );
 
   useEffect(() => {
     // I tavoli non hanno un cliente > no cronologia ordini
@@ -75,6 +85,11 @@ export default function OrderSummary({
     );
   }, [order.products]);
 
+  const updateOrderTime = (value: string) => {
+    setOrderTime(value);
+    fetchRequest("POST", "/api/orders/", "updateOrderTime", { time: value, orderId: order.id });
+  };
+
   return (
     <div className="w-[20%] flex flex-col gap-6 h-full">
       <Button
@@ -99,8 +114,16 @@ export default function OrderSummary({
             </Button>
           }
         >
-          <OrderHistory customer={customer} onCreate={copyFromOrder} />
+          <OrderHistory customer={customer} onCreate={addProducts} />
         </DialogWrapper>
+      )}
+
+      {order.type !== OrderType.TABLE && (
+        <WhenSelector
+          className="h-12 text-2xl uppercase"
+          value={orderTime}
+          onValueChange={updateOrderTime}
+        />
       )}
 
       <div className="mt-auto flex flex-col gap-6">

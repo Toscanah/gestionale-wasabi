@@ -24,34 +24,9 @@ export function getCategoryFields(options: Option[]): FormFieldType[] {
       label: "Opzioni",
       unique: true,
       children: ({ field }: { field: ControllerRenderProps }) => {
-        console.log(field.value)
-        let hoverCondition = false;
-
-        if (field.value !== undefined) {
-          console.log(options.find((opt) => opt.option.id.toString() === field.value))
-
-          hoverCondition =
-            options.find((opt) => opt.option.id.toString() === field.value) == undefined
-              ? true
-              : false;
-        }
-
         return (
           <div className="space-y-2 text-center">
             <CategoryOptions field={field} options={options} />
-            {hoverCondition && (
-              <HoverCard>
-                <HoverCardTrigger asChild>
-                  <div className="text-sm hover:underline hover:cursor-pointer text-red-500">
-                    Metti il cursore qua
-                  </div>
-                </HoverCardTrigger>
-                <HoverCardContent className="w-80">
-                  L'opzione di questa categoria non è attiva e non è presente nell'elenco. Se la
-                  rimuovi dovrai andare a riattivarla per poi re-impostarla di nuovo qua
-                </HoverCardContent>
-              </HoverCard>
-            )}
           </div>
         );
       },

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import addProductToOrder from "../../sql/products/addProductToOrder";
+import addProductsToOrder from "../../sql/products/addProductsToOrder";
 import updateProductInOrder from "../../sql/products/updateProductInOrder";
 import deleteProductFromOrder from "../../sql/products/deleteProductFromOrder";
 import getProducts from "../../sql/products/getProducts";
@@ -35,6 +36,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         await updateProductInOrder(content?.orderId, content?.key, content?.value, content?.product)
       );
+    case "addProductsToOrder":
+      return NextResponse.json(await addProductsToOrder(content?.orderId, content?.products));;
+
     case "updateProductOptionsInOrder":
       return NextResponse.json(
         await updateProductOptionsInOrder(content?.productInOrderId, content?.optionId)

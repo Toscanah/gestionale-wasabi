@@ -5,7 +5,7 @@ import { OrderType } from "../../types/OrderType";
 import createPickupOrder from "../../sql/orders/createPickupOrder";
 import createHomeOrder from "../../sql/orders/createHomeOrder";
 import getRequestBody from "../../util/functions/getRequestBody";
-import copyFromOrder from "../../sql/orders/copyFromOrder";
+import updateOrderTime from "../../sql/orders/updateOrderTime";
 
 export async function POST(request: NextRequest) {
   const { action, content } = await getRequestBody(request);
@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(await createPickupOrder(content as any));
     case "createHomeOrder":
       return NextResponse.json(await createHomeOrder(content as any));
-    case "copyFromOrder":
-      return NextResponse.json(await copyFromOrder(content?.sourceOrder, content?.order));
+    case "updateOrderTime":
+      return NextResponse.json(await updateOrderTime(content?.time, content?.orderId));
   }
 }
 

@@ -23,15 +23,24 @@ export function useProductManager(
       order,
       productCode: newCode,
       quantity: newQuantity,
-    }).then((productOnOrder) => {
-      if (productOnOrder) {
-        updateProductsList({ newProducts: [productOnOrder] });
+    }).then((newProduct) => {
+      if (newProduct) {
+        updateProductsList({ newProducts: [newProduct] });
         setNewCode("");
         setNewQuantity(0);
         toastSuccess("Il prodotto è stato aggiunto correttamente", "Prodotto aggiunto");
       } else {
         toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
       }
+    });
+  };
+
+  const addProducts = (products: ProductInOrderType[]) => {
+    fetchRequest<ProductInOrderType[]>("POST", "/api/products", "addProductsToOrder", {
+      orderId: order.id,
+      products,
+    }).then((newProducts) => {
+      updateProductsList({ newProducts });
     });
   };
 
@@ -164,6 +173,7 @@ export function useProductManager(
     products,
     setProducts,
     addProduct,
+    addProducts,
     newCode,
     newQuantity,
     updateProductsList,

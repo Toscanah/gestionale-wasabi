@@ -11,6 +11,8 @@ import { ProductWithInfo } from "../types/ProductWithInfo";
 import { Separator } from "@/components/ui/separator";
 import { HomeOrder, PickupOrder } from "../types/PrismaOrders";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox"; // Assuming you're using a Checkbox component
+import { ProductInOrderType } from "../types/ProductInOrderType";
 
 type ProductStats = {
   desc: string;
@@ -31,12 +33,13 @@ export default function OrderHistory({
   onCreate,
 }: {
   customer: CustomerWithDetails;
-  onCreate?: (order: HomeOrder | PickupOrder) => void;
+  onCreate?: (newProducts: ProductInOrderType[]) => void;
 }) {
   const orderTypes = [
     { type: "Domicilio", orders: customer.home_orders },
     { type: "Asporto", orders: customer.pickup_orders },
   ];
+
   const [stats, setStats] = useState<OrderStats>({
     mostBoughtProduct: undefined,
     leastBoughtProduct: undefined,
@@ -45,7 +48,9 @@ export default function OrderHistory({
     avgOrdersPerYear: 0,
     avgOrderCost: 0,
   });
- 
+
+  const [selectedProducts, setSelectedProducts] = useState<ProductInOrderType[]>([]);
+
   useEffect(() => {
     const allOrders = [...customer.home_orders, ...customer.pickup_orders];
 
@@ -128,13 +133,41 @@ export default function OrderHistory({
     return `${capitalizedDay}, ${formattedDate}`;
   };
 
+  const handleCheckboxChange = (product: ProductInOrderType) => {
+    setSelectedProducts((prevSelected) =>
+      prevSelected.some((p) => p.id === product.id)
+        ? prevSelected.filter((p) => p.id !== product.id)
+        : [...prevSelected, product]
+    );
+  };
+
+  const handleRecreate = () => {
+    console.log(selectedProducts);
+    onCreate?.(selectedProducts);
+  };
+
   return (
     <div className="w-full h-full flex flex-col gap-4">
       {!orderTypes.some(({ orders }) => orders && orders.length > 0) ? (
         <p className="text-xl text-center mt-4">Nessun ordine registrato</p>
       ) : (
         <Accordion
-          type="multiple"
+          onValueChange={(e) => {
+            if (e.length > 0) {
+              const [orderType, orderIdString] = e.split("-");
+              const orderId = Number(orderIdString);
+              const selectedOrderType = orderTypes.find((type) => type.type === orderType);
+              const selectedOrder = selectedOrderType?.orders.find((order) => order.id === orderId);
+
+              if (selectedOrder) {
+                setSelectedProducts(selectedOrder.order.products);
+              }
+            } else {
+              setSelectedProducts([]);
+            }
+          }}
+          type="single"
+          collapsible
           className="max-h-[450px] w-[40vw] overflow-y-auto overflow-x-hidden pr-4"
         >
           <AccordionItem value={"stats"} key={"stats"}>
@@ -191,11 +224,10 @@ export default function OrderHistory({
                 <AccordionItem value={`${type}-${id}`} key={`${type}-${id}`}>
                   <AccordionTrigger className="text-xl">
                     <div className="flex gap-4 items-center justify-between">
-                      <span>
+                      <span className="flex items-center gap-2">
                         <Badge>{type}</Badge>
                         {formatDateWithDay(order.created_at)} - {"€ " + order.total}
                       </span>
-                      {onCreate && <Button onClick={() => onCreate(order as any)}>Ricrea</Button>}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="space-y-4">
@@ -206,7 +238,13 @@ export default function OrderHistory({
                             key={product.id}
                             className="text-xl flex justify-between items-center"
                           >
-                            <span className="">
+                            <span className="flex items-center gap-2">
+                              {onCreate && (
+                                <Checkbox
+                                  defaultChecked={true}
+                                  onCheckedChange={() => handleCheckboxChange(product)}
+                                />
+                              )}
                               {product.quantity} x {product.product.desc}
                               {product.options.length > 0 && (
                                 <span>
@@ -229,6 +267,15 @@ export default function OrderHistory({
                       </ul>
                     ) : (
                       <p className="text-xl">Nessun prodotto in questo ordine</p>
+                    )}
+
+                    {onCreate && sortedProducts.length > 0 && (
+                      <Button
+                        onClick={() => handleRecreate()}
+                        disabled={!(selectedProducts.length > 0)}
+                      >
+                        Ricrea
+                      </Button>
                     )}
                   </AccordionContent>
                 </AccordionItem>
