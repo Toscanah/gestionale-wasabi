@@ -273,10 +273,6 @@ export default function AddressForm({
               <Textarea className="resize-none text-xl uppercase" />
             </FormField>
           </div>
-
-          {/* <FormField control={form.control} name="when" label="Quando?">
-            <WhenSelector isForm className="h-14 text-2xl uppercase" />
-          </FormField> */}
         </form>
       </Form>
     </div>

@@ -13,6 +13,12 @@ enum OrderType {
     PICK_UP
 }
 
+enum OrderState {
+    ACTIVE
+    FULFILLED
+    ELIMINATED
+}
+
 enum PaymentType {
     CASH
     CARD
@@ -26,6 +32,7 @@ model Order {
     updated_at   DateTime         @default(now()) @updatedAt
     total        Float            @default(0)
     paid         Boolean          @default(false)
+    state        OrderState       @default(ACTIVE)
     type         OrderType
     products     ProductInOrder[]
     payments     Payment[]

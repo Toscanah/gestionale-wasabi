@@ -29,11 +29,12 @@ export default function OrderTable({
   setOrder?: Dispatch<SetStateAction<AnyOrder | undefined>>;
 }) {
   const { onOrdersUpdate } = useWasabiContext();
-  const { copyFromOrder, updateOrder } = useOrderManager(order, setOrder);
+  const { updateOrder } = useOrderManager(order, setOrder);
   const {
     products,
     setProducts,
     addProduct,
+    addProducts,
     newCode,
     newQuantity,
     updateProduct,
@@ -93,7 +94,7 @@ export default function OrderTable({
         table={table}
         order={order}
         setAction={setAction}
-        copyFromOrder={copyFromOrder}
+        addProducts={addProducts}
       />
     </div>
   ) : action == "payFull" ? (

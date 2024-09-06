@@ -13,9 +13,9 @@ import { Dispatch, SetStateAction, useState } from "react";
 import fetchRequest from "../../util/functions/fetchRequest";
 
 export const formSchema = z.object({
-  name: getZodField("string", true),
-  surname: getZodField("string", true),
-  phone: getZodField("string", false),
+  name: getZodField("string", false),
+  surname: getZodField("string", false),
+  phone: getZodField("string"),
   email: getZodField("string", false),
   preferences: getZodField("string", false),
   phone_id: getZodField("any", false),

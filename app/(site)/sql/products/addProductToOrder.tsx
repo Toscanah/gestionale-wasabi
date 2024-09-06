@@ -46,7 +46,7 @@ export default async function addProductToOrder(
   }
 
 
-  const updatedOrder = await prisma.order.update({
+  await prisma.order.update({
     where: {
       id: order.id,
     },
