@@ -25,6 +25,12 @@ export function useOrderManager(
     });
   };
 
+  const cancelOrder = () => {
+    fetchRequest("POST", "/api/orders/", "cancelOrder", { orderId: order.id }).then(() =>
+      onOrdersUpdate(order.type as OrderType)
+    );
+  };
+
   const calculateTotal = (products: ProductInOrderType[]) => {
     return products.reduce((acc, product) => {
       const productPrice =
@@ -33,5 +39,5 @@ export function useOrderManager(
     }, 0);
   };
 
-  return { updateOrder };
+  return { updateOrder, cancelOrder };
 }

@@ -5,8 +5,6 @@ import formatRice from "../util/functions/formatRice";
 export default function RiceSummary() {
   const { rice } = useWasabiContext();
 
-  console.log("riso in summary", rice.remaining)
-
   return (
     <div
       className={cn(

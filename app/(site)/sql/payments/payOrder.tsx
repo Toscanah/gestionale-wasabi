@@ -61,7 +61,7 @@ export default async function payOrder(
   if (allProductsPaid.length === 0) {
     await prisma.order.update({
       where: { id: orderId },
-      data: { paid: true },
+      data: { state: "PAID" },
     });
   }
 

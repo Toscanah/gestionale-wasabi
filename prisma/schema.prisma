@@ -15,8 +15,8 @@ enum OrderType {
 
 enum OrderState {
     ACTIVE
-    FULFILLED
-    ELIMINATED
+    PAID
+    CANCELLED
 }
 
 enum PaymentType {
@@ -31,7 +31,6 @@ model Order {
     created_at   DateTime         @default(now())
     updated_at   DateTime         @default(now()) @updatedAt
     total        Float            @default(0)
-    paid         Boolean          @default(false)
     state        OrderState       @default(ACTIVE)
     type         OrderType
     products     ProductInOrder[]

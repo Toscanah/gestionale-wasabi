@@ -27,24 +27,34 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
         ? generateTimeSlots(18, 30, 22, 30, currentHour, currentMinute)
         : [];
 
-    // Check if the current `value` is valid or has already passed
     const allTimeSlots = [...lunchTimes, ...dinnerTimes];
     const isValuePresent = value && allTimeSlots.includes(value);
 
     const isBeforeCurrentTime = (timeString: string) => {
       const [hours, minutes] = timeString.split(":").map(Number);
-      return hours < currentHour || (hours === currentHour && minutes <= currentMinute);
+
+      // Create a Date object for the selected time and the current time
+      const selectedTime = new Date();
+      selectedTime.setHours(hours, minutes, 0, 0); // Set to the selected time
+
+      const currentTime = new Date(); // Current time is now
+
+      // Check if the selected time is before the current time
+      return selectedTime < currentTime;
     };
 
-    // Create a new group if `value` is not present and is before the current time
+    //console.log(isBeforeCurrentTime(value ?? ""));
+
     const additionalGroup =
-      value && !isValuePresent && isBeforeCurrentTime(value)
+      value && !isValuePresent 
         ? [
             {
               items: [value],
             },
           ]
         : [];
+
+    console.log(additionalGroup);
 
     return (
       <SelectWrapper
