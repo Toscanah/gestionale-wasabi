@@ -15,6 +15,7 @@ export default async function addProductsToOrder(
           product_id: productInOrder.product.id,
           quantity: productInOrder.quantity,
           total: productInOrder.total,
+          riceQuantity: productInOrder.product.rice * productInOrder.quantity,
           // If product options are needed, uncomment this part
           // options: {
           //   create: productInOrder.options.map((opt) => ({

@@ -151,6 +151,7 @@ model ProductInOrder {
     total        Float                  @default(0)
     isPaidFully  Boolean                @default(false)
     paidQuantity Int                    @default(0)
+    riceQuantity Float                  @default(0)
     options      OptionInProductOrder[]
     product      Product                @relation(fields: [product_id], references: [id])
     order        Order                  @relation(fields: [order_id], references: [id])

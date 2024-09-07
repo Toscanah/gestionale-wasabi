@@ -1,7 +1,5 @@
 import {
   createContext,
-  Dispatch,
-  SetStateAction,
   useContext,
   useState,
   ReactNode,
@@ -12,12 +10,14 @@ import fetchRequest from "../util/functions/fetchRequest";
 import { Rice } from "@prisma/client";
 import { toastSuccess } from "../util/toast";
 
+type RiceState = { total: Rice; remaining: Rice };
+
 interface WasabiContextProps {
   onOrdersUpdate: (type: OrderType) => void;
-  rice: Rice;
-  setRice: Dispatch<SetStateAction<Rice>>;
-  fetchRice: () => void;
-  updateRice: (rice: Rice) => void;
+  rice: RiceState;
+  updateTotalRice: (total: Rice) => void;
+  fetchRemainingRice: () => void;
+  
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);
@@ -37,23 +37,43 @@ export const WasabiProvider = ({
   children: ReactNode;
   onOrdersUpdate: (type: OrderType) => void;
 }) => {
-  const [rice, setRice] = useState<Rice>({
-    id: 1,
-    amount: 0,
-    threshold: 0,
+  const [rice, setRice] = useState<{ total: Rice; remaining: Rice }>({
+    total: { id: 1, amount: -1, threshold: -1 },
+    remaining: { id: 1, amount: -1, threshold: -1 },
   });
 
-  const fetchRice = () =>
-    fetchRequest<Rice>("GET", "/api/rice/", "getRice").then((rice) => setRice(rice));
+  const fetchTotalRice = () =>
+    fetchRequest<Rice>("GET", "/api/rice/", "getTotalRice").then((total) => {
+      setRice((prevRice) => ({ ...prevRice, total }));
+    });
 
-  const updateRice = (rice: Rice) => {
-    fetchRequest("POST", "/api/rice/", "updateRice", { rice }).then(() => {
+  const fetchRemainingRice = () =>
+    fetchRequest<Rice>("GET", "/api/rice", "getRemainingRice").then((remaining) =>
+      setRice((prevRice) => ({ ...prevRice, remaining }))
+    );
+
+  const updateTotalRice = (total: Rice) => {
+    fetchRequest("POST", "/api/rice/", "updateRice", total).then(() => {
+      setRice((prevRice) => ({ ...prevRice, total }));
+      fetchRemainingRice();
       toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
     });
   };
 
+  useEffect(() => {
+    fetchTotalRice();
+    fetchRemainingRice();
+  }, []);
+
   return (
-    <WasabiContext.Provider value={{ onOrdersUpdate, rice, setRice, fetchRice, updateRice }}>
+    <WasabiContext.Provider
+      value={{
+        fetchRemainingRice,
+        onOrdersUpdate,
+        rice,
+        updateTotalRice,
+      }}
+    >
       {children}
     </WasabiContext.Provider>
   );

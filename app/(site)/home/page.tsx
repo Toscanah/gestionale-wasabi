@@ -38,16 +38,10 @@ export default function Home() {
     fetchOrders(type);
   };
 
-  const createDefaultRice = () => {
-    fetchRequest<Rice | {}>("POST", "/api/rice/", "createDefaultRice");
-  };
-
   useEffect(() => {
     fetchOrders(OrderType.TABLE);
     fetchOrders(OrderType.PICK_UP);
     fetchOrders(OrderType.TO_HOME);
-
-    //createDefaultRice();
   }, []);
 
   return (

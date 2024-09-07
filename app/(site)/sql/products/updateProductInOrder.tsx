@@ -42,6 +42,7 @@ export default async function updateProductInOrder(
         data: {
           product_id: newProduct.id,
           total: newTotal,
+          riceQuantity: newProduct.rice * productInOrder.quantity,
         },
         include: {
           product: {
@@ -61,10 +62,11 @@ export default async function updateProductInOrder(
       });
 
       await prisma.optionInProductOrder.createMany({
-        data: newProduct.category.options.map((option) => ({
-          product_in_order_id: updatedProduct.id,
-          option_id: option.option.id,
-        })),
+        data:
+          newProduct?.category?.options.map((option) => ({
+            product_in_order_id: updatedProduct.id,
+            option_id: option.option.id,
+          })) ?? [],
       });
 
       const difference = newTotal - productInOrder.total;
@@ -158,6 +160,7 @@ export default async function updateProductInOrder(
           data: {
             quantity: { increment: quantityDifference },
             total: { increment: totalDifference },
+            riceQuantity: { increment: quantityDifference * productInOrder.product.rice },
           },
           include: {
             product: {

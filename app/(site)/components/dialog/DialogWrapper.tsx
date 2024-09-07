@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 
 interface DialogWrapperProps {
   children?: ReactNode;
-  title?: string;
+  title?: string | ReactNode;
   trigger: ReactNode | JSX.Element;
   showCloseButton?: boolean;
   desc?: ReactNode;
@@ -23,13 +23,14 @@ interface DialogWrapperProps {
   onDelete?: () => void;
   onOpenChange?: (open: boolean) => void;
   contentClassName?: string;
+  triggerClassName?: string;
   header?: boolean;
   open?: boolean;
 }
 
 export default function DialogWrapper({
   children,
-  title = "",
+  title = "Titolo!!!!!",
   trigger,
   showCloseButton = true,
   desc,
@@ -37,12 +38,15 @@ export default function DialogWrapper({
   onDelete,
   onOpenChange,
   contentClassName,
+  triggerClassName,
   header = true,
   open,
 }: DialogWrapperProps) {
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger asChild className={triggerClassName}>
+        {trigger}
+      </DialogTrigger>
       <DialogContent
         className={cn("max-w-screen max-h-screen w-auto", contentClassName)}
         showCloseButton={showCloseButton}
