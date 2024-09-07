@@ -17,15 +17,17 @@ import fetchRequest from "../util/functions/fetchRequest";
 import { useEffect, useState } from "react";
 
 export default function RiceDialog() {
-  const { updateRice, rice, setRice } = useWasabiContext();
+  const { rice, updateTotalRice } = useWasabiContext();
+  const [newRice, setNewRice] = useState<Rice>(rice.total);
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={(open) => setNewRice(rice.total)}>
       <DialogTrigger asChild>
         <Button variant={"outline"}>
           <Gear className="mr-2 h-4 w-4" /> Riso
         </Button>
       </DialogTrigger>
+
       <DialogContent>
         {/* <DialogHeader>
           <DialogTitle className="mb-4">Gestione riso</DialogTitle>
@@ -40,9 +42,13 @@ export default function RiceDialog() {
               className="h-10 text-2xl"
               type="number"
               id="rice"
-              value={rice.amount}
+              value={newRice.amount}
               onChange={(e) =>
-                setRice({ id: 1, amount: Number(e.target.value), threshold: rice.threshold })
+                setNewRice({
+                  id: 1,
+                  amount: e.target.valueAsNumber,
+                  threshold: newRice.threshold,
+                })
               }
             />
           </div>
@@ -54,16 +60,16 @@ export default function RiceDialog() {
               className="h-10 text-2xl"
               type="number"
               id="threshold"
-              value={rice.threshold}
+              value={newRice.threshold}
               onChange={(e) =>
-                setRice({ id: 1, amount: rice.amount, threshold: Number(e.target.value) })
+                setNewRice({ id: 1, amount: newRice.amount, threshold: e.target.valueAsNumber })
               }
             />
           </div>
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="submit" onClick={() => updateRice(rice)} className="w-full">
+            <Button type="submit" onClick={() => updateTotalRice(newRice)} className="w-full">
               Salva
             </Button>
           </DialogClose>

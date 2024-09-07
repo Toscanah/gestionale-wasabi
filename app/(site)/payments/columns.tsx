@@ -1,14 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Payment } from "@prisma/client";
 import TableColumn from "../components/table/TableColumn";
 import { PaymentWithOrder } from "../types/PaymentWithOrder";
 import DialogWrapper from "../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { OrderType } from "../types/OrderType";
 
 const columns: ColumnDef<PaymentWithOrder>[] = [
   TableColumn({
     accessorKey: "amount",
     header: "Ammontare",
+    cellContent: (row) => "€ " + row.original.amount,
   }),
 
   TableColumn({
@@ -18,7 +20,7 @@ const columns: ColumnDef<PaymentWithOrder>[] = [
       row.original.type == "CARD"
         ? "CARTA"
         : row.original.type == "CASH"
-        ? "BANCONOTE"
+        ? "CONTANTI"
         : row.original.type == "CREDIT"
         ? "CREDITO"
         : "BUONI PASTO",
@@ -52,7 +54,7 @@ const columns: ColumnDef<PaymentWithOrder>[] = [
     accessorKey: "ordine",
     header: "Ordine",
     cellContent: (row) => {
-      const order = row.original;
+      const order = row.original.order;
 
       return (
         <DialogWrapper
@@ -61,8 +63,22 @@ const columns: ColumnDef<PaymentWithOrder>[] = [
               Vedi ordine
             </Button>
           }
+          title={
+            <div className="flex gap-2 items-center">
+              <Badge>
+                {order.type == OrderType.TO_HOME
+                  ? "Domicilio"
+                  : order.type == OrderType.TABLE
+                  ? "Tavolo"
+                  : "Asporto"}
+              </Badge>
+              Ordine del {new Date(order.created_at).toLocaleDateString("it-IT")}
+            </div>
+          }
         >
-          <div>{order.toString()}</div>
+          <div className="flex flex-col gap-4">
+            <span>Totale: € {order.total}</span>
+          </div>
         </DialogWrapper>
       );
     },

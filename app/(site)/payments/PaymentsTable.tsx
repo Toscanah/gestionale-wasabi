@@ -9,6 +9,7 @@ import useGlobalFilter from "../components/hooks/useGlobalFilter";
 import GoBack from "../components/GoBack";
 import TableControls from "../components/table/TableControls";
 import { PaymentWithOrder } from "../types/PaymentWithOrder";
+import SelectWrapper from "../components/select/SelectWrapper";
 
 export default function PaymentsTable({ payments }: { payments: PaymentWithOrder[] }) {
   const [allPayments, setAllPayments] = useState<PaymentWithOrder[]>(payments);
@@ -23,7 +24,30 @@ export default function PaymentsTable({ payments }: { payments: PaymentWithOrder
           table={table}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-        />
+          onReset={() => setAllPayments(payments)}
+        >
+          <SelectWrapper
+            className="h-10 max-w-sm"
+            groups={[
+              {
+                items: [
+                  { name: "Tutti i tipi", value: "-1" },
+                  { name: "CONTANTI", value: "CASH" },
+                  { name: "CARTA", value: "CARD" },
+                  { name: "CREDITO", value: "CREDIT" },
+                  { name: "BUONI PASTO", value: "VOUCH" },
+                ],
+              },
+            ]}
+            //placeholder="Filtra per tipo"
+            defaultValue="-1"
+            onValueChange={(value) =>
+              setAllPayments(
+                value === "-1" ? payments : payments.filter((payment) => payment.type === value)
+              )
+            }
+          />
+        </TableControls>
 
         <Table table={table} />
       </div>

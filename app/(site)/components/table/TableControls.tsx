@@ -10,6 +10,7 @@ export default function TableControls({
   AddComponent,
   children,
   title,
+  onReset,
 }: {
   table: Table<any>;
   globalFilter: string;
@@ -17,12 +18,12 @@ export default function TableControls({
   AddComponent?: ReactNode;
   children?: ReactNode;
   title?: ReactNode;
+  onReset?: () => void;
 }) {
   return (
     <div className="flex gap-4 items-center">
       {title}
       {AddComponent}
-
 
       <Input
         placeholder="Cerca"
@@ -30,18 +31,18 @@ export default function TableControls({
         onChange={(event) => setGlobalFilter(String(event.target.value))}
         className="max-w-sm"
       />
+      {children}
       <Button
         className="px-0"
         variant={"link"}
         onClick={() => {
+          onReset?.();
           table.resetSorting();
           setGlobalFilter("");
         }}
       >
         Reimposta
       </Button>
-
-      {children}
     </div>
   );
 }

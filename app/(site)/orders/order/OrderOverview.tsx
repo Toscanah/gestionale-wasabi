@@ -13,6 +13,7 @@ import { OrderType } from "../../types/OrderType";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import fetchRequest from "../../util/functions/fetchRequest";
 import WhenSelector from "../../components/select/WhenSelector";
+import { debounce } from "lodash";
 
 export default function OrderSummary({
   order,
@@ -27,10 +28,9 @@ export default function OrderSummary({
   setAction: Dispatch<SetStateAction<Actions>>;
   addProducts: (newProducts: ProductInOrderType[]) => void;
 }) {
-  const { rice } = useWasabiContext();
+  const { fetchRemainingRice, rice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
   const [customer, setCustomer] = useState<CustomerWithDetails | undefined>(undefined);
-  
 
   const [orderTime, setOrderTime] = useState<string>(
     order.type !== OrderType.TABLE
@@ -77,12 +77,21 @@ export default function OrderSummary({
   }, []);
 
   useEffect(() => {
-    setUsedRice(
-      order.products.reduce(
-        (total, product) => total + (product.product.rice ?? 0) * product.quantity,
-        0
-      )
+    const totalUsedRice = order.products.reduce(
+      (total, product) => total + product.riceQuantity,
+      0
     );
+
+    setUsedRice(totalUsedRice);
+
+    const debouncedFetch = debounce(() => {
+      fetchRemainingRice();
+    }, 3000);
+    debouncedFetch();
+
+    return () => {
+      debouncedFetch.cancel();
+    };
   }, [order.products]);
 
   const updateOrderTime = (value: string) => {
@@ -136,7 +145,7 @@ export default function OrderSummary({
             <div
               className={cn(
                 "w-1/2 border-r p-2 h-12",
-                rice.amount - usedRice < rice.threshold && "text-destructive"
+                rice.total.amount - usedRice < rice.total.threshold && "text-destructive"
               )}
             >
               Rimanente
@@ -148,10 +157,10 @@ export default function OrderSummary({
             <div
               className={cn(
                 "w-1/2 border-r p-2 h-12",
-                rice.amount - usedRice < rice.threshold && "text-destructive"
+                rice.total.amount - usedRice < rice.total.threshold && "text-destructive"
               )}
             >
-              {formatRice(rice.amount - usedRice)}
+              {formatRice(rice.total.amount - usedRice)}
             </div>
             <div className="w-1/2 p-2 h-12">{formatRice(usedRice)}</div>
           </div>

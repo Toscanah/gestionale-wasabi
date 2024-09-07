@@ -5,14 +5,16 @@ import formatRice from "../util/functions/formatRice";
 export default function RiceSummary() {
   const { rice } = useWasabiContext();
 
+  console.log("riso in summary", rice.remaining)
+
   return (
     <div
       className={cn(
         "flex items-center justify-center text-3xl",
-        rice.amount < rice.threshold && "text-destructive"
+        rice.remaining.amount < rice.remaining.threshold && "text-destructive"
       )}
     >
-      Riso rimanente: {formatRice(rice.amount)}
+      Riso rimanente: {formatRice(rice.remaining.amount)}
     </div>
   );
 }

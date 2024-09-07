@@ -28,10 +28,11 @@ export default async function addProductToOrder(
 
   const productInOrder = await prisma.productInOrder.create({
     data: {
-      product_id: product.id,
       order_id: order.id,
+      product_id: product.id,
       quantity: Number(quantity),
       total: productTotalPrice,
+      riceQuantity: product.rice * Number(quantity) ?? 0
     },
   });
 
