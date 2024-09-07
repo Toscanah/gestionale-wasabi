@@ -29,7 +29,7 @@ export default function OrderTable({
   setOrder?: Dispatch<SetStateAction<AnyOrder | undefined>>;
 }) {
   const { onOrdersUpdate } = useWasabiContext();
-  const { updateOrder } = useOrderManager(order, setOrder);
+  const { updateOrder, cancelOrder } = useOrderManager(order, setOrder);
   const {
     products,
     setProducts,
@@ -91,6 +91,10 @@ export default function OrderTable({
 
       <OrderOverview
         deleteProducts={() => deleteProducts(table)}
+        cancelOrder={() => {
+          cancelOrder()
+          setOpen(false);
+        }}
         table={table}
         order={order}
         setAction={setAction}

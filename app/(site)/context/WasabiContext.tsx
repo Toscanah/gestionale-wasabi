@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { OrderType } from "../types/OrderType";
 import fetchRequest from "../util/functions/fetchRequest";
 import { Rice } from "@prisma/client";
@@ -13,11 +7,10 @@ import { toastSuccess } from "../util/toast";
 type RiceState = { total: Rice; remaining: Rice };
 
 interface WasabiContextProps {
-  onOrdersUpdate: (type: OrderType) => void;
   rice: RiceState;
   updateTotalRice: (total: Rice) => void;
   fetchRemainingRice: () => void;
-  
+  onOrdersUpdate: (type: OrderType) => void;
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);

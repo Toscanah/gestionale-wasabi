@@ -5,7 +5,7 @@ import { useWasabiContext } from "../../context/WasabiContext";
 import { Table } from "@tanstack/react-table";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
+import { AnyOrder, HomeOrder, PickupOrder } from "../../types/PrismaOrders";
 import { Actions } from "./OrderTable";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import OrderHistory from "../../components/OrderHistory";
@@ -19,19 +19,20 @@ export default function OrderSummary({
   order,
   table,
   deleteProducts,
+  cancelOrder,
   setAction,
   addProducts,
 }: {
   order: AnyOrder;
   table: Table<ProductInOrderType>;
   deleteProducts: () => void;
+  cancelOrder: () => void;
   setAction: Dispatch<SetStateAction<Actions>>;
   addProducts: (newProducts: ProductInOrderType[]) => void;
 }) {
   const { fetchRemainingRice, rice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
   const [customer, setCustomer] = useState<CustomerWithDetails | undefined>(undefined);
-
   const [orderTime, setOrderTime] = useState<string>(
     order.type !== OrderType.TABLE
       ? order.type == OrderType.PICK_UP
@@ -77,12 +78,7 @@ export default function OrderSummary({
   }, []);
 
   useEffect(() => {
-    const totalUsedRice = order.products.reduce(
-      (total, product) => total + product.riceQuantity,
-      0
-    );
-
-    setUsedRice(totalUsedRice);
+    setUsedRice(order.products.reduce((total, product) => total + product.riceQuantity, 0));
 
     const debouncedFetch = debounce(() => {
       fetchRemainingRice();
@@ -110,7 +106,7 @@ export default function OrderSummary({
         Cancella prodotti selezionati
       </Button>
 
-      <Button className="w-full h-12 text-xl" variant={"destructive"} onClick={() => {}}>
+      <Button className="w-full h-12 text-xl" variant={"destructive"} onClick={cancelOrder}>
         Elimina ordine
       </Button>
 
@@ -180,8 +176,8 @@ export default function OrderSummary({
             className="w-full text-3xl h-12"
             onClick={() => setAction("payPart")}
             disabled={
-              order.products.length === 0 || // Disable if there are no products
-              (order.products.length === 1 && order.products[0].quantity <= 1) // Disable if there is one product and its quantity is 1 or less
+              order.products.length === 0 ||
+              (order.products.length === 1 && order.products[0].quantity <= 1)
             }
           >
             Dividi

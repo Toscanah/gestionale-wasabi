@@ -45,10 +45,10 @@ export default async function getOrdersByType(type: OrderType) {
     },
     where: {
       type: type,
-      paid: false,
+      state: "ACTIVE",
     },
     orderBy: {
-      created_at: "asc", // Ordering by creation date in ascending order
+      created_at: "asc",
     },
   });
 
@@ -74,10 +74,6 @@ export default async function getOrdersByType(type: OrderType) {
             : product.product.site_price)
       );
     }, 0);
-
-    // if (type == OrderType.TO_HOME) {
-    //   console.log(unpaidOrderTotal);
-    // }
 
     return {
       ...order,
