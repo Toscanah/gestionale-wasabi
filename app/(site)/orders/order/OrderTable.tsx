@@ -16,8 +16,9 @@ import OrderPayment from "../../payments/OrderPayment";
 import DivideOrder from "./divide-order/DivideOrder";
 import { useProductManager } from "../../components/hooks/useProductManager";
 import { useOrderManager } from "../../components/hooks/useOrderManager";
+import RomanStyle from "./divide-order/RomanStyle";
 
-export type Actions = "" | "payFull" | "payPart" | "paidFull" | "paidPart";
+export type Actions = "" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
 export default function OrderTable({
   order,
@@ -92,7 +93,7 @@ export default function OrderTable({
       <OrderOverview
         deleteProducts={() => deleteProducts(table)}
         cancelOrder={() => {
-          cancelOrder()
+          cancelOrder();
           setOpen(false);
         }}
         table={table}
@@ -108,6 +109,12 @@ export default function OrderTable({
       order={order}
       setProducts={setProducts}
       type="full"
+    />
+  ) : action == "payRoman" ? (
+    <RomanStyle
+      order={order}
+      handleOrderPaid={() => setAction("paidFull")}
+      handleBackButton={() => setAction("")}
     />
   ) : (
     <DivideOrder

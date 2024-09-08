@@ -1,4 +1,4 @@
-import { isNull } from "util";
+
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import prisma from "../db";
 

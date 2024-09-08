@@ -178,7 +178,7 @@ export default function OrderHistory({
                     <h3 className="text-xl">Prodotto più acquistato</h3>
                     {stats.mostBoughtProduct ? (
                       <p>
-                        - {stats.mostBoughtProduct.desc} ({stats.mostBoughtProduct.quantity})
+                        - {stats.mostBoughtProduct.desc} ({stats.mostBoughtProduct.quantity} volte)
                       </p>
                     ) : (
                       <p>Nessun prodotto</p>
@@ -188,7 +188,7 @@ export default function OrderHistory({
                     <h3 className="text-xl">Prodotto meno acquistato</h3>
                     {stats.leastBoughtProduct ? (
                       <p>
-                        - {stats.leastBoughtProduct.desc} ({stats.leastBoughtProduct.quantity})
+                        - {stats.leastBoughtProduct.desc} ({stats.leastBoughtProduct.quantity} volte)
                       </p>
                     ) : (
                       <p>Nessun prodotto</p>
@@ -216,70 +216,79 @@ export default function OrderHistory({
           </AccordionItem>
 
           {orderTypes.map(({ type, orders }) =>
-            orders.map(({ id, order }) => {
-              const sortedProducts = [...order.products].sort((a, b) => b.quantity - a.quantity);
+            orders
+              .sort(
+                (a, b) =>
+                  new Date(b.order.created_at).getTime() - new Date(a.order.created_at).getTime()
+              )
+              .map(({ id, order }) => {
+                const sortedProducts = [...order.products].sort((a, b) => b.quantity - a.quantity);
 
-              return (
-                <AccordionItem value={`${type}-${id}`} key={`${type}-${id}`}>
-                  <AccordionTrigger className="text-xl">
-                    <div className="flex gap-4 items-center justify-between">
-                      <span className="flex items-center gap-2">
-                        <Badge>{type}</Badge>
-                        {formatDateWithDay(order.created_at)} - {"€ " + order.total}
-                      </span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4">
-                    {sortedProducts.length > 0 ? (
-                      <ul className="list-disc list-inside">
-                        {sortedProducts.map((product) => (
-                          <li
-                            key={product.id}
-                            className="text-xl flex justify-between items-center"
-                          >
-                            <span className="flex items-center gap-2">
-                              {onCreate && (
-                                <Checkbox
-                                  defaultChecked={true}
-                                  onCheckedChange={() => handleCheckboxChange(product)}
-                                />
-                              )}
-                              {product.quantity} x {product.product.desc}
-                              {product.options.length > 0 && (
-                                <span>
-                                  {" "}
-                                  (
-                                  {product.options
-                                    .map((option) => option.option.option_name)
-                                    .join(", ")}
-                                  )
-                                </span>
-                              )}
-                            </span>
-                            <span className="font-semibold">
-                              {type === "Domicilio"
-                                ? `€ ${(product.quantity * product.product.home_price).toFixed(2)}`
-                                : `€ ${(product.quantity * product.product.site_price).toFixed(2)}`}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-xl">Nessun prodotto in questo ordine</p>
-                    )}
+                return (
+                  <AccordionItem value={`${type}-${id}`} key={`${type}-${id}`}>
+                    <AccordionTrigger className="text-xl">
+                      <div className="flex gap-4 items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <Badge>{type}</Badge>
+                          {formatDateWithDay(order.created_at)} - {"€ " + order.total}
+                        </span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-4">
+                      {sortedProducts.length > 0 ? (
+                        <ul className="list-disc list-inside">
+                          {sortedProducts.map((product) => (
+                            <li
+                              key={product.id}
+                              className="text-xl flex justify-between items-center"
+                            >
+                              <span className="flex items-center gap-2">
+                                {onCreate && (
+                                  <Checkbox
+                                    defaultChecked={true}
+                                    onCheckedChange={() => handleCheckboxChange(product)}
+                                  />
+                                )}
+                                {product.quantity} x {product.product.desc}
+                                {product.options.length > 0 && (
+                                  <span>
+                                    {" "}
+                                    (
+                                    {product.options
+                                      .map((option) => option.option.option_name)
+                                      .join(", ")}
+                                    )
+                                  </span>
+                                )}
+                              </span>
+                              <span className="font-semibold">
+                                {type === "Domicilio"
+                                  ? `€ ${(product.quantity * product.product.home_price).toFixed(
+                                      2
+                                    )}`
+                                  : `€ ${(product.quantity * product.product.site_price).toFixed(
+                                      2
+                                    )}`}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-xl">Nessun prodotto in questo ordine</p>
+                      )}
 
-                    {onCreate && sortedProducts.length > 0 && (
-                      <Button
-                        onClick={() => handleRecreate()}
-                        disabled={!(selectedProducts.length > 0)}
-                      >
-                        Ricrea
-                      </Button>
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })
+                      {onCreate && sortedProducts.length > 0 && (
+                        <Button
+                          onClick={() => handleRecreate()}
+                          disabled={!(selectedProducts.length > 0)}
+                        >
+                          Ricrea
+                        </Button>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })
           )}
         </Accordion>
       )}
