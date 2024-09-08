@@ -33,15 +33,15 @@ export default function TableControls({
       />
       {children}
       <Button
-        className="px-0"
-        variant={"link"}
+        //className="px-0"
+        variant={"outline"}
         onClick={() => {
           onReset?.();
           table.resetSorting();
           setGlobalFilter("");
         }}
       >
-        Reimposta
+        Reimposta filtri
       </Button>
     </div>
   );

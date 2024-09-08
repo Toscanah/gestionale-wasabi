@@ -33,6 +33,7 @@ export default function getColumns<T extends { id: number; active: boolean }>(
     TableColumn<T>({
       accessorKey: "actions",
       header: "Azioni",
+      sortable: false,
       cellContent: (row) => (
         <div className="flex space-x-2">
           {React.createElement(EditComponent, { object: row.original })}

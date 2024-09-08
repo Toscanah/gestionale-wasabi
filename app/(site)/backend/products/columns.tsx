@@ -34,13 +34,13 @@ const columns: ColumnDef<ProductAndCategory>[] = [
   }),
 
   TableColumn({
-    accessorKey: "category.category",
-    header: "Categoria",
+    accessorKey: "rice",
+    header: "Riso (g)",
   }),
 
   TableColumn({
-    accessorKey: "rice",
-    header: "Riso",
+    accessorKey: "category.category",
+    header: "Categoria",
   }),
 ];
 

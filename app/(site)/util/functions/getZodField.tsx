@@ -9,7 +9,9 @@ const getZodField = (
   switch (type) {
     case "number":
       return required
-        ? z.coerce.number({ required_error: requiredMsg })
+        ? z.coerce
+            .number({ required_error: requiredMsg })
+            .gt(0, { message: "Questo campo non può essere 0" })
         : z.coerce.number().optional();
     case "string":
       return required
