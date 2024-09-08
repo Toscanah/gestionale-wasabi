@@ -1,4 +1,3 @@
-
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import prisma from "../db";
 
@@ -21,8 +20,8 @@ export default async function updateProduct(newProduct: ProductWithInfo) {
     data: {
       code: newProduct.code,
       desc: newProduct.desc,
-      site_price: newProduct.site_price,
-      home_price: newProduct.home_price,
+      site_price: Number(newProduct.site_price),
+      home_price: Number(newProduct.home_price),
       rice: newProduct.rice,
       category_id: Number(newProduct.category_id) !== -1 ? Number(newProduct.category_id) : null,
     },

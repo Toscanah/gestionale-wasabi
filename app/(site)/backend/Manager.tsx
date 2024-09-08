@@ -150,8 +150,9 @@ export default function Manager<T extends { id: number; active: boolean }>({
         AddComponent={actions.add}
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
+        onReset={() => setOnlyActive(true)}
       >
-        <div className="space-x-2 flex items-center ml-auto">
+        <div className="space-x-2 flex items-center">
           <Checkbox
             checked={onlyActive}
             onCheckedChange={() => {

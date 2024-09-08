@@ -12,8 +12,8 @@ import { X } from "@phosphor-icons/react";
 export const formSchema = z.object({
   code: getZodField("string"),
   desc: getZodField("string"),
-  site_price: getZodField("string"),
-  home_price: getZodField("string"),
+  site_price: getZodField("number"),
+  home_price: getZodField("number"),
   rice: getZodField("number", false),
   category_id: getZodField("any", false),
 });

@@ -14,7 +14,14 @@ import SelectWrapper from "../components/select/SelectWrapper";
 export default function PaymentsTable({ payments }: { payments: PaymentWithOrder[] }) {
   const [allPayments, setAllPayments] = useState<PaymentWithOrder[]>(payments);
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
-  const table = getTable({ data: allPayments, columns, globalFilter, setGlobalFilter });
+  const table = getTable({
+    data: allPayments.sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    ),
+    columns,
+    globalFilter,
+    setGlobalFilter,
+  });
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">

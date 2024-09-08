@@ -46,23 +46,19 @@ export default function FormFields<T extends Partial<T>>({
 }: FormFieldsProps<T>) {
   const form = getForm<T>(formSchema, defaultValues);
   const onSubmit = (values: Partial<T>) => {
+
     handleSubmit(values);
 
-    if (form.formState.isValid) {
-      const currentValues = form.getValues();
-      const resetValues: Partial<T> = {};
-
-      for (const key in currentValues) {
-        if (currentValues.hasOwnProperty(key)) {
-          resetValues[key] = "" as any;
-        }
+    const currentValues = form.getValues();
+    const resetValues: Partial<T> = {};
+    for (const key in currentValues) {
+      if (currentValues.hasOwnProperty(key)) {
+        resetValues[key] = "" as any;
       }
-
-      form.reset(resetValues);
     }
-  };
 
-  console.log(defaultValues);
+    form.reset(resetValues);
+  };
 
   let fieldIndex = 0;
 
