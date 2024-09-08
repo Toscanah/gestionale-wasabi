@@ -8,7 +8,6 @@ export default async function payOrder(
   productsToPay: ProductInOrderType[]
 ) {
   const orderId = payments[0].order_id;
-
   const createdPayments = await Promise.all(
     payments.map((payment) =>
       prisma.payment.create({

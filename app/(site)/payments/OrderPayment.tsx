@@ -31,12 +31,14 @@ export default function OrderPayment({
   order,
   type,
   setProducts,
+
 }: {
   handleBackButton: () => void;
   handleOrderPaid: () => void;
   order: AnyOrder;
   type: "full" | "partial";
-  setProducts: Dispatch<SetStateAction<ProductInOrderType[]>>;
+  setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>;
+
 }) {
   const { onOrdersUpdate } = useWasabiContext();
   const [paymentAmounts, setPaymentAmounts] = useState({
@@ -61,8 +63,6 @@ export default function OrderPayment({
   };
 
   const handlePaymentChange = (type: TYPE_OF_PAYMENT, value: number) => {
-    console.log(value);
-
     setPaymentAmounts((prev) => ({
       ...prev,
       [type]: isNaN(value) ? undefined : value,
@@ -106,7 +106,7 @@ export default function OrderPayment({
       handleOrderPaid();
 
       if (type == "partial") {
-        setProducts((prevProducts) => {
+        setProducts?.((prevProducts) => {
           const productsToPayMap = new Map(order.products.map((product) => [product.id, product]));
 
           const newProducts = prevProducts.map((product) => {

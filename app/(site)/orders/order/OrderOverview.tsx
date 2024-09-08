@@ -106,9 +106,18 @@ export default function OrderSummary({
         Cancella prodotti selezionati
       </Button>
 
-      <Button className="w-full h-12 text-xl" variant={"destructive"} onClick={cancelOrder}>
-        Elimina ordine
-      </Button>
+      <DialogWrapper
+        title="Sei sicuro?"
+        variant="delete"
+        trigger={
+          <Button className="w-full h-12 text-xl" variant={"destructive"}>
+            Elimina ordine
+          </Button>
+        }
+        onDelete={() => cancelOrder()}
+      >
+        <div>Stai per eliminare questo ordine</div>
+      </DialogWrapper>
 
       {order.type !== OrderType.TABLE && customer && (
         <DialogWrapper
@@ -126,7 +135,7 @@ export default function OrderSummary({
       {order.type !== OrderType.TABLE && (
         <WhenSelector
           className="h-12 text-2xl uppercase"
-          value={orderTime}
+          value={orderTime == "immediate" ? "Subito" : orderTime}
           onValueChange={updateOrderTime}
         />
       )}
@@ -182,7 +191,11 @@ export default function OrderSummary({
           >
             Dividi
           </Button>
-          <Button className="w-full text-3xl h-12" disabled={order.products.length <= 0}>
+          <Button
+            onClick={() => setAction("payRoman")}
+            className="w-full text-3xl h-12"
+            disabled={order.products.length <= 0}
+          >
             Romana
           </Button>
         </div>

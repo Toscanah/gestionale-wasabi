@@ -46,7 +46,7 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
     //console.log(isBeforeCurrentTime(value ?? ""));
 
     const additionalGroup =
-      value && !isValuePresent 
+      value && !isValuePresent && value !== "Subito"
         ? [
             {
               items: [value],
