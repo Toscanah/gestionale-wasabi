@@ -14,6 +14,7 @@ import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import fetchRequest from "../../util/functions/fetchRequest";
 import WhenSelector from "../../components/select/WhenSelector";
 import { debounce } from "lodash";
+import { toastSuccess } from "../../util/toast";
 
 export default function OrderSummary({
   order,
@@ -78,9 +79,7 @@ export default function OrderSummary({
   }, []);
 
   useEffect(() => {
-    console.log()
-
-    setUsedRice(order.products.reduce((total, product) => total + product.riceQuantity, 0));
+    setUsedRice(order.products.reduce((total, product) => total + (product.riceQuantity ?? 0), 0));
 
     const debouncedFetch = debounce(() => {
       fetchRemainingRice();
@@ -95,6 +94,7 @@ export default function OrderSummary({
   const updateOrderTime = (value: string) => {
     setOrderTime(value);
     fetchRequest("POST", "/api/orders/", "updateOrderTime", { time: value, orderId: order.id });
+    toastSuccess("Orario dell'ordine correttamente aggiornato");
   };
 
   return (
