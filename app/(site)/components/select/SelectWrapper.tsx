@@ -40,7 +40,7 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
       value,
     },
     ref
-  ) => {
+  ) => { 
     return (
       <Select
         onValueChange={field ? field.onChange : onValueChange}
@@ -56,26 +56,28 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
         </SelectTrigger>
 
         <SelectContent>
-          {groups.map((group, groupIndex) => (
-            <SelectGroup key={groupIndex}>
-              {group.label && (
-                <SelectLabel className="text-xl space-y-2">
-                  <Separator orientation="horizontal" />
-                  <div>{group.label}</div>
-                </SelectLabel>
-              )}
+          {groups
+            .filter((group) => group.items.length > 0)
+            .map((group, groupIndex) => (
+              <SelectGroup key={groupIndex}>
+                {group.label && (
+                  <SelectLabel className="text-xl space-y-2">
+                    <Separator orientation="horizontal" />
+                    <div>{group.label}</div>
+                  </SelectLabel>
+                )}
 
-              {group.items.map((item, itemIndex) => (
-                <SelectItem
-                  key={itemIndex}
-                  value={typeof item == "string" ? item : item.value}
-                  className="text-xl"
-                >
-                  {typeof item == "string" ? item : item.name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          ))}
+                {group.items.map((item, itemIndex) => (
+                  <SelectItem
+                    key={itemIndex}
+                    value={typeof item == "string" ? item : item.value}
+                    className="text-xl"
+                  >
+                    {typeof item == "string" ? item : item.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            ))}
         </SelectContent>
       </Select>
     );

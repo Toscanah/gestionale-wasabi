@@ -31,24 +31,21 @@ export default function OrderPayment({
   order,
   type,
   setProducts,
-
 }: {
   handleBackButton: () => void;
   handleOrderPaid: () => void;
   order: AnyOrder;
   type: "full" | "partial";
   setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>;
-
 }) {
   const { onOrdersUpdate } = useWasabiContext();
+  const [payAll, setPayAll] = useState<TYPE_OF_PAYMENT | undefined>(undefined);
   const [paymentAmounts, setPaymentAmounts] = useState({
     [TYPE_OF_PAYMENT.CASH]: undefined,
     [TYPE_OF_PAYMENT.CARD]: undefined,
     [TYPE_OF_PAYMENT.VOUCH]: undefined,
     [TYPE_OF_PAYMENT.CREDIT]: undefined,
   });
-
-  const [payAll, setPayAll] = useState<TYPE_OF_PAYMENT | undefined>(undefined);
 
   const handlePayAll = () => {
     if (payAll) {
@@ -68,8 +65,6 @@ export default function OrderPayment({
       [type]: isNaN(value) ? undefined : value,
     }));
   };
-
-  useEffect(() => setPayAll(undefined), [paymentAmounts]);
 
   const getPaymentName = (type: TYPE_OF_PAYMENT) => {
     switch (type) {
@@ -142,6 +137,8 @@ export default function OrderPayment({
   const totalPaid = Object.values(paymentAmounts).reduce((sum, amount) => sum + (amount ?? 0), 0);
   const remainingAmount = (order.total ?? 0) - totalPaid;
 
+  useEffect(() => setPayAll(undefined), [paymentAmounts]);
+
   return (
     <div className="w-full h-full flex flex-col gap-12">
       <div className="w-full flex justify-between flex-col gap-6">
@@ -188,7 +185,8 @@ export default function OrderPayment({
             <ul className="list-disc list-inside">
               {paymentMethods.map(
                 ({ type }) =>
-                  paymentAmounts[type] !== 0 && (
+                  paymentAmounts[type] !== 0 &&
+                  paymentAmounts[type] !== undefined && (
                     <li key={type} className="text-3xl">
                       Euro pagati con {getPaymentName(type)}: € {paymentAmounts[type]}
                     </li>

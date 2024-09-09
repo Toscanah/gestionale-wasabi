@@ -78,6 +78,8 @@ export default function OrderSummary({
   }, []);
 
   useEffect(() => {
+    console.log()
+
     setUsedRice(order.products.reduce((total, product) => total + product.riceQuantity, 0));
 
     const debouncedFetch = debounce(() => {

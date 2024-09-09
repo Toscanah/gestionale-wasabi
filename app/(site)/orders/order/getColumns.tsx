@@ -179,7 +179,7 @@ export default function getColumns(
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
 
         return (
-          <div className="space-y-2 max-h-20 overflow-auto">
+          <div className="space-y-2 max-h-24 overflow-auto">
             {avalOptions &&
               avalOptions.map((option) => (
                 <div key={option.option.id} className="flex items-center space-x-2">

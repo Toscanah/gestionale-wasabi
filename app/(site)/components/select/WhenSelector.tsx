@@ -18,14 +18,8 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
 
-    const lunchTimes =
-      currentHour >= 11 && currentHour < 16
-        ? generateTimeSlots(12, 0, 14, 30, currentHour, currentMinute)
-        : [];
-    const dinnerTimes =
-      currentHour >= 16 && currentHour <= 22
-        ? generateTimeSlots(18, 30, 22, 30, currentHour, currentMinute)
-        : [];
+    const lunchTimes = generateTimeSlots(12, 0, 14, 30, currentHour, currentMinute);
+    const dinnerTimes = generateTimeSlots(18, 30, 22, 30, currentHour, currentMinute);
 
     const allTimeSlots = [...lunchTimes, ...dinnerTimes];
     const isValuePresent = value && allTimeSlots.includes(value);
@@ -43,8 +37,6 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
       return selectedTime < currentTime;
     };
 
-    //console.log(isBeforeCurrentTime(value ?? ""));
-
     const additionalGroup =
       value && !isValuePresent && value !== "Subito"
         ? [
@@ -53,8 +45,6 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
             },
           ]
         : [];
-
-    console.log(additionalGroup);
 
     return (
       <SelectWrapper
