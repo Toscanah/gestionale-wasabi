@@ -11,12 +11,12 @@ export function useProductManager(
   order: AnyOrder,
   updateOrder: (updatedProducts: ProductInOrderType[]) => void
 ) {
+  const [newCode, setNewCode] = useState<string>("");
+  const [newQuantity, setNewQuantity] = useState<number>(0);
   const [products, setProducts] = useState<ProductInOrderType[]>([
     ...order.products,
     createDummyProduct(),
   ]);
-  const [newCode, setNewCode] = useState<string>("");
-  const [newQuantity, setNewQuantity] = useState<number>(0);
 
   const addProduct = () => {
     fetchRequest<ProductInOrderType>("POST", "/api/products/", "addProductToOrder", {
@@ -28,7 +28,6 @@ export function useProductManager(
         updateProductsList({ newProducts: [newProduct] });
         setNewCode("");
         setNewQuantity(0);
-        toastSuccess("Il prodotto è stato aggiunto correttamente", "Prodotto aggiunto");
       } else {
         toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
       }
@@ -39,9 +38,7 @@ export function useProductManager(
     fetchRequest<ProductInOrderType[]>("POST", "/api/products", "addProductsToOrder", {
       orderId: order.id,
       products,
-    }).then((newProducts) => {
-      updateProductsList({ newProducts });
-    });
+    }).then((newProducts) => updateProductsList({ newProducts: products }));
   };
 
   const updateProduct = (key: string, value: any, index: number) => {
@@ -165,6 +162,8 @@ export function useProductManager(
       const updatedProductList = [...productsWithUpdates, ...newProducts, createDummyProduct()];
 
       updateOrder(updatedProductList);
+
+      toastSuccess("Prodotti aggiornai correttamente");
       return updatedProductList;
     });
   };

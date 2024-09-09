@@ -9,19 +9,14 @@ export default async function addProductsToOrder(
 
   const newProducts = await Promise.all(
     products.map(async (productInOrder) => {
-      return await prisma.productInOrder.create({
+      // Create the productInOrder
+      const newProductInOrder = await prisma.productInOrder.create({
         data: {
           order_id: targetOrderId,
           product_id: productInOrder.product.id,
           quantity: productInOrder.quantity,
           total: productInOrder.total,
           riceQuantity: productInOrder.product.rice * productInOrder.quantity,
-          // If product options are needed, uncomment this part
-          // options: {
-          //   create: productInOrder.options.map((opt) => ({
-          //     option_id: opt.option.id,
-          //   })),
-          // },
         },
         include: {
           product: {
@@ -44,9 +39,22 @@ export default async function addProductsToOrder(
           },
         },
       });
+
+      // If the product category has options, create option records for the product
+      if (productInOrder.product.category) {
+        await prisma.optionInProductOrder.createMany({
+          data: productInOrder.product.category.options.map((opt) => ({
+            product_in_order_id: newProductInOrder.id,
+            option_id: opt.option.id,
+          })),
+        });
+      }
+
+      return newProductInOrder;
     })
   );
 
+  // Update the total price of the order
   await prisma.order.update({
     where: {
       id: targetOrderId,

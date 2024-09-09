@@ -61,14 +61,16 @@ export default async function updateProductInOrder(
         where: { product_in_order_id: updatedProduct.id },
       });
 
-      await prisma.optionInProductOrder.createMany({
-        data:
-          newProduct?.category?.options.map((option) => ({
-            product_in_order_id: updatedProduct.id,
-            option_id: option.option.id,
-          })) ?? [],
-      });
-
+      if (newProduct.category) {
+        await prisma.optionInProductOrder.createMany({
+          data:
+            newProduct.category.options.map((option) => ({
+              product_in_order_id: updatedProduct.id,
+              option_id: option.option.id,
+            })),
+        });
+      }
+      
       const difference = newTotal - productInOrder.total;
       await prisma.order.update({
         where: { id: orderId },
