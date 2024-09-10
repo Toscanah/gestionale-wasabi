@@ -37,7 +37,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
           case OrderType.TABLE: {
             const parsedRow = row.original as TableOrder;
 
-            return parsedRow.table_order?.table?.number;
+            return parsedRow.table_order?.table;
           }
           case OrderType.PICK_UP: {
             const parsedRow = row.original as PickupOrder;

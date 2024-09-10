@@ -8,7 +8,6 @@ import { OrderType } from "../../types/OrderType";
 import { useFocusCycle } from "../../components/hooks/useFocusCycle";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../util/toast";
-import { Table as PrismaTable } from "@prisma/client";
 import { Triangle } from "react-loader-spinner";
 
 export default function Table({
@@ -16,7 +15,6 @@ export default function Table({
 }: {
   setOrder: Dispatch<SetStateAction<AnyOrder | undefined>>;
 }) {
-  const [tables, setTables] = useState<PrismaTable[]>([]);
   const { onOrdersUpdate } = useWasabiContext();
 
   const tableRef = useRef<HTMLInputElement>(null);
@@ -26,22 +24,12 @@ export default function Table({
 
   const { handleKeyDown } = useFocusCycle([tableRef, pplRef, nameRef, buttonRef]);
 
-  useEffect(() => {
-    fetchRequest<PrismaTable[]>("GET", "/api/tables/", "getTables").then((tables) => {
-      setTables(tables);
-    });
-  }, []);
-
   const createTableOrder = () => {
     const ppl = Number(pplRef.current?.value);
     const table = tableRef.current?.value;
 
     if (table == "") {
       return toastError("Assicurati di aver aggiunto un tavolo");
-    }
-
-    if (!tables.some((t) => t.number === table)) {
-      return toastError("Il tavolo specificato non esiste");
     }
 
     if (ppl < 1) {
@@ -62,10 +50,6 @@ export default function Table({
       }
     });
   };
-
-  if (tables.length == 0) {
-    return <></>;
-  }
 
   return (
     <div className="w-full flex flex-col gap-4">

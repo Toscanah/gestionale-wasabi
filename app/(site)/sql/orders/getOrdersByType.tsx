@@ -37,11 +37,7 @@ export default async function getOrdersByType(type: OrderType) {
       pickup_order: {
         include: { customer: true },
       },
-      table_order: {
-        include: {
-          table: true,
-        },
-      },
+      table_order: true,
     },
     where: {
       type: type,
