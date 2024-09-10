@@ -30,12 +30,8 @@ type CommonOrderPayload = Prisma.OrderGetPayload<{
 
 type TableOrderPayload = Prisma.OrderGetPayload<{
   include: {
-    table_order: {
-      include: {
-        table: true;
-      };
-    };
-  };
+    table_order: true,
+  }
 }>;
 
 type HomeOrderPayload = Prisma.OrderGetPayload<{

@@ -43,11 +43,10 @@ model Order {
 model TableOrder {
     id       Int     @id @default(autoincrement())
     order_id Int     @unique
-    table_id Int
+    table    String
     res_name String?
     people   Int
     order    Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
-    table    Table   @relation(fields: [table_id], references: [id])
 }
 
 model HomeOrder {
@@ -106,12 +105,6 @@ model Phone {
     id       Int       @id @default(autoincrement())
     phone    String
     Customer Customer?
-}
-
-model Table {
-    id     Int          @id @default(autoincrement())
-    number String
-    orders TableOrder[]
 }
 
 model Payment {
