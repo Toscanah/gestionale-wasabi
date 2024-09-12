@@ -3,6 +3,7 @@ import getRemainingRice from "../../sql/rice/getRemainingRice";
 import updateRice from "../../sql/rice/updateRice";
 import getRequestBody from "../../util/functions/getRequestBody";
 import getTotalRice from "../../sql/rice/getTotalRice";
+import resetRice from "../../sql/rice/resetRice";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -23,5 +24,8 @@ export async function POST(request: NextRequest) {
   switch (action) {
     case "updateRice":
       return NextResponse.json(await updateRice(content));
+
+    case "resetRice":
+      return NextResponse.json(await resetRice());
   }
 }

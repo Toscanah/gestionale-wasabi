@@ -2,7 +2,6 @@ import { Address, Customer } from "@prisma/client";
 import { Dispatch, KeyboardEvent, RefObject, SetStateAction, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import getToHomeForm, { FormValues } from "../../../components/forms/getToHomeForm";
 import { Textarea } from "@/components/ui/textarea";
 import WhenSelector from "@/app/(site)/components/select/WhenSelector";
 import FormField from "@/app/(site)/components/FormField";
@@ -10,6 +9,9 @@ import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import parseAddress from "@/app/(site)/util/functions/parseAddress";
 import { useFocusCycle } from "@/app/(site)/components/hooks/useFocusCycle";
 import { UseFormReturn } from "react-hook-form";
+import getForm from "@/app/(site)/util/functions/getForm";
+import formSchema from "./form";
+import { z } from "zod";
 
 export default function AddressForm({
   addInfo,
@@ -51,9 +53,9 @@ export default function AddressForm({
   handleKeyDown: (e: KeyboardEvent) => void;
   refs: RefObject<any>[];
 }) {
-  const form = getToHomeForm();
+  const form = getForm(formSchema, { when: "immediate" });
 
-  function onSubmit(values: FormValues) {
+  function onSubmit(values: Partial<z.infer<typeof formSchema>>) {
     const { street, civic } = parseAddress(values.street);
 
     setAddInfo({

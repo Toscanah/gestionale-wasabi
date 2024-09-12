@@ -12,7 +12,7 @@ import OrderTable from "../orders/order/OrderTable";
 import DialogWrapper from "../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 
-export default function CreateOrder({ type }: { type: OrderType }) {
+export default function CreateOrder({ type, triggerClassName }: { type: OrderType; triggerClassName?: string }) {
   const [order, setOrder] = useState<AnyOrder | undefined>(undefined);
   const [open, setOpen] = useState<boolean>(false);
   const components = new Map<OrderType, { name: string; component: ReactNode }>([
@@ -24,7 +24,7 @@ export default function CreateOrder({ type }: { type: OrderType }) {
   return (
     <DialogWrapper
       open={open}
-      header={false}
+      hasHeader={false}
       onOpenChange={() => {
         setOrder(undefined);
         setOpen(!open);
@@ -36,7 +36,7 @@ export default function CreateOrder({ type }: { type: OrderType }) {
           : "w-[40vw] "
       )}
       trigger={
-        <Button className="w-full text-2xl h-12">
+        <Button className={cn("w-full text-2xl h-12", triggerClassName)}>
           <Plus className="mr-2 h-5 w-5" /> {components.get(type)?.name}
         </Button>
       }
