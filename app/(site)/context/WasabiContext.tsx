@@ -11,6 +11,7 @@ interface WasabiContextProps {
   updateTotalRice: (total: Rice) => void;
   fetchRemainingRice: () => void;
   onOrdersUpdate: (type: OrderType) => void;
+  resetRice: () => void;
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);
@@ -53,6 +54,13 @@ export const WasabiProvider = ({
     });
   };
 
+  const resetRice = () => {
+    fetchRequest("POST", "/api/rice/", "resetRice").then(() => {
+      fetchTotalRice();
+      fetchRemainingRice();
+    });
+  };
+
   useEffect(() => {
     fetchTotalRice();
     fetchRemainingRice();
@@ -61,6 +69,7 @@ export const WasabiProvider = ({
   return (
     <WasabiContext.Provider
       value={{
+        resetRice,
         fetchRemainingRice,
         onOrdersUpdate,
         rice,

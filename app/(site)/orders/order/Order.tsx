@@ -18,7 +18,7 @@ export default function Order({
     <DialogWrapper
       open={open}
       onOpenChange={setOpen}
-      header={false}
+      hasHeader={false}
       contentClassName="w-[97.5vw] max-w-screen max-h-screen h-[95vh]"
       trigger={
         <TableCell key={cell.id} className={className}>

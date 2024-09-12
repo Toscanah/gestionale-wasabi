@@ -29,7 +29,7 @@ export default function OrdersTable({ data, type }: TableProps) {
     <div className="w-full h-full">
       <Table
         table={table}
-        tableClassName="max-h-[90%] h-[90%]"
+        tableClassName="max-h-[100%] h-[100%] rounded-none"
         rowClassName="hover:cursor-pointer w-full h-16 max-h-16 text-xl"
         cellClassName={(index: number) =>
           index == 3 && type == OrderType.TO_HOME ? "max-w-42 truncate" : ""

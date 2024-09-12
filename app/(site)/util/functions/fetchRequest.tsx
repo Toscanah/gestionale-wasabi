@@ -29,14 +29,13 @@ export default async function fetchRequest<T>(
     case "POST":
     case "DELETE":
       url = new URL(path, window.location.origin);
-      requestOptions.body = content ? JSON.stringify({ action, content }) : undefined;
+      requestOptions.body = JSON.stringify({ action, content });
 
       break;
 
     default:
       throw new Error(`Unsupported HTTP method: ${method}`);
   }
-
 
   return await (await fetch(url.toString(), requestOptions)).json();
 }

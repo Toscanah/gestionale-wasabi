@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { OrderType } from "../types/OrderType";
 import { WasabiProvider } from "../context/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
@@ -10,6 +10,10 @@ import fetchRequest from "../util/functions/fetchRequest";
 import { cn } from "@/lib/utils";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
 import { Rice } from "@prisma/client";
+import { Separator } from "@/components/ui/separator";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Button } from "@/components/ui/button";
+import { getPanelElement } from "react-resizable-panels";
 
 export default function Home() {
   const [orders, setOrders] = useState<{
@@ -25,7 +29,6 @@ export default function Home() {
   const fetchOrders = (type: OrderType) => {
     fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrdersByType", { type }).then((data) => {
       if (data) {
-        //console.log(data)
         setOrders((prevOrders) => ({
           ...prevOrders,
           [type]: data,
@@ -38,37 +41,76 @@ export default function Home() {
     fetchOrders(type);
   };
 
+  const onLayout = (sizes: number[]) => {
+    
+
+    //console.log(leftPanelElement);
+  };
+
   useEffect(() => {
     fetchOrders(OrderType.TABLE);
     fetchOrders(OrderType.PICK_UP);
     fetchOrders(OrderType.TO_HOME);
+
+    
+
   }, []);
 
   return (
     <WasabiProvider onOrdersUpdate={onOrdersUpdate}>
-      <div className="w-screen p-4 h-screen flex flex-col gap-2">
-        <div className="w-full h-[10%] flex justify-between">
+      <div className="w-screen p-4 h-screen flex flex-col gap-4">
+        <div className="w-full flex justify-between">
+          {/* <Button onClick={() => {
+            
+
+            const table1 = getPanelElement("TABLE");
+            const table2 = getPanelElement("TO_HOME");
+            const table3 = getPanelElement("PICK_UP");
+          
+
+          }}>Reset</Button> */}
           <Header />
         </div>
 
-        <div className="flex gap-4 h-[90%] w-full">
-          {Object.values(OrderType).map((type) => {
+        <Separator orientation="horizontal" />
+
+        <ResizablePanelGroup direction="horizontal" onLayout={onLayout}>
+          {Object.values(OrderType).map((type, index) => {
             return (
-              <div
-                key={type}
-                className={cn(
-                  "h-full flex gap-4 flex-col items-center",
-                  type == OrderType.TO_HOME ? "w-[40%]" : "w-[30%]"
-                )}
-              >
-                <div className="flex w-full justify-between items-center">
-                  <CreateOrder type={type} />
-                </div>
-                <OrdersTable data={orders[type]} type={type} />
-              </div>
+              <>
+                <ResizablePanel
+                  //collapsedSize={5}
+                  //defaultSize={33}
+                  key={type}
+                  id={type}
+                  className={cn(
+                    "h-full flex gap- flex-col items-center",
+                    type == OrderType.TO_HOME ? "w-[35%]" : "w-[32.5%]"
+                  )}
+                >
+                  <div className="flex w-full justify-between items-center ">
+                    <CreateOrder
+                      type={type}
+                      triggerClassName={cn(
+                        "rounded-none ",
+                        index == 0 && "rounded-tl-md",
+                        index == 2 && "rounded-tr-md"
+                      )}
+                    />
+                  </div>
+                  <OrdersTable data={orders[type]} type={type} />
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+              </>
             );
           })}
-        </div>
+
+          {/* <ResizablePanel>One</ResizablePanel>
+          
+          <ResizablePanel>Two</ResizablePanel>
+
+        <div className="flex gap-4 h-[95%] w-full"></div> */}
+        </ResizablePanelGroup>
       </div>
     </WasabiProvider>
   );

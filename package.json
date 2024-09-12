@@ -69,6 +69,7 @@
         "react-hook-form": "^7.52.0",
         "react-loader-spinner": "^6.1.6",
         "react-lorem-ipsum": "^1.4.10",
+        "react-resizable-panels": "^2.1.2",
         "react-tabindex": "^1.0.3",
         "server-only": "^0.0.1",
         "sharp": "^0.33.5",
