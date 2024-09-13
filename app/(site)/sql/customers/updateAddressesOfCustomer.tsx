@@ -3,8 +3,11 @@ import prisma from "../db";
 import getCustomersWithDetails from "./getCustomersWithDetails";
 
 export default async function updateAddressesOfCustomer(addresses: Address[], customerId: number) {
+  console.log(customerId)
+  console.log(addresses)
+
   for (const address of addresses) {
-    if (address.id >= 0) {
+    if (address.id > 0) {
       // Update the existing address if it exists
       await prisma.address.update({
         where: { id: address.id },

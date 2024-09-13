@@ -28,6 +28,8 @@ export default function CustomerAddresses({
 }) {
   const [currentAddresses, setCurrentAddresses] = useState<Address[]>(addresses ?? []);
 
+  console.log(customerId)
+
   const saveAddresses = () => {
     fetchRequest<CustomerWithDetails[]>("POST", "/api/customers", "updateAddressesOfCustomer", {
       addresses: currentAddresses,
