@@ -1,13 +1,16 @@
 import getTable from "@/app/(site)/util/functions/getTable";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import getColumns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
+import { Calc } from "./Calculator";
 
-export type Calc = { amount: number; quantity: number; total: number };
-
-export default function CalculationTable() {
-  const [calcs, setCalcs] = useState<Calc[]>([{ amount: 0, quantity: 0, total: 0 }]);
-
+export default function CalculationTable({
+  calcs,
+  setCalcs,
+}: {
+  calcs: Calc[];
+  setCalcs: Dispatch<SetStateAction<Calc[]>>;
+}) {
   const handleFieldChange = (key: keyof Calc, value: number, rowIndex: number) => {
     setCalcs((prevCalcs) => {
       const updatedCalcs = [...prevCalcs];
@@ -29,5 +32,5 @@ export default function CalculationTable() {
   const columns = getColumns(handleFieldChange);
   const table = getTable({ data: calcs, columns });
 
-  return <Table table={table} tableClassName="border-none" />;
+  return <div className="flex"><Table table={table} tableClassName="border-none" /></div>;
 }

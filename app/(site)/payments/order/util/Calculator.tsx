@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Backspace } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,6 +12,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import CalculationTable from "./CalculationTable";
+import formatAmount from "@/app/(site)/util/functions/formatAmount";
+
+export type Calc = { amount: number; quantity: number; total: number };
 
 export default function Calculator({
   typedAmount,
@@ -20,6 +23,8 @@ export default function Calculator({
   typedAmount: string;
   setTypedAmount: Dispatch<SetStateAction<string>>;
 }) {
+  const [calcs, setCalcs] = useState<Calc[]>([{ amount: 0, quantity: 0, total: 0 }]);
+
   const handleButtonClick = (value: string) => {
     if (value === "erase") {
       setTypedAmount((prev) => prev.slice(0, -1));
@@ -33,6 +38,9 @@ export default function Calculator({
       setTypedAmount(typedAmount + value);
     }
   };
+
+  const calculateTotal = () =>
+    setTypedAmount(formatAmount(calcs.reduce((sum, calc) => sum + calc.total, 0)));
 
   const buttons = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", "."];
 
@@ -66,8 +74,11 @@ export default function Calculator({
         </div>
       </div>
 
-      <div>
-        <CalculationTable />
+      <div className="w-full h-full flex items-center flex-col gap-4">
+        <Button onClick={() => calculateTotal()} className="w-full h-12 text-xl">
+          Calcola
+        </Button>
+        <CalculationTable calcs={calcs} setCalcs={setCalcs} />
       </div>
     </div>
   );
