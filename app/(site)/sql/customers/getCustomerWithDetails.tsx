@@ -1,10 +1,11 @@
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
+import { HomeOrder } from "../../types/PrismaOrders";
 import prisma from "../db";
 
 export default async function getCustomerWithDetails(
   customerId: number
 ): Promise<CustomerWithDetails | null> {
-  return await prisma.customer.findUnique({
+  const customer = await prisma.customer.findUnique({
     where: {
       id: customerId,
     },
@@ -73,4 +74,21 @@ export default async function getCustomerWithDetails(
       },
     },
   });
+
+  if (!customer) return null;
+
+  // Filter out inactive products
+  customer.home_orders.forEach((homeOrder) => {
+    homeOrder.order.products = homeOrder.order.products.filter(
+      (productInOrder) => productInOrder.product.active
+    );
+  });
+
+  customer.pickup_orders.forEach((pickupOrder) => {
+    pickupOrder.order.products = pickupOrder.order.products.filter(
+      (productInOrder) => productInOrder.product.active
+    );
+  });
+
+  return customer;
 }

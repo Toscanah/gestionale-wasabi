@@ -1,0 +1,50 @@
+import { Address, Customer } from "@prisma/client";
+import { debounce } from "lodash";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import fetchRequest from "../../util/functions/fetchRequest";
+
+export default function useFetchCustomer(
+  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>
+) {
+  const [phone, setPhone] = useState<string>("");
+  const [customer, setCustomer] = useState<Customer | undefined>(undefined);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+
+  const fetchCustomer = () => {
+    fetchRequest<Customer>("GET", "/api/customers", "getCustomerByPhone", {
+      phone,
+    }).then((fetchedCustomer) => {
+      setCustomer(fetchedCustomer || undefined);
+
+      if (fetchedCustomer) {
+        fetchAddresses(fetchedCustomer.id);
+      }
+    });
+  };
+
+  const fetchAddresses = (customerId: number) => {
+    fetchRequest<Address[]>("GET", "/api/addresses/", "getAddressesByCustomer", {
+      customerId,
+    }).then((fetchedAddresses) =>
+      setAddresses(fetchedAddresses.filter((address) => !address.temporary))
+    );
+  };
+
+  useEffect(() => {
+    if (phone) {
+      setSelectedAddress(undefined);
+      fetchCustomer();
+    } else {
+      setCustomer(undefined);
+    }
+  }, [phone]);
+
+  return {
+    customer,
+    addresses,
+    phone,
+    setCustomer,
+    setAddresses,
+    setPhone,
+  };
+}

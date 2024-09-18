@@ -7,11 +7,17 @@ import createHomeOrder from "../../sql/orders/createHomeOrder";
 import getRequestBody from "../../util/functions/getRequestBody";
 import updateOrderTime from "../../sql/orders/updateOrderTime";
 import cancelOrder from "../../sql/orders/cancelOrder";
+import updateOrderNotes from "../../sql/orders/updateOrderNotes";
+import updateDiscount from "../../sql/orders/updateDiscount";
 
 export async function POST(request: NextRequest) {
   const { action, content } = await getRequestBody(request);
 
   switch (action) {
+    case "updateDiscount":
+      return NextResponse.json(await updateDiscount(content?.orderId, content?.discount));
+    case "updateOrderNotes":
+      return NextResponse.json(await updateOrderNotes(content?.orderId, content?.notes));
     case "createTableOrder":
       return NextResponse.json(await createTableOrder(content as any));
     case "createPickupOrder":

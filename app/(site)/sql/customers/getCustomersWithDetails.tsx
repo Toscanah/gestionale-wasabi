@@ -2,7 +2,7 @@ import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import prisma from "../db";
 
 export default async function getCustomersWithDetails(): Promise<CustomerWithDetails[]> {
-  return await prisma.customer.findMany({
+  const customers = await prisma.customer.findMany({
     include: {
       addresses: true,
       phone: true,
@@ -68,4 +68,21 @@ export default async function getCustomersWithDetails(): Promise<CustomerWithDet
       },
     },
   });
+
+  // Filter out inactive products
+  customers.forEach((customer) => {
+    customer.home_orders.forEach((homeOrder) => {
+      homeOrder.order.products = homeOrder.order.products.filter(
+        (productInOrder) => productInOrder.product.active
+      );
+    });
+
+    customer.pickup_orders.forEach((pickupOrder) => {
+      pickupOrder.order.products = pickupOrder.order.products.filter(
+        (productInOrder) => productInOrder.product.active
+      );
+    });
+  });
+
+  return customers;
 }

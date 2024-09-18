@@ -4,7 +4,7 @@ import getColumns from "./getColumns";
 import { OrderType } from "../types/OrderType";
 import { Cell } from "@tanstack/react-table";
 import { AnyOrder } from "../types/PrismaOrders";
-import Order from "./order/Order";
+import Order from "./single-order/Order";
 import getTable from "../util/functions/getTable";
 import Table from "../components/table/Table";
 

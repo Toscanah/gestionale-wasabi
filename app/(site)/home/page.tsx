@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { OrderType } from "../types/OrderType";
 import { WasabiProvider } from "../context/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
-import CreateOrder from "../create-order/CreateOrder";
+import CreateOrder from "../orders/create-order/CreateOrder";
 import Header from "./Header";
 import fetchRequest from "../util/functions/fetchRequest";
 import { cn } from "@/lib/utils";
@@ -42,8 +42,6 @@ export default function Home() {
   };
 
   const onLayout = (sizes: number[]) => {
-    
-
     //console.log(leftPanelElement);
   };
 
@@ -51,9 +49,6 @@ export default function Home() {
     fetchOrders(OrderType.TABLE);
     fetchOrders(OrderType.PICK_UP);
     fetchOrders(OrderType.TO_HOME);
-
-    
-
   }, []);
 
   return (
@@ -79,8 +74,7 @@ export default function Home() {
             return (
               <>
                 <ResizablePanel
-                  //collapsedSize={5}
-                  //defaultSize={33}
+                  defaultSize={33}
                   key={type}
                   id={type}
                   className={cn(
@@ -92,7 +86,7 @@ export default function Home() {
                     <CreateOrder
                       type={type}
                       triggerClassName={cn(
-                        "rounded-none ",
+                        "rounded-none",
                         index == 0 && "rounded-tl-md",
                         index == 2 && "rounded-tr-md"
                       )}
@@ -100,7 +94,10 @@ export default function Home() {
                   </div>
                   <OrdersTable data={orders[type]} type={type} />
                 </ResizablePanel>
-                <ResizableHandle withHandle />
+
+                {type !== OrderType.PICK_UP && (
+                  <ResizableHandle withHandle key={"handle-" + type} />
+                )}
               </>
             );
           })}

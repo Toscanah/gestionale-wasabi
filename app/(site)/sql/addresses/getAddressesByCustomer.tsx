@@ -6,6 +6,7 @@ export default async function getAddressesByCustomer(customerId: number) {
       customer: {
         id: customerId,
       },
+      temporary: false,
     },
   });
 }

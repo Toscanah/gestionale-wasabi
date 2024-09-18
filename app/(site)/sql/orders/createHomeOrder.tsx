@@ -5,10 +5,9 @@ export default async function createHomeOrder(content: {
   customer: Customer;
   address: Address;
   notes: string;
-  when: string;
   contact_phone: string;
 }) {
-  const { customer, address, notes, when, contact_phone } = content;
+  const { customer, address, notes, contact_phone } = content;
 
   return await prisma.order.create({
     data: {
@@ -28,7 +27,7 @@ export default async function createHomeOrder(content: {
           },
           contact_phone,
           notes,
-          when,
+          when: "immediate"
         },
       },
     },
