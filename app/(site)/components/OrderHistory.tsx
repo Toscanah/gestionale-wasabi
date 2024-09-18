@@ -13,6 +13,7 @@ import { HomeOrder, PickupOrder } from "../types/PrismaOrders";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox"; // Assuming you're using a Checkbox component
 import { ProductInOrderType } from "../types/ProductInOrderType";
+import applyDiscount from "../util/functions/applyDiscount";
 
 type ProductStats = {
   desc: string;
@@ -103,7 +104,10 @@ export default function OrderHistory({
       Object.values(ordersPerYear).reduce((sum, count) => sum + count, 0) /
       Object.keys(ordersPerYear).length;
 
-    const totalOrderCost = allOrders.reduce((sum, order) => sum + order.order.total, 0);
+    const totalOrderCost = allOrders.reduce(
+      (sum, order) => sum + applyDiscount(order.order.total, order.order.discount),
+      0
+    );
     const avgOrderCost = totalOrderCost / allOrders.length;
 
     setStats({
@@ -188,7 +192,8 @@ export default function OrderHistory({
                     <h3 className="text-xl">Prodotto meno acquistato</h3>
                     {stats.leastBoughtProduct ? (
                       <p>
-                        - {stats.leastBoughtProduct.desc} ({stats.leastBoughtProduct.quantity} volte)
+                        - {stats.leastBoughtProduct.desc} ({stats.leastBoughtProduct.quantity}{" "}
+                        volte)
                       </p>
                     ) : (
                       <p>Nessun prodotto</p>
@@ -230,11 +235,22 @@ export default function OrderHistory({
                       <div className="flex gap-4 items-center justify-between">
                         <span className="flex items-center gap-2">
                           <Badge>{type}</Badge>
-                          {formatDateWithDay(order.created_at)} - {"€ " + order.total}
+                          {formatDateWithDay(order.created_at)} -{" "}
+                          {"€ " + applyDiscount(order.total, order.discount)}
                         </span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="space-y-4">
+                    {onCreate && sortedProducts.length > 0 && (
+                        <Button
+                          className="w-full"
+                          onClick={() => handleRecreate()}
+                          disabled={!(selectedProducts.length > 0)}
+                        >
+                          Ricrea questo ordine
+                        </Button>
+                      )}
+                      
                       {sortedProducts.length > 0 ? (
                         <ul className="list-disc list-inside">
                           {sortedProducts.map((product) => (
@@ -277,14 +293,7 @@ export default function OrderHistory({
                         <p className="text-xl">Nessun prodotto in questo ordine</p>
                       )}
 
-                      {onCreate && sortedProducts.length > 0 && (
-                        <Button
-                          onClick={() => handleRecreate()}
-                          disabled={!(selectedProducts.length > 0)}
-                        >
-                          Ricrea
-                        </Button>
-                      )}
+
                     </AccordionContent>
                   </AccordionItem>
                 );

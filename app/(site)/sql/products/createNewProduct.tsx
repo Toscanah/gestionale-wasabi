@@ -2,6 +2,9 @@ import prisma from "../db";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 
 export default async function createNewProduct(product: ProductWithInfo) {
+  console.log(product)
+  console.log(Number(product.category_id))
+
   const existingProduct = await prisma.product.findFirst({
     where: {
       code: product.code,
@@ -17,7 +20,7 @@ export default async function createNewProduct(product: ProductWithInfo) {
       site_price: Number(product.site_price),
       home_price: Number(product.home_price),
       rice: product.rice,
-      category_id: Number(product.category_id) ?? null,
+      category_id: product.category_id ? Number(product.category_id) || null : null,
     },
     include: {
       category: true,

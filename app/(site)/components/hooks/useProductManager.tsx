@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { AnyOrder } from "../../types/PrismaOrders";
 import createDummyProduct from "../../util/functions/createDummyProduct";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
@@ -26,8 +26,6 @@ export function useProductManager(
     }).then((newProduct) => {
       if (newProduct) {
         updateProductsList({ newProducts: [newProduct] });
-        setNewCode("");
-        setNewQuantity(0);
       } else {
         toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
       }
@@ -162,7 +160,8 @@ export function useProductManager(
       const updatedProductList = [...productsWithUpdates, ...newProducts, createDummyProduct()];
 
       updateOrder(updatedProductList);
-
+      setNewCode("");
+      setNewQuantity(0);
       toastSuccess("Prodotti aggiornai correttamente");
       return updatedProductList;
     });
@@ -175,10 +174,9 @@ export function useProductManager(
     addProducts,
     newCode,
     newQuantity,
-    updateProductsList,
     updateProduct,
-    deleteProducts,
     updateProductField,
+    deleteProducts,
     updateProductOption,
   };
 }

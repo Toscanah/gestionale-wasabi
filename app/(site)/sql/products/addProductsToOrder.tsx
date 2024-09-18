@@ -40,16 +40,6 @@ export default async function addProductsToOrder(
         },
       });
 
-      // If the product category has options, create option records for the product
-      if (productInOrder.product.category) {
-        await prisma.optionInProductOrder.createMany({
-          data: productInOrder.product.category.options.map((opt) => ({
-            product_in_order_id: newProductInOrder.id,
-            option_id: opt.option.id,
-          })),
-        });
-      }
-
       return newProductInOrder;
     })
   );

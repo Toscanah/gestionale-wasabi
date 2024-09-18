@@ -1,9 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
-import { AnyOrder, HomeOrder, PickupOrder } from "../../types/PrismaOrders";
+import { AnyOrder } from "../../types/PrismaOrders";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { OrderType } from "../../types/OrderType";
-import { useProductManager } from "./useProductManager";
 import { useWasabiContext } from "../../context/WasabiContext";
 
 export function useOrderManager(

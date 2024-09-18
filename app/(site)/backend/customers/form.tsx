@@ -24,17 +24,17 @@ export const formSchema = z.object({
 export function getCustomerFields(): FormFieldType[] {
   return [
     {
+      name: "phone",
+      label: "Numero di telefono",
+      type: "text",
+    },
+    {
       name: "name",
       label: "Nome",
     },
     {
       name: "surname",
       label: "Cognome",
-    },
-    {
-      name: "phone",
-      label: "Numero di telefono",
-      type: "text",
     },
     {
       name: "email",

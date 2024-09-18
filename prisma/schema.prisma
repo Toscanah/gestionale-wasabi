@@ -31,6 +31,7 @@ model Order {
     created_at   DateTime         @default(now())
     updated_at   DateTime         @default(now()) @updatedAt
     total        Float            @default(0)
+    discount     Float            @default(0)
     state        OrderState       @default(ACTIVE)
     type         OrderType
     products     ProductInOrder[]

@@ -39,15 +39,10 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
 
             return parsedRow.table_order?.table;
           }
-          case OrderType.PICK_UP: {
+          case OrderType.PICK_UP:
             const parsedRow = row.original as PickupOrder;
+            return parsedRow.pickup_order?.customer?.surname || parsedRow.pickup_order?.name;
 
-            if (parsedRow.pickup_order?.customer?.surname !== "") {
-              return parsedRow.pickup_order?.customer?.surname;
-            } else {
-              return parsedRow.pickup_order.name;
-            }
-          }
           case OrderType.TO_HOME: {
             const parsedRow = row.original as HomeOrder;
             return parsedRow.home_order?.address.doorbell;

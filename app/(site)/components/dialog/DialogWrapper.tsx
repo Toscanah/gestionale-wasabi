@@ -21,7 +21,7 @@ interface DialogWrapperProps {
   desc?: ReactNode;
   variant?: "delete" | "normal";
   onDelete?: () => void;
-  onOpenChange?: (open?: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
   contentClassName?: string;
   triggerClassName?: string;
   hasHeader?: boolean;
@@ -50,7 +50,7 @@ export default function DialogWrapper({
         {trigger}
       </DialogTrigger>
       <DialogContent
-        className={cn("max-w-screen max-h-screen w-auto", contentClassName)}
+        className={cn("max-w-screen w-auto", contentClassName)}
         showCloseButton={showCloseButton}
       >
         {hasHeader && (
@@ -59,6 +59,7 @@ export default function DialogWrapper({
             {desc && <DialogDescription>{desc}</DialogDescription>}
           </DialogHeader>
         )}
+        
         {children}
 
         {variant == "delete" && onDelete && (

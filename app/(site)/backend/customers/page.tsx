@@ -46,7 +46,7 @@ export default function CustomersDashboard() {
         email: object?.email ?? "",
         preferences: object?.preferences ?? "",
       }}
-      layout={[{ fieldsPerRow: 2 }, { fieldsPerRow: 2 }, { fieldsPerRow: 1 }]}
+      layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 2 }, { fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
       formFields={getCustomerFields()}
       formSchema={formSchema}
     />

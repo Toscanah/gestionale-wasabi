@@ -15,6 +15,7 @@ export default async function addProductToOrder(
         equals: productCode,
         mode: "insensitive",
       },
+      active: true,
     },
     include: { category: { include: { options: { select: { option: true } } } } },
   });
@@ -35,17 +36,6 @@ export default async function addProductToOrder(
       riceQuantity: product.rice * Number(quantity) ?? 0
     },
   });
-
-  // creo i record con le opzioni di quel prodotto
-  if (product.category) {
-    await prisma.optionInProductOrder.createMany({
-      data: product.category.options.map((option) => ({
-        product_in_order_id: productInOrder.id,
-        option_id: option.option.id,
-      })),
-    });
-  }
-
 
   await prisma.order.update({
     where: {
