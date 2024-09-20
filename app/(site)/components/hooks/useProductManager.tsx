@@ -36,7 +36,7 @@ export function useProductManager(
     fetchRequest<ProductInOrderType[]>("POST", "/api/products", "addProductsToOrder", {
       orderId: order.id,
       products,
-    }).then((newProducts) => updateProductsList({ newProducts: products }));
+    }).then(() => updateProductsList({ newProducts: products }));
   };
 
   const updateProduct = (key: string, value: any, index: number) => {
@@ -162,7 +162,7 @@ export function useProductManager(
       updateOrder(updatedProductList);
       setNewCode("");
       setNewQuantity(0);
-      toastSuccess("Prodotti aggiornai correttamente");
+      toastSuccess("Prodotti aggiornati correttamente");
       return updatedProductList;
     });
   };

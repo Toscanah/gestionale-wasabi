@@ -1,6 +1,5 @@
 import { Address, Customer } from "@prisma/client";
-import { debounce } from "lodash";
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import fetchRequest from "../../util/functions/fetchRequest";
 
 export default function useFetchCustomer(

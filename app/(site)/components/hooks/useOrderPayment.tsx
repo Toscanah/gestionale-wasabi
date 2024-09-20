@@ -111,5 +111,5 @@ export default function useOrderPayment(
     });
   };
 
-  return { handlePaymentChange, payment,payOrder };
+  return { handlePaymentChange, payment, payOrder };
 }

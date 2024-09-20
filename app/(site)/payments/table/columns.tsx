@@ -1,8 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
 import { OrderWithPayments } from "../../types/OrderWithPayments";
-import DialogWrapper from "../../components/dialog/DialogWrapper";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { OrderType } from "../../types/OrderType";
 import applyDiscount from "../../util/functions/applyDiscount";
