@@ -17,6 +17,8 @@ export default function useFetchCustomer(
 
       if (fetchedCustomer) {
         fetchAddresses(fetchedCustomer.id);
+      } else {
+        setAddresses([])
       }
     });
   };
@@ -31,10 +33,10 @@ export default function useFetchCustomer(
 
   useEffect(() => {
     if (phone) {
+      setAddresses([])
       setSelectedAddress(undefined);
-      fetchCustomer();
-    } else {
       setCustomer(undefined);
+      fetchCustomer();
     }
   }, [phone]);
 

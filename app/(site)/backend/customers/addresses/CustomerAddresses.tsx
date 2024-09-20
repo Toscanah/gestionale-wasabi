@@ -28,7 +28,7 @@ export default function CustomerAddresses({
 }) {
   const [currentAddresses, setCurrentAddresses] = useState<Address[]>(addresses ?? []);
 
-  console.log(customerId)
+  console.log(customerId);
 
   const saveAddresses = () => {
     fetchRequest<CustomerWithDetails[]>("POST", "/api/customers", "updateAddressesOfCustomer", {
@@ -125,18 +125,18 @@ export default function CustomerAddresses({
 
                   <div className="flex justify-between gap-4">
                     <div className="space-y-2 w-full">
-                      <Label>Piano</Label>
-                      <Input
-                        defaultValue={address.floor?.toString()}
-                        onChange={(e) => updateField(address.id, "floor", e.target.value)}
-                      />
-                    </div>
-
-                    <div className="space-y-2 w-full">
                       <Label>Campanello</Label>
                       <Input
                         defaultValue={address.doorbell?.toString()}
                         onChange={(e) => updateField(address.id, "doorbell", e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 w-full">
+                      <Label>Piano</Label>
+                      <Input
+                        defaultValue={address.floor?.toString()}
+                        onChange={(e) => updateField(address.id, "floor", e.target.value)}
                       />
                     </div>
 

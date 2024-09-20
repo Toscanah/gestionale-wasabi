@@ -22,6 +22,7 @@ interface OverviewProps {
   formRef: any;
   phoneRef: RefObject<any>;
   handleKeyDown: (e: KeyboardEvent) => void;
+  createHomeOrder: () => void;
 }
 
 export default function Overview({
@@ -35,12 +36,14 @@ export default function Overview({
   formRef,
   phoneRef,
   handleKeyDown,
+  createHomeOrder,
 }: OverviewProps) {
   const [permAddresses, setPermAddresses] = useState<Address[]>([]);
   const [tempAddress, setTempAddress] = useState<Address | undefined>();
   const [lastAddressId, setLastAddressId] = useState<string>("");
 
   useEffect(() => {
+    setLastAddressId("");
     setPermAddresses(addresses.filter((address) => !address.temporary));
     setTempAddress(addresses.find((address) => address.temporary));
   }, [addresses]);
@@ -68,7 +71,7 @@ export default function Overview({
       setSelectedOption(selectedAddress.temporary ? "temp" : selectedAddress.id.toString());
     } else {
       setSelectedOption(
-        lastAddressId || permAddresses.find((addr) => addr.active)?.id.toString() || ""
+        lastAddressId || permAddresses.find((addr) => addr.active)?.id.toString() || "new"
       );
     }
   }, [permAddresses]);
@@ -80,6 +83,7 @@ export default function Overview({
         : selectedOption === "new"
         ? undefined
         : addresses.find((addr) => selectedOption === addr.id.toString());
+
     setSelectedAddress(address);
   }, [selectedOption]);
 
@@ -185,6 +189,16 @@ export default function Overview({
                 new Event("submit", { cancelable: true, bubbles: true })
               )
             }
+          >
+            SALVA DATI
+          </Button>
+
+          <Button
+            className="text-4xl h-16 w-full"
+            disabled={
+              !selectedAddress || selectedOption === "new" || (selectedAddress && tempAddress !== undefined)
+            }
+            onClick={() => createHomeOrder()}
           >
             CREA ORDINE
           </Button>

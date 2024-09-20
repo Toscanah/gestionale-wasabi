@@ -8,6 +8,7 @@ import parseAddress from "@/app/(site)/util/functions/parseAddress";
 import getForm from "@/app/(site)/util/functions/getForm";
 import formSchema from "./form";
 import { z } from "zod";
+import { toastSuccess } from "@/app/(site)/util/toast";
 
 function getActionType(object: object | undefined): string {
   return object === undefined ? "create" : "update";
@@ -30,6 +31,8 @@ export default function AddressForm({
   handleKeyDown,
   refs,
   createHomeOrder,
+  setExternalInfo,
+  externalInfo,
 }: {
   customer: Customer | undefined;
   selectedAddress: Address | undefined;
@@ -42,8 +45,9 @@ export default function AddressForm({
   handleKeyDown: (e: KeyboardEvent) => void;
   refs: RefObject<any>[];
   createHomeOrder: (address: Address, externalInfo: ExternalInfo) => void;
+  setExternalInfo: Dispatch<SetStateAction<ExternalInfo>>;
+  externalInfo: ExternalInfo;
 }) {
-  const [externalInfo, setExternalInfo] = useState<ExternalInfo>({ contactPhone: "", notes: "" });
   const form = getForm(formSchema);
 
   const handleCustomerUpdate = async (actionCustomer: string, customerContent: object) => {
@@ -93,6 +97,7 @@ export default function AddressForm({
       name: values.name,
       surname: values.surname,
       preferences: values.preferences,
+      email: values.email,
       id: customer?.id,
     };
 
@@ -109,7 +114,7 @@ export default function AddressForm({
     };
 
     const newExternalInfo = { notes: values.notes, contactPhone: values.contact_phone };
-    setExternalInfo(newExternalInfo)
+    setExternalInfo(newExternalInfo);
 
     const updatedCustomer = await handleCustomerUpdate(actionCustomer, customerContent);
     const updatedAddress = await handleAddressUpdate(
@@ -118,7 +123,9 @@ export default function AddressForm({
       addressContent
     );
 
-    createHomeOrder(updatedAddress, newExternalInfo);
+    toastSuccess("Il cliente e i suoi indirizzi sono stato correttamente aggiornato");
+
+    //createHomeOrder(updatedAddress, newExternalInfo);
   }
 
   useEffect(() => {
@@ -140,7 +147,7 @@ export default function AddressForm({
     });
 
     form.clearErrors();
-  }, [selectedAddress, customer]);
+  }, [selectedAddress, customer, phone]);
 
   useEffect(() => setExternalInfo({ contactPhone: "", notes: "" }), [phone]);
 
@@ -172,14 +179,14 @@ export default function AddressForm({
               label="Campanello"
               example="(es. Rossi)"
             />
+
             <FormField
               ref={refs[2]}
               control={form.control}
-              name="contact_phone"
-              type="number"
+              name="floor"
+              label="Piano"
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl uppercase"
-              label="Num. telefono addizionale"
             />
           </div>
 
@@ -187,10 +194,11 @@ export default function AddressForm({
             <FormField
               ref={refs[3]}
               control={form.control}
-              name="floor"
-              label="Piano"
+              name="contact_phone"
+              type="number"
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl uppercase"
+              label="Num. telefono addizionale"
             />
             <FormField
               ref={refs[4]}

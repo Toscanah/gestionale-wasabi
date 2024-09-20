@@ -19,15 +19,16 @@ export default function ToHome({
   const { handleKeyDown, addRefs } = useFocusCycle();
 
   const formRef = useRef<HTMLFormElement>(null);
+  const [externalInfo, setExternalInfo] = useState<ExternalInfo>({ contactPhone: "", notes: "" });
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(undefined);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const { customer, addresses, phone, setCustomer, setAddresses, setPhone } =
     useFetchCustomer(setSelectedAddress);
 
-  const createHomeOrder = (address: Address, externalInfo: ExternalInfo) => {
+  const createHomeOrder = () => {
     fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {
       customer: customer,
-      address,
+      address: { ...selectedAddress },
       notes: externalInfo.notes,
       contact_phone: externalInfo.contactPhone,
     }).then((order) => {
@@ -39,8 +40,8 @@ export default function ToHome({
   const phoneRef = useRef<HTMLInputElement>(null);
   const streetRef = useRef<HTMLInputElement>(null);
   const bellRef = useRef<HTMLInputElement>(null);
-  const contactRef = useRef<HTMLInputElement>(null);
   const floorRef = useRef<HTMLInputElement>(null);
+  const contactRef = useRef<HTMLInputElement>(null);
   const stairRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const surnameRef = useRef<HTMLInputElement>(null);
@@ -79,6 +80,7 @@ export default function ToHome({
         formRef={formRef}
         phoneRef={phoneRef}
         handleKeyDown={handleKeyDown}
+        createHomeOrder={createHomeOrder}
       />
 
       <Separator orientation="vertical" />
@@ -86,12 +88,14 @@ export default function ToHome({
       <div className="w-[70%] h-full ">
         {phone.length > 0 && (
           <AddressForm
+            setExternalInfo={setExternalInfo}
+            externalInfo={externalInfo}
             handleKeyDown={handleKeyDown}
             refs={[
               streetRef,
               bellRef,
-              contactRef,
               floorRef,
+              contactRef,
               stairRef,
               nameRef,
               surnameRef,
