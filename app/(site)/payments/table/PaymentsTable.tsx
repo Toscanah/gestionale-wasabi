@@ -15,9 +15,17 @@ export default function PaymentsTable({ fetchedOrders }: { fetchedOrders: OrderW
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
 
   const table = getTable({
-    data: orders.sort(
-      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    ),
+    data: orders
+      .filter((order) => {
+        const orderDate = new Date(order.created_at);
+        const today = new Date();
+        return (
+          orderDate.getDate() === today.getDate() &&
+          orderDate.getMonth() === today.getMonth() &&
+          orderDate.getFullYear() === today.getFullYear()
+        );
+      })
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
     columns,
     globalFilter,
     setGlobalFilter,

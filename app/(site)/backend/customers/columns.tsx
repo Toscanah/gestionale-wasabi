@@ -14,6 +14,20 @@ const columns = (
   setCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>
 ): ColumnDef<CustomerWithDetails>[] => [
   TableColumn({
+    accessorKey: "phone.phone",
+    header: "Num. di telefono",
+  }),
+
+  TableColumn({
+    accessorKey: "boordbells",
+    header: "Campanelli",
+    cellContent: (row) =>
+      row.original.addresses
+        .map((address) => address.doorbell.charAt(0).toUpperCase() + address.doorbell.slice(1))
+        .join(", "),
+  }),
+
+  TableColumn({
     accessorKey: "name",
     header: "Nome",
   }),
@@ -21,11 +35,6 @@ const columns = (
   TableColumn({
     accessorKey: "surname",
     header: "Cognome",
-  }),
-
-  TableColumn({
-    accessorKey: "phone.phone",
-    header: "Num. di telefono",
   }),
 
   TableColumn({
@@ -53,7 +62,7 @@ const columns = (
             </Button>
           }
         >
-          <OrderHistory customer={customer}/>
+          <OrderHistory customer={customer} />
         </DialogWrapper>
       );
     },

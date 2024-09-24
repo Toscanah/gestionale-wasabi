@@ -59,7 +59,7 @@ export default function DialogWrapper({
             {desc && <DialogDescription>{desc}</DialogDescription>}
           </DialogHeader>
         )}
-        
+
         {children}
 
         {variant == "delete" && onDelete && (
@@ -71,9 +71,11 @@ export default function DialogWrapper({
                 </Button>
               </DialogClose>
 
-              <Button type="button" className="w-full" variant={"destructive"} onClick={onDelete}>
-                Confermo
-              </Button>
+              <DialogClose asChild>
+                <Button type="button" className="w-full" variant={"destructive"} onClick={onDelete}>
+                  Confermo
+                </Button>
+              </DialogClose>
             </div>
           </DialogFooter>
         )}

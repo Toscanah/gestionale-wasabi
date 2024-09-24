@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
 import { Rice } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
-import fetchRequest from "../util/functions/fetchRequest";
 import { useEffect, useState } from "react";
 import DialogWrapper from "../components/dialog/DialogWrapper";
 
@@ -32,16 +31,19 @@ export default function RiceDialog() {
       }
       footer={
         <>
-          <DialogClose asChild>
-            <Button
-              type="submit"
-              onClick={() => resetRice()}
-              className="w-full"
-              variant={"destructive"}
-            >
-              Resetta
-            </Button>
-          </DialogClose>
+          <DialogWrapper
+            variant="delete"
+            title="Sei sicuro?"
+            onDelete={() => resetRice()}
+            trigger={
+              <Button className="w-full" variant={"destructive"}>
+                Resetta
+              </Button>
+            }
+          >
+            Stai per resettare il riso
+          </DialogWrapper>
+
           <DialogClose asChild>
             <Button type="submit" onClick={() => updateTotalRice(newRice)} className="w-full">
               Salva
