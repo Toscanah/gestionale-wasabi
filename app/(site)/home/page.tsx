@@ -14,6 +14,8 @@ import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
 import { getPanelElement } from "react-resizable-panels";
+import Link from "next/link";
+import { Skull } from "@phosphor-icons/react";
 
 export default function Home() {
   const [orders, setOrders] = useState<{
@@ -64,6 +66,12 @@ export default function Home() {
           
 
           }}>Reset</Button> */}
+
+          <Link href={"../printing"}>
+            <Button className="" variant={"outline"}>
+              <Skull className="mr-2 h-4 w-4" /> Stampa
+            </Button>
+          </Link>
           <Header />
         </div>
 

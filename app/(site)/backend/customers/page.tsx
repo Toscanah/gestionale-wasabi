@@ -74,7 +74,7 @@ export default function CustomersDashboard() {
         )}
       </div>
 
-      <GoBack path="/backend" />
+      <GoBack path="../../home" />
     </div>
   );
 }

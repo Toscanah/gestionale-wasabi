@@ -34,7 +34,7 @@ export default function Table<T>({
               table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className="*:text-xl">
+                    <TableHead key={header.id} > {/**className="*:text-xl" */}
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}

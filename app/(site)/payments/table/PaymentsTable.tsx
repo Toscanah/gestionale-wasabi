@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
 import columns from "../table/columns";
@@ -9,23 +10,38 @@ import GoBack from "../../components/GoBack";
 import TableControls from "../../components/table/TableControls";
 import { OrderWithPayments } from "../../types/OrderWithPayments";
 import SelectWrapper from "../../components/select/SelectWrapper";
+import DailySummary from "./DailySummary";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 export default function PaymentsTable({ fetchedOrders }: { fetchedOrders: OrderWithPayments[] }) {
   const [orders, setOrders] = useState<OrderWithPayments[]>(fetchedOrders);
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  useEffect(() => {
+    if (date) {
+      setOrders(() =>
+        fetchedOrders.filter((order) => {
+          const orderDate = new Date(order.created_at);
+
+          return (
+            orderDate.getFullYear() === date.getFullYear() &&
+            orderDate.getMonth() === date.getMonth() &&
+            orderDate.getDate() === date.getDate()
+          );
+        })
+      );
+    }
+  }, [date]);
 
   const table = getTable({
-    data: orders
-      .filter((order) => {
-        const orderDate = new Date(order.created_at);
-        const today = new Date();
-        return (
-          orderDate.getDate() === today.getDate() &&
-          orderDate.getMonth() === today.getMonth() &&
-          orderDate.getFullYear() === today.getFullYear()
-        );
-      })
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
+    data: orders.sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    ),
     columns,
     globalFilter,
     setGlobalFilter,
@@ -39,7 +55,9 @@ export default function PaymentsTable({ fetchedOrders }: { fetchedOrders: OrderW
           table={table}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-          onReset={() => setOrders(fetchedOrders)}
+          onReset={() => {
+            setDate(new Date())
+            setOrders(fetchedOrders)}}
         >
           <SelectWrapper
             className="h-10 max-w-sm"
@@ -62,9 +80,29 @@ export default function PaymentsTable({ fetchedOrders }: { fetchedOrders: OrderW
               )
             }
           />
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "grow justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date ? format(date, "PPP") : <span>Seleziona una data</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+            </PopoverContent>
+          </Popover>
         </TableControls>
 
         <Table table={table} />
+
+        <DailySummary orders={orders} />
       </div>
 
       <GoBack path="/home" />

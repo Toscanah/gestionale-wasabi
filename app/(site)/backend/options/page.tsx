@@ -69,7 +69,7 @@ export default function OptionsDashboard() {
         )}
       </div>
 
-      <GoBack path="/backend" />
+      <GoBack path="../../home" />
     </div>
   );
 }

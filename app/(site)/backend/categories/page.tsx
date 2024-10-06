@@ -76,7 +76,7 @@ export default function CategoryDashboard() {
         )}
       </div>
 
-      <GoBack path="/backend" />
+      <GoBack path="../../home" />
     </div>
   );
 }
