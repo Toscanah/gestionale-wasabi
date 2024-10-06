@@ -45,7 +45,7 @@
         "@radix-ui/react-hover-card": "^1.1.1",
         "@radix-ui/react-label": "^2.1.0",
         "@radix-ui/react-navigation-menu": "^1.2.0",
-        "@radix-ui/react-popover": "^1.1.0",
+        "@radix-ui/react-popover": "^1.1.1",
         "@radix-ui/react-radio-group": "^1.2.0",
         "@radix-ui/react-select": "^2.1.1",
         "@radix-ui/react-separator": "^1.1.0",
@@ -55,18 +55,23 @@
         "@radix-ui/react-toggle": "^1.1.0",
         "@radix-ui/react-toggle-group": "^1.1.0",
         "@tanstack/react-table": "^8.17.3",
+        "@types/w3c-web-usb": "^1.0.10",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
         "date-fns": "^3.6.0",
         "debounce": "^2.1.0",
+        "escpos": "^3.0.0-alpha.6",
         "lodash": "^4.17.21",
         "lodash.debounce": "^4.0.8",
         "lucide-react": "^0.412.0",
         "next": "^14.2.5",
         "next-themes": "^0.3.0",
+        "node-addon-api": "^8.2.0",
+        "node-gyp-build": "^4.8.2",
         "re-resizable": "^6.9.17",
         "react": "^18",
         "react-clock": "^5.0.0",
+        "react-day-picker": "^8.10.1",
         "react-dom": "^18",
         "react-hook-form": "^7.52.0",
         "react-loader-spinner": "^6.1.6",
@@ -78,6 +83,7 @@
         "sonner": "^1.5.0",
         "tailwind-merge": "^2.3.0",
         "tailwindcss-animate": "^1.0.7",
+        "usb": "^2.14.0",
         "uuid": "^10.0.0",
         "vaul": "^0.9.1",
         "zod": "^3.23.8"
@@ -90,7 +96,7 @@
         "electron": "^31.4.0",
         "electron-builder": "^24.13.3",
         "postcss": "^8",
-        "prisma": "^5.19.1",
+        "prisma": "^5.20.0",
         "tailwindcss": "^3.4.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.4.5"
@@ -99,5 +105,10 @@
     "main": "main.js",
     "keywords": [],
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "browser": {
+        "fs": false,
+        "path": false,
+        "os": false
+    }
 }

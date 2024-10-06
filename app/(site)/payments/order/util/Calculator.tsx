@@ -75,9 +75,6 @@ export default function Calculator({
       </div>
 
       <div className="w-full h-full flex items-center flex-col gap-4">
-        <Button onClick={() => calculateTotal()} className="w-full h-12 text-xl">
-          Calcola
-        </Button>
         <CalculationTable calcs={calcs} setCalcs={setCalcs} />
       </div>
     </div>

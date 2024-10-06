@@ -69,8 +69,6 @@ export default function OrderTable({
     setRowSelection,
   });
 
-  useEffect(() => console.log(products), [products])
-
   useEffect(() => {
     if (action === "paidFull") {
       onOrdersUpdate(order.type as OrderType);
