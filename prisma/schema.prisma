@@ -19,6 +19,12 @@ enum OrderState {
     CANCELLED
 }
 
+enum ProductInOrderState {
+    IN_ORDER
+    DELETED_COOKED
+    DELETED_UNCOOKED
+}
+
 enum PaymentType {
     CASH
     CARD
@@ -145,6 +151,7 @@ model ProductInOrder {
     isPaidFully  Boolean                @default(false)
     paidQuantity Int                    @default(0)
     riceQuantity Float                  @default(0)
+    state        ProductInOrderState    @default(IN_ORDER)
     options      OptionInProductOrder[]
     product      Product                @relation(fields: [product_id], references: [id])
     order        Order                  @relation(fields: [order_id], references: [id])

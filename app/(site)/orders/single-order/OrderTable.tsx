@@ -85,7 +85,7 @@ export default function OrderTable({
             cancelOrder();
             setOpen(false);
           }}
-          deleteProducts={() => deleteProducts(table)}
+          deleteProducts={deleteProducts}
           table={table}
         />
       </div>

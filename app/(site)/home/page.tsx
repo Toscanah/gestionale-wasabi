@@ -39,13 +39,7 @@ export default function Home() {
     });
   };
 
-  const onOrdersUpdate = (type: OrderType) => {
-    fetchOrders(type);
-  };
-
-  const onLayout = (sizes: number[]) => {
-    //console.log(leftPanelElement);
-  };
+  const onOrdersUpdate = (type: OrderType) => fetchOrders(type);
 
   useEffect(() => {
     fetchOrders(OrderType.TABLE);
@@ -57,16 +51,6 @@ export default function Home() {
     <WasabiProvider onOrdersUpdate={onOrdersUpdate}>
       <div className="w-screen p-4 h-screen flex flex-col gap-4">
         <div className="w-full flex justify-between">
-          {/* <Button onClick={() => {
-            
-
-            const table1 = getPanelElement("TABLE");
-            const table2 = getPanelElement("TO_HOME");
-            const table3 = getPanelElement("PICK_UP");
-          
-
-          }}>Reset</Button> */}
-
           <Link href={"../printing"}>
             <Button className="" variant={"outline"}>
               <Skull className="mr-2 h-4 w-4" /> Stampa
@@ -77,7 +61,7 @@ export default function Home() {
 
         <Separator orientation="horizontal" />
 
-        <ResizablePanelGroup direction="horizontal" onLayout={onLayout}>
+        <ResizablePanelGroup direction="horizontal">
           {Object.values(OrderType).map((type, index) => {
             return (
               <>
@@ -98,9 +82,14 @@ export default function Home() {
                         index == 0 && "rounded-tl-md",
                         index == 2 && "rounded-tr-md"
                       )}
-                    />
+                    >
+                      {orders[type].length !== 0 && "(" + orders[type].length + ")"}
+                    </CreateOrder>
                   </div>
+
                   <OrdersTable data={orders[type]} type={type} />
+
+                  <div className="w-full flex items-center justify-start"></div>
                 </ResizablePanel>
 
                 {type !== OrderType.PICK_UP && (
@@ -109,12 +98,6 @@ export default function Home() {
               </>
             );
           })}
-
-          {/* <ResizablePanel>One</ResizablePanel>
-          
-          <ResizablePanel>Two</ResizablePanel>
-
-        <div className="flex gap-4 h-[95%] w-full"></div> */}
         </ResizablePanelGroup>
       </div>
     </WasabiProvider>

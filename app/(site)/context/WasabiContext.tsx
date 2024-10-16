@@ -31,15 +31,15 @@ export const WasabiProvider = ({
   children: ReactNode;
   onOrdersUpdate: (type: OrderType) => void;
 }) => {
-  const [rice, setRice] = useState<{ total: Rice; remaining: Rice }>({
+  const [rice, setRice] = useState<RiceState>({
     total: { id: 1, amount: -1, threshold: -1 },
     remaining: { id: 1, amount: -1, threshold: -1 },
   });
 
   const fetchTotalRice = () =>
-    fetchRequest<Rice>("GET", "/api/rice/", "getTotalRice").then((total) => {
-      setRice((prevRice) => ({ ...prevRice, total }));
-    });
+    fetchRequest<Rice>("GET", "/api/rice/", "getTotalRice").then((total) =>
+      setRice((prevRice) => ({ ...prevRice, total }))
+    );
 
   const fetchRemainingRice = () =>
     fetchRequest<Rice>("GET", "/api/rice", "getRemainingRice").then((remaining) =>
@@ -48,7 +48,10 @@ export const WasabiProvider = ({
 
   const updateTotalRice = (total: Rice) => {
     fetchRequest("POST", "/api/rice/", "updateRice", total).then(() => {
-      setRice((prevRice) => ({ ...prevRice, total }));
+      setRice((prevRice) => ({
+        ...prevRice,
+        total: { ...total, amount: total.amount + prevRice.total.amount },
+      }));
       fetchRemainingRice();
       toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
     });

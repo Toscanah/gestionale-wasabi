@@ -49,17 +49,19 @@ export default async function getOrdersByType(type: OrderType) {
   });
 
   const adjustedOrders = orders.map((order) => {
-    const unpaidProducts = order.products.map((product) => {
-      return {
-        ...product,
-        quantity: product.quantity - product.paidQuantity,
-        total:
-          (product.quantity - product.paidQuantity) *
-          (order.type == OrderType.TO_HOME
-            ? product.product.home_price
-            : product.product.site_price),
-      };
-    });
+    const unpaidProducts = order.products
+      .filter((prod) => prod.state == "IN_ORDER")
+      .map((product) => {
+        return {
+          ...product,
+          quantity: product.quantity - product.paidQuantity,
+          total:
+            (product.quantity - product.paidQuantity) *
+            (order.type == OrderType.TO_HOME
+              ? product.product.home_price
+              : product.product.site_price),
+        };
+      });
 
     const unpaidOrderTotal = unpaidProducts.reduce((sum, product) => {
       return (

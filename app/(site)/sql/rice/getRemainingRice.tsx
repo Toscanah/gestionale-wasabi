@@ -1,13 +1,10 @@
 import { Rice } from "@prisma/client";
 import prisma from "../db";
 import { endOfDay, startOfDay } from "date-fns";
+import getTotalRice from "./getTotalRice";
 
 export default async function getRemainingRice(): Promise<Rice | null> {
-  const rice = await prisma.rice.findUnique({
-    where: {
-      id: 1,
-    },
-  });
+  const rice = await getTotalRice();
 
   const today = new Date();
   const usedRice = await prisma.productInOrder.aggregate({
@@ -15,6 +12,9 @@ export default async function getRemainingRice(): Promise<Rice | null> {
       riceQuantity: true,
     },
     where: {
+      state: {
+        not: "DELETED_UNCOOKED",
+      },
       order: {
         created_at: {
           gte: startOfDay(today),

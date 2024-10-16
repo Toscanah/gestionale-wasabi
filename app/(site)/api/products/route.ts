@@ -53,6 +53,6 @@ export async function DELETE(request: NextRequest) {
 
   switch (action) {
     case "deleteProductFromOrder":
-      return NextResponse.json(await deleteProductFromOrder(content?.productIds, content?.orderId));
+      return NextResponse.json(await deleteProductFromOrder(content?.productIds, content?.orderId, content?.cooked));
   }
 }
