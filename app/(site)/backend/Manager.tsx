@@ -164,6 +164,10 @@ export default function Manager<T extends { id: number; active: boolean }>({
       </TableControls>
 
       <Table<T> table={table} />
+
+      <div className="flex-1 text-sm text-muted-foreground">
+        {table.getFilteredRowModel().rows.length} elementi totali
+      </div>
     </div>
   );
 }

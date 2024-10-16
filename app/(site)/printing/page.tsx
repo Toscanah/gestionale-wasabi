@@ -1,63 +1,45 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import address from "./receipts/address"; // Assuming it returns encoded data
-import commands from "./commands"; // Assuming it contains ESC/POS commands
 import { Button } from "@/components/ui/button";
+import { Br, Cut, Line, Printer, Text, Row, render } from "react-thermal-printer";
+
+import { HomeOrder } from "../types/PrismaOrders";
+import Takeaway from "./receipts/Takeaway";
 
 export default function Dio() {
-  const [device, setDevice] = useState<USBDevice | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
+  async function foo() {
+    /**
+     * step 1: installare il driver sia del cavo serial
+     * e poi della stampante in se
+     *
+     * step 2: e poi andare nel device manager e mettere 19200 come rate
+     */
 
-  const setupDevice = (selectedDevice: USBDevice) => {
-    return selectedDevice
-      .open()
-      .then(() => selectedDevice.selectConfiguration(1))
-      .then(() => selectedDevice.claimInterface(0))
-      .then(() => {
-        setDevice(selectedDevice);
-        setIsConnected(true);
-      })
-      .catch((error) => {
-        console.error("Error setting up the device:", error);
-      });
-  };
+    //width={42} characterSet="wpc1252"
+    const receipt = (
+      <Printer type="epson">
+        <Takeaway />
+      </Printer>
+    );
 
-  const connectToDevice = () => {
-    if (!device) {
-      navigator.usb
-        .requestDevice({ filters: [] })
-        .then((selectedDevice) => setupDevice(selectedDevice))
-        .catch((error) => {
-          console.error("Failed to connect to USB device:", error);
-        });
+    const data: Uint8Array = await render(receipt);
+    const port = await (window as any).navigator.serial.requestPort();
+    await port.open({ baudRate: 19200 });
+
+    console.log(data);
+
+    const writer = port.writable?.getWriter();
+
+    if (writer != null) {
+      await writer.write(data);
+      writer.releaseLock();
     }
-  };
-
-  const print =  () => {
-    if (device && isConnected) {
-      const data = address();
-      const commandBuffer = new Uint8Array([
-        // ...commands.TEXT_BOLD,
-        ...new TextEncoder().encode("AAAB "),
-        // ...commands.FULL_CUT,
-      ]);
-
-      device
-        .transferOut(1, data)
-
-    } else {
-      console.warn("Device is not connected or not ready");
-    }
-  };
+  }
 
   return (
     <div className="flex gap-4">
-      {/* Button to trigger device connection and printing */}
-      <Button onClick={connectToDevice}>Connect to Printer</Button>
-      <Button onClick={print} disabled={!isConnected}>
-        Print
-      </Button>
+      <Button onClick={foo}>test </Button>
     </div>
   );
 }

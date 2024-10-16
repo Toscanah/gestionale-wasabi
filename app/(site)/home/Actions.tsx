@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowClockwise,
   Hash,
+  Key,
   List,
   PiggyBank,
   Shield,
@@ -32,6 +33,29 @@ export default function Actions() {
     router.push(path);
   };
 
+  const menuItems = [
+    {
+      label: "Prodotti",
+      icon: <List className="mr-2 h-4 w-4" />,
+      path: "/backend/products",
+    },
+    {
+      label: "Clienti",
+      icon: <UsersFour className="mr-2 h-4 w-4" />,
+      path: "/backend/customers",
+    },
+    {
+      label: "Categorie",
+      icon: <Tag className="mr-2 h-4 w-4" />,
+      path: "/backend/categories",
+    },
+    {
+      label: "Opzioni",
+      icon: <Hash className="mr-2 h-4 w-4" />,
+      path: "/backend/options",
+    },
+  ];
+
   return (
     <div className="flex gap-4 justify-center items-center">
       <RiceDialog />
@@ -50,24 +74,22 @@ export default function Actions() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">Admin</Button>
+          <Button variant="outline">
+            <Key className="mr-2 h-4 w-4" /> Admin
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {/* <DropdownMenuLabel>Azioni admin</DropdownMenuLabel>
-          <DropdownMenuSeparator /> */}
-
-          <DropdownMenuItem onClick={() => navigateTo("/backend/products")}>
-            <List className="mr-2 h-4 w-4" /> Prodotti
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigateTo("/backend/customers")}>
-            <UsersFour className="mr-2 h-4 w-4" /> Clienti
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigateTo("/backend/categories")}>
-            <Tag className="mr-2 h-4 w-4" /> Categorie
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigateTo("/backend/options")}>
-            <Hash className="mr-2 h-4 w-4" /> Opzioni
-          </DropdownMenuItem>
+          <DropdownMenuLabel>Cosa vuoi modificare?</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {menuItems.map((item, index) => (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => navigateTo(item.path)}
+              className="hover:cursor-pointer"
+            >
+              {item.icon} {item.label}
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
 

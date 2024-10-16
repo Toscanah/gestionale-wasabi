@@ -30,15 +30,19 @@ type CommonOrderPayload = Prisma.OrderGetPayload<{
 
 type TableOrderPayload = Prisma.OrderGetPayload<{
   include: {
-    table_order: true,
-  }
+    table_order: true;
+  };
 }>;
 
 type HomeOrderPayload = Prisma.OrderGetPayload<{
   include: {
     home_order: {
       include: {
-        customer: true;
+        customer: {
+          include: {
+            phone: true;
+          };
+        };
         address: true;
       };
     };
@@ -49,7 +53,11 @@ type PickupOrderPayload = Prisma.OrderGetPayload<{
   include: {
     pickup_order: {
       include: {
-        customer: true;
+        customer: {
+          include: {
+            phone: true;
+          };
+        };
       };
     };
   };

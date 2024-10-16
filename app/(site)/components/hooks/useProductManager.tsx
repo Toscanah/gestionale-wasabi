@@ -72,7 +72,7 @@ export function useProductManager(
     });
   };
 
-  const deleteProducts = (table: Table<any>) => {
+  const deleteProducts = (table: Table<any>, cooked: boolean) => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     const selectedProductIds = selectedRows.map((row) => row.original.id);
 
@@ -80,6 +80,7 @@ export function useProductManager(
       fetchRequest("DELETE", "/api/products/", "deleteProductFromOrder", {
         productIds: selectedProductIds,
         orderId: order.id,
+        cooked,
       }).then(() => {
         updateProductsList({
           deletedProducts: products.filter((p) => selectedProductIds.includes(p.id)),
