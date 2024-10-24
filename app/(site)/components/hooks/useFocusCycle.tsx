@@ -1,33 +1,42 @@
 import { KeyboardEvent, useRef } from "react";
 
 export default function useFocusCycle() {
-  const refs = useRef<HTMLElement[]>([]);
+  const refs = useRef<Set<HTMLElement>>(new Set());
   const currentRefIndex = useRef(0);
 
   const addRefs = (...newRefs: (HTMLElement | null)[]) => {
     newRefs.forEach((ref) => {
-      if (ref && !refs.current.includes(ref)) {
-        refs.current.push(ref);
+      if (ref) {
+        refs.current.add(ref);
       }
     });
   };
 
-  const updateCurrentRefIndex = () => {
-    const focusedElement = document.activeElement;
-    const index = refs.current.findIndex((ref) => ref === focusedElement);
-    if (index !== -1) {
-      currentRefIndex.current = index;
-    }
+  const getIndexOfFocusedElement = () =>
+    Array.from(refs.current).findIndex((el) => el === document.activeElement);
+
+  const moveFocus = (delta: number) => {
+    const elements = Array.from(refs.current);
+    const totalElements = elements.length;
+
+    if (totalElements === 0) return;
+
+    currentRefIndex.current = (currentRefIndex.current + delta + totalElements) % totalElements;
+    elements[currentRefIndex.current]?.focus();
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === "Tab") {
-      e.preventDefault();
-      updateCurrentRefIndex();
+    const focusMovementKeys = ["Enter", "Tab", "ArrowDown", "ArrowUp"];
 
-      const nextIndex = (currentRefIndex.current + 1) % refs.current.length;
-      currentRefIndex.current = nextIndex;
-      refs.current[nextIndex]?.focus();
+    if (focusMovementKeys.includes(e.key)) {
+      e.preventDefault();
+      currentRefIndex.current = getIndexOfFocusedElement();
+
+      if (e.key === "Enter" || e.key === "Tab" || e.key === "ArrowDown") {
+        moveFocus(1);
+      } else if (e.key === "ArrowUp") {
+        moveFocus(-1);
+      }
     }
   };
 

@@ -14,8 +14,9 @@ export default function RiceDialog() {
 
   return (
     <DialogWrapper
-      onOpenChange={(open) => setNewRice({ ...rice.total, amount: 0 })}
+      onOpenChange={() => setNewRice({ ...rice.total, amount: 0 })}
       title="Gestione riso"
+       contentClassName="border-t-4 border-t-gray-400"
       trigger={
         <Button variant={"outline"}>
           <Gear className="mr-2 h-4 w-4" /> Riso
@@ -26,9 +27,10 @@ export default function RiceDialog() {
           <DialogWrapper
             variant="delete"
             title="Sei sicuro?"
+           
             onDelete={() => resetRice()}
             trigger={
-              <Button className="w-full" variant={"destructive"}>
+              <Button className="w-full border-red-600 text-red-600" variant={"outline"} >
                 Resetta
               </Button>
             }

@@ -32,10 +32,10 @@ export default async function getOrdersByType(type: OrderType) {
       },
       payments: true,
       home_order: {
-        include: { address: true, customer: true },
+        include: { address: true, customer: { include: { phone: true } } },
       },
       pickup_order: {
-        include: { customer: true },
+        include: { customer: { include: { phone: true } } },
       },
       table_order: true,
     },

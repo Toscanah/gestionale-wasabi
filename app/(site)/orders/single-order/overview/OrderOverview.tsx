@@ -1,9 +1,9 @@
 import { ProductInOrderType } from "../../../types/ProductInOrderType";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { AnyOrder, HomeOrder } from "../../../types/PrismaOrders";
 import { Actions } from "../OrderTable";
 import { OrderType } from "../../../types/OrderType";
-import QuickNotes from "./QuickNotes";
+import QuickNotes, { Notes } from "./QuickNotes";
 import Discount from "./Discount";
 import Time from "./Time";
 import OldOrders from "./OldOrders";
@@ -20,10 +20,12 @@ export default function OrderOverview({
   setAction: Dispatch<SetStateAction<Actions>>;
   addProducts: (newProducts: ProductInOrderType[]) => void;
 }) {
+  const [note, setNote] = useState<Notes>("");
+
   return (
     <div className="w-[25%] flex flex-col gap-6 h-full">
       {order.type !== OrderType.TABLE && order.type !== OrderType.PICK_UP && (
-        <QuickNotes order={order as HomeOrder} />
+        <QuickNotes order={order as HomeOrder} note={note} setNote={setNote} />
       )}
 
       {order.type !== OrderType.TABLE && (

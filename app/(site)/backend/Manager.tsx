@@ -108,7 +108,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
 
   const actions = {
     edit: ({ object }: { object: T }) => (
-      <DialogWrapper title="Modifica elemento" trigger={getTrigger("update")} variant="delete">
+      <DialogWrapper title="Modifica elemento" trigger={getTrigger("update")} variant="normal">
         <FormFields
           object={object}
           handleSubmit={(values) => handleUpdate(values, object)}
@@ -121,6 +121,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
         title="Attenzione!"
         trigger={getTrigger("delete", !object.active)}
         variant="delete"
+        hasHeader
         onDelete={() => handleToggle(object)}
       >
         <div>
