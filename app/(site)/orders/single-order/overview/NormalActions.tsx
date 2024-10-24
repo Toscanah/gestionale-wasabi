@@ -3,11 +3,16 @@ import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { Actions } from "../OrderTable";
+import print from "@/app/(site)/printing/print";
+import takeaway from "@/app/(site)/printing/receipts/order";
+import { Notes } from "./QuickNotes";
 
 export default function NormalActions({
   order,
   setAction,
+  note,
 }: {
+  note: Notes;
   order: AnyOrder;
   setAction: Dispatch<SetStateAction<Actions>>;
 }) {
@@ -33,7 +38,14 @@ export default function NormalActions({
         </Button>
       </div>
 
-      <Button className="w-full text-3xl h-12">Stampa</Button>
+      <Button
+        className="w-full text-3xl h-12"
+        onClick={() => {
+          print(() => takeaway(order, note));
+        }}
+      >
+        Stampa
+      </Button>
       <Button
         className="w-full text-3xl h-12"
         onClick={() => setAction("payFull")}

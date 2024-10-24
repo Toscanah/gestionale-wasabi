@@ -79,7 +79,7 @@ export default function Actions() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>Cosa vuoi modificare?</DropdownMenuLabel>
+          <DropdownMenuLabel>Dove vuoi andare?</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {menuItems.map((item, index) => (
             <DropdownMenuItem
@@ -94,6 +94,7 @@ export default function Actions() {
       </DropdownMenu>
 
       <ArrowClockwise
+      className="hover:cursor-pointer"
         size={32}
         onClick={() => {
           onOrdersUpdate(OrderType.TO_HOME);

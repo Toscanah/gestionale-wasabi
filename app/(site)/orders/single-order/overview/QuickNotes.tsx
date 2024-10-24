@@ -3,15 +3,21 @@ import { OrderType } from "@/app/(site)/types/OrderType";
 import { HomeOrder } from "@/app/(site)/types/PrismaOrders";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { toastSuccess } from "@/app/(site)/util/toast";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-type Notes = "already_paid" | "cash" | "card" | "";
+export type Notes = "already_paid" | "cash" | "card" | "";
 
-export default function QuickNotes({ order }: { order: HomeOrder }) {
+export default function QuickNotes({
+  order,
+  note,
+  setNote,
+}: {
+  order: HomeOrder;
+  note: Notes;
+  setNote: Dispatch<SetStateAction<Notes>>;
+}) {
   const { onOrdersUpdate } = useWasabiContext();
-  const [note, setNote] = useState<Notes>("");
-
   const noteOptions: { value: Notes; label: string }[] = [
     { value: "already_paid", label: "Già pagato" },
     { value: "cash", label: "Contanti" },

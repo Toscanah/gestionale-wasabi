@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogClose } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Warning } from "@phosphor-icons/react";
 import { Table } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 
@@ -18,12 +19,13 @@ export default function DangerActions({
   const [productsCooked, setProductsCooked] = useState(false);
 
   useEffect(() => setProductsCooked(false), []);
-  
+
   return (
     <div className="w-full flex gap-6 items-center h-12">
       <DialogWrapper
-        title="Sei sicuro?"
+      contentClassName="max-w-[30vw]"
         variant="delete"
+        hasHeader
         trigger={
           <Button className="w-full h-12 text-xl" variant={"destructive"}>
             Elimina ordine
@@ -31,7 +33,7 @@ export default function DangerActions({
         }
         onDelete={cancelOrder}
       >
-        <div>Stai per eliminare questo ordine</div>
+        <div className="text-lg">Stai per eliminare questo ordine. Questa azione è finale e non reversibile</div>
       </DialogWrapper>
 
       <DialogWrapper

@@ -12,6 +12,7 @@ import {
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Warning } from "@phosphor-icons/react";
 
 interface DialogWrapperProps {
   children?: ReactNode;
@@ -31,7 +32,7 @@ interface DialogWrapperProps {
 
 export default function DialogWrapper({
   children,
-  title = "Titolo!!!!!",
+  title,
   trigger,
   showCloseButton = true,
   desc,
@@ -40,7 +41,7 @@ export default function DialogWrapper({
   onOpenChange,
   contentClassName,
   triggerClassName,
-  hasHeader = true,
+  hasHeader = false,
   open,
   footer,
 }: DialogWrapperProps) {
@@ -50,12 +51,25 @@ export default function DialogWrapper({
         {trigger}
       </DialogTrigger>
       <DialogContent
-        className={cn("max-w-screen w-auto", contentClassName)}
+        className={cn(
+          "max-w-screen w-auto",
+          contentClassName,
+          variant == "delete" && "border-t-4 border-t-red-600"
+        )}
         showCloseButton={showCloseButton}
       >
         {hasHeader && (
           <DialogHeader>
-            <DialogTitle className="mb-4">{title}</DialogTitle>
+            <DialogTitle className="text-2xl">
+              {variant == "delete" ? (
+                <span className="flex gap-2 items-center">
+                  <Warning size={32} />
+                  Attenzione!
+                </span>
+              ) : (
+                title
+              )}
+            </DialogTitle>
             {desc && <DialogDescription>{desc}</DialogDescription>}
           </DialogHeader>
         )}

@@ -51,11 +51,11 @@ export default function Home() {
     <WasabiProvider onOrdersUpdate={onOrdersUpdate}>
       <div className="w-screen p-4 h-screen flex flex-col gap-4">
         <div className="w-full flex justify-between">
-          <Link href={"../printing"}>
+          {/* <Link href={"../printing"}>
             <Button className="" variant={"outline"}>
               <Skull className="mr-2 h-4 w-4" /> Stampa
             </Button>
-          </Link>
+          </Link> */}
           <Header />
         </div>
 
@@ -87,7 +87,12 @@ export default function Home() {
                     </CreateOrder>
                   </div>
 
-                  <OrdersTable data={orders[type]} type={type} />
+                  <OrdersTable
+                    data={orders[type].sort(
+                      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                    )}
+                    type={type}
+                  />
 
                   <div className="w-full flex items-center justify-start"></div>
                 </ResizablePanel>

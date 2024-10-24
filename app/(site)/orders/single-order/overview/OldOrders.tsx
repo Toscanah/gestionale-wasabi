@@ -1,5 +1,5 @@
 import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
-import OrderHistory from "@/app/(site)/components/OrderHistory";
+import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
 import { CustomerWithDetails } from "@/app/(site)/types/CustomerWithDetails";
 import { OrderType } from "@/app/(site)/types/OrderType";
 import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/types/PrismaOrders";
@@ -60,6 +60,7 @@ export default function OldOrders({
     customer && (
       <DialogWrapper
         title="Storico ordini"
+        hasHeader={false}
         trigger={
           <Button type="button" variant={"outline"} className="h-12 text-xl">
             Vedi ordini precedenti
