@@ -109,9 +109,9 @@ model Customer {
 }
 
 model Phone {
-    id       Int       @id @default(autoincrement())
-    phone    String
-    Customer Customer?
+    id        Int       @id @default(autoincrement())
+    phone     String
+    customer Customer?
 }
 
 model Payment {

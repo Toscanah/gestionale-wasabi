@@ -1,19 +1,7 @@
-"use client";
+import { ReactNode } from "react";
+import { Printer, render } from "react-thermal-printer";
 
-import { ReactNode, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Br, Cut, Line, Printer, Text, Row, render, Raw } from "react-thermal-printer";
-
-import { HomeOrder } from "../types/PrismaOrders";
-import Takeaway from "./receipts/order";
-import takeway from "./receipts/order";
-import productsTable from "./common/products";
-import getOrdersByType from "../sql/orders/getOrdersByType";
-import { OrderType } from "../types/OrderType";
-import { ProductInOrderType } from "../types/ProductInOrderType";
-import fetchRequest from "../util/functions/fetchRequest";
-
-export default async function print(content: () => ReactNode) {
+export default async function print(...contents: (() => ReactNode)[]) {
   /**
    * step 1: installare il driver sia del cavo serial
    * e poi della stampante in se
@@ -23,7 +11,7 @@ export default async function print(content: () => ReactNode) {
 
   const receipt = (
     <Printer characterSet="wpc1256_arabic" type="epson">
-      {content()}
+      {contents.map((content) => content())}
     </Printer>
   );
 

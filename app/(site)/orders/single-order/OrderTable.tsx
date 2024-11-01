@@ -78,7 +78,7 @@ export default function OrderTable({
 
   return action == "" ? (
     <div className="w-full h-full flex gap-6 justify-between">
-      <div className="w-[75%] h-full flex flex-col gap-6 justify-between">
+      <div className="w-[80%] h-full flex flex-col gap-6 justify-between">
         <Table table={table} tableClassName="h-full max-h-full" />
         <DangerActions
           cancelOrder={() => {

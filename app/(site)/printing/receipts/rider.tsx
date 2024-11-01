@@ -5,17 +5,17 @@ import orderInfo from "../common/orderInfo";
 import time from "../common/time";
 import total from "../common/total";
 
-export default function riderDelivery<T extends AnyOrder>(order: T, payment: Notes) {
+export default function rider<T extends AnyOrder>(order: T, payment: Notes) {
   return (
     <>
+      <Cut />
+
       {time()}
       <Line />
-      <Br/>
 
       {orderInfo(order, payment)}
       <Line />
-      <Br/>
-      
+
       {total(order.products)}
       <Cut />
     </>

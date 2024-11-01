@@ -67,7 +67,7 @@ export default function getColumns(
             variant="outline"
             onClick={() => handleQuantityArrows("down", row.index)}
           >
-            {/* <CaretDown size={16} /> */}-1
+            -1
           </Button>
 
           <Input
@@ -90,7 +90,7 @@ export default function getColumns(
             variant="outline"
             onClick={() => handleQuantityArrows("up", row.index)}
           >
-            {/* <CaretUp size={16} /> */}+1
+            +1
           </Button>
         </div>
       ),

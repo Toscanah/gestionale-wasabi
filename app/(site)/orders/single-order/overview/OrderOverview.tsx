@@ -28,21 +28,19 @@ export default function OrderOverview({
         <QuickNotes order={order as HomeOrder} note={note} setNote={setNote} />
       )}
 
-      {order.type !== OrderType.TABLE && (
-        <>
-          <OldOrders addProducts={addProducts} order={order} />
-          <Time order={order} />
-        </>
-      )}
+      {order.type !== OrderType.TABLE && <OldOrders addProducts={addProducts} order={order} />}
 
-      <Discount order={order} />
+      <div className="flex gap-6 items-center">
+        {order.type !== OrderType.TABLE && <Time order={order} />}
+        <Discount order={order} />
+      </div>
 
       <div className="mt-auto flex flex-col gap-6">
         <Rice order={order} />
 
         <Total orderTotal={order.total} discount={order.discount} />
 
-        <NormalActions order={order} setAction={setAction} />
+        <NormalActions order={order} setAction={setAction} note={note} />
       </div>
     </div>
   );

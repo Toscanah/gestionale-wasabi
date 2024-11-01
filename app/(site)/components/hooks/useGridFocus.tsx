@@ -60,7 +60,6 @@ export default function useGridFocus(defaultFocusedInput: FocussableInput, maxCo
       default:
         return null;
     }
-    return null;
   };
 
   const handleKeyNavigation = (

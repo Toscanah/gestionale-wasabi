@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Backspace } from "@phosphor-icons/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import {
   Table,
   TableBody,
@@ -19,10 +19,13 @@ export type Calc = { amount: number; quantity: number; total: number };
 export default function Calculator({
   typedAmount,
   setTypedAmount,
+  handleBackButton,
 }: {
   typedAmount: string;
+  handleBackButton: () => void;
   setTypedAmount: Dispatch<SetStateAction<string>>;
 }) {
+  const calcRef = useRef<HTMLInputElement>(null);
   const [calcs, setCalcs] = useState<Calc[]>([{ amount: 0, quantity: 0, total: 0 }]);
 
   const handleButtonClick = (value: string) => {
@@ -39,22 +42,22 @@ export default function Calculator({
     }
   };
 
-  const calculateTotal = () =>
-    setTypedAmount(formatAmount(calcs.reduce((sum, calc) => sum + calc.total, 0)));
+  useEffect(() => calcRef.current?.focus(), []);
 
   const buttons = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", "."];
 
   return (
-    <div className="w-full h-full flex gap-4">
-      <div className="w-full h-full flex items-center flex-col gap-4">
+    <div className="w-full h-full flex gap-4 justify-center">
+      <div className="w-full h-full flex flex-col gap-4 justify-evenly items-center">
         <Input
+          ref={calcRef}
           className="w-72 h-12 text-xl"
           value={typedAmount}
           type="text"
           onChange={(e) => setTypedAmount(e.target.value)}
         />
 
-        <div className="grid grid-cols-3 gap-4 w-72">
+        <div className="grid grid-cols-3 gap-4 w-72 *:border ">
           {buttons.map((value, index) => (
             <Button
               key={index}
@@ -71,12 +74,16 @@ export default function Calculator({
           >
             <Backspace size={48} weight="regular" />
           </Button>
+          <Button className="w-full col-span-3" variant={"outline"}>
+
+            Tabella
+          </Button>
         </div>
       </div>
 
-      <div className="w-full h-full flex items-center flex-col gap-4">
+      {/* <div className="w-full h-full flex items-center flex-col gap-4 justify-between">
         <CalculationTable calcs={calcs} setCalcs={setCalcs} />
-      </div>
+      </div> */}
     </div>
   );
 }

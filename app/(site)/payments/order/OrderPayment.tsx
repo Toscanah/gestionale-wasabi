@@ -52,7 +52,8 @@ export default function OrderPayment({
     handleOrderPaid,
     setProducts
   );
-  const [typedAmount, setTypedAmount] = useState<string>(payment.remainingAmount.toFixed(2));
+
+  const [typedAmount, setTypedAmount] = useState<string>(formatAmount(payment.remainingAmount));
 
   return (
     <div className="w-full h-full flex flex-col gap-6">
@@ -69,7 +70,9 @@ export default function OrderPayment({
                     setTypedAmount(formatAmount(payment.remainingAmount - Number(typedAmount)));
                   }}
                   className={cn(
-                    "h-64 rounded-md flex border-t border-x rounded-bl-none rounded-br-none items-center justify-center hover:cursor-pointer",
+                    "h-64 rounded-md flex border-t border-x",
+                    "rounded-bl-none rounded-br-none items-center",
+                    "justify-center hover:cursor-pointer",
                     "flex flex-col"
                   )}
                 >
@@ -85,23 +88,33 @@ export default function OrderPayment({
         </div>
       </div>
 
-      <div className="w-full text-4xl flex justify-between h-full gap-8">
-        <PaymentSummary order={order} payment={payment} paymentMethods={paymentMethods} />
+      <div className="w-full text-4xl flex h-full gap-4">
+        <PaymentSummary
+          totalToPay={applyDiscount(order.total, order.discount)}
+          payment={payment}
+          paymentMethods={paymentMethods}
+        />
 
         <Separator orientation="vertical" />
 
-        <div className="flex flex-col gap-6 w-1/2 text-4xl items-center text-center h-full justify-center">
+        <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center">
           {payment.remainingAmount > 0 ? (
-            <Calculator typedAmount={typedAmount} setTypedAmount={setTypedAmount} />
+            <Calculator typedAmount={typedAmount} 
+            handleBackButton={handleBackButton}
+            setTypedAmount={setTypedAmount} />
           ) : (
-            <div className="flex flex-col gap-6 w-1/2 text-4xl items-center text-center h-full justify-center">
+            <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center">
               <h1>
                 <span>
                   Vuoi procedere con l'incasso di <b>€ {order.total}</b>?
                 </span>
               </h1>
               <div className="w-full flex gap-6 items-center justify-center">
-                <Button className="w-1/3 h-32 text-3xl" variant={"destructive"} onClick={() => {}}>
+                <Button
+                  className="w-1/3 h-32 text-3xl"
+                  variant={"destructive"}
+                  onClick={() => handleBackButton()}
+                >
                   Cancella
                 </Button>
                 <Button
@@ -115,6 +128,8 @@ export default function OrderPayment({
           )}
         </div>
       </div>
+
+      <Button onClick={handleBackButton} className="text-lg">Indietro</Button>
     </div>
   );
 }

@@ -63,14 +63,14 @@ export default function DivideOrder({
     <div className="w-full h-full flex flex-col gap-8">
       <div className="w-full h-full flex gap-8">
         <Table
-          tableClassName="max-w-[50%] overflow-x-scroll select-none"
+          tableClassName="max-w-[50%] overflow-x-scroll select-none max-h-full"
           table={leftTable}
           onRowClick={(product) =>
             handleRowClick(product, leftProducts, setLeftProducts, rightProducts, setRightProducts)
           }
         />
         <Table
-          tableClassName="max-w-[50%] overflow-x-scroll select-none"
+          tableClassName="max-w-[50%] overflow-x-scroll select-none max-h-full"
           table={rightTable}
           onRowClick={(product) =>
             handleRowClick(product, rightProducts, setRightProducts, leftProducts, setLeftProducts)
@@ -78,13 +78,15 @@ export default function DivideOrder({
         />
       </div>
       <div className="flex gap-8 *:h-14 *:text-xl">
-        <Button onClick={() => setAction("")}>Indietro</Button>
+        <Button onClick={() => setAction("")} className="w-1/2">
+          Indietro
+        </Button>
         <Button
           onClick={() => {
             setAction("payPart");
             setGoPay(true);
           }}
-          className="grow bg-green-500 text-black"
+          className="w-1/2 bg-green-500 text-black"
           disabled={rightProducts.length <= 0}
         >
           Paga
@@ -108,7 +110,7 @@ export default function DivideOrder({
       }}
       handleBackButton={() => setGoPay(false)}
       handleOrderPaid={() => {
-        setRightProducts([])
+        setRightProducts([]);
         /**
          * questo deve essere piu completo
          * in pratica se è "l'ultima volta" che posso fare il divide,
