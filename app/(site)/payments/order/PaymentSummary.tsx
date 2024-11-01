@@ -2,18 +2,16 @@ import { Separator } from "@/components/ui/separator";
 import { Payment } from "../../components/hooks/useOrderPayment";
 import getPaymentName from "../../util/functions/getPaymentName";
 import { PaymentMethod } from "./OrderPayment";
-import applyDiscount from "../../util/functions/applyDiscount";
-import { AnyOrder } from "../../types/PrismaOrders";
 import formatAmount from "../../util/functions/formatAmount";
 
 export default function PaymentSummary({
   payment,
   paymentMethods,
-  order,
+  totalToPay,
 }: {
   payment: Payment;
   paymentMethods: PaymentMethod[];
-  order: AnyOrder;
+  totalToPay: number;
 }) {
   const paidPayments = paymentMethods.filter(({ type }) => {
     const amount = payment.paymentAmounts[type];
@@ -21,7 +19,7 @@ export default function PaymentSummary({
   });
 
   return (
-    <div className="flex flex-col gap-4 w-1/2 h-full">
+    <div className="flex flex-col gap-4 grow h-full">
       <div className="text-5xl">
         <b>RIEPILOGO:</b>
       </div>
@@ -43,9 +41,7 @@ export default function PaymentSummary({
 
       <Separator className="w-full" orientation="horizontal" />
 
-      <div className="text-3xl">
-        Totale da pagare: € {formatAmount(applyDiscount(order.total, order.discount))}
-      </div>
+      <div className="text-3xl">Totale da pagare: € {formatAmount(totalToPay)}</div>
     </div>
   );
 }

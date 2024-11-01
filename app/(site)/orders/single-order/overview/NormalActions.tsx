@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { Actions } from "../OrderTable";
 import print from "@/app/(site)/printing/print";
-import takeaway from "@/app/(site)/printing/receipts/order";
+import orderRec from "@/app/(site)/printing/receipts/order";
 import { Notes } from "./QuickNotes";
+import rider from "../../../printing/receipts/rider";
+import kitchen from "@/app/(site)/printing/receipts/kitchen";
 
 export default function NormalActions({
   order,
@@ -40,8 +42,11 @@ export default function NormalActions({
 
       <Button
         className="w-full text-3xl h-12"
-        onClick={() => {
-          print(() => takeaway(order, note));
+        onClick={async () => {
+          await print(
+            () => orderRec(order, note),
+            () => rider(order, note)
+          );
         }}
       >
         Stampa

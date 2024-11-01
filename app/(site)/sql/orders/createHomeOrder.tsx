@@ -27,7 +27,7 @@ export default async function createHomeOrder(content: {
           },
           contact_phone,
           notes,
-          when: "immediate"
+          when: "immediate",
         },
       },
     },
@@ -54,7 +54,16 @@ export default async function createHomeOrder(content: {
           },
         },
       },
-      home_order: true,
+      home_order: {
+        include: {
+          customer: {
+            include: {
+              phone: true,
+            },
+          },
+          address: true,
+        },
+      },
     },
   });
 }

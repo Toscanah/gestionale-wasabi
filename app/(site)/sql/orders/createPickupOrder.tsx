@@ -5,24 +5,30 @@ export default async function createPickupOrder(content: {
   when: string;
   phone?: string;
 }) {
-  const { name, when, phone } = content;
+  const { when, phone } = content;
+  let name = content.name;
   let customerData = undefined;
 
   // Check if the phone already exists
   if (phone) {
     const existingPhone = await prisma.phone.findFirst({
       where: { phone: phone },
-      include: { customers: true },
+      include: { customer: true },
     });
 
     // Phone exists, connect the existing customer
     if (existingPhone) {
-      const firstCustomer = existingPhone.customers[0];
-      customerData = {
-        connect: {
-          id: firstCustomer.id,
-        },
-      };
+      const customer = existingPhone.customer;
+
+      if (customer) {
+        customerData = {
+          connect: {
+            id: customer.id,
+          },
+        };
+
+        name = customer.surname ?? content.name;
+      }
     } else {
       // Phone does not exist, create new customer and phone
       customerData = {
@@ -51,8 +57,15 @@ export default async function createPickupOrder(content: {
       },
     },
     include: {
-      
-      pickup_order: true,
+      pickup_order: {
+        include: {
+          customer: {
+            include: {
+              phone: true,
+            },
+          },
+        },
+      },
       products: {
         include: {
           product: {

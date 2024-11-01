@@ -26,7 +26,7 @@ export default function Time({ order }: { order: AnyOrder }) {
 
   return (
     <div className="flex gap-2 justify-between items-center">
-      <span className="text-xl">Orario</span>
+      {/* <span className="text-xl">Orario</span> */}
 
       <WhenSelector
         className="h-12 text-2xl uppercase"
