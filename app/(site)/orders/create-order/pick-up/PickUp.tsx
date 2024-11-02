@@ -116,7 +116,7 @@ export default function PickUp({
         <Label htmlFor="when" className="text-xl">
           Quando?
         </Label>
-        <WhenSelector ref={selectRef} handleKeyDown={handleKeyDown} />
+        <WhenSelector ref={selectRef} onKeyDown={handleKeyDown} />
       </div>
 
       <Button type="submit" className="w-full" onClick={createPickupOrder} ref={buttonRef}>

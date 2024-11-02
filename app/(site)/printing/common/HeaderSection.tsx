@@ -1,7 +1,7 @@
-import { Br, Cut, Image, Line, Row, Text } from "react-thermal-printer";
-import time from "./time";
+import { Br, Text } from "react-thermal-printer";
+import TimeSection from "./TimeSection";
 
-export default function header() {
+export default function HeaderSection() {
   return (
     <>
       <Text size={{ width: 2, height: 2 }} bold align="center">
@@ -25,7 +25,7 @@ export default function header() {
       </Text>
       <Br />
 
-      {time()}
+      {TimeSection()}
     </>
   );
 }

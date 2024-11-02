@@ -1,17 +1,22 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { getProductPrice } from "../../util/functions/getProductPrice";
+import { OrderType } from "../../types/OrderType";
+import formatAmount from "../../util/functions/formatAmount";
 
-export default function OrderDetail({
-  onCreate,
-  handleCheckboxChange,
-  sortedProducts,
-  type,
-}: {
-  onCreate?: (newProducts: ProductInOrderType[]) => void;
-  handleCheckboxChange: (product: ProductInOrderType) => void;
+interface OrderDetailProps {
   sortedProducts: ProductInOrderType[];
   type: string;
-}) {
+  onCreate?: (newProducts: ProductInOrderType[]) => void;
+  onCheckboxChange: (product: ProductInOrderType) => void;
+}
+
+export default function OrderDetail({
+  sortedProducts,
+  type,
+  onCreate,
+  onCheckboxChange,
+}: OrderDetailProps) {
   return sortedProducts.length > 0 ? (
     <ul className="list-disc list-inside">
       {sortedProducts.map((product) => (
@@ -20,7 +25,7 @@ export default function OrderDetail({
             {onCreate && (
               <Checkbox
                 defaultChecked={true}
-                onCheckedChange={() => handleCheckboxChange(product)}
+                onCheckedChange={() => onCheckboxChange(product)}
               />
             )}
             {product.quantity} x <b>{product.product.desc}</b>
@@ -32,9 +37,10 @@ export default function OrderDetail({
             )}
           </span>
           <span className="font-semibold">
-            {type === "Domicilio"
-              ? `€ ${(product.quantity * product.product.home_price).toFixed(2)}`
-              : `€ ${(product.quantity * product.product.site_price).toFixed(2)}`}
+            {`€ ${formatAmount(
+              product.quantity *
+                getProductPrice(product, type === "Domicilio" ? OrderType.TO_HOME : OrderType.TABLE)
+            )}`}
           </span>
         </li>
       ))}

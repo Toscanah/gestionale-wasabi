@@ -1,6 +1,7 @@
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { OrderType } from "../../types/OrderType";
 import prisma from "../db";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export default async function updateProductInOrder(
   orderId: number,
@@ -35,7 +36,7 @@ export default async function updateProductInOrder(
 
       const newTotal =
         productInOrder.quantity *
-        (currentOrder.type === OrderType.TO_HOME ? newProduct.home_price : newProduct.site_price);
+        getProductPrice({ product: { ...newProduct } } as any, currentOrder.type as OrderType);
 
       const updatedProduct = await prisma.productInOrder.update({
         where: { id: productInOrder.id },
@@ -63,14 +64,13 @@ export default async function updateProductInOrder(
 
       if (newProduct.category) {
         await prisma.optionInProductOrder.createMany({
-          data:
-            newProduct.category.options.map((option) => ({
-              product_in_order_id: updatedProduct.id,
-              option_id: option.option.id,
-            })),
+          data: newProduct.category.options.map((option) => ({
+            product_in_order_id: updatedProduct.id,
+            option_id: option.option.id,
+          })),
         });
       }
-      
+
       const difference = newTotal - productInOrder.total;
       await prisma.order.update({
         where: { id: orderId },
@@ -85,10 +85,7 @@ export default async function updateProductInOrder(
 
       const quantityDifference = newQuantity - productInOrder.quantity;
       const totalDifference =
-        quantityDifference *
-        (currentOrder.type === OrderType.TO_HOME
-          ? productInOrder.product.home_price
-          : productInOrder.product.site_price);
+        quantityDifference * getProductPrice(productInOrder, currentOrder.type as OrderType);
 
       if (newQuantity == 0) {
         if (productInOrder.paidQuantity === 0) {
@@ -113,10 +110,7 @@ export default async function updateProductInOrder(
         } else {
           const quantityDifference = productInOrder.quantity;
           const totalDifference =
-            quantityDifference *
-            (currentOrder.type === OrderType.TO_HOME
-              ? productInOrder.product.home_price
-              : productInOrder.product.site_price);
+            quantityDifference * getProductPrice(productInOrder, currentOrder.type as OrderType);
 
           const isPaidFully =
             productInOrder.paidQuantity + quantityDifference >= productInOrder.quantity;
@@ -188,11 +182,7 @@ export default async function updateProductInOrder(
           updatedProduct: {
             ...updatedProduct,
             quantity: newQuantity,
-            total:
-              newQuantity *
-              (currentOrder.type === OrderType.TO_HOME
-                ? productInOrder.product.home_price
-                : productInOrder.product.site_price),
+            total: newQuantity * getProductPrice(productInOrder, currentOrder.type as OrderType),
           },
         };
       }

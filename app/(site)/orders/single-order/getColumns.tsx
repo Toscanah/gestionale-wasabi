@@ -9,6 +9,7 @@ import useGridFocus, { FocussableInput } from "../../components/hooks/useGridFoc
 import { Button } from "@/components/ui/button";
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { debounce } from "lodash";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,
@@ -147,11 +148,7 @@ export default function getColumns(
         <>
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
-            : `€ ${
-                type == OrderType.TO_HOME
-                  ? row.original.product.home_price
-                  : row.original.product.site_price
-              }`}
+            : `€ ${getProductPrice(row.original, type)}`}
         </>
       ),
     }),

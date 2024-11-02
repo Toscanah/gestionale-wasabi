@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
@@ -16,7 +15,7 @@ export default function RiceDialog() {
     <DialogWrapper
       onOpenChange={() => setNewRice({ ...rice.total, amount: 0 })}
       title="Gestione riso"
-       contentClassName="border-t-4 border-t-gray-400"
+      contentClassName="border-t-4 border-t-gray-400"
       trigger={
         <Button variant={"outline"}>
           <Gear className="mr-2 h-4 w-4" /> Riso
@@ -27,10 +26,9 @@ export default function RiceDialog() {
           <DialogWrapper
             variant="delete"
             title="Sei sicuro?"
-           
             onDelete={() => resetRice()}
             trigger={
-              <Button className="w-full border-red-600 text-red-600" variant={"outline"} >
+              <Button className="w-full border-red-600 text-red-600" variant={"outline"}>
                 Resetta
               </Button>
             }

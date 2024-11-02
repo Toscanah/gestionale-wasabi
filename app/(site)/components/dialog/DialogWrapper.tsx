@@ -21,13 +21,13 @@ interface DialogWrapperProps {
   showCloseButton?: boolean;
   desc?: ReactNode;
   variant?: "delete" | "normal";
-  onDelete?: () => void;
-  onOpenChange?: (open: boolean) => void;
   contentClassName?: string;
   triggerClassName?: string;
   hasHeader?: boolean;
   open?: boolean;
   footer?: ReactNode;
+  onDelete?: () => void;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export default function DialogWrapper({
@@ -37,14 +37,16 @@ export default function DialogWrapper({
   showCloseButton = true,
   desc,
   variant = "normal",
-  onDelete,
-  onOpenChange,
   contentClassName,
   triggerClassName,
   hasHeader = false,
   open,
   footer,
+  onDelete,
+  onOpenChange,
 }: DialogWrapperProps) {
+  const isDeleteVariant = variant === "delete";
+
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogTrigger asChild className={triggerClassName}>
@@ -54,14 +56,14 @@ export default function DialogWrapper({
         className={cn(
           "max-w-screen w-auto",
           contentClassName,
-          variant == "delete" && "border-t-4 border-t-red-600"
+          isDeleteVariant && "border-t-4 border-t-red-600"
         )}
         showCloseButton={showCloseButton}
       >
         {hasHeader && (
           <DialogHeader>
             <DialogTitle className="text-2xl">
-              {variant == "delete" ? (
+              {isDeleteVariant ? (
                 <span className="flex gap-2 items-center">
                   <Warning size={32} />
                   Attenzione!
@@ -70,13 +72,14 @@ export default function DialogWrapper({
                 title
               )}
             </DialogTitle>
+            
             {desc && <DialogDescription>{desc}</DialogDescription>}
           </DialogHeader>
         )}
 
         {children}
 
-        {variant == "delete" && onDelete && (
+        {isDeleteVariant && onDelete && (
           <DialogFooter className="w-full">
             <div className="w-full flex gap-2">
               <DialogClose asChild>

@@ -26,15 +26,15 @@ export default function useFocusCycle() {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    const focusMovementKeys = ["Enter", "Tab", "ArrowDown", "ArrowUp"];
+    const focusMovementKeys = ["Enter", "Tab", "ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft"];
 
     if (focusMovementKeys.includes(e.key)) {
       e.preventDefault();
       currentRefIndex.current = getIndexOfFocusedElement();
 
-      if (e.key === "Enter" || e.key === "Tab" || e.key === "ArrowDown") {
+      if (e.key === "Enter" || e.key === "Tab" || e.key === "ArrowDown" || e.key === "ArrowRight") {
         moveFocus(1);
-      } else if (e.key === "ArrowUp") {
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
         moveFocus(-1);
       }
     }

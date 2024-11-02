@@ -3,6 +3,7 @@ import { OrderType } from "../../types/OrderType";
 import prisma from "../db";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export default async function addProductToOrder(
   order: Order,
@@ -25,7 +26,9 @@ export default async function addProductToOrder(
   }
 
   const productTotalPrice =
-    (order?.type == OrderType.TO_HOME ? product.home_price : product.site_price) * quantity;
+    getProductPrice({ product: { ...product } } as any, order.type as OrderType) * quantity;
+
+    console.log(productTotalPrice);
 
   const productInOrder = await prisma.productInOrder.create({
     data: {
@@ -33,7 +36,7 @@ export default async function addProductToOrder(
       product_id: product.id,
       quantity: Number(quantity),
       total: productTotalPrice,
-      riceQuantity: product.rice * Number(quantity) ?? 0
+      riceQuantity: product.rice * Number(quantity) ?? 0,
     },
   });
 
@@ -47,7 +50,6 @@ export default async function addProductToOrder(
       },
     },
   });
-
 
   // ritorno il prodotto ora con i vari record delle opzioni che ho aggiunto sopra
   return await prisma.productInOrder.findUnique({

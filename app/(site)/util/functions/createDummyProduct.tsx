@@ -2,6 +2,8 @@ import { ProductInOrderType } from "../../types/ProductInOrderType";
 
 export default function createDummyProduct(): ProductInOrderType {
   return {
+    riceQuantity: 0,
+    state: "IN_ORDER",
     product: {
       active: true,
       category: {

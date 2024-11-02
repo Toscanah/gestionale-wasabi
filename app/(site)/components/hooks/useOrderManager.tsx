@@ -4,6 +4,7 @@ import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { OrderType } from "../../types/OrderType";
 import { useWasabiContext } from "../../context/WasabiContext";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export function useOrderManager(
   order: AnyOrder,
@@ -24,19 +25,16 @@ export function useOrderManager(
     });
   };
 
-  const cancelOrder = () => {
+  const cancelOrder = () => 
     fetchRequest("POST", "/api/orders/", "cancelOrder", { orderId: order.id }).then(() =>
       onOrdersUpdate(order.type as OrderType)
     );
-  };
 
-  const calculateTotal = (products: ProductInOrderType[]) => {
-    return products.reduce((acc, product) => {
-      const productPrice =
-        order.type === OrderType.TO_HOME ? product.product.home_price : product.product.site_price;
-      return acc + product.quantity * productPrice;
-    }, 0);
-  };
+  const calculateTotal = (products: ProductInOrderType[]) =>
+    products.reduce(
+      (acc, product) => acc + product.quantity * getProductPrice(product, order.type as OrderType),
+      0
+    );
 
   return { updateOrder, cancelOrder };
 }

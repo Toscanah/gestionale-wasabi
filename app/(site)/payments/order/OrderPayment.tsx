@@ -12,6 +12,7 @@ import useOrderPayment from "../../components/hooks/useOrderPayment";
 import PaymentSummary from "./PaymentSummary";
 import { Button } from "@/components/ui/button";
 import formatAmount from "../../util/functions/formatAmount";
+import { PayingAction } from "../../orders/single-order/OrderTable";
 
 export enum TYPE_OF_PAYMENT {
   CASH = "cash",
@@ -34,16 +35,16 @@ const paymentMethods: PaymentMethod[] = [
 ];
 
 export default function OrderPayment({
-  handleBackButton,
-  handleOrderPaid,
   order,
   type,
+  handleBackButton,
+  handleOrderPaid,
   setProducts,
 }: {
-  handleBackButton: () => void;
-  handleOrderPaid: () => void;
   order: AnyOrder;
   type: "full" | "partial";
+  handleBackButton: () => void;
+  handleOrderPaid: () => void;
   setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>;
 }) {
   const { payment, handlePaymentChange, payOrder } = useOrderPayment(
@@ -99,9 +100,11 @@ export default function OrderPayment({
 
         <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center">
           {payment.remainingAmount > 0 ? (
-            <Calculator typedAmount={typedAmount} 
-            handleBackButton={handleBackButton}
-            setTypedAmount={setTypedAmount} />
+            <Calculator
+              typedAmount={typedAmount}
+              handleBackButton={handleBackButton}
+              setTypedAmount={setTypedAmount}
+            />
           ) : (
             <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center">
               <h1>
@@ -113,7 +116,12 @@ export default function OrderPayment({
                 <Button
                   className="w-1/3 h-32 text-3xl"
                   variant={"destructive"}
-                  onClick={() => handleBackButton()}
+                  onClick={() => {
+                    Object.values(TYPE_OF_PAYMENT).map((type) =>
+                      handlePaymentChange(type, undefined)
+                    );
+                    setTypedAmount((applyDiscount(order.total, order.discount) ?? 0).toString());
+                  }}
                 >
                   Cancella
                 </Button>
@@ -129,7 +137,9 @@ export default function OrderPayment({
         </div>
       </div>
 
-      <Button onClick={handleBackButton} className="text-lg">Indietro</Button>
+      <Button onClick={handleBackButton} className="text-lg">
+        Indietro
+      </Button>
     </div>
   );
 }

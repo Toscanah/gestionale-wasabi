@@ -7,17 +7,18 @@ import getColumns from "./getColumns";
 import { OrderType } from "@/app/(site)/types/OrderType";
 import { Button } from "@/components/ui/button";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
-import { Actions } from "../single-order/OrderTable";
+import { PayingAction } from "../single-order/OrderTable";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export default function DivideOrder({
   products,
   order,
-  setAction,
+  setPayingAction,
   setProducts,
 }: {
   products: ProductInOrderType[];
   order: AnyOrder;
-  setAction: Dispatch<SetStateAction<Actions>>;
+  setPayingAction: Dispatch<SetStateAction<PayingAction>>;
   setProducts: Dispatch<SetStateAction<ProductInOrderType[]>>;
 }) {
   const [goPay, setGoPay] = useState<boolean>(false);
@@ -59,6 +60,13 @@ export default function DivideOrder({
     }
   };
 
+  const handleOrderPaid = () => {
+    setRightProducts([]);
+    const isOrderFullyPaid = leftProducts.length === 0;
+    setPayingAction(isOrderFullyPaid ? "paidFull" : "payPart");
+    if (!isOrderFullyPaid) setGoPay(false);
+  };
+
   return !goPay ? (
     <div className="w-full h-full flex flex-col gap-8">
       <div className="w-full h-full flex gap-8">
@@ -78,12 +86,12 @@ export default function DivideOrder({
         />
       </div>
       <div className="flex gap-8 *:h-14 *:text-xl">
-        <Button onClick={() => setAction("")} className="w-1/2">
+        <Button onClick={() => setPayingAction("none")} className="w-1/2">
           Indietro
         </Button>
         <Button
           onClick={() => {
-            setAction("payPart");
+            setPayingAction("payPart");
             setGoPay(true);
           }}
           className="w-1/2 bg-green-500 text-black"
@@ -101,25 +109,12 @@ export default function DivideOrder({
         ...order,
         products: rightProducts,
         total: rightProducts.reduce(
-          (total, p) =>
-            total +
-            (order.type == OrderType.TO_HOME ? p.product.home_price : p.product.site_price) *
-              p.quantity,
+          (total, p) => total + getProductPrice(p, order.type as OrderType) * p.quantity,
           0
         ),
       }}
       handleBackButton={() => setGoPay(false)}
-      handleOrderPaid={() => {
-        setRightProducts([]);
-        /**
-         * questo deve essere piu completo
-         * in pratica se è "l'ultima volta" che posso fare il divide,
-         * per cui che dopo aver pagato non c'è altro da pagare,
-         * non devo usare setGopay(false) ma setAction("paidFull"),
-         * cosi dopo aver pagato definitivamente tutto si chiude l'ordine
-         */
-        setGoPay(false);
-      }}
+      handleOrderPaid={handleOrderPaid}
     />
   );
 }

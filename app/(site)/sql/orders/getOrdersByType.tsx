@@ -1,5 +1,6 @@
 import { OrderType } from "../../types/OrderType";
 import { AnyOrder } from "../../types/PrismaOrders";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 import prisma from "../db";
 
 export default async function getOrdersByType(type: OrderType) {
@@ -57,20 +58,12 @@ export default async function getOrdersByType(type: OrderType) {
           quantity: product.quantity - product.paidQuantity,
           total:
             (product.quantity - product.paidQuantity) *
-            (order.type == OrderType.TO_HOME
-              ? product.product.home_price
-              : product.product.site_price),
+            getProductPrice(product, order.type as OrderType),
         };
       });
 
     const unpaidOrderTotal = unpaidProducts.reduce((sum, product) => {
-      return (
-        sum +
-        product.quantity *
-          (order.type == OrderType.TO_HOME
-            ? product.product.home_price
-            : product.product.site_price)
-      );
+      return sum + product.quantity * getProductPrice(product, order.type as OrderType);
     }, 0);
 
     return {

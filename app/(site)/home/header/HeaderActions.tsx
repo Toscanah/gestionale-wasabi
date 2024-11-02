@@ -1,20 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  ArrowClockwise,
-  Hash,
-  Key,
-  List,
-  PiggyBank,
-  Shield,
-  Tag,
-  UsersFour,
-} from "@phosphor-icons/react";
-import RiceDialog from "../rice/RiceDialog";
+import { ArrowClockwise, Hash, Key, List, PiggyBank, Tag, UsersFour } from "@phosphor-icons/react";
+import RiceDialog from "../../rice/RiceDialog";
 import Link from "next/link";
-import { useWasabiContext } from "../context/WasabiContext";
-import { OrderType } from "../types/OrderType";
+import { useWasabiContext } from "../../context/WasabiContext";
+import { OrderType } from "../../types/OrderType";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 
-export default function Actions() {
+export default function HeaderActions() {
   const { onOrdersUpdate } = useWasabiContext();
   const router = useRouter();
 
@@ -66,24 +57,19 @@ export default function Actions() {
         </Button>
       </Link>
 
-      {/* <Link href={"../backend"}>
-        <Button className="" variant={"outline"}>
-          <Shield className="mr-2 h-4 w-4" /> Admin
-        </Button>
-      </Link> */}
-
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">
             <Key className="mr-2 h-4 w-4" /> Admin
           </Button>
         </DropdownMenuTrigger>
+
         <DropdownMenuContent>
           <DropdownMenuLabel>Dove vuoi andare?</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {menuItems.map((item, index) => (
+          {menuItems.map((item) => (
             <DropdownMenuItem
-              key={index}
+              key={item.label}
               onClick={() => navigateTo(item.path)}
               className="hover:cursor-pointer"
             >
@@ -94,8 +80,8 @@ export default function Actions() {
       </DropdownMenu>
 
       <ArrowClockwise
-      className="hover:cursor-pointer"
-        size={32}
+        className="hover:cursor-pointer"
+        size={24}
         onClick={() => {
           onOrdersUpdate(OrderType.TO_HOME);
           onOrdersUpdate(OrderType.PICK_UP);

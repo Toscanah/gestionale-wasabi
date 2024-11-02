@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import TableColumn from "../../components/table/TableColumn";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { OrderType } from "../../types/OrderType";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrderType>[] {
   return [
@@ -74,11 +75,7 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrderTyp
         <>
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
-            : `€ ${
-                type == OrderType.TO_HOME
-                  ? row.original.product.home_price
-                  : row.original.product.site_price
-              }`}
+            : `€ ${getProductPrice(row.original, type)}`}
         </>
       ),
     }),
