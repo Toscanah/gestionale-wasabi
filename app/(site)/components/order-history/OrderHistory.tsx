@@ -7,11 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useEffect, useMemo, useState } from "react";
-import { ProductWithInfo } from "../../types/ProductWithInfo";
-import { Separator } from "@/components/ui/separator";
-import { HomeOrder, PickupOrder } from "../../types/PrismaOrders";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox"; // Assuming you're using a Checkbox component
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import applyDiscount from "../../util/functions/applyDiscount";
 import HistoryStats from "./HistoryStats";
@@ -38,6 +34,7 @@ export default function OrderHistory({
   customer: CustomerWithDetails;
   onCreate?: (newProducts: ProductInOrderType[]) => void;
 }) {
+  const [selectedProducts, setSelectedProducts] = useState<ProductInOrderType[]>([]);
   const orderTypes = useMemo(
     () => [
       { type: "Domicilio", orders: customer.home_orders },
@@ -55,7 +52,6 @@ export default function OrderHistory({
     avgOrderCost: 0,
   });
 
-  const [selectedProducts, setSelectedProducts] = useState<ProductInOrderType[]>([]);
 
   const allOrders = useMemo(
     () => [...customer.home_orders, ...customer.pickup_orders],
@@ -135,7 +131,6 @@ export default function OrderHistory({
       year: "numeric",
     }).format(new Date(dateString));
 
-    // Capitalize the first letter of the day
     return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
   };
 
@@ -158,11 +153,13 @@ export default function OrderHistory({
       <Accordion
         onValueChange={(e) => {
           if (!e) return setSelectedProducts([]);
+
           const [orderType, orderIdString] = e.split("-");
           const selectedOrderType = orderTypes.find((type) => type.type === orderType);
           const selectedOrder = selectedOrderType?.orders.find(
             (order) => order.id === Number(orderIdString)
           );
+          
           setSelectedProducts(selectedOrder?.order.products || []);
         }}
         type="single"
@@ -193,11 +190,12 @@ export default function OrderHistory({
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4">
                   <OrderDetail
-                    handleCheckboxChange={handleCheckboxChange}
+                    onCheckboxChange={handleCheckboxChange}
                     type={type}
                     onCreate={onCreate}
                     sortedProducts={order.products.sort((a, b) => b.quantity - a.quantity)}
                   />
+                  
                   {onCreate && (
                     <Button
                       className="w-full"

@@ -5,12 +5,6 @@ export default function HistoryStats({ stats }: { stats: OrderStats }) {
   return (
     <AccordionContent className="space-y-4">
       <table className="table-auto w-full text-left">
-        {/* <thead>
-          <tr>
-            <th className="text-xl pb-4">Statistiche</th>
-            <th className="text-xl pb-4">Valore</th>
-          </tr>
-        </thead> */}
         <tbody>
           <tr>
             <td className="text-lg ">Prodotto più acquistato</td>

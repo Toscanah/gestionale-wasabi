@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 
 export interface FocussableInput {
   rowIndex: number;
@@ -30,37 +30,37 @@ export default function useGridFocus(defaultFocusedInput: FocussableInput, maxCo
     }
   };
 
-  const getNextInputToFocus = (
-    e: KeyboardEvent<HTMLInputElement>,
-    currentInput: FocussableInput
-  ) => {
-    const { rowIndex, colIndex } = currentInput;
+  const getNextInputToFocus = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>, currentInput: FocussableInput) => {
+      const { rowIndex, colIndex } = currentInput;
 
-    switch (e.key) {
-      case "Enter":
-      case "ArrowRight":
-        if (colIndex < maxCols) {
-          return { rowIndex, colIndex: colIndex + 1 };
-        } else {
-          return { rowIndex: rowIndex + 1, colIndex: 0 };
-        }
-      case "ArrowDown":
-        return { rowIndex: rowIndex + 1, colIndex };
-      case "ArrowUp":
-        if (rowIndex > 0) {
-          return { rowIndex: rowIndex - 1, colIndex };
-        }
-        break;
-      case "ArrowLeft":
-        if (colIndex == 0) {
-          return { rowIndex: rowIndex - 1, colIndex: colIndex + 1 };
-        } else {
-          return { rowIndex, colIndex: colIndex - 1 };
-        }
-      default:
-        return null;
-    }
-  };
+      switch (e.key) {
+        case "Enter":
+        case "ArrowRight":
+          if (colIndex < maxCols) {
+            return { rowIndex, colIndex: colIndex + 1 };
+          } else {
+            return { rowIndex: rowIndex + 1, colIndex: 0 };
+          }
+        case "ArrowDown":
+          return { rowIndex: rowIndex + 1, colIndex };
+        case "ArrowUp":
+          if (rowIndex > 0) {
+            return { rowIndex: rowIndex - 1, colIndex };
+          }
+          break;
+        case "ArrowLeft":
+          if (colIndex == 0) {
+            return { rowIndex: rowIndex - 1, colIndex: colIndex + 1 };
+          } else {
+            return { rowIndex, colIndex: colIndex - 1 };
+          }
+        default:
+          return null;
+      }
+    },
+    []
+  );
 
   const handleKeyNavigation = (
     e: KeyboardEvent<HTMLInputElement>,
@@ -69,15 +69,12 @@ export default function useGridFocus(defaultFocusedInput: FocussableInput, maxCo
     const nextInput = getNextInputToFocus(e, currentInput);
 
     if (nextInput) {
-      moveToInput(nextInput);
       setFocusedInput(nextInput);
     }
   };
 
-  const getInputRef = (input: FocussableInput) => {
-    const refKey = `${input.rowIndex}-${input.colIndex}`;
-    return inputRefs.get(refKey);
-  };
+  const getInputRef = (input: FocussableInput) =>
+    inputRefs.get(`${input.rowIndex}-${input.colIndex}`);
 
   return {
     focusedInput,

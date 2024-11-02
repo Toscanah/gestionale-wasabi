@@ -2,17 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Backspace } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import CalculationTable from "./CalculationTable";
-import formatAmount from "@/app/(site)/util/functions/formatAmount";
 
 export type Calc = { amount: number; quantity: number; total: number };
 
@@ -42,7 +31,9 @@ export default function Calculator({
     }
   };
 
-  useEffect(() => calcRef.current?.focus(), []);
+  useEffect(() => {calcRef.current?.focus()
+    calcRef.current?.select()
+  }, []);
 
   const buttons = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", "."];
 
@@ -61,7 +52,7 @@ export default function Calculator({
           {buttons.map((value, index) => (
             <Button
               key={index}
-              className={`h-20 "w-20" text-4xl`}
+              className={`h-20 w-20 text-4xl`}
               onClick={() => handleButtonClick(value)}
             >
               {value}
@@ -74,8 +65,7 @@ export default function Calculator({
           >
             <Backspace size={48} weight="regular" />
           </Button>
-          <Button className="w-full col-span-3" variant={"outline"}>
-
+          <Button className="w-full col-span-3 h-20 text-lg" variant={"outline"}>
             Tabella
           </Button>
         </div>

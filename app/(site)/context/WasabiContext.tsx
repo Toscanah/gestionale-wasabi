@@ -46,7 +46,7 @@ export const WasabiProvider = ({
       setRice((prevRice) => ({ ...prevRice, remaining }))
     );
 
-  const updateTotalRice = (total: Rice) => {
+  const updateTotalRice = (total: Rice) =>
     fetchRequest("POST", "/api/rice/", "updateRice", total).then(() => {
       setRice((prevRice) => ({
         ...prevRice,
@@ -55,14 +55,12 @@ export const WasabiProvider = ({
       fetchRemainingRice();
       toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
     });
-  };
 
-  const resetRice = () => {
+  const resetRice = () =>
     fetchRequest("POST", "/api/rice/", "resetRice").then(() => {
       fetchTotalRice();
       fetchRemainingRice();
     });
-  };
 
   useEffect(() => {
     fetchTotalRice();

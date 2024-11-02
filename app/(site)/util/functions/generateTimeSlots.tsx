@@ -4,7 +4,7 @@ export default function generateTimeSlots(
   endHour: number,
   endMinute: number,
   currentHour: number,
-  currentMinute: number
+  currentMinute: number,
 ) {
   const times = [];
   let currentSlotHour = startHour;

@@ -9,7 +9,7 @@ export default function useFetchCustomer(
   const [customer, setCustomer] = useState<Customer | undefined>(undefined);
   const [addresses, setAddresses] = useState<Address[]>([]);
 
-  const fetchCustomer = () => {
+  const fetchCustomer = () =>
     fetchRequest<Customer>("GET", "/api/customers", "getCustomerByPhone", {
       phone,
     }).then((fetchedCustomer) => {
@@ -18,22 +18,20 @@ export default function useFetchCustomer(
       if (fetchedCustomer) {
         fetchAddresses(fetchedCustomer.id);
       } else {
-        setAddresses([])
+        setAddresses([]);
       }
     });
-  };
 
-  const fetchAddresses = (customerId: number) => {
+  const fetchAddresses = (customerId: number) =>
     fetchRequest<Address[]>("GET", "/api/addresses/", "getAddressesByCustomer", {
       customerId,
     }).then((fetchedAddresses) =>
       setAddresses(fetchedAddresses.filter((address) => !address.temporary))
     );
-  };
 
   useEffect(() => {
     if (phone) {
-      setAddresses([])
+      setAddresses([]);
       setSelectedAddress(undefined);
       setCustomer(undefined);
       fetchCustomer();

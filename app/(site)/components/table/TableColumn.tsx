@@ -18,7 +18,6 @@ export default function TableColumn<T>({
   cellContent,
 }: TableColumnProps<T>): ColumnDef<T> {
   return {
-    //accessorFn,
     accessorKey,
     header: ({ column }) =>
       sortable ? (

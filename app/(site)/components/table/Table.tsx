@@ -8,7 +8,16 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Cell, flexRender, Table as TanstackTable } from "@tanstack/react-table";
-import { Fragment, ReactNode } from "react";
+import { Fragment } from "react";
+
+interface TableProps<T> {
+  table: TanstackTable<T>;
+  tableClassName?: string;
+  rowClassName?: string;
+  cellClassName?: (index: number) => string;
+  CustomCell?: ({ cell, className }: { cell: Cell<T, any>; className: string }) => JSX.Element;
+  onRowClick?: (orginal: T) => void;
+}
 
 export default function Table<T>({
   table,
@@ -17,14 +26,7 @@ export default function Table<T>({
   cellClassName,
   CustomCell,
   onRowClick,
-}: {
-  table: TanstackTable<T>;
-  tableClassName?: string;
-  rowClassName?: string;
-  cellClassName?: (index: number) => string;
-  CustomCell?: ({ cell, className }: { cell: Cell<T, any>; className: string }) => JSX.Element;
-  onRowClick?: (orginal: T) => void;
-}) {
+}: TableProps<T>) {
   return (
     <div className={cn("rounded-md border w-full overflow-y-auto max-h-max", tableClassName)}>
       {table && (
@@ -34,7 +36,7 @@ export default function Table<T>({
               table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} > {/**className="*:text-xl" */}
+                    <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -43,6 +45,7 @@ export default function Table<T>({
                 </TableRow>
               ))}
           </TableHeader>
+          
           <TableBody>
             {table.getRowModel().rows?.length > 0 &&
               table.getRowModel().rows?.map((row) => {

@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   switch (action) {
     case "payOrder":
       return NextResponse.json(
-        await payOrder(content?.payments as Payment[], content?.type as any, content?.productsToPay)
+        await payOrder(content?.payments as Payment[], content?.productsToPay)
       );
   }
 }

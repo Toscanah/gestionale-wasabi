@@ -14,7 +14,7 @@ import { useOrderManager } from "../../components/hooks/useOrderManager";
 import RomanStyle from "../divide-order/RomanStyle";
 import DangerActions from "./overview/DangerActions";
 
-export type Actions = "" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
+export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
 export default function OrderTable({
   order,
@@ -39,7 +39,7 @@ export default function OrderTable({
     deleteProducts,
     updateProductOption,
   } = useProductManager(order, updateOrder);
-  const [action, setAction] = useState<Actions>("");
+  const [payingAction, setPayingAction] = useState<PayingAction>("none");
   const [rowSelection, setRowSelection] = useState({});
 
   useEffect(() => {
@@ -70,13 +70,13 @@ export default function OrderTable({
   });
 
   useEffect(() => {
-    if (action === "paidFull") {
+    if (payingAction === "paidFull") {
       onOrdersUpdate(order.type as OrderType);
       setOpen(false);
     }
-  }, [action]);
+  }, [payingAction]);
 
-  return action == "" ? (
+  return payingAction == "none" ? (
     <div className="w-full h-full flex gap-6 justify-between">
       <div className="w-[80%] h-full flex flex-col gap-6 justify-between">
         <Table table={table} tableClassName="h-full max-h-full" />
@@ -90,32 +90,28 @@ export default function OrderTable({
         />
       </div>
 
-      <OrderOverview        
-        order={order}
-        setAction={setAction}
-        addProducts={addProducts}
-      />
+      <OrderOverview order={order} setAction={setPayingAction} addProducts={addProducts} />
     </div>
-  ) : action == "payFull" ? (
+  ) : payingAction == "payFull" ? (
     <OrderPayment
-      handleOrderPaid={() => setAction("paidFull")}
-      handleBackButton={() => setAction("")}
       order={order}
-      setProducts={setProducts}
       type="full"
+      handleOrderPaid={() => setPayingAction("paidFull")}
+      handleBackButton={() => setPayingAction("none")}
+      setProducts={setProducts}
     />
-  ) : action == "payRoman" ? (
+  ) : payingAction == "payRoman" ? (
     <RomanStyle
       order={order}
-      handleOrderPaid={() => setAction("paidFull")}
-      handleBackButton={() => setAction("")}
+      handleOrderPaid={() => setPayingAction("paidFull")}
+      handleBackButton={() => setPayingAction("none")}
     />
   ) : (
     <DivideOrder
       setProducts={setProducts}
       order={order}
       products={products.filter((product) => product.product_id !== -1)}
-      setAction={setAction}
+      setPayingAction={setPayingAction}
     />
   );
 }

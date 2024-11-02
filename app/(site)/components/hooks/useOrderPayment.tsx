@@ -6,6 +6,7 @@ import fetchRequest from "../../util/functions/fetchRequest";
 import { OrderType } from "../../types/OrderType";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export type Payment = {
   paymentAmounts: {
@@ -22,7 +23,7 @@ export default function useOrderPayment(
   order: AnyOrder,
   type: "full" | "partial",
   handleOrderPaid: () => void,
-  setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>
+  setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>,
 ) {
   const { onOrdersUpdate } = useWasabiContext();
   const [payment, setPayment] = useState<Payment>({
@@ -49,7 +50,7 @@ export default function useOrderPayment(
     }));
   }, [payment.paymentAmounts]);
 
-  const handlePaymentChange = (type: TYPE_OF_PAYMENT, value: number | undefined) => {
+  const handlePaymentChange = (type: TYPE_OF_PAYMENT, value: number | undefined) =>
     setPayment((prevPayment) => ({
       ...prevPayment,
       paymentAmounts: {
@@ -57,7 +58,6 @@ export default function useOrderPayment(
         [type]: value === undefined || isNaN(value) ? undefined : value,
       },
     }));
-  };
 
   const payOrder = () => {
     const productsToPay = order.products;
@@ -71,7 +71,6 @@ export default function useOrderPayment(
 
     fetchRequest("POST", "/api/payments/", "payOrder", {
       payments,
-      type,
       productsToPay,
     }).then(() => {
       onOrdersUpdate(order.type as OrderType);
@@ -87,11 +86,7 @@ export default function useOrderPayment(
             if (productToPay) {
               const newQuantity = product.quantity - productToPay.quantity;
               const newPaidQuantity = product.paidQuantity + productToPay.quantity;
-              const newTotal =
-                newQuantity *
-                (order.type === OrderType.TO_HOME
-                  ? product.product.home_price
-                  : product.product.site_price);
+              const newTotal = newQuantity * getProductPrice(product, order.type as OrderType);
 
               return {
                 ...product,

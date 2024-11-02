@@ -4,20 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { Actions } from "../OrderTable";
 import print from "@/app/(site)/printing/print";
-import orderRec from "@/app/(site)/printing/receipts/order";
-import { Notes } from "./QuickNotes";
-import rider from "../../../printing/receipts/rider";
-import kitchen from "@/app/(site)/printing/receipts/kitchen";
+import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
+import { QuickPaymentOption } from "./QuickPaymentOptions";
+import RiderReceipt from "../../../printing/receipts/RiderReceipt";
+
+interface NormalActionsProps {
+  quickPaymentOption: QuickPaymentOption;
+  order: AnyOrder;
+  setAction: Dispatch<SetStateAction<Actions>>;
+}
 
 export default function NormalActions({
   order,
   setAction,
-  note,
-}: {
-  note: Notes;
-  order: AnyOrder;
-  setAction: Dispatch<SetStateAction<Actions>>;
-}) {
+  quickPaymentOption,
+}: NormalActionsProps) {
   return (
     <>
       <div className="flex gap-6">
@@ -42,15 +43,17 @@ export default function NormalActions({
 
       <Button
         className="w-full text-3xl h-12"
+        disabled={order.products.length === 0}
         onClick={async () => {
           await print(
-            () => orderRec(order, note),
-            () => rider(order, note)
+            () => OrderReceipt(order, quickPaymentOption),
+            // () => RiderReceipt(order, quickPaymentOption)
           );
         }}
       >
         Stampa
       </Button>
+
       <Button
         className="w-full text-3xl h-12"
         onClick={() => setAction("payFull")}

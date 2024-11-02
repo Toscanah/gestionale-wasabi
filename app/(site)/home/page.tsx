@@ -1,21 +1,19 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { OrderType } from "../types/OrderType";
 import { WasabiProvider } from "../context/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../orders/create-order/CreateOrder";
-import Header from "./Header";
+import Header from "./header/Header";
 import fetchRequest from "../util/functions/fetchRequest";
 import { cn } from "@/lib/utils";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
-import { Rice } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { getPanelElement } from "react-resizable-panels";
-import Link from "next/link";
-import { Skull } from "@phosphor-icons/react";
+import print from "../printing/print";
+import KitchenReceipt from "../printing/receipts/KitchenReceipt";
 
 export default function Home() {
   const [orders, setOrders] = useState<{
@@ -51,11 +49,14 @@ export default function Home() {
     <WasabiProvider onOrdersUpdate={onOrdersUpdate}>
       <div className="w-screen p-4 h-screen flex flex-col gap-4">
         <div className="w-full flex justify-between">
-          {/* <Link href={"../printing"}>
-            <Button className="" variant={"outline"}>
-              <Skull className="mr-2 h-4 w-4" /> Stampa
-            </Button>
-          </Link> */}
+          <Button
+            onClick={async () => {
+              await print(() => KitchenReceipt(orders[OrderType.TABLE][0]));
+            }}
+          >
+            test cucina
+          </Button>
+
           <Header />
         </div>
 
