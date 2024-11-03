@@ -1,19 +1,21 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { TYPE_OF_PAYMENT } from "../../payments/order/OrderPayment";
 import applyDiscount from "../../util/functions/applyDiscount";
 import { AnyOrder } from "../../types/PrismaOrders";
 import fetchRequest from "../../util/functions/fetchRequest";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { getProductPrice } from "../../util/functions/getProductPrice";
+import formatAmount from "../../util/functions/formatAmount";
+import { PaymentType } from "@prisma/client";
+import createDummyProduct from "../../util/functions/createDummyProduct";
 
 export type Payment = {
   paymentAmounts: {
-    [TYPE_OF_PAYMENT.CASH]?: number;
-    [TYPE_OF_PAYMENT.CARD]?: number;
-    [TYPE_OF_PAYMENT.VOUCH]?: number;
-    [TYPE_OF_PAYMENT.CREDIT]?: number;
+    [PaymentType.CASH]?: number;
+    [PaymentType.CARD]?: number;
+    [PaymentType.VOUCH]?: number;
+    [PaymentType.CREDIT]?: number;
   };
   paidAmount: number;
   remainingAmount: number;
@@ -23,19 +25,20 @@ export default function useOrderPayment(
   order: AnyOrder,
   type: "full" | "partial",
   handleOrderPaid: () => void,
-  setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>,
+  setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>
 ) {
   const { onOrdersUpdate } = useWasabiContext();
   const [payment, setPayment] = useState<Payment>({
     paymentAmounts: {
-      [TYPE_OF_PAYMENT.CASH]: undefined,
-      [TYPE_OF_PAYMENT.CARD]: undefined,
-      [TYPE_OF_PAYMENT.VOUCH]: undefined,
-      [TYPE_OF_PAYMENT.CREDIT]: undefined,
+      [PaymentType.CASH]: undefined,
+      [PaymentType.CARD]: undefined,
+      [PaymentType.VOUCH]: undefined,
+      [PaymentType.CREDIT]: undefined,
     },
     paidAmount: 0,
     remainingAmount: applyDiscount(order.total, order.discount) ?? 0,
   });
+  const [typedAmount, setTypedAmount] = useState<string>(formatAmount(payment.remainingAmount));
 
   useEffect(() => {
     const totalPaid = Object.values(payment.paymentAmounts).reduce(
@@ -50,7 +53,7 @@ export default function useOrderPayment(
     }));
   }, [payment.paymentAmounts]);
 
-  const handlePaymentChange = (type: TYPE_OF_PAYMENT, value: number | undefined) =>
+  const handlePaymentChange = (type: PaymentType, value: number | undefined) =>
     setPayment((prevPayment) => ({
       ...prevPayment,
       paymentAmounts: {
@@ -73,38 +76,43 @@ export default function useOrderPayment(
       payments,
       productsToPay,
     }).then(() => {
-      onOrdersUpdate(order.type as OrderType);
       handleOrderPaid();
 
-      if (type == "partial") {
+      if (type === "partial") {
         setProducts?.((prevProducts) => {
-          const productsToPayMap = new Map(order.products.map((product) => [product.id, product]));
+          const productsToPayMap = new Map(
+            productsToPay.map((product) => [product.id, product.quantity])
+          );
 
-          const newProducts = prevProducts.map((product) => {
-            const productToPay = productsToPayMap.get(product.id);
+          const newProducts = prevProducts
+            .map((product) => {
+              const paidQuantity = productsToPayMap.get(product.id) || 0;
+              const remainingQuantity = product.quantity - paidQuantity;
 
-            if (productToPay) {
-              const newQuantity = product.quantity - productToPay.quantity;
-              const newPaidQuantity = product.paidQuantity + productToPay.quantity;
-              const newTotal = newQuantity * getProductPrice(product, order.type as OrderType);
+              if (remainingQuantity <= 0) return null;
+
+              const newPaidQuantity = product.paidQuantity + paidQuantity;
+              const newTotal =
+                remainingQuantity * getProductPrice(product, order.type as OrderType);
 
               return {
                 ...product,
-                quantity: newQuantity,
+                quantity: remainingQuantity,
                 paidQuantity: newPaidQuantity,
                 total: newTotal,
-                isPaidFully: newPaidQuantity >= product.quantity ? true : product.isPaidFully,
+                isPaidFully: newPaidQuantity >= product.quantity,
               };
-            } else {
-              return product;
-            }
-          });
+            })
+            .filter(Boolean);
 
-          return newProducts;
+          newProducts.push(createDummyProduct());
+          return newProducts as ProductInOrderType[];
         });
       }
+
+      onOrdersUpdate(order.type as OrderType);
     });
   };
 
-  return { handlePaymentChange, payment, payOrder };
+  return { handlePaymentChange, payment, payOrder, typedAmount, setTypedAmount };
 }

@@ -1,4 +1,4 @@
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { getProductPrice } from "./getProductPrice";
 

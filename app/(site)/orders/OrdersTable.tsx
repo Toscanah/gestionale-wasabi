@@ -1,7 +1,7 @@
 "use client";
 
 import getColumns from "./getColumns";
-import { OrderType } from "../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { Cell } from "@tanstack/react-table";
 import { AnyOrder } from "../types/PrismaOrders";
 import Order from "./single-order/Order";

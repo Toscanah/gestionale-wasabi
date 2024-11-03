@@ -1,8 +1,8 @@
 import { ProductInOrderType } from "../../../types/ProductInOrderType";
 import { Dispatch, SetStateAction, useState } from "react";
 import { AnyOrder, HomeOrder } from "../../../types/PrismaOrders";
-import { Actions } from "../OrderTable";
-import { OrderType } from "../../../types/OrderType";
+import { PayingAction } from "../OrderTable";
+import { OrderType } from "@prisma/client";
 import QuickPaymentOptions, { QuickPaymentOption } from "./QuickPaymentOptions";
 import Discount from "./Discount";
 import Time from "./Time";
@@ -17,14 +17,14 @@ export default function OrderOverview({
   addProducts,
 }: {
   order: AnyOrder;
-  setAction: Dispatch<SetStateAction<Actions>>;
+  setAction: Dispatch<SetStateAction<PayingAction>>;
   addProducts: (newProducts: ProductInOrderType[]) => void;
 }) {
   const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
 
   return (
     <div className="w-[25%] flex flex-col gap-6 h-full">
-      {order.type !== OrderType.TABLE && order.type !== OrderType.PICK_UP && (
+      {order.type !== OrderType.TABLE && (
         <QuickPaymentOptions
           order={order as HomeOrder}
           quickPaymentOption={quickPaymentOption}

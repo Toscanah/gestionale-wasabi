@@ -1,7 +1,6 @@
 import createTableOrder from "@/app/(site)/sql/orders/createTableOrder";
 import { NextRequest, NextResponse } from "next/server";
 import getOrdersByType from "../../sql/orders/getOrdersByType";
-import { OrderType } from "../../types/OrderType";
 import createPickupOrder from "../../sql/orders/createPickupOrder";
 import createHomeOrder from "../../sql/orders/createHomeOrder";
 import getRequestBody from "../../util/functions/getRequestBody";
@@ -9,6 +8,7 @@ import updateOrderTime from "../../sql/orders/updateOrderTime";
 import cancelOrder from "../../sql/orders/cancelOrder";
 import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 import updateDiscount from "../../sql/orders/updateDiscount";
+import { OrderType } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   const { action, content } = await getRequestBody(request);

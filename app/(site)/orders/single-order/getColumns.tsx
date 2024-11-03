@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { Input } from "@/components/ui/input";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import TableColumn from "../../components/table/TableColumn";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";

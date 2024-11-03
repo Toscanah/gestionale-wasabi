@@ -14,7 +14,7 @@ export default function Rice({ order }: { order: AnyOrder }) {
 
     const debouncedFetch = debounce(() => {
       fetchRemainingRice();
-    }, 3000);
+    }, 5000); // da decidere se farlo instant oppure dopo abbastanza aver aggiunto i prodotti
     debouncedFetch();
 
     return () => {

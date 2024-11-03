@@ -1,5 +1,5 @@
 import { Order } from "@prisma/client";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import { ProductInOrderType } from "../../types/ProductInOrderType";

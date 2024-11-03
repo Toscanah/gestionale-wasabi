@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { OrderType } from "../types/OrderType";
+import { OrderType } from "@prisma/client";
 import fetchRequest from "../util/functions/fetchRequest";
 import { Rice } from "@prisma/client";
 import { toastSuccess } from "../util/toast";

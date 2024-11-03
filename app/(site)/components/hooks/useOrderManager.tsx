@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { AnyOrder } from "../../types/PrismaOrders";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 

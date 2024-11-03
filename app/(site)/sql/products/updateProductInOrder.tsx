@@ -1,5 +1,5 @@
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 

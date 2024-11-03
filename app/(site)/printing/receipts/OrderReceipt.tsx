@@ -4,7 +4,7 @@ import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/ProductsListSection";
 import OrderInfoSection from "../common/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
 
 export default function OrderReceipt<T extends AnyOrder>(

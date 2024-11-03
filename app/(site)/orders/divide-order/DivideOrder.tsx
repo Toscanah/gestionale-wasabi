@@ -4,7 +4,7 @@ import getTable from "@/app/(site)/util/functions/getTable";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Table from "@/app/(site)/components/table/Table";
 import getColumns from "./getColumns";
-import { OrderType } from "@/app/(site)/types/OrderType";
+import { OrderType } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
 import { PayingAction } from "../single-order/OrderTable";
@@ -62,22 +62,24 @@ export default function DivideOrder({
 
   const handleOrderPaid = () => {
     setRightProducts([]);
+
     const isOrderFullyPaid = leftProducts.length === 0;
     setPayingAction(isOrderFullyPaid ? "paidFull" : "payPart");
+
     if (!isOrderFullyPaid) setGoPay(false);
   };
 
   return !goPay ? (
     <div className="w-full h-full flex flex-col gap-8">
       <div className="w-full h-full flex gap-8">
-        <Table
+        <Table<ProductInOrderType>
           tableClassName="max-w-[50%] overflow-x-scroll select-none max-h-full"
           table={leftTable}
           onRowClick={(product) =>
             handleRowClick(product, leftProducts, setLeftProducts, rightProducts, setRightProducts)
           }
         />
-        <Table
+        <Table<ProductInOrderType>
           tableClassName="max-w-[50%] overflow-x-scroll select-none max-h-full"
           table={rightTable}
           onRowClick={(product) =>
@@ -85,6 +87,7 @@ export default function DivideOrder({
           }
         />
       </div>
+      
       <div className="flex gap-8 *:h-14 *:text-xl">
         <Button onClick={() => setPayingAction("none")} className="w-1/2">
           Indietro

@@ -1,5 +1,5 @@
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import { OrderType } from "@/app/(site)/types/OrderType";
+import { OrderType } from "@prisma/client";
 import { HomeOrder } from "@/app/(site)/types/PrismaOrders";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { toastSuccess } from "@/app/(site)/util/toast";
@@ -26,7 +26,7 @@ export default function QuickPaymentOptions({
     { value: "card", label: "Carta" },
   ];
 
-  const handleNoteChange = (value: QuickPaymentOption) => {
+  const handleQuickPaymentOption = (value: QuickPaymentOption) => {
     const newNote = quickPaymentOption === value ? "none" : value;
     setQuickPaymentOption(newNote);
 
@@ -42,9 +42,9 @@ export default function QuickPaymentOptions({
 
   useEffect(() => {
     if (order.home_order?.notes) {
-      const QuickPaymentOption = order.home_order.notes.toLowerCase();
+      const quickPaymentOption = order.home_order.notes.toLowerCase();
       const matchingOption = quickPaymentOptions.find((option) =>
-        QuickPaymentOption.includes(option.label.toLowerCase())
+        quickPaymentOption.includes(option.label.toLowerCase())
       );
 
       if (matchingOption) {
@@ -59,7 +59,7 @@ export default function QuickPaymentOptions({
       className="flex w-full gap-6"
       type="single"
       value={quickPaymentOption}
-      onValueChange={(value: QuickPaymentOption) => handleNoteChange(value ? value : "")}
+      onValueChange={(value: QuickPaymentOption) => handleQuickPaymentOption(value ? value : "none")}
     >
       {quickPaymentOptions.map(({ value, label }) => (
         <ToggleGroupItem key={value} value={value} className="flex-1 h-12 text-xl">

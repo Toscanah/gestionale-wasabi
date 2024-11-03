@@ -1,7 +1,7 @@
 import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
 import { CustomerWithDetails } from "@/app/(site)/types/CustomerWithDetails";
-import { OrderType } from "@/app/(site)/types/OrderType";
+import { OrderType } from "@prisma/client";
 import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/types/PrismaOrders";
 import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";

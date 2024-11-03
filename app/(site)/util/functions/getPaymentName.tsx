@@ -1,14 +1,14 @@
-import { TYPE_OF_PAYMENT } from "../../payments/order/OrderPayment";
+import { PaymentType } from "@prisma/client";
 
-export default function getPaymentName(type: TYPE_OF_PAYMENT) {
+export default function getPaymentName(type: PaymentType) {
   switch (type) {
-    case TYPE_OF_PAYMENT.CARD:
+    case PaymentType.CARD:
       return "la carta";
-    case TYPE_OF_PAYMENT.CASH:
+    case PaymentType.CASH:
       return "contanti";
-    case TYPE_OF_PAYMENT.CREDIT:
+    case PaymentType.CREDIT:
       return "i crediti";
-    case TYPE_OF_PAYMENT.VOUCH:
+    case PaymentType.VOUCH:
       return "i buoni pasto";
     default:
       return "";

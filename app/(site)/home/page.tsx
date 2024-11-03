@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { OrderType } from "../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { WasabiProvider } from "../context/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../orders/create-order/CreateOrder";

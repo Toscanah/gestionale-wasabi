@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { OrderType } from "../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
 import TableColumn from "../components/table/TableColumn";
 

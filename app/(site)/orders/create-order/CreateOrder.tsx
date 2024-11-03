@@ -2,7 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import { Plus } from "@phosphor-icons/react";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import Table from "./table/Table";
 import ToHome from "./to-home/ToHome";
 import PickUp from "./pick-up/PickUp";
