@@ -14,9 +14,9 @@ export default async function print(...contents: (() => ReactNode)[]) {
       {contents.map((content) => content())}
     </Printer>
   );
-  
+
   const data: Uint8Array = await render(receipt);
-  const ports = await window.navigator.serial.getPorts();
+  const ports = await (window as any).navigator.serial.getPorts();
   const port = ports[0];
 
   if (port) {

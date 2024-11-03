@@ -32,6 +32,11 @@ enum PaymentType {
     CREDIT
 }
 
+enum KitchenType {
+    HOT
+    COLD
+}
+
 model Order {
     id           Int              @id @default(autoincrement())
     created_at   DateTime         @default(now())
@@ -109,8 +114,8 @@ model Customer {
 }
 
 model Phone {
-    id        Int       @id @default(autoincrement())
-    phone     String
+    id       Int       @id @default(autoincrement())
+    phone    String
     customer Customer?
 }
 
@@ -161,6 +166,7 @@ model Category {
     id       Int                @id @default(autoincrement())
     category String
     active   Boolean            @default(true)
+    kitchen  KitchenType
     products Product[]
     options  CategoryOnOption[]
 }
