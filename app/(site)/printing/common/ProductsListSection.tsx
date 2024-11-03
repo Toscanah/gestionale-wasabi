@@ -40,7 +40,7 @@ export default function ProductsListSection(
   return (
     <>
       {recipient == "customer" && (
-        <Row key="header" left={formatLeftText("Prodotto") + "P.U."} right="Tot €"/>
+        <Row key="header" left={formatLeftText("Prodotto") + "P.Unit."} right="Tot €"/>
       )}
 
       {aggregatedProducts.map((product, index) => {

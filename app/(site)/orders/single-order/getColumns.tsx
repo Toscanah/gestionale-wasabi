@@ -22,7 +22,7 @@ export default function getColumns(
 
   const debouncedFieldChange = debounce(
     (newValue: number, rowIndex: number) => handleFieldChange("quantity", newValue, rowIndex),
-    1000
+    0
   );
 
   const handleQuantityArrows = (direction: "up" | "down", rowIndex: number) => {

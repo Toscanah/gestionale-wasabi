@@ -2,16 +2,17 @@ import { AnyOrder } from "@/app/(site)/types/PrismaOrders";
 import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
-import { Actions } from "../OrderTable";
+import { PayingAction } from "../OrderTable";
 import print from "@/app/(site)/printing/print";
 import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
 import { QuickPaymentOption } from "./QuickPaymentOptions";
 import RiderReceipt from "../../../printing/receipts/RiderReceipt";
+import { OrderType } from "@prisma/client";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
   order: AnyOrder;
-  setAction: Dispatch<SetStateAction<Actions>>;
+  setAction: Dispatch<SetStateAction<PayingAction>>;
 }
 
 export default function NormalActions({
@@ -45,10 +46,12 @@ export default function NormalActions({
         className="w-full text-3xl h-12"
         disabled={order.products.length === 0}
         onClick={async () => {
-          await print(
-            () => OrderReceipt(order, quickPaymentOption),
-            // () => RiderReceipt(order, quickPaymentOption)
-          );
+          const content = [() => OrderReceipt(order, quickPaymentOption)];
+
+          if (order.type !== OrderType.TABLE)
+            content.push(() => RiderReceipt(order, quickPaymentOption));
+
+          await print(...content);
         }}
       >
         Stampa
