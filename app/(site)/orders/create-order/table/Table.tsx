@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AnyOrder, TableOrder } from "../../../types/PrismaOrders";
 import { useWasabiContext } from "../../../context/WasabiContext";
-import { OrderType } from "../../../types/OrderType";
+import { OrderType } from "@prisma/client";
 
 import fetchRequest from "../../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../../util/toast";

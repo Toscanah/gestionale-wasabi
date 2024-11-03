@@ -1,7 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { getProductPrice } from "../../util/functions/getProductPrice";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import formatAmount from "../../util/functions/formatAmount";
 
 interface OrderDetailProps {

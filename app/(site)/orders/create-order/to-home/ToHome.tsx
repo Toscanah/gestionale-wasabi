@@ -6,7 +6,7 @@ import { Address } from "@prisma/client";
 import fetchRequest from "../../../util/functions/fetchRequest";
 import { AnyOrder, HomeOrder } from "../../../types/PrismaOrders";
 import { useWasabiContext } from "../../../context/WasabiContext";
-import { OrderType } from "../../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import useFocusCycle from "@/app/(site)/components/hooks/useFocusCycle";
 import useFetchCustomer from "@/app/(site)/components/hooks/useFetchCustomer";
 

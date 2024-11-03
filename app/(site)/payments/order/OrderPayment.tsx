@@ -6,32 +6,26 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import applyDiscount from "../../util/functions/applyDiscount";
-import Calculator from "./util/Calculator";
+import Calculator from "./input-tools/ManualInput";
 import { Coins, CreditCard, ForkKnife, Icon, Money } from "@phosphor-icons/react";
 import useOrderPayment from "../../components/hooks/useOrderPayment";
 import PaymentSummary from "./PaymentSummary";
 import { Button } from "@/components/ui/button";
 import formatAmount from "../../util/functions/formatAmount";
-import { PayingAction } from "../../orders/single-order/OrderTable";
-
-export enum TYPE_OF_PAYMENT {
-  CASH = "cash",
-  CARD = "card",
-  VOUCH = "vouch",
-  CREDIT = "credit",
-}
+import { PaymentType } from "@prisma/client";
+import Tools from "./input-tools/Tools";
 
 export type PaymentMethod = {
-  type: TYPE_OF_PAYMENT;
+  type: PaymentType;
   label: string;
   icon: Icon;
 };
 
 const paymentMethods: PaymentMethod[] = [
-  { type: TYPE_OF_PAYMENT.CASH, label: "Contanti", icon: Money },
-  { type: TYPE_OF_PAYMENT.CARD, label: "Carta", icon: CreditCard },
-  { type: TYPE_OF_PAYMENT.VOUCH, label: "Buoni pasto", icon: ForkKnife },
-  { type: TYPE_OF_PAYMENT.CREDIT, label: "Credito", icon: Coins },
+  { type: PaymentType.CASH, label: "Contanti", icon: Money },
+  { type: PaymentType.CARD, label: "Carta", icon: CreditCard },
+  { type: PaymentType.VOUCH, label: "Buoni pasto", icon: ForkKnife },
+  { type: PaymentType.CREDIT, label: "Credito", icon: Coins },
 ];
 
 export default function OrderPayment({
@@ -47,14 +41,12 @@ export default function OrderPayment({
   handleOrderPaid: () => void;
   setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>;
 }) {
-  const { payment, handlePaymentChange, payOrder } = useOrderPayment(
+  const { payment, handlePaymentChange, payOrder, typedAmount, setTypedAmount } = useOrderPayment(
     order,
     type,
     handleOrderPaid,
     setProducts
   );
-
-  const [typedAmount, setTypedAmount] = useState<string>(formatAmount(payment.remainingAmount));
 
   return (
     <div className="w-full h-full flex flex-col gap-6">
@@ -98,15 +90,11 @@ export default function OrderPayment({
 
         <Separator orientation="vertical" />
 
-        <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center">
+        <div className="flex flex-col w-[40%] gap-6 text-4xl items-center text-center h-full justify-center">
           {payment.remainingAmount > 0 ? (
-            <Calculator
-              typedAmount={typedAmount}
-              handleBackButton={handleBackButton}
-              setTypedAmount={setTypedAmount}
-            />
+            <Tools typedAmount={typedAmount} setTypedAmount={setTypedAmount} />
           ) : (
-            <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center">
+            <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center w-[40%]">
               <h1>
                 <span>
                   Vuoi procedere con l'incasso di <b>€ {order.total}</b>?
@@ -117,16 +105,14 @@ export default function OrderPayment({
                   className="w-1/3 h-32 text-3xl"
                   variant={"destructive"}
                   onClick={() => {
-                    Object.values(TYPE_OF_PAYMENT).map((type) =>
-                      handlePaymentChange(type, undefined)
-                    );
+                    Object.values(PaymentType).map((type) => handlePaymentChange(type, undefined));
                     setTypedAmount((applyDiscount(order.total, order.discount) ?? 0).toString());
                   }}
                 >
                   Cancella
                 </Button>
                 <Button
-                  onClick={() => payOrder()}
+                  onClick={payOrder}
                   className="w-1/3 h-32 bg-green-500 text-3xl text-black hover:bg-green-500/90"
                 >
                   Conferma

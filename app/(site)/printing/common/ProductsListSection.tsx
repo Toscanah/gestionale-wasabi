@@ -1,6 +1,6 @@
 import { Row } from "react-thermal-printer";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import formatAmount from "../../util/functions/formatAmount";
 import TotalSection from "./TotalSection";
 import { Option } from "../../types/Option";

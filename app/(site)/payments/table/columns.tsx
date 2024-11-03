@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
 import { OrderWithPayments } from "../../types/OrderWithPayments";
 import { Badge } from "@/components/ui/badge";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import applyDiscount from "../../util/functions/applyDiscount";
 
 const columns: ColumnDef<OrderWithPayments>[] = [

@@ -3,7 +3,7 @@ import { AnyOrder, PickupOrder } from "../../../types/PrismaOrders";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { OrderType } from "../../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { toast } from "sonner";
 import WhenSelector from "../../../components/select/WhenSelector";
 import { useWasabiContext } from "../../../context/WasabiContext";

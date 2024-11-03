@@ -2,7 +2,7 @@ import { Br, Cut, Line, Text, TextSize } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/ProductsListSection";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const size: { width: TextSize; height: TextSize } = { width: 2, height: 2 };

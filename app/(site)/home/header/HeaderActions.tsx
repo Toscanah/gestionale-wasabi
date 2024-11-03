@@ -5,7 +5,7 @@ import { ArrowClockwise, Hash, Key, List, PiggyBank, Tag, UsersFour } from "@pho
 import RiceDialog from "../../rice/RiceDialog";
 import Link from "next/link";
 import { useWasabiContext } from "../../context/WasabiContext";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuContent,

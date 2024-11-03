@@ -1,5 +1,4 @@
-// priceUtils.ts
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 
 export function getProductPrice(product: ProductInOrderType, orderType: OrderType): number {

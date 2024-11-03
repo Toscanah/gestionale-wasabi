@@ -1,5 +1,5 @@
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import { OrderType } from "@/app/(site)/types/OrderType";
+import { OrderType } from "@prisma/client";
 import { AnyOrder } from "@/app/(site)/types/PrismaOrders";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { Input } from "@/components/ui/input";

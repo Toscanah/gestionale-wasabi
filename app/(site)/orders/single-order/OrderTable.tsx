@@ -2,7 +2,7 @@ import getColumns from "./getColumns";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useWasabiContext } from "../../context/WasabiContext";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
 import { AnyOrder } from "../../types/PrismaOrders";

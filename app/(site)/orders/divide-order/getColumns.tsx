@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import TableColumn from "../../components/table/TableColumn";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { OrderType } from "../../types/OrderType";
+import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrderType>[] {
