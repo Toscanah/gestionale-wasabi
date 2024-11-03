@@ -11,5 +11,3 @@ export default function getForm<T>(
     defaultValues,
   });
 }
-
-// export type FormValues<T> = z.infer<z.ZodType<Partial<T>>>;

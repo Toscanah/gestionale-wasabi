@@ -1,7 +1,7 @@
 import { Br, Line, Text } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
 import HeaderSection from "../common/HeaderSection";
-import ProductsListSection from "../common/ProductsListSection";
+import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
 import { OrderType } from "@prisma/client";
@@ -26,12 +26,16 @@ export default function OrderReceipt<T extends AnyOrder>(
           <Text align="center">{pickupOrder.when}</Text>
         </>
       )}
+      
+      <Br />
       <Line />
+      <Br />
 
       {ProductsListSection(order.products, order.type as OrderType, order.discount)}
       <Line />
+      <Br />
 
-      {homeOrder && OrderInfoSection(order, quickPaymentOption)}
+      {homeOrder && OrderInfoSection(order as HomeOrder, quickPaymentOption)}
       <Line />
 
       {FooterSection(order.id)}
