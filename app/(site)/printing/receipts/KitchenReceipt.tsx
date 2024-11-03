@@ -1,52 +1,80 @@
-import { Br, Cut, Line, Text, TextSize } from "react-thermal-printer";
+import { Br, Cut, Line, Row, Text, TextSize } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
 import TimeSection from "../common/TimeSection";
-import ProductsListSection from "../common/ProductsListSection";
-import { OrderType } from "@prisma/client";
+import ProductsListSection from "../common/products-list/ProductsListSection";
+import { KitchenType, OrderType } from "@prisma/client";
 
-export default function KitchenReceipt<T extends AnyOrder>(order: T) {
+interface KitchenReceiptProps<T> {
+  order: T;
+}
+
+export default function KitchenReceipt<T extends AnyOrder>({ order }: KitchenReceiptProps<T>) {
   const size: { width: TextSize; height: TextSize } = { width: 2, height: 2 };
 
+  // Determine the type of order
   const tableOrder = (order as TableOrder).table_order ?? false;
   const homeOrder = (order as HomeOrder).home_order ?? false;
   const pickupOrder = (order as PickupOrder).pickup_order ?? false;
 
-  return (
+  // Separate products into hot and cold kitchens
+  const hotProducts = order.products.filter(
+    (product) => product.product.category?.kitchen === KitchenType.HOT
+  );
+  const coldProducts = order.products.filter(
+    (product) => product.product.category?.kitchen === KitchenType.COLD
+  );
+
+  // Function to render receipt for each kitchen type
+  const renderReceiptSection = (title: string, products: typeof order.products) => (
     <>
+      <Text align="center" bold size={size}>
+        {title}
+      </Text>
+      <Br />
+
       {TimeSection()}
 
       <Line />
+      <Br />
       {tableOrder && (
-        <>
-          <Text align="center" size={size}>
-            TAVOLO
-          </Text>
-          <Text align="center" bold size={size}>
-            {tableOrder.table}
-          </Text>
-        </>
+        <Row
+          left={
+            <Text bold size={size}>
+              ASPORTO
+            </Text>
+          }
+          right={
+            <Text bold size={size}>
+              {tableOrder.table}
+            </Text>
+          }
+        />
       )}
 
       {pickupOrder && (
-        <>
-          <Text align="center" size={size}>
-            ASPORTO
-          </Text>
-          <Text align="center" bold size={size}>
-            {pickupOrder.name}
-          </Text>
-        </>
+        <Row
+          left={
+            <Text bold size={size}>
+              ASPORTO
+            </Text>
+          }
+          right={
+            <Text bold size={size}>
+              {pickupOrder.name}
+            </Text>
+          }
+        />
       )}
 
       {homeOrder && (
-        <>
-          <Text align="center" size={size}>
-            DELIVERY
-          </Text>
-          <Text align="center" size={size}>
-            {homeOrder.address.doorbell}
-          </Text>
-        </>
+        <Row
+          left={
+            <Text bold size={size}>
+              DELIVERY
+            </Text>
+          }
+          right={<Text size={size}>{homeOrder.address.doorbell}</Text>}
+        />
       )}
 
       <Br />
@@ -63,9 +91,17 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       )}
 
       <Line />
-      {ProductsListSection(order.products, order.type as OrderType, 0, "kitchen", false)}
+      <Br />
+      {ProductsListSection(products, order.type as OrderType, 0, "kitchen")}
 
       <Cut />
+    </>
+  );
+
+  return (
+    <>
+      {coldProducts.length > 0 && renderReceiptSection("Cucina fredda", coldProducts)}
+      {hotProducts.length > 0 && renderReceiptSection("Cucina calda", hotProducts)}
     </>
   );
 }

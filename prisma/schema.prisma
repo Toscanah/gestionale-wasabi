@@ -166,7 +166,7 @@ model Category {
     id       Int                @id @default(autoincrement())
     category String
     active   Boolean            @default(true)
-    kitchen  KitchenType
+    kitchen  KitchenType        @default(COLD)
     products Product[]
     options  CategoryOnOption[]
 }
