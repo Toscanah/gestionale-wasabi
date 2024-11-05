@@ -9,7 +9,8 @@ import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaym
 
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,
-  quickPaymentOption: QuickPaymentOption
+  quickPaymentOption: QuickPaymentOption,
+  putInfo: boolean = true
 ) {
   const tableOrder = (order as TableOrder).table_order;
   const homeOrder = (order as HomeOrder).home_order;
@@ -26,17 +27,17 @@ export default function OrderReceipt<T extends AnyOrder>(
           <Text align="center">{pickupOrder.when}</Text>
         </>
       )}
-      
+
       <Br />
       <Line />
       <Br />
 
-      {ProductsListSection(order.products, order.type as OrderType, order.discount)}
+      {ProductsListSection(order.products, order.type as OrderType, order.discount, "customer")}
       <Line />
       <Br />
 
-      {homeOrder && OrderInfoSection(order as HomeOrder, quickPaymentOption)}
-      <Line />
+      {homeOrder && putInfo && OrderInfoSection(order as HomeOrder, quickPaymentOption)}
+      {homeOrder && putInfo && <Line />}
 
       {FooterSection(order.id)}
       <Br />

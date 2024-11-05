@@ -16,9 +16,7 @@ export default function ProductsListSection(
     orderType
   );
 
-  return recipient == "customer" ? (
-    <CustomerProducts aggregatedProducts={aggregatedProducts} discount={discount} />
-  ) : (
-    <KitchenProducts aggregatedProducts={aggregatedProducts} />
-  );
+  return recipient == "customer"
+    ? CustomerProducts({ aggregatedProducts, discount })
+    : KitchenProducts({ aggregatedProducts });
 }

@@ -2,11 +2,18 @@ import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
 
 import { CategoryWithOptions } from "../../types/CategoryWithOptions";
+import { KitchenType } from "@prisma/client";
 
 const columns: ColumnDef<CategoryWithOptions>[] = [
   TableColumn({
     accessorKey: "category",
     header: "Categoria",
+  }),
+
+  TableColumn({
+    accessorKey: "kitchen",
+    header: "Tipo di cucina",
+    cellContent: (row) => (row.original.kitchen == KitchenType.COLD ? "Fredda" : "Calda"),
   }),
 
   TableColumn<CategoryWithOptions>({

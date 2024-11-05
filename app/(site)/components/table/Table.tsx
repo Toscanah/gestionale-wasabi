@@ -13,6 +13,7 @@ import { Fragment } from "react";
 interface TableProps<T> {
   table: TanstackTable<T>;
   tableClassName?: string;
+  headerClassName?: string;
   rowClassName?: string;
   cellClassName?: (index: number) => string;
   CustomCell?: ({ cell, className }: { cell: Cell<T, any>; className: string }) => JSX.Element;
@@ -23,6 +24,7 @@ export default function Table<T>({
   table,
   tableClassName,
   rowClassName,
+  headerClassName,
   cellClassName,
   CustomCell,
   onRowClick,
@@ -31,12 +33,12 @@ export default function Table<T>({
     <div className={cn("rounded-md border w-full overflow-y-auto max-h-max", tableClassName)}>
       {table && (
         <DataTable>
-          <TableHeader className="sticky top-0 z-30 bg-background">
+          <TableHeader className={cn("sticky top-0 z-30 bg-background")}>
             {table.getRowModel().rows?.length > 0 &&
               table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className={headerClassName}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -45,7 +47,7 @@ export default function Table<T>({
                 </TableRow>
               ))}
           </TableHeader>
-          
+
           <TableBody>
             {table.getRowModel().rows?.length > 0 &&
               table.getRowModel().rows?.map((row) => {

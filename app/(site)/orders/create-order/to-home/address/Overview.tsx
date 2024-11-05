@@ -18,9 +18,12 @@ interface OverviewProps {
   setPhone: Dispatch<SetStateAction<string>>;
   phone: string;
   selectedOption: string;
+  doorbellSearch: string;
+  setDoorbellSearch: Dispatch<SetStateAction<string>>;
   setSelectedOption: Dispatch<SetStateAction<string>>;
   formRef: any;
   phoneRef: RefObject<any>;
+  doorbellSearchRef: RefObject<any>;
   handleKeyDown: (e: KeyboardEvent) => void;
   createHomeOrder: () => void;
 }
@@ -35,8 +38,11 @@ export default function Overview({
   setSelectedOption,
   formRef,
   phoneRef,
+  doorbellSearchRef,
   handleKeyDown,
   createHomeOrder,
+  setDoorbellSearch,
+  doorbellSearch,
 }: OverviewProps) {
   const [permAddresses, setPermAddresses] = useState<Address[]>([]);
   const [tempAddress, setTempAddress] = useState<Address | undefined>();
@@ -102,6 +108,20 @@ export default function Overview({
           type="number"
           onKeyDown={handleKeyDown}
           onChange={(e: any) => setPhone(e.target.value)}
+        />
+
+        <Label htmlFor="customer-name" className="text-xl">
+          Campanello del cliente
+        </Label>
+
+        <Input
+          id="customer-name"
+          ref={doorbellSearchRef}
+          className="w-full text-center text-3xl h-16"
+          defaultValue={doorbellSearch}
+          type="text"
+          onKeyDown={handleKeyDown}
+          onChange={(e: any) => setDoorbellSearch(e.target.value)}
         />
       </div>
 
@@ -196,7 +216,9 @@ export default function Overview({
           <Button
             className="text-4xl h-16 w-full"
             disabled={
-              !selectedAddress || selectedOption === "new" || (selectedAddress && tempAddress !== undefined)
+              !selectedAddress ||
+              selectedOption === "new" ||
+              (selectedAddress && tempAddress !== undefined)
             }
             onClick={() => createHomeOrder()}
           >

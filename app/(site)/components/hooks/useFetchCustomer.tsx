@@ -1,13 +1,23 @@
 import { Address, Customer } from "@prisma/client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import fetchRequest from "../../util/functions/fetchRequest";
+import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 
 export default function useFetchCustomer(
   setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>
 ) {
   const [phone, setPhone] = useState<string>("");
+  const [doorbellSearch, setDoorbellSearch] = useState<string>("");
+  const [possibleCustomers, setPossibleCustomers] = useState<CustomerWithDetails[]>([]);
   const [customer, setCustomer] = useState<Customer | undefined>(undefined);
   const [addresses, setAddresses] = useState<Address[]>([]);
+
+  const resetState = () => {
+    setAddresses([]);
+    setSelectedAddress(undefined);
+    setCustomer(undefined);
+    setPossibleCustomers([]);
+  };
 
   const fetchCustomer = () =>
     fetchRequest<Customer>("GET", "/api/customers", "getCustomerByPhone", {
@@ -29,21 +39,34 @@ export default function useFetchCustomer(
       setAddresses(fetchedAddresses.filter((address) => !address.temporary))
     );
 
+  const fetchCustomersByDoorbell = () =>
+    fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "fetchCustomersByDoorbell", {
+      doorbell: doorbellSearch,
+    }).then((customers) => setPossibleCustomers(customers));
+
   useEffect(() => {
     if (phone) {
-      setAddresses([]);
-      setSelectedAddress(undefined);
-      setCustomer(undefined);
+      resetState()
       fetchCustomer();
     }
   }, [phone]);
+
+  useEffect(() => {
+    if (doorbellSearch) {
+      resetState()
+      fetchCustomersByDoorbell();
+    }
+  }, [doorbellSearch]);
 
   return {
     customer,
     addresses,
     phone,
+    doorbellSearch,
+    possibleCustomers,
     setCustomer,
     setAddresses,
     setPhone,
+    setDoorbellSearch,
   };
 }

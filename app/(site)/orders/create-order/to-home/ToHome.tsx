@@ -9,6 +9,7 @@ import { useWasabiContext } from "../../../context/WasabiContext";
 import { OrderType } from "@prisma/client";
 import useFocusCycle from "@/app/(site)/components/hooks/useFocusCycle";
 import useFetchCustomer from "@/app/(site)/components/hooks/useFetchCustomer";
+import PossibleCustomers from "./possible-customers/PossibleCustomers";
 
 export default function ToHome({
   setOrder,
@@ -22,10 +23,19 @@ export default function ToHome({
   const [externalInfo, setExternalInfo] = useState<ExternalInfo>({ contactPhone: "", notes: "" });
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(undefined);
   const [selectedOption, setSelectedOption] = useState<string>("");
-  const { customer, addresses, phone, setCustomer, setAddresses, setPhone } =
-    useFetchCustomer(setSelectedAddress);
+  const {
+    customer,
+    addresses,
+    phone,
+    doorbellSearch,
+    setCustomer,
+    setAddresses,
+    setPhone,
+    setDoorbellSearch,
+    possibleCustomers,
+  } = useFetchCustomer(setSelectedAddress);
 
-  const createHomeOrder = () => {
+  const createHomeOrder = () =>
     fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {
       customer: customer,
       address: { ...selectedAddress },
@@ -35,9 +45,9 @@ export default function ToHome({
       setOrder(order);
       onOrdersUpdate(OrderType.TO_HOME);
     });
-  };
 
   const phoneRef = useRef<HTMLInputElement>(null);
+  const doorbellSearchRef = useRef<HTMLInputElement>(null);
   const streetRef = useRef<HTMLInputElement>(null);
   const bellRef = useRef<HTMLInputElement>(null);
   const floorRef = useRef<HTMLInputElement>(null);
@@ -53,6 +63,7 @@ export default function ToHome({
   useEffect(() => {
     addRefs(
       phoneRef.current,
+      doorbellSearchRef.current,
       streetRef.current,
       bellRef.current,
       floorRef.current,
@@ -67,6 +78,8 @@ export default function ToHome({
     );
   }, [phone]);
 
+  console.log(possibleCustomers);
+
   return (
     <div className="w-full flex gap-6 h-full">
       <Overview
@@ -79,6 +92,9 @@ export default function ToHome({
         setSelectedOption={setSelectedOption}
         formRef={formRef}
         phoneRef={phoneRef}
+        doorbellSearchRef={doorbellSearchRef}
+        doorbellSearch={doorbellSearch}
+        setDoorbellSearch={setDoorbellSearch}
         handleKeyDown={handleKeyDown}
         createHomeOrder={createHomeOrder}
       />
@@ -86,7 +102,7 @@ export default function ToHome({
       <Separator orientation="vertical" />
 
       <div className="w-[70%] h-full ">
-        {phone.length > 0 && (
+        {phone.length > 0 ? (
           <AddressForm
             setExternalInfo={setExternalInfo}
             externalInfo={externalInfo}
@@ -114,6 +130,11 @@ export default function ToHome({
             setAddresses={setAddresses}
             createHomeOrder={createHomeOrder}
           />
+        ) : (
+          doorbellSearch.length > 0 &&
+          possibleCustomers.length > 0 && (
+            <PossibleCustomers possibleCustomers={possibleCustomers} setPhone={setPhone} />
+          )
         )}
       </div>
     </div>

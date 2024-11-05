@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import SelectWrapper from "../../components/select/SelectWrapper";
 import { Button } from "@/components/ui/button";
@@ -65,11 +65,12 @@ export default function CategoryOptions({ field, options }: CategoryOptionsProps
         groups={[
           {
             items: allOptions
-              .filter(
-                (option) =>
-                  !currentOptions.some(
-                    (currentOption) => currentOption.option.id === option.option.id
-                  )
+              .filter((option) =>
+                currentOptions.length > 0
+                  ? !currentOptions.some(
+                      (currentOption) => currentOption.option.id === option.option.id
+                    )
+                  : false
               )
               .map((option) => ({
                 value: option.option.id.toString(),
