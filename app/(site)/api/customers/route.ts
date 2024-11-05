@@ -6,10 +6,11 @@ import createCustomer from "../../sql/customers/createCustomer";
 import toggleCustomer from "../../sql/customers/toggleCustomer";
 import getCustomersWithDetails from "../../sql/customers/getCustomersWithDetails";
 import updateAddressesOfCustomer from "../../sql/customers/updateAddressesOfCustomer";
-import updateCustomerFromOrder from "../../sql/customers/updateCustomerFromOrder"
+import updateCustomerFromOrder from "../../sql/customers/updateCustomerFromOrder";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import getCustomerWithDetails from "../../sql/customers/getCustomerWithDetails";
 import updateCustomerFromAdmin from "../../sql/customers/updateCustomerFromAdmin";
+import getCustomersByDoorbell from "../../sql/customers/getCustomersByDoorbell";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -23,6 +24,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         await getCustomerWithDetails(Number(params.get("customerId")) ?? -1)
       );
+    case "fetchCustomersByDoorbell":
+      return NextResponse.json(await getCustomersByDoorbell(params.get("doorbell") ?? ""));
   }
 }
 

@@ -3,9 +3,6 @@ import prisma from "../db";
 import getCustomersWithDetails from "./getCustomersWithDetails";
 
 export default async function updateAddressesOfCustomer(addresses: Address[], customerId: number) {
-  console.log(customerId)
-  console.log(addresses)
-
   for (const address of addresses) {
     if (address.id > 0) {
       // Update the existing address if it exists
@@ -33,7 +30,7 @@ export default async function updateAddressesOfCustomer(addresses: Address[], cu
           stair: address.stair,
           street_info: address.street_info,
           temporary: address.temporary,
-          doorbell: address.doorbell,
+          doorbell: address.doorbell.toLocaleLowerCase(),
           active: address.active,
         },
       });

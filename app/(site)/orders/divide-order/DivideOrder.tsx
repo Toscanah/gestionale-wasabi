@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
 import { PayingAction } from "../single-order/OrderTable";
 import { getProductPrice } from "../../util/functions/getProductPrice";
+import print from "../../printing/print";
+import OrderReceipt from "../../printing/receipts/OrderReceipt";
+import { Cut } from "react-thermal-printer";
 
 export default function DivideOrder({
   products,
@@ -87,15 +90,19 @@ export default function DivideOrder({
           }
         />
       </div>
-      
+
       <div className="flex gap-8 *:h-14 *:text-xl">
         <Button onClick={() => setPayingAction("none")} className="w-1/2">
           Indietro
         </Button>
         <Button
-          onClick={() => {
+          onClick={async () => {
             setPayingAction("payPart");
             setGoPay(true);
+            await print(
+              () => OrderReceipt({ ...order, products: rightProducts }, "none", false),
+              () => <Cut />
+            );
           }}
           className="w-1/2 bg-green-500 text-black"
           disabled={rightProducts.length <= 0}

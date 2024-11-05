@@ -50,9 +50,9 @@ export default function Home() {
       <div className="w-screen p-4 h-screen flex flex-col gap-4">
         <div className="w-full flex justify-between">
           <Button
-            onClick={async () => {
-              await print(() => KitchenReceipt(orders[OrderType.TABLE][0]));
-            }}
+            onClick={async () =>
+              await print(() => KitchenReceipt<TableOrder>(orders[OrderType.TABLE][0]))
+            }
           >
             test cucina
           </Button>

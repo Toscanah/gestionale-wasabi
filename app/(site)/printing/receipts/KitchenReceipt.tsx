@@ -8,13 +8,13 @@ interface KitchenReceiptProps<T> {
   order: T;
 }
 
-export default function KitchenReceipt<T extends AnyOrder>({ order }: KitchenReceiptProps<T>) {
+export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const size: { width: TextSize; height: TextSize } = { width: 2, height: 2 };
 
   // Determine the type of order
-  const tableOrder = (order as TableOrder).table_order ?? false;
-  const homeOrder = (order as HomeOrder).home_order ?? false;
-  const pickupOrder = (order as PickupOrder).pickup_order ?? false;
+  const tableOrder = (order as TableOrder)?.table_order ?? false;
+  const homeOrder = (order as HomeOrder)?.home_order ?? false;
+  const pickupOrder = (order as PickupOrder)?.pickup_order ?? false;
 
   // Separate products into hot and cold kitchens
   const hotProducts = order.products.filter(
@@ -23,6 +23,7 @@ export default function KitchenReceipt<T extends AnyOrder>({ order }: KitchenRec
   const coldProducts = order.products.filter(
     (product) => product.product.category?.kitchen === KitchenType.COLD
   );
+
 
   // Function to render receipt for each kitchen type
   const renderReceiptSection = (title: string, products: typeof order.products) => (
@@ -40,7 +41,7 @@ export default function KitchenReceipt<T extends AnyOrder>({ order }: KitchenRec
         <Row
           left={
             <Text bold size={size}>
-              ASPORTO
+              TAVOLO
             </Text>
           }
           right={
