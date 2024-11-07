@@ -11,6 +11,7 @@ import { AnyOrder } from "../../types/PrismaOrders";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import OrderTable from "../single-order/OrderTable";
+import { OrderProvider } from "../../context/OrderContext";
 
 export default function CreateOrder({
   type,
@@ -23,6 +24,7 @@ export default function CreateOrder({
 }) {
   const [order, setOrder] = useState<AnyOrder | undefined>(undefined);
   const [open, setOpen] = useState<boolean>(false);
+
   const components = new Map<OrderType, { name: string; component: ReactNode }>([
     [OrderType.TABLE, { name: "Ordine al tavolo", component: <Table setOrder={setOrder} /> }],
     [OrderType.TO_HOME, { name: "Ordine a domicilio", component: <ToHome setOrder={setOrder} /> }],
@@ -52,7 +54,9 @@ export default function CreateOrder({
       {!order ? (
         <div className="w-full h-full ">{components.get(type)?.component}</div>
       ) : (
-        <OrderTable order={order as AnyOrder} setOrder={setOrder} setOpen={setOpen} />
+        <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen} setOrder={setOrder}>
+          <OrderTable />
+        </OrderProvider>
       )}
     </DialogWrapper>
   );

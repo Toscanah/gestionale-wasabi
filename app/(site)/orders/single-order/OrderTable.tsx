@@ -1,11 +1,10 @@
 import getColumns from "./getColumns";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { OrderType } from "@prisma/client";
 import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
-import { AnyOrder } from "../../types/PrismaOrders";
 import OrderOverview from "./overview/OrderOverview";
 import OrderPayment from "../../payments/order/OrderPayment";
 import DivideOrder from "../divide-order/DivideOrder";
@@ -13,18 +12,15 @@ import { useProductManager } from "../../components/hooks/useProductManager";
 import { useOrderManager } from "../../components/hooks/useOrderManager";
 import RomanStyle from "../divide-order/RomanStyle";
 import DangerActions from "./overview/DangerActions";
+import { useOrderContext } from "../../context/OrderContext";
+import print from "../../printing/print";
+import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
+import fetchRequest from "../../util/functions/fetchRequest";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
-export default function OrderTable({
-  order,
-  setOpen,
-  setOrder,
-}: {
-  order: AnyOrder;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  setOrder?: Dispatch<SetStateAction<AnyOrder | undefined>>;
-}) {
+export default function OrderTable() {
+  const { order, setOrder, toggleDialog, dialogOpen } = useOrderContext();
   const { onOrdersUpdate } = useWasabiContext();
   const { updateOrder, cancelOrder } = useOrderManager(order, setOrder);
   const {
@@ -72,9 +68,28 @@ export default function OrderTable({
   useEffect(() => {
     if (payingAction === "paidFull") {
       onOrdersUpdate(order.type as OrderType);
-      setOpen(false);
+      toggleDialog(false);
     }
   }, [payingAction]);
+
+  useEffect(() => {
+    async function printKitchenRec() {
+      fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "updatePrintedAmounts", {
+        products,
+      }).then(async (remainingProducts) => {
+        onOrdersUpdate(order.type);
+        if (remainingProducts.length > 0) {
+          // await print(() =>
+          //   KitchenReceipt<typeof order>({ ...order, products: remainingProducts })
+          // );
+        }
+      });
+    }
+
+    if (!dialogOpen) {
+      printKitchenRec();
+    }
+  }, [dialogOpen]);
 
   return payingAction == "none" ? (
     <div className="w-full h-full flex gap-6 justify-between">
@@ -83,7 +98,7 @@ export default function OrderTable({
         <DangerActions
           cancelOrder={() => {
             cancelOrder();
-            setOpen(false);
+            toggleDialog(false);
           }}
           deleteProducts={deleteProducts}
           table={table}

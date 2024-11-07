@@ -12,6 +12,8 @@ import { getProductPrice } from "../../util/functions/getProductPrice";
 import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import { Cut } from "react-thermal-printer";
+import { useOrderContext } from "../../context/OrderContext";
+import { useOrderManager } from "../../components/hooks/useOrderManager";
 
 export default function DivideOrder({
   products,
@@ -24,6 +26,9 @@ export default function DivideOrder({
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
   setProducts: Dispatch<SetStateAction<ProductInOrderType[]>>;
 }) {
+  const { dialogOpen } = useOrderContext();
+  const { createSubOrder } = useOrderManager(order);
+
   const [goPay, setGoPay] = useState<boolean>(false);
   const [leftProducts, setLeftProducts] = useState<ProductInOrderType[]>(products);
   const [rightProducts, setRightProducts] = useState<ProductInOrderType[]>([]);
@@ -71,6 +76,12 @@ export default function DivideOrder({
 
     if (!isOrderFullyPaid) setGoPay(false);
   };
+
+  useEffect(() => {
+    if (!dialogOpen && rightProducts.length > 0) {
+      createSubOrder(order, rightProducts);
+    }
+  }, [dialogOpen]);
 
   return !goPay ? (
     <div className="w-full h-full flex flex-col gap-8">

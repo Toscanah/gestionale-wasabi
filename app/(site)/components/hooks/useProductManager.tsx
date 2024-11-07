@@ -77,7 +77,7 @@ export function useProductManager(
     const selectedProductIds = selectedRows.map((row) => row.original.id);
 
     if (selectedProductIds.length > 0) {
-      fetchRequest("DELETE", "/api/products/", "deleteProductFromOrder", {
+      fetchRequest("DELETE", "/api/products/", "deleteProductsFromOrder", {
         productIds: selectedProductIds,
         orderId: order.id,
         cooked,

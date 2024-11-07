@@ -4,6 +4,7 @@ import OrderTable from "./OrderTable";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { AnyOrder } from "../../types/PrismaOrders";
 import { useState } from "react";
+import { OrderProvider } from "../../context/OrderContext";
 
 export default function Order({
   cell,
@@ -26,7 +27,9 @@ export default function Order({
         </TableCell>
       }
     >
-      <OrderTable order={cell.row.original} setOpen={setOpen} />
+      <OrderProvider order={cell.row.original} dialogOpen={open} setDialogOpen={setOpen}>
+        <OrderTable />
+      </OrderProvider>
     </DialogWrapper>
   );
 }

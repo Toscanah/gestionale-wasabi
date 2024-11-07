@@ -25,8 +25,13 @@ export function useOrderManager(
     });
   };
 
-  const cancelOrder = () => 
+  const cancelOrder = () =>
     fetchRequest("POST", "/api/orders/", "cancelOrder", { orderId: order.id }).then(() =>
+      onOrdersUpdate(order.type as OrderType)
+    );
+
+  const createSubOrder = (parentOrder: AnyOrder, products: ProductInOrderType[]) =>
+    fetchRequest("POST", "/api/orders/", "createSubOrder", { products, parentOrder }).then(() =>
       onOrdersUpdate(order.type as OrderType)
     );
 
@@ -36,5 +41,5 @@ export function useOrderManager(
       0
     );
 
-  return { updateOrder, cancelOrder };
+  return { updateOrder, cancelOrder, createSubOrder };
 }

@@ -43,6 +43,7 @@ model Order {
     updated_at   DateTime         @default(now()) @updatedAt
     total        Float            @default(0)
     discount     Float            @default(0)
+    suborderOf   Int?
     state        OrderState       @default(ACTIVE)
     type         OrderType
     products     ProductInOrder[]
@@ -148,18 +149,19 @@ model Product {
 }
 
 model ProductInOrder {
-    id           Int                    @id @default(autoincrement())
-    product_id   Int
-    order_id     Int
-    quantity     Int                    @default(0)
-    total        Float                  @default(0)
-    isPaidFully  Boolean                @default(false)
-    paidQuantity Int                    @default(0)
-    riceQuantity Float                  @default(0)
-    state        ProductInOrderState    @default(IN_ORDER)
-    options      OptionInProductOrder[]
-    product      Product                @relation(fields: [product_id], references: [id])
-    order        Order                  @relation(fields: [order_id], references: [id])
+    id            Int                    @id @default(autoincrement())
+    product_id    Int
+    order_id      Int
+    quantity      Int                    @default(0)
+    total         Float                  @default(0)
+    isPaidFully   Boolean                @default(false)
+    paidQuantity  Int                    @default(0)
+    riceQuantity  Float                  @default(0)
+    printedAmount Int                    @default(0)
+    state         ProductInOrderState    @default(IN_ORDER)
+    options       OptionInProductOrder[]
+    product       Product                @relation(fields: [product_id], references: [id])
+    order         Order                  @relation(fields: [order_id], references: [id])
 }
 
 model Category {

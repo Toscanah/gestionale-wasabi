@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import addProductToOrder from "../../sql/products/addProductToOrder";
 import addProductsToOrder from "../../sql/products/addProductsToOrder";
 import updateProductInOrder from "../../sql/products/updateProductInOrder";
-import deleteProductFromOrder from "../../sql/products/deleteProductFromOrder";
+import deleteProductsFromOrder from "../../sql/products/deleteProductsFromOrder";
 import getProducts from "../../sql/products/getProducts";
 import getRequestBody from "../../util/functions/getRequestBody";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
@@ -10,6 +10,7 @@ import updateProduct from "../../sql/products/updateProduct";
 import updateProductOptionsInOrder from "../../sql/products/updateProductOptionsInOrder";
 import createNewProduct from "../../sql/products/createNewProduct";
 import toggleProduct from "../../sql/products/toggleProduct";
+import updatePrintedAmounts from "../../sql/products/updatePrintedAmounts";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
         await updateProductInOrder(content?.orderId, content?.key, content?.value, content?.product)
       );
     case "addProductsToOrder":
-      return NextResponse.json(await addProductsToOrder(content?.orderId, content?.products));;
+      return NextResponse.json(await addProductsToOrder(content?.orderId, content?.products));
 
     case "updateProductOptionsInOrder":
       return NextResponse.json(
@@ -45,6 +46,8 @@ export async function POST(request: NextRequest) {
       );
     case "toggleProduct":
       return NextResponse.json(await toggleProduct(content?.id));
+    case "updatePrintedAmounts":
+      return NextResponse.json(await updatePrintedAmounts(content?.products));
   }
 }
 
@@ -52,7 +55,9 @@ export async function DELETE(request: NextRequest) {
   const { action, content } = await getRequestBody(request);
 
   switch (action) {
-    case "deleteProductFromOrder":
-      return NextResponse.json(await deleteProductFromOrder(content?.productIds, content?.orderId, content?.cooked));
+    case "deleteProductsFromOrder":
+      return NextResponse.json(
+        await deleteProductsFromOrder(content?.productIds, content?.orderId, content?.cooked)
+      );
   }
 }

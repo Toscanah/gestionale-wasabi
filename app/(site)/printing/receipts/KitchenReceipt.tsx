@@ -24,7 +24,6 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
     (product) => product.product.category?.kitchen === KitchenType.COLD
   );
 
-
   // Function to render receipt for each kitchen type
   const renderReceiptSection = (title: string, products: typeof order.products) => (
     <>
