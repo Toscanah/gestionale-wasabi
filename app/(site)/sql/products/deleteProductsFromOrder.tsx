@@ -1,6 +1,6 @@
 import prisma from "../db";
 
-export default async function deleteProductFromOrder(
+export default async function deleteProductsFromOrder(
   productIds: number[],
   orderId: number,
   cooked: boolean = false
