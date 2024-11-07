@@ -126,10 +126,10 @@ export default function getColumns(
                   <Checkbox
                     defaultChecked={selectedOptions.includes(option.option.id)}
                     onCheckedChange={(e) => selectOption(row.original.id, option.option.id)}
-                    id={`option-${option.option.id}`}
+                    id={`option-${option.option.id}-${row.index}`}
                   />
                   <Label
-                    htmlFor={`option-${option.option.id}`}
+                    htmlFor={`option-${option.option.id}-${row.index}`}
                     className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     {option.option.option_name}
