@@ -46,12 +46,20 @@ export default function KitchenProducts({
       {groupedProducts["no_options"]?.map((product, index) => (
         <Row
           key={index}
-          left={formatReceiptText(
-            `${product.product.code.toUpperCase()} ${product.product.desc}`,
-            22,
-            String(product.quantity).length > 1 ? 0 : 1
-          )}
-          right={formatReceiptText(String(product.quantity), 2, 5).trim()}
+          left={
+            <Text bold size={size}>
+              {formatReceiptText(
+                `${product.product.code.toUpperCase()} ${product.product.desc}`,
+                23,
+                String(product.quantity).length > 1 ? 0 : 1
+              )}
+            </Text>
+          }
+          right={
+            <Text bold size={size} align="right">
+              {String(product.quantity).trim()}
+            </Text>
+          }
         />
       ))}
 
@@ -73,7 +81,9 @@ export default function KitchenProducts({
               </Text>
             ))}
 
-            {" - " + formatReceiptText(optionsKey, 24)}
+            <Text bold size={size}>
+              {" - " + formatReceiptText(optionsKey, 24)}
+            </Text>
             {idx < arr.length - 1 && <Line character="*" />}
           </Fragment>
         ))}
