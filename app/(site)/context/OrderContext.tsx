@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
+import { createContext, useContext, ReactNode, Dispatch, SetStateAction } from "react";
 import { AnyOrder } from "../types/PrismaOrders";
 
 type OrderContextType = {

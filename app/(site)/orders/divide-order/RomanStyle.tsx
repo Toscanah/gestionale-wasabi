@@ -66,7 +66,7 @@ export default function RomanStyle({
           }}
           type="full"
           handleBackButton={handleBackButton}
-          handleOrderPaid={handleOrderPaymentComplete}
+          onOrderPaid={handleOrderPaymentComplete}
         />
       )}
     </div>

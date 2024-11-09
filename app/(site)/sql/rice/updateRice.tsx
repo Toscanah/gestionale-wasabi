@@ -2,8 +2,6 @@ import { Rice } from "@prisma/client";
 import prisma from "../db";
 
 export default async function updateRice(rice: Rice) {
-  console.log(rice)
-
   return await prisma.rice.update({
     data: {
       id: 1,

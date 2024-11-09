@@ -21,7 +21,7 @@ export default function CustomersDashboard() {
   useEffect(() => {
     fetchRequest<CustomerWithDetails[]>("GET", "/api/customers/", "getCustomersWithDetails").then(
       (customers) => {
-        console.log(customers);
+  
         setCustomers(customers);
         setLoading(false);
       }

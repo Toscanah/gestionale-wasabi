@@ -6,39 +6,19 @@ import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { getProductPrice } from "../../util/functions/getProductPrice";
-import formatAmount from "../../util/functions/formatAmount";
 import { PaymentType } from "@prisma/client";
 import createDummyProduct from "../../util/functions/createDummyProduct";
-
-export type Payment = {
-  paymentAmounts: {
-    [PaymentType.CASH]?: number;
-    [PaymentType.CARD]?: number;
-    [PaymentType.VOUCH]?: number;
-    [PaymentType.CREDIT]?: number;
-  };
-  paidAmount: number;
-  remainingAmount: number;
-};
+import { Payment } from "../../context/OrderPaymentContext";
 
 export default function useOrderPayment(
   order: AnyOrder,
   type: "full" | "partial",
-  handleOrderPaid: () => void,
+  onOrderPaid: () => void,
+  payment: Payment,
+  setPayment: Dispatch<SetStateAction<Payment>>,
   setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>
 ) {
   const { onOrdersUpdate } = useWasabiContext();
-  const [payment, setPayment] = useState<Payment>({
-    paymentAmounts: {
-      [PaymentType.CASH]: undefined,
-      [PaymentType.CARD]: undefined,
-      [PaymentType.VOUCH]: undefined,
-      [PaymentType.CREDIT]: undefined,
-    },
-    paidAmount: 0,
-    remainingAmount: applyDiscount(order.total, order.discount) ?? 0,
-  });
-  const [typedAmount, setTypedAmount] = useState<string>(formatAmount(payment.remainingAmount));
 
   useEffect(() => {
     const totalPaid = Object.values(payment.paymentAmounts).reduce(
@@ -76,10 +56,10 @@ export default function useOrderPayment(
       payments,
       productsToPay,
     }).then(() => {
-      handleOrderPaid();
+      onOrderPaid();
 
-      if (type === "partial") {
-        setProducts?.((prevProducts) => {
+      if (type === "partial" && setProducts) {
+        setProducts((prevProducts) => {
           const productsToPayMap = new Map(
             productsToPay.map((product) => [product.id, product.quantity])
           );
@@ -114,5 +94,5 @@ export default function useOrderPayment(
     });
   };
 
-  return { handlePaymentChange, payment, payOrder, typedAmount, setTypedAmount };
+  return { handlePaymentChange, payOrder };
 }

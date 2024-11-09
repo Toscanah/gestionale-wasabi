@@ -1,14 +1,17 @@
 import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import formatReceiptText from "@/app/(site)/util/functions/formatReceiptText";
 import { Fragment } from "react";
-import { Line, Row, Text, TextSize } from "react-thermal-printer";
+import { Br, Line, Row, Text, TextSize } from "react-thermal-printer";
 
 export default function KitchenProducts({
   aggregatedProducts,
 }: {
   aggregatedProducts: ProductInOrderType[];
 }) {
-  const size: { width: TextSize; height: TextSize } = { width: 2, height: 2 };
+  const size = (w: TextSize, h: TextSize): { width: TextSize; height: TextSize } => ({
+    width: w,
+    height: h,
+  });
   const groupedProducts: { [key: string]: ProductInOrderType[] } = {};
 
   aggregatedProducts.forEach((product) => {
@@ -16,7 +19,7 @@ export default function KitchenProducts({
       product.options.length === 0
         ? "no_options"
         : product.options
-            .map(({ option }) => option.option_name.slice(0, 6))
+            .map(({ option }) => option.option_name)
             .sort()
             .join(", ");
 
@@ -47,7 +50,7 @@ export default function KitchenProducts({
         <Row
           key={index}
           left={
-            <Text bold size={size}>
+            <Text bold size={size(2, 2)}>
               {formatReceiptText(
                 `${product.product.code.toUpperCase()} ${product.product.desc}`,
                 23,
@@ -56,7 +59,7 @@ export default function KitchenProducts({
             </Text>
           }
           right={
-            <Text bold size={size} align="right">
+            <Text bold size={size(2, 2)} align="right">
               {String(product.quantity).trim()}
             </Text>
           }
@@ -70,7 +73,7 @@ export default function KitchenProducts({
         .map(([optionsKey, products], idx, arr) => (
           <Fragment key={idx}>
             {products.map((product, index) => (
-              <Text bold size={size} key={`${product.product.code}-${index}`}>
+              <Text bold size={size(2, 2)} key={`${product.product.code}-${index}`}>
                 {formatReceiptText(
                   `${product.product.code.toUpperCase()} ${product.product.desc}`,
                   22,
@@ -81,10 +84,11 @@ export default function KitchenProducts({
               </Text>
             ))}
 
-            <Text bold size={size}>
+            <Text bold size={size(1, 1)}>
               {" - " + formatReceiptText(optionsKey, 24)}
             </Text>
-            {idx < arr.length - 1 && <Line character="*" />}
+
+            {idx < arr.length - 1 && arr.length > 1 && <Line character="=" />}
           </Fragment>
         ))}
     </>

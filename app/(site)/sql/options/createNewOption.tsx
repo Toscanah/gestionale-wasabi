@@ -2,8 +2,6 @@ import { Option } from "@prisma/client";
 import prisma from "../db";
 
 export default async function createNewOption(newOption: Option) {
-  console.log(newOption)
-
   return await prisma.option.create({
     data: {
       active: newOption.active,

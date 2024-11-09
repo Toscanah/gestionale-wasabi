@@ -78,7 +78,7 @@ export default function DivideOrder({
   };
 
   useEffect(() => {
-    if (!dialogOpen && rightProducts.length > 0) {
+    if (!dialogOpen && rightProducts.length > 0 && !goPay) {
       createSubOrder(order, rightProducts);
     }
   }, [dialogOpen]);
@@ -110,10 +110,7 @@ export default function DivideOrder({
           onClick={async () => {
             setPayingAction("payPart");
             setGoPay(true);
-            await print(
-              () => OrderReceipt({ ...order, products: rightProducts }, "none", false),
-              () => <Cut />
-            );
+            await print(() => OrderReceipt({ ...order, products: rightProducts }, "none", false));
           }}
           className="w-1/2 bg-green-500 text-black"
           disabled={rightProducts.length <= 0}
@@ -135,7 +132,7 @@ export default function DivideOrder({
         ),
       }}
       handleBackButton={() => setGoPay(false)}
-      handleOrderPaid={handleOrderPaid}
+      onOrderPaid={handleOrderPaid}
     />
   );
 }

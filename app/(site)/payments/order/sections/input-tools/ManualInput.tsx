@@ -1,14 +1,12 @@
+import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Backspace } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
-interface ManualInputProps {
-  typedAmount: string;
-  setTypedAmount: Dispatch<SetStateAction<string>>;
-}
+export default function ManualInput() {
+  const { typedAmount, setTypedAmount } = useOrderPaymentContext();
 
-export default function ManualInput({ typedAmount, setTypedAmount }: ManualInputProps) {
   const calcRef = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = (value: string) => {

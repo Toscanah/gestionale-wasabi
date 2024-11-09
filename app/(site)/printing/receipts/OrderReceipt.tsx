@@ -1,4 +1,4 @@
-import { Br, Line, Text } from "react-thermal-printer";
+import { Br, Cut, Line, Text } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
@@ -32,15 +32,19 @@ export default function OrderReceipt<T extends AnyOrder>(
       <Line />
       <Br />
 
-      {ProductsListSection(order.products, order.type as OrderType, order.discount, "customer")}
+      {ProductsListSection(order.products, order.type, order.discount, "customer")}
       <Line />
       <Br />
 
-      {homeOrder && putInfo && OrderInfoSection(order as HomeOrder, quickPaymentOption)}
-      {homeOrder && putInfo && <Line />}
+      {homeOrder && putInfo && (
+        <>
+          {OrderInfoSection(order as HomeOrder, quickPaymentOption)}
+          <Line />
+        </>
+      )}
 
       {FooterSection(order.id)}
-      <Br />
+      {order.type !== OrderType.TO_HOME && <Cut />}
     </>
   );
 }

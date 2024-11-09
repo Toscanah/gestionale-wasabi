@@ -1,19 +1,13 @@
 import { Separator } from "@/components/ui/separator";
-import { Payment } from "../../components/hooks/useOrderPayment";
-import getPaymentName from "../../util/functions/getPaymentName";
-import { PaymentMethod } from "./OrderPayment";
-import formatAmount from "../../util/functions/formatAmount";
+import getPaymentName from "../../../util/functions/getPaymentName";
+import formatAmount from "../../../util/functions/formatAmount";
+import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
+import { PaymentType } from "@prisma/client";
 
-export default function PaymentSummary({
-  payment,
-  paymentMethods,
-  totalToPay,
-}: {
-  payment: Payment;
-  paymentMethods: PaymentMethod[];
-  totalToPay: number;
-}) {
-  const paidPayments = paymentMethods.filter(({ type }) => {
+export default function PaymentSummary({ totalToPay }: { totalToPay: number }) {
+  const { payment } = useOrderPaymentContext();
+
+  const paidPayments = Object.values(PaymentType).filter((type) => {
     const amount = payment.paymentAmounts[type];
     return amount !== undefined && amount > 0;
   });
@@ -26,7 +20,7 @@ export default function PaymentSummary({
 
       {paidPayments.length > 0 && (
         <ul className="list-disc list-inside">
-          {paidPayments.map(({ type }) => (
+          {Object.values(PaymentType).map((type) => (
             <li key={type} className="text-3xl">
               Euro pagati con {getPaymentName(type)}: € {formatAmount(payment.paymentAmounts[type])}
             </li>

@@ -78,8 +78,6 @@ export default function ToHome({
     );
   }, [phone]);
 
-  console.log(possibleCustomers);
-
   return (
     <div className="w-full flex gap-6 h-full">
       <Overview

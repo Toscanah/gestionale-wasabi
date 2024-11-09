@@ -10,49 +10,86 @@ export default function OrderInfoSection(
     <>
       {order.home_order?.customer.preferences && (
         <>
-          <Line />
+          <Text bold inline>
+            Preferenze:{" "}
+          </Text>
+          <Text>{order.home_order.customer.preferences.toUpperCase()}</Text>
           <Br />
-          <Text bold>Pref: {order.home_order?.customer.preferences.toUpperCase()}</Text>
           <Line />
           <Br />
         </>
       )}
 
-      <Text bold>Tel: {order.home_order?.customer.phone?.phone}</Text>
+      <Text bold inline>
+        Tel:{" "}
+      </Text>
+      <Text inline>{order.home_order?.customer.phone?.phone}</Text>
+      <Br />
 
-      <Text bold>
+      <Text bold inline>
         Via:{" "}
+      </Text>
+      <Text inline>
         {(order.home_order?.address.street + " " + order.home_order?.address.civic).toUpperCase()}
       </Text>
+      <Br />
 
       {order.home_order?.address.street_info && (
-        <Text bold>Inf: {order.home_order?.address.street_info.toUpperCase()}</Text>
+        <>
+          <Text bold inline>
+            Informazioni strad:{" "}
+          </Text>
+          <Text inline>{order.home_order.address.street_info.toUpperCase()}</Text>
+          <Br />
+        </>
       )}
 
-      <Text bold>Camp: {order.home_order?.address.doorbell.toUpperCase()}</Text>
+      <Text bold inline>
+        Campanello:{" "}
+      </Text>
+      <Text inline>{order.home_order?.address.doorbell.toUpperCase()}</Text>
+      <Br />
 
       {order.home_order?.address.floor && (
-        <Text bold>
-          {order.home_order?.address.floor ? "Piano: " + order.home_order.address.floor : ""}
-        </Text>
+        <>
+          <Text bold inline>
+            Piano:{" "}
+          </Text>
+          <Text inline>{order.home_order.address.floor}</Text>
+          <Br />
+        </>
       )}
 
       {order.home_order?.address.stair && (
-        <Text bold>
-          {order.home_order?.address.stair ? "Scala: " + order.home_order.address.stair : ""}
-        </Text>
+        <>
+          <Text bold inline>
+            {order.home_order?.address.floor && ", "}Scala:{" "}
+          </Text>
+          <Text inline>{order.home_order.address.stair}</Text>
+          <Br />
+        </>
       )}
 
       {quickPaymentOption !== "none" && (
-        <Text bold>Pagam: {quickPaymentOption == "cash" ? "CONTANTI" : "CARTA"}</Text>
+        <>
+          <Text bold inline>
+            Pagamento:{" "}
+          </Text>
+          <Text inline>{quickPaymentOption === "cash" ? "CONTANTI" : "CARTA"}</Text>
+          <Br />
+        </>
       )}
 
-      <Text bold>
+      <Text bold inline>
         Quando:{" "}
+      </Text>
+      <Text>
         {order.home_order?.when !== "immediate"
-          ? '"' + order.home_order?.when + '"'
+          ? `"${order.home_order?.when}"`
           : '"PRIMA POSSIBILE"'}
       </Text>
+
+      <Br />
     </>
   );
 }

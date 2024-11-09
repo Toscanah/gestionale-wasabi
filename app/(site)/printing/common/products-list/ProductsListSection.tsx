@@ -16,8 +16,6 @@ export default function ProductsListSection(
     orderType
   );
 
-  console.log(aggregatedProducts);
-
   return recipient == "customer"
     ? CustomerProducts({ aggregatedProducts, discount })
     : KitchenProducts({ aggregatedProducts });
