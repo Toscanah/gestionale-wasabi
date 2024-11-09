@@ -25,8 +25,6 @@ export default async function getLastAddressOfCustomer(phone: string) {
     },
   });
 
-  //console.log(lastOrderWithAddress)
-
   if (lastOrderWithAddress && lastOrderWithAddress.home_order) {
     return lastOrderWithAddress;
   }

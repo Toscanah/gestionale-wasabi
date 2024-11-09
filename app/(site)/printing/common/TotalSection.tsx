@@ -3,14 +3,14 @@ import { ProductInOrderType } from "../../types/ProductInOrderType";
 import applyDiscount from "../../util/functions/applyDiscount";
 import formatAmount from "../../util/functions/formatAmount";
 
-export default function TotalSection(products: ProductInOrderType[], discount: number = 0) {
+export default function TotalSection(products: ProductInOrderType[], discount: number = 0, bold: boolean = false) {
   const size: { width: TextSize; height: TextSize } = { width: 1, height: 1 };
 
   return (
     <>
       <Br />
 
-      <Text size={size} align="center">
+      <Text size={size} align="center" bold={bold}>
         {`TOTALE: ${formatAmount(
           applyDiscount(
             products.reduce((acc, product) => acc + product.total, 0),

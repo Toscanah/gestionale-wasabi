@@ -18,13 +18,14 @@ export default function useGridFocus(defaultFocusedInput: FocussableInput, maxCo
     const inputToMove = inputRefs.get(refKey);
 
     if (inputToMove) {
-      inputToMove.focus();
       inputToMove.select();
+      inputToMove.focus();
     }
   };
 
   const addInputRef = (ref: HTMLInputElement | null, newInput: FocussableInput) => {
     const refKey = `${newInput.rowIndex}-${newInput.colIndex}`;
+
     if (ref) {
       inputRefs.set(refKey, ref);
     }

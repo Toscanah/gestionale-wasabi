@@ -1,11 +1,11 @@
 import { Br, Cut, Line } from "react-thermal-printer";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder, HomeOrder } from "../../types/PrismaOrders";
 import OrderInfoSection from "../common/OrderInfoSection";
 import TimeSection from "../common/TimeSection";
 import TotalSection from "../common/TotalSection";
 
-export default function RiderReceipt(order: AnyOrder, quickPaymentOption: QuickPaymentOption) {
+export default function RiderReceipt(order: HomeOrder, quickPaymentOption: QuickPaymentOption) {
   return (
     <>
       <Cut />
@@ -13,10 +13,11 @@ export default function RiderReceipt(order: AnyOrder, quickPaymentOption: QuickP
       {TimeSection()}
 
       <Line />
+      <Br />
       {OrderInfoSection(order, quickPaymentOption)}
 
       <Line />
-      {TotalSection(order.products)}
+      {TotalSection(order.products, 0, true)}
 
       <Cut />
     </>

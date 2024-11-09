@@ -1,4 +1,4 @@
-import { AnyOrder } from "@/app/(site)/types/PrismaOrders";
+import { AnyOrder, HomeOrder } from "@/app/(site)/types/PrismaOrders";
 import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
@@ -8,6 +8,7 @@ import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
 import { QuickPaymentOption } from "./QuickPaymentOptions";
 import RiderReceipt from "../../../printing/receipts/RiderReceipt";
 import { OrderType } from "@prisma/client";
+import { Cut } from "react-thermal-printer";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
@@ -28,7 +29,8 @@ export default function NormalActions({
           onClick={() => setAction("payPart")}
           disabled={
             order.products.length === 0 ||
-            (order.products.length === 1 && order.products[0].quantity <= 1)
+            (order.products.length === 1 && order.products[0].quantity <= 1) ||
+            order.type == OrderType.TO_HOME
           }
         >
           Dividi
@@ -36,7 +38,7 @@ export default function NormalActions({
         <Button
           onClick={() => setAction("payRoman")}
           className="w-full text-3xl h-12"
-          disabled={order.products.length <= 0}
+          disabled={order.products.length <= 0 || order.type == OrderType.TO_HOME}
         >
           Romana
         </Button>
@@ -46,10 +48,18 @@ export default function NormalActions({
         className="w-full text-3xl h-12"
         disabled={order.products.length === 0}
         onClick={async () => {
-          const content = [() => OrderReceipt(order, quickPaymentOption)];
+          const content = [
+            () =>
+              OrderReceipt<typeof order>(
+                order,
+                quickPaymentOption,
+                order.type == OrderType.TO_HOME
+              ),
+          ];
 
-          if (order.type !== OrderType.TABLE)
-            content.push(() => RiderReceipt(order, quickPaymentOption));
+          // if (order.type == OrderType.TO_HOME) {
+          //   content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
+          // }
 
           await print(...content);
         }}
@@ -59,10 +69,16 @@ export default function NormalActions({
 
       <Button
         className="w-full text-3xl h-12"
-        onClick={() => setAction("payFull")}
+        onClick={async () => {
+          setAction("payFull");
+
+          if (order.type !== OrderType.TO_HOME) {
+            await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false));
+          }
+        }}
         disabled={applyDiscount(order.total, order.discount) == 0}
       >
-        PAGA
+        {order.type == OrderType.TO_HOME ? "INCASSA" : "PAGA"}
       </Button>
     </>
   );

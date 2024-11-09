@@ -11,12 +11,10 @@ interface KitchenReceiptProps<T> {
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const size: { width: TextSize; height: TextSize } = { width: 2, height: 2 };
 
-  // Determine the type of order
   const tableOrder = (order as TableOrder)?.table_order ?? false;
   const homeOrder = (order as HomeOrder)?.home_order ?? false;
   const pickupOrder = (order as PickupOrder)?.pickup_order ?? false;
 
-  // Separate products into hot and cold kitchens
   const hotProducts = order.products.filter(
     (product) => product.product.category?.kitchen === KitchenType.HOT
   );
@@ -24,7 +22,6 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
     (product) => product.product.category?.kitchen === KitchenType.COLD
   );
 
-  // Function to render receipt for each kitchen type
   const renderReceiptSection = (title: string, products: typeof order.products) => (
     <>
       <Text align="center" bold size={size}>
@@ -35,49 +32,24 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {TimeSection()}
 
       <Line />
-      <Br />
       {tableOrder && (
-        <Row
-          left={
-            <Text bold size={size}>
-              TAVOLO
-            </Text>
-          }
-          right={
-            <Text bold size={size}>
-              {tableOrder.table}
-            </Text>
-          }
-        />
+        <Text align="center" bold size={size}>
+          TAVOLO {tableOrder.table}
+        </Text>
       )}
 
       {pickupOrder && (
-        <Row
-          left={
-            <Text bold size={size}>
-              ASPORTO
-            </Text>
-          }
-          right={
-            <Text bold size={size}>
-              {pickupOrder.name}
-            </Text>
-          }
-        />
+        <Text align="center" bold size={size}>
+          ASPORTO {pickupOrder.name}
+        </Text>
       )}
 
       {homeOrder && (
-        <Row
-          left={
-            <Text bold size={size}>
-              DELIVERY
-            </Text>
-          }
-          right={<Text size={size}>{homeOrder.address.doorbell}</Text>}
-        />
+        <Text align="center" bold size={size}>
+          DELIVERY {homeOrder.address.doorbell}
+        </Text>
       )}
 
-      <Br />
       {pickupOrder && (
         <Text align="center" bold size={size}>
           {pickupOrder.when}
@@ -86,7 +58,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       {homeOrder && (
         <Text align="center" size={size}>
-          Orario {homeOrder.when}
+          Orario {homeOrder.when == "immediate" ? "Prima possibile" : homeOrder.when}
         </Text>
       )}
 

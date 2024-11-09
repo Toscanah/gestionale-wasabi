@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Plus } from "@phosphor-icons/react";
 import { OrderType } from "@prisma/client";
 import Table from "./table/Table";
@@ -31,12 +31,15 @@ export default function CreateOrder({
     [OrderType.PICK_UP, { name: "Ordine per asporto", component: <PickUp setOrder={setOrder} /> }],
   ]);
 
+  useEffect(() => {
+    setOrder(undefined);
+  }, [open]);
+
   return (
     <DialogWrapper
       open={open}
       hasHeader={false}
       onOpenChange={() => {
-        setOrder(undefined);
         setOpen(!open);
       }}
       contentClassName={cn(
@@ -52,7 +55,7 @@ export default function CreateOrder({
       }
     >
       {!order ? (
-        <div className="w-full h-full ">{components.get(type)?.component}</div>
+        <div className="w-full h-full">{components.get(type)?.component}</div>
       ) : (
         <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen} setOrder={setOrder}>
           <OrderTable />

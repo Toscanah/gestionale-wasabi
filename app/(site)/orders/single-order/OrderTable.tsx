@@ -20,7 +20,9 @@ import fetchRequest from "../../util/functions/fetchRequest";
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
 export default function OrderTable() {
+  
   const { order, setOrder, toggleDialog, dialogOpen } = useOrderContext();
+  
   const { onOrdersUpdate } = useWasabiContext();
   const { updateOrder, cancelOrder } = useOrderManager(order, setOrder);
   const {
@@ -73,20 +75,25 @@ export default function OrderTable() {
   }, [payingAction]);
 
   useEffect(() => {
+    console.log("Dialogo: ", dialogOpen);
+    
     async function printKitchenRec() {
       fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "updatePrintedAmounts", {
         products,
       }).then(async (remainingProducts) => {
         onOrdersUpdate(order.type);
+
         if (remainingProducts.length > 0) {
-          // await print(() =>
-          //   KitchenReceipt<typeof order>({ ...order, products: remainingProducts })
-          // );
+          await print(() =>
+            KitchenReceipt<typeof order>({ ...order, products: remainingProducts })
+          );
         }
       });
     }
 
-    if (!dialogOpen) {
+    
+
+    if (!dialogOpen && !order.suborderOf) {
       printKitchenRec();
     }
   }, [dialogOpen]);
@@ -111,7 +118,7 @@ export default function OrderTable() {
     <OrderPayment
       order={order}
       type="full"
-      handleOrderPaid={() => setPayingAction("paidFull")}
+      onOrderPaid={() => setPayingAction("paidFull")}
       handleBackButton={() => setPayingAction("none")}
       setProducts={setProducts}
     />
