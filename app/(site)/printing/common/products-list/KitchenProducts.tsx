@@ -50,37 +50,38 @@ export default function KitchenProducts({
         <Row
           key={index}
           left={
-            <Text bold size={size(2, 2)}>
+            /**trasformare questo in un singolo Text */
+            <Text bold size={size(1, 1)}>
               {formatReceiptText(
                 `${product.product.code.toUpperCase()} ${product.product.desc}`,
                 23,
                 String(product.quantity).length > 1 ? 0 : 1
-              )}
+              ).toLocaleUpperCase()}
             </Text>
           }
           right={
-            <Text bold size={size(2, 2)} align="right">
-              {String(product.quantity).trim()}
+            <Text bold size={size(1, 1)} align="right">
+              {String(product.quantity).trim().toLocaleUpperCase()}
             </Text>
           }
         />
       ))}
 
-      {groupedProducts["no_options"]?.length > 0 && <Line character="*" />}
+      {groupedProducts["no_options"]?.length > 0 && <Line character="=" />}
 
       {Object.entries(groupedProducts)
         .filter(([key]) => key !== "no_options")
         .map(([optionsKey, products], idx, arr) => (
           <Fragment key={idx}>
             {products.map((product, index) => (
-              <Text bold size={size(2, 2)} key={`${product.product.code}-${index}`}>
+              <Text bold size={size(1, 1)} key={`${product.product.code}-${index}`}>
                 {formatReceiptText(
                   `${product.product.code.toUpperCase()} ${product.product.desc}`,
                   22,
                   String(product.quantity).length > 1 ? 0 : 1
-                )}
+                ).toLocaleUpperCase()}
 
-                {formatReceiptText(String(product.quantity), 2, 5).trim()}
+                {formatReceiptText(String(product.quantity), 2, 5).trim().toLocaleUpperCase()}
               </Text>
             ))}
 

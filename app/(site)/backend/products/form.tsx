@@ -8,6 +8,7 @@ import SelectWrapper from "../../components/select/SelectWrapper";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
 import { X } from "@phosphor-icons/react";
+import KitchenType from "./KitchenType";
 
 export const formSchema = z.object({
   code: getZodField("string"),
@@ -16,6 +17,7 @@ export const formSchema = z.object({
   home_price: getZodField("number"),
   rice: getZodField("number", false),
   category_id: getZodField("any", false),
+  kitchen: z.any(),
 });
 
 export function getProductFields(categories: CategoryWithOptions[]): FormFieldType[] {
@@ -67,6 +69,18 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
         );
       },
       unique: true,
+    },
+    {
+      name: "kitchen",
+      label: "Cucina",
+      unique: true,
+      children: ({ field }: { field: ControllerRenderProps }) => {
+        return (
+          <div className="space-y-2 text-center">
+            <KitchenType field={field} />
+          </div>
+        );
+      },
     },
   ];
 }

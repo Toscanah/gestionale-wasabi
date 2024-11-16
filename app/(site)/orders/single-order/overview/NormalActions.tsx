@@ -57,9 +57,9 @@ export default function NormalActions({
               ),
           ];
 
-          // if (order.type == OrderType.TO_HOME) {
-          //   content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
-          // }
+          if (order.type == OrderType.TO_HOME) {
+            content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
+          }
 
           await print(...content);
         }}
