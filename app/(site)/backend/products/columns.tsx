@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductWithInfo } from "../../types/ProductWithInfo";
 import TableColumn from "../../components/table/TableColumn";
+import { KitchenType } from "@prisma/client";
 
 type ProductAndCategory = Omit<ProductWithInfo, "category"> & {
   category: string;
@@ -15,6 +16,24 @@ const columns: ColumnDef<ProductAndCategory>[] = [
   TableColumn({
     accessorKey: "desc",
     header: "Descrizione",
+  }),
+
+  TableColumn({
+    accessorKey: "kitchen",
+    header: "Tipo di cucina",
+    cellContent: (row) => {
+      let kitchen = "Altro";
+
+      if (row.original.kitchen == KitchenType.COLD) {
+        kitchen = "Fredda";
+      } else if (row.original.kitchen == KitchenType.HOT) {
+        kitchen = "Calda";
+      } else if (row.original.kitchen == KitchenType.HOT_AND_COLD) {
+        kitchen = "Calda + fredda";
+      }
+
+      return kitchen;
+    },
   }),
 
   TableColumn({

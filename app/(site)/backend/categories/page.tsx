@@ -48,7 +48,7 @@ export default function CategoryDashboard() {
       handleSubmit={handleSubmit}
       footerName={footerName}
       defaultValues={{ ...object }}
-      layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
+      layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
       formFields={getCategoryFields(options)}
       formSchema={formSchema}
     />

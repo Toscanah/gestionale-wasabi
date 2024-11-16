@@ -10,11 +10,6 @@ const columns: ColumnDef<CategoryWithOptions>[] = [
     header: "Categoria",
   }),
 
-  TableColumn({
-    accessorKey: "kitchen",
-    header: "Tipo di cucina",
-    cellContent: (row) => (row.original.kitchen == KitchenType.COLD ? "Fredda" : "Calda"),
-  }),
 
   TableColumn<CategoryWithOptions>({
     accessorKey: "options",

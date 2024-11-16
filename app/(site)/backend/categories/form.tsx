@@ -5,12 +5,12 @@ import CategoryOptions from "./CategoryOptions";
 import { ControllerRenderProps } from "react-hook-form";
 import { Option } from "../../types/Option";
 import { Checkbox } from "@/components/ui/checkbox";
-import KitchenType from "./KitchenType";
+import KitchenType from "../products/KitchenType";
 
 export const formSchema = z.object({
   category: getZodField("string"),
   options: z.array(z.any()).optional(),
-  kitchen: z.any(),
+
 });
 
 export function getCategoryFields(options: Option[]): FormFieldType[] {
@@ -31,17 +31,6 @@ export function getCategoryFields(options: Option[]): FormFieldType[] {
         );
       },
     },
-    {
-      name: "kitchen",
-      label: "Cucina",
-      unique: true,
-      children: ({ field }: { field: ControllerRenderProps }) => {
-        return (
-          <div className="space-y-2 text-center">
-            <KitchenType field={field} />
-          </div>
-        );
-      },
-    },
+    
   ];
 }
