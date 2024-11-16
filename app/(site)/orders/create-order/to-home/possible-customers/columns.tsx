@@ -15,32 +15,32 @@ const columns = (): ColumnDef<CustomerWithDetails>[] => [
   }),
 
   TableColumn({
-    accessorKey: "name",
-    header: "Nome",
-  }),
-
-  TableColumn({
-    accessorKey: "surname",
-    header: "Cognome",
-  }),
-
-  TableColumn({
-    accessorKey: "email",
-    header: "Email",
-  }),
-
-  TableColumn({
-    accessorKey: "preferences",
-    header: "Preferenze",
-  }),
-
-  TableColumn({
     accessorKey: "addresses",
-    header: "Indirizzi",
+    header: "Indirizzi (campanelli)",
     cellContent: (row) =>
       row.original.addresses
         .map((address) => address.doorbell.charAt(0).toUpperCase() + address.doorbell.slice(1))
         .join(", "),
+  }),
+
+  // TableColumn({
+  //   accessorKey: "name",
+  //   header: "Nome",
+  // }),
+
+  // TableColumn({
+  //   accessorKey: "surname",
+  //   header: "Cognome",
+  // }),
+
+  // TableColumn({
+  //   accessorKey: "email",
+  //   header: "Email",
+  // }),
+
+  TableColumn({
+    accessorKey: "preferences",
+    header: "Preferenze",
   }),
 ];
 

@@ -20,9 +20,8 @@ import fetchRequest from "../../util/functions/fetchRequest";
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
 export default function OrderTable() {
-  
   const { order, setOrder, toggleDialog, dialogOpen } = useOrderContext();
-  
+
   const { onOrdersUpdate } = useWasabiContext();
   const { updateOrder, cancelOrder } = useOrderManager(order, setOrder);
   const {
@@ -75,8 +74,6 @@ export default function OrderTable() {
   }, [payingAction]);
 
   useEffect(() => {
-    console.log("Dialogo: ", dialogOpen);
-    
     async function printKitchenRec() {
       fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "updatePrintedAmounts", {
         products,
@@ -91,8 +88,6 @@ export default function OrderTable() {
       });
     }
 
-    
-
     if (!dialogOpen && !order.suborderOf) {
       printKitchenRec();
     }
@@ -103,8 +98,8 @@ export default function OrderTable() {
       <div className="w-[80%] h-full flex flex-col gap-6 justify-between">
         <Table table={table} tableClassName="h-full max-h-full" />
         <DangerActions
-          cancelOrder={() => {
-            cancelOrder();
+          cancelOrder={(cooked) => {
+            cancelOrder(cooked);
             toggleDialog(false);
           }}
           deleteProducts={deleteProducts}

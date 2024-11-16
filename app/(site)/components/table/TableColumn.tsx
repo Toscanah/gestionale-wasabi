@@ -8,7 +8,7 @@ type TableColumnProps<T> = {
   sortable?: boolean;
   accessorKey: string;
   header: string | ReactNode;
-  cellContent?: (row: Row<T>) => ReactNode;
+  cellContent?: (row: Row<T>) => ReactNode | string;
 };
 
 export default function TableColumn<T>({
@@ -33,6 +33,5 @@ export default function TableColumn<T>({
       ),
     cell: ({ row }) =>
       cellContent ? cellContent(row) : String(getNestedValue(row.original, accessorKey)),
-
   };
 }

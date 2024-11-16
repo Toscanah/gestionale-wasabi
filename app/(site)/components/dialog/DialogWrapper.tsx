@@ -13,6 +13,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Warning } from "@phosphor-icons/react";
+import { Separator } from "@/components/ui/separator";
 
 interface DialogWrapperProps {
   children?: ReactNode;
@@ -72,7 +73,7 @@ export default function DialogWrapper({
                 title
               )}
             </DialogTitle>
-            
+
             {desc && <DialogDescription>{desc}</DialogDescription>}
           </DialogHeader>
         )}
@@ -84,7 +85,7 @@ export default function DialogWrapper({
             <div className="w-full flex gap-2">
               <DialogClose asChild>
                 <Button className="w-full" variant={"outline"}>
-                  Ho cambiato idea
+                  Indietro, ho cambiato idea
                 </Button>
               </DialogClose>
 

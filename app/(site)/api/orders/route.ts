@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     case "updateOrderTime":
       return NextResponse.json(await updateOrderTime(content?.time, content?.orderId));
     case "cancelOrder":
-      return NextResponse.json(await cancelOrder(content?.orderId));
+      return NextResponse.json(await cancelOrder(content?.orderId, content?.cooked));
     case "createSubOrder":
       return NextResponse.json(await createSubOrder(content?.parentOrder, content?.products));
   }

@@ -49,7 +49,12 @@ export default function getColumns(
           defaultValue={row.original.product?.code ?? ""}
           autoFocus={row.original.product_id == -1}
           onKeyDown={(e: any) => {
-            handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
+            const currentInput = getInputRef({ rowIndex: row.index, colIndex: 0 });
+
+            if (currentInput?.value !== "" && currentInput) {
+              handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
+            }
+
             if (e.key === "Enter") {
               handleFieldChange("code", e.target.value, row.index);
             }
@@ -111,9 +116,7 @@ export default function getColumns(
       accessorKey: "options",
       header: "Opzioni",
       cellContent: (row) => {
-        if (row.original.product_id == -1) {
-          return <></>;
-        }
+        if (row.original.product_id == -1) return <></>;
 
         const avalOptions = row.original.product?.category?.options ?? [];
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
@@ -145,18 +148,20 @@ export default function getColumns(
       accessorKey: "price",
       header: "Unità",
       cellContent: (row) => (
-        <>
+        <span className="text-2xl">
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
             : `€ ${getProductPrice(row.original, type)}`}
-        </>
+        </span>
       ),
     }),
 
     TableColumn<ProductInOrderType>({
       accessorKey: "total",
       header: "Totale",
-      cellContent: (row) => (row.original.total == 0 ? "" : `€ ${row.original.total}`),
+      cellContent: (row) => (
+        <span className="text-2xl">{row.original.total == 0 ? "" : `€ ${row.original.total}`}</span>
+      ),
     }),
 
     TableColumn<ProductInOrderType>({

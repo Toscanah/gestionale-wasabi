@@ -1,4 +1,4 @@
-import { Br, Cut, Line, Row, Text, TextSize } from "react-thermal-printer";
+import { Br, Cut, Line, Text, TextSize } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
@@ -16,10 +16,19 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const pickupOrder = (order as PickupOrder)?.pickup_order ?? false;
 
   const hotProducts = order.products.filter(
-    (product) => product.product.category?.kitchen === KitchenType.HOT
+    (product) =>
+      product.product.kitchen === KitchenType.HOT ||
+      product.product.kitchen === KitchenType.HOT_AND_COLD
   );
+
   const coldProducts = order.products.filter(
-    (product) => product.product.category?.kitchen === KitchenType.COLD
+    (product) =>
+      product.product.kitchen === KitchenType.COLD ||
+      product.product.kitchen === KitchenType.HOT_AND_COLD
+  );
+
+  const noneProducts = order.products.filter(
+    (product) => product.product.kitchen === KitchenType.NONE
   );
 
   const renderReceiptSection = (title: string, products: typeof order.products) => (
@@ -74,6 +83,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
     <>
       {coldProducts.length > 0 && renderReceiptSection("Cucina fredda", coldProducts)}
       {hotProducts.length > 0 && renderReceiptSection("Cucina calda", hotProducts)}
+      {noneProducts.length > 0 && renderReceiptSection("Altro", noneProducts)}
     </>
   );
 }

@@ -37,6 +37,10 @@ export default function Home() {
     });
   };
 
+  const funzione = (parametro: number) => {
+
+  }
+
   const onOrdersUpdate = (type: OrderType) => fetchOrders(type);
 
   useEffect(() => {
