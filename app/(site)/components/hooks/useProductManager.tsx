@@ -27,6 +27,7 @@ export function useProductManager(
       if (newProduct) {
         updateProductsList({ newProducts: [newProduct] });
       } else {
+        updateProductsList({updatedProducts: [createDummyProduct()]})
         toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
       }
     });

@@ -35,6 +35,8 @@ enum PaymentType {
 enum KitchenType {
     HOT
     COLD
+    HOT_AND_COLD
+    NONE
 }
 
 model Order {
@@ -144,6 +146,7 @@ model Product {
     home_price  Float
     rice        Float            @default(0)
     active      Boolean          @default(true)
+    kitchen     KitchenType      @default(NONE)
     orders      ProductInOrder[]
     category    Category?        @relation(fields: [category_id], references: [id])
 }
@@ -168,7 +171,6 @@ model Category {
     id       Int                @id @default(autoincrement())
     category String
     active   Boolean            @default(true)
-    kitchen  KitchenType        @default(COLD)
     products Product[]
     options  CategoryOnOption[]
 }

@@ -21,31 +21,16 @@ export default async function deleteProductsFromOrder(
 
   const totalToDecrement = productsToDelete.reduce((acc, product) => acc + product.total, 0);
 
-  // If products are cooked, update the state instead of deleting
-  if (cooked) {
-    await prisma.productInOrder.updateMany({
-      where: {
-        id: {
-          in: productIds,
-        },
+  await prisma.productInOrder.updateMany({
+    where: {
+      id: {
+        in: productIds,
       },
-      data: {
-        state: "DELETED_COOKED", // Update the state for cooked products
-      },
-    });
-  } else {
-    // For uncooked products, update the state to DELETED_UNCOOKED and delete options
-    await prisma.productInOrder.updateMany({
-      where: {
-        id: {
-          in: productIds,
-        },
-      },
-      data: {
-        state: "DELETED_UNCOOKED", // Update the state for uncooked products
-      },
-    });
-  }
+    },
+    data: {
+      state: cooked ? "DELETED_COOKED" : "DELETED_UNCOOKED",
+    },
+  });
 
   // Remove associated options regardless of the cooked state
   await prisma.optionInProductOrder.deleteMany({

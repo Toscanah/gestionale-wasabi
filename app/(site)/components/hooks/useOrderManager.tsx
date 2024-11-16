@@ -10,7 +10,7 @@ export function useOrderManager(
   order: AnyOrder,
   setOrder?: Dispatch<SetStateAction<AnyOrder | undefined>>
 ) {
-  const { onOrdersUpdate } = useWasabiContext();
+  const { onOrdersUpdate, fetchRemainingRice } = useWasabiContext();
 
   const updateOrder = (updatedProducts: ProductInOrderType[]) => {
     onOrdersUpdate(order.type as OrderType);
@@ -25,15 +25,20 @@ export function useOrderManager(
     });
   };
 
-  const cancelOrder = () =>
-    fetchRequest("POST", "/api/orders/", "cancelOrder", { orderId: order.id }).then(() =>
-      onOrdersUpdate(order.type as OrderType)
-    );
+  const cancelOrder = (cooked: boolean = false) =>
+    fetchRequest<AnyOrder>("POST", "/api/orders/", "cancelOrder", {
+      orderId: order.id,
+      cooked,
+    }).then(() => {
+      onOrdersUpdate(order.type as OrderType);
+      fetchRemainingRice();
+    });
 
   const createSubOrder = (parentOrder: AnyOrder, products: ProductInOrderType[]) =>
-    fetchRequest("POST", "/api/orders/", "createSubOrder", { products, parentOrder }).then(() =>
-      onOrdersUpdate(order.type as OrderType)
-    );
+    fetchRequest("POST", "/api/orders/", "createSubOrder", {
+      products,
+      parentOrder,
+    }).then(() => onOrdersUpdate(order.type as OrderType));
 
   const calculateTotal = (products: ProductInOrderType[]) =>
     products.reduce(

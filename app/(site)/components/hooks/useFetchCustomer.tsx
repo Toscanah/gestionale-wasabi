@@ -46,14 +46,16 @@ export default function useFetchCustomer(
 
   useEffect(() => {
     if (phone) {
-      resetState()
+      resetState();
+      setDoorbellSearch("");
       fetchCustomer();
     }
   }, [phone]);
 
   useEffect(() => {
     if (doorbellSearch) {
-      resetState()
+      resetState();
+      setPhone("");
       fetchCustomersByDoorbell();
     }
   }, [doorbellSearch]);

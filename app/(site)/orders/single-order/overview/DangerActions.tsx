@@ -13,7 +13,7 @@ export default function DangerActions({
   table,
 }: {
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
-  cancelOrder: () => void;
+  cancelOrder: (cooked: boolean) => void;
   table: Table<any>;
 }) {
   const [productsCooked, setProductsCooked] = useState(false);
@@ -23,7 +23,7 @@ export default function DangerActions({
   return (
     <div className="w-full flex gap-6 items-center h-12">
       <DialogWrapper
-      contentClassName="max-w-[30vw]"
+        contentClassName="max-w-[40vw]"
         variant="delete"
         hasHeader
         trigger={
@@ -31,14 +31,28 @@ export default function DangerActions({
             Elimina ordine
           </Button>
         }
-        onDelete={cancelOrder}
+        onDelete={() => cancelOrder(productsCooked)}
       >
-        <div className="text-lg">Stai per eliminare questo ordine. Questa azione è finale e non reversibile</div>
+        <div className="space-y-2">
+          <span className="text-lg">
+            Stai per eliminare questo ordine. Questa azione è finale e non reversibile.
+          </span>
+
+          <div className="flex gap-2 items-center">
+            <Label className="text-lg font-normal">Ho cucinato i prodotti di questo ordine</Label>
+            <Checkbox
+              checked={productsCooked}
+              onCheckedChange={(e: any) => setProductsCooked(e as boolean)}
+            />
+          </div>
+        </div>
       </DialogWrapper>
 
       <DialogWrapper
+        contentClassName="max-w-[40vw]"
         title="Attenzione"
         variant="delete"
+        hasHeader
         trigger={
           <Button
             className="w-full h-12 text-xl"
@@ -50,14 +64,19 @@ export default function DangerActions({
         }
         onDelete={() => deleteProducts(table, productsCooked)}
       >
-        <div>Prima di procedere dimmi</div>
-
         <div className="space-y-2">
-          <Label>Ho cucinato questo prodotto</Label>
-          <Checkbox
-            checked={productsCooked}
-            onCheckedChange={(e) => setProductsCooked(e as boolean)}
-          />
+          <span className="text-lg">
+            Stai per eliminare il/i prodotto/i che hai selezionato. Questa azione è finale e non
+            reversibile.
+          </span>
+
+          <div className="flex gap-2 items-center">
+            <Label className="text-lg font-normal">Ho cucinato questo/i prodotto/i</Label>
+            <Checkbox
+              checked={productsCooked}
+              onCheckedChange={(e: any) => setProductsCooked(e as boolean)}
+            />
+          </div>
         </div>
       </DialogWrapper>
     </div>

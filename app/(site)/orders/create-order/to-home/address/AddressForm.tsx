@@ -192,7 +192,7 @@ export default function AddressForm({
 
           <div className="flex justify-between gap-4">
             <FormField
-              ref={refs[3]}
+              ref={refs[4]}
               control={form.control}
               name="contact_phone"
               type="number"
@@ -201,7 +201,7 @@ export default function AddressForm({
               label="Num. telefono addizionale"
             />
             <FormField
-              ref={refs[4]}
+              ref={refs[3]}
               control={form.control}
               name="stair"
               label="Scala"
