@@ -15,7 +15,19 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
             table
               .getSortedRowModel()
               ?.flatRows?.findIndex((flatRow) => flatRow.id === String(row.id)) || 0;
-          return <div className="text-muted-foreground">{index + 1}</div>;
+
+          return (
+            <div className="text-muted-foreground gap-2 flex items-center">
+              <span>{index + 1}</span>
+              <span className="text-sm">
+                {row.original.products.some(
+                  (product: any) => product.printedAmount == product.quantity
+                )
+                  ? "✔️"
+                  : "❌"}
+              </span>
+            </div>
+          );
         } else {
           return "";
         }

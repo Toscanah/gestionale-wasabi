@@ -198,7 +198,7 @@ export default function AddressForm({
               type="number"
               handleKeyDown={handleKeyDown}
               className="h-14 text-2xl uppercase"
-              label="Num. telefono addizionale"
+              label="Num. telefono alternativo"
             />
             <FormField
               ref={refs[3]}

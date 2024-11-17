@@ -59,6 +59,7 @@ export default function OrderTable() {
     rowIndex: products.length - 1,
     colIndex: 0,
   });
+
   const table = getTable<ProductInOrderType>({
     data: products,
     columns,
@@ -76,7 +77,7 @@ export default function OrderTable() {
   useEffect(() => {
     async function printKitchenRec() {
       fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "updatePrintedAmounts", {
-        products,
+        products: order.products,
       }).then(async (remainingProducts) => {
         onOrdersUpdate(order.type);
 

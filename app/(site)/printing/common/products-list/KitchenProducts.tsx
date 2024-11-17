@@ -1,5 +1,6 @@
 import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import formatReceiptText from "@/app/(site)/util/functions/formatReceiptText";
+import getReceiptSize from "@/app/(site)/util/functions/getReceiptSize";
 import { Fragment } from "react";
 import { Br, Line, Row, Text, TextSize } from "react-thermal-printer";
 
@@ -8,11 +9,9 @@ export default function KitchenProducts({
 }: {
   aggregatedProducts: ProductInOrderType[];
 }) {
-  const size = (w: TextSize, h: TextSize): { width: TextSize; height: TextSize } => ({
-    width: w,
-    height: h,
-  });
   const groupedProducts: { [key: string]: ProductInOrderType[] } = {};
+  const bigSize = getReceiptSize(2, 2);
+  const smallSize = getReceiptSize(1, 1);
 
   aggregatedProducts.forEach((product) => {
     const optionsKey =
@@ -44,52 +43,43 @@ export default function KitchenProducts({
     }
   });
 
+  const ProductLine = ({ product }: { product: ProductInOrderType }) => (
+    <Fragment>
+      <Text inline bold size={bigSize}>
+        {formatReceiptText(product.product.code.toUpperCase(), 4, 2)}
+      </Text>
+
+      <Text inline bold size={smallSize}>
+        {formatReceiptText(product.product.desc, 27, String(product.quantity).length > 1 ? 5 : 7)}
+      </Text>
+
+      <Text bold size={bigSize}>
+        {formatReceiptText(product.quantity.toString(), String(product.quantity).length)}
+      </Text>
+    </Fragment>
+  );
+
   return (
     <>
       {groupedProducts["no_options"]?.map((product, index) => (
-        <Row
-          key={index}
-          left={
-            /**trasformare questo in un singolo Text */
-            <Text bold size={size(1, 1)}>
-              {formatReceiptText(
-                `${product.product.code.toUpperCase()} ${product.product.desc}`,
-                23,
-                String(product.quantity).length > 1 ? 0 : 1
-              ).toLocaleUpperCase()}
-            </Text>
-          }
-          right={
-            <Text bold size={size(1, 1)} align="right">
-              {String(product.quantity).trim().toLocaleUpperCase()}
-            </Text>
-          }
-        />
+        <ProductLine key={index} product={product} />
       ))}
 
-      {groupedProducts["no_options"]?.length > 0 && <Line character="=" />}
+      {groupedProducts["no_options"]?.length > 0 && <Line />}
 
       {Object.entries(groupedProducts)
         .filter(([key]) => key !== "no_options")
         .map(([optionsKey, products], idx, arr) => (
-          <Fragment key={idx}>
+          <Fragment key={`group-${idx}`}>
             {products.map((product, index) => (
-              <Text bold size={size(1, 1)} key={`${product.product.code}-${index}`}>
-                {formatReceiptText(
-                  `${product.product.code.toUpperCase()} ${product.product.desc}`,
-                  22,
-                  String(product.quantity).length > 1 ? 0 : 1
-                ).toLocaleUpperCase()}
-
-                {formatReceiptText(String(product.quantity), 2, 5).trim().toLocaleUpperCase()}
-              </Text>
+              <ProductLine key={index} product={product} />
             ))}
 
-            <Text bold size={size(1, 1)}>
-              {" - " + formatReceiptText(optionsKey, 24)}
+            <Text bold size={smallSize}>
+              {" - " + formatReceiptText(optionsKey, 36)}
             </Text>
 
-            {idx < arr.length - 1 && arr.length > 1 && <Line character="=" />}
+            {idx < arr.length - 1 && arr.length > 1 && <Line />}
           </Fragment>
         ))}
     </>

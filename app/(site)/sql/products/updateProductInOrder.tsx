@@ -157,6 +157,15 @@ export default async function updateProductInOrder(
             quantity: { increment: quantityDifference },
             total: { increment: totalDifference },
             riceQuantity: { increment: quantityDifference * productInOrder.product.rice },
+            printedAmount: {
+              increment:
+                quantityDifference > 0 // se sto incrementando, non fare nulla
+                  ? 0
+                  : productInOrder.printedAmount == 0 // se non ho prodotti stampati, non fare nulla
+                  ? 0
+                  : Math.max(quantityDifference, -productInOrder.printedAmount), 
+                  // mi assicuro che con la differenza, non vado sotto lo zero (che non ha senso)
+            },
           },
           include: {
             product: {
