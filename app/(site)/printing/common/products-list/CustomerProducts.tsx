@@ -1,4 +1,3 @@
-import { Option } from "@/app/(site)/types/Option";
 import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 import formatAmount from "@/app/(site)/util/functions/formatAmount";

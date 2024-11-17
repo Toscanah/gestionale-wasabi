@@ -84,9 +84,7 @@ export default function OrderInfoSection(
         Quando:{" "}
       </Text>
       <Text>
-        {order.home_order?.when !== "immediate"
-          ? `"${order.home_order?.when}"`
-          : '"PRIMA POSSIBILE"'}
+        {order.home_order?.when !== "immediate" ? order.home_order?.when : "PRIMA POSSIBILE"}
       </Text>
 
       <Br />

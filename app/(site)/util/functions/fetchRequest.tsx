@@ -30,7 +30,6 @@ export default async function fetchRequest<T>(
     case "DELETE":
       url = new URL(path, window.location.origin);
       requestOptions.body = JSON.stringify({ action, content });
-
       break;
 
     default:

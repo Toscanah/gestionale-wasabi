@@ -7,7 +7,7 @@ const kitchenTypeLabels: Record<TypeOfKitchen, string> = {
   [TypeOfKitchen.HOT]: "Cucina calda",
   [TypeOfKitchen.COLD]: "Cucina fredda",
   [TypeOfKitchen.HOT_AND_COLD]: "Cucina calda e fredda",
-  [TypeOfKitchen.NONE]: "Nessuna",
+  [TypeOfKitchen.NONE]: "Altro",
 };
 
 export default function KitchenType({ field }: { field: ControllerRenderProps }) {

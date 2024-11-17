@@ -1,4 +1,4 @@
-import { Br, Cut, Line, Text, TextSize } from "react-thermal-printer";
+import { Br, Cut, Line, Row, Text, TextSize } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
@@ -34,7 +34,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const renderReceiptSection = (title: string, products: typeof order.products) => (
     <>
       <Text align="center" bold size={size}>
-        {title}
+        {title.toUpperCase()}
       </Text>
       <Br />
 
@@ -42,33 +42,74 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       <Line />
       {tableOrder && (
-        <Text align="center" bold size={size}>
-          TAVOLO {tableOrder.table}
-        </Text>
+        <Row
+          left={
+            <Text bold size={size}>
+              TAVOLO
+            </Text>
+          }
+          right={
+            <Text bold size={size}>
+              {tableOrder.table}
+            </Text>
+          }
+        />
       )}
 
       {pickupOrder && (
-        <Text align="center" bold size={size}>
-          ASPORTO {pickupOrder.name}
-        </Text>
+        <Row
+          left={
+            <Text bold size={size}>
+              ASPORTO
+            </Text>
+          }
+          right={
+            <Text bold size={size}>
+              {pickupOrder.name}
+            </Text>
+          }
+        />
       )}
 
       {homeOrder && (
-        <Text align="center" bold size={size}>
-          DELIVERY {homeOrder.address.doorbell}
-        </Text>
+        <Row
+          left={
+            <Text bold size={size}>
+              DELIVERY
+            </Text>
+          }
+          right={
+            <Text bold size={size}>
+              {homeOrder.address.doorbell}
+            </Text>
+          }
+        />
       )}
 
       {pickupOrder && (
-        <Text align="center" bold size={size}>
-          {pickupOrder.when}
-        </Text>
+        <Row
+          left={
+            <Text bold size={size}>
+              Orario
+            </Text>
+          }
+          right={
+            <Text bold size={size}>
+              {pickupOrder.when}
+            </Text>
+          }
+        />
       )}
 
       {homeOrder && (
-        <Text align="center" size={size}>
-          Orario {homeOrder.when == "immediate" ? "Prima possibile" : homeOrder.when}
-        </Text>
+        <Row
+          left={<Text size={size}>Orario</Text>}
+          right={
+            <Text size={size}>
+              {homeOrder.when === "immediate" ? "Prima possibile" : homeOrder.when}
+            </Text>
+          }
+        />
       )}
 
       <Line />

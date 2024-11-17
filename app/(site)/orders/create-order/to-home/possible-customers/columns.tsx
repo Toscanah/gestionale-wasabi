@@ -1,12 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-import { Buildings, Pencil } from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
-
-import { Dispatch, SetStateAction } from "react";
 import { CustomerWithDetails } from "@/app/(site)/types/CustomerWithDetails";
 import TableColumn from "@/app/(site)/components/table/TableColumn";
-import { Customer } from "@prisma/client";
 
 const columns = (): ColumnDef<CustomerWithDetails>[] => [
   TableColumn({
@@ -16,10 +10,22 @@ const columns = (): ColumnDef<CustomerWithDetails>[] => [
 
   TableColumn({
     accessorKey: "addresses",
-    header: "Indirizzi (campanelli)",
+    header: "Campanelli",
     cellContent: (row) =>
       row.original.addresses
         .map((address) => address.doorbell.charAt(0).toUpperCase() + address.doorbell.slice(1))
+        .join(", "),
+  }),
+
+  TableColumn({
+    accessorKey: "addresses",
+    header: "Indirizzi",
+    cellContent: (row) =>
+      row.original.addresses
+        .map(
+          (address) =>
+            address.street.charAt(0).toUpperCase() + address.street.slice(1) + " " + address.civic
+        )
         .join(", "),
   }),
 
