@@ -32,8 +32,10 @@ export default function WasabiSidebar() {
         <SidebarSeparator />
 
         <SidebarGroup>
-          <RiceSection />
-          <KitchenSettings />
+          <SidebarGroupContent>
+            <RiceSection />
+            <KitchenSettings />
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>

@@ -46,6 +46,7 @@ export default function RiceDefaultValues() {
         {riceDefaults.map((defaultValue) => (
           <Button className="flex items-center gap-2 w grow group" key={defaultValue}>
             <X
+              onClick={() => removeDefaultValue(defaultValue)}
               size={24}
               className="transform transition-transform duration-300 
                         group-hover:rotate-[360deg] hover:font-bold hover:drop-shadow-2xl"
