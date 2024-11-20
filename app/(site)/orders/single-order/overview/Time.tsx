@@ -30,7 +30,7 @@ export default function Time({ order }: { order: AnyOrder }) {
 
       <WhenSelector
         className="h-12 text-2xl uppercase"
-        value={orderTime == "immediate" ? "Subito" : orderTime}
+        value={orderTime == "immediate" ? "Prima possibile" : orderTime}
         onValueChange={updateOrderTime}
       />
     </div>

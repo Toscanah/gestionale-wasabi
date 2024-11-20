@@ -12,7 +12,10 @@ export default function RiceSummary() {
         rice.remaining.amount < rice.remaining.threshold && "text-destructive"
       )}
     >
-      Riso rimanente: {formatRice(rice.remaining.amount)}
+      <p>
+        Riso rimanente:{" "}
+        <b>{formatRice(rice.remaining.amount)}</b>
+      </p>
     </div>
   );
 }

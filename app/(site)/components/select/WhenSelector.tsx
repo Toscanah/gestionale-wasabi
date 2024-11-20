@@ -24,7 +24,7 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
     const isValuePresent = value && allTimeSlots.includes(value);
 
     const additionalGroup =
-      value && !isValuePresent && value !== "Subito"
+      value && !isValuePresent && value !== "immediate"
         ? [
             {
               items: [value],
@@ -34,7 +34,7 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
 
     return (
       <SelectWrapper
-        defaultValue="Subito"
+        defaultValue="immediate"
         field={field}
         ref={ref}
         onValueChange={onValueChange}
@@ -45,7 +45,7 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
           ...additionalGroup,
           {
             label: "Subito",
-            items: ["Subito"],
+            items: ["immediate"],
           },
           ...(lunchTimes.length > 0
             ? [

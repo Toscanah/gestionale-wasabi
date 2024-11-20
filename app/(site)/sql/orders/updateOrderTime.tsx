@@ -9,7 +9,7 @@ export default async function updateOrderTime(time: string, orderId: number) {
 
   if (!baseOrder) return;
 
-  const when = time?.toLowerCase() === "subito" ? "immediate" : time;
+  const when = time?.toLowerCase() === "Prima possibile" ? "immediate" : time;
 
   const updateData = { data: { when }, where: { order_id: orderId } };
 

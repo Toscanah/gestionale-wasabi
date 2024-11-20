@@ -9,7 +9,6 @@ export default async function addProductsToOrder(
 
   const newProducts = await Promise.all(
     products.map(async (productInOrder) => {
-      // Create the productInOrder
       const newProductInOrder = await prisma.productInOrder.create({
         data: {
           order_id: targetOrderId,

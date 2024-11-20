@@ -20,9 +20,11 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
             <div className="text-muted-foreground gap-2 flex items-center">
               <span>{index + 1}</span>
               <span className="text-sm">
-                {row.original.products.some(
-                  (product: any) => product.printedAmount == product.quantity
-                )
+                {row.original.suborderOf || row.original.products.length === 0
+                  ? ""
+                  : row.original.products.some(
+                      (product: any) => product.printedAmount === product.quantity
+                    )
                   ? "✔️"
                   : "❌"}
               </span>
@@ -79,7 +81,9 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
           accessorKey: "home_order.when",
           header: "Quando",
           cellContent: (row) =>
-            row.original.home_order?.when == "immediate" ? "Subito" : row.original.home_order?.when,
+            row.original.home_order?.when == "immediate"
+              ? "Prima possibile"
+              : row.original.home_order?.when,
         })
       );
       break;
