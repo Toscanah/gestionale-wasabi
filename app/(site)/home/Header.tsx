@@ -16,44 +16,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import RiceSummary from "../rice/RiceSummary";
+import KitchenOffset from "../components/KitchenOffset";
 
 export default function Header() {
-  const iconClassName = "mr-2 h-4 w-4"
+  
   const router = useRouter();
   const { onOrdersUpdate } = useWasabiContext();
   const navigateTo = (path: string) => router.push(path);
 
-  const adminItems = [
-    {
-      label: "Prodotti",
-      icon: <List className={iconClassName} />,
-      path: "/backend/products",
-    },
-    {
-      label: "Clienti",
-      icon: <UsersFour className={iconClassName} />,
-      path: "/backend/customers",
-    },
-    {
-      label: "Categorie",
-      icon: <Tag className={iconClassName} />,
-      path: "/backend/categories",
-    },
-    {
-      label: "Opzioni",
-      icon: <Hash className={iconClassName} />,
-      path: "/backend/options",
-    },
-  ];
+const iconClassName = ""
 
-  const statsItems = [
-    { label: "Prodottti", icon: <List className={iconClassName} />, path: "/" },
-    { label: "Clienti", icon: <UsersFour className={iconClassName} />, path: "/" },
-  ];
+
 
   return (
     <>
-      <div className="flex gap-4 justify-center items-center">
+      {/* <div className="flex gap-4 justify-center items-center">
+        <KitchenOffset/>
+
         <RiceDialog />
 
         <Link href={"../payments/table/"}>
@@ -106,16 +85,8 @@ export default function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* <ArrowClockwise
-          className="hover:cursor-pointer"
-          size={24}
-          onClick={() => {
-            onOrdersUpdate(OrderType.TO_HOME);
-            onOrdersUpdate(OrderType.PICK_UP);
-            onOrdersUpdate(OrderType.TABLE);
-          }}
-        /> */}
-      </div>
+        
+      </div> */}
       <RiceSummary />
     </>
   );

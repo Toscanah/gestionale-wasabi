@@ -36,8 +36,8 @@ export function useOrderManager(
 
   const createSubOrder = (parentOrder: AnyOrder, products: ProductInOrderType[]) =>
     fetchRequest("POST", "/api/orders/", "createSubOrder", {
-      products,
       parentOrder,
+      products,
     }).then(() => onOrdersUpdate(order.type as OrderType));
 
   const calculateTotal = (products: ProductInOrderType[]) =>

@@ -11,6 +11,8 @@ import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrd
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Header from "./Header";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import WasabiSidebar from "../components/sidebar/Sidebar";
 
 export default function Home() {
   const [orders, setOrders] = useState<{
@@ -43,8 +45,15 @@ export default function Home() {
 
   return (
     <WasabiProvider onOrdersUpdate={onOrdersUpdate}>
+      <WasabiSidebar />
+
       <div className="w-screen p-4 h-screen flex flex-col gap-4">
-        <div className="w-full flex justify-between">
+        <div className="w-full flex justify-between items-center">
+          <div className="flex items-center gap-4 text-2xl">
+            <SidebarTrigger /> Wasabi Sushi
+          </div>
+
+          {/**className="absolute left-[15px] top-[22px]" */}
           {/* <Button
             onClick={async () =>
               await print(() => KitchenReceipt<TableOrder>(orders[OrderType.TABLE][0]))

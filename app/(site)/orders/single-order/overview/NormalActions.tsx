@@ -24,7 +24,7 @@ export default function NormalActions({
   setAction,
   quickPaymentOption,
 }: NormalActionsProps) {
-  const {onOrdersUpdate} = useWasabiContext();
+  const { onOrdersUpdate } = useWasabiContext();
 
   const canSplit = () =>
     order.products.length > 1 ||
@@ -35,13 +35,7 @@ export default function NormalActions({
   const canPayFull = () => applyDiscount(order.total, order.discount) > 0;
 
   const handlePrint = async () => {
-    const content = [
-      //() => OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.TO_HOME),
-    ];
-
-    if (order.type === OrderType.TO_HOME) {
-      content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
-    }
+    let content = [];
 
     let unprintedProducts = await fetchRequest<ProductInOrderType[]>(
       "POST",
@@ -55,6 +49,14 @@ export default function NormalActions({
     if (unprintedProducts.length > 0) {
       onOrdersUpdate(order.type);
       content.push(() => KitchenReceipt({ ...order, products: unprintedProducts }));
+    }
+
+    content.push(() =>
+      OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.TO_HOME)
+    );
+
+    if (order.type === OrderType.TO_HOME) {
+      content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
     }
 
     await print(...content);

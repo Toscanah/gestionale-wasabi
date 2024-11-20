@@ -5,10 +5,8 @@ import { Label } from "@/components/ui/label";
 import { AnyOrder, TableOrder } from "../../../types/PrismaOrders";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { OrderType } from "@prisma/client";
-
 import fetchRequest from "../../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../../util/toast";
-import { Triangle } from "react-loader-spinner";
 import useFocusCycle from "@/app/(site)/components/hooks/useFocusCycle";
 
 export default function Table({
@@ -24,12 +22,13 @@ export default function Table({
   const nameRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    addRefs(tableRef.current, pplRef.current, nameRef.current, buttonRef.current);
-  }, []);
+  useEffect(
+    () => addRefs(tableRef.current, pplRef.current, nameRef.current, buttonRef.current),
+    []
+  );
 
   const createTableOrder = () => {
-    const people = Number(pplRef.current?.value);
+    const people = Number(pplRef.current?.value ?? 1);
     const table = tableRef.current?.value;
     const res_name = nameRef.current?.value;
     const content = { table, people, res_name };
@@ -38,21 +37,16 @@ export default function Table({
       return toastError("Assicurati di aver aggiunto un tavolo");
     }
 
-    if (people < 1) {
-      return toastError("Il tavolo deve avere almeno una persona");
-    }
-
-    fetchRequest<TableOrder>("POST", "/api/orders/", "createTableOrder", { ...content }).then(
-      (order) => {
-        if (order) {
-          toastSuccess("Ordine creato con successo");
-          setOrder(order);
-          onOrdersUpdate(OrderType.TABLE);
-        } else {
-          toastError("L'ordine non è stato creato. Sei sicuro che il tavolo esista?");
-        }
+    fetchRequest<{ order: TableOrder; new: boolean }>("POST", "/api/orders/", "createTableOrder", {
+      ...content,
+    }).then((order) => {
+      if (order.new) {
+        toastSuccess("Ordine creato con successo");
       }
-    );
+
+      setOrder(order.order);
+      onOrdersUpdate(OrderType.TABLE);
+    });
   };
 
   return (

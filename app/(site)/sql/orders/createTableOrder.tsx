@@ -7,7 +7,46 @@ export default async function createTableOrder(content: {
 }) {
   const { table, people, res_name } = content;
 
-  return await prisma.order.create({
+  const existingOrder = await prisma.order.findFirst({
+    where: {
+      type: "TABLE",
+      table_order: {
+        table: table,
+      },
+      state: "ACTIVE",
+    },
+    include: {
+      table_order: true,
+      products: {
+        include: {
+          product: {
+            include: {
+              category: {
+                include: {
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          options: {
+            include: {
+              option: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (existingOrder) {
+    return { order: existingOrder, new: false };
+  }
+
+  const newOrder = await prisma.order.create({
     data: {
       type: "TABLE",
       total: 0,
@@ -45,4 +84,6 @@ export default async function createTableOrder(content: {
       },
     },
   });
+
+  return { order: newOrder, new: true };
 }

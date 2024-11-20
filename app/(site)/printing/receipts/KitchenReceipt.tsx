@@ -4,10 +4,6 @@ import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType, OrderType } from "@prisma/client";
 
-interface KitchenReceiptProps<T> {
-  order: T;
-}
-
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const size: { width: TextSize; height: TextSize } = { width: 2, height: 2 };
 
@@ -31,7 +27,16 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
     (product) => product.product.kitchen === KitchenType.NONE
   );
 
-  const renderReceiptSection = (title: string, products: typeof order.products) => (
+  const calculateAdjustedTime = (originalTime: string) => {
+    let offset: number = parseInt(localStorage.getItem("kitchenOffset") ?? "0");
+    const date = new Date(originalTime);
+    date.setMinutes(date.getMinutes() - offset);
+    return date.toLocaleTimeString();
+  };
+
+  type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
+
+  const renderReceiptSection = (title: ReceiptTitle, products: typeof order.products) => (
     <>
       <Text align="center" bold size={size}>
         {title.toUpperCase()}
@@ -95,7 +100,9 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={size}>
-              {pickupOrder.when}
+              {pickupOrder.when == "immediate"
+                ? "Prima possibile"
+                : calculateAdjustedTime(pickupOrder.when ?? "")}
             </Text>
           }
         />
@@ -105,8 +112,10 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
         <Row
           left={<Text size={size}>Orario</Text>}
           right={
-            <Text size={size}>
-              {homeOrder.when === "immediate" ? "Prima possibile" : homeOrder.when}
+            <Text bold size={size}>
+              {homeOrder.when == "immediate"
+                ? "Prima possibile"
+                : calculateAdjustedTime(homeOrder.when ?? "")}
             </Text>
           }
         />

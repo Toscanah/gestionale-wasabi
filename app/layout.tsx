@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./(site)/components/theme-provider";
 import { ChangeTheme } from "./(site)/components/ChangeTheme";
 import { Toaster } from "@/components/ui/sonner";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,17 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster richColors position="bottom-center" duration={1500} />
-          <div className="fixed bottom-4 right-4 hover:cursor-pointer">
-            <ChangeTheme />
-          </div>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <SidebarProvider>
+            
+            {children}
+            <Toaster richColors position="bottom-center" duration={1500} />
+            <div className="fixed bottom-4 right-4 hover:cursor-pointer">
+              <ChangeTheme />
+            </div>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

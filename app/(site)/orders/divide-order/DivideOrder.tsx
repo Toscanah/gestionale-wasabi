@@ -49,23 +49,28 @@ export default function DivideOrder({
 
     const sourceProduct = sourceCopy.find((p) => p.id === product.id);
     if (sourceProduct) {
+      // Adjust quantity and total in source
       if (sourceProduct.quantity > 1) {
         sourceProduct.quantity -= 1;
       } else {
         const index = sourceCopy.findIndex((p) => p.id === product.id);
         sourceCopy.splice(index, 1);
       }
-
-      const targetProduct = targetCopy.find((p) => p.id === product.id);
-      if (targetProduct) {
-        targetProduct.quantity += 1;
-      } else {
-        targetCopy.push({ ...product, quantity: 1 });
-      }
-
-      setSource(sourceCopy);
-      setTarget(targetCopy);
+      sourceProduct.total = sourceProduct.quantity * getProductPrice(sourceProduct, order.type); // Adjust total for source
     }
+
+    const targetProduct = targetCopy.find((p) => p.id === product.id);
+    if (targetProduct) {
+      // Adjust quantity and total in target
+      targetProduct.quantity += 1;
+      targetProduct.total = targetProduct.quantity * getProductPrice(targetProduct, order.type); // Adjust total for target
+    } else {
+      // Add new product to target and set initial quantity and total
+      targetCopy.push({ ...product, quantity: 1, total: getProductPrice(product, order.type) }); // Assuming the price is available in the product object
+    }
+
+    setSource(sourceCopy);
+    setTarget(targetCopy);
   };
 
   const handleOrderPaid = () => {
@@ -127,7 +132,7 @@ export default function DivideOrder({
         ...order,
         products: rightProducts,
         total: rightProducts.reduce(
-          (total, p) => total + getProductPrice(p, order.type as OrderType) * p.quantity,
+          (total, p) => total + getProductPrice(p, order.type) * p.quantity,
           0
         ),
       }}
