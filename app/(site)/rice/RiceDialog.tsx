@@ -9,7 +9,7 @@ import DialogWrapper from "../components/dialog/DialogWrapper";
 import SelectWrapper from "../components/select/SelectWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 
-export default function RiceDialog() {
+export default function RiceDialog({ variant }: { variant: "header" | "sidebar" }) {
   const { rice, updateTotalRice, resetRice } = useWasabiContext();
   const [newRice, setNewRice] = useState<Rice>({ ...rice.total, amount: 0 });
   const [riceDefaults, setRiceDefaults] = useState<number[]>([]);
@@ -30,7 +30,14 @@ export default function RiceDialog() {
       title="Gestione riso"
       contentClassName="border-t-4 border-t-gray-400"
       trigger={
-        <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
+        variant == "sidebar" ? (
+          <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
+        ) : (
+          <Button variant={"outline"} className="w-44">
+            <Gear className="mr-2 h-4 w-4" />
+            Riso
+          </Button>
+        )
       }
       footer={
         <>

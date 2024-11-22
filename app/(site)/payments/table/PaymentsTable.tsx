@@ -56,8 +56,9 @@ export default function PaymentsTable({ fetchedOrders }: { fetchedOrders: OrderW
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
           onReset={() => {
-            setDate(new Date())
-            setOrders(fetchedOrders)}}
+            setDate(new Date());
+            setOrders(fetchedOrders);
+          }}
         >
           <SelectWrapper
             className="h-10 max-w-sm"
@@ -73,10 +74,19 @@ export default function PaymentsTable({ fetchedOrders }: { fetchedOrders: OrderW
             ]}
             defaultValue="-1"
             onValueChange={(value) =>
-              setOrders(
-                value === "-1"
-                  ? fetchedOrders
-                  : fetchedOrders.filter((order) => order.type === value)
+              setOrders(() =>
+                fetchedOrders.filter((order) => {
+                  const orderDate = new Date(order.created_at);
+
+                  const matchesDate =
+                    orderDate.getFullYear() === date?.getFullYear() &&
+                    orderDate.getMonth() === date?.getMonth() &&
+                    orderDate.getDate() === date?.getDate();
+
+                  const matchesType = value === "-1" || order.type === value;
+
+                  return matchesDate && matchesType;
+                })
               )
             }
           />

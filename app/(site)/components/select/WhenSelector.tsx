@@ -45,7 +45,7 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
           ...additionalGroup,
           {
             label: "Subito",
-            items: ["immediate"],
+            items: [{name: "Subito", value: "immediate"}],
           },
           ...(lunchTimes.length > 0
             ? [
