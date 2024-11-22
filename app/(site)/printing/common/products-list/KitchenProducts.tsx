@@ -43,6 +43,8 @@ export default function KitchenProducts({
     }
   });
 
+  console.log(groupedProducts);
+
   const ProductLine = ({ product }: { product: ProductInOrderType }) => (
     <Fragment>
       <Text inline bold size={bigSize}>
@@ -61,9 +63,7 @@ export default function KitchenProducts({
 
   return (
     <>
-      {groupedProducts["no_options"]?.map((product, index) => (
-        <ProductLine key={index} product={product} />
-      ))}
+      {groupedProducts["no_options"]?.map((product, index) => ProductLine({ product }))}
 
       {groupedProducts["no_options"]?.length > 0 && <Line />}
 
@@ -71,9 +71,10 @@ export default function KitchenProducts({
         .filter(([key]) => key !== "no_options")
         .map(([optionsKey, products], idx, arr) => (
           <Fragment key={`group-${idx}`}>
-            {products.map((product, index) => (
-              <ProductLine key={index} product={product} />
-            ))}
+            {products.map(
+              (product, index) => ProductLine({ product })
+              // <ProductLine key={index} product={product} />
+            )}
 
             <Text bold size={smallSize}>
               {" - " + formatReceiptText(optionsKey, 36)}
