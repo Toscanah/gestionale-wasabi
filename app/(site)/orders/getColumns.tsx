@@ -82,7 +82,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
           header: "Quando",
           cellContent: (row) =>
             row.original.home_order?.when == "immediate"
-              ? "Prima possibile"
+              ? "Subito"
               : row.original.home_order?.when,
         })
       );

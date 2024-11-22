@@ -15,6 +15,12 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
 
 export default function Home() {
+  const [activeOrders, setActiveOrders] = useState<{
+    [OrderType.TABLE]: boolean;
+    [OrderType.TO_HOME]: boolean;
+    [OrderType.PICK_UP]: boolean;
+  }>({ [OrderType.TABLE]: true, [OrderType.TO_HOME]: true, [OrderType.PICK_UP]: true });
+
   const [orders, setOrders] = useState<{
     [OrderType.TABLE]: TableOrder[];
     [OrderType.TO_HOME]: HomeOrder[];
@@ -24,6 +30,13 @@ export default function Home() {
     [OrderType.TO_HOME]: [],
     [OrderType.PICK_UP]: [],
   });
+
+  const toggleOrder = (type: OrderType) => {
+    setActiveOrders((prev) => ({
+      ...prev,
+      [type]: !prev[type],
+    }));
+  };
 
   const fetchOrders = (type: OrderType) =>
     fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrdersByType", { type }).then((data) => {
@@ -43,6 +56,8 @@ export default function Home() {
     fetchOrders(OrderType.TO_HOME);
   }, []);
 
+  const activeOrderTypes = Object.values(OrderType).filter((type) => activeOrders[type]);
+
   return (
     <WasabiProvider onOrdersUpdate={onOrdersUpdate}>
       <WasabiSidebar />
@@ -53,21 +68,20 @@ export default function Home() {
             <SidebarTrigger /> Wasabi Sushi
           </div>
 
-          <Header />
+          <Header toggleOrder={toggleOrder} activeOrders={activeOrders} />
         </div>
 
         <Separator orientation="horizontal" />
 
         <ResizablePanelGroup direction="horizontal">
-          {Object.values(OrderType).map((type, index) => (
-            <Fragment key={index}>
+          {activeOrderTypes.map((type, index) => (
+            <Fragment key={type}>
               <ResizablePanel
-                defaultSize={33}
-                key={type}
+                defaultSize={100 / activeOrderTypes.length}
                 id={type}
                 className={cn(
-                  "h-full flex gap- flex-col items-center",
-                  type == OrderType.TO_HOME ? "w-[35%]" : "w-[32.5%]"
+                  "h-full flex flex-col items-center"
+                  //type === OrderType.TO_HOME ? "w-[35%]" : "w-[32.5%]"
                 )}
               >
                 <div className="flex w-full justify-between items-center ">
@@ -75,8 +89,10 @@ export default function Home() {
                     type={type}
                     triggerClassName={cn(
                       "rounded-none",
-                      index == 0 && "rounded-tl-md",
-                      index == 2 && "rounded-tr-md"
+                      index === 0 && "rounded-tl-md",
+                      index === activeOrderTypes.length - 1 && "rounded-tr-md",
+                      // activeOrderTypes.length === 2 && index === 1 && "border-l-[2px]",
+                      // activeOrderTypes.length === 3 && index === 1 && "border-x-[2px]",
                     )}
                   >
                     {orders[type].length !== 0 && "(" + orders[type].length + ")"}
@@ -89,11 +105,11 @@ export default function Home() {
                   )}
                   type={type}
                 />
-
-                <div className="w-full flex items-center justify-start"></div>
               </ResizablePanel>
 
-              {type !== OrderType.PICK_UP && <ResizableHandle withHandle key={"handle-" + type} />}
+              {index < activeOrderTypes.length - 1 && (
+                <ResizableHandle disabled/>
+              )}
             </Fragment>
           ))}
         </ResizablePanelGroup>
