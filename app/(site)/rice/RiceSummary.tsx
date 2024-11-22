@@ -8,7 +8,7 @@ export default function RiceSummary() {
   return (
     <div
       className={cn(
-        "flex items-center justify-center text-3xl",
+        "flex items-center justify-center text-3xl w-80",
         rice.remaining.amount < rice.remaining.threshold && "text-destructive"
       )}
     >

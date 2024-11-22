@@ -14,8 +14,6 @@ import RiceSection from "./sections/RiceSection";
 import KitchenSettings from "./sections/KitchenSettingsSection";
 
 export default function WasabiSidebar() {
-  const { toggleSidebar, open } = useSidebar();
-
   return (
     <Sidebar>
       <SidebarContent>

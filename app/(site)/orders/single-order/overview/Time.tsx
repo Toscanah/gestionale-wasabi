@@ -17,6 +17,8 @@ export default function Time({ order }: { order: AnyOrder }) {
       : ""
   );
 
+  console.log(orderTime)
+
   const updateOrderTime = (value: string) => {
     setOrderTime(value);
     fetchRequest("POST", "/api/orders/", "updateOrderTime", { time: value, orderId: order.id });
@@ -30,7 +32,7 @@ export default function Time({ order }: { order: AnyOrder }) {
 
       <WhenSelector
         className="h-12 text-2xl uppercase"
-        value={orderTime == "immediate" ? "Prima possibile" : orderTime}
+        value={orderTime == "immediate" ? "immediate" : orderTime}
         onValueChange={updateOrderTime}
       />
     </div>

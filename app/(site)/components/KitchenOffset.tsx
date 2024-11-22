@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { FormDescription } from "@/components/ui/form";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 
-export default function KitchenOffset() {
+export default function KitchenOffset({ variant }: { variant: "sidebar" | "header" }) {
   const [offset, setOffset] = useState<number>(0);
 
   useEffect(() => {
@@ -24,11 +24,19 @@ export default function KitchenOffset() {
   return (
     <DialogWrapper
       hasHeader
+      contentClassName="border-t-4 border-t-gray-400"
       title="Anticipo cottura prodotti"
       trigger={
-        <SidebarMenuButton>
-          <ChefHat className="mr-2 h-4 w-4" /> Cucina
-        </SidebarMenuButton>
+        variant == "sidebar" ? (
+          <SidebarMenuButton>
+            <ChefHat className="h-4 w-4" /> Cucina
+          </SidebarMenuButton>
+        ) : (
+          <Button variant={"outline"} className="w-44">
+            <ChefHat className="mr-2 h-4 w-4" />
+            Anticipo cucina
+          </Button>
+        )
       }
       footer={
         <DialogClose className="w-full">

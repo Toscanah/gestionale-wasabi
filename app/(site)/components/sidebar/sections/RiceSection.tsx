@@ -13,7 +13,7 @@ import { CookingPot } from "@phosphor-icons/react";
 import { ChevronDown } from "lucide-react";
 
 export default function RiceSection() {
-  const riceItems = [<RiceDialog />, <RiceDefaultValues />];
+  const riceItems = [<RiceDialog variant="sidebar" />, <RiceDefaultValues />];
 
   return (
     <SidebarMenu>

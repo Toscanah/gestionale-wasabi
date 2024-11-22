@@ -6,7 +6,7 @@ export default function KitchenSettings() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <KitchenOffset />
+        <KitchenOffset variant="sidebar" />
       </SidebarMenuItem>
     </SidebarMenu>
   );

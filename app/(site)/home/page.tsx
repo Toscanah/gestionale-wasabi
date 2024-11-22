@@ -49,18 +49,9 @@ export default function Home() {
 
       <div className="w-screen p-4 h-screen flex flex-col gap-4">
         <div className="w-full flex justify-between items-center">
-          <div className="flex items-center gap-4 text-2xl">
+          <div className="flex items-center gap-4 text-2xl w-80">
             <SidebarTrigger /> Wasabi Sushi
           </div>
-
-          {/**className="absolute left-[15px] top-[22px]" */}
-          {/* <Button
-            onClick={async () =>
-              await print(() => KitchenReceipt<TableOrder>(orders[OrderType.TABLE][0]))
-            }
-          >
-            test cucina
-          </Button> */}
 
           <Header />
         </div>
