@@ -50,13 +50,19 @@ export default function getColumns(
           autoFocus={row.original.product_id == -1}
           onKeyDown={(e: any) => {
             const currentInput = getInputRef({ rowIndex: row.index, colIndex: 0 });
+            const inputValue = currentInput?.value || "";
 
-            if (currentInput?.value !== "" && currentInput) {
-              handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
-            }
-
-            if (e.key === "Enter") {
-              handleFieldChange("code", e.target.value, row.index);
+            if (inputValue === "") {
+              if (e.key !== "Enter") {
+                handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
+              }
+            } else {
+              if (e.key === "Enter") {
+                handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
+                handleFieldChange("code", e.target.value, row.index);
+              } else {
+                handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
+              }
             }
           }}
         />

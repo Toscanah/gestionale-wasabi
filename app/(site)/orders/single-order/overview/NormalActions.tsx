@@ -12,6 +12,7 @@ import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
+import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
@@ -25,6 +26,7 @@ export default function NormalActions({
   quickPaymentOption,
 }: NormalActionsProps) {
   const { onOrdersUpdate } = useWasabiContext();
+  const { toggleDialog } = useOrderContext();
 
   const canSplit = () =>
     order.products.length > 1 ||
@@ -45,7 +47,7 @@ export default function NormalActions({
         products: order.products,
       }
     );
-
+    
     if (unprintedProducts.length > 0) {
       onOrdersUpdate(order.type);
       content.push(() => KitchenReceipt({ ...order, products: unprintedProducts }));
@@ -59,7 +61,7 @@ export default function NormalActions({
       content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
     }
 
-    await print(...content);
+    await print(...content).then(() => toggleDialog(false));
   };
 
   const handleFullPayment = async () => {

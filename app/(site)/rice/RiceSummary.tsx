@@ -6,16 +6,13 @@ export default function RiceSummary() {
   const { rice } = useWasabiContext();
 
   return (
-    <div
+    <span
       className={cn(
-        "flex items-center justify-center text-3xl w-80",
+        "flex items-center text-3xl w-96 justify-end ",
         rice.remaining.amount < rice.remaining.threshold && "text-destructive"
       )}
     >
-      <p>
-        Riso rimanente:{" "}
-        <b>{formatRice(rice.remaining.amount)}</b>
-      </p>
-    </div>
+      Riso rimanente: {formatRice(rice.remaining.amount)}
+    </span>
   );
 }

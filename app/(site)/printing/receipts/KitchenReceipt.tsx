@@ -3,9 +3,11 @@ import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/Prisma
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType, OrderType } from "@prisma/client";
+import getReceiptSize from "../../util/functions/getReceiptSize";
 
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
-  const size: { width: TextSize; height: TextSize } = { width: 2, height: 2 };
+  const bigSize = getReceiptSize(2,2);
+  const smallSize = getReceiptSize(1,1);
 
   const tableOrder = (order as TableOrder)?.table_order ?? false;
   const homeOrder = (order as HomeOrder)?.home_order ?? false;
@@ -38,7 +40,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
   const renderReceiptSection = (title: ReceiptTitle, products: typeof order.products) => (
     <>
-      <Text align="center" bold size={size}>
+      <Text align="center" bold size={bigSize}>
         {title.toUpperCase()}
       </Text>
       <Br />
@@ -49,12 +51,12 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {tableOrder && (
         <Row
           left={
-            <Text bold size={size}>
+            <Text bold size={smallSize}>
               TAVOLO
             </Text>
           }
           right={
-            <Text bold size={size}>
+            <Text bold size={smallSize}>
               {tableOrder.table}
             </Text>
           }
@@ -64,12 +66,12 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {pickupOrder && (
         <Row
           left={
-            <Text bold size={size}>
+            <Text bold size={smallSize}>
               ASPORTO
             </Text>
           }
           right={
-            <Text bold size={size}>
+            <Text bold size={smallSize}>
               {pickupOrder.name}
             </Text>
           }
@@ -79,12 +81,12 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {homeOrder && (
         <Row
           left={
-            <Text bold size={size}>
+            <Text bold size={smallSize}>
               DELIVERY
             </Text>
           }
           right={
-            <Text bold size={size}>
+            <Text bold size={smallSize}>
               {homeOrder.address.doorbell}
             </Text>
           }
@@ -94,12 +96,12 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {pickupOrder && (
         <Row
           left={
-            <Text bold size={size}>
+            <Text bold size={bigSize}>
               Orario
             </Text>
           }
           right={
-            <Text bold size={size}>
+            <Text bold size={bigSize}>
               {pickupOrder.when == "immediate"
                 ? "Prima possibile"
                 : calculateAdjustedTime(pickupOrder.when ?? "")}
@@ -110,9 +112,9 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       {homeOrder && (
         <Row
-          left={<Text size={size}>Orario</Text>}
+          left={<Text size={bigSize}>Orario</Text>}
           right={
-            <Text bold size={size}>
+            <Text bold size={bigSize}>
               {homeOrder.when == "immediate"
                 ? "Prima possibile"
                 : calculateAdjustedTime(homeOrder.when ?? "")}
