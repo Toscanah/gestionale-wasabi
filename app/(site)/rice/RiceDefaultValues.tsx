@@ -23,7 +23,7 @@ export default function RiceDefaultValues() {
     const updatedDefaults = [...riceDefaults, value];
     setRiceDefaults(updatedDefaults);
     localStorage.setItem("riceDefaults", JSON.stringify(updatedDefaults));
-    setNewDefault(undefined); // Clear input
+    setNewDefault(undefined);
   };
 
   const removeDefaultValue = (value: number) => {
@@ -43,17 +43,19 @@ export default function RiceDefaultValues() {
       }
     >
       <div className="flex flex-wrap gap-4 justify-between items-center max-w-[30vw] w-[30vw]">
-        {riceDefaults.map((defaultValue) => (
-          <Button className="flex items-center gap-2 w grow group" key={defaultValue}>
-            <X
-              onClick={() => removeDefaultValue(defaultValue)}
-              size={24}
-              className="transform transition-transform duration-300 
+        {riceDefaults
+          
+          .map((defaultValue) => (
+            <Button className="flex items-center gap-2 w grow group" key={defaultValue}>
+              <X
+                onClick={() => removeDefaultValue(defaultValue)}
+                size={24}
+                className="transform transition-transform duration-300 
                         group-hover:rotate-[360deg] hover:font-bold hover:drop-shadow-2xl"
-            />
-            {defaultValue}
-          </Button>
-        ))}
+              />
+              {defaultValue}
+            </Button>
+          ))}
       </div>
       <div className="w-full flex gap-2">
         <Input

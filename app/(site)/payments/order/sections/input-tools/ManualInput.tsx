@@ -28,6 +28,7 @@ export default function ManualInput() {
   return (
     <div className="w-full h-full flex flex-col gap-4 justify-evenly items-center">
       <Input
+        onClick={() => calcRef.current?.select()}
         ref={calcRef}
         className="w-72 h-12 text-xl"
         value={typedAmount}

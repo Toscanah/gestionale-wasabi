@@ -6,6 +6,7 @@ import OrderInfoSection from "../common/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
 import { OrderType } from "@prisma/client";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
+import getReceiptSize from "../../util/functions/getReceiptSize";
 
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,
@@ -16,16 +17,21 @@ export default function OrderReceipt<T extends AnyOrder>(
   const homeOrder = (order as HomeOrder).home_order;
   const pickupOrder = (order as PickupOrder).pickup_order;
 
+  const bigSize = getReceiptSize(2, 2);
+
   return (
     <>
       {HeaderSection()}
 
-      {tableOrder && <Text align="center">Tavolo {tableOrder.table}</Text>}
+      {tableOrder && (
+        <Text align="center" size={bigSize}>
+          Tavolo {tableOrder.table}
+        </Text>
+      )}
       {pickupOrder && (
-        <>
-          <Text align="center">{pickupOrder.name}</Text>
-          <Text align="center">{pickupOrder.when}</Text>
-        </>
+        <Text align="center" size={bigSize}>
+          {pickupOrder.name} - {pickupOrder.when}
+        </Text>
       )}
 
       <Br />

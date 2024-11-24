@@ -27,8 +27,13 @@ export default function RiceDialog({ variant }: { variant: "header" | "sidebar" 
   return (
     <DialogWrapper
       onOpenChange={() => setNewRice({ ...rice.total, amount: 0 })}
-      title="Gestione riso"
-      contentClassName="border-t-4 border-t-gray-400"
+      title={
+        <>
+          Gestione riso <span className="text-muted-foreground">(grammi)</span>
+        </>
+      }
+      hasHeader
+      contentClassName="border-t-4 border-t-gray-400 w-[40vw]"
       trigger={
         variant == "sidebar" ? (
           <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
@@ -63,7 +68,7 @@ export default function RiceDialog({ variant }: { variant: "header" | "sidebar" 
       <div className="flex flex-col gap-4">
         <div className="space-y-2">
           <Label htmlFor="rice" className="text-xl">
-            Riso da aggiungere <span className="text-muted-foreground">(grammi)</span>
+            Riso da aggiungere
           </Label>
           <SelectWrapper
             className="h-10"
@@ -71,10 +76,12 @@ export default function RiceDialog({ variant }: { variant: "header" | "sidebar" 
               riceDefaults && riceDefaults.length > 0
                 ? [
                     {
-                      items: riceDefaults.map((item) => ({
-                        name: String(item),
-                        value: String(item),
-                      })),
+                      items: riceDefaults
+                        .sort((a, b) => b - a)
+                        .map((item) => ({
+                          name: String(item),
+                          value: String(item),
+                        })),
                     },
                   ]
                 : []
@@ -89,51 +96,74 @@ export default function RiceDialog({ variant }: { variant: "header" | "sidebar" 
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="rice" className="text-xl">
-            Riso da aggiungere <span className="text-muted-foreground">(grammi)</span>
-          </Label>
-          <Input
-            className="h-10 text-2xl"
-            type="number"
-            id="rice"
-            value={newRice.amount}
-            onChange={(e) =>
-              setNewRice({
-                id: 1,
-                amount: e.target.valueAsNumber,
-                threshold: newRice.threshold,
-              })
-            }
-          />
+        <div className="flex w-full justify-between gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="add-rice" className="text-xl">
+              Riso da AGGIUNGERE
+            </Label>
+            <Input
+              className="h-10 text-2xl"
+              type="number"
+              id="add-rice"
+              // defaultValue={newRice.amount}
+              onChange={(e) =>
+                setNewRice({
+                  id: 1,
+                  amount: e.target.valueAsNumber,
+                  threshold: newRice.threshold,
+                })
+              }
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="rem-rice" className="text-xl">
+              Riso da TOGLIERE
+            </Label>
+            <Input
+              className="h-10 text-2xl"
+              type="number"
+              id="rem-rice"
+              // defaultValue={newRice.amount}
+              onChange={(e) =>
+                setNewRice({
+                  id: 1,
+                  amount: -e.target.valueAsNumber,
+                  threshold: newRice.threshold,
+                })
+              }
+            />
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="threshold" className="text-xl">
-            Soglia avviso <span className="text-muted-foreground">(grammi)</span>
-          </Label>
-          <Input
-            className="h-10 text-2xl"
-            type="number"
-            id="threshold"
-            value={newRice.threshold}
-            onChange={(e) =>
-              setNewRice({ id: 1, amount: newRice.amount, threshold: e.target.valueAsNumber })
-            }
-          />
-        </div>
+        <div className="flex w-full justify-between gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="threshold" className="text-xl">
+              Soglia avviso
+            </Label>
+            <Input
+              className="h-10 text-2xl"
+              type="number"
+              id="threshold"
+              value={newRice.threshold}
+              onChange={(e) =>
+                setNewRice({ id: 1, amount: newRice.amount, threshold: e.target.valueAsNumber })
+              }
+            />
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="total" className="text-xl">
-            Riso totale fin ad ora <span className="text-muted-foreground">(grammi)</span>
-          </Label>
-          <Input
-            disabled
-            className="h-10 text-2xl"
-            type="number"
-            id="total"
-            value={rice.total.amount}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="total" className="text-xl">
+              Riso totale fin ad ora
+            </Label>
+            <Input
+              disabled
+              className="h-10 text-2xl"
+              type="number"
+              id="total"
+              value={rice.total.amount}
+            />
+          </div>
         </div>
       </div>
     </DialogWrapper>

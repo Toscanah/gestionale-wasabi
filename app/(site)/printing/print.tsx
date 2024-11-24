@@ -1,6 +1,23 @@
 import { ReactNode } from "react";
 import { Printer, Raw, render } from "react-thermal-printer";
 
+interface SerialPort {
+  open(options: { baudRate: number }): Promise<void>;
+  close(): Promise<void>;
+  writable: WritableStream | null;
+}
+
+interface Serial {
+  getPorts(): Promise<SerialPort[]>;
+  requestPort(): Promise<SerialPort>;
+}
+
+declare global {
+  interface Navigator {
+    serial: Serial;
+  }
+}
+
 export default async function print(...contents: (() => ReactNode)[]) {
   /**
    * Passaggi per configurare la stampante termica:
@@ -30,7 +47,7 @@ export default async function print(...contents: (() => ReactNode)[]) {
 
   const data: Uint8Array = await render(receipt);
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
-  const port: SerialPort = ports[0];
+  const port = ports[0];
 
   if (port) {
     await port.open({ baudRate: 19200 });
