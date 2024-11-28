@@ -29,8 +29,8 @@ export function useOrderManager(
     fetchRequest<AnyOrder>("POST", "/api/orders/", "cancelOrder", {
       orderId: order.id,
       cooked,
-    }).then(() => {
-      onOrdersUpdate(order.type as OrderType);
+    }).then(async () => {
+      await onOrdersUpdate(order.type as OrderType);
       fetchRemainingRice();
     });
 

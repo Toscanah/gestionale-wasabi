@@ -19,9 +19,9 @@ export default function FooterSection(orderId: number) {
       </Text>
       <Br />
 
-      <Text align="center">
+      {/* <Text align="center">
         Se sei soddisfatto del nostro servizio per favore dacci un giudizio
-      </Text>
+      </Text> */}
 
       {/* <Br />
       <QRCode

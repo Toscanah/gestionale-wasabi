@@ -2,7 +2,7 @@ import getColumns from "./getColumns";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { useEffect, useState } from "react";
 import { useWasabiContext } from "../../context/WasabiContext";
-import { OrderType } from "@prisma/client";
+import { OrderState, OrderType } from "@prisma/client";
 import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
 import OrderOverview from "./overview/OrderOverview";
@@ -77,7 +77,7 @@ export default function OrderTable() {
   useEffect(() => {
     async function printKitchenRec() {
       fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "updatePrintedAmounts", {
-        products: order.products,
+        products: order.products ?? [],
       }).then(async (remainingProducts) => {
         onOrdersUpdate(order.type);
 
@@ -89,7 +89,7 @@ export default function OrderTable() {
       });
     }
 
-    if (!dialogOpen && !order.suborderOf) {
+    if (!dialogOpen && !order.suborderOf && order.state !== "CANCELLED") {
       printKitchenRec();
     }
   }, [dialogOpen]);
@@ -99,10 +99,7 @@ export default function OrderTable() {
       <div className="w-[80%] h-full flex flex-col gap-6 justify-between">
         <Table table={table} tableClassName="h-full max-h-full" />
         <DangerActions
-          cancelOrder={(cooked) => {
-            cancelOrder(cooked);
-            toggleDialog(false);
-          }}
+          cancelOrder={async (cooked) => await cancelOrder(cooked).then(() => toggleDialog(false))}
           deleteProducts={deleteProducts}
           table={table}
         />

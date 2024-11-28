@@ -7,15 +7,13 @@ import { Warning } from "@phosphor-icons/react";
 import { Table } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 
-export default function DangerActions({
-  deleteProducts,
-  cancelOrder,
-  table,
-}: {
+interface DangerActionsProps {
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
-  cancelOrder: (cooked: boolean) => void;
+  cancelOrder: (cooked: boolean) => Promise<void>;
   table: Table<any>;
-}) {
+}
+
+export default function DangerActions({ deleteProducts, cancelOrder, table }: DangerActionsProps) {
   const [productsCooked, setProductsCooked] = useState(false);
 
   useEffect(() => setProductsCooked(false), []);
@@ -31,7 +29,7 @@ export default function DangerActions({
             Elimina ordine
           </Button>
         }
-        onDelete={() => cancelOrder(productsCooked)}
+        onDelete={async () => await cancelOrder(productsCooked)}
       >
         <div className="space-y-2">
           <span className="text-lg">

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Printer, Raw, render } from "react-thermal-printer";
+import { Printer, render } from "react-thermal-printer";
 
 interface SerialPort {
   open(options: { baudRate: number }): Promise<void>;
@@ -39,6 +39,7 @@ export default async function print(...contents: (() => ReactNode)[]) {
    * - I dati vengono quindi inviati alla stampante tramite la porta seriale utilizzando il tasso di trasmissione configurato.
    * - Alla fine, la connessione alla porta viene chiusa.
    */
+  
   const receipt = (
     <Printer characterSet="wpc1256_arabic" type="epson">
       {contents.map((content) => content())}
@@ -59,8 +60,5 @@ export default async function print(...contents: (() => ReactNode)[]) {
     }
 
     await port.close();
-    return true;
   }
-
-  return false;
 }
