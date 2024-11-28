@@ -15,12 +15,6 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
 
 export default function Home() {
-  const [activeOrders, setActiveOrders] = useState<{
-    [OrderType.TABLE]: boolean;
-    [OrderType.TO_HOME]: boolean;
-    [OrderType.PICK_UP]: boolean;
-  }>({ [OrderType.TABLE]: true, [OrderType.TO_HOME]: true, [OrderType.PICK_UP]: true });
-
   const [orders, setOrders] = useState<{
     [OrderType.TABLE]: TableOrder[];
     [OrderType.TO_HOME]: HomeOrder[];
@@ -31,12 +25,18 @@ export default function Home() {
     [OrderType.PICK_UP]: [],
   });
 
-  const toggleOrder = (type: OrderType) => {
-    setActiveOrders((prev) => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
-  };
+  const [activeOrders, setActiveOrders] = useState<{
+    [OrderType.TABLE]: boolean;
+    [OrderType.TO_HOME]: boolean;
+    [OrderType.PICK_UP]: boolean;
+  }>({ [OrderType.TABLE]: true, [OrderType.TO_HOME]: true, [OrderType.PICK_UP]: true });
+
+  const toggleOrder = (type: OrderType) =>
+    setActiveOrders((prev) =>
+      Object.keys(prev).filter((key) => prev[key as OrderType]).length === 1 && prev[type]
+        ? prev
+        : { ...prev, [type]: !prev[type] }
+    );
 
   const fetchOrders = (type: OrderType) =>
     fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrdersByType", { type }).then((data) => {
@@ -79,10 +79,7 @@ export default function Home() {
               <ResizablePanel
                 defaultSize={100 / activeOrderTypes.length}
                 id={type}
-                className={cn(
-                  "h-full flex flex-col items-center"
-                  //type === OrderType.TO_HOME ? "w-[35%]" : "w-[32.5%]"
-                )}
+                className="h-full flex flex-col items-center"
               >
                 <div className="flex w-full justify-between items-center ">
                   <CreateOrder
@@ -90,9 +87,7 @@ export default function Home() {
                     triggerClassName={cn(
                       "rounded-none",
                       index === 0 && "rounded-tl-md",
-                      index === activeOrderTypes.length - 1 && "rounded-tr-md",
-                      // activeOrderTypes.length === 2 && index === 1 && "border-l-[2px]",
-                      // activeOrderTypes.length === 3 && index === 1 && "border-x-[2px]",
+                      index === activeOrderTypes.length - 1 && "rounded-tr-md"
                     )}
                   >
                     {orders[type].length !== 0 && "(" + orders[type].length + ")"}
@@ -107,9 +102,7 @@ export default function Home() {
                 />
               </ResizablePanel>
 
-              {index < activeOrderTypes.length - 1 && (
-                <ResizableHandle disabled/>
-              )}
+              {index < activeOrderTypes.length - 1 && <ResizableHandle disabled />}
             </Fragment>
           ))}
         </ResizablePanelGroup>

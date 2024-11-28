@@ -10,35 +10,38 @@ import {
 import { Dispatch, SetStateAction } from "react";
 
 const PAGE_SIZE = 99999;
+const noop = () => {};
+
+interface TableProps<T> {
+  data: T[];
+  columns: ColumnDef<T>[];
+  globalFilter?: string;
+  setGlobalFilter?: Dispatch<SetStateAction<string>>;
+  rowSelection?: Record<string, boolean>;
+  setRowSelection?: Dispatch<SetStateAction<Record<string, boolean>>>;
+}
 
 export default function getTable<T>({
   data,
   columns,
-  globalFilter,
-  setGlobalFilter,
-  rowSelection,
-  setRowSelection,
-}: {
-  data: T[];
-  columns: ColumnDef<any>[];
-  globalFilter?: string;
-  setGlobalFilter?: Dispatch<SetStateAction<string>>;
-  rowSelection?: any;
-  setRowSelection?: Dispatch<SetStateAction<any>>;
-}): Table<T> {
+  globalFilter = "",
+  setGlobalFilter = noop,
+  rowSelection = {},
+  setRowSelection = noop,
+}: TableProps<T>): Table<T> {
   return useReactTable({
     data,
     columns,
     state: {
-      globalFilter: globalFilter || "",
-      rowSelection: rowSelection || {},
+      globalFilter,
+      rowSelection,
     },
-    onGlobalFilterChange: setGlobalFilter || (() => {}),
+    onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: setRowSelection || (() => {}),
+    onRowSelectionChange: setRowSelection,
     autoResetPageIndex: false,
     initialState: {
       pagination: {

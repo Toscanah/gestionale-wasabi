@@ -9,7 +9,11 @@ import DialogWrapper from "../components/dialog/DialogWrapper";
 import SelectWrapper from "../components/select/SelectWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 
-export default function RiceDialog({ variant }: { variant: "header" | "sidebar" }) {
+interface RiceDialogProps {
+  variant: "header" | "sidebar";
+}
+
+export default function RiceDialog({ variant }: RiceDialogProps) {
   const { rice, updateTotalRice, resetRice } = useWasabiContext();
   const [newRice, setNewRice] = useState<Rice>({ ...rice.total, amount: 0 });
   const [riceDefaults, setRiceDefaults] = useState<number[]>([]);
@@ -65,10 +69,10 @@ export default function RiceDialog({ variant }: { variant: "header" | "sidebar" 
         </>
       }
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <div className="space-y-2">
           <Label htmlFor="rice" className="text-xl">
-            Riso da aggiungere
+            Valori di base
           </Label>
           <SelectWrapper
             className="h-10"

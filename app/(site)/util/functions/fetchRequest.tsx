@@ -24,6 +24,7 @@ export default async function fetchRequest<T>(
           url.searchParams.append(key, (content as any)[key]);
         });
       }
+      
       break;
 
     case "POST":

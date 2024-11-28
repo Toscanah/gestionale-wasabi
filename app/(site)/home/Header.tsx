@@ -7,17 +7,22 @@ import RiceSummary from "../rice/RiceSummary";
 import KitchenOffset from "../components/KitchenOffset";
 import { OrderType } from "@prisma/client";
 
-export default function Header({
-  toggleOrder,
-  activeOrders,
-}: {
+interface HeaderProps {
   toggleOrder: (type: OrderType) => void;
   activeOrders: {
     [OrderType.TABLE]: boolean;
     [OrderType.TO_HOME]: boolean;
     [OrderType.PICK_UP]: boolean;
   };
-}) {
+}
+
+const orderLabels: { type: OrderType; label: string }[] = [
+  { type: OrderType.TABLE, label: "Tavoli" },
+  { type: OrderType.TO_HOME, label: "Domicilio" },
+  { type: OrderType.PICK_UP, label: "Asporto" },
+];
+
+export default function Header({ toggleOrder, activeOrders }: HeaderProps) {
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -27,33 +32,19 @@ export default function Header({
         </div>
 
         <div className="flex justify-evenly w-full">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="table-orders"
-              checked={activeOrders[OrderType.TABLE]}
-              onCheckedChange={() => toggleOrder(OrderType.TABLE)}
-            />
-            <Label htmlFor="table-orders">Tavoli</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="home-orders"
-              checked={activeOrders[OrderType.TO_HOME]}
-              onCheckedChange={() => toggleOrder(OrderType.TO_HOME)}
-            />
-            <Label htmlFor="home-orders">Domicilio</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="pickup-orders"
-              checked={activeOrders[OrderType.PICK_UP]}
-              onCheckedChange={() => toggleOrder(OrderType.PICK_UP)}
-            />
-            <Label htmlFor="pickup-orders">Asporto</Label>
-          </div>
+          {orderLabels.map(({ type, label }) => (
+            <div key={label} className="flex items-center space-x-2">
+              <Checkbox
+                id={label}
+                checked={activeOrders[type]}
+                onCheckedChange={() => toggleOrder(type)}
+              />
+              <Label htmlFor={label}>{label}</Label>
+            </div>
+          ))}
         </div>
       </div>
-      
+
       <RiceSummary />
     </>
   );
