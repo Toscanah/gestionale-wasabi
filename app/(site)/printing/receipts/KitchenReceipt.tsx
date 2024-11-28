@@ -5,9 +5,16 @@ import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType, OrderType } from "@prisma/client";
 import getReceiptSize from "../../util/functions/getReceiptSize";
 
+const calculateAdjustedTime = (originalTime: string) => {
+  let offset: number = parseInt(localStorage.getItem("kitchenOffset") ?? "0");
+  const date = new Date(originalTime);
+  date.setMinutes(date.getMinutes() - offset);
+  return date.toLocaleTimeString();
+};
+
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
-  const bigSize = getReceiptSize(2,2);
-  const smallSize = getReceiptSize(1,1);
+  const bigSize = getReceiptSize(2, 2);
+  const smallSize = getReceiptSize(1, 1);
 
   const tableOrder = (order as TableOrder)?.table_order ?? false;
   const homeOrder = (order as HomeOrder)?.home_order ?? false;
@@ -28,13 +35,6 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const noneProducts = order.products.filter(
     (product) => product.product.kitchen === KitchenType.NONE
   );
-
-  const calculateAdjustedTime = (originalTime: string) => {
-    let offset: number = parseInt(localStorage.getItem("kitchenOffset") ?? "0");
-    const date = new Date(originalTime);
-    date.setMinutes(date.getMinutes() - offset);
-    return date.toLocaleTimeString();
-  };
 
   type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
 
@@ -86,7 +86,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
             </Text>
           }
           right={
-            <Text bold size={smallSize}>
+            <Text bold size={bigSize}>
               {homeOrder.address.doorbell}
             </Text>
           }
@@ -96,7 +96,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {pickupOrder && (
         <Row
           left={
-            <Text bold size={bigSize}>
+            <Text bold size={smallSize}>
               Orario
             </Text>
           }
@@ -112,7 +112,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       {homeOrder && (
         <Row
-          left={<Text size={bigSize}>Orario</Text>}
+          left={<Text size={smallSize}>Orario</Text>}
           right={
             <Text bold size={bigSize}>
               {homeOrder.when == "immediate"

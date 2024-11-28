@@ -28,16 +28,15 @@ export default function NormalActions({
   const { onOrdersUpdate } = useWasabiContext();
   const { toggleDialog } = useOrderContext();
 
-  const canSplit = () =>
-    order.products.length > 1 ||
-    (order.products.length === 1 &&
-      order.products[0].quantity > 1 &&
-      order.type !== OrderType.TO_HOME);
+  const canSplit = (products: ProductInOrderType[]) =>
+    products.length > 1 ||
+    (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.TO_HOME);
 
   const canPayFull = () => applyDiscount(order.total, order.discount) > 0;
 
   const handlePrint = async () => {
-    // Update printed amounts
+    let content = [];
+
     let unprintedProducts = await fetchRequest<ProductInOrderType[]>(
       "POST",
       "/api/products/",
@@ -47,12 +46,7 @@ export default function NormalActions({
       }
     );
 
-    // Ensure data is up-to-date before proceeding
     await onOrdersUpdate(order.type);
-
-    // Prepare content after updating
-    let content = [];
-
     if (unprintedProducts.length > 0) {
       content.push(() => KitchenReceipt({ ...order, products: unprintedProducts }));
     }
@@ -65,7 +59,6 @@ export default function NormalActions({
       content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
     }
 
-    // Print receipts and then close the dialog
     await print(...content);
     toggleDialog(false);
   };
@@ -84,7 +77,7 @@ export default function NormalActions({
         <Button
           className="w-full text-3xl h-12"
           onClick={() => setAction("payPart")}
-          disabled={!canSplit()}
+          disabled={!canSplit(order.products.filter((product) => product.id !== -1))}
         >
           Dividi
         </Button>
