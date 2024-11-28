@@ -16,19 +16,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+interface ChildrenComponentTypeProps {
+  field: ControllerRenderProps;
+  className?: string;
+  onBlur?: () => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+}
+
 type FormFieldProps = {
   control: Control<any>;
   name: string;
   label: string;
   example?: string;
-  children?:
-    | ComponentType<{
-        field: ControllerRenderProps;
-        className?: string;
-        onBlur?: () => void;
-        onKeyDown: (e: React.KeyboardEvent) => void;
-      }>
-    | ReactElement;
+  children?: ComponentType<ChildrenComponentTypeProps> | ReactElement;
   type?: string;
   handleKeyDown?: (e: KeyboardEvent) => void;
   className?: string;

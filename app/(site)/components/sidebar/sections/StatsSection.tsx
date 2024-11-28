@@ -7,7 +7,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { List, UsersFour } from "@phosphor-icons/react";
 import { CaretDown, ChartBar } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 

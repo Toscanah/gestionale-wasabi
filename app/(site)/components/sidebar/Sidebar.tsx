@@ -5,7 +5,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarSeparator,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import AdminSection from "./sections/AdminSection";
 import StatsSection from "./sections/StatsSection";

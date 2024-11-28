@@ -10,13 +10,18 @@ import { cn } from "@/lib/utils";
 import { Cell, flexRender, Table as TanstackTable } from "@tanstack/react-table";
 import { Fragment } from "react";
 
+interface CustomeCellProps<T> {
+  cell: Cell<T, any>;
+  className: string;
+}
+
 interface TableProps<T> {
   table: TanstackTable<T>;
   tableClassName?: string;
   headerClassName?: string;
   rowClassName?: string;
   cellClassName?: (index: number) => string;
-  CustomCell?: ({ cell, className }: { cell: Cell<T, any>; className: string }) => JSX.Element;
+  CustomCell?: ({ cell, className }: CustomeCellProps<T>) => JSX.Element;
   onRowClick?: (orginal: T) => void;
 }
 

@@ -2,6 +2,11 @@ import { OrderType } from "@prisma/client";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { getProductPrice } from "./getProductPrice";
 
+const formatOptionsString = (options: { option: { option_name: string } }[]) =>
+  options
+    .map(({ option }) => option.option_name.charAt(0).toUpperCase() + option.option_name.slice(1))
+    .join(", ");
+
 export default function aggregateProducts(
   products: ProductInOrderType[],
   orderType: OrderType
@@ -9,16 +14,15 @@ export default function aggregateProducts(
   const aggregated: Record<string, ProductInOrderType> = {};
 
   products.forEach((product) => {
-    const optionsString = product.options
-      .map(({ option }) => option.option_name.charAt(0).toUpperCase() + option.option_name.slice(1))
-      .join(", ");
+    const optionsString = formatOptionsString(product.options || []);
+    const key = `${product.product.code} ${product.product.desc || ""} ${optionsString}`;
 
-    const key = `${product.product.code} ${product.product.desc} ${optionsString}`;
+    const aggregatedProduct = aggregated[key];
 
-    if (aggregated[key]) {
-      aggregated[key].quantity += product.quantity;
+    if (aggregatedProduct) {
+      aggregatedProduct.quantity += product.quantity;
     } else {
-      aggregated[key] = { ...product };
+      aggregated[key] = { ...product, quantity: product.quantity };
     }
 
     aggregated[key].total = aggregated[key].quantity * getProductPrice(product, orderType);

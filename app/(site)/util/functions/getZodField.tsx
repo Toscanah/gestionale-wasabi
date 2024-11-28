@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-const getZodField = (
+export default function getZodField(
   type: "number" | "string" | "any" | "array" | "boolean",
   required: boolean = true
-) => {
+) {
   const requiredMsg = "Questo campo è richiesto";
 
   switch (type) {
@@ -26,6 +26,4 @@ const getZodField = (
     case "any":
       return required ? z.any({ required_error: requiredMsg }) : z.any().optional();
   }
-};
-
-export default getZodField;
+}

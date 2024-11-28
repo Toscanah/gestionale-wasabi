@@ -10,7 +10,7 @@ interface WasabiContextProps {
   rice: RiceState;
   updateTotalRice: (total: Rice) => void;
   fetchRemainingRice: () => void;
-  onOrdersUpdate: (type: OrderType) => void;
+  onOrdersUpdate: (type: OrderType) => Promise<void>;
   resetRice: () => void;
 }
 
@@ -24,13 +24,12 @@ export const useWasabiContext = () => {
   return context;
 };
 
-export const WasabiProvider = ({
-  children,
-  onOrdersUpdate,
-}: {
+interface WasabiProviderProps {
   children: ReactNode;
-  onOrdersUpdate: (type: OrderType) => void;
-}) => {
+  onOrdersUpdate: (type: OrderType) => Promise<void>;
+}
+
+export const WasabiProvider = ({ children, onOrdersUpdate }: WasabiProviderProps) => {
   const [rice, setRice] = useState<RiceState>({
     total: { id: 1, amount: -1, threshold: -1 },
     remaining: { id: 1, amount: -1, threshold: -1 },

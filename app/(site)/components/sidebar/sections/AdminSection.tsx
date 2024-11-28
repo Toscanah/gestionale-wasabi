@@ -7,8 +7,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { CaretDown, Hash, List, Tag } from "@phosphor-icons/react";
-import { Gear, UsersFour } from "@phosphor-icons/react/dist/ssr";
+import { CaretDown} from "@phosphor-icons/react";
+import { Gear } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 
 export default function AdminSection() {

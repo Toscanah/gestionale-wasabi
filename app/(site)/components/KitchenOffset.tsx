@@ -8,7 +8,11 @@ import { Label } from "@/components/ui/label";
 import { FormDescription } from "@/components/ui/form";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 
-export default function KitchenOffset({ variant }: { variant: "sidebar" | "header" }) {
+interface KitchenOffsetProps {
+  variant: "sidebar" | "header";
+}
+
+export default function KitchenOffset({ variant }: KitchenOffsetProps) {
   const [offset, setOffset] = useState<number>(0);
 
   useEffect(() => {

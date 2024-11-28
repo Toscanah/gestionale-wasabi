@@ -27,13 +27,12 @@ export type OrderStats = {
   avgOrderCost: number;
 };
 
-export default function OrderHistory({
-  customer,
-  onCreate,
-}: {
+interface OrderHistoryProps {
   customer: CustomerWithDetails;
   onCreate?: (newProducts: ProductInOrderType[]) => void;
-}) {
+}
+
+export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) {
   const [selectedProducts, setSelectedProducts] = useState<ProductInOrderType[]>([]);
   const orderTypes = useMemo(
     () => [
@@ -51,7 +50,6 @@ export default function OrderHistory({
     avgOrdersPerYear: 0,
     avgOrderCost: 0,
   });
-
 
   const allOrders = useMemo(
     () => [...customer.home_orders, ...customer.pickup_orders],
@@ -134,13 +132,12 @@ export default function OrderHistory({
     return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
   };
 
-  const handleCheckboxChange = (product: ProductInOrderType) => {
+  const handleCheckboxChange = (product: ProductInOrderType) =>
     setSelectedProducts((prevSelected) =>
       prevSelected.some((p) => p.id === product.id)
         ? prevSelected.filter((p) => p.id !== product.id)
         : [...prevSelected, product]
     );
-  };
 
   const handleRecreate = () => onCreate?.(selectedProducts);
 
@@ -159,7 +156,7 @@ export default function OrderHistory({
           const selectedOrder = selectedOrderType?.orders.find(
             (order) => order.id === Number(orderIdString)
           );
-          
+
           setSelectedProducts(selectedOrder?.order.products || []);
         }}
         type="single"
@@ -195,7 +192,7 @@ export default function OrderHistory({
                     onCreate={onCreate}
                     sortedProducts={order.products.sort((a, b) => b.quantity - a.quantity)}
                   />
-                  
+
                   {onCreate && (
                     <Button
                       className="w-full"

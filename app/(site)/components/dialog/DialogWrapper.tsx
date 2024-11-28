@@ -98,7 +98,7 @@ export default function DialogWrapper({
           </DialogFooter>
         )}
 
-        {footer && <DialogFooter className="w-full">{footer}</DialogFooter>}
+        {footer && <DialogFooter className="w-full sm:space-x-4">{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>
   );

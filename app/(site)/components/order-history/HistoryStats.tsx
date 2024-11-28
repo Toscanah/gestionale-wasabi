@@ -1,7 +1,11 @@
 import { AccordionContent } from "@/components/ui/accordion";
 import { OrderStats } from "./OrderHistory";
 
-export default function HistoryStats({ stats }: { stats: OrderStats }) {
+interface HistoryStatsProps {
+  stats: OrderStats;
+}
+
+export default function HistoryStats({ stats }: HistoryStatsProps) {
   return (
     <AccordionContent className="space-y-4">
       <table className="table-auto w-full text-left">

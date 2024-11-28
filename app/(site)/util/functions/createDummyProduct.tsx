@@ -4,7 +4,9 @@ export default function createDummyProduct(): ProductInOrderType {
   return {
     riceQuantity: 0,
     state: "IN_ORDER",
+    printedAmount: -1,
     product: {
+      kitchen: "NONE",
       active: true,
       category: {
         active: false,

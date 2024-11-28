@@ -59,5 +59,8 @@ export default async function print(...contents: (() => ReactNode)[]) {
     }
 
     await port.close();
+    return true;
   }
+
+  return false;
 }
