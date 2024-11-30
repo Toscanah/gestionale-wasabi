@@ -51,13 +51,13 @@ export default function NormalActions({
       content.push(() => KitchenReceipt({ ...order, products: unprintedProducts }));
     }
 
-    content.push(() =>
-      OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.TO_HOME)
-    );
+    // content.push(() =>
+    //   OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.TO_HOME)
+    // );
 
-    if (order.type === OrderType.TO_HOME) {
-      content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
-    }
+    // if (order.type === OrderType.TO_HOME) {
+    //   content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
+    // }
 
     await print(...content).then(() => toggleDialog(false));
   };
