@@ -5,14 +5,40 @@ import formatRice from "../util/functions/formatRice";
 export default function RiceSummary() {
   const { rice } = useWasabiContext();
 
+  const remainingToThreshold = rice.remaining.amount - rice.remaining.threshold;
+  const isZeroOrLess = (value: number) => value <= 0;
+
   return (
-    <span
+    <table
       className={cn(
-        "flex items-center text-3xl w-96 justify-end ",
+        "w-[28rem] text-3xl border-collapse",
         rice.remaining.amount < rice.remaining.threshold && "text-destructive"
       )}
     >
-      Riso rimanente: {formatRice(rice.remaining.amount)}
-    </span>
+      <tbody>
+        <tr>
+          <td className="text-right">Corrente</td>
+          <td
+            className={cn(
+              "text-right font-bold",
+              isZeroOrLess(rice.remaining.amount) && "text-red-600"
+            )}
+          >
+            {formatRice(rice.remaining.amount)}
+          </td>
+        </tr>
+        <tr>
+          <td className="text-right">Fino alla soglia</td>
+          <td
+            className={cn(
+              "text-right font-bold",
+              isZeroOrLess(remainingToThreshold) && "text-red-600"
+            )}
+          >
+            {formatRice(remainingToThreshold)}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }

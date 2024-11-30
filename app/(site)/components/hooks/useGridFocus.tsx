@@ -9,20 +9,16 @@ export default function useGridFocus(defaultFocusedInput: FocussableInput, maxCo
   const inputRefs = useRef<Map<string, HTMLInputElement | null>>(new Map()).current;
   const [focusedInput, setFocusedInput] = useState<FocussableInput>(defaultFocusedInput);
 
-  useEffect(() => {
-    moveToInput(focusedInput);
-  }, [focusedInput]);
+  useEffect(() => moveToInput(focusedInput), [focusedInput]);
 
   const moveToInput = (inputToFocus: FocussableInput) => {
-    const refKey = `${inputToFocus.rowIndex}-${inputToFocus.colIndex}`;
-    const inputToMove = inputRefs.get(refKey);
+    const inputToMove = getInputRef(inputToFocus);
 
     if (inputToMove) {
-      // Ensure the input is focused before selecting it
       setTimeout(() => {
         inputToMove.focus();
         inputToMove.select();
-      }, 0); // A delay of 0 ms queues the operation to run after the current call stack
+      }, 0);
     }
   };
 

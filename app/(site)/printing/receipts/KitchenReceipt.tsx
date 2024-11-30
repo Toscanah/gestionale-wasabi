@@ -6,10 +6,19 @@ import { KitchenType, OrderType } from "@prisma/client";
 import getReceiptSize from "../../util/functions/getReceiptSize";
 
 const calculateAdjustedTime = (originalTime: string) => {
-  let offset: number = parseInt(localStorage.getItem("kitchenOffset") ?? "0");
-  const date = new Date(originalTime);
+  const timeParts = originalTime.split(":");
+  
+  if (timeParts.length !== 2 || isNaN(Number(timeParts[0])) || isNaN(Number(timeParts[1]))) {
+    return "Orario non valido";
+  }
+
+  const offset = parseInt(localStorage.getItem("kitchenOffset") ?? "0", 10);
+  const now = new Date();
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), Number(timeParts[0]), Number(timeParts[1]));
+
   date.setMinutes(date.getMinutes() - offset);
-  return date.toLocaleTimeString();
+
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {

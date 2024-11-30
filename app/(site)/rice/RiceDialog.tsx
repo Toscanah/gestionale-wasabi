@@ -16,6 +16,8 @@ interface RiceDialogProps {
 export default function RiceDialog({ variant }: RiceDialogProps) {
   const { rice, updateTotalRice, resetRice } = useWasabiContext();
   const [newRice, setNewRice] = useState<Rice>({ ...rice.total, amount: 0 });
+  const [riceToAdd, setRiceToAdd] = useState<number>(0);
+  const [riceToRemove, setRiceToRemove] = useState<number>(0);
   const [riceDefaults, setRiceDefaults] = useState<number[]>([]);
 
   useEffect(() => {
@@ -27,6 +29,24 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
       localStorage.setItem("riceDefaults", JSON.stringify([]));
     }
   }, []);
+
+  const handleAddRice = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.valueAsNumber;
+    setRiceToAdd(value);
+    setNewRice({ ...newRice, amount: value });
+  };
+
+  const handleRemoveRice = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.valueAsNumber;
+    setRiceToRemove(value);
+    setNewRice({ ...newRice, amount: -value });
+  };
+
+  const handleSelectChange = (val: string) => {
+    const selectedRice = Number(val);
+    setRiceToAdd(selectedRice)
+    setNewRice({ ...newRice, amount: selectedRice });
+  };
 
   return (
     <DialogWrapper
@@ -75,7 +95,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             Valori di base
           </Label>
           <SelectWrapper
-            className="h-10"
+            className="h-10 text-xl"
             groups={
               riceDefaults && riceDefaults.length > 0
                 ? [
@@ -90,13 +110,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                   ]
                 : []
             }
-            onValueChange={(val) =>
-              setNewRice({
-                id: 1,
-                amount: Number(val),
-                threshold: newRice.threshold,
-              })
-            }
+            onValueChange={handleSelectChange}
           />
         </div>
 
@@ -109,14 +123,8 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
               className="h-10 text-2xl"
               type="number"
               id="add-rice"
-              // defaultValue={newRice.amount}
-              onChange={(e) =>
-                setNewRice({
-                  id: 1,
-                  amount: e.target.valueAsNumber,
-                  threshold: newRice.threshold,
-                })
-              }
+              value={riceToAdd}
+              onChange={handleAddRice}
             />
           </div>
 
@@ -128,14 +136,8 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
               className="h-10 text-2xl"
               type="number"
               id="rem-rice"
-              // defaultValue={newRice.amount}
-              onChange={(e) =>
-                setNewRice({
-                  id: 1,
-                  amount: -e.target.valueAsNumber,
-                  threshold: newRice.threshold,
-                })
-              }
+              value={riceToRemove}
+              onChange={handleRemoveRice}
             />
           </div>
         </div>

@@ -62,9 +62,9 @@ export default function Home() {
     <WasabiProvider onOrdersUpdate={onOrdersUpdate}>
       <WasabiSidebar />
 
-      <div className="w-screen p-4 h-screen flex flex-col gap-4">
+      <div className="w-full p-4 h-screen flex flex-col gap-4">
         <div className="w-full flex justify-between items-center">
-          <div className="flex items-center gap-4 text-2xl w-96">
+          <div className="flex items-center gap-4 text-2xl w-[28rem]">
             <SidebarTrigger /> Wasabi Sushi
           </div>
 
