@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Home() {
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
   const router = useRouter();
 
-  useEffect(() => {+
-    setTheme("dark");
+  useEffect(() => {
+    +setTheme("light");
     router.push("./home");
   }, [router]);
 
