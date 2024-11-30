@@ -7,7 +7,8 @@ const kitchenTypeLabels: Record<TypeOfKitchen, string> = {
   [TypeOfKitchen.HOT]: "Cucina calda",
   [TypeOfKitchen.COLD]: "Cucina fredda",
   [TypeOfKitchen.HOT_AND_COLD]: "Cucina calda e fredda",
-  [TypeOfKitchen.NONE]: "Altro",
+  [TypeOfKitchen.OTHER]: "Altro",
+  [TypeOfKitchen.NONE]: "Nessuna",
 };
 
 export default function KitchenType({ field }: { field: ControllerRenderProps }) {
@@ -15,10 +16,10 @@ export default function KitchenType({ field }: { field: ControllerRenderProps })
     <RadioGroup
       onValueChange={field.onChange}
       defaultValue={field.value}
-      className="w-full flex justify-around flex-wrap "
+      className="w-full flex flex-wrap"
     >
       {Object.entries(kitchenTypeLabels).map(([value, label]) => (
-        <div key={value} className="flex items-center space-x-2 w-[40%]">
+        <div key={value} className="flex items-center space-x-2 w-[45%]">
           <RadioGroupItem value={value} id={value} />
           <Label htmlFor={value}>{label}</Label>
         </div>

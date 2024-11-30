@@ -36,6 +36,7 @@ enum KitchenType {
     HOT
     COLD
     HOT_AND_COLD
+    OTHER
     NONE
 }
 
@@ -142,8 +143,8 @@ model Product {
     category_id Int?
     code        String
     desc        String
-    site_price  Float
-    home_price  Float
+    site_price  Float?           @default(0)
+    home_price  Float?           @default(0)
     rice        Float            @default(0)
     active      Boolean          @default(true)
     kitchen     KitchenType      @default(NONE)

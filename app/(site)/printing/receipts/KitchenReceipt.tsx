@@ -32,8 +32,8 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       product.product.kitchen === KitchenType.HOT_AND_COLD
   );
 
-  const noneProducts = order.products.filter(
-    (product) => product.product.kitchen === KitchenType.NONE
+  const otherProducts = order.products.filter(
+    (product) => product.product.kitchen === KitchenType.OTHER
   );
 
   type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
@@ -135,7 +135,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
     <>
       {coldProducts.length > 0 && renderReceiptSection("Cucina fredda", coldProducts)}
       {hotProducts.length > 0 && renderReceiptSection("Cucina calda", hotProducts)}
-      {noneProducts.length > 0 && renderReceiptSection("Altro", noneProducts)}
+      {otherProducts.length > 0 && renderReceiptSection("Altro", otherProducts)}
     </>
   );
 }
