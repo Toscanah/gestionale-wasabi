@@ -56,8 +56,8 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
             </Text>
           }
           right={
-            <Text bold size={smallSize}>
-              {tableOrder.table}
+            <Text bold size={bigSize}>
+              {tableOrder.table.toLocaleUpperCase()}
             </Text>
           }
         />
@@ -71,8 +71,8 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
             </Text>
           }
           right={
-            <Text bold size={smallSize}>
-              {pickupOrder.name}
+            <Text bold size={bigSize}>
+              {pickupOrder.name.toLocaleUpperCase()}
             </Text>
           }
         />
@@ -87,7 +87,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {homeOrder.address.doorbell}
+              {homeOrder.address.doorbell.toLocaleUpperCase()}
             </Text>
           }
         />
@@ -112,7 +112,11 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       {homeOrder && (
         <Row
-          left={<Text size={smallSize}>Orario</Text>}
+          left={
+            <Text bold size={smallSize}>
+              Orario
+            </Text>
+          }
           right={
             <Text bold size={bigSize}>
               {homeOrder.when == "immediate"

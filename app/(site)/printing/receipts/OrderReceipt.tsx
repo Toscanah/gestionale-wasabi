@@ -1,4 +1,4 @@
-import { Br, Cut, Line, Text } from "react-thermal-printer";
+import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
@@ -24,14 +24,24 @@ export default function OrderReceipt<T extends AnyOrder>(
       {HeaderSection()}
 
       {tableOrder && (
-        <Text align="center" size={bigSize}>
+        <Text align="right" size={bigSize}>
           Tavolo {tableOrder.table}
         </Text>
       )}
+
       {pickupOrder && (
-        <Text align="center" size={bigSize}>
-          {pickupOrder.name} - {pickupOrder.when}
-        </Text>
+        <Row
+          left={
+            <Text align="center" size={bigSize}>
+              {pickupOrder.name}
+            </Text>
+          }
+          right={
+            <Text align="center" size={bigSize}>
+              {pickupOrder.when}
+            </Text>
+          }
+        />
       )}
 
       <Br />

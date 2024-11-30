@@ -66,6 +66,13 @@ export default function PickUp({
       </div>
 
       <div className="w-full space-y-2">
+        <Label htmlFor="when" className="text-xl">
+          Quando?
+        </Label>
+        <WhenSelector ref={selectRef} onKeyDown={handleKeyDown} />
+      </div>
+
+      <div className="w-full space-y-2">
         <Label htmlFor="phone" className="text-xl flex justify-between items-center">
           <div>
             Telefono <span className="text-muted-foreground">(facoltativo)</span>
@@ -110,13 +117,6 @@ export default function PickUp({
           ref={phoneRef}
           onKeyDown={handleKeyDown}
         />
-      </div>
-
-      <div className="w-full space-y-2">
-        <Label htmlFor="when" className="text-xl">
-          Quando?
-        </Label>
-        <WhenSelector ref={selectRef} onKeyDown={handleKeyDown} />
       </div>
 
       <Button type="submit" className="w-full" onClick={createPickupOrder} ref={buttonRef}>
