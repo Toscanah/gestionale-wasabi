@@ -35,9 +35,8 @@ export default function NormalActions({
   const canPayFull = () => applyDiscount(order.total, order.discount) > 0;
 
   const handlePrint = async () => {
-    let content = [];
-
-    let unprintedProducts = await fetchRequest<ProductInOrderType[]>(
+    const content = [];
+    const unprintedProducts = await fetchRequest<ProductInOrderType[]>(
       "POST",
       "/api/products/",
       "updatePrintedAmounts",
@@ -47,6 +46,7 @@ export default function NormalActions({
     );
 
     await onOrdersUpdate(order.type);
+
     if (unprintedProducts.length > 0) {
       content.push(() => KitchenReceipt({ ...order, products: unprintedProducts }));
     }
@@ -59,7 +59,8 @@ export default function NormalActions({
     //   content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
     // }
 
-    await print(...content).then(() => toggleDialog(false));
+    await print(...content);
+    toggleDialog(false);
   };
 
   const handleFullPayment = async () => {

@@ -46,6 +46,10 @@ export default function OrderTable() {
   }, [newCode, newQuantity]);
 
   const handleFieldChange = (key: "code" | "quantity", value: any, index: number) => {
+    if (key === "quantity" && isNaN(Number(value))) {
+      return;
+    }
+
     const productToUpdate = products[index];
 
     if (productToUpdate.product_id !== -1) {
@@ -75,21 +79,25 @@ export default function OrderTable() {
   }, [payingAction]);
 
   useEffect(() => {
-    async function printKitchenRec() {
-      await onOrdersUpdate(order.type).then(() =>
-        fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "updatePrintedAmounts", {
-          products: order.products ?? [],
-        }).then(async (remainingProducts) => {
-          await onOrdersUpdate(order.type);
+    const printKitchenRec = async () => {
+      await onOrdersUpdate(order.type);
 
-          if (remainingProducts.length > 0) {
-            await print(() =>
-              KitchenReceipt<typeof order>({ ...order, products: remainingProducts })
-            );
-          }
-        })
+      // Step 2: Fetch remaining unprinted products
+      const remainingProducts = await fetchRequest<ProductInOrderType[]>(
+        "POST",
+        "/api/products/",
+        "updatePrintedAmounts",
+        { products: order.products ?? [] }
       );
-    }
+
+      // Step 3: Update orders again (if needed)
+      await onOrdersUpdate(order.type);
+
+      // Step 4: Print if there are remaining products
+      if (remainingProducts.length > 0) {
+        await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
+      }
+    };
 
     if (!dialogOpen && !order.suborderOf && order.state !== "CANCELLED") {
       printKitchenRec();
