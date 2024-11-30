@@ -22,7 +22,7 @@ const columns: ColumnDef<ProductAndCategory>[] = [
     accessorKey: "kitchen",
     header: "Tipo di cucina",
     cellContent: (row) => {
-      let kitchen = "Altro";
+      let kitchen = "Nessuna";
 
       if (row.original.kitchen == KitchenType.COLD) {
         kitchen = "Fredda";
@@ -30,6 +30,8 @@ const columns: ColumnDef<ProductAndCategory>[] = [
         kitchen = "Calda";
       } else if (row.original.kitchen == KitchenType.HOT_AND_COLD) {
         kitchen = "Calda + fredda";
+      } else if (row.original.kitchen == KitchenType.OTHER) {
+        kitchen = "Altro";
       }
 
       return kitchen;
