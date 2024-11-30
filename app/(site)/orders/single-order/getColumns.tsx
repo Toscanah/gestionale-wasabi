@@ -85,7 +85,7 @@ export default function getColumns(
           <Input
             ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 1 })}
             onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 1 })}
-            type="number"
+            type="text"
             className="max-w-20 text-2xl uppercase"
             autoFocus={focusedInput.rowIndex === row.index && focusedInput.colIndex === 1}
             defaultValue={row.original.quantity == 0 ? 1 : row.original.quantity}
@@ -128,7 +128,7 @@ export default function getColumns(
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
 
         return (
-          <div className="space-y-2 max-h-24 overflow-auto">
+          <div className="space-y-2">
             {avalOptions &&
               avalOptions.map((option) => (
                 <div key={option.option.id} className="flex items-center space-x-2">
