@@ -20,8 +20,8 @@ export default async function updateProduct(newProduct: ProductWithInfo) {
     data: {
       code: newProduct.code,
       desc: newProduct.desc,
-      site_price: Number(newProduct.site_price),
-      home_price: Number(newProduct.home_price),
+      site_price: Number(newProduct.site_price) ?? 0,
+      home_price: Number(newProduct.home_price) ?? 0,
       rice: newProduct.rice,
       kitchen: newProduct.kitchen,
       category_id: Number(newProduct.category_id) !== -1 ? Number(newProduct.category_id) : null,

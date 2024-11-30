@@ -22,6 +22,7 @@ export default function OrderReceipt<T extends AnyOrder>(
   return (
     <>
       {HeaderSection()}
+      <Br />
 
       {tableOrder && (
         <Text align="right" size={bigSize}>
