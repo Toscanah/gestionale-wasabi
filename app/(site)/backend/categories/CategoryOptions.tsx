@@ -70,7 +70,7 @@ export default function CategoryOptions({ field, options }: CategoryOptionsProps
                   ? !currentOptions.some(
                       (currentOption) => currentOption.option.id === option.option.id
                     )
-                  : false
+                  : true
               )
               .map((option) => ({
                 value: option.option.id.toString(),
