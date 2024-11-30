@@ -53,12 +53,15 @@ export default async function print(...contents: (() => ReactNode)[]) {
   if (port) {
     await port.open({ baudRate: 19200 });
     const writer = port.writable?.getWriter();
-
+    
     if (writer != null) {
       await writer.write(data);
       writer.releaseLock();
     }
 
     await port.close();
+    return true;
   }
+
+  return false;
 }

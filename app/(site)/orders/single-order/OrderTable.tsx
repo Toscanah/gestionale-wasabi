@@ -76,17 +76,19 @@ export default function OrderTable() {
 
   useEffect(() => {
     async function printKitchenRec() {
-      fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "updatePrintedAmounts", {
-        products: order.products ?? [],
-      }).then(async (remainingProducts) => {
-        onOrdersUpdate(order.type);
+      await onOrdersUpdate(order.type).then(() =>
+        fetchRequest<ProductInOrderType[]>("POST", "/api/products/", "updatePrintedAmounts", {
+          products: order.products ?? [],
+        }).then(async (remainingProducts) => {
+          await onOrdersUpdate(order.type);
 
-        if (remainingProducts.length > 0) {
-          await print(() =>
-            KitchenReceipt<typeof order>({ ...order, products: remainingProducts })
-          );
-        }
-      });
+          if (remainingProducts.length > 0) {
+            await print(() =>
+              KitchenReceipt<typeof order>({ ...order, products: remainingProducts })
+            );
+          }
+        })
+      );
     }
 
     if (!dialogOpen && !order.suborderOf && order.state !== "CANCELLED") {
