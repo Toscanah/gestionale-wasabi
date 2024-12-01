@@ -47,17 +47,17 @@ export default function NormalActions({
 
     await onOrdersUpdate(order.type);
 
-    // if (unprintedProducts.length > 0) {
-    //   content.push(() => KitchenReceipt({ ...order, products: unprintedProducts }));
-    // }
+    if (unprintedProducts.length > 0) {
+      content.push(() => KitchenReceipt({ ...order, products: unprintedProducts }));
+    }
 
     content.push(() =>
       OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.TO_HOME)
     );
 
-    // if (order.type === OrderType.TO_HOME) {
-    //   content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
-    // }
+    if (order.type === OrderType.TO_HOME) {
+      content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
+    }
 
     await print(...content);
     toggleDialog(false);
