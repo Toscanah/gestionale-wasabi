@@ -1,13 +1,36 @@
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import prisma from "../db";
 
-export default async function updatePrintedAmounts(products: ProductInOrderType[]) {
+export default async function updatePrintedAmounts(orderId: number) {
   const remainingProducts: ProductInOrderType[] = [];
-  const originalProducts = products.filter((product) => product.id !== -1);
 
-  if (originalProducts.length == 0) return [];
+  const products = await prisma.productInOrder.findMany({
+    where: { order_id: orderId },
+    include: {
+      options: {
+        include: {
+          option: true,
+        },
+      },
+      product: {
+        include: {
+          category: {
+            include: {
+              options: {
+                select: {
+                  option: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
 
-  for (const product of originalProducts) {
+  if (products.length == 0) return [];
+
+  for (const product of products) {
     const remainingToPrint = product.quantity - product.printedAmount;
 
     if (remainingToPrint > 0) {
