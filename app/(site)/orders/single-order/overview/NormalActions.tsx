@@ -59,8 +59,9 @@ export default function NormalActions({
       content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
     }
 
-    await print(...content);
-    toggleDialog(false);
+    await print(...content).then(
+      async () => await onOrdersUpdate(order.type).then(() => toggleDialog(false))
+    );
   };
 
   const handleFullPayment = async () => {
