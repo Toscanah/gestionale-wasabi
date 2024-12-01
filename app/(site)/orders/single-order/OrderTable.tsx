@@ -80,23 +80,20 @@ export default function OrderTable() {
 
   useEffect(() => {
     const printKitchenRec = async () => {
-      await onOrdersUpdate(order.type);
+      await onOrdersUpdate(order.type).then(async () => {
+        const remainingProducts = await fetchRequest<ProductInOrderType[]>(
+          "POST",
+          "/api/products/",
+          "updatePrintedAmounts",
+          { products: order.products ?? [] }
+        );
 
-      // Step 2: Fetch remaining unprinted products
-      const remainingProducts = await fetchRequest<ProductInOrderType[]>(
-        "POST",
-        "/api/products/",
-        "updatePrintedAmounts",
-        { products: order.products ?? [] }
-      );
-
-      // Step 3: Update orders again (if needed)
-      await onOrdersUpdate(order.type);
-
-      // Step 4: Print if there are remaining products
-      if (remainingProducts.length > 0) {
-        await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
-      }
+        await onOrdersUpdate(order.type);
+        
+        if (remainingProducts.length > 0) {
+          await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
+        }
+      });
     };
 
     if (!dialogOpen && !order.suborderOf && order.state !== "CANCELLED") {
