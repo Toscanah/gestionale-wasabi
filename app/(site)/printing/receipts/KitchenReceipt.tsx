@@ -7,18 +7,24 @@ import getReceiptSize from "../../util/functions/getReceiptSize";
 
 const calculateAdjustedTime = (originalTime: string) => {
   const timeParts = originalTime.split(":");
-  
+
   if (timeParts.length !== 2 || isNaN(Number(timeParts[0])) || isNaN(Number(timeParts[1]))) {
     return "Orario non valido";
   }
 
   const offset = parseInt(localStorage.getItem("kitchenOffset") ?? "0", 10);
   const now = new Date();
-  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), Number(timeParts[0]), Number(timeParts[1]));
+  const date = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    Number(timeParts[0]),
+    Number(timeParts[1])
+  );
 
   date.setMinutes(date.getMinutes() - offset);
 
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
@@ -58,18 +64,9 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       <Line />
       {tableOrder && (
-        <Row
-          left={
-            <Text bold size={smallSize}>
-              TAVOLO
-            </Text>
-          }
-          right={
-            <Text bold size={bigSize}>
-              {tableOrder.table.toLocaleUpperCase()}
-            </Text>
-          }
-        />
+        <Text bold size={bigSize} align="right">
+          TAV {tableOrder.table.toLocaleUpperCase()}
+        </Text>
       )}
 
       {pickupOrder && (

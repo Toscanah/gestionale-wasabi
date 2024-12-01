@@ -2,6 +2,8 @@
 REM Enable command echoing (optional for debugging)
 setlocal enabledelayedexpansion
 
+call git pull
+
 REM Install dependencies
 echo Installing dependencies...
 call npm install
