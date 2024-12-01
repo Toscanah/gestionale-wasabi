@@ -41,7 +41,7 @@ export default function NormalActions({
       "/api/products/",
       "updatePrintedAmounts",
       {
-        products: order.products,
+        orderId: order.id,
       }
     );
 

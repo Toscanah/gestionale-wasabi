@@ -85,11 +85,11 @@ export default function OrderTable() {
           "POST",
           "/api/products/",
           "updatePrintedAmounts",
-          { products: order.products ?? [] }
+          { orderId: order.id }
         );
 
         await onOrdersUpdate(order.type);
-        
+
         if (remainingProducts.length > 0) {
           await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
         }

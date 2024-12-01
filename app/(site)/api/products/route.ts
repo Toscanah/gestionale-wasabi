@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     case "toggleProduct":
       return NextResponse.json(await toggleProduct(content?.id));
     case "updatePrintedAmounts":
-      return NextResponse.json(await updatePrintedAmounts(content?.products));
+      return NextResponse.json(await updatePrintedAmounts(content?.orderId));
   }
 }
 
