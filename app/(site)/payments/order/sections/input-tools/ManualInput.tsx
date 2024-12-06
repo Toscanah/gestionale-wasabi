@@ -30,25 +30,26 @@ export default function ManualInput() {
       <Input
         onClick={() => calcRef.current?.select()}
         ref={calcRef}
-        className="w-72 h-12 text-xl"
+        className="w-64 h-12 text-xl"
         value={typedAmount}
         type="text"
         onChange={(e) => setTypedAmount(e.target.value)}
       />
 
-      <div className="grid grid-cols-3 gap-4 w-72 *:border ">
+      <div className="grid grid-cols-3 gap-4 w-60 *:border ">
         {buttons.map((value, index) => (
           <Button
             key={index}
-            className={`h-20 w-20 text-4xl`}
+            className={`h-12 w-12 text-2xl`}
             onClick={() => handleButtonClick(value)}
           >
             {value}
           </Button>
         ))}
+
         <Button
           key={"erase"}
-          className={`h-20 "w-20" text-4xl`}
+          className={`h-16 w-12 text-4xl`}
           onClick={() => handleButtonClick("erase")}
         >
           <Backspace size={48} weight="regular" />

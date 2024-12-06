@@ -4,6 +4,7 @@ import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
 import TableColumn from "../components/table/TableColumn";
+import applyDiscount from "../util/functions/applyDiscount";
 
 export default function getColumns(type: OrderType): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
@@ -81,9 +82,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
           accessorKey: "home_order.when",
           header: "Quando",
           cellContent: (row) =>
-            row.original.home_order?.when == "immediate"
-              ? "Subito"
-              : row.original.home_order?.when,
+            row.original.home_order?.when == "immediate" ? "Subito" : row.original.home_order?.when,
         })
       );
       break;
@@ -112,7 +111,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     TableColumn<AnyOrder>({
       accessorKey: "total",
       header: "Totale",
-      cellContent: (row) => `€ ${row.original.total}`,
+      cellContent: (row) => `€ ${applyDiscount(row.original.total, row.original.discount)}`,
     })
   );
 

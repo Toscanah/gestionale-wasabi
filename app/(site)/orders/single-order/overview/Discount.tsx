@@ -5,17 +5,26 @@ import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { Input } from "@/components/ui/input";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
+import { toastSuccess } from "@/app/(site)/util/toast";
 
 export default function Discount({ order }: { order: AnyOrder }) {
   const { onOrdersUpdate } = useWasabiContext();
-  const [discount, setDiscount] = useState<number>(order.discount);
+  const [discount, setDiscount] = useState<number | undefined>(
+    order.discount == 0 ? undefined : order.discount
+  );
 
   const debouncedFetch = useCallback(
-    debounce((discount: number) => {
-      fetchRequest("POST", "/api/orders/", "updateDiscount", { orderId: order.id, discount }).then(
-        () => onOrdersUpdate(order.type as OrderType)
-      );
-    }, 1000),
+    debounce(
+      (discount: number) =>
+        fetchRequest("POST", "/api/orders/", "updateDiscount", {
+          orderId: order.id,
+          discount,
+        }).then(() => {
+          toastSuccess("Sconto aggiornato correttamente");
+          onOrdersUpdate(order.type as OrderType);
+        }),
+      1000
+    ),
     []
   );
 

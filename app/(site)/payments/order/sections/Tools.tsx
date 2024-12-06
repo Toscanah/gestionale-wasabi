@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import ManualInput from "./input-tools/ManualInput";
 import CalculationTable from "./input-tools/CalculationTable";
+import { ArrowsClockwise } from "@phosphor-icons/react";
 
 export default function Tools() {
   const { setActiveTool, activeTool } = useOrderPaymentContext();
@@ -12,11 +13,16 @@ export default function Tools() {
   const toggleLabel = activeTool === "manual" ? "Calcola" : "Manuale";
 
   return (
-    <div className="w-full h-full flex flex-col justify-between">
+    <div className="relative w-full h-full flex flex-col justify-between">
       {activeTool === "manual" ? <ManualInput /> : <CalculationTable />}
 
-      <Button variant="outline" className="h-20 text-2xl" onClick={toggleTool}>
-        {toggleLabel}
+      <Button
+        variant="outline"
+        className=" h-12 w-12 p-0"
+        onClick={toggleTool}
+      >
+        {/* {toggleLabel} */}
+        <ArrowsClockwise size={32} />
       </Button>
     </div>
   );

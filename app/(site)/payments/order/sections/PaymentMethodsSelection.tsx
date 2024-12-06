@@ -36,7 +36,7 @@ export default function PaymentMethodsSelection() {
   };
 
   return (
-    <div className="w-full flex justify-between flex-col gap-6">
+    <div className="w-full flex justify-between flex-col gap-6 h-2/5">
       <div className="flex justify-between gap-2">
         {paymentMethods.map(({ type, label, icon: Icon }) => (
           <div key={type} className="space-y-2 flex-1">
@@ -46,7 +46,7 @@ export default function PaymentMethodsSelection() {
               <div
                 onClick={() => handlePaymentClick(type)}
                 className={cn(
-                  "h-64 rounded-md flex border-t border-x",
+                  "h-52 rounded-md flex border-t border-x",
                   "rounded-bl-none rounded-br-none items-center",
                   "justify-center hover:cursor-pointer",
                   "flex flex-col"

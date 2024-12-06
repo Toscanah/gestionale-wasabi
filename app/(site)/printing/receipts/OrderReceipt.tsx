@@ -11,7 +11,8 @@ import getReceiptSize from "../../util/functions/getReceiptSize";
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,
   quickPaymentOption: QuickPaymentOption,
-  putInfo: boolean = true
+  putInfo: boolean = true,
+  forceCut: boolean = false
 ) {
   const tableOrder = (order as TableOrder).table_order;
   const homeOrder = (order as HomeOrder).home_order;
@@ -61,7 +62,7 @@ export default function OrderReceipt<T extends AnyOrder>(
       )}
 
       {FooterSection(order.id)}
-      {order.type !== OrderType.TO_HOME && <Cut />}
+      {(forceCut || order.type !== OrderType.TO_HOME) && <Cut />}
     </>
   );
 }

@@ -51,9 +51,11 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   return (
     <DialogWrapper
       onOpenChange={() => setNewRice({ ...rice.total, amount: 0 })}
+      desc="Tutti i valori sono calcolati in grammi"
       title={
         <>
-          Gestione riso <span className="text-muted-foreground">(grammi)</span>
+          Gestione riso 
+          {/* <span className="text-muted-foreground">(tutto in grammi)</span> */}
         </>
       }
       hasHeader

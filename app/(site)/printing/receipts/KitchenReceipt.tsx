@@ -6,6 +6,7 @@ import { KitchenType, OrderType } from "@prisma/client";
 import getReceiptSize from "../../util/functions/getReceiptSize";
 
 const calculateAdjustedTime = (originalTime: string) => {
+  console.log(originalTime);
   const timeParts = originalTime.split(":");
 
   if (timeParts.length !== 2 || isNaN(Number(timeParts[0])) || isNaN(Number(timeParts[1]))) {
@@ -23,11 +24,13 @@ const calculateAdjustedTime = (originalTime: string) => {
   );
 
   date.setMinutes(date.getMinutes() - offset);
-
+  console.log(date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
+  type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
+  
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
@@ -50,8 +53,6 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const otherProducts = order.products.filter(
     (product) => product.product.kitchen === KitchenType.OTHER
   );
-
-  type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
 
   const renderReceiptSection = (title: ReceiptTitle, products: typeof order.products) => (
     <>

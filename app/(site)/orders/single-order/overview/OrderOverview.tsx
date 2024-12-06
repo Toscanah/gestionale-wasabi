@@ -11,15 +11,19 @@ import Rice from "./Rice";
 import Total from "./Total";
 import NormalActions from "./NormalActions";
 
+interface OrderOverviewProps {
+  order: AnyOrder;
+  setAction: Dispatch<SetStateAction<PayingAction>>;
+  addProducts: (newProducts: ProductInOrderType[]) => void;
+  updateUnprintedProducts: () => Promise<ProductInOrderType[]>;
+}
+
 export default function OrderOverview({
   order,
   setAction,
   addProducts,
-}: {
-  order: AnyOrder;
-  setAction: Dispatch<SetStateAction<PayingAction>>;
-  addProducts: (newProducts: ProductInOrderType[]) => void;
-}) {
+  updateUnprintedProducts,
+}: OrderOverviewProps) {
   const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
 
   return (
@@ -47,6 +51,7 @@ export default function OrderOverview({
         <NormalActions
           order={order}
           setAction={setAction}
+          updateUnprintedProducts={updateUnprintedProducts}
           quickPaymentOption={quickPaymentOption}
         />
       </div>

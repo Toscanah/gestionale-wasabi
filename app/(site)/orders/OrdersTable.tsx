@@ -15,7 +15,7 @@ interface TableProps {
 
 export default function OrdersTable({ data, type }: TableProps) {
   const columns = getColumns(type);
-  const table = getTable<AnyOrder>({ data, columns });
+  const table = getTable<any>({ data, columns });
 
   const CustomCell = ({
     cell,

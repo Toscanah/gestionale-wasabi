@@ -26,7 +26,5 @@ export default async function createNewProduct(product: ProductWithInfo) {
     },
   });
 
-  console.log(newProduct);
-
   return newProduct;
 }
