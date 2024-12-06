@@ -35,6 +35,7 @@ export default function OrderTable() {
     updateProductField,
     deleteProducts,
     updateProductOption,
+    updateUnprintedProducts,
   } = useProductManager(order, updateOrder);
   const [payingAction, setPayingAction] = useState<PayingAction>("none");
   const [rowSelection, setRowSelection] = useState({});
@@ -80,20 +81,12 @@ export default function OrderTable() {
 
   useEffect(() => {
     const printKitchenRec = async () => {
-      await onOrdersUpdate(order.type).then(async () => {
-        const remainingProducts = await fetchRequest<ProductInOrderType[]>(
-          "POST",
-          "/api/products/",
-          "updatePrintedAmounts",
-          { orderId: order.id }
-        );
+      await onOrdersUpdate(order.type);
+      const remainingProducts = await updateUnprintedProducts();
 
-        await onOrdersUpdate(order.type);
-
-        if (remainingProducts.length > 0) {
-          await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
-        }
-      });
+      if (remainingProducts.length > 0) {
+        await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
+      }
     };
 
     if (!dialogOpen && !order.suborderOf && order.state !== "CANCELLED") {
@@ -112,7 +105,12 @@ export default function OrderTable() {
         />
       </div>
 
-      <OrderOverview order={order} setAction={setPayingAction} addProducts={addProducts} />
+      <OrderOverview
+        updateUnprintedProducts={updateUnprintedProducts}
+        order={order}
+        setAction={setPayingAction}
+        addProducts={addProducts}
+      />
     </div>
   ) : payingAction == "payFull" ? (
     <OrderPayment

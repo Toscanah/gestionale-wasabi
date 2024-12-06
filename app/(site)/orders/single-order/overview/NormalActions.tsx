@@ -8,7 +8,6 @@ import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
 import { QuickPaymentOption } from "./QuickPaymentOptions";
 import RiderReceipt from "../../../printing/receipts/RiderReceipt";
 import { OrderType } from "@prisma/client";
-import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
@@ -18,12 +17,14 @@ interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
   order: AnyOrder;
   setAction: Dispatch<SetStateAction<PayingAction>>;
+  updateUnprintedProducts: () => Promise<ProductInOrderType[]>;
 }
 
 export default function NormalActions({
   order,
   setAction,
   quickPaymentOption,
+  updateUnprintedProducts,
 }: NormalActionsProps) {
   const { onOrdersUpdate } = useWasabiContext();
   const { toggleDialog } = useOrderContext();
@@ -32,18 +33,11 @@ export default function NormalActions({
     products.length > 1 ||
     (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.TO_HOME);
 
-  const canPayFull = () => applyDiscount(order.total, order.discount) > 0;
+  const canPayFull = applyDiscount(order.total, order.discount) > 0;
 
   const handlePrint = async () => {
     const content = [];
-    const unprintedProducts = await fetchRequest<ProductInOrderType[]>(
-      "POST",
-      "/api/products/",
-      "updatePrintedAmounts",
-      {
-        orderId: order.id,
-      }
-    );
+    const unprintedProducts = await updateUnprintedProducts();
 
     await onOrdersUpdate(order.type);
 
@@ -66,6 +60,12 @@ export default function NormalActions({
 
   const handleFullPayment = async () => {
     setAction("payFull");
+
+    const unprintedProducts = await updateUnprintedProducts();
+
+    if (unprintedProducts.length > 0) {
+      await print(() => KitchenReceipt({ ...order, products: unprintedProducts }));
+    }
 
     if (order.type !== OrderType.TO_HOME) {
       await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false));
@@ -100,7 +100,7 @@ export default function NormalActions({
         Stampa
       </Button>
 
-      <Button className="w-full text-3xl h-12" onClick={handleFullPayment} disabled={!canPayFull()}>
+      <Button className="w-full text-3xl h-12" onClick={handleFullPayment} disabled={!canPayFull}>
         {order.type === OrderType.TO_HOME ? "INCASSA" : "PAGA"}
       </Button>
     </>

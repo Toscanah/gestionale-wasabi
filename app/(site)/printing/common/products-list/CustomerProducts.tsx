@@ -20,19 +20,6 @@ interface CustomerProductsProps {
   aggregatedProducts: ProductInOrderType[];
 }
 
-const calculatePadding = (totalLength: number): number => {
-  switch (totalLength) {
-    case 1:
-      return LEFT_PADDING; // No extra padding for single-character totals
-    case 2:
-      return LEFT_PADDING - 1; // Less padding for two-character totals
-    case 3:
-      return LEFT_PADDING - 2; // Even less padding for three-character totals
-    default:
-      return LEFT_PADDING; // Default padding for unexpected cases
-  }
-};
-
 export default function CustomerProducts({ discount, aggregatedProducts }: CustomerProductsProps) {
   return (
     <>

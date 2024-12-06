@@ -27,7 +27,7 @@ export function useProductManager(
       if (newProduct) {
         updateProductsList({ newProducts: [newProduct] });
       } else {
-        updateProductsList({updatedProducts: [createDummyProduct()]})
+        updateProductsList({ updatedProducts: [createDummyProduct()] });
         toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
       }
     });
@@ -136,16 +136,33 @@ export function useProductManager(
     });
   };
 
+  const updateUnprintedProducts = async (): Promise<ProductInOrderType[]> => {
+    const unprintedProducts = await fetchRequest<ProductInOrderType[]>(
+      "POST",
+      "/api/products/",
+      "updatePrintedAmounts",
+      { orderId: order.id }
+    );
+
+    if (unprintedProducts.length > 0) {
+      updateProductsList({ updatedProducts: unprintedProducts, toast: false });
+    }
+
+    return unprintedProducts;
+  };
+
   const updateProductsList = ({
     newProducts = [],
     updatedProducts = [],
     deletedProducts = [],
     isDummyUpdate = false,
+    toast = true,
   }: {
     newProducts?: ProductInOrderType[];
     updatedProducts?: ProductInOrderType[];
     deletedProducts?: ProductInOrderType[];
     isDummyUpdate?: boolean;
+    toast?: boolean;
   }) => {
     setProducts((prevProducts) => {
       if (isDummyUpdate) {
@@ -164,7 +181,9 @@ export function useProductManager(
       updateOrder(updatedProductList);
       setNewCode("");
       setNewQuantity(0);
-      toastSuccess("Prodotti aggiornati correttamente");
+
+      if (toast) toastSuccess("Prodotti aggiornati correttamente");
+
       return updatedProductList;
     });
   };
@@ -180,5 +199,6 @@ export function useProductManager(
     updateProductField,
     deleteProducts,
     updateProductOption,
+    updateUnprintedProducts,
   };
 }

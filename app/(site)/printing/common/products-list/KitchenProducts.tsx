@@ -43,8 +43,6 @@ export default function KitchenProducts({
     }
   });
 
-  console.log(groupedProducts);
-
   const ProductLine = ({ product }: { product: ProductInOrderType }) => (
     <Fragment>
       <Text inline bold size={bigSize}>

@@ -3,14 +3,14 @@ import { PaymentType } from "@prisma/client";
 export default function getPaymentName(type: PaymentType) {
   switch (type) {
     case PaymentType.CARD:
-      return "la carta";
+      return "Carta";
     case PaymentType.CASH:
-      return "contanti";
+      return "Contanti";
     case PaymentType.CREDIT:
-      return "i crediti";
+      return "Crediti";
     case PaymentType.VOUCH:
-      return "i buoni pasto";
+      return "Buoni pasto";
     default:
       return "";
   }
-};
+}

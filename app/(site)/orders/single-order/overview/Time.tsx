@@ -17,8 +17,6 @@ export default function Time({ order }: { order: AnyOrder }) {
       : ""
   );
 
-  console.log(orderTime)
-
   const updateOrderTime = (value: string) => {
     setOrderTime(value);
     fetchRequest("POST", "/api/orders/", "updateOrderTime", { time: value, orderId: order.id });

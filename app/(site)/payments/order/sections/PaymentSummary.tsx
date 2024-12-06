@@ -13,29 +13,52 @@ export default function PaymentSummary({ totalToPay }: { totalToPay: number }) {
   });
 
   return (
-    <div className="flex flex-col gap-4 grow h-full">
+    <div className="flex flex-col gap-6 grow h-full">
       <div className="text-5xl">
-        <b>RIEPILOGO:</b>
+        <b>RIEPILOGO</b>
       </div>
 
+      {/* Table for Paid Payments */}
       {paidPayments.length > 0 && (
-        <ul className="list-disc list-inside">
-          {Object.values(PaymentType).map((type) => (
-            <li key={type} className="text-3xl">
-              Euro pagati con {getPaymentName(type)}: € {formatAmount(payment.paymentAmounts[type])}
-            </li>
-          ))}
-        </ul>
+        <table className="w-full text-3xl border-collapse">
+          <tbody>
+            {paidPayments.map((type) => (
+              <tr key={type}>
+                <td>{getPaymentName(type)}</td>
+                <td className="text-right">{formatAmount(payment.paymentAmounts[type])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
 
+      {paidPayments.length > 0 && <Separator className="w-full" orientation="horizontal" />}
+
+      {/* Table for Subtotal and Remaining */}
+      <table className="w-full text-3xl border-collapse">
+        <tbody>
+          <tr>
+            <td className="text-left">Subtotale:</td>
+            <td className="text-right">€ {formatAmount(payment.paidAmount)}</td>
+          </tr>
+          <tr>
+            <td className="text-left">Rimanente (resto):</td>
+            <td className="text-right">€ {formatAmount(payment.remainingAmount)}</td>
+          </tr>
+        </tbody>
+      </table>
+
       <Separator className="w-full" orientation="horizontal" />
 
-      <div className="text-3xl">Subtotale: € {formatAmount(payment.paidAmount)}</div>
-      <div className="text-3xl">Rimanente (resto): € {formatAmount(payment.remainingAmount)}</div>
-
-      <Separator className="w-full" orientation="horizontal" />
-
-      <div className="text-3xl">Totale da pagare: € {formatAmount(totalToPay)}</div>
+      {/* Table for Total to Pay */}
+      <table className="w-full text-3xl border-collapse">
+        <tbody>
+          <tr>
+            <td className="text-left font-bold">Totale da Pagare:</td>
+            <td className="text-right font-bold">€ {formatAmount(totalToPay)}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }

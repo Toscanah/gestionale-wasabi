@@ -74,7 +74,7 @@ export default function DialogWrapper({
               )}
             </DialogTitle>
 
-            {desc && <DialogDescription>{desc}</DialogDescription>}
+            {desc && <DialogDescription className="text-lg">{desc}</DialogDescription>}
           </DialogHeader>
         )}
 
