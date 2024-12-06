@@ -25,11 +25,11 @@ export default function Time({ order }: { order: AnyOrder }) {
   };
 
   return (
-    <div className="flex gap-2 justify-between items-center">
+    <div className="flex gap-2 justify-between items-center w-full">
       {/* <span className="text-xl">Orario</span> */}
 
       <WhenSelector
-        className="h-12 text-2xl uppercase"
+        className="h-12 text-2xl uppercase w-full"
         value={orderTime == "immediate" ? "immediate" : orderTime}
         onValueChange={updateOrderTime}
       />

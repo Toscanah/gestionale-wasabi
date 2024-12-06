@@ -76,6 +76,7 @@ export default async function updateProductInOrder(
         where: { id: orderId },
         data: {
           total: (currentOrder?.total ?? 0) + difference,
+          isReceiptPrinted: false,
         },
       });
 
@@ -103,6 +104,7 @@ export default async function updateProductInOrder(
               total: {
                 decrement: productInOrder.total,
               },
+              isReceiptPrinted: false,
             },
           });
 
@@ -139,6 +141,7 @@ export default async function updateProductInOrder(
             where: { id: orderId },
             data: {
               total: { decrement: totalDifference },
+              isReceiptPrinted: false,
             },
           });
 
@@ -163,8 +166,8 @@ export default async function updateProductInOrder(
                   ? 0
                   : productInOrder.printedAmount == 0 // se non ho prodotti stampati, non fare nulla
                   ? 0
-                  : Math.max(quantityDifference, -productInOrder.printedAmount), 
-                  // mi assicuro che con la differenza, non vado sotto lo zero (che non ha senso)
+                  : Math.max(quantityDifference, -productInOrder.printedAmount),
+              // mi assicuro che con la differenza, non vado sotto lo zero (che non ha senso)
             },
           },
           include: {
@@ -184,6 +187,7 @@ export default async function updateProductInOrder(
           where: { id: orderId },
           data: {
             total: { increment: totalDifference },
+            isReceiptPrinted: false,
           },
         });
 
@@ -191,7 +195,7 @@ export default async function updateProductInOrder(
           updatedProduct: {
             ...updatedProduct,
             quantity: newQuantity,
-            total: newQuantity * getProductPrice(productInOrder, currentOrder.type as OrderType),
+            total: newQuantity * getProductPrice(productInOrder, currentOrder.type),
           },
         };
       }

@@ -21,7 +21,7 @@ export default function Discount({ order }: { order: AnyOrder }) {
           discount,
         }).then(() => {
           toastSuccess("Sconto aggiornato correttamente");
-          onOrdersUpdate(order.type as OrderType);
+          onOrdersUpdate(order.type);
         }),
       1000
     ),
@@ -34,8 +34,8 @@ export default function Discount({ order }: { order: AnyOrder }) {
   };
 
   return (
-    <div className="flex gap-2 justify-between items-center">
-      <span className="text-xl min-w-fit">Sconto (%)</span>
+    <div className="flex gap-2 justify-between items-center w-full">
+      {/* <span className="text-xl min-w-fit">Sconto (%)</span> */}
       <Input
         value={discount}
         onChange={(e) => handleDiscount(e.target.valueAsNumber)}

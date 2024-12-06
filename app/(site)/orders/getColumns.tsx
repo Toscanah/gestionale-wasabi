@@ -5,6 +5,7 @@ import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
 import TableColumn from "../components/table/TableColumn";
 import applyDiscount from "../util/functions/applyDiscount";
+import formatAmount from "../util/functions/formatAmount";
 
 export default function getColumns(type: OrderType): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
@@ -20,15 +21,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
           return (
             <div className="text-muted-foreground gap-2 flex items-center">
               <span>{index + 1}</span>
-              <span className="text-sm">
-                {row.original.suborderOf || row.original.products.length === 0
-                  ? ""
-                  : row.original.products.some(
-                      (product: any) => product.printedAmount === product.quantity
-                    )
-                  ? "✔️"
-                  : "❌"}
-              </span>
+              {/* <span className="text-sm">{row.original.isReceiptPrinted ? "✔️" : "❌"}</span> */}
             </div>
           );
         } else {
@@ -91,6 +84,10 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
         TableColumn<PickupOrder>({
           accessorKey: "pickup_order.when",
           header: "Quando",
+          cellContent: (row) =>
+            row.original.pickup_order?.when == "immediate"
+              ? "Subito"
+              : row.original.pickup_order?.when,
         })
       );
       break;
@@ -111,7 +108,8 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     TableColumn<AnyOrder>({
       accessorKey: "total",
       header: "Totale",
-      cellContent: (row) => `€ ${applyDiscount(row.original.total, row.original.discount)}`,
+      cellContent: (row) =>
+        `€ ${formatAmount(applyDiscount(row.original.total, row.original.discount))}`,
     })
   );
 

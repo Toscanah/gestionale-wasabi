@@ -52,6 +52,7 @@ export default async function addProductsToOrder(
       total: {
         increment: productTotalPrice,
       },
+      isReceiptPrinted: false,
     },
   });
 

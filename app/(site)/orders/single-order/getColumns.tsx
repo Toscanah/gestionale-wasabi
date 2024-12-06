@@ -39,6 +39,23 @@ export default function getColumns(
 
   return [
     TableColumn<ProductInOrderType>({
+      accessorKey: "select",
+      header: "",
+      sortable: false,
+      cellContent: (row) =>
+        row.original.product_id !== -1 && (
+          <div className="flex justify-center items-center">
+            <Checkbox
+              className="h-6 w-6"
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+            />
+          </div>
+        ),
+    }),
+
+    TableColumn<ProductInOrderType>({
       accessorKey: "code",
       header: "Codice",
       cellContent: (row) => (
@@ -168,23 +185,6 @@ export default function getColumns(
       cellContent: (row) => (
         <span className="text-2xl">{row.original.total == 0 ? "" : `€ ${row.original.total}`}</span>
       ),
-    }),
-
-    TableColumn<ProductInOrderType>({
-      accessorKey: "select",
-      header: "",
-      sortable: false,
-      cellContent: (row) =>
-        row.original.product_id !== -1 && (
-          <div className="flex justify-center items-center mr-4">
-            <Checkbox
-              className="h-6 w-6"
-              checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              aria-label="Select row"
-            />
-          </div>
-        ),
     }),
   ];
 }
