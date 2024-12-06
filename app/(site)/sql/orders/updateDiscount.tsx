@@ -7,6 +7,7 @@ export default async function updateDiscount(orderId: number, discount: number) 
     },
     data: {
       discount: discount ?? 0,
+      isReceiptPrinted: false,
     },
   });
 }

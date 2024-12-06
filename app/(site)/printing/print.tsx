@@ -39,7 +39,7 @@ export default async function print(...contents: (() => ReactNode)[]) {
    * - I dati vengono quindi inviati alla stampante tramite la porta seriale utilizzando il tasso di trasmissione configurato.
    * - Alla fine, la connessione alla porta viene chiusa.
    */
-  
+
   const receipt = (
     <Printer characterSet="wpc1256_arabic" type="epson">
       {contents.map((content) => content())}
@@ -48,12 +48,15 @@ export default async function print(...contents: (() => ReactNode)[]) {
 
   const data: Uint8Array = await render(receipt);
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
+
+  if (ports.length == 0) return false;
+
   const port = ports[0];
 
   if (port) {
     await port.open({ baudRate: 19200 });
     const writer = port.writable?.getWriter();
-    
+
     if (writer != null) {
       await writer.write(data);
       writer.releaseLock();

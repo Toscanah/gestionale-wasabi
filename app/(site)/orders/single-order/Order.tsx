@@ -27,9 +27,9 @@ export default function Order({
           key={cell.id}
           className={cn(
             className,
-            // cell.row.original.products.some((product) => product.printedAmount === product.total)
-            //   ? "text-green-500"
-            //   : "text-red-500"
+            !cell.row.original.isReceiptPrinted
+              // ? "*:text-green-500 text-green-500"
+              && "*:text-red-400 text-red-400"
           )}
         >
           {flexRender(cell.column.columnDef.cell, cell.getContext())}

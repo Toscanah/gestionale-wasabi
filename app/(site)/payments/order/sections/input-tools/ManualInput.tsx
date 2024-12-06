@@ -11,11 +11,22 @@ export default function ManualInput() {
 
   const handleButtonClick = (value: string) => {
     setTypedAmount((prev) => {
+      if (document.getSelection()?.toString() === calcRef.current?.value.toString()) {
+        if (value === "erase") return "";
+        if (value === ".") return "0.";
+        if (value !== ".") return value;
+        return prev;
+      }
+
+      // Default behavior when the input is not focused
       if (value === "erase") return prev.slice(0, -1);
       if (value === "." && !prev.includes(".")) return prev === "" ? "0." : prev + value;
       if (value !== ".") return prev + value;
+      
       return prev;
     });
+
+    calcRef.current?.focus();
   };
 
   useEffect(() => {
@@ -26,7 +37,7 @@ export default function ManualInput() {
   const buttons = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", "."];
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 justify-evenly items-center">
+    <>
       <Input
         onClick={() => calcRef.current?.select()}
         ref={calcRef}
@@ -36,11 +47,11 @@ export default function ManualInput() {
         onChange={(e) => setTypedAmount(e.target.value)}
       />
 
-      <div className="grid grid-cols-3 gap-4 w-60 *:border ">
+      <div className="grid grid-cols-3 gap-4 *:border ">
         {buttons.map((value, index) => (
           <Button
             key={index}
-            className={`h-12 w-12 text-2xl`}
+            className={`h-16 w-16 text-4xl`}
             onClick={() => handleButtonClick(value)}
           >
             {value}
@@ -49,12 +60,12 @@ export default function ManualInput() {
 
         <Button
           key={"erase"}
-          className={`h-16 w-12 text-4xl`}
+          className={`h-16 w-16 text-4xl p-0`}
           onClick={() => handleButtonClick("erase")}
         >
           <Backspace size={48} weight="regular" />
         </Button>
       </div>
-    </div>
+    </>
   );
 }

@@ -50,6 +50,7 @@ export default async function deleteProductsFromOrder(
       total: {
         decrement: totalToDecrement,
       },
+      isReceiptPrinted: false,
     },
   });
 }

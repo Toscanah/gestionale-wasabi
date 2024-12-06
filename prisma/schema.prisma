@@ -41,19 +41,20 @@ enum KitchenType {
 }
 
 model Order {
-    id           Int              @id @default(autoincrement())
-    created_at   DateTime         @default(now())
-    updated_at   DateTime         @default(now()) @updatedAt
-    total        Float            @default(0)
-    discount     Float            @default(0)
-    suborderOf   Int?
-    state        OrderState       @default(ACTIVE)
-    type         OrderType
-    products     ProductInOrder[]
-    payments     Payment[]
-    table_order  TableOrder?
-    home_order   HomeOrder?
-    pickup_order PickupOrder?
+    id               Int              @id @default(autoincrement())
+    created_at       DateTime         @default(now())
+    updated_at       DateTime         @default(now()) @updatedAt
+    total            Float            @default(0)
+    discount         Float            @default(0)
+    isReceiptPrinted Boolean          @default(false)
+    suborderOf       Int?
+    state            OrderState       @default(ACTIVE)
+    type             OrderType
+    products         ProductInOrder[]
+    payments         Payment[]
+    table_order      TableOrder?
+    home_order       HomeOrder?
+    pickup_order     PickupOrder?
 }
 
 model TableOrder {

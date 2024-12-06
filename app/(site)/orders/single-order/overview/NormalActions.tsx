@@ -12,6 +12,7 @@ import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
@@ -36,6 +37,8 @@ export default function NormalActions({
   const canPayFull = applyDiscount(order.total, order.discount) > 0;
 
   const handlePrint = async () => {
+    fetchRequest("POST", "/api/orders", "updatePrintedFlag", { orderId: order.id });
+
     const content = [];
     const unprintedProducts = await updateUnprintedProducts();
 
@@ -69,6 +72,7 @@ export default function NormalActions({
 
     if (order.type !== OrderType.TO_HOME) {
       await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false));
+      fetchRequest("POST", "/api/orders", "updatePrintedFlag", { orderId: order.id });
     }
   };
 

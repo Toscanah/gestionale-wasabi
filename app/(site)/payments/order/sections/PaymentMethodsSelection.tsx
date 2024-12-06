@@ -20,15 +20,17 @@ export default function PaymentMethodsSelection() {
     setTypedAmount,
     payment,
     paymentCalculations,
+    setPaymentCalculations,
     typedAmount,
   } = useOrderPaymentContext();
 
   const handlePaymentClick = (type: PaymentType) => {
     if (activeTool === "table") {
       const totalAmount = paymentCalculations.reduce((sum, row) => sum + row.total, 0);
-      
+
       handlePaymentChange(type, totalAmount);
       setTypedAmount(formatAmount(payment.remainingAmount - totalAmount));
+      setPaymentCalculations([{ amount: 0, quantity: 0, total: 0 }]);
     } else {
       handlePaymentChange(type, Number(typedAmount));
       setTypedAmount(formatAmount(payment.remainingAmount - Number(typedAmount)));

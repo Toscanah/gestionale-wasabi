@@ -10,6 +10,7 @@ import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 import updateDiscount from "../../sql/orders/updateDiscount";
 import { OrderType } from "@prisma/client";
 import createSubOrder from "../../sql/orders/createSubOrder";
+import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 
 export async function POST(request: NextRequest) {
   const { action, content } = await getRequestBody(request);
@@ -31,6 +32,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(await cancelOrder(content?.orderId, content?.cooked));
     case "createSubOrder":
       return NextResponse.json(await createSubOrder(content?.parentOrder, content?.products));
+    case "updatePrintedFlag":
+      return NextResponse.json(await updatePrintedFlag(content?.orderId));
   }
 }
 

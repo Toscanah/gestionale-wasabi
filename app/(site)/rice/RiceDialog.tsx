@@ -75,7 +75,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <DialogWrapper
             variant="delete"
             title="Sei sicuro?"
-            onDelete={() => resetRice()}
+            onDelete={resetRice}
             trigger={
               <Button className="w-full border-red-600 text-red-600" variant={"outline"}>
                 Resetta

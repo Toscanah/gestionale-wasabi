@@ -2,7 +2,7 @@ import getColumns from "./getColumns";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { useEffect, useState } from "react";
 import { useWasabiContext } from "../../context/WasabiContext";
-import { OrderState, OrderType } from "@prisma/client";
+import { OrderType } from "@prisma/client";
 import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
 import OrderOverview from "./overview/OrderOverview";
@@ -15,7 +15,6 @@ import DangerActions from "./overview/DangerActions";
 import { useOrderContext } from "../../context/OrderContext";
 import print from "../../printing/print";
 import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
-import fetchRequest from "../../util/functions/fetchRequest";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 

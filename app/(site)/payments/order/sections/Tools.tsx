@@ -13,16 +13,12 @@ export default function Tools() {
   const toggleLabel = activeTool === "manual" ? "Calcola" : "Manuale";
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-between">
+    <div className="relative w-full h-full flex flex-col justify-between items-center">
       {activeTool === "manual" ? <ManualInput /> : <CalculationTable />}
 
-      <Button
-        variant="outline"
-        className=" h-12 w-12 p-0"
-        onClick={toggleTool}
-      >
-        {/* {toggleLabel} */}
-        <ArrowsClockwise size={32} />
+      <Button variant="outline" className="h-12 w-full" onClick={toggleTool}>
+        {toggleLabel}
+        {/* <ArrowsClockwise size={32} /> */}
       </Button>
     </div>
   );

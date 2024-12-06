@@ -10,12 +10,14 @@ export default async function updateOrderTime(time: string, orderId: number) {
   if (!baseOrder) return;
 
   const when = time?.toLowerCase() === "Prima possibile" ? "immediate" : time;
-
   const updateData = { data: { when }, where: { order_id: orderId } };
 
-  if (baseOrder.type === OrderType.PICK_UP) {
-    return prisma.pickupOrder.update(updateData);
-  } else if (baseOrder.type === OrderType.TO_HOME) {
-    return prisma.homeOrder.update(updateData);
-  }
+  await prisma.order.update({
+    where: { id: orderId },
+    data: { isReceiptPrinted: false },
+  });
+
+  return baseOrder.type === "PICK_UP"
+    ? prisma.pickupOrder.update(updateData)
+    : prisma.homeOrder.update(updateData);
 }

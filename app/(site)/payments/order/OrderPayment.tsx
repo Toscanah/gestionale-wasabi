@@ -47,7 +47,7 @@ export default function OrderPayment({
 
           <Separator orientation="vertical" />
 
-          <div className="flex flex-col w-[40%] gap-6 text-4xl items-center text-center h-full justify-center">
+          <div className="flex flex-col w-[28%] gap-6 text-4xl items-center text-center h-full justify-center">
             <PaymentConfirmationAndTools order={order} />
           </div>
         </div>

@@ -24,12 +24,12 @@ const calculateAdjustedTime = (originalTime: string) => {
   );
 
   date.setMinutes(date.getMinutes() - offset);
-  console.log(date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
+type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
+
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
-  type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
   
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);

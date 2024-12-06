@@ -80,6 +80,13 @@ export default async function createSubOrder(
     });
 
     if (productInOrder) {
+      await prisma.order.update({
+        where: { id: parentOrder.id },
+        data: {
+          isReceiptPrinted: false,
+        },
+      });
+
       const newQuantity = productInOrder.quantity - product.quantity;
       const newRiceQuantity = productInOrder.riceQuantity - product.product.rice * newQuantity; // Adjust rice quantity accordingly
       const newPrintedAmount = productInOrder.printedAmount - product.quantity;
