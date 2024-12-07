@@ -48,7 +48,7 @@ export default function PaymentMethodsSelection() {
               <div
                 onClick={() => handlePaymentClick(type)}
                 className={cn(
-                  "h-52 rounded-md flex border-t border-x",
+                  "h-40 rounded-md flex border-t border-x",
                   "rounded-bl-none rounded-br-none items-center",
                   "justify-center hover:cursor-pointer",
                   "flex flex-col"

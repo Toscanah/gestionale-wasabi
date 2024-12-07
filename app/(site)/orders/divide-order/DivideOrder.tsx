@@ -115,8 +115,21 @@ export default function DivideOrder({
           onClick={async () => {
             setPayingAction("payPart");
             setGoPay(true);
+
             await print(() =>
-              OrderReceipt({ ...order, products: rightProducts }, "none", false, true)
+              OrderReceipt(
+                {
+                  ...order,
+                  products: rightProducts,
+                  total: rightProducts.reduce(
+                    (total, p) => total + getProductPrice(p, order.type) * p.quantity,
+                    0
+                  ),
+                },
+                "none",
+                false,
+                true
+              )
             );
           }}
           className="w-1/2 bg-green-500 text-black"
