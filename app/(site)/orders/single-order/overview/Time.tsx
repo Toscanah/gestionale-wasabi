@@ -17,11 +17,16 @@ export default function Time({ order }: { order: AnyOrder }) {
       : ""
   );
 
-  const updateOrderTime = (value: string) => {
+  const updateOrderTime = async (value: string) => {
     setOrderTime(value);
-    fetchRequest("POST", "/api/orders/", "updateOrderTime", { time: value, orderId: order.id });
-    onOrdersUpdate(order.type as OrderType);
-    toastSuccess("Orario dell'ordine correttamente aggiornato");
+
+    fetchRequest("POST", "/api/orders/", "updateOrderTime", {
+      time: value,
+      orderId: order.id,
+    }).then(() => {
+      onOrdersUpdate(order.type);
+      toastSuccess("Orario dell'ordine correttamente aggiornato");
+    });
   };
 
   return (
