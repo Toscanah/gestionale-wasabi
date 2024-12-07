@@ -80,12 +80,13 @@ export default function OrderTable() {
 
   useEffect(() => {
     const printKitchenRec = async () => {
-      await onOrdersUpdate(order.type);
-      const remainingProducts = await updateUnprintedProducts();
+      await onOrdersUpdate(order.type).then(async () => {
+        const remainingProducts = await updateUnprintedProducts();
 
-      if (remainingProducts.length > 0) {
-        await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
-      }
+        if (remainingProducts.length > 0) {
+          await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
+        }
+      });
     };
 
     if (!dialogOpen && !order.suborderOf && order.state !== "CANCELLED") {
