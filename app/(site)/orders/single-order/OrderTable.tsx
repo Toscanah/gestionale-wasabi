@@ -79,7 +79,7 @@ export default function OrderTable() {
   }, [payingAction]);
 
   useEffect(() => {
-    const printKitchenRec = async () => {
+    const printKitchenRec = async () =>
       await onOrdersUpdate(order.type).then(async () => {
         const remainingProducts = await updateUnprintedProducts();
 
@@ -87,7 +87,6 @@ export default function OrderTable() {
           await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
         }
       });
-    };
 
     if (!dialogOpen && !order.suborderOf && order.state !== "CANCELLED") {
       printKitchenRec();
