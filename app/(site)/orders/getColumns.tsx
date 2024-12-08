@@ -21,7 +21,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
           return (
             <div className="text-muted-foreground gap-2 flex items-center">
               <span>{index + 1}</span>
-              {/* <span className="text-sm">{row.original.isReceiptPrinted ? "✔️" : "❌"}</span> */}
+              {/* <span className="text-sm">{row.original.is_receipt_printed ? "✔️" : "❌"}</span> */}
             </div>
           );
         } else {
@@ -39,7 +39,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     TableColumn<AnyOrder>({
       accessorKey: "who",
       header:
-        type === OrderType.TABLE ? "Tavolo" : type === OrderType.PICK_UP ? "Cliente" : "Campanello",
+        type === OrderType.TABLE ? "Tavolo" : type === OrderType.PICKUP ? "Cliente" : "Campanello",
       cellContent: (row) => {
         switch (type) {
           case OrderType.TABLE: {
@@ -47,11 +47,11 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
 
             return parsedRow.table_order?.table;
           }
-          case OrderType.PICK_UP:
+          case OrderType.PICKUP:
             const parsedRow = row.original as PickupOrder;
             return parsedRow.pickup_order?.customer?.surname || parsedRow.pickup_order?.name;
 
-          case OrderType.TO_HOME: {
+          case OrderType.HOME: {
             const parsedRow = row.original as HomeOrder;
             return parsedRow.home_order?.address.doorbell;
           }
@@ -61,7 +61,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
   ];
 
   switch (type) {
-    case OrderType.TO_HOME:
+    case OrderType.HOME:
       columns.push(
         TableColumn<HomeOrder>({
           accessorKey: "address.street",
@@ -79,7 +79,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
         })
       );
       break;
-    case OrderType.PICK_UP:
+    case OrderType.PICKUP:
       columns.push(
         TableColumn<PickupOrder>({
           accessorKey: "pickup_order.when",

@@ -1,7 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
 import { AnyOrder } from "../../types/PrismaOrders";
 import { Separator } from "@/components/ui/separator";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
 import applyDiscount from "../../util/functions/applyDiscount";
 import { Icon } from "@phosphor-icons/react";
 import PaymentSummary from "./sections/PaymentSummary";
@@ -10,6 +8,7 @@ import { PaymentType } from "@prisma/client";
 import { OrderPaymentProvider } from "../../context/OrderPaymentContext";
 import PaymentMethodsSelection from "./sections/PaymentMethodsSelection";
 import PaymentConfirmationAndTools from "./sections/PaymentConfirmationAndTools";
+import { useOrderContext } from "../../context/OrderContext";
 
 export type PaymentMethod = {
   type: PaymentType;
@@ -18,27 +17,23 @@ export type PaymentMethod = {
 };
 
 interface OrderPaymentProps {
-  order: AnyOrder;
   type: "full" | "partial";
   onOrderPaid: () => void;
   handleBackButton: () => void;
-  setProducts?: Dispatch<SetStateAction<ProductInOrderType[]>>;
+  order?: AnyOrder;
 }
 
 export default function OrderPayment({
-  order,
   type,
   onOrderPaid,
   handleBackButton,
-  setProducts,
+  order: propOrder,
 }: OrderPaymentProps) {
+  const { order: contextOrder } = useOrderContext();
+  const order = propOrder || contextOrder;
+
   return (
-    <OrderPaymentProvider
-      order={order}
-      type={type}
-      onOrderPaid={onOrderPaid}
-      setProducts={setProducts}
-    >
+    <OrderPaymentProvider type={type} onOrderPaid={onOrderPaid}>
       <div className="w-full h-full flex flex-col gap-6">
         <PaymentMethodsSelection />
 
@@ -48,7 +43,7 @@ export default function OrderPayment({
           <Separator orientation="vertical" />
 
           <div className="flex flex-col w-[28%] gap-6 text-4xl items-center text-center h-full justify-center">
-            <PaymentConfirmationAndTools order={order} />
+            <PaymentConfirmationAndTools />
           </div>
         </div>
 

@@ -11,15 +11,15 @@ interface HeaderProps {
   toggleOrder: (type: OrderType) => void;
   activeOrders: {
     [OrderType.TABLE]: boolean;
-    [OrderType.TO_HOME]: boolean;
-    [OrderType.PICK_UP]: boolean;
+    [OrderType.HOME]: boolean;
+    [OrderType.PICKUP]: boolean;
   };
 }
 
 const orderLabels: { type: OrderType; label: string }[] = [
   { type: OrderType.TABLE, label: "Tavoli" },
-  { type: OrderType.TO_HOME, label: "Domicilio" },
-  { type: OrderType.PICK_UP, label: "Asporto" },
+  { type: OrderType.HOME, label: "Domicilio" },
+  { type: OrderType.PICKUP, label: "Asporto" },
 ];
 
 export default function Header({ toggleOrder, activeOrders }: HeaderProps) {

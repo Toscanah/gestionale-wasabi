@@ -1,4 +1,5 @@
 import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
+import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogClose } from "@/components/ui/dialog";
@@ -8,12 +9,11 @@ import { Table } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 
 interface DangerActionsProps {
-  deleteProducts: (table: Table<any>, cooked: boolean) => void;
-  cancelOrder: (cooked: boolean) => Promise<void>;
   table: Table<any>;
 }
 
-export default function DangerActions({ deleteProducts, cancelOrder, table }: DangerActionsProps) {
+export default function DangerActions({ table }: DangerActionsProps) {
+  const { cancelOrder, deleteProducts, toggleDialog } = useOrderContext();
   const [productsCooked, setProductsCooked] = useState(false);
 
   useEffect(() => setProductsCooked(false), []);
@@ -29,7 +29,7 @@ export default function DangerActions({ deleteProducts, cancelOrder, table }: Da
             Elimina ordine
           </Button>
         }
-        onDelete={async () => await cancelOrder(productsCooked)}
+        onDelete={async () => await cancelOrder(productsCooked).then(() => toggleDialog(false))}
       >
         <div className="space-y-2">
           <span className="text-lg">

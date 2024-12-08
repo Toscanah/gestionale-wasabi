@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
+import { OrderType } from "@prisma/client";
 
 export default function PaymentsTable({ fetchedOrders }: { fetchedOrders: OrderWithPayments[] }) {
   const [orders, setOrders] = useState<OrderWithPayments[]>(fetchedOrders);
@@ -66,9 +67,9 @@ export default function PaymentsTable({ fetchedOrders }: { fetchedOrders: OrderW
               {
                 items: [
                   { name: "Tutti i tipi di ordine", value: "-1" },
-                  { name: "Tavolo", value: "TABLE" },
-                  { name: "Domicilio", value: "TO_HOME" },
-                  { name: "Asporto", value: "PICK_UP" },
+                  { name: "Tavolo", value: OrderType.TABLE },
+                  { name: "Domicilio", value: OrderType.HOME },
+                  { name: "Asporto", value: OrderType.PICKUP },
                 ],
               },
             ]}

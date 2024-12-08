@@ -30,7 +30,6 @@ const calculateAdjustedTime = (originalTime: string) => {
 type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
 
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
-  
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
@@ -109,9 +108,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {pickupOrder.when == "immediate"
-                ? "Prima possibile"
-                : calculateAdjustedTime(pickupOrder.when ?? "")}
+              {pickupOrder.when == "immediate" ? "Prima possibile" : pickupOrder.when}
             </Text>
           }
         />

@@ -10,13 +10,16 @@ import { Button } from "@/components/ui/button";
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { debounce } from "lodash";
 import { getProductPrice } from "../../util/functions/getProductPrice";
+import { useOrderContext } from "../../context/OrderContext";
+import { useCallback, useEffect, useRef } from "react";
 
 export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,
   type: OrderType,
-  selectOption: (productInOrderId: number, optionId: number) => void,
   defaultFocusedInput: FocussableInput
 ): ColumnDef<ProductInOrderType>[] {
+  const { updateProductOption: selectOption } = useOrderContext();
+
   const { getInputRef, addInputRef, setFocusedInput, handleKeyNavigation, focusedInput } =
     useGridFocus(defaultFocusedInput, 1);
 
@@ -64,7 +67,9 @@ export default function getColumns(
           ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 0 })}
           className="max-w-28 text-2xl uppercase"
           defaultValue={row.original.product?.code ?? ""}
-          autoFocus={row.original.product_id == -1}
+          autoFocus={
+            row.original.product_id == -1
+          }
           onKeyDown={(e: any) => {
             const currentInput = getInputRef({ rowIndex: row.index, colIndex: 0 });
             const inputValue = currentInput?.value || "";
@@ -151,7 +156,10 @@ export default function getColumns(
                 <div key={option.option.id} className="flex items-center space-x-2">
                   <Checkbox
                     defaultChecked={selectedOptions.includes(option.option.id)}
-                    onCheckedChange={(e) => selectOption(row.original.id, option.option.id)}
+                    onCheckedChange={(e) => {
+                      selectOption(row.original.id, option.option.id);
+                      setFocusedInput({ rowIndex: row.index, colIndex: 0 });
+                    }}
                     id={`option-${option.option.id}-${row.index}`}
                   />
                   <Label

@@ -5,14 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { OrderType } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { useOrderContext } from "../../context/OrderContext";
 
 interface RomanStyleProps {
-  order: AnyOrder;
   handleBackButton: () => void;
   handleOrderPaid: () => void;
 }
 
-export default function RomanStyle({ order, handleBackButton, handleOrderPaid }: RomanStyleProps) {
+export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanStyleProps) {
+  const { order } = useOrderContext();
   const [ppl, setPpl] = useState<number>(0);
   const [currentPerson, setCurrentPerson] = useState<number>(1);
 

@@ -48,7 +48,7 @@ export default async function updateProductOptionsInOrder(
         id: productInOrder.order_id,
       },
       data: {
-        isReceiptPrinted: false,
+        is_receipt_printed: false,
       },
     });
   }

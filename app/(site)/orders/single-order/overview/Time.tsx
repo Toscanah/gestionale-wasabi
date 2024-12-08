@@ -5,13 +5,15 @@ import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/types/PrismaOrder
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { toastSuccess } from "@/app/(site)/util/toast";
 import { useState } from "react";
+import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
-export default function Time({ order }: { order: AnyOrder }) {
-  const { onOrdersUpdate } = useWasabiContext();
+export default function Time() {
+  const { updateGlobalState } = useWasabiContext();
+  const { order, updateOrder } = useOrderContext();
 
   const [orderTime, setOrderTime] = useState<string>(
     order.type !== OrderType.TABLE
-      ? order.type == OrderType.PICK_UP
+      ? order.type == OrderType.PICKUP
         ? (order as PickupOrder).pickup_order?.when ?? ""
         : (order as HomeOrder).home_order?.when ?? ""
       : ""
@@ -20,19 +22,18 @@ export default function Time({ order }: { order: AnyOrder }) {
   const updateOrderTime = async (value: string) => {
     setOrderTime(value);
 
-    fetchRequest("POST", "/api/orders/", "updateOrderTime", {
+    fetchRequest<AnyOrder>("POST", "/api/orders/", "updateOrderTime", {
       time: value,
       orderId: order.id,
-    }).then(() => {
-      onOrdersUpdate(order.type);
+    }).then((updatedOrder) => {
       toastSuccess("Orario dell'ordine correttamente aggiornato");
+      updateOrder(updatedOrder);
+      updateGlobalState(updatedOrder, "update");
     });
   };
 
   return (
     <div className="flex gap-2 justify-between items-center w-full">
-      {/* <span className="text-xl">Orario</span> */}
-
       <WhenSelector
         className="h-12 text-2xl uppercase w-full"
         value={orderTime == "immediate" ? "immediate" : orderTime}

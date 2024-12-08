@@ -4,13 +4,12 @@ export default function useFocusCycle() {
   const refs = useRef<Set<HTMLElement>>(new Set());
   const currentRefIndex = useRef(0);
 
-  const addRefs = (...newRefs: (HTMLElement | null)[]) => {
+  const addRefs = (...newRefs: (HTMLElement | null)[]) =>
     newRefs.forEach((ref) => {
       if (ref) {
         refs.current.add(ref);
       }
     });
-  };
 
   const getIndexOfFocusedElement = () =>
     Array.from(refs.current).findIndex((el) => el === document.activeElement);

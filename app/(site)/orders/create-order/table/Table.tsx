@@ -9,12 +9,12 @@ import fetchRequest from "../../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../../util/toast";
 import useFocusCycle from "@/app/(site)/components/hooks/useFocusCycle";
 
-export default function Table({
-  setOrder,
-}: {
-  setOrder: Dispatch<SetStateAction<AnyOrder | undefined>>;
-}) {
-  const { onOrdersUpdate } = useWasabiContext();
+interface TableProps {
+  setOrder: Dispatch<SetStateAction<AnyOrder>>;
+}
+
+export default function Table({ setOrder }: TableProps) {
+  const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
 
   const tableRef = useRef<HTMLInputElement>(null);
@@ -39,13 +39,13 @@ export default function Table({
 
     fetchRequest<{ order: TableOrder; new: boolean }>("POST", "/api/orders/", "createTableOrder", {
       ...content,
-    }).then((order) => {
-      if (order.new) {
+    }).then((newTableOrder) => {
+      if (newTableOrder.new) {
         toastSuccess("Ordine creato con successo");
+        updateGlobalState(newTableOrder.order, "add");
       }
 
-      setOrder(order.order);
-      onOrdersUpdate(OrderType.TABLE);
+      setOrder(newTableOrder.order);
     });
   };
 

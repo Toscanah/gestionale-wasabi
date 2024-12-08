@@ -1,13 +1,14 @@
 import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 import prisma from "../db";
+import { AnyOrder } from "../../types/PrismaOrders";
 
-export default async function getOrdersByType(type: OrderType) {
+export default async function getOrdersByType(type: OrderType): Promise<AnyOrder[]> {
   const orders = await prisma.order.findMany({
     include: {
       products: {
         where: {
-          isPaidFully: false,
+          is_paid_fully: false,
         },
         include: {
           product: {
@@ -23,11 +24,7 @@ export default async function getOrdersByType(type: OrderType) {
               },
             },
           },
-          options: {
-            include: {
-              option: true,
-            },
-          },
+          options: { include: { option: true } },
         },
       },
       payments: true,
@@ -51,19 +48,18 @@ export default async function getOrdersByType(type: OrderType) {
   const adjustedOrders = orders.map((order) => {
     const unpaidProducts = order.products
       .filter((prod) => prod.state == "IN_ORDER")
-      .map((product) => {
-        return {
-          ...product,
-          quantity: product.quantity - product.paidQuantity,
-          total:
-            (product.quantity - product.paidQuantity) *
-            getProductPrice(product, order.type as OrderType),
-        };
-      });
+      .map((product) => ({
+        ...product,
+        quantity: product.quantity - product.paid_quantity,
+        total:
+          (product.quantity - product.paid_quantity) *
+          getProductPrice(product, order.type as OrderType),
+      }));
 
-    const unpaidOrderTotal = unpaidProducts.reduce((sum, product) => {
-      return sum + product.quantity * getProductPrice(product, order.type as OrderType);
-    }, 0);
+    const unpaidOrderTotal = unpaidProducts.reduce(
+      (sum, product) => sum + product.quantity * getProductPrice(product, order.type as OrderType),
+      0
+    );
 
     return {
       ...order,

@@ -1,4 +1,3 @@
-import { AnyOrder } from "@/app/(site)/types/PrismaOrders";
 import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import getTable from "@/app/(site)/util/functions/getTable";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -11,26 +10,24 @@ import { PayingAction } from "../single-order/OrderTable";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
-import { Cut } from "react-thermal-printer";
 import { useOrderContext } from "../../context/OrderContext";
-import { useOrderManager } from "../../components/hooks/useOrderManager";
+
+interface DividerOrderProps {
+  setPayingAction: Dispatch<SetStateAction<PayingAction>>;
+  products?: ProductInOrderType[];
+}
 
 export default function DivideOrder({
-  products,
-  order,
   setPayingAction,
-  setProducts,
-}: {
-  products: ProductInOrderType[];
-  order: AnyOrder;
-  setPayingAction: Dispatch<SetStateAction<PayingAction>>;
-  setProducts: Dispatch<SetStateAction<ProductInOrderType[]>>;
-}) {
+  products: propProducts,
+}: DividerOrderProps) {
+  const { order, createSubOrder } = useOrderContext();
   const { dialogOpen } = useOrderContext();
-  const { createSubOrder } = useOrderManager(order);
 
   const [goPay, setGoPay] = useState<boolean>(false);
-  const [leftProducts, setLeftProducts] = useState<ProductInOrderType[]>(products);
+  const [leftProducts, setLeftProducts] = useState<ProductInOrderType[]>(
+    propProducts || order.products
+  );
   const [rightProducts, setRightProducts] = useState<ProductInOrderType[]>([]);
 
   const columns = getColumns(order.type as OrderType);
@@ -135,13 +132,12 @@ export default function DivideOrder({
           className="w-1/2 bg-green-500 text-black"
           disabled={rightProducts.length <= 0}
         >
-          Paga
+          INCASSA
         </Button>
       </div>
     </div>
   ) : (
     <OrderPayment
-      setProducts={setProducts}
       type="partial"
       order={{
         ...order,

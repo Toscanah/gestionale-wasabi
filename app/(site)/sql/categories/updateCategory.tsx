@@ -35,7 +35,6 @@ export default async function updateCategory(category: CategoryWithOptions) {
     where: { id: category.id },
     data: {
       category: category.category,
-      kitchen: category.kitchen,
     },
     include: {
       options: {
