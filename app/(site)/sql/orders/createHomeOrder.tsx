@@ -11,7 +11,7 @@ export default async function createHomeOrder(content: {
 
   return await prisma.order.create({
     data: {
-      type: OrderType.TO_HOME,
+      type: OrderType.HOME,
       total: 0,
       home_order: {
         create: {

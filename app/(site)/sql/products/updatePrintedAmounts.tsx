@@ -31,18 +31,18 @@ export default async function updatePrintedAmounts(orderId: number) {
   if (products.length == 0) return [];
 
   for (const product of products) {
-    const remainingToPrint = product.quantity - product.printedAmount;
+    const remainingToPrint = product.quantity - product.printed_amount;
 
     if (remainingToPrint > 0) {
       remainingProducts.push({
         ...product,
-        printedAmount: remainingToPrint,
+        printed_amount: remainingToPrint,
       });
 
       await prisma.productInOrder.update({
         where: { id: product.id },
         data: {
-          printedAmount: {
+          printed_amount: {
             increment: remainingToPrint,
           },
         },

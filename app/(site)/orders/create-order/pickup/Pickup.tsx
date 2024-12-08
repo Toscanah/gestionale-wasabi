@@ -1,4 +1,4 @@
-import { Dispatch, KeyboardEvent, RefObject, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { AnyOrder, PickupOrder } from "../../../types/PrismaOrders";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -11,16 +11,15 @@ import useFocusCycle from "../../../components/hooks/useFocusCycle";
 import fetchRequest from "../../../util/functions/fetchRequest";
 import { toastError } from "../../../util/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Info, Question } from "@phosphor-icons/react";
+import { Question } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 
-export default function PickUp({
-  setOrder,
-}: {
-  setOrder: Dispatch<SetStateAction<AnyOrder | undefined>>;
-}) {
-  const { onOrdersUpdate } = useWasabiContext();
+interface PickupProps {
+  setOrder: Dispatch<SetStateAction<AnyOrder>>;
+}
+
+export default function Pickup({ setOrder }: PickupProps) {
+  const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
 
   const nameRef = useRef<HTMLInputElement>(null);
@@ -28,9 +27,10 @@ export default function PickUp({
   const selectRef = useRef<HTMLButtonElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    addRefs(nameRef.current, phoneRef.current, selectRef.current, buttonRef.current);
-  }, []);
+  useEffect(
+    () => addRefs(nameRef.current, phoneRef.current, selectRef.current, buttonRef.current),
+    []
+  );
 
   const createPickupOrder = () => {
     const name = nameRef.current?.value;
@@ -43,9 +43,9 @@ export default function PickUp({
     }
 
     fetchRequest<PickupOrder>("POST", "/api/orders/", "createPickupOrder", { ...content }).then(
-      (order) => {
-        setOrder(order);
-        onOrdersUpdate(OrderType.PICK_UP);
+      (newPickupOrder) => {
+        setOrder(newPickupOrder);
+        updateGlobalState(newPickupOrder, "add");
       }
     );
   };

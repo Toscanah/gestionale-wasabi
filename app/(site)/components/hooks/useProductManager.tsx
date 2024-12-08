@@ -6,19 +6,13 @@ import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../util/toast";
 import { Table } from "@tanstack/react-table";
 import { Option, OptionInProductOrder } from "@prisma/client";
+import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
 
-export function useProductManager(
-  order: AnyOrder,
-  updateOrder: (updatedProducts: ProductInOrderType[]) => void
-) {
+export function useProductManager(order: AnyOrder, updateOrder: (updatedOrder: AnyOrder) => void) {
   const [newCode, setNewCode] = useState<string>("");
   const [newQuantity, setNewQuantity] = useState<number>(0);
-  const [products, setProducts] = useState<ProductInOrderType[]>([
-    ...order.products,
-    createDummyProduct(),
-  ]);
 
-  const addProduct = () => {
+  const addProduct = () =>
     fetchRequest<ProductInOrderType>("POST", "/api/products/", "addProductToOrder", {
       order,
       productCode: newCode,
@@ -31,17 +25,15 @@ export function useProductManager(
         toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
       }
     });
-  };
 
-  const addProducts = (products: ProductInOrderType[]) => {
+  const addProducts = (products: ProductInOrderType[]) =>
     fetchRequest<ProductInOrderType[]>("POST", "/api/products", "addProductsToOrder", {
       orderId: order.id,
       products,
     }).then(() => updateProductsList({ newProducts: products }));
-  };
 
   const updateProduct = (key: string, value: any, index: number) => {
-    let productToUpdate = products[index];
+    let productToUpdate = order.products[index];
 
     if (key == "quantity" && value < 0) {
       return toastError("La quantità non può essere negativa");
@@ -84,7 +76,7 @@ export function useProductManager(
         cooked,
       }).then(() => {
         updateProductsList({
-          deletedProducts: products.filter((p) => selectedProductIds.includes(p.id)),
+          deletedProducts: order.products.filter((p) => selectedProductIds.includes(p.id)),
         });
         table.resetRowSelection();
       });
@@ -92,7 +84,7 @@ export function useProductManager(
   };
 
   const updateProductField = (key: string, value: any, index: number) => {
-    const updatedProducts = [...products];
+    const updatedProducts = [...order.products];
 
     if (key === "code") {
       updatedProducts[index].product.code = value;
@@ -112,7 +104,7 @@ export function useProductManager(
       "updateProductOptionsInOrder",
       { productInOrderId, optionId }
     ).then((newOption) => {
-      const updatedProducts = products.map((product: ProductInOrderType) => {
+      const updatedProducts = order.products.map((product: ProductInOrderType) => {
         if (product.id !== productInOrderId) {
           return product;
         }
@@ -136,12 +128,14 @@ export function useProductManager(
     });
   };
 
-  const updateUnprintedProducts = async (): Promise<ProductInOrderType[]> => {
+  const updateUnprintedProducts = async () => {
     const unprintedProducts = await fetchRequest<ProductInOrderType[]>(
       "POST",
       "/api/products/",
       "updatePrintedAmounts",
-      { orderId: order.id }
+      {
+        orderId: order.id,
+      }
     );
 
     if (unprintedProducts.length > 0) {
@@ -164,33 +158,31 @@ export function useProductManager(
     isDummyUpdate?: boolean;
     toast?: boolean;
   }) => {
-    setProducts((prevProducts) => {
-      if (isDummyUpdate) {
-        return [...prevProducts];
-      }
+    if (isDummyUpdate) return;
 
-      const filteredProducts = prevProducts
-        .filter((p) => !deletedProducts.some((deleted) => deleted.id === p.id))
-        .filter((p) => p.id !== -1);
-      const productsWithUpdates = filteredProducts.map((product) => {
+    const updatedProductsList = order.products
+      .filter((product) => !deletedProducts.some((deleted) => deleted.id === product.id))
+      .filter((product) => product.id !== -1)
+      .map((product) => {
         const update = updatedProducts.find((p) => p.id === product.id);
         return update ? { ...product, ...update } : product;
       });
-      const updatedProductList = [...productsWithUpdates, ...newProducts, createDummyProduct()];
 
-      updateOrder(updatedProductList);
-      setNewCode("");
-      setNewQuantity(0);
-
-      if (toast) toastSuccess("Prodotti aggiornati correttamente");
-
-      return updatedProductList;
+    updateOrder({
+      ...order,
+      products: [...updatedProductsList, ...newProducts, createDummyProduct()],
+      total: calculateOrderTotal({
+        ...order,
+        products: [...updatedProductsList, ...newProducts],
+      }),
     });
+    setNewCode("");
+    setNewQuantity(0);
+
+    if (toast) toastSuccess("Prodotti aggiornati correttamente");
   };
 
   return {
-    products,
-    setProducts,
     addProduct,
     addProducts,
     newCode,

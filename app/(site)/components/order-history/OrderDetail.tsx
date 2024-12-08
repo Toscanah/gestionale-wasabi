@@ -39,7 +39,7 @@ export default function OrderDetail({
           <span className="font-semibold">
             {`€ ${formatAmount(
               product.quantity *
-                getProductPrice(product, type === "Domicilio" ? OrderType.TO_HOME : OrderType.TABLE)
+                getProductPrice(product, type === "Domicilio" ? OrderType.HOME : OrderType.TABLE)
             )}`}
           </span>
         </li>

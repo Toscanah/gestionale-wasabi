@@ -62,7 +62,7 @@ export default function OrderReceipt<T extends AnyOrder>(
       )}
 
       {FooterSection(order.id)}
-      {(forceCut || order.type !== OrderType.TO_HOME) && <Cut />}
+      {(forceCut || order.type !== OrderType.HOME) && <Cut />}
     </>
   );
 }

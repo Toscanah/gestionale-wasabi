@@ -4,8 +4,8 @@ import { AnyOrder } from "../types/PrismaOrders";
 import useOrderPayment from "../components/hooks/useOrderPayment";
 import formatAmount from "../util/functions/formatAmount";
 import applyDiscount from "../util/functions/applyDiscount";
+import { useOrderContext } from "./OrderContext";
 
-// quello che il context ritorna
 interface OrderPaymentContextProps {
   payment: Payment;
   typedAmount: string;
@@ -19,12 +19,9 @@ interface OrderPaymentContextProps {
   resetPayment: () => void;
 }
 
-// quello che il consumatore deve dare
 interface OrderPaymentProvider {
-  order: AnyOrder;
   type: "full" | "partial";
   onOrderPaid: () => void;
-  setProducts?: React.Dispatch<React.SetStateAction<any>>;
   children: ReactNode;
 }
 
@@ -43,13 +40,9 @@ export type Payment = {
 
 export type PaymentCalculation = { amount: number; quantity: number; total: number };
 
-export const OrderPaymentProvider = ({
-  order,
-  type,
-  onOrderPaid,
-  setProducts,
-  children,
-}: OrderPaymentProvider) => {
+export const OrderPaymentProvider = ({ type, onOrderPaid, children }: OrderPaymentProvider) => {
+  const { order } = useOrderContext();
+
   const [activeTool, setActiveTool] = useState<"manual" | "table">("manual");
   const [paymentCalculations, setPaymentCalculations] = useState<PaymentCalculation[]>([
     { amount: 0, quantity: 0, total: 0 },
@@ -72,8 +65,7 @@ export const OrderPaymentProvider = ({
     type,
     onOrderPaid,
     payment,
-    setPayment,
-    setProducts
+    setPayment
   );
 
   const resetPayment = () => {

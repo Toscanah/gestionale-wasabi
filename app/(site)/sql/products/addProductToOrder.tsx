@@ -34,7 +34,7 @@ export default async function addProductToOrder(
       product_id: product.id,
       quantity: Number(quantity),
       total: productTotalPrice,
-      riceQuantity: product.rice * Number(quantity) || 0,
+      rice_quantity: product.rice * Number(quantity) || 0,
     },
   });
 
@@ -46,7 +46,7 @@ export default async function addProductToOrder(
       total: {
         increment: productTotalPrice,
       },
-      isReceiptPrinted: false,
+      is_receipt_printed: false,
     },
   });
 

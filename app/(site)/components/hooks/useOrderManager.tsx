@@ -2,49 +2,34 @@ import { Dispatch, SetStateAction } from "react";
 import { AnyOrder } from "../../types/PrismaOrders";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
-import { getProductPrice } from "../../util/functions/getProductPrice";
+import createDummyProduct from "../../util/functions/createDummyProduct";
 
-export function useOrderManager(
-  order: AnyOrder,
-  setOrder?: Dispatch<SetStateAction<AnyOrder | undefined>>
-) {
-  const { onOrdersUpdate, fetchRemainingRice } = useWasabiContext();
+export function useOrderManager(order: AnyOrder, setOrder: Dispatch<SetStateAction<AnyOrder>>) {
+  const { updateGlobalState, fetchRemainingRice } = useWasabiContext();
 
-  const updateOrder = (updatedProducts: ProductInOrderType[]) => {
-    onOrdersUpdate(order.type as OrderType);
-    setOrder?.((prevOrder) => {
-      if (!prevOrder) return prevOrder;
-
-      return {
-        ...prevOrder,
-        products: updatedProducts,
-        total: calculateTotal(updatedProducts),
-      };
+  const updateOrder = (updatedOrder: AnyOrder) => {
+    setOrder({
+      ...updatedOrder,
+      products: [...updatedOrder.products.filter((p) => p.id !== -1), createDummyProduct()],
     });
+    updateGlobalState(updatedOrder, "update");
   };
 
   const cancelOrder = (cooked: boolean = false) =>
     fetchRequest<AnyOrder>("POST", "/api/orders/", "cancelOrder", {
       orderId: order.id,
       cooked,
-    }).then(async () => {
-      await onOrdersUpdate(order.type as OrderType);
+    }).then((deletedOrder) => {
       fetchRemainingRice();
+      updateGlobalState(deletedOrder, "delete");
     });
 
   const createSubOrder = (parentOrder: AnyOrder, products: ProductInOrderType[]) =>
-    fetchRequest("POST", "/api/orders/", "createSubOrder", {
+    fetchRequest<AnyOrder>("POST", "/api/orders/", "createSubOrder", {
       parentOrder,
       products,
-    }).then(() => onOrdersUpdate(order.type as OrderType));
-
-  const calculateTotal = (products: ProductInOrderType[]) =>
-    products.reduce(
-      (acc, product) => acc + product.quantity * getProductPrice(product, order.type as OrderType),
-      0
-    );
+    }).then((newSubOrder) => updateGlobalState(newSubOrder, "add"));
 
   return { updateOrder, cancelOrder, createSubOrder };
 }

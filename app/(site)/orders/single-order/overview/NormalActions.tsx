@@ -16,65 +16,65 @@ import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
-  order: AnyOrder;
   setAction: Dispatch<SetStateAction<PayingAction>>;
-  updateUnprintedProducts: () => Promise<ProductInOrderType[]>;
 }
 
-export default function NormalActions({
-  order,
-  setAction,
-  quickPaymentOption,
-  updateUnprintedProducts,
-}: NormalActionsProps) {
-  const { onOrdersUpdate } = useWasabiContext();
-  const { toggleDialog } = useOrderContext();
+export default function NormalActions({ setAction, quickPaymentOption }: NormalActionsProps) {
+  const { order, updateUnprintedProducts, updateOrder, toggleDialog } = useOrderContext();
+  const { updateGlobalState } = useWasabiContext();
 
   const canSplit = (products: ProductInOrderType[]) =>
     products.length > 1 ||
-    (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.TO_HOME);
+    (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.HOME);
 
-  const canPayFull = applyDiscount(order.total, order.discount) > 0;
+  const updatePrintedFlag = () =>
+    fetchRequest<AnyOrder>("POST", "/api/orders", "updatePrintedFlag", {
+      orderId: order.id,
+    }).then((updatedOrder) => {
+      updateOrder(updatedOrder);
+      updateGlobalState(updatedOrder, "update");
+    });
 
-  const handlePrint = async () => {
-    fetchRequest("POST", "/api/orders", "updatePrintedFlag", { orderId: order.id });
-
+  const buildPrintContent = async (
+    order: AnyOrder,
+    quickPaymentOption: QuickPaymentOption,
+    isRePrint = false
+  ) => {
     const content = [];
-    const unprintedProducts = await updateUnprintedProducts();
 
-    await onOrdersUpdate(order.type);
-
-    if (unprintedProducts.length > 0) {
-      content.push(() => KitchenReceipt({ ...order, products: unprintedProducts }));
+    if (!isRePrint) {
+      const unprintedProducts = await updateUnprintedProducts();
+      if (unprintedProducts.length > 0) {
+        content.push(() => KitchenReceipt<typeof order>({ ...order, products: unprintedProducts }));
+      }
+    } else {
+      content.push(() => KitchenReceipt<typeof order>(order));
     }
 
     content.push(() =>
-      OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.TO_HOME)
+      OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.HOME)
     );
 
-    if (order.type === OrderType.TO_HOME) {
+    if (order.type === OrderType.HOME) {
       content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
     }
 
-    await print(...content).then(
-      async () => await onOrdersUpdate(order.type).then(() => toggleDialog(false))
-    );
+    return content;
   };
 
-  const handleFullPayment = async () => {
-    setAction("payFull");
-
-    const unprintedProducts = await updateUnprintedProducts();
-
-    if (unprintedProducts.length > 0) {
-      await print(() => KitchenReceipt({ ...order, products: unprintedProducts }));
-    }
-
-    if (order.type !== OrderType.TO_HOME) {
-      await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false));
-      fetchRequest("POST", "/api/orders", "updatePrintedFlag", { orderId: order.id });
-    }
+  const handleRePrint = async () => {
+    updatePrintedFlag();
+    const content = await buildPrintContent(order, quickPaymentOption, true);
+    await print(...content);
   };
+
+  const handlePrint = async () => {
+    updatePrintedFlag();
+    const content = await buildPrintContent(order, quickPaymentOption, false);
+    await print(...content).then(() => toggleDialog(false));
+  };
+
+  const handleFullPayment = () => setAction("payFull");
 
   return (
     <>
@@ -90,22 +90,36 @@ export default function NormalActions({
         <Button
           onClick={() => setAction("payRoman")}
           className="w-full text-3xl h-12"
-          disabled={order.products.length <= 0 || order.type === OrderType.TO_HOME}
+          disabled={order.products.length <= 0 || order.type === OrderType.HOME}
         >
           Romana
         </Button>
       </div>
 
+      <div className="flex gap-6">
+        <Button
+          className="w-full text-3xl h-12"
+          disabled={order.products.length === 0}
+          onClick={handlePrint}
+        >
+          Stampa
+        </Button>
+
+        <Button
+          className="w-full text-3xl h-12"
+          disabled={order.products.length === 0}
+          onClick={handleRePrint}
+        >
+          Ristampa
+        </Button>
+      </div>
+
       <Button
         className="w-full text-3xl h-12"
-        disabled={order.products.length === 0}
-        onClick={handlePrint}
+        onClick={handleFullPayment}
+        disabled={!(order.total > 0)} // || !order.is_receipt_printed
       >
-        Stampa
-      </Button>
-
-      <Button className="w-full text-3xl h-12" onClick={handleFullPayment} disabled={!canPayFull}>
-        {order.type === OrderType.TO_HOME ? "INCASSA" : "PAGA"}
+        INCASSA
       </Button>
     </>
   );

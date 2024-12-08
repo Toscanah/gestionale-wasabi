@@ -17,19 +17,19 @@ import WasabiSidebar from "../components/sidebar/Sidebar";
 export default function Home() {
   const [orders, setOrders] = useState<{
     [OrderType.TABLE]: TableOrder[];
-    [OrderType.TO_HOME]: HomeOrder[];
-    [OrderType.PICK_UP]: PickupOrder[];
+    [OrderType.HOME]: HomeOrder[];
+    [OrderType.PICKUP]: PickupOrder[];
   }>({
     [OrderType.TABLE]: [],
-    [OrderType.TO_HOME]: [],
-    [OrderType.PICK_UP]: [],
+    [OrderType.HOME]: [],
+    [OrderType.PICKUP]: [],
   });
 
   const [activeOrders, setActiveOrders] = useState<{
     [OrderType.TABLE]: boolean;
-    [OrderType.TO_HOME]: boolean;
-    [OrderType.PICK_UP]: boolean;
-  }>({ [OrderType.TABLE]: true, [OrderType.TO_HOME]: true, [OrderType.PICK_UP]: true });
+    [OrderType.HOME]: boolean;
+    [OrderType.PICKUP]: boolean;
+  }>({ [OrderType.TABLE]: true, [OrderType.HOME]: true, [OrderType.PICKUP]: true });
 
   const toggleOrder = (type: OrderType) =>
     setActiveOrders((prev) =>
@@ -38,28 +38,56 @@ export default function Home() {
         : { ...prev, [type]: !prev[type] }
     );
 
-  const fetchOrders = (type: OrderType) =>
-    fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrdersByType", { type }).then((data) => {
-      if (data) {
-        setOrders((prevOrders) => ({
-          ...prevOrders,
-          [type]: data,
-        }));
+  const fetchOrdersByType = async <T,>(type: OrderType): Promise<T> =>
+    await fetchRequest<T>("GET", "/api/orders/", "getOrdersByType", {
+      type,
+    });
+
+  const updateGlobalState = (order: AnyOrder, action: "update" | "delete" | "add") =>
+    setOrders((prevOrders) => {
+      const existingOrders = prevOrders[order.type] || [];
+
+      switch (action) {
+        case "update":
+          return {
+            ...prevOrders,
+            [order.type]: existingOrders.map((existingOrder) =>
+              existingOrder.id === order.id ? order : existingOrder
+            ),
+          };
+
+        case "delete":
+          return {
+            ...prevOrders,
+            [order.type]: existingOrders.filter((existingOrder) => existingOrder.id !== order.id),
+          };
+
+        case "add":
+          return {
+            ...prevOrders,
+            [order.type]: [...existingOrders, order],
+          };
+
+        default:
+          return prevOrders;
       }
     });
 
-  const onOrdersUpdate = (type: OrderType) => fetchOrders(type);
-
   useEffect(() => {
-    fetchOrders(OrderType.TABLE);
-    fetchOrders(OrderType.PICK_UP);
-    fetchOrders(OrderType.TO_HOME);
+    const fetchInitialOrders = async () =>
+      setOrders({
+        [OrderType.HOME]: await fetchOrdersByType<HomeOrder[]>(OrderType.HOME),
+        [OrderType.PICKUP]: await fetchOrdersByType<PickupOrder[]>(OrderType.PICKUP),
+        [OrderType.TABLE]: await fetchOrdersByType<TableOrder[]>(OrderType.TABLE),
+      });
+
+    fetchInitialOrders();
   }, []);
 
   const activeOrderTypes = Object.values(OrderType).filter((type) => activeOrders[type]);
 
   return (
-    <WasabiProvider onOrdersUpdate={onOrdersUpdate}>
+    <WasabiProvider updateGlobalState={updateGlobalState}>
       <WasabiSidebar />
 
       <div className="w-full p-4 h-screen flex flex-col gap-4">
@@ -102,7 +130,7 @@ export default function Home() {
                 />
               </ResizablePanel>
 
-              {index < activeOrderTypes.length - 1 && <ResizableHandle disabled />}
+              {index < activeOrderTypes.length - 1 && <ResizableHandle />}
             </Fragment>
           ))}
         </ResizablePanelGroup>

@@ -1,3 +1,4 @@
+import { OrderType } from "@prisma/client";
 import prisma from "../db";
 
 export default async function createPickupOrder(content: {
@@ -46,7 +47,7 @@ export default async function createPickupOrder(content: {
   // Create the order with or without customer data
   const createdOrder = await prisma.order.create({
     data: {
-      type: "PICK_UP",
+      type: OrderType.PICKUP,
       total: 0,
       pickup_order: {
         create: {

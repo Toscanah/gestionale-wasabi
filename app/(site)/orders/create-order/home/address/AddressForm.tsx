@@ -19,6 +19,21 @@ export type ExternalInfo = {
   contactPhone?: string | undefined;
 };
 
+interface AddressFormProps {
+  customer: Customer | undefined;
+  selectedAddress: Address | undefined;
+  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>;
+  selectedOption: string;
+  setCustomer: Dispatch<SetStateAction<Customer | undefined>>;
+  phone: string;
+  setAddresses: Dispatch<SetStateAction<Address[]>>;
+  formRef: any;
+  handleKeyDown: (e: KeyboardEvent) => void;
+  refs: RefObject<any>[];
+  setExternalInfo: Dispatch<SetStateAction<ExternalInfo>>;
+  externalInfo: ExternalInfo;
+}
+
 export default function AddressForm({
   customer,
   selectedAddress,
@@ -30,24 +45,9 @@ export default function AddressForm({
   formRef,
   handleKeyDown,
   refs,
-  createHomeOrder,
   setExternalInfo,
   externalInfo,
-}: {
-  customer: Customer | undefined;
-  selectedAddress: Address | undefined;
-  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>;
-  selectedOption: string;
-  setCustomer: Dispatch<SetStateAction<Customer | undefined>>;
-  phone: string;
-  setAddresses: Dispatch<SetStateAction<Address[]>>;
-  formRef: any;
-  handleKeyDown: (e: KeyboardEvent) => void;
-  refs: RefObject<any>[];
-  createHomeOrder: (address: Address, externalInfo: ExternalInfo) => void;
-  setExternalInfo: Dispatch<SetStateAction<ExternalInfo>>;
-  externalInfo: ExternalInfo;
-}) {
+}: AddressFormProps) {
   const form = getForm(formSchema);
 
   const handleCustomerUpdate = async (actionCustomer: string, customerContent: object) => {

@@ -1,6 +1,7 @@
 import { Payment, PaymentType } from "@prisma/client";
 import prisma from "../db";
 import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
+import getOrderById from "../orders/getOrderById";
 
 export default async function payOrder(payments: Payment[], productsToPay: ProductInOrderType[]) {
   const orderId = payments[0].order_id;
@@ -18,25 +19,22 @@ export default async function payOrder(payments: Payment[], productsToPay: Produ
   });
 
   // Retrieve the order along with associated products
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: { products: true },
-  });
+  const order = await getOrderById(orderId);
 
   if (!order) throw new Error(`Order with id ${orderId} not found`);
 
-  // Update paid quantity and isPaidFully for each product
+  // Update paid quantity and is_paid_fully for each product
   const productUpdates = productsToPay
     .map((productToPay) => {
       const productInOrder = order.products.find((p) => p.id === productToPay.id);
       if (!productInOrder) return null;
 
-      const newPaidQuantity = productInOrder.paidQuantity + productToPay.quantity;
+      const newPaidQuantity = productInOrder.paid_quantity + productToPay.quantity;
       return {
         id: productInOrder.id,
         data: {
-          paidQuantity: newPaidQuantity,
-          isPaidFully: newPaidQuantity >= productInOrder.quantity,
+          paid_quantity: newPaidQuantity,
+          is_paid_fully: newPaidQuantity >= productInOrder.quantity,
         },
       };
     })
@@ -56,18 +54,21 @@ export default async function payOrder(payments: Payment[], productsToPay: Produ
   const unpaidInOrderProductsCount = await prisma.productInOrder.count({
     where: {
       order_id: orderId,
-      isPaidFully: false,
+      is_paid_fully: false,
       state: "IN_ORDER", // Only count unpaid products with state "IN_ORDER"
     },
   });
 
+  let updatedOrder = order;
   // If no unpaid products with "IN_ORDER" status remain, mark the order as "PAID"
   if (unpaidInOrderProductsCount === 0) {
     await prisma.order.update({
       where: { id: orderId },
       data: { state: "PAID" },
     });
+
+    updatedOrder = await getOrderById(orderId);
   }
 
-  return createdPayments;
+  return updatedOrder;
 }

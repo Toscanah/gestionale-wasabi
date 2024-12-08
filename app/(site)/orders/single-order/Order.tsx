@@ -7,13 +7,12 @@ import { useState } from "react";
 import { OrderProvider } from "../../context/OrderContext";
 import { cn } from "@/lib/utils";
 
-export default function Order({
-  cell,
-  className,
-}: {
+interface OrderProps {
   cell: Cell<AnyOrder, unknown>;
   className: string;
-}) {
+}
+
+export default function Order({ cell, className }: OrderProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -27,9 +26,7 @@ export default function Order({
           key={cell.id}
           className={cn(
             className,
-            !cell.row.original.isReceiptPrinted
-              // ? "*:text-green-500 text-green-500"
-              && "*:text-red-400 text-red-400"
+            cell.row.original.is_receipt_printed && "*:text-green-600 text-green-600"
           )}
         >
           {flexRender(cell.column.columnDef.cell, cell.getContext())}

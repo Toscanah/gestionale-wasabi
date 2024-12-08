@@ -2,6 +2,7 @@ import { forwardRef, KeyboardEvent } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import generateTimeSlots from "../../util/functions/generateTimeSlots";
 import SelectWrapper from "./SelectWrapper";
+import { addHours } from "date-fns";
 
 interface WhenSelectorProps {
   className?: string;
@@ -14,6 +15,7 @@ interface WhenSelectorProps {
 const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
   ({ className, field, value, onValueChange, onKeyDown }, ref) => {
     const now = new Date();
+
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
 
@@ -45,7 +47,7 @@ const WhenSelector = forwardRef<HTMLButtonElement, WhenSelectorProps>(
           ...additionalGroup,
           {
             label: "Subito",
-            items: [{name: "Subito", value: "immediate"}],
+            items: [{ name: "Subito", value: "immediate" }],
           },
           ...(lunchTimes.length > 0
             ? [

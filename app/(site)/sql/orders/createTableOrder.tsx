@@ -1,3 +1,4 @@
+import { OrderType } from "@prisma/client";
 import prisma from "../db";
 
 export default async function createTableOrder(content: {
@@ -9,7 +10,7 @@ export default async function createTableOrder(content: {
 
   const existingOrder = await prisma.order.findFirst({
     where: {
-      type: "TABLE",
+      type: OrderType.TABLE,
       table_order: {
         table: table,
       },
@@ -48,7 +49,7 @@ export default async function createTableOrder(content: {
 
   const newOrder = await prisma.order.create({
     data: {
-      type: "TABLE",
+      type: OrderType.TABLE,
       total: 0,
       table_order: {
         create: {

@@ -9,7 +9,7 @@ export default async function getRemainingRice(): Promise<Rice | null> {
   const today = new Date();
   const usedRice = await prisma.productInOrder.aggregate({
     _sum: {
-      riceQuantity: true,
+      rice_quantity: true,
     },
     where: {
       state: {
@@ -24,7 +24,7 @@ export default async function getRemainingRice(): Promise<Rice | null> {
     },
   });
 
-  const totalUsedRice = usedRice._sum.riceQuantity ?? 0;
+  const totalUsedRice = usedRice._sum.rice_quantity ?? 0;
   return rice
     ? { ...rice, amount: rice.amount - totalUsedRice }
     : { id: 1, amount: 0, threshold: 0 };

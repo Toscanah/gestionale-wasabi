@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma } from "@prisma/client";
 
 export type ProductInOrderType = Prisma.ProductInOrderGetPayload<{
   include: {
@@ -14,11 +14,7 @@ export type ProductInOrderType = Prisma.ProductInOrderGetPayload<{
           };
         };
       };
-    },
-    options: {
-      select: {
-        option: true,
-      }
-    }
+    };
+    options: { select: { option: true } };
   };
 }>;
