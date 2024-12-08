@@ -1,15 +1,11 @@
 import getColumns from "./getColumns";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { useEffect, useState } from "react";
-import { useWasabiContext } from "../../context/WasabiContext";
-import { OrderType } from "@prisma/client";
 import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
 import OrderOverview from "./overview/OrderOverview";
 import OrderPayment from "../../payments/order/OrderPayment";
 import DivideOrder from "../divide-order/DivideOrder";
-import { useProductManager } from "../../components/hooks/useProductManager";
-import { useOrderManager } from "../../components/hooks/useOrderManager";
 import RomanStyle from "../divide-order/RomanStyle";
 import DangerActions from "./overview/DangerActions";
 import { useOrderContext } from "../../context/OrderContext";
@@ -19,23 +15,18 @@ import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
 export default function OrderTable() {
-  const { order, setOrder, toggleDialog, dialogOpen } = useOrderContext();
-
-  const { onOrdersUpdate } = useWasabiContext();
-  const { updateOrder, cancelOrder } = useOrderManager(order, setOrder);
   const {
-    products,
-    setProducts,
+    order,
+    toggleDialog,
+    dialogOpen,
     addProduct,
-    addProducts,
     newCode,
     newQuantity,
     updateProduct,
     updateProductField,
-    deleteProducts,
-    updateProductOption,
     updateUnprintedProducts,
-  } = useProductManager(order, updateOrder);
+  } = useOrderContext();
+
   const [payingAction, setPayingAction] = useState<PayingAction>("none");
   const [rowSelection, setRowSelection] = useState({});
 
@@ -50,7 +41,7 @@ export default function OrderTable() {
       return;
     }
 
-    const productToUpdate = products[index];
+    const productToUpdate = order.products[index];
 
     if (productToUpdate.product_id !== -1) {
       updateProduct(key, value, index);
@@ -59,13 +50,13 @@ export default function OrderTable() {
     }
   };
 
-  const columns = getColumns(handleFieldChange, order.type as OrderType, updateProductOption, {
-    rowIndex: products.length - 1,
+  const columns = getColumns(handleFieldChange, order.type, {
+    rowIndex: order.products.length - 1,
     colIndex: 0,
   });
 
   const table = getTable<ProductInOrderType>({
-    data: products,
+    data: order.products,
     columns,
     rowSelection,
     setRowSelection,
@@ -73,63 +64,51 @@ export default function OrderTable() {
 
   useEffect(() => {
     if (payingAction === "paidFull") {
-      onOrdersUpdate(order.type as OrderType);
       toggleDialog(false);
     }
   }, [payingAction]);
 
   useEffect(() => {
-    const printKitchenRec = async () =>
-      await onOrdersUpdate(order.type).then(async () => {
-        const remainingProducts = await updateUnprintedProducts();
+    const printKitchenRec = async () => {
+      const unprintedProducts = await updateUnprintedProducts();
 
-        if (remainingProducts.length > 0) {
-          await print(() => KitchenReceipt({ ...order, products: remainingProducts }));
-        }
-      });
+      if (unprintedProducts.length > 0) {
+        await print(() => KitchenReceipt({ ...order, products: unprintedProducts }));
+      }
+    };
 
-    if (!dialogOpen && !order.suborderOf && order.state !== "CANCELLED") {
+    if (!dialogOpen && !order.suborder_of && order.state !== "CANCELLED") {
       printKitchenRec();
     }
   }, [dialogOpen]);
 
   return payingAction == "none" ? (
     <div className="w-full h-full flex gap-6 justify-between">
-      <div className="w-[80%] h-full flex flex-col gap-6 justify-between">
-        <Table table={table} tableClassName="h-full max-h-full" />
-        <DangerActions
-          cancelOrder={async (cooked) => await cancelOrder(cooked).then(() => toggleDialog(false))}
-          deleteProducts={deleteProducts}
+      <div className="w-[75%] h-full flex flex-col gap-6 justify-between">
+        <Table
           table={table}
+          tableClassName="h-full max-h-full"
+          stickyRowIndex={order.products.length - 1}
         />
+        <DangerActions table={table} />
       </div>
 
-      <OrderOverview
-        updateUnprintedProducts={updateUnprintedProducts}
-        order={order}
-        setAction={setPayingAction}
-        addProducts={addProducts}
-      />
+      <OrderOverview setAction={setPayingAction} />
     </div>
   ) : payingAction == "payFull" ? (
     <OrderPayment
-      order={order}
       type="full"
       onOrderPaid={() => setPayingAction("paidFull")}
       handleBackButton={() => setPayingAction("none")}
-      setProducts={setProducts}
     />
   ) : payingAction == "payRoman" ? (
     <RomanStyle
-      order={order}
       handleOrderPaid={() => setPayingAction("paidFull")}
       handleBackButton={() => setPayingAction("none")}
     />
   ) : (
     <DivideOrder
-      setProducts={setProducts}
-      order={order}
-      products={products.filter((product) => product.product_id !== -1)}
+      products={order.products.filter((product) => product.product_id !== -1)}
       setPayingAction={setPayingAction}
     />
   );

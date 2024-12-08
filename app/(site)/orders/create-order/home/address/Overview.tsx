@@ -220,7 +220,7 @@ export default function Overview({
               selectedOption === "new" ||
               (selectedAddress && tempAddress !== undefined)
             }
-            onClick={() => createHomeOrder()}
+            onClick={createHomeOrder}
           >
             CREA ORDINE
           </Button>

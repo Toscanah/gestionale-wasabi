@@ -23,11 +23,7 @@ export type CustomerWithDetails = Prisma.CustomerGetPayload<{
                     };
                   };
                 };
-                options: {
-                  include: {
-                    option: true;
-                  };
-                };
+                options: { include: { option: true } };
               };
             };
           };
@@ -53,11 +49,7 @@ export type CustomerWithDetails = Prisma.CustomerGetPayload<{
                     };
                   };
                 };
-                options: {
-                  include: {
-                    option: true;
-                  };
-                };
+                options: { include: { option: true } };
               };
             };
           };

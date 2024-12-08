@@ -1,12 +1,15 @@
 import prisma from "../db";
+import getOrderById from "./getOrderById";
 
 export default async function updatePrintedFlag(orderId: number) {
-  return await prisma.order.update({
+  await prisma.order.update({
     where: {
       id: orderId,
     },
     data: {
-      isReceiptPrinted: true,
+      is_receipt_printed: true,
     },
   });
+
+  return await getOrderById(orderId);
 }

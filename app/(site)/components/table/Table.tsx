@@ -22,7 +22,8 @@ interface TableProps<T> {
   rowClassName?: string;
   cellClassName?: (index: number) => string;
   CustomCell?: ({ cell, className }: CustomeCellProps<T>) => JSX.Element;
-  onRowClick?: (orginal: T) => void;
+  onRowClick?: (original: T) => void;
+  stickyRowIndex?: number; // Add stickyRowIndex prop
 }
 
 export default function Table<T>({
@@ -33,6 +34,7 @@ export default function Table<T>({
   cellClassName,
   CustomCell,
   onRowClick,
+  stickyRowIndex, // Accept stickyRowIndex prop
 }: TableProps<T>) {
   return (
     <div className={cn("rounded-md border w-full overflow-y-auto max-h-max", tableClassName)}>
@@ -55,12 +57,18 @@ export default function Table<T>({
 
           <TableBody>
             {table.getRowModel().rows?.length > 0 &&
-              table.getRowModel().rows?.map((row) => {
+              table.getRowModel().rows?.map((row, rowIndex) => {
+                const isSticky = rowIndex === stickyRowIndex; // Check if this row should be sticky
+
                 return (
                   <TableRow
                     onClick={() => (onRowClick ? onRowClick(row.original) : undefined)}
                     key={row.id}
-                    className={cn("h-8 max-h-8", rowClassName)}
+                    className={cn(
+                      "h-8 max-h-8",
+                      rowClassName,
+                      // isSticky && "sticky z-10 bottom-0"
+                    )}
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell, index) => (

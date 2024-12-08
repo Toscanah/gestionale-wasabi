@@ -1,4 +1,3 @@
-import { Customer, Phone } from "@prisma/client";
 import prisma from "../db";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 

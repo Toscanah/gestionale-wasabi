@@ -1,6 +1,4 @@
-import { ProductInOrderType } from "../../../types/ProductInOrderType";
 import { Dispatch, SetStateAction, useState } from "react";
-import { AnyOrder, HomeOrder } from "../../../types/PrismaOrders";
 import { PayingAction } from "../OrderTable";
 import { OrderType } from "@prisma/client";
 import QuickPaymentOptions, { QuickPaymentOption } from "./QuickPaymentOptions";
@@ -10,50 +8,36 @@ import OldOrders from "./OldOrders";
 import Rice from "./Rice";
 import Total from "./Total";
 import NormalActions from "./NormalActions";
+import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 interface OrderOverviewProps {
-  order: AnyOrder;
   setAction: Dispatch<SetStateAction<PayingAction>>;
-  addProducts: (newProducts: ProductInOrderType[]) => void;
-  updateUnprintedProducts: () => Promise<ProductInOrderType[]>;
 }
 
-export default function OrderOverview({
-  order,
-  setAction,
-  addProducts,
-  updateUnprintedProducts,
-}: OrderOverviewProps) {
+export default function OrderOverview({ setAction }: OrderOverviewProps) {
+  const { order } = useOrderContext();
   const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
 
   return (
     <div className="w-[25%] flex flex-col gap-6 h-full">
-      {order.type !== OrderType.TABLE && (
+      {order.type == OrderType.HOME && (
         <QuickPaymentOptions
-          order={order as HomeOrder}
           quickPaymentOption={quickPaymentOption}
           setQuickPaymentOption={setQuickPaymentOption}
         />
       )}
 
-      {order.type !== OrderType.TABLE && <OldOrders addProducts={addProducts} order={order} />}
+      {order.type !== OrderType.TABLE && <OldOrders />}
 
       <div className="flex gap-6 items-center">
-        {order.type !== OrderType.TABLE && <Time order={order} />}
-        <Discount order={order} />
+        {order.type !== OrderType.TABLE && <Time />}
+        <Discount />
       </div>
 
       <div className="mt-auto flex flex-col gap-6">
-        <Rice order={order} />
-
-        <Total orderTotal={order.total} discount={order.discount} />
-
-        <NormalActions
-          order={order}
-          setAction={setAction}
-          updateUnprintedProducts={updateUnprintedProducts}
-          quickPaymentOption={quickPaymentOption}
-        />
+        <Rice />
+        <Total />
+        <NormalActions setAction={setAction} quickPaymentOption={quickPaymentOption} />
       </div>
     </div>
   );

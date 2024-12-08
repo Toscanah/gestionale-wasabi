@@ -1,9 +1,10 @@
 import prisma from "../db";
+import getOrderById from "./getOrderById";
 
 export default async function updateOrderNotes(orderId: number, notes: string) {
   await prisma.order.update({
     where: { id: orderId },
-    data: { isReceiptPrinted: false },
+    data: { is_receipt_printed: false },
   });
 
   const homeOrder = await prisma.homeOrder.findUnique({
@@ -38,8 +39,12 @@ export default async function updateOrderNotes(orderId: number, notes: string) {
     }
   }
 
-  return await prisma.homeOrder.update({
+  await prisma.homeOrder.update({
     where: { order_id: orderId },
     data: { notes: updatedNotes },
   });
+
+  console.log(orderId)
+
+  return await getOrderById(orderId);
 }

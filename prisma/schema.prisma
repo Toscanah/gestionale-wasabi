@@ -9,8 +9,8 @@ datasource db {
 
 enum OrderType {
     TABLE
-    TO_HOME
-    PICK_UP
+    HOME
+    PICKUP
 }
 
 enum OrderState {
@@ -41,20 +41,20 @@ enum KitchenType {
 }
 
 model Order {
-    id               Int              @id @default(autoincrement())
-    created_at       DateTime         @default(now())
-    updated_at       DateTime         @default(now()) @updatedAt
-    total            Float            @default(0)
-    discount         Float            @default(0)
-    isReceiptPrinted Boolean          @default(false)
-    suborderOf       Int?
-    state            OrderState       @default(ACTIVE)
-    type             OrderType
-    products         ProductInOrder[]
-    payments         Payment[]
-    table_order      TableOrder?
-    home_order       HomeOrder?
-    pickup_order     PickupOrder?
+    id                 Int              @id @default(autoincrement())
+    created_at         DateTime         @default(now())
+    updated_at         DateTime         @default(now()) @updatedAt
+    total              Float            @default(0)
+    discount           Float            @default(0)
+    is_receipt_printed Boolean          @default(false)
+    suborder_of        Int?
+    state              OrderState       @default(ACTIVE)
+    type               OrderType
+    products           ProductInOrder[]
+    payments           Payment[]
+    table_order        TableOrder?
+    home_order         HomeOrder?
+    pickup_order       PickupOrder?
 }
 
 model TableOrder {
@@ -101,7 +101,7 @@ model Address {
     active      Boolean     @default(true)
     temporary   Boolean     @default(false)
     customer    Customer    @relation(fields: [customer_id], references: [id])
-    HomeOrder   HomeOrder[]
+    home_orders HomeOrder[]
 }
 
 model Customer {
@@ -154,19 +154,19 @@ model Product {
 }
 
 model ProductInOrder {
-    id            Int                    @id @default(autoincrement())
-    product_id    Int
-    order_id      Int
-    quantity      Int                    @default(0)
-    total         Float                  @default(0)
-    isPaidFully   Boolean                @default(false)
-    paidQuantity  Int                    @default(0)
-    riceQuantity  Float                  @default(0)
-    printedAmount Int                    @default(0)
-    state         ProductInOrderState    @default(IN_ORDER)
-    options       OptionInProductOrder[]
-    product       Product                @relation(fields: [product_id], references: [id])
-    order         Order                  @relation(fields: [order_id], references: [id])
+    id             Int                    @id @default(autoincrement())
+    product_id     Int
+    order_id       Int
+    quantity       Int                    @default(0)
+    total          Float                  @default(0)
+    is_paid_fully  Boolean                @default(false)
+    paid_quantity  Int                    @default(0)
+    rice_quantity  Float                  @default(0)
+    printed_amount Int                    @default(0)
+    state          ProductInOrderState    @default(IN_ORDER)
+    options        OptionInProductOrder[]
+    product        Product                @relation(fields: [product_id], references: [id])
+    order          Order                  @relation(fields: [order_id], references: [id])
 }
 
 model Category {
@@ -197,6 +197,6 @@ model OptionInProductOrder {
     id                  Int            @id @default(autoincrement())
     product_in_order_id Int
     option_id           Int
-    productInOrder      ProductInOrder @relation(fields: [product_in_order_id], references: [id])
+    product_in_order    ProductInOrder @relation(fields: [product_in_order_id], references: [id])
     option              Option         @relation(fields: [option_id], references: [id])
 }
