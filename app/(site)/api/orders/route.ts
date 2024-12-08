@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     case "updateDiscount":
       return NextResponse.json(await updateDiscount(content?.orderId, content?.discount));
     case "updateOrderNotes":
-      return NextResponse.json(await updateOrderNotes(content?.orderId, content?.notes));
+      return NextResponse.json(await updateOrderNotes(content?.orderId, content?.quickPaymentOption));
     case "createTableOrder":
       return NextResponse.json(await createTableOrder(content as any));
     case "createPickupOrder":

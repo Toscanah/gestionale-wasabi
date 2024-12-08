@@ -2,9 +2,9 @@ import { ProductInOrderType } from "../../types/ProductInOrderType";
 
 export default function createDummyProduct(): ProductInOrderType {
   return {
-    riceQuantity: 0,
+    rice_quantity: 0,
     state: "IN_ORDER",
-    printedAmount: -1,
+    printed_amount: -1,
     product: {
       kitchen: "NONE",
       active: true,
@@ -28,7 +28,7 @@ export default function createDummyProduct(): ProductInOrderType {
     quantity: 0,
     total: 0,
     id: -1,
-    isPaidFully: false,
-    paidQuantity: 0,
+    is_paid_fully: false,
+    paid_quantity: 0,
   };
 }

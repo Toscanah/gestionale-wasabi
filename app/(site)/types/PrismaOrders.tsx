@@ -18,20 +18,14 @@ type CommonOrderPayload = Prisma.OrderGetPayload<{
             };
           };
         };
-        options: {
-          select: {
-            option: true;
-          };
-        };
+        options: { select: { option: true } };
       };
     };
   };
 }>;
 
 type TableOrderPayload = Prisma.OrderGetPayload<{
-  include: {
-    table_order: true;
-  };
+  include: { table_order: true };
 }>;
 
 type HomeOrderPayload = Prisma.OrderGetPayload<{

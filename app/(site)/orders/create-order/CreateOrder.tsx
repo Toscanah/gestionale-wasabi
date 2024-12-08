@@ -4,47 +4,42 @@ import { ReactNode, useEffect, useState } from "react";
 import { Plus } from "@phosphor-icons/react";
 import { OrderType } from "@prisma/client";
 import Table from "./table/Table";
-import ToHome from "./to-home/ToHome";
-import PickUp from "./pick-up/PickUp";
 import { cn } from "@/lib/utils";
 import { AnyOrder } from "../../types/PrismaOrders";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import OrderTable from "../single-order/OrderTable";
 import { OrderProvider } from "../../context/OrderContext";
+import Home from "./home/Home";
+import generateEmptyOrder from "../../util/functions/generateEmptyOrder";
+import Pickup from "./pickup/Pickup";
 
-export default function CreateOrder({
-  type,
-  triggerClassName,
-  children,
-}: {
+interface CreateOrderProps {
   type: OrderType;
   triggerClassName?: string;
   children?: ReactNode;
-}) {
-  const [order, setOrder] = useState<AnyOrder | undefined>(undefined);
+}
+
+export default function CreateOrder({ type, triggerClassName, children }: CreateOrderProps) {
+  const [order, setOrder] = useState<AnyOrder>(generateEmptyOrder(type));
   const [open, setOpen] = useState<boolean>(false);
 
   const components = new Map<OrderType, { name: string; component: ReactNode }>([
     [OrderType.TABLE, { name: "Ordine al tavolo", component: <Table setOrder={setOrder} /> }],
-    [OrderType.TO_HOME, { name: "Ordine a domicilio", component: <ToHome setOrder={setOrder} /> }],
-    [OrderType.PICK_UP, { name: "Ordine per asporto", component: <PickUp setOrder={setOrder} /> }],
+    [OrderType.HOME, { name: "Ordine a domicilio", component: <Home setOrder={setOrder} /> }],
+    [OrderType.PICKUP, { name: "Ordine per asporto", component: <Pickup setOrder={setOrder} /> }],
   ]);
 
-  useEffect(() => {
-    setOrder(undefined);
-  }, [open]);
+  useEffect(() => setOrder(generateEmptyOrder(type)), [open]);
 
   return (
     <DialogWrapper
       open={open}
       hasHeader={false}
-      onOpenChange={() => {
-        setOpen(!open);
-      }}
+      onOpenChange={() => setOpen(!open)}
       contentClassName={cn(
         "flex flex-col gap-6 items-center",
-        type === OrderType.TO_HOME || order
+        type === OrderType.HOME || order.id !== -1
           ? "w-[97.5vw] max-w-screen max-h-screen h-[95vh]"
           : "w-[40vw] "
       )}
@@ -54,10 +49,10 @@ export default function CreateOrder({
         </Button>
       }
     >
-      {!order ? (
+      {order.id == -1 ? (
         <div className="w-full h-full">{components.get(type)?.component}</div>
       ) : (
-        <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen} setOrder={setOrder}>
+        <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen}>
           <OrderTable />
         </OrderProvider>
       )}

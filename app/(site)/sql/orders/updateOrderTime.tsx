@@ -1,5 +1,6 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
+import getOrderById from "./getOrderById";
 
 export default async function updateOrderTime(time: string, orderId: number) {
   const baseOrder = await prisma.order.findUnique({
@@ -14,10 +15,14 @@ export default async function updateOrderTime(time: string, orderId: number) {
 
   await prisma.order.update({
     where: { id: orderId },
-    data: { isReceiptPrinted: false },
+    data: { is_receipt_printed: false },
   });
 
-  return baseOrder.type === "PICK_UP"
-    ? prisma.pickupOrder.update(updateData)
-    : prisma.homeOrder.update(updateData);
+  if (baseOrder.type === OrderType.PICKUP) {
+    await prisma.pickupOrder.update(updateData);
+  } else {
+    await prisma.homeOrder.update(updateData);
+  }
+
+  return await getOrderById(orderId);
 }

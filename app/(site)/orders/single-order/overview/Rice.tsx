@@ -4,13 +4,15 @@ import { useWasabiContext } from "../../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import { AnyOrder } from "@/app/(site)/types/PrismaOrders";
 import { debounce } from "lodash";
+import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
-export default function Rice({ order }: { order: AnyOrder }) {
+export default function Rice() {
+  const { order } = useOrderContext();
   const { rice, fetchRemainingRice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
 
   useEffect(() => {
-    setUsedRice(order.products.reduce((total, product) => total + (product.riceQuantity ?? 0), 0));
+    setUsedRice(order.products.reduce((total, product) => total + (product.rice_quantity ?? 0), 0));
 
     const debouncedFetch = debounce(() => {
       fetchRemainingRice();

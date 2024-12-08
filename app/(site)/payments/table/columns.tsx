@@ -12,9 +12,9 @@ const columns: ColumnDef<OrderWithPayments>[] = [
     cellContent: (row) => {
       return (
         <Badge>
-          {row.original.type == OrderType.TO_HOME
+          {row.original.type == OrderType.HOME
             ? "Domicilio"
-            : row.original.type == OrderType.PICK_UP
+            : row.original.type == OrderType.PICKUP
             ? "Asporto"
             : "Tavolo"}
         </Badge>
@@ -88,7 +88,7 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   //         title={
   //           <div className="flex gap-2 items-center">
   //             <Badge>
-  //               {order.type == OrderType.TO_HOME
+  //               {order.type == OrderType.HOME
   //                 ? "Domicilio"
   //                 : order.type == OrderType.TABLE
   //                 ? "Tavolo"

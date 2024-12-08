@@ -1,16 +1,16 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { OrderType } from "@prisma/client";
 import fetchRequest from "../util/functions/fetchRequest";
 import { Rice } from "@prisma/client";
 import { toastSuccess } from "../util/toast";
+import { AnyOrder } from "../types/PrismaOrders";
 
 type RiceState = { total: Rice; remaining: Rice };
 
 interface WasabiContextProps {
+  updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
   rice: RiceState;
-  updateTotalRice: (total: Rice) => void;
   fetchRemainingRice: () => void;
-  onOrdersUpdate: (type: OrderType) => Promise<void>;
+  updateTotalRice: (total: Rice) => void;
   resetRice: () => void;
 }
 
@@ -26,10 +26,10 @@ export const useWasabiContext = () => {
 
 interface WasabiProviderProps {
   children: ReactNode;
-  onOrdersUpdate: (type: OrderType) => Promise<void>;
+  updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
 }
 
-export const WasabiProvider = ({ children, onOrdersUpdate }: WasabiProviderProps) => {
+export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderProps) => {
   const [rice, setRice] = useState<RiceState>({
     total: { id: 1, amount: -1, threshold: -1 },
     remaining: { id: 1, amount: -1, threshold: -1 },
@@ -69,11 +69,11 @@ export const WasabiProvider = ({ children, onOrdersUpdate }: WasabiProviderProps
   return (
     <WasabiContext.Provider
       value={{
-        resetRice,
-        fetchRemainingRice,
-        onOrdersUpdate,
+        updateGlobalState,
         rice,
+        fetchRemainingRice,
         updateTotalRice,
+        resetRice,
       }}
     >
       {children}

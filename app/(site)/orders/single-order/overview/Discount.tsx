@@ -6,9 +6,12 @@ import { Input } from "@/components/ui/input";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
 import { toastSuccess } from "@/app/(site)/util/toast";
+import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 
-export default function Discount({ order }: { order: AnyOrder }) {
-  const { onOrdersUpdate } = useWasabiContext();
+export default function Discount() {
+  const { updateGlobalState } = useWasabiContext();
+  const { order, updateOrder } = useOrderContext();
   const [discount, setDiscount] = useState<number | undefined>(
     order.discount == 0 ? undefined : order.discount
   );
@@ -16,12 +19,13 @@ export default function Discount({ order }: { order: AnyOrder }) {
   const debouncedFetch = useCallback(
     debounce(
       (discount: number) =>
-        fetchRequest("POST", "/api/orders/", "updateDiscount", {
+        fetchRequest<AnyOrder>("POST", "/api/orders/", "updateDiscount", {
           orderId: order.id,
           discount,
-        }).then(() => {
+        }).then((updatedOrder) => {
           toastSuccess("Sconto aggiornato correttamente");
-          onOrdersUpdate(order.type);
+          updateOrder(updatedOrder);
+          updateGlobalState(updatedOrder, "update");
         }),
       1000
     ),
@@ -35,7 +39,6 @@ export default function Discount({ order }: { order: AnyOrder }) {
 
   return (
     <div className="flex gap-2 justify-between items-center w-full">
-      {/* <span className="text-xl min-w-fit">Sconto (%)</span> */}
       <Input
         value={discount}
         onChange={(e) => handleDiscount(e.target.valueAsNumber)}

@@ -7,6 +7,7 @@ import createHomeOrder from "./createHomeOrder";
 import createTableOrder from "./createTableOrder";
 import prisma from "../db";
 import { getProductPrice } from "../../util/functions/getProductPrice";
+import getOrderById from "./getOrderById";
 
 export default async function createSubOrder(
   parentOrder: AnyOrder,
@@ -16,7 +17,7 @@ export default async function createSubOrder(
 
   const suborderCount = await prisma.order.count({
     where: {
-      suborderOf: parentOrder.id,
+      suborder_of: parentOrder.id,
       state: {
         in: ["ACTIVE", "PAID"],
       },
@@ -27,7 +28,7 @@ export default async function createSubOrder(
   let order;
 
   switch (parentOrder.type) {
-    case OrderType.PICK_UP:
+    case OrderType.PICKUP:
       order = parentOrder as PickupOrder;
       newSubOrder = (await createPickupOrder({
         name: `${order.pickup_order?.name}_${suborderNumber}`,
@@ -36,7 +37,7 @@ export default async function createSubOrder(
       })) as any;
       break;
 
-    case OrderType.TO_HOME:
+    case OrderType.HOME:
       order = parentOrder as HomeOrder;
       newSubOrder = (await createHomeOrder({
         customer: order.home_order?.customer as any,
@@ -66,7 +67,7 @@ export default async function createSubOrder(
         id: newSubOrder.order.id,
       },
       data: {
-        suborderOf: parentOrder.id,
+        suborder_of: parentOrder.id,
       },
     });
   }
@@ -83,22 +84,22 @@ export default async function createSubOrder(
       await prisma.order.update({
         where: { id: parentOrder.id },
         data: {
-          isReceiptPrinted: false,
+          is_receipt_printed: false,
         },
       });
 
       const newQuantity = productInOrder.quantity - product.quantity;
-      const newRiceQuantity = productInOrder.riceQuantity - product.product.rice * newQuantity; // Adjust rice quantity accordingly
-      const newPrintedAmount = productInOrder.printedAmount - product.quantity;
+      const newRiceQuantity = productInOrder.rice_quantity - product.product.rice * newQuantity; // Adjust rice quantity accordingly
+      const newPrintedAmount = productInOrder.printed_amount - product.quantity;
 
       if (newQuantity > 0) {
-        // Update the quantity and riceQuantity if there's still a quantity left
+        // Update the quantity and rice_quantity if there's still a quantity left
         await prisma.productInOrder.update({
           where: { id: productInOrder.id },
           data: {
             quantity: newQuantity,
-            riceQuantity: newRiceQuantity, // Adjust rice quantity
-            printedAmount: newPrintedAmount,
+            rice_quantity: newRiceQuantity, // Adjust rice quantity
+            printed_amount: newPrintedAmount,
             total: newQuantity * getProductPrice(product, parentOrder.type),
           },
         });
@@ -118,5 +119,6 @@ export default async function createSubOrder(
     }
   }
 
-  return await addProductsToOrder(newSubOrder.order.id, products);
+  await addProductsToOrder(newSubOrder.order.id, products);
+  return await getOrderById(newSubOrder.order.id);
 }

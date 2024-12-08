@@ -1,13 +1,16 @@
 import prisma from "../db";
+import getOrderById from "./getOrderById";
 
 export default async function updateDiscount(orderId: number, discount: number) {
-  return await prisma.order.update({
+  await prisma.order.update({
     where: {
       id: orderId,
     },
     data: {
       discount: discount ?? 0,
-      isReceiptPrinted: false,
+      is_receipt_printed: false,
     },
   });
+
+  return await getOrderById(orderId)
 }

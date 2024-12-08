@@ -11,12 +11,12 @@ import useFocusCycle from "@/app/(site)/components/hooks/useFocusCycle";
 import useFetchCustomer from "@/app/(site)/components/hooks/useFetchCustomer";
 import PossibleCustomers from "./possible-customers/PossibleCustomers";
 
-export default function ToHome({
-  setOrder,
-}: {
-  setOrder: Dispatch<SetStateAction<AnyOrder | undefined>>;
-}) {
-  const { onOrdersUpdate } = useWasabiContext();
+interface HomeProps {
+  setOrder: Dispatch<SetStateAction<AnyOrder>>;
+}
+
+export default function Home({ setOrder }: HomeProps) {
+  const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -41,9 +41,9 @@ export default function ToHome({
       address: { ...selectedAddress },
       notes: externalInfo.notes,
       contact_phone: externalInfo.contactPhone,
-    }).then((order) => {
-      setOrder(order);
-      onOrdersUpdate(OrderType.TO_HOME);
+    }).then((newHomeOrder) => {
+      setOrder(newHomeOrder);
+      updateGlobalState(newHomeOrder, "add");
     });
 
   const phoneRef = useRef<HTMLInputElement>(null);
@@ -60,23 +60,25 @@ export default function ToHome({
   const notesRef = useRef<HTMLInputElement>(null);
   const prefRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    addRefs(
-      phoneRef.current,
-      doorbellSearchRef.current,
-      streetRef.current,
-      bellRef.current,
-      floorRef.current,
-      stairRef.current,
-      contactRef.current,
-      nameRef.current,
-      surnameRef.current,
-      emailRef.current,
-      infoRef.current,
-      notesRef.current,
-      prefRef.current
-    );
-  }, [phone]);
+  useEffect(
+    () =>
+      addRefs(
+        phoneRef.current,
+        doorbellSearchRef.current,
+        streetRef.current,
+        bellRef.current,
+        floorRef.current,
+        stairRef.current,
+        contactRef.current,
+        nameRef.current,
+        surnameRef.current,
+        emailRef.current,
+        infoRef.current,
+        notesRef.current,
+        prefRef.current
+      ),
+    [phone]
+  );
 
   return (
     <div className="w-full flex gap-6 h-full">
@@ -126,7 +128,6 @@ export default function ToHome({
             setCustomer={setCustomer}
             phone={phone}
             setAddresses={setAddresses}
-            createHomeOrder={createHomeOrder}
           />
         ) : (
           doorbellSearch.length > 0 &&
