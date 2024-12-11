@@ -170,6 +170,7 @@ export function useProductManager(order: AnyOrder, updateOrder: (updatedOrder: A
 
     updateOrder({
       ...order,
+      is_receipt_printed: false,
       products: [...updatedProductsList, ...newProducts, createDummyProduct()],
       total: calculateOrderTotal({
         ...order,

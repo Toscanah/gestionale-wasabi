@@ -109,7 +109,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                       items: riceDefaults
                         .sort((a, b) => b.value - a.value)
                         .map((item) => ({
-                          name: String(item.label),
+                          name: item.label ? String(item.label) : String(item.value),
                           value: String(item.value),
                         })),
                     },

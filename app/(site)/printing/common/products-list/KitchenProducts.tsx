@@ -69,10 +69,7 @@ export default function KitchenProducts({
         .filter(([key]) => key !== "no_options")
         .map(([optionsKey, products], idx, arr) => (
           <Fragment key={`group-${idx}`}>
-            {products.map(
-              (product, index) => ProductLine({ product })
-              // <ProductLine key={index} product={product} />
-            )}
+            {products.map((product) => ProductLine({ product }))}
 
             <Text bold size={smallSize}>
               {" - " + formatReceiptText(optionsKey, 36)}

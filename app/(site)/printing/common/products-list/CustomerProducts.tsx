@@ -33,7 +33,7 @@ export default function CustomerProducts({ discount, aggregatedProducts }: Custo
 
       {aggregatedProducts.map((product, index) => (
         <Fragment key={product + "-" + index}>
-          <Text bold>
+          <Text >
             {formatReceiptText(
               `${product.product.code.toUpperCase()} ${product.product.desc}`,
               MAX_CHAR_PER_LINE,
@@ -61,6 +61,7 @@ export default function CustomerProducts({ discount, aggregatedProducts }: Custo
       )}
 
       {TotalSection(aggregatedProducts, discount)}
+      <Br />
       <Br />
     </>
   );
