@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import DialogWrapper from "../components/dialog/DialogWrapper";
 import SelectWrapper from "../components/select/SelectWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
+import { RiceDefault } from "../types/RiceDefault";
 
 interface RiceDialogProps {
   variant: "header" | "sidebar";
@@ -18,17 +19,22 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   const [newRice, setNewRice] = useState<Rice>({ ...rice.total, amount: 0 });
   const [riceToAdd, setRiceToAdd] = useState<number>(0);
   const [riceToRemove, setRiceToRemove] = useState<number>(0);
-  const [riceDefaults, setRiceDefaults] = useState<number[]>([]);
+  const [riceDefaults, setRiceDefaults] = useState<RiceDefault[]>([]);
 
-  useEffect(() => {
+  useEffect(() => getRiceDefaults, []);
+
+  const getRiceDefaults = () => {
     const defaults = localStorage.getItem("riceDefaults");
+    console.log(defaults);
 
-    if (defaults) {
-      setRiceDefaults(JSON.parse(defaults) as number[]);
+    if (!defaults) {
+      const initialDefaults: RiceDefault[] = [];
+      localStorage.setItem("riceDefaults", JSON.stringify(initialDefaults));
+      setRiceDefaults(initialDefaults);
     } else {
-      localStorage.setItem("riceDefaults", JSON.stringify([]));
+      setRiceDefaults(JSON.parse(defaults) as RiceDefault[]);
     }
-  }, []);
+  };
 
   const handleAddRice = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.valueAsNumber;
@@ -44,22 +50,20 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
 
   const handleSelectChange = (val: string) => {
     const selectedRice = Number(val);
-    setRiceToAdd(selectedRice)
+    setRiceToAdd(selectedRice);
     setNewRice({ ...newRice, amount: selectedRice });
   };
 
   return (
     <DialogWrapper
-      onOpenChange={() => setNewRice({ ...rice.total, amount: 0 })}
+      size="medium"
+      onOpenChange={() => {
+        setNewRice({ ...rice.total, amount: 0 });
+        getRiceDefaults();
+      }}
+      title={"Gestione riso"}
       desc="Tutti i valori sono calcolati in grammi"
-      title={
-        <>
-          Gestione riso 
-          {/* <span className="text-muted-foreground">(tutto in grammi)</span> */}
-        </>
-      }
-      hasHeader
-      contentClassName="border-t-4 border-t-gray-400 w-[40vw]"
+      contentClassName="border-t-4 border-t-gray-400 gap-6"
       trigger={
         variant == "sidebar" ? (
           <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
@@ -73,16 +77,16 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
       footer={
         <>
           <DialogWrapper
+            size="small"
             variant="delete"
-            title="Sei sicuro?"
             onDelete={resetRice}
             trigger={
               <Button className="w-full border-red-600 text-red-600" variant={"outline"}>
-                Resetta
+                Azzera
               </Button>
             }
           >
-            Stai per resettare il riso
+            Stai per azzerare il riso, sei sicuro?
           </DialogWrapper>
 
           <Button type="submit" onClick={() => updateTotalRice(newRice)} className="w-full">
@@ -103,10 +107,10 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                 ? [
                     {
                       items: riceDefaults
-                        .sort((a, b) => b - a)
+                        .sort((a, b) => b.value - a.value)
                         .map((item) => ({
-                          name: String(item),
-                          value: String(item),
+                          name: String(item.label),
+                          value: String(item.value),
                         })),
                     },
                   ]

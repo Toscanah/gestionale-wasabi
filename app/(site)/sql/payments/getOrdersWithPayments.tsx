@@ -1,7 +1,7 @@
 import { OrderWithPayments } from "../../types/OrderWithPayments";
 import prisma from "../db";
 
-export default async function getOrderWithPayments(): Promise<OrderWithPayments[]> {
+export default async function getOrdersWithPayments(): Promise<OrderWithPayments[]> {
   const orders = await prisma.order.findMany({
     where: {
       payments: {
@@ -10,6 +10,24 @@ export default async function getOrderWithPayments(): Promise<OrderWithPayments[
     },
     include: {
       payments: true,
+      products: {
+        include: {
+          product: {
+            include: {
+              category: {
+                include: {
+                  options: {
+                    select: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          options: { select: { option: true } },
+        },
+      },
     },
   });
 
@@ -24,16 +42,16 @@ export default async function getOrderWithPayments(): Promise<OrderWithPayments[
     order.payments.forEach((payment) => {
       switch (payment.type) {
         case "CARD":
-          paymentTotals.totalCash += payment.amount;
-          break;
-        case "CASH":
           paymentTotals.totalCard += payment.amount;
           break;
+        case "CASH":
+          paymentTotals.totalCash += payment.amount;
+          break;
         case "CREDIT":
-          paymentTotals.totalVouch += payment.amount;
+          paymentTotals.totalCredit += payment.amount;
           break;
         case "VOUCH":
-          paymentTotals.totalCredit += payment.amount;
+          paymentTotals.totalVouch += payment.amount;
           break;
         default:
           break;

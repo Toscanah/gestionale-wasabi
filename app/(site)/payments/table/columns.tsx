@@ -4,6 +4,9 @@ import { OrderWithPayments } from "../../types/OrderWithPayments";
 import { Badge } from "@/components/ui/badge";
 import { OrderType } from "@prisma/client";
 import applyDiscount from "../../util/functions/applyDiscount";
+import DialogWrapper from "../../components/dialog/DialogWrapper";
+import { Button } from "@/components/ui/button";
+import OrderSummary from "./OrderSummary";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({
@@ -27,7 +30,7 @@ const columns: ColumnDef<OrderWithPayments>[] = [
     header: "Quando",
     cellContent: (row) => {
       const order = row.original;
-      const date = order.created_at;
+      const date = new Date(order.created_at);
       const options: Intl.DateTimeFormatOptions = {
         weekday: "long",
         day: "numeric",
@@ -69,42 +72,14 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({
     accessorKey: "order.total",
     header: "Totale ordine",
-    cellContent: (row) => applyDiscount(row.original.total, row.original.discount)
+    cellContent: (row) => applyDiscount(row.original.total, row.original.discount),
   }),
 
-  // TableColumn({
-  //   accessorKey: "ordine",
-  //   header: "Ordine",
-  //   cellContent: (row) => {
-  //     const order = row.original;
-
-  //     return (
-  //       <DialogWrapper
-  //         trigger={
-  //           <Button type="button" variant={"outline"}>
-  //             Vedi ordine
-  //           </Button>
-  //         }
-  //         title={
-  //           <div className="flex gap-2 items-center">
-  //             <Badge>
-  //               {order.type == OrderType.HOME
-  //                 ? "Domicilio"
-  //                 : order.type == OrderType.TABLE
-  //                 ? "Tavolo"
-  //                 : "Asporto"}
-  //             </Badge>
-  //             Ordine del {new Date(order.created_at).toLocaleDateString("it-IT")}
-  //           </div>
-  //         }
-  //       >
-  //         <div className="flex flex-col gap-4">
-  //           <span>Totale: € {order.total}</span>
-  //         </div>
-  //       </DialogWrapper>
-  //     );
-  //   },
-  // }),
+  TableColumn({
+    accessorKey: "ordine",
+    header: "Ordine",
+    cellContent: (row) => <OrderSummary order={row.original} />,
+  }),
 ];
 
 export default columns;

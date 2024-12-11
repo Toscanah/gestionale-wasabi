@@ -27,7 +27,7 @@ export default function KitchenOffset({ variant }: KitchenOffsetProps) {
 
   return (
     <DialogWrapper
-      hasHeader
+      size="small"
       contentClassName="border-t-4 border-t-gray-400"
       title="Anticipo cottura prodotti"
       trigger={

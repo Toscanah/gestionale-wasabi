@@ -53,8 +53,7 @@ export default function OldOrders() {
   return (
     customer && (
       <DialogWrapper
-        title="Storico ordini"
-        hasHeader={false}
+      size="medium"
         trigger={
           <Button type="button" variant={"outline"} className="h-12 text-xl">
             Vedi ordini precedenti

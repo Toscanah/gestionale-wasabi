@@ -7,8 +7,8 @@ import getNestedValue from "../../util/functions/getNestedValue";
 type TableColumnProps<T> = {
   sortable?: boolean;
   accessorKey: string;
-  header: string | ReactNode;
-  cellContent?: (row: Row<T>) => ReactNode | string;
+  header: ReactNode;
+  cellContent?: (row: Row<T>) => ReactNode;
 };
 
 export default function TableColumn<T>({

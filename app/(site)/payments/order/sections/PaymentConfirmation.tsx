@@ -5,15 +5,14 @@ import formatAmount from "@/app/(site)/util/functions/formatAmount";
 import { Button } from "@/components/ui/button";
 
 export default function PaymentConfirmation() {
-  const { payOrder, resetPayment } = useOrderPaymentContext();
-  const { order } = useOrderContext();
+  const { payOrder, resetPayment, transactionOrder } = useOrderPaymentContext();
 
   return (
     <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center w-[60%]">
       <h1>
         <span>
           Vuoi procedere con l'incasso di{" "}
-          <b>€ {formatAmount(applyDiscount(order.total, order.discount))}</b>?
+          <b>€ {formatAmount(applyDiscount(transactionOrder.total, transactionOrder.discount))}</b>?
         </span>
       </h1>
       <div className="w-full flex gap-6 items-center justify-center">

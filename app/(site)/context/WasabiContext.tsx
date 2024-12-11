@@ -1,4 +1,12 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import fetchRequest from "../util/functions/fetchRequest";
 import { Rice } from "@prisma/client";
 import { toastSuccess } from "../util/toast";
@@ -12,6 +20,8 @@ interface WasabiContextProps {
   fetchRemainingRice: () => void;
   updateTotalRice: (total: Rice) => void;
   resetRice: () => void;
+  selectedOrders: number[];
+  toggleOrderSelection: (orderId: number) => void;
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);
@@ -30,10 +40,20 @@ interface WasabiProviderProps {
 }
 
 export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderProps) => {
+  const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
   const [rice, setRice] = useState<RiceState>({
     total: { id: 1, amount: -1, threshold: -1 },
     remaining: { id: 1, amount: -1, threshold: -1 },
   });
+
+  const toggleOrderSelection = (orderId: number) => {
+    setSelectedOrders(
+      (prevSelected) =>
+        prevSelected.includes(orderId)
+          ? prevSelected.filter((id) => id !== orderId)
+          : [...prevSelected, orderId]
+    );
+  };
 
   const fetchTotalRice = () =>
     fetchRequest<Rice>("GET", "/api/rice/", "getTotalRice").then((total) =>
@@ -74,6 +94,8 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
         fetchRemainingRice,
         updateTotalRice,
         resetRice,
+        selectedOrders,
+        toggleOrderSelection,
       }}
     >
       {children}
