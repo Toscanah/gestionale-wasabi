@@ -15,21 +15,29 @@ import { Button } from "@/components/ui/button";
 import { Warning } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 
-interface DialogWrapperProps {
+const sizes = {
+  small: "max-w-[25vw] w-[25vw]",
+  medium: "max-w-[40vw] w-[40vw]",
+  large: "max-w-[97.5vw] w-[97.5vw]",
+};
+
+type DialogWrapperProps = {
   children?: ReactNode;
-  title?: string | ReactNode;
-  trigger: ReactNode | JSX.Element;
+  trigger: ReactNode;
   showCloseButton?: boolean;
-  desc?: ReactNode;
   variant?: "delete" | "normal";
   contentClassName?: string;
   triggerClassName?: string;
-  hasHeader?: boolean;
   open?: boolean;
   footer?: ReactNode;
   onDelete?: () => void;
   onOpenChange?: (open: boolean) => void;
-}
+  size?: keyof typeof sizes;
+} & (
+  | { title: ReactNode; desc?: ReactNode }
+  | { title: ReactNode; desc: ReactNode }
+  | { title?: never; desc?: never }
+);
 
 export default function DialogWrapper({
   children,
@@ -40,11 +48,11 @@ export default function DialogWrapper({
   variant = "normal",
   contentClassName,
   triggerClassName,
-  hasHeader = false,
   open,
   footer,
   onDelete,
   onOpenChange,
+  size = "medium",
 }: DialogWrapperProps) {
   const isDeleteVariant = variant === "delete";
 
@@ -55,13 +63,15 @@ export default function DialogWrapper({
       </DialogTrigger>
       <DialogContent
         className={cn(
-          "max-w-screen w-auto",
-          contentClassName,
-          isDeleteVariant && "border-t-4 border-t-red-600"
+          "w-auto max-h-screen",
+          sizes[size],
+          isDeleteVariant && "border-t-4 border-t-red-600",
+          contentClassName
         )}
         showCloseButton={showCloseButton}
       >
-        {hasHeader && (
+        
+        {title || isDeleteVariant && (
           <DialogHeader>
             <DialogTitle className="text-2xl">
               {isDeleteVariant ? (
@@ -73,10 +83,11 @@ export default function DialogWrapper({
                 title
               )}
             </DialogTitle>
-
             {desc && <DialogDescription className="text-lg">{desc}</DialogDescription>}
           </DialogHeader>
         )}
+
+        {desc && <Separator />}
 
         {children}
 

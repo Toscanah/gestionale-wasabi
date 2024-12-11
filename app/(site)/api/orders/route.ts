@@ -11,6 +11,16 @@ import updateDiscount from "../../sql/orders/updateDiscount";
 import { OrderType } from "@prisma/client";
 import createSubOrder from "../../sql/orders/createSubOrder";
 import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
+import deleteOrdersInBulk from "../../sql/orders/deleteOrdersInBulk";
+
+export async function DELETE(request: NextRequest) {
+  const {action, content} = await getRequestBody(request);
+
+  switch (action) {
+    case "deleteOrdersInBulk":
+      return NextResponse.json(await deleteOrdersInBulk(content?.ordersId));
+  }
+}
 
 export async function POST(request: NextRequest) {
   const { action, content } = await getRequestBody(request);

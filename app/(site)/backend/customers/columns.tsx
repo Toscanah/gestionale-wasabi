@@ -55,6 +55,7 @@ const columns = (
 
       return (
         <DialogWrapper
+          size="medium"
           title="Storico ordini"
           trigger={
             <Button type="button" variant={"outline"}>
@@ -77,6 +78,7 @@ const columns = (
 
       return (
         <DialogWrapper
+          size="medium"
           title="Gestisci indirizzi"
           trigger={
             <Button type="button" variant={"outline"}>

@@ -34,8 +34,8 @@ export default function CreateOrder({ type, triggerClassName, children }: Create
 
   return (
     <DialogWrapper
+      size="medium"
       open={open}
-      hasHeader={false}
       onOpenChange={() => setOpen(!open)}
       contentClassName={cn(
         "flex flex-col gap-6 items-center",

@@ -3,9 +3,11 @@ import { Cell, flexRender } from "@tanstack/react-table";
 import OrderTable from "./OrderTable";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { AnyOrder } from "../../types/PrismaOrders";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { OrderProvider } from "../../context/OrderContext";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useWasabiContext } from "../../context/WasabiContext";
 
 interface OrderProps {
   cell: Cell<AnyOrder, unknown>;
@@ -13,14 +15,20 @@ interface OrderProps {
 }
 
 export default function Order({ cell, className }: OrderProps) {
+  const { selectedOrders, toggleOrderSelection } = useWasabiContext();
   const [open, setOpen] = useState<boolean>(false);
+
+  const handleCheckboxClick = (e: FormEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    toggleOrderSelection(cell.row.original.id);
+  };
 
   return (
     <DialogWrapper
       open={open}
       onOpenChange={setOpen}
-      hasHeader={false}
-      contentClassName="w-[97.5vw] max-w-screen max-h-screen h-[95vh] flex"
+      size="large"
+      contentClassName="h-[95vh] flex"
       trigger={
         <TableCell
           key={cell.id}
@@ -29,6 +37,13 @@ export default function Order({ cell, className }: OrderProps) {
             cell.row.original.is_receipt_printed && "*:text-green-600 text-green-600"
           )}
         >
+          {cell.column.getIndex() == 0 && (
+            <Checkbox
+              className="h-6 w-6"
+              onClick={handleCheckboxClick}
+              checked={selectedOrders.includes(cell.row.original.id)}
+            />
+          )}
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
         </TableCell>
       }

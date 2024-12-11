@@ -6,29 +6,36 @@ import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrd
 import TableColumn from "../components/table/TableColumn";
 import applyDiscount from "../util/functions/applyDiscount";
 import formatAmount from "../util/functions/formatAmount";
+import { useWasabiContext } from "../context/WasabiContext";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function getColumns(type: OrderType): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
-    {
-      accessorKey: "#",
-      cell: ({ row, table }) => {
-        if (table) {
-          const index =
-            table
-              .getSortedRowModel()
-              ?.flatRows?.findIndex((flatRow) => flatRow.id === String(row.id)) || 0;
+    // {
+    //   accessorKey: "#",
+    //   cell: ({ row, table }) => {
+    //     if (table) {
+    //       const index =
+    //         table
+    //           .getSortedRowModel()
+    //           ?.flatRows?.findIndex((flatRow) => flatRow.id === String(row.id)) || 0;
 
-          return (
-            <div className="text-muted-foreground gap-2 flex items-center">
-              <span>{index + 1}</span>
-              {/* <span className="text-sm">{row.original.is_receipt_printed ? "✔️" : "❌"}</span> */}
-            </div>
-          );
-        } else {
-          return "";
-        }
-      },
-    },
+    //       return (
+    //         <div className="text-muted-foreground gap-2 flex items-center">
+    //           <span>{index + 1}</span>
+    //           {/* <span className="text-sm">{row.original.is_receipt_printed ? "✔️" : "❌"}</span> */}
+    //         </div>
+    //       );
+    //     } else {
+    //       return "";
+    //     }
+    //   },
+    // },
+    TableColumn<AnyOrder>({
+      accessorKey: "selection",
+      header: "",
+      sortable: false,
+    }),
 
     TableColumn<AnyOrder>({
       accessorKey: "created_at",

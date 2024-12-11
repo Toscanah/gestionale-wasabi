@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from "react";
 import {
   Table as DataTable,
   TableBody,
@@ -34,10 +35,24 @@ export default function Table<T>({
   cellClassName,
   CustomCell,
   onRowClick,
-  stickyRowIndex, // Accept stickyRowIndex prop
+  stickyRowIndex,
 }: TableProps<T>) {
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (stickyRowIndex) {
+      const tableElement = tableRef.current;
+      if (tableElement) {
+        tableElement.scrollTop = tableElement.scrollHeight;
+      }
+    }
+  }, [stickyRowIndex]);
+
   return (
-    <div className={cn("rounded-md border w-full overflow-y-auto max-h-max", tableClassName)}>
+    <div
+      ref={tableRef}
+      className={cn("rounded-md border w-full overflow-y-auto max-h-max", tableClassName)}
+    >
       {table && (
         <DataTable>
           <TableHeader className={cn("sticky top-0 z-30 bg-background")}>
@@ -58,16 +73,16 @@ export default function Table<T>({
           <TableBody>
             {table.getRowModel().rows?.length > 0 &&
               table.getRowModel().rows?.map((row, rowIndex) => {
-                const isSticky = rowIndex === stickyRowIndex; // Check if this row should be sticky
+                const shouldStick = rowIndex === stickyRowIndex;
 
                 return (
                   <TableRow
                     onClick={() => (onRowClick ? onRowClick(row.original) : undefined)}
                     key={row.id}
                     className={cn(
-                      "h-8 max-h-8",
+                      "h-8 max-h-8 transition",
                       rowClassName,
-                      // isSticky && "sticky z-10 bottom-0"
+                      shouldStick && "sticky z-10 bottom-0 bg-muted-foreground/20"
                     )}
                     data-state={row.getIsSelected() && "selected"}
                   >

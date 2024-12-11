@@ -68,7 +68,9 @@ export default function getColumns(
           className="max-w-28 text-2xl uppercase"
           defaultValue={row.original.product?.code ?? ""}
           autoFocus={
-            row.original.product_id == -1
+            row.original.product_id == -1 
+            // && focusedInput.colIndex == 0 &&
+            // focusedInput.rowIndex == row.index
           }
           onKeyDown={(e: any) => {
             const currentInput = getInputRef({ rowIndex: row.index, colIndex: 0 });
@@ -158,7 +160,7 @@ export default function getColumns(
                     defaultChecked={selectedOptions.includes(option.option.id)}
                     onCheckedChange={(e) => {
                       selectOption(row.original.id, option.option.id);
-                      setFocusedInput({ rowIndex: row.index, colIndex: 0 });
+                      // setFocusedInput({ rowIndex: row.index, colIndex: 1 });
                     }}
                     id={`option-${option.option.id}-${row.index}`}
                   />

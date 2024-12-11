@@ -16,22 +16,22 @@ export default function RiceSummary() {
       )}
     >
       <tbody>
-        <tr>
-          <td className="text-right">Corrente</td>
+        <tr className="w-full">
+          <td className="text-right text-2xl w-[70%]">Corrente</td>
           <td
             className={cn(
-              "text-right font-bold",
+              "text-right font-bold pl-3",
               isZeroOrLess(rice.remaining.amount) && "text-red-600"
             )}
           >
             {formatRice(rice.remaining.amount)}
           </td>
         </tr>
-        <tr>
-          <td className="text-right">Fino alla soglia</td>
+        <tr className="w-full">
+          <td className="text-right text-2xl w-[70%]">Fino alla soglia</td>
           <td
             className={cn(
-              "text-right font-bold",
+              "text-right font-bold pl-3",
               isZeroOrLess(remainingToThreshold) && "text-red-600"
             )}
           >

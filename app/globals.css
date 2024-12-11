@@ -3,6 +3,35 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Widths in viewports */
+    --dialog-small-width: 30vw; /* Small Dialog Width */
+    --dialog-medium-width: 50vw; /* Medium Dialog Width */
+    --dialog-large-width: 97.5vw; /* Large Dialog Width */
+    --dialog-full-width: 100%; /* Full Dialog Width */
+
+    /* Heights in viewports */
+    --dialog-small-height: 30vh; /* Small Dialog Height */
+    --dialog-medium-height: 50vh; /* Medium Dialog Height */
+    --dialog-large-height: 95vh; /* Large Dialog Height */
+    --dialog-full-height: 100%; /* Full Dialog Height */
+  }
+
+  .dialog-small {
+    width: var(--dialog-small-width);
+    height: var(--dialog-small-height);
+  }
+
+  .dialog-medium {
+    width: var(--dialog-medium-width);
+    height: var(--dialog-medium-height);
+  }
+
+  .dialog-large {
+    width: var(--dialog-large-width);
+    height: var(--dialog-large-height);
+  }
+
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"] {
@@ -71,62 +100,11 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-
-  :root {
-    --custom-green-light: 120, 100%, 50%; /* Example light green color */
-  }
-
-  .dark {
-    --custom-green-dark: 120, 100%, 40%; /* Example dark green color */
-  }
-
-  /* :root {
-    --background: 355 100% 95%; 
-    --foreground: 355 5% 0%;
-    --card: 355 50% 90%;
-    --card-foreground: 355 5% 10%;
-    --popover: 355 100% 95%;
-    --popover-foreground: 355 100% 0%;
-    --primary: 355 100% 44.9%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 355 30% 70%;
-    --secondary-foreground: 0 0% 0%;
-    --muted: 317 30% 85%;
-    --muted-foreground: 355 5% 35%;
-    --accent: 317 30% 80%;
-    --accent-foreground: 355 5% 10%;
-    --destructive: 0 100% 30%;
-    --destructive-foreground: 355 5% 90%;
-    --border: 355 30% 50%;
-    --input: 355 30% 18%;
-    --ring: 355 100% 44.9%;
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: 355 50% 5%;
-    --foreground: 355 5% 90%;
-    --card: 355 50% 0%;
-    --card-foreground: 355 5% 90%;
-    --popover: 355 50% 5%;
-    --popover-foreground: 355 5% 90%;
-    --primary: 355 100% 44.9%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 355 30% 10%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 317 30% 15%;
-    --muted-foreground: 355 5% 60%;
-    --accent: 317 30% 15%;
-    --accent-foreground: 355 5% 90%;
-    --destructive: 0 100% 30%;
-    --destructive-foreground: 355 5% 90%;
-    --border: 355 30% 18%;
-    --input: 355 30% 18%;
-    --ring: 355 100% 44.9%;
-    --radius: 0.5rem;
-  } */
 }
 
 @layer base {
+  
+
   * {
     @apply border-border;
   }

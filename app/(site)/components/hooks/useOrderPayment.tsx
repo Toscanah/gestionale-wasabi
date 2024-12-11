@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import applyDiscount from "../../util/functions/applyDiscount";
 import { AnyOrder } from "../../types/PrismaOrders";
 import fetchRequest from "../../util/functions/fetchRequest";
@@ -7,19 +7,18 @@ import { useWasabiContext } from "../../context/WasabiContext";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 import { PaymentType } from "@prisma/client";
-import createDummyProduct from "../../util/functions/createDummyProduct";
 import { Payment } from "../../context/OrderPaymentContext";
 import { useOrderContext } from "../../context/OrderContext";
 
 export default function useOrderPayment(
-  order: AnyOrder,
   type: "full" | "partial",
   onOrderPaid: () => void,
   payment: Payment,
-  setPayment: Dispatch<SetStateAction<Payment>>
+  setPayment: Dispatch<SetStateAction<Payment>>,
+  order: AnyOrder
 ) {
   const { updateGlobalState } = useWasabiContext();
-  const { setProducts } = useOrderContext();
+  const { updateOrder } = useOrderContext();
 
   useEffect(() => {
     const totalPaid = Object.values(payment.paymentAmounts).reduce(
@@ -60,12 +59,13 @@ export default function useOrderPayment(
       onOrderPaid();
 
       if (type === "partial") {
-        setProducts((prevProducts) => {
-          const productsToPayMap = new Map(
-            productsToPay.map((product) => [product.id, product.quantity])
-          );
+        const productsToPayMap = new Map(
+          productsToPay.map((product) => [product.id, product.quantity])
+        );
 
-          const newProducts = prevProducts
+        updateOrder({
+          ...order,
+          products: order.products
             .map((product) => {
               const paid_quantity = productsToPayMap.get(product.id) || 0;
               const remainingQuantity = product.quantity - paid_quantity;
@@ -84,10 +84,7 @@ export default function useOrderPayment(
                 is_paid_fully: newPaidQuantity >= product.quantity,
               };
             })
-            .filter(Boolean);
-
-          newProducts.push(createDummyProduct());
-          return newProducts as ProductInOrderType[];
+            .filter(Boolean) as ProductInOrderType[],
         });
       }
 
