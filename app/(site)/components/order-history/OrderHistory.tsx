@@ -142,7 +142,7 @@ export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) 
   const handleRecreate = () => onCreate?.(selectedProducts);
 
   if (!orderTypes.some(({ orders }) => orders && orders.length > 0)) {
-    return <p className="text-xl text-center mt-4">Nessun ordine registrato</p>;
+    return <p className="text-2xl text-center">Nessun ordine registrato</p>;
   }
 
   return (

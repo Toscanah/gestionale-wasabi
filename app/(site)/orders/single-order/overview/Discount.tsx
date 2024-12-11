@@ -23,6 +23,7 @@ export default function Discount() {
           orderId: order.id,
           discount,
         }).then((updatedOrder) => {
+
           toastSuccess("Sconto aggiornato correttamente");
           updateOrder(updatedOrder);
           updateGlobalState(updatedOrder, "update");
