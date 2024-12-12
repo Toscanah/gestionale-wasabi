@@ -17,12 +17,6 @@ import { z } from "zod";
 import executeAction from "../util/executeAction";
 import { AnyOrder } from "../../types/PrismaOrders";
 import { CustomerWithDetails } from "../../types/CustomerWithDetails";
-import {
-  HomeOrderWithRelationsSchema,
-  OrderWithRelationsSchema,
-  PickupOrderWithRelationsSchema,
-  TableOrderWithRelationsSchema,
-} from "@/prisma/generated/zod";
 
 const schemas = {
   getOrdersByType: z.object({
@@ -61,9 +55,7 @@ const schemas = {
     cooked: z.boolean().optional().default(false),
   }),
   createSubOrder: z.object({
-    parentOrder: HomeOrderWithRelationsSchema.or(PickupOrderWithRelationsSchema).or(
-      TableOrderWithRelationsSchema
-    ),
+    parentOrder: z.any(),
   }),
   updatePrintedFlag: z.object({
     orderId: z.number(),
@@ -72,7 +64,7 @@ const schemas = {
     ordersId: z.array(z.number()),
   }),
   deleteEverything: z.object({}),
-  prova: OrderWithRelationsSchema,
+  // prova: OrderWithRelationsSchema,
 };
 
 const GET_ACTIONS = new Map([
