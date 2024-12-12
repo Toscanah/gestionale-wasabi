@@ -39,7 +39,7 @@ const schemas = {
   createTableOrder: z.object({
     table: z.string(),
     people: z.number(),
-    res_name: z.string().optional(),
+    resName: z.string().optional(),
   }),
   createPickupOrder: z.object({
     name: z.string(),

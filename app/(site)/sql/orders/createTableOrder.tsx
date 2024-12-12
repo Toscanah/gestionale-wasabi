@@ -1,7 +1,7 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 
-export default async function createTableOrder(table: string, people: number, res_name?: string) {
+export default async function createTableOrder(table: string, people: number, resName?: string) {
   const existingOrder = await prisma.order.findFirst({
     where: {
       type: OrderType.TABLE,
@@ -48,7 +48,7 @@ export default async function createTableOrder(table: string, people: number, re
       table_order: {
         create: {
           table: table,
-          res_name: res_name ?? "",
+          res_name: resName ?? "",
           people: Number(people),
         },
       },

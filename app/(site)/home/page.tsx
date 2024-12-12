@@ -100,7 +100,7 @@ export default function Home() {
             <Button
               variant={"destructive"}
               onClick={() => {
-                fetchRequest("DELETE", "/api/orders", "deleteEverything").then(() => {
+                fetchRequest<any>("DELETE", "/api/orders", "deleteEverything").then((a) => {
                   setOrders({
                     [OrderType.HOME]: [],
                     [OrderType.PICKUP]: [],
