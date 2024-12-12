@@ -15,7 +15,7 @@ export default function RiceSection() {
   const riceItems = [<RiceDialog variant="sidebar" />, <RiceDefaultValues />];
 
   return (
-    <SidebarMenu>
+    <SidebarMenu key={"rice"}>
       <Collapsible className="group/collapsible">
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>

@@ -24,7 +24,7 @@
         }
     },
     "scripts": {
-        "dev": "prisma db push && next dev",
+        "dev": "prisma db push && npx prisma generate zod && next dev",
         "build": "next build",
         "start": "next start",
         "lint": "next lint"
@@ -87,7 +87,8 @@
         "usb": "^2.14.0",
         "uuid": "^10.0.0",
         "vaul": "^0.9.1",
-        "zod": "^3.23.8"
+        "zod": "^3.23.8",
+        "zod-prisma-types": "^3.2.1"
     },
     "devDependencies": {
         "@types/lodash": "^4.17.5",

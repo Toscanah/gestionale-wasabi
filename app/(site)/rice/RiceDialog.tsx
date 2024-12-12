@@ -25,7 +25,6 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
 
   const getRiceDefaults = () => {
     const defaults = localStorage.getItem("riceDefaults");
-    console.log(defaults);
 
     if (!defaults) {
       const initialDefaults: RiceDefault[] = [];

@@ -8,7 +8,6 @@ import { useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 export default function Time() {
-  const { updateGlobalState } = useWasabiContext();
   const { order, updateOrder } = useOrderContext();
 
   const [orderTime, setOrderTime] = useState<string>(
@@ -26,9 +25,23 @@ export default function Time() {
       time: value,
       orderId: order.id,
     }).then((updatedOrder) => {
+      // updateOrder(updatedOrder);
+      updateOrder(
+        updatedOrder.type === OrderType.PICKUP
+          ? {
+              pickup_order: {
+                ...(updatedOrder as PickupOrder).pickup_order,
+                when: (updatedOrder as PickupOrder).pickup_order?.when,
+              },
+            }
+          : {
+              home_order: {
+                ...(updatedOrder as HomeOrder).home_order,
+                when: (updatedOrder as HomeOrder).home_order?.when,
+              },
+            }
+      );
       toastSuccess("Orario dell'ordine correttamente aggiornato");
-      updateOrder(updatedOrder);
-      updateGlobalState(updatedOrder, "update");
     });
   };
 

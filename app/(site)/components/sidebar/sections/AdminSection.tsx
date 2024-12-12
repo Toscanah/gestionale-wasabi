@@ -32,7 +32,7 @@ export default function AdminSection() {
   ];
 
   return (
-    <SidebarMenu>
+    <SidebarMenu key={"admin"}>
       <Collapsible className="group/collapsible">
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>

@@ -31,14 +31,13 @@ export default function QuickPaymentOptions({
     const newNote = quickPaymentOption === value ? "none" : value;
     setQuickPaymentOption(newNote);
 
-    fetchRequest<AnyOrder>("POST", "/api/orders/", "updateOrderNotes", {
+    fetchRequest<HomeOrder>("POST", "/api/orders/", "updateOrderNotes", {
       orderId: order.id,
       quickPaymentOption:
         quickPaymentOptions.find((option) => option.value === newNote)?.label || "",
     }).then((updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
-      updateOrder(updatedOrder);
-      updateGlobalState(updatedOrder, "update");
+      updateOrder({ home_order: { notes: updatedOrder.home_order?.notes } });
     });
   };
 

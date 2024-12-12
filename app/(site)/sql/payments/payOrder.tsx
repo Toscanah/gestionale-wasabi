@@ -59,16 +59,18 @@ export default async function payOrder(payments: Payment[], productsToPay: Produ
     },
   });
 
-  let updatedOrder = order;
   // If no unpaid products with "IN_ORDER" status remain, mark the order as "PAID"
   if (unpaidInOrderProductsCount === 0) {
     await prisma.order.update({
       where: { id: orderId },
       data: { state: "PAID" },
     });
-
-    updatedOrder = await getOrderById(orderId);
   }
 
-  return updatedOrder;
+  await prisma.order.update({
+    where: { id: orderId },
+    data: { is_receipt_printed: false },
+  });
+
+  return await getOrderById(orderId);
 }

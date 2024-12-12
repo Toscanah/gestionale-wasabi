@@ -11,11 +11,12 @@ import fetchRequest from "../util/functions/fetchRequest";
 import { Rice } from "@prisma/client";
 import { toastSuccess } from "../util/toast";
 import { AnyOrder } from "../types/PrismaOrders";
+import { UpdateStateAction } from "../home/page";
 
 type RiceState = { total: Rice; remaining: Rice };
 
 interface WasabiContextProps {
-  updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
+  updateGlobalState: (order: AnyOrder, action: UpdateStateAction) => void;
   rice: RiceState;
   fetchRemainingRice: () => void;
   updateTotalRice: (total: Rice) => void;
@@ -46,14 +47,12 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
     remaining: { id: 1, amount: -1, threshold: -1 },
   });
 
-  const toggleOrderSelection = (orderId: number) => {
-    setSelectedOrders(
-      (prevSelected) =>
-        prevSelected.includes(orderId)
-          ? prevSelected.filter((id) => id !== orderId)
-          : [...prevSelected, orderId]
+  const toggleOrderSelection = (orderId: number) =>
+    setSelectedOrders((prevSelected) =>
+      prevSelected.includes(orderId)
+        ? prevSelected.filter((id) => id !== orderId)
+        : [...prevSelected, orderId]
     );
-  };
 
   const fetchTotalRice = () =>
     fetchRequest<Rice>("GET", "/api/rice/", "getTotalRice").then((total) =>
@@ -75,16 +74,14 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
       toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
     });
 
-  const resetRice = () =>
-    fetchRequest("POST", "/api/rice/", "resetRice").then(() => {
-      fetchTotalRice();
-      fetchRemainingRice();
-    });
-
-  useEffect(() => {
+  const basicRiceFetch = () => {
     fetchTotalRice();
     fetchRemainingRice();
-  }, []);
+  };
+
+  const resetRice = () => fetchRequest("POST", "/api/rice/", "resetRice").then(basicRiceFetch);
+
+  useEffect(basicRiceFetch, []);
 
   return (
     <WasabiContext.Provider

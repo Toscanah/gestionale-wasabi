@@ -37,10 +37,10 @@ export default function Home({ setOrder }: HomeProps) {
 
   const createHomeOrder = () =>
     fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {
-      customer: customer,
-      address: { ...selectedAddress },
+      customerId: customer?.id,
+      address: selectedAddress?.id,
       notes: externalInfo.notes,
-      contact_phone: externalInfo.contactPhone,
+      contactPhone: externalInfo.contactPhone,
     }).then((newHomeOrder) => {
       setOrder(newHomeOrder);
       updateGlobalState(newHomeOrder, "add");

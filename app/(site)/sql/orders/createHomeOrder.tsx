@@ -1,13 +1,13 @@
 import { Address, Customer, OrderType } from "@prisma/client";
 import prisma from "../db";
 
-export default async function createHomeOrder(content: {
-  customer: Customer;
-  address: Address;
-  notes: string;
-  contact_phone: string;
-}) {
-  const { customer, address, notes, contact_phone } = content;
+export default async function createHomeOrder(
+  customerId: number,
+  addressId: number,
+  notes: string,
+  contactPhone: string
+) {
+  console.log(customerId, addressId, notes, contactPhone);
 
   return await prisma.order.create({
     data: {
@@ -17,15 +17,15 @@ export default async function createHomeOrder(content: {
         create: {
           address: {
             connect: {
-              id: address.id,
+              id: addressId,
             },
           },
           customer: {
             connect: {
-              id: customer.id,
+              id: customerId,
             },
           },
-          contact_phone,
+          contact_phone: contactPhone,
           notes,
           when: "immediate",
         },

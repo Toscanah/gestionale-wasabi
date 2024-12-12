@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnyOrder } from "../../types/PrismaOrders";
 import createDummyProduct from "../../util/functions/createDummyProduct";
 import { ProductInOrderType } from "../../types/ProductInOrderType";
@@ -7,8 +7,12 @@ import { toastError, toastSuccess } from "../../util/toast";
 import { Table } from "@tanstack/react-table";
 import { Option, OptionInProductOrder } from "@prisma/client";
 import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
+import { RecursivePartial } from "./useOrderManager";
 
-export function useProductManager(order: AnyOrder, updateOrder: (updatedOrder: AnyOrder) => void) {
+export function useProductManager(
+  order: AnyOrder,
+  updateOrder: (order: RecursivePartial<AnyOrder>) => void
+) {
   const [newCode, setNewCode] = useState<string>("");
   const [newQuantity, setNewQuantity] = useState<number>(0);
 
@@ -139,7 +143,10 @@ export function useProductManager(order: AnyOrder, updateOrder: (updatedOrder: A
     );
 
     if (unprintedProducts.length > 0) {
-      updateProductsList({ updatedProducts: unprintedProducts, toast: false });
+      updateProductsList({
+        updatedProducts: unprintedProducts,
+        toast: false,
+      });
     }
 
     return unprintedProducts;
@@ -169,14 +176,13 @@ export function useProductManager(order: AnyOrder, updateOrder: (updatedOrder: A
       });
 
     updateOrder({
-      ...order,
-      is_receipt_printed: false,
       products: [...updatedProductsList, ...newProducts, createDummyProduct()],
       total: calculateOrderTotal({
         ...order,
         products: [...updatedProductsList, ...newProducts],
       }),
     });
+
     setNewCode("");
     setNewQuantity(0);
 

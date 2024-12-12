@@ -6,7 +6,6 @@ import { KitchenType, OrderType } from "@prisma/client";
 import getReceiptSize from "../../util/functions/getReceiptSize";
 
 const calculateAdjustedTime = (originalTime: string) => {
-  console.log(originalTime);
   const timeParts = originalTime.split(":");
 
   if (timeParts.length !== 2 || isNaN(Number(timeParts[0])) || isNaN(Number(timeParts[1]))) {

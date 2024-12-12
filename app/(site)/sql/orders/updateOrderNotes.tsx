@@ -44,7 +44,5 @@ export default async function updateOrderNotes(orderId: number, notes: string) {
     data: { notes: updatedNotes },
   });
 
-  console.log(orderId)
-
   return await getOrderById(orderId);
 }

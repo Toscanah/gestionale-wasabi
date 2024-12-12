@@ -31,8 +31,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     fetchRequest<AnyOrder>("POST", "/api/orders", "updatePrintedFlag", {
       orderId: order.id,
     }).then((updatedOrder) => {
-      updateOrder(updatedOrder);
-      updateGlobalState(updatedOrder, "update");
+      updateOrder({ is_receipt_printed: updatedOrder.is_receipt_printed });
     });
 
   const buildPrintContent = async (
@@ -44,6 +43,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
     if (!isRePrint) {
       const unprintedProducts = await updateUnprintedProducts();
+
       if (unprintedProducts.length > 0) {
         content.push(() => KitchenReceipt<typeof order>({ ...order, products: unprintedProducts }));
       }
@@ -63,13 +63,13 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
   };
 
   const handleRePrint = async () => {
-    updatePrintedFlag();
+    await updatePrintedFlag();
     const content = await buildPrintContent(order, quickPaymentOption, true);
     await print(...content);
   };
 
   const handlePrint = async () => {
-    updatePrintedFlag();
+    await updatePrintedFlag();
     const content = await buildPrintContent(order, quickPaymentOption, false);
     await print(...content).then(() => toggleDialog(false));
   };

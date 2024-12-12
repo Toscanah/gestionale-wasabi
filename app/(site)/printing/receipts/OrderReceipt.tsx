@@ -35,7 +35,7 @@ export default function OrderReceipt<T extends AnyOrder>(
         <Row
           left={
             <Text align="center" size={bigSize}>
-              {pickupOrder.name}
+              {pickupOrder.name.toLocaleUpperCase()}
             </Text>
           }
           right={

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function PaymentSection() {
   return (
-    <SidebarMenu>
+    <SidebarMenu key={"payments"}>
       <SidebarMenuItem>
         <SidebarMenuButton asChild>
           <Link href={"../../../payments/table"}>

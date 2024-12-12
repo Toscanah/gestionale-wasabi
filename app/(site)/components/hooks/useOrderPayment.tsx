@@ -64,7 +64,6 @@ export default function useOrderPayment(
         );
 
         updateOrder({
-          ...order,
           products: order.products
             .map((product) => {
               const paid_quantity = productsToPayMap.get(product.id) || 0;
