@@ -16,28 +16,27 @@ export default async function executeAction(
   const actionEntry = actionsMap.get(action);
 
   if (!actionEntry) {
-    return new NextResponse(`Action "${action}" not found`, { status: 403 });
+    return NextResponse.json(`Action "${action}" not found`, { status: 403 });
   }
 
   const { func, schema } = actionEntry;
 
   try {
-    const parsedContent = schema.safeParse(content);
+    // const parsedContent = schema.safeParse(content);
 
-    console.log(content);
+    // console.log(content);
 
-    if (!parsedContent.success) {
-      return NextResponse.json(parsedContent.error);
+    // if (!parsedContent.success) {
+    //   return NextResponse.json(parsedContent.error);
 
-      return NextResponse.json(`Content "${content}" did not pass the type guard`, {
-        status: 401,
-      });
-    }
+    //   return NextResponse.json(`Content "${content}" did not pass the type guard`, {
+    //     status: 401,
+    //   });
+    // }
 
-    return NextResponse.json(await func(...Object.values(content as any)));
+    return NextResponse.json(await func(...(content ? Object.values(content as any) : [])));
   } catch (error) {
-    console.log("Qua?");
-    return new NextResponse(
+    return NextResponse.json(
       `Invalid content: ${error instanceof Error ? error.message : String(error)}`,
       { status: 402 }
     );

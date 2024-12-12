@@ -30,8 +30,8 @@ export default function Table({ setOrder }: TableProps) {
   const createTableOrder = () => {
     const people = Number(pplRef.current?.value ?? 1);
     const table = tableRef.current?.value;
-    const res_name = nameRef.current?.value;
-    const content = { table, people, res_name };
+    const resName = nameRef.current?.value;
+    const content = { table, people, resName };
 
     if (table == "") {
       return toastError("Assicurati di aver aggiunto un tavolo");
@@ -40,6 +40,7 @@ export default function Table({ setOrder }: TableProps) {
     fetchRequest<{ order: TableOrder; new: boolean }>("POST", "/api/orders/", "createTableOrder", {
       ...content,
     }).then((newTableOrder) => {
+      console.log(newTableOrder)
       if (newTableOrder.new) {
         toastSuccess("Ordine creato con successo");
         updateGlobalState(newTableOrder.order, "add");
