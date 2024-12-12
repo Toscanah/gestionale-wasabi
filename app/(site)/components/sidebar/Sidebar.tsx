@@ -16,7 +16,7 @@ export default function WasabiSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup key={"group-1"}>
           <SidebarGroupLabel>Pannello impostazioni</SidebarGroupLabel>
 
           <SidebarGroupContent>
@@ -28,7 +28,7 @@ export default function WasabiSidebar() {
 
         <SidebarSeparator />
 
-        <SidebarGroup>
+        <SidebarGroup key={"group-2"}>
           <SidebarGroupContent>
             <RiceSection />
             <KitchenSettings />

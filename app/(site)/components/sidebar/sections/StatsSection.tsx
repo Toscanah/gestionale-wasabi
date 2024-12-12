@@ -17,7 +17,7 @@ export default function StatsSection() {
   ];
 
   return (
-    <SidebarMenu>
+    <SidebarMenu key={"stats"}>
       <Collapsible className="group/collapsible">
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>

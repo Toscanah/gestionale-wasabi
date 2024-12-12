@@ -50,5 +50,12 @@ export default async function updatePrintedAmounts(orderId: number) {
     }
   }
 
+  await prisma.order.update({
+    where: { id: orderId },
+    data: {
+      is_receipt_printed: false,
+    },
+  });
+
   return remainingProducts;
 }

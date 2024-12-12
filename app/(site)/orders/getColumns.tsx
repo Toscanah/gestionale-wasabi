@@ -52,15 +52,19 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
           case OrderType.TABLE: {
             const parsedRow = row.original as TableOrder;
 
-            return parsedRow.table_order?.table;
+            return parsedRow.table_order?.table.toLocaleUpperCase();
           }
           case OrderType.PICKUP:
             const parsedRow = row.original as PickupOrder;
-            return parsedRow.pickup_order?.customer?.surname || parsedRow.pickup_order?.name;
+            return (
+              parsedRow.pickup_order?.customer?.surname ||
+              parsedRow.pickup_order?.name ||
+              ""
+            ).toLocaleUpperCase();
 
           case OrderType.HOME: {
             const parsedRow = row.original as HomeOrder;
-            return parsedRow.home_order?.address.doorbell;
+            return (parsedRow.home_order?.address.doorbell || "").toLocaleUpperCase();
           }
         }
       },

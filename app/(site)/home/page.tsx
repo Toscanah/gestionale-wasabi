@@ -13,6 +13,9 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import Header from "./Header";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
+import { Button } from "@/components/ui/button";
+
+export type UpdateStateAction = "update" | "delete" | "add";
 
 export default function Home() {
   const [orders, setOrders] = useState<{
@@ -43,7 +46,7 @@ export default function Home() {
       type,
     });
 
-  const updateGlobalState = (order: AnyOrder, action: "update" | "delete" | "add") =>
+  const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) =>
     setOrders((prevOrders) => {
       const existingOrders = prevOrders[order.type] || [];
 
@@ -94,9 +97,34 @@ export default function Home() {
         <div className="w-full flex justify-between items-center">
           <div className="flex items-center gap-4 text-2xl w-[28rem]">
             <SidebarTrigger /> Wasabi Sushi
+            <Button
+              variant={"destructive"}
+              onClick={() => {
+                fetchRequest("DELETE", "/api/orders", "deleteEverything").then(() => {
+                  setOrders({
+                    [OrderType.HOME]: [],
+                    [OrderType.PICKUP]: [],
+                    [OrderType.TABLE]: [],
+                  });
+                });
+              }}
+            >
+              PERICOLO, QUESTO TASTO ELIMINA ORDINI, PAGAMENTI E PRODOTTI NEGLI ORDINI
+            </Button>
           </div>
 
           <Header toggleOrder={toggleOrder} activeOrders={activeOrders} />
+
+          <Button
+            onClick={() => {
+              console.log(orders["HOME"][0]);
+              fetchRequest<any>("POST", "/api/orders", "prova", orders["HOME"][0]).then((idk) => {
+                console.log(idk);
+              });
+            }}
+          >
+            PROVA
+          </Button>
         </div>
 
         <Separator orientation="horizontal" />

@@ -6,6 +6,7 @@
     "skipLibCheck": true,
     "checkJs": true,
     "strict": true,
+    "strictNullChecks": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",

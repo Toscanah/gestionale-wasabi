@@ -52,11 +52,11 @@ export default async function createSubOrder(
 
     case OrderType.TABLE:
       order = parentOrder as TableOrder;
-      newSubOrder = (await createTableOrder({
-        table: `${order.table_order?.table}_${suborderNumber}`,
-        people: order.table_order?.people ?? 1,
-        res_name: order.table_order?.res_name ?? "",
-      })) as any;
+      newSubOrder = (await createTableOrder(
+        `${order.table_order?.table}_${suborderNumber}`,
+        order.table_order?.people ?? 1,
+        order.table_order?.res_name ?? ""
+      )) as any;
 
       break;
   }

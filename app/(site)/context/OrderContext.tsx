@@ -1,6 +1,6 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
 import { AnyOrder } from "../types/PrismaOrders";
-import { useOrderManager } from "../components/hooks/useOrderManager";
+import { RecursivePartial, useOrderManager } from "../components/hooks/useOrderManager";
 import { useProductManager } from "../components/hooks/useProductManager";
 import { ProductInOrderType } from "../types/ProductInOrderType";
 import { Table } from "@tanstack/react-table";
@@ -32,7 +32,7 @@ type OrderContextType = {
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
   updateProductOption: (productInOrderId: number, optionId: number) => void;
   updateUnprintedProducts: () => Promise<ProductInOrderType[]>;
-  updateOrder: (updatedOrder: AnyOrder) => void;
+  updateOrder: (order: RecursivePartial<AnyOrder>) => void;
 };
 
 export const OrderProvider = ({
@@ -43,7 +43,7 @@ export const OrderProvider = ({
 }: OrderProviderProps) => {
   const [order, setOrder] = useState<AnyOrder>({
     ...initialOrder,
-    products: [...initialOrder.products.filter((p) => p.id !== -1), createDummyProduct()],
+    products: [...(initialOrder.products ?? []).filter((p) => p.id !== -1), createDummyProduct()],
   });
 
   const toggleDialog = (dialogOpen: boolean) => setDialogOpen(dialogOpen);

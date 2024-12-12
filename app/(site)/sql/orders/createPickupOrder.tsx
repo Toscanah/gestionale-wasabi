@@ -1,16 +1,10 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 
-export default async function createPickupOrder(content: {
-  name: string;
-  when: string;
-  phone?: string;
-}) {
-  const { when, phone } = content;
-  let name = content.name;
+export default async function createPickupOrder(name: string, when: string, phone?: string) {
+  let orderName = name;
   let customerData = undefined;
 
-  // Check if the phone already exists
   if (phone) {
     const existingPhone = await prisma.phone.findFirst({
       where: { phone: phone },
@@ -28,7 +22,7 @@ export default async function createPickupOrder(content: {
           },
         };
 
-        name = customer.surname ?? content.name;
+        orderName = customer.surname ?? name;
       }
     } else {
       // Phone does not exist, create new customer and phone
