@@ -90,27 +90,6 @@ export const OrderSchema = z.object({
 
 export type Order = z.infer<typeof OrderSchema>
 
-// ORDER RELATION SCHEMA
-//------------------------------------------------------
-
-export type OrderRelations = {
-  products: ProductInOrderWithRelations[];
-  payments: PaymentWithRelations[];
-  table_order?: TableOrderWithRelations | null;
-  home_order?: HomeOrderWithRelations | null;
-  pickup_order?: PickupOrderWithRelations | null;
-};
-
-export type OrderWithRelations = z.infer<typeof OrderSchema> & OrderRelations
-
-export const OrderWithRelationsSchema: z.ZodType<OrderWithRelations> = OrderSchema.merge(z.object({
-  products: z.lazy(() => ProductInOrderWithRelationsSchema).array(),
-  payments: z.lazy(() => PaymentWithRelationsSchema).array(),
-  table_order: z.lazy(() => TableOrderWithRelationsSchema).nullable(),
-  home_order: z.lazy(() => HomeOrderWithRelationsSchema).nullable(),
-  pickup_order: z.lazy(() => PickupOrderWithRelationsSchema).nullable(),
-}))
-
 /////////////////////////////////////////
 // TABLE ORDER SCHEMA
 /////////////////////////////////////////
@@ -124,19 +103,6 @@ export const TableOrderSchema = z.object({
 })
 
 export type TableOrder = z.infer<typeof TableOrderSchema>
-
-// TABLE ORDER RELATION SCHEMA
-//------------------------------------------------------
-
-export type TableOrderRelations = {
-  order: OrderWithRelations;
-};
-
-export type TableOrderWithRelations = z.infer<typeof TableOrderSchema> & TableOrderRelations
-
-export const TableOrderWithRelationsSchema: z.ZodType<TableOrderWithRelations> = TableOrderSchema.merge(z.object({
-  order: z.lazy(() => OrderWithRelationsSchema),
-}))
 
 /////////////////////////////////////////
 // HOME ORDER SCHEMA
@@ -154,23 +120,6 @@ export const HomeOrderSchema = z.object({
 
 export type HomeOrder = z.infer<typeof HomeOrderSchema>
 
-// HOME ORDER RELATION SCHEMA
-//------------------------------------------------------
-
-export type HomeOrderRelations = {
-  order: OrderWithRelations;
-  address: AddressWithRelations;
-  customer: CustomerWithRelations;
-};
-
-export type HomeOrderWithRelations = z.infer<typeof HomeOrderSchema> & HomeOrderRelations
-
-export const HomeOrderWithRelationsSchema: z.ZodType<HomeOrderWithRelations> = HomeOrderSchema.merge(z.object({
-  order: z.lazy(() => OrderWithRelationsSchema),
-  address: z.lazy(() => AddressWithRelationsSchema),
-  customer: z.lazy(() => CustomerWithRelationsSchema),
-}))
-
 /////////////////////////////////////////
 // PICKUP ORDER SCHEMA
 /////////////////////////////////////////
@@ -184,21 +133,6 @@ export const PickupOrderSchema = z.object({
 })
 
 export type PickupOrder = z.infer<typeof PickupOrderSchema>
-
-// PICKUP ORDER RELATION SCHEMA
-//------------------------------------------------------
-
-export type PickupOrderRelations = {
-  customer?: CustomerWithRelations | null;
-  order: OrderWithRelations;
-};
-
-export type PickupOrderWithRelations = z.infer<typeof PickupOrderSchema> & PickupOrderRelations
-
-export const PickupOrderWithRelationsSchema: z.ZodType<PickupOrderWithRelations> = PickupOrderSchema.merge(z.object({
-  customer: z.lazy(() => CustomerWithRelationsSchema).nullable(),
-  order: z.lazy(() => OrderWithRelationsSchema),
-}))
 
 /////////////////////////////////////////
 // ADDRESS SCHEMA
@@ -219,21 +153,6 @@ export const AddressSchema = z.object({
 
 export type Address = z.infer<typeof AddressSchema>
 
-// ADDRESS RELATION SCHEMA
-//------------------------------------------------------
-
-export type AddressRelations = {
-  customer: CustomerWithRelations;
-  home_orders: HomeOrderWithRelations[];
-};
-
-export type AddressWithRelations = z.infer<typeof AddressSchema> & AddressRelations
-
-export const AddressWithRelationsSchema: z.ZodType<AddressWithRelations> = AddressSchema.merge(z.object({
-  customer: z.lazy(() => CustomerWithRelationsSchema),
-  home_orders: z.lazy(() => HomeOrderWithRelationsSchema).array(),
-}))
-
 /////////////////////////////////////////
 // CUSTOMER SCHEMA
 /////////////////////////////////////////
@@ -250,25 +169,6 @@ export const CustomerSchema = z.object({
 
 export type Customer = z.infer<typeof CustomerSchema>
 
-// CUSTOMER RELATION SCHEMA
-//------------------------------------------------------
-
-export type CustomerRelations = {
-  phone?: PhoneWithRelations | null;
-  addresses: AddressWithRelations[];
-  home_orders: HomeOrderWithRelations[];
-  pickup_orders: PickupOrderWithRelations[];
-};
-
-export type CustomerWithRelations = z.infer<typeof CustomerSchema> & CustomerRelations
-
-export const CustomerWithRelationsSchema: z.ZodType<CustomerWithRelations> = CustomerSchema.merge(z.object({
-  phone: z.lazy(() => PhoneWithRelationsSchema).nullable(),
-  addresses: z.lazy(() => AddressWithRelationsSchema).array(),
-  home_orders: z.lazy(() => HomeOrderWithRelationsSchema).array(),
-  pickup_orders: z.lazy(() => PickupOrderWithRelationsSchema).array(),
-}))
-
 /////////////////////////////////////////
 // PHONE SCHEMA
 /////////////////////////////////////////
@@ -279,19 +179,6 @@ export const PhoneSchema = z.object({
 })
 
 export type Phone = z.infer<typeof PhoneSchema>
-
-// PHONE RELATION SCHEMA
-//------------------------------------------------------
-
-export type PhoneRelations = {
-  customer?: CustomerWithRelations | null;
-};
-
-export type PhoneWithRelations = z.infer<typeof PhoneSchema> & PhoneRelations
-
-export const PhoneWithRelationsSchema: z.ZodType<PhoneWithRelations> = PhoneSchema.merge(z.object({
-  customer: z.lazy(() => CustomerWithRelationsSchema).nullable(),
-}))
 
 /////////////////////////////////////////
 // PAYMENT SCHEMA
@@ -306,19 +193,6 @@ export const PaymentSchema = z.object({
 })
 
 export type Payment = z.infer<typeof PaymentSchema>
-
-// PAYMENT RELATION SCHEMA
-//------------------------------------------------------
-
-export type PaymentRelations = {
-  order: OrderWithRelations;
-};
-
-export type PaymentWithRelations = z.infer<typeof PaymentSchema> & PaymentRelations
-
-export const PaymentWithRelationsSchema: z.ZodType<PaymentWithRelations> = PaymentSchema.merge(z.object({
-  order: z.lazy(() => OrderWithRelationsSchema),
-}))
 
 /////////////////////////////////////////
 // RICE SCHEMA
@@ -350,21 +224,6 @@ export const ProductSchema = z.object({
 
 export type Product = z.infer<typeof ProductSchema>
 
-// PRODUCT RELATION SCHEMA
-//------------------------------------------------------
-
-export type ProductRelations = {
-  orders: ProductInOrderWithRelations[];
-  category?: CategoryWithRelations | null;
-};
-
-export type ProductWithRelations = z.infer<typeof ProductSchema> & ProductRelations
-
-export const ProductWithRelationsSchema: z.ZodType<ProductWithRelations> = ProductSchema.merge(z.object({
-  orders: z.lazy(() => ProductInOrderWithRelationsSchema).array(),
-  category: z.lazy(() => CategoryWithRelationsSchema).nullable(),
-}))
-
 /////////////////////////////////////////
 // PRODUCT IN ORDER SCHEMA
 /////////////////////////////////////////
@@ -384,23 +243,6 @@ export const ProductInOrderSchema = z.object({
 
 export type ProductInOrder = z.infer<typeof ProductInOrderSchema>
 
-// PRODUCT IN ORDER RELATION SCHEMA
-//------------------------------------------------------
-
-export type ProductInOrderRelations = {
-  options: OptionInProductOrderWithRelations[];
-  product: ProductWithRelations;
-  order: OrderWithRelations;
-};
-
-export type ProductInOrderWithRelations = z.infer<typeof ProductInOrderSchema> & ProductInOrderRelations
-
-export const ProductInOrderWithRelationsSchema: z.ZodType<ProductInOrderWithRelations> = ProductInOrderSchema.merge(z.object({
-  options: z.lazy(() => OptionInProductOrderWithRelationsSchema).array(),
-  product: z.lazy(() => ProductWithRelationsSchema),
-  order: z.lazy(() => OrderWithRelationsSchema),
-}))
-
 /////////////////////////////////////////
 // CATEGORY SCHEMA
 /////////////////////////////////////////
@@ -412,21 +254,6 @@ export const CategorySchema = z.object({
 })
 
 export type Category = z.infer<typeof CategorySchema>
-
-// CATEGORY RELATION SCHEMA
-//------------------------------------------------------
-
-export type CategoryRelations = {
-  products: ProductWithRelations[];
-  options: CategoryOnOptionWithRelations[];
-};
-
-export type CategoryWithRelations = z.infer<typeof CategorySchema> & CategoryRelations
-
-export const CategoryWithRelationsSchema: z.ZodType<CategoryWithRelations> = CategorySchema.merge(z.object({
-  products: z.lazy(() => ProductWithRelationsSchema).array(),
-  options: z.lazy(() => CategoryOnOptionWithRelationsSchema).array(),
-}))
 
 /////////////////////////////////////////
 // CATEGORY ON OPTION SCHEMA
@@ -440,21 +267,6 @@ export const CategoryOnOptionSchema = z.object({
 
 export type CategoryOnOption = z.infer<typeof CategoryOnOptionSchema>
 
-// CATEGORY ON OPTION RELATION SCHEMA
-//------------------------------------------------------
-
-export type CategoryOnOptionRelations = {
-  category: CategoryWithRelations;
-  option: OptionWithRelations;
-};
-
-export type CategoryOnOptionWithRelations = z.infer<typeof CategoryOnOptionSchema> & CategoryOnOptionRelations
-
-export const CategoryOnOptionWithRelationsSchema: z.ZodType<CategoryOnOptionWithRelations> = CategoryOnOptionSchema.merge(z.object({
-  category: z.lazy(() => CategoryWithRelationsSchema),
-  option: z.lazy(() => OptionWithRelationsSchema),
-}))
-
 /////////////////////////////////////////
 // OPTION SCHEMA
 /////////////////////////////////////////
@@ -467,21 +279,6 @@ export const OptionSchema = z.object({
 
 export type Option = z.infer<typeof OptionSchema>
 
-// OPTION RELATION SCHEMA
-//------------------------------------------------------
-
-export type OptionRelations = {
-  categories: CategoryOnOptionWithRelations[];
-  products: OptionInProductOrderWithRelations[];
-};
-
-export type OptionWithRelations = z.infer<typeof OptionSchema> & OptionRelations
-
-export const OptionWithRelationsSchema: z.ZodType<OptionWithRelations> = OptionSchema.merge(z.object({
-  categories: z.lazy(() => CategoryOnOptionWithRelationsSchema).array(),
-  products: z.lazy(() => OptionInProductOrderWithRelationsSchema).array(),
-}))
-
 /////////////////////////////////////////
 // OPTION IN PRODUCT ORDER SCHEMA
 /////////////////////////////////////////
@@ -493,21 +290,6 @@ export const OptionInProductOrderSchema = z.object({
 })
 
 export type OptionInProductOrder = z.infer<typeof OptionInProductOrderSchema>
-
-// OPTION IN PRODUCT ORDER RELATION SCHEMA
-//------------------------------------------------------
-
-export type OptionInProductOrderRelations = {
-  product_in_order: ProductInOrderWithRelations;
-  option: OptionWithRelations;
-};
-
-export type OptionInProductOrderWithRelations = z.infer<typeof OptionInProductOrderSchema> & OptionInProductOrderRelations
-
-export const OptionInProductOrderWithRelationsSchema: z.ZodType<OptionInProductOrderWithRelations> = OptionInProductOrderSchema.merge(z.object({
-  product_in_order: z.lazy(() => ProductInOrderWithRelationsSchema),
-  option: z.lazy(() => OptionWithRelationsSchema),
-}))
 
 /////////////////////////////////////////
 // SELECT & INCLUDE

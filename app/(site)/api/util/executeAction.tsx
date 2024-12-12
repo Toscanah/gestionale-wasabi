@@ -20,19 +20,22 @@ export default async function executeAction(
   }
 
   const { func, schema } = actionEntry;
-
+  
   try {
-    // const parsedContent = schema.safeParse(content);
+    const parsedContent = schema.safeParse(content);
+    
+    if (action == "prova") {
+      console.log("Contenuto", content)
+      console.log(parsedContent.success);
+    }
 
-    // console.log(content);
+    if (!parsedContent.success) {
+      return NextResponse.json(parsedContent.error);
 
-    // if (!parsedContent.success) {
-    //   return NextResponse.json(parsedContent.error);
-
-    //   return NextResponse.json(`Content "${content}" did not pass the type guard`, {
-    //     status: 401,
-    //   });
-    // }
+      return NextResponse.json(`Content "${content}" did not pass the type guard function`, {
+        status: 401,
+      });
+    }
 
     return NextResponse.json(await func(...(content ? Object.values(content as any) : [])));
   } catch (error) {

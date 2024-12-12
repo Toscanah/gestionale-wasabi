@@ -1,64 +1,54 @@
-import { Prisma } from "@prisma/client";
+import {
+  AddressSchema,
+  CategorySchema,
+  CustomerSchema,
+  OptionSchema,
+  OrderSchema,
+  PaymentSchema,
+  PhoneSchema,
+  ProductSchema,
+  TableOrderSchema,
+} from "@/prisma/generated/zod";
+import { z } from "zod";
 
-type CommonOrderPayload = Prisma.OrderGetPayload<{
-  include: {
-    payments: true;
-    products: {
-      include: {
-        product: {
-          include: {
-            category: {
-              include: {
-                options: {
-                  select: {
-                    option: true;
-                  };
-                };
-              };
-            };
-          };
-        };
-        options: { select: { option: true } };
-      };
-    };
-  };
-}>;
+export const ProductWithRelationsSchema = ProductSchema.extend({
+  category: CategorySchema.extend({
+    options: z.array(OptionSchema),
+  }),
+  options: z.array(OptionSchema),
+});
 
-type TableOrderPayload = Prisma.OrderGetPayload<{
-  include: { table_order: true };
-}>;
+export const OrderWithRelationsSchema = OrderSchema.extend({
+  payments: z.array(PaymentSchema),
+  products: z.array(
+    ProductWithRelationsSchema.extend({
+      product: ProductWithRelationsSchema,
+    })
+  ),
+});
 
-type HomeOrderPayload = Prisma.OrderGetPayload<{
-  include: {
-    home_order: {
-      include: {
-        customer: {
-          include: {
-            phone: true;
-          };
-        };
-        address: true;
-      };
-    };
-  };
-}>;
+export const TableOrderWithRelationsSchema = OrderWithRelationsSchema.extend({
+  table_order: TableOrderSchema,
+});
 
-type PickupOrderPayload = Prisma.OrderGetPayload<{
-  include: {
-    pickup_order: {
-      include: {
-        customer: {
-          include: {
-            phone: true;
-          };
-        };
-      };
-    };
-  };
-}>;
+export const HomeOrderWithRelationsSchema = OrderWithRelationsSchema.extend({
+  home_order: z.object({
+    customer: CustomerSchema.extend({
+      phone: PhoneSchema,
+    }),
+    address: AddressSchema,
+  }),
+});
 
-export type TableOrder = CommonOrderPayload & TableOrderPayload;
-export type HomeOrder = CommonOrderPayload & HomeOrderPayload;
-export type PickupOrder = CommonOrderPayload & PickupOrderPayload;
+export const PickupOrderWithRelationsSchema = OrderWithRelationsSchema.extend({
+  pickup_order: z.object({
+    customer: CustomerSchema.extend({
+      phone: PhoneSchema,
+    }),
+  }),
+});
 
-export type AnyOrder = HomeOrder | PickupOrder | TableOrder;
+export type TableOrder = z.infer<typeof TableOrderSchema>;
+export type HomeOrder = z.infer<typeof HomeOrderSchema>;
+export type PickupOrder = z.infer<typeof PickupOrderSchema>;
+export type AnyOrder = TableOrder | HomeOrder | PickupOrder;
