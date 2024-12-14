@@ -117,7 +117,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       <Button
         className="w-full text-3xl h-12"
         onClick={handleFullPayment}
-        disabled={!(order.total > 0)} // || !order.is_receipt_printed
+        disabled={!(order.total > 0) || !order.is_receipt_printed}
       >
         INCASSA
       </Button>
