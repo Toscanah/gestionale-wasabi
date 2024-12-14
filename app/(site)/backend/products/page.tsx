@@ -1,19 +1,19 @@
 "use client";
 
 import GoBack from "../../components/GoBack";
-import { ProductWithInfo } from "../../types/ProductWithInfo";
+import { Product } from "@/app/(site)/models";
 import fetchRequest from "../../util/functions/fetchRequest";
 import Manager from "../Manager";
 import columns from "./columns";
 import { useEffect, useState } from "react";
 import FormFields from "../FormFields";
-import { CategoryWithOptions } from "../../types/CategoryWithOptions";
+import { CategoryWithOptions } from "@/app/(site)/models";
 import { formSchema } from "./form";
 import { getProductFields } from "./form";
 import logo from "../../../../public/logo.png";
 import Image from "next/image";
 
-type ProductAndCategory = Omit<ProductWithInfo, "category"> & {
+export type ProductAndCategory = Omit<Product, "category"> & {
   category: string;
 };
 

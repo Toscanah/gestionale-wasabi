@@ -1,5 +1,5 @@
 import { OrderType } from "@prisma/client";
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 
 export default function generateEmptyOrder(orderType: OrderType): AnyOrder {
   return {

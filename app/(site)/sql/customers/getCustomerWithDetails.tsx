@@ -1,5 +1,5 @@
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
-import { HomeOrder } from "../../types/PrismaOrders";
+import { CustomerWithDetails } from "@/app/(site)/models";
+import { HomeOrder } from "@/app/(site)/models";
 import prisma from "../db";
 
 export default async function getCustomerWithDetails(

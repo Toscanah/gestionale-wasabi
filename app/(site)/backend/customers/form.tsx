@@ -1,16 +1,8 @@
 import { z } from "zod";
 import getZodField from "../../util/functions/getZodField";
 import { FormFieldType } from "../FormFields";
-import { ControllerRenderProps } from "react-hook-form";
-import { Option } from "../../types/Option";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import CustomerAddresses from "./addresses/CustomerAddresses";
-import { Input } from "@/components/ui/input";
-import { Address } from "@prisma/client";
-import { Dispatch, SetStateAction, useState } from "react";
-import fetchRequest from "../../util/functions/fetchRequest";
+
 
 export const formSchema = z.object({
   name: getZodField("string", false),

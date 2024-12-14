@@ -1,10 +1,10 @@
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "../../models";
 import prisma from "../db";
 
 export default async function addProductsToOrder(
   targetOrderId: number,
-  products: ProductInOrderType[]
-): Promise<ProductInOrderType[] | []> {
+  products: ProductInOrder[]
+): Promise<ProductInOrder[]> {
   const productTotalPrice = products.reduce((sum, product) => sum + product.total, 0);
 
   const newProducts = await Promise.all(

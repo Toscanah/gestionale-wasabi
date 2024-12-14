@@ -1,4 +1,4 @@
-import { Address } from "@prisma/client";
+import { Address } from "@/prisma/generated/zod";
 import prisma from "../db";
 import getCustomersWithDetails from "./getCustomersWithDetails";
 

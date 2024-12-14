@@ -1,4 +1,4 @@
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder } from "../../models";
 import prisma from "../db";
 
 export default async function getOrderById(orderId: number): Promise<AnyOrder> {

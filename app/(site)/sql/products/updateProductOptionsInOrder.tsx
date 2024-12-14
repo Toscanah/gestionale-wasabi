@@ -1,10 +1,10 @@
-import { Option, OptionInProductOrder } from "@prisma/client";
+import { OptionInProductOrder } from "../../models";
 import prisma from "../db";
 
 export default async function updateProductOptionsInOrder(
   productInOrderId: number,
   optionId: number
-): Promise<OptionInProductOrder & { option: Option }> {
+): Promise<OptionInProductOrder> {
   // Check if the option already exists in the product order
   const optionPresent = await prisma.optionInProductOrder.findFirst({
     where: {

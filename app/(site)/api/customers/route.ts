@@ -1,70 +1,77 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import getCustomerByPhone from "../../sql/customers/getCustomerByPhone";
-import getRequestBody from "../../util/functions/getRequestBody";
-import { Address, Customer } from "@prisma/client";
 import createCustomer from "../../sql/customers/createCustomer";
 import toggleCustomer from "../../sql/customers/toggleCustomer";
 import getCustomersWithDetails from "../../sql/customers/getCustomersWithDetails";
 import updateAddressesOfCustomer from "../../sql/customers/updateAddressesOfCustomer";
 import updateCustomerFromOrder from "../../sql/customers/updateCustomerFromOrder";
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import getCustomerWithDetails from "../../sql/customers/getCustomerWithDetails";
 import updateCustomerFromAdmin from "../../sql/customers/updateCustomerFromAdmin";
 import getCustomersByDoorbell from "../../sql/customers/getCustomersByDoorbell";
+import { z } from "zod";
+import { CustomerWithAddressesAndOrdersSchema, CreateCustomerSchema } from "../../models";
+import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
+import handleRequest from "../util/handleRequest";
 
-export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
+export const customerSchemas = {
+  getCustomerByPhone: z.object({ phone: z.string() }),
+  getCustomerWithDetails: z.object({ customerId: z.number() }),
+  getCustomersWithDetails: z.undefined(),
+  getCustomersByDoorbell: z.object({ doorbell: z.string() }),
+  updateCustomerFromAdmin: z.object({
+    customer: CustomerWithAddressesAndOrdersSchema,
+  }),
+  updateCustomerFromOrder: z.object({
+    customer: CustomerSchema,
+  }),
+  createCustomer: z.object({
+    customer: CreateCustomerSchema,
+    phone: z.string(),
+  }),
+  toggleCustomer: z.object({ id: z.number() }),
+  updateAddressesOfCustomer: z.object({
+    addresses: z.array(AddressSchema),
+    customerId: z.number(),
+  }),
+};
 
-  switch (params.get("action")) {
-    case "getCustomerByPhone":
-      return NextResponse.json(await getCustomerByPhone(params.get("phone") ?? ""));
-    case "getCustomersWithDetails":
-      return NextResponse.json(await getCustomersWithDetails());
-    case "getCustomerWithDetails":
-      return NextResponse.json(
-        await getCustomerWithDetails(Number(params.get("customerId")) ?? -1)
-      );
-    case "fetchCustomersByDoorbell":
-      return NextResponse.json(await getCustomersByDoorbell(params.get("doorbell") ?? ""));
-  }
-}
+const POST_ACTIONS = new Map([
+  [
+    "updateCustomerFromAdmin",
+    { func: updateCustomerFromAdmin, schema: customerSchemas.updateCustomerFromAdmin },
+  ],
+  [
+    "updateCustomerFromOrder",
+    { func: updateCustomerFromOrder, schema: customerSchemas.updateCustomerFromOrder },
+  ],
+  ["createCustomer", { func: createCustomer, schema: customerSchemas.createCustomer }],
+  ["toggleCustomer", { func: toggleCustomer, schema: customerSchemas.toggleCustomer }],
+  [
+    "updateAddressesOfCustomer",
+    { func: updateAddressesOfCustomer, schema: customerSchemas.updateAddressesOfCustomer },
+  ],
+]);
+
+const GET_ACTIONS = new Map([
+  ["getCustomerByPhone", { func: getCustomerByPhone, schema: customerSchemas.getCustomerByPhone }],
+  [
+    "getCustomersWithDetails",
+    { func: getCustomersWithDetails, schema: customerSchemas.getCustomersWithDetails },
+  ],
+  [
+    "getCustomerWithDetails",
+    { func: getCustomerWithDetails, schema: customerSchemas.getCustomerWithDetails },
+  ],
+  [
+    "fetchCustomersByDoorbell",
+    { func: getCustomersByDoorbell, schema: customerSchemas.getCustomersByDoorbell },
+  ],
+]);
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getRequestBody(request);
+  return await handleRequest(request, "POST", POST_ACTIONS);
+}
 
-  switch (action) {
-    case "updateCustomerFromAdmin":
-      return NextResponse.json(
-        await updateCustomerFromAdmin({
-          ...content,
-          phone: { phone: content?.phone, id: content?.phone_id },
-        } as CustomerWithDetails)
-      );
-
-    case "updateCustomerFromOrder":
-      return NextResponse.json(await updateCustomerFromOrder(content as any));
-
-    case "createCustomer":
-      return NextResponse.json(
-        await createCustomer(
-          content?.customer
-            ? content.customer
-            : {
-                name: content?.name,
-                surname: content?.surname,
-                email: content?.email,
-                preferences: content?.preferences,
-              },
-          content?.phone
-        )
-      );
-
-    case "toggleCustomer":
-      return NextResponse.json(await toggleCustomer(content?.id));
-
-    case "updateAddressesOfCustomer":
-      return NextResponse.json(
-        await updateAddressesOfCustomer(content?.addresses, content?.customerId)
-      );
-  }
+export async function GET(request: NextRequest) {
+  return await handleRequest(request, "GET", GET_ACTIONS);
 }

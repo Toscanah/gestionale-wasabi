@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 import fetchRequest from "../../util/functions/fetchRequest";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../context/WasabiContext";
 import createDummyProduct from "../../util/functions/createDummyProduct";
 
@@ -12,7 +12,7 @@ export type RecursivePartial<T> = {
 export function useOrderManager(order: AnyOrder, setOrder: Dispatch<SetStateAction<AnyOrder>>) {
   const { updateGlobalState, fetchRemainingRice } = useWasabiContext();
 
-  const updateOrder = (order: RecursivePartial<AnyOrder>) => {
+  const updateOrder = (order: RecursivePartial<AnyOrder>) =>
     setOrder((prevOrder) => {
       const updatedOrder = {
         ...prevOrder,
@@ -27,7 +27,6 @@ export function useOrderManager(order: AnyOrder, setOrder: Dispatch<SetStateActi
       updateGlobalState(updatedOrder, "update");
       return updatedOrder;
     });
-  };
 
   const cancelOrder = (cooked: boolean = false) =>
     fetchRequest<AnyOrder>("POST", "/api/orders/", "cancelOrder", {
@@ -38,7 +37,7 @@ export function useOrderManager(order: AnyOrder, setOrder: Dispatch<SetStateActi
       updateGlobalState(deletedOrder, "delete");
     });
 
-  const createSubOrder = (parentOrder: AnyOrder, products: ProductInOrderType[]) =>
+  const createSubOrder = (parentOrder: AnyOrder, products: ProductInOrder[]) =>
     fetchRequest<AnyOrder>("POST", "/api/orders/", "createSubOrder", {
       parentOrder,
       products,

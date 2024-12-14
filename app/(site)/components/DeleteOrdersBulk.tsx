@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useWasabiContext } from "../context/WasabiContext";
 import fetchRequest from "../util/functions/fetchRequest";
-import DialogWrapper from "./dialog/DialogWrapper";
 import OrderDeletionDialog from "./dialog/OrderDeletionDialog";
-import { AnyOrder } from "../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 
 export default function DeleteOrdersBulk() {
   const { selectedOrders, updateGlobalState, toggleOrderSelection, fetchRemainingRice } =

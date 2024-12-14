@@ -8,23 +8,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { Label } from "@/components/ui/label";
 import TableColumn from "../../components/table/TableColumn";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 
-export default function getColumns(type: OrderType): ColumnDef<ProductInOrderType>[] {
+export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {
   return [
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "product.code",
       header: "Codice",
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "quantity",
       header: "Quantità",
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "desc",
       header: "Descrizione",
       cellContent: (row) => (
@@ -34,7 +34,7 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrderTyp
       ),
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "options",
       header: "Opzioni",
       cellContent: (row) => {
@@ -68,7 +68,7 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrderTyp
       },
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "price",
       header: "Unità",
       cellContent: (row) => (
@@ -80,13 +80,13 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrderTyp
       ),
     }),
 
-    // TableColumn<ProductInOrderType>({
+    // TableColumn<ProductInOrder>({
     //   accessorKey: "total",
     //   header: "Totale",
     //   cellContent: (row) => (row.original.total == 0 ? "" : `€ ${row.original.total}`),
     // }),
 
-    // TableColumn<ProductInOrderType>({
+    // TableColumn<ProductInOrder>({
     //   accessorKey: "select",
     //   header: "Seleziona",
     //   sortable: false,

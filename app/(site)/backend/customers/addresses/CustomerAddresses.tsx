@@ -12,32 +12,32 @@ import { Textarea } from "@/components/ui/textarea";
 import parseAddress from "@/app/(site)/util/functions/parseAddress";
 import { Button } from "@/components/ui/button";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
-import { CustomerWithDetails } from "@/app/(site)/types/CustomerWithDetails";
-import { Trash } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { CustomerWithDetails } from "@/app/(site)/models";
+
+interface CustomerAddressesProps {
+  addresses: Address[];
+  customerId: number;
+  setCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>;
+}
 
 export default function CustomerAddresses({
   addresses,
   customerId,
   setCustomers,
-}: {
-  addresses: Address[];
-  customerId: number;
-  setCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>;
-}) {
+}: CustomerAddressesProps) {
   const [currentAddresses, setCurrentAddresses] = useState<Address[]>(addresses ?? []);
 
-  const saveAddresses = () => {
+  const saveAddresses = () =>
     fetchRequest<CustomerWithDetails[]>("POST", "/api/customers", "updateAddressesOfCustomer", {
       addresses: currentAddresses,
       customerId,
     }).then((updatedCustomers) => {
       setCustomers(updatedCustomers);
     });
-  };
 
-  const addAddress = () => {
+  const addAddress = () =>
     setCurrentAddresses((prevAddresses) => [
       {
         civic: "",
@@ -53,7 +53,6 @@ export default function CustomerAddresses({
       },
       ...prevAddresses,
     ]);
-  };
 
   const toggleAddress = (addressToToggle: Address) => {
     setCurrentAddresses((prevAddresses) =>
@@ -129,7 +128,7 @@ export default function CustomerAddresses({
                         onChange={(e) => updateField(address.id, "doorbell", e.target.value)}
                       />
                     </div>
-                    
+
                     <div className="space-y-2 w-full">
                       <Label>Piano</Label>
                       <Input

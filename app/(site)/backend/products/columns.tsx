@@ -1,11 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ProductWithInfo } from "../../types/ProductWithInfo";
+import { Product } from "@/app/(site)/models";
 import TableColumn from "../../components/table/TableColumn";
 import { KitchenType } from "@prisma/client";
-
-type ProductAndCategory = Omit<ProductWithInfo, "category"> & {
-  category: string;
-};
+import { ProductAndCategory } from "./page";
 
 const columns: ColumnDef<ProductAndCategory>[] = [
   TableColumn({

@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AnyOrder, TableOrder } from "../../../types/PrismaOrders";
+import { AnyOrder, TableOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { OrderType } from "@prisma/client";
 import fetchRequest from "../../../util/functions/fetchRequest";

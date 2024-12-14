@@ -1,4 +1,4 @@
-import { CustomerWithDetails } from "@/app/(site)/types/CustomerWithDetails";
+import { CustomerWithDetails } from "@/app/(site)/models";
 import columns from "./columns";
 import getTable from "@/app/(site)/util/functions/getTable";
 import Table from "@/app/(site)/components/table/Table";
