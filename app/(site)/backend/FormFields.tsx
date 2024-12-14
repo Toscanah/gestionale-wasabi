@@ -4,19 +4,10 @@ import { z } from "zod";
 import getForm from "../util/functions/getForm";
 import { ControllerRenderProps, DefaultValues } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import React, {
-  ComponentType,
-  HTMLInputTypeAttribute,
-  ReactElement,
-  RefObject,
-  useEffect,
-  useRef,
-} from "react";
+import React, { ComponentType, HTMLInputTypeAttribute, ReactElement } from "react";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import FormField from "../components/FormField";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 
 export type FormFieldType = {
   name: string;
@@ -46,7 +37,6 @@ export default function FormFields<T extends Partial<T>>({
 }: FormFieldsProps<T>) {
   const form = getForm<T>(formSchema, defaultValues);
   const onSubmit = (values: Partial<T>) => {
-
     handleSubmit(values);
 
     const currentValues = form.getValues();

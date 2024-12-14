@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Badge } from "@/components/ui/badge";
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
-import { OrderWithPayments } from "../../types/OrderWithPayments";
+import { OrderWithPayments } from "@/app/(site)/models";
 import formatOptionsString from "../../util/functions/formatOptionsString";
 import formatAmount from "../../util/functions/formatAmount";
 

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder, OptionInProductOrder } from "@/app/(site)/models";
 import createDummyProduct from "../../util/functions/createDummyProduct";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../util/toast";
 import { Table } from "@tanstack/react-table";
-import { Option, OptionInProductOrder } from "@prisma/client";
 import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
 import { RecursivePartial } from "./useOrderManager";
 import { getProductPrice } from "../../util/functions/getProductPrice";
@@ -18,7 +17,7 @@ export function useProductManager(
   const [newQuantity, setNewQuantity] = useState<number>(0);
 
   const addProduct = () =>
-    fetchRequest<ProductInOrderType>("POST", "/api/products/", "addProductToOrder", {
+    fetchRequest<ProductInOrder>("POST", "/api/products/", "addProductToOrder", {
       order,
       productCode: newCode,
       quantity: newQuantity,
@@ -31,8 +30,8 @@ export function useProductManager(
       }
     });
 
-  const addProducts = (products: ProductInOrderType[]) =>
-    fetchRequest<ProductInOrderType[]>("POST", "/api/products", "addProductsToOrder", {
+  const addProducts = (products: ProductInOrder[]) =>
+    fetchRequest<ProductInOrder[]>("POST", "/api/products", "addProductsToOrder", {
       orderId: order.id,
       products,
     }).then(() => updateProductsList({ newProducts: products }));
@@ -45,14 +44,14 @@ export function useProductManager(
     }
 
     fetchRequest<{
-      updatedProduct?: ProductInOrderType;
-      deletedProduct?: ProductInOrderType;
+      updatedProduct?: ProductInOrder;
+      deletedProduct?: ProductInOrder;
       error?: string;
     }>("POST", "/api/products/", "updateProductInOrder", {
       orderId: order.id,
       key: key,
       value: value,
-      product: productToUpdate,
+      productInOrder: productToUpdate,
     }).then((result) => {
       const { updatedProduct, deletedProduct, error } = result;
 
@@ -102,39 +101,35 @@ export function useProductManager(
     updateProductsList({ updatedProducts, isDummyUpdate: true });
   };
 
-  const updateProductOption = (productInOrderId: number, optionId: number) => {
-    fetchRequest<OptionInProductOrder & { option: Option }>(
-      "POST",
-      "/api/products/",
-      "updateProductOptionsInOrder",
-      { productInOrderId, optionId }
-    ).then((newOption) => {
-      const updatedProducts = order.products.map((product: ProductInOrderType) => {
+  const updateProductOption = (productInOrderId: number, optionId: number) =>
+    fetchRequest<OptionInProductOrder>("POST", "/api/products/", "updateProductOptionsInOrder", {
+      productInOrderId,
+      optionId,
+    }).then((newOption) => {
+      const updatedProducts = order.products.map((product) => {
         if (product.id !== productInOrderId) {
           return product;
         }
 
         const isOptionPresent = product.options.some(
-          (selectedOption: { option: Option }) => selectedOption.option.id === newOption.option_id
+          (selectedOption) => selectedOption.option.id === newOption.option_id
         );
 
         return {
           ...product,
           options: isOptionPresent
             ? product.options.filter(
-                (selectedOption: { option: Option }) =>
-                  selectedOption.option.id !== newOption.option_id
+                (selectedOption) => selectedOption.option.id !== newOption.option_id
               )
-            : [...product.options, { option: newOption.option }],
+            : [...product.options, { ...newOption }],
         };
       });
 
       updateProductsList({ updatedProducts });
     });
-  };
 
   const updateUnprintedProducts = async () => {
-    const unprintedProducts = await fetchRequest<ProductInOrderType[]>(
+    const unprintedProducts = await fetchRequest<ProductInOrder[]>(
       "POST",
       "/api/products/",
       "updatePrintedAmounts",
@@ -173,9 +168,9 @@ export function useProductManager(
     toast = true,
     updateFlag = true,
   }: {
-    newProducts?: ProductInOrderType[];
-    updatedProducts?: ProductInOrderType[];
-    deletedProducts?: ProductInOrderType[];
+    newProducts?: ProductInOrder[];
+    updatedProducts?: ProductInOrder[];
+    deletedProducts?: ProductInOrder[];
     isDummyUpdate?: boolean;
     toast?: boolean;
     updateFlag?: boolean;

@@ -4,13 +4,11 @@ import {
   useState,
   ReactNode,
   useEffect,
-  Dispatch,
-  SetStateAction,
 } from "react";
 import fetchRequest from "../util/functions/fetchRequest";
 import { Rice } from "@prisma/client";
 import { toastSuccess } from "../util/toast";
-import { AnyOrder } from "../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 import { UpdateStateAction } from "../home/page";
 
 type RiceState = { total: Rice; remaining: Rice };

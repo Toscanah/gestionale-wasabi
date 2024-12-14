@@ -1,4 +1,4 @@
-import { OrderWithPayments } from "../../types/OrderWithPayments";
+import { OrderWithPayments } from "@/app/(site)/models";
 
 export default function DailySummary({ orders }: { orders: OrderWithPayments[] }) {
   const totalCash = orders.reduce((sum, order) => sum + order.totalCash, 0);

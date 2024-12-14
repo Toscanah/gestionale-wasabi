@@ -8,7 +8,7 @@ import columns from "./columns";
 import useGlobalFilter from "../../components/hooks/useGlobalFilter";
 import GoBack from "../../components/GoBack";
 import TableControls from "../../components/table/TableControls";
-import { OrderWithPayments } from "../../types/OrderWithPayments";
+import { OrderWithPayments } from "@/app/(site)/models";
 import SelectWrapper from "../../components/select/SelectWrapper";
 import DailySummary from "./DailySummary";
 import { cn } from "@/lib/utils";

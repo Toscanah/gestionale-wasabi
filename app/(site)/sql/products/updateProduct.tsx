@@ -1,7 +1,8 @@
-import { ProductWithInfo } from "../../types/ProductWithInfo";
+
+import { Product } from "../../models";
 import prisma from "../db";
 
-export default async function updateProduct(newProduct: ProductWithInfo) {
+export default async function updateProduct(newProduct: Product) {
   const existingProduct = await prisma.product.findFirst({
     where: {
       code: newProduct.code,

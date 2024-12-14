@@ -3,7 +3,7 @@
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
 import { Cell } from "@tanstack/react-table";
-import { AnyOrder } from "../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 import Order from "./single-order/Order";
 import getTable from "../util/functions/getTable";
 import Table from "../components/table/Table";

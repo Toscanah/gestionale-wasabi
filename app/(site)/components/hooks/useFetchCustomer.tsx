@@ -1,7 +1,7 @@
 import { Address, Customer } from "@prisma/client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import fetchRequest from "../../util/functions/fetchRequest";
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
+import { CustomerWithDetails } from "@/app/(site)/models";
 
 export default function useFetchCustomer(
   setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>
@@ -40,7 +40,7 @@ export default function useFetchCustomer(
     );
 
   const fetchCustomersByDoorbell = () =>
-    fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "fetchCustomersByDoorbell", {
+    fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "getCustomersByDoorbell", {
       doorbell: doorbellSearch,
     }).then((customers) => setPossibleCustomers(customers));
 

@@ -3,11 +3,8 @@ import getZodField from "../../util/functions/getZodField";
 import { Textarea } from "@/components/ui/textarea";
 import { FormFieldType } from "../FormFields";
 import { ControllerRenderProps } from "react-hook-form";
-import { CategoryWithOptions } from "../../types/CategoryWithOptions";
+import { CategoryWithOptions } from "@/app/(site)/models";
 import SelectWrapper from "../../components/select/SelectWrapper";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Button } from "@/components/ui/button";
-import { X } from "@phosphor-icons/react";
 import KitchenType from "./KitchenType";
 
 export const formSchema = z.object({

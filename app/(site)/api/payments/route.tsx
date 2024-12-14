@@ -1,25 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
-import getRequestBody from "../../util/functions/getRequestBody";
-import { Payment } from "@prisma/client";
+import { NextRequest } from "next/server";
+import { z } from "zod";
+import handleRequest from "../util/handleRequest";
 import payOrder from "../../sql/payments/payOrder";
 import getOrdersWithPayments from "../../sql/payments/getOrdersWithPayments";
+import { PayOrderSchema } from "../../models";
+
+export const paymentSchemas = {
+  payOrder: PayOrderSchema,
+  getOrdersWithPayments: z.undefined(),
+};
+
+const POST_ACTIONS = new Map([["payOrder", { func: payOrder, schema: paymentSchemas.payOrder }]]);
+
+const GET_ACTIONS = new Map([
+  ["getOrdersWithPayments", { func: getOrdersWithPayments, schema: paymentSchemas.getOrdersWithPayments }],
+]);
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getRequestBody(request);
-
-  switch (action) {
-    case "payOrder":
-      return NextResponse.json(
-        await payOrder(content?.payments as Payment[], content?.productsToPay)
-      );
-  }
+  return await handleRequest(request, "POST", POST_ACTIONS);
 }
 
 export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
-
-  switch (params.get("action")) {
-    case "getOrdersWithPayments":
-      return NextResponse.json(await getOrdersWithPayments());
-  }
+  return await handleRequest(request, "GET", GET_ACTIONS);
 }

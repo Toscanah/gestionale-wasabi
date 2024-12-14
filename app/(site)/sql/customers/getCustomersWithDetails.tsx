@@ -1,4 +1,4 @@
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
+import { CustomerWithDetails } from "@/app/(site)/models";
 import prisma from "../db";
 
 export default async function getCustomersWithDetails(): Promise<CustomerWithDetails[]> {

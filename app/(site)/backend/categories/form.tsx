@@ -3,9 +3,7 @@ import getZodField from "../../util/functions/getZodField";
 import { FormFieldType } from "../FormFields";
 import CategoryOptions from "./CategoryOptions";
 import { ControllerRenderProps } from "react-hook-form";
-import { Option } from "../../types/Option";
-import { Checkbox } from "@/components/ui/checkbox";
-import KitchenType from "../products/KitchenType";
+import { Option } from "@/prisma/generated/zod";
 
 export const formSchema = z.object({
   category: getZodField("string"),

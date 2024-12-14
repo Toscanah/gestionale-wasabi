@@ -1,5 +1,5 @@
+import { CustomerWithDetails } from "../../models";
 import prisma from "../db";
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 
 export default async function updateCustomerFromAdmin(
   customer: CustomerWithDetails
@@ -51,12 +51,20 @@ export default async function updateCustomerFromAdmin(
             include: {
               products: {
                 include: {
-                  product: true,
-                  options: {
+                  product: {
                     include: {
-                      option: true,
+                      category: {
+                        include: {
+                          options: {
+                            include: {
+                              option: true,
+                            },
+                          },
+                        },
+                      },
                     },
                   },
+                  options: { include: { option: true } },
                 },
               },
             },
@@ -69,12 +77,20 @@ export default async function updateCustomerFromAdmin(
             include: {
               products: {
                 include: {
-                  product: true,
-                  options: {
+                  product: {
                     include: {
-                      option: true,
+                      category: {
+                        include: {
+                          options: {
+                            include: {
+                              option: true,
+                            },
+                          },
+                        },
+                      },
                     },
                   },
+                  options: { include: { option: true } },
                 },
               },
             },

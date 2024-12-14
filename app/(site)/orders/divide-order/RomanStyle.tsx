@@ -1,5 +1,5 @@
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
-import { AnyOrder, TableOrder } from "@/app/(site)/types/PrismaOrders";
+import { AnyOrder, TableOrder } from "@/app/(site)/models";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

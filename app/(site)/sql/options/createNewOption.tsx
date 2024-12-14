@@ -1,7 +1,7 @@
-import { Option } from "@prisma/client";
+import { Option } from "@/prisma/generated/zod";
 import prisma from "../db";
 
-export default async function createNewOption(newOption: Option) {
+export default async function createNewOption(newOption: Option): Promise<Option> {
   return await prisma.option.create({
     data: {
       active: newOption.active,

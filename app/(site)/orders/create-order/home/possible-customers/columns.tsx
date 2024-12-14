@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { CustomerWithDetails } from "@/app/(site)/types/CustomerWithDetails";
+import { CustomerWithDetails } from "@/app/(site)/models";
 import TableColumn from "@/app/(site)/components/table/TableColumn";
 
 const columns = (): ColumnDef<CustomerWithDetails>[] => [

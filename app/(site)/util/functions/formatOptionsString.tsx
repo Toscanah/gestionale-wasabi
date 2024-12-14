@@ -1,4 +1,4 @@
-import { Option } from "../../types/Option";
+import { Option } from "@/app/(site)/models";
 
 export default function formatOptionsString(maxChar: number, options: Option[]) {
   return options

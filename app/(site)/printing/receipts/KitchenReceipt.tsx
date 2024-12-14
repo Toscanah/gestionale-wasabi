@@ -1,5 +1,5 @@
 import { Br, Cut, Line, Row, Text, TextSize } from "react-thermal-printer";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
+import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/models";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType, OrderType } from "@prisma/client";

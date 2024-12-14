@@ -3,28 +3,20 @@ import { NextRequest } from "next/server";
 import getOrdersByType from "../../sql/orders/getOrdersByType";
 import createPickupOrder from "../../sql/orders/createPickupOrder";
 import createHomeOrder from "../../sql/orders/createHomeOrder";
-import getRequestBody from "../../util/functions/getRequestBody";
 import updateOrderTime from "../../sql/orders/updateOrderTime";
 import cancelOrder from "../../sql/orders/cancelOrder";
 import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 import updateDiscount from "../../sql/orders/updateDiscount";
-import { HomeOrder, OrderType } from "@prisma/client";
+import { OrderType } from "@prisma/client";
 import createSubOrder from "../../sql/orders/createSubOrder";
 import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 import deleteOrdersInBulk from "../../sql/orders/deleteOrdersInBulk";
 import deleteEverything from "../../sql/deleteEverything";
 import { z } from "zod";
-import executeAction from "../util/executeAction";
-import { AnyOrder } from "../../types/PrismaOrders";
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
-import {
-  HomeOrderWithRelationsSchema,
-  OrderWithRelationsSchema,
-  PickupOrderWithRelationsSchema,
-  TableOrderWithRelationsSchema,
-} from "@/prisma/generated/zod";
+import { CreateSubOrderSchema } from "../../models";
+import handleRequest from "../util/handleRequest";
 
-const schemas = {
+export const orderSchemas = {
   getOrdersByType: z.object({
     type: z.nativeEnum(OrderType),
   }),
@@ -44,7 +36,7 @@ const schemas = {
   createPickupOrder: z.object({
     name: z.string(),
     when: z.string(),
-    phoe: z.string().optional(),
+    phone: z.string().optional(),
   }),
   createHomeOrder: z.object({
     customerId: z.number(),
@@ -60,67 +52,45 @@ const schemas = {
     orderId: z.number(),
     cooked: z.boolean().optional().default(false),
   }),
-  createSubOrder: z.object({
-    parentOrder: HomeOrderWithRelationsSchema.or(PickupOrderWithRelationsSchema).or(
-      TableOrderWithRelationsSchema
-    ),
-  }),
+  createSubOrder: CreateSubOrderSchema,
   updatePrintedFlag: z.object({
     orderId: z.number(),
   }),
   deleteOrdersInBulk: z.object({
     ordersId: z.array(z.number()),
   }),
-  deleteEverything: z.object({}),
-  prova: OrderWithRelationsSchema,
+  deleteEverything: z.undefined(),
 };
 
 const GET_ACTIONS = new Map([
-  ["getOrdersByType", { func: getOrdersByType, schema: schemas.getOrdersByType }],
+  ["getOrdersByType", { func: getOrdersByType, schema: orderSchemas.getOrdersByType }],
 ]);
 
 const POST_ACTIONS = new Map([
-  [
-    "prova",
-    {
-      func: async (order: HomeOrder) => {
-        console.log("Oridine ricevuto", order);
-        return null;
-      },
-      schema: schemas.prova,
-    },
-  ],
-  ["updateDiscount", { func: updateDiscount, schema: schemas.updateDiscount }],
-  ["updateOrderNotes", { func: updateOrderNotes, schema: schemas.updateOrderNotes }],
-  ["createTableOrder", { func: createTableOrder, schema: schemas.createTableOrder }],
-  ["createPickupOrder", { func: createPickupOrder, schema: schemas.createPickupOrder }],
-  ["createHomeOrder", { func: createHomeOrder, schema: schemas.createHomeOrder }],
-  ["updateOrderTime", { func: updateOrderTime, schema: schemas.updateOrderTime }],
-  ["cancelOrder", { func: cancelOrder, schema: schemas.cancelOrder }],
-  ["createSubOrder", { func: createSubOrder, schema: schemas.createSubOrder }],
-  ["updatePrintedFlag", { func: updatePrintedFlag, schema: schemas.updatePrintedFlag }],
+  ["updateDiscount", { func: updateDiscount, schema: orderSchemas.updateDiscount }],
+  ["updateOrderNotes", { func: updateOrderNotes, schema: orderSchemas.updateOrderNotes }],
+  ["createTableOrder", { func: createTableOrder, schema: orderSchemas.createTableOrder }],
+  ["createPickupOrder", { func: createPickupOrder, schema: orderSchemas.createPickupOrder }],
+  ["createHomeOrder", { func: createHomeOrder, schema: orderSchemas.createHomeOrder }],
+  ["updateOrderTime", { func: updateOrderTime, schema: orderSchemas.updateOrderTime }],
+  ["cancelOrder", { func: cancelOrder, schema: orderSchemas.cancelOrder }],
+  ["createSubOrder", { func: createSubOrder, schema: orderSchemas.createSubOrder }],
+  ["updatePrintedFlag", { func: updatePrintedFlag, schema: orderSchemas.updatePrintedFlag }],
 ]);
 
 const DELETE_ACTIONS = new Map([
-  ["deleteOrdersInBulk", { func: deleteOrdersInBulk, schema: schemas.deleteOrdersInBulk }],
-  ["deleteEverything", { func: deleteEverything, schema: schemas.deleteEverything }],
+  ["deleteOrdersInBulk", { func: deleteOrdersInBulk, schema: orderSchemas.deleteOrdersInBulk }],
+  ["deleteEverything", { func: deleteEverything, schema: orderSchemas.deleteEverything }],
 ]);
 
 export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
-  const action = params.get("action") ?? "";
-  const content = Object.fromEntries(
-    Array.from(params.entries()).filter(([key]) => key !== "action")
-  );
-  return executeAction(GET_ACTIONS, action, content);
+  return await handleRequest(request, "GET", GET_ACTIONS);
 }
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getRequestBody(request);
-  return executeAction(POST_ACTIONS, action, content);
+  return await handleRequest(request, "POST", POST_ACTIONS);
 }
 
 export async function DELETE(request: NextRequest) {
-  const { action, content } = await getRequestBody(request);
-  return executeAction(DELETE_ACTIONS, action, content);
+  return await handleRequest(request, "DELETE", DELETE_ACTIONS);
 }

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import { AnyOrder, PickupOrder } from "../../../types/PrismaOrders";
+import { AnyOrder, PickupOrder } from "@/app/(site)/models";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

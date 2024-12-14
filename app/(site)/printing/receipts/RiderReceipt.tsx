@@ -1,6 +1,6 @@
 import { Br, Cut, Line } from "react-thermal-printer";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
-import { AnyOrder, HomeOrder } from "../../types/PrismaOrders";
+import { AnyOrder, HomeOrder } from "@/app/(site)/models";
 import OrderInfoSection from "../common/OrderInfoSection";
 import TimeSection from "../common/TimeSection";
 import TotalSection from "../common/TotalSection";

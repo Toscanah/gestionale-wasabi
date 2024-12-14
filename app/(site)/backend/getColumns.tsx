@@ -1,7 +1,6 @@
 import React, { ComponentType } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../components/table/TableColumn";
-import { Check, X } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 

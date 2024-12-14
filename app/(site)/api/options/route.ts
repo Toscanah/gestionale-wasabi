@@ -1,46 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
 import getAllOptions from "../../sql/options/getAllOptions";
-import getRequestBody from "../../util/functions/getRequestBody";
-import editOptionsOfCategory from "../../sql/options/editOptionsOfCategory";
+import updateOptionsOfCategory from "../../sql/options/updateOptionsOfCategory";
 import getAllOptionsWithCategories from "../../sql/options/getAllOptionsWithCategories";
 import updateOption from "../../sql/options/updateOption";
-import { Option } from "@prisma/client";
 import createNewOption from "../../sql/options/createNewOption";
-import deleteOption from "../../sql/options/deleteOption";
 import toggleOption from "../../sql/options/toggleOption";
+import handleRequest from "../util/handleRequest";
+import { z } from "zod";
+import { OptionSchema } from "@/prisma/generated/zod";
+import { UpdateOptionsOfCategorySchema } from "../../models";
 
-export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
+export const optionSchemas = {
+  getAllOptions: z.undefined(),
+  getAllOptionsWithCategories: z.undefined(),
+  updateOptionsOfCategory: UpdateOptionsOfCategorySchema,
+  updateOption: z.object({
+    option: OptionSchema,
+  }),
+  createNewOption: z.object({
+    newOption: OptionSchema,
+  }),
+  toggleOption: z.object({
+    id: z.number(),
+  }),
+};
 
-  switch (params.get("action")) {
-    case "getAllOptions":
-      return NextResponse.json(await getAllOptions());
+const POST_ACTIONS = new Map([
+  [
+    "updateOptionsOfCategory",
+    { func: updateOptionsOfCategory, schema: optionSchemas.updateOptionsOfCategory },
+  ],
+  ["updateOption", { func: updateOption, schema: optionSchemas.updateOption }],
+  ["createNewOption", { func: createNewOption, schema: optionSchemas.createNewOption }],
+  ["toggleOption", { func: toggleOption, schema: optionSchemas.toggleOption }],
+]);
 
-    case "getAllOptionsWithCategories":
-      return NextResponse.json(await getAllOptionsWithCategories());
-  }
-}
+const GET_ACTIONS = new Map([
+  ["getAllOptions", { func: getAllOptions, schema: optionSchemas.getAllOptions }],
+  [
+    "getAllOptionsWithCategories",
+    { func: getAllOptionsWithCategories, schema: optionSchemas.getAllOptionsWithCategories },
+  ],
+]);
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getRequestBody(request);
-
-  switch (action) {
-    case "editOptionsOfCategory":
-      return NextResponse.json(await editOptionsOfCategory(content?.category, content?.options));
-    case "updateOption":
-      return NextResponse.json(await updateOption(content as Option));
-    case "createNewOption":
-      return NextResponse.json(await createNewOption(content as Option));
-      case "toggleOption": 
-      return NextResponse.json(await toggleOption(content?.id));
-  }
+  return await handleRequest(request, "POST", POST_ACTIONS);
 }
 
-export async function DELETE(request: NextRequest) {
-  const { action, content } = await getRequestBody(request);
-
-  switch (action) {
-    case "deleteOption":
-      return NextResponse.json(await deleteOption(content?.id as number));
-  }
+export async function GET(request: NextRequest) {
+  return await handleRequest(request, "GET", GET_ACTIONS);
 }

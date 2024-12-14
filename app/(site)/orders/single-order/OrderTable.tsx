@@ -1,5 +1,5 @@
 import getColumns from "./getColumns";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
 import getTable from "../../util/functions/getTable";
@@ -55,7 +55,7 @@ export default function OrderTable() {
     colIndex: 0,
   });
 
-  const table = getTable<ProductInOrderType>({
+  const table = getTable<ProductInOrder>({
     data: order.products,
     columns,
     rowSelection,
