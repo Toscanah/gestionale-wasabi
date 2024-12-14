@@ -8,6 +8,7 @@ import { Table } from "@tanstack/react-table";
 import { Option, OptionInProductOrder } from "@prisma/client";
 import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
 import { RecursivePartial } from "./useOrderManager";
+import { getProductPrice } from "../../util/functions/getProductPrice";
 
 export function useProductManager(
   order: AnyOrder,
@@ -143,9 +144,21 @@ export function useProductManager(
     );
 
     if (unprintedProducts.length > 0) {
+      const updatedProducts = unprintedProducts.map((unprintedProduct) => {
+        const remainingQuantity = unprintedProduct.quantity - unprintedProduct.paid_quantity;
+
+        return {
+          ...unprintedProduct,
+          quantity: remainingQuantity,
+          total: remainingQuantity * getProductPrice(unprintedProduct, order.type),
+          rice_quantity: remainingQuantity * unprintedProduct.product.rice,
+        };
+      });
+
       updateProductsList({
-        updatedProducts: unprintedProducts,
+        updatedProducts,
         toast: false,
+        updateFlag: false,
       });
     }
 
@@ -158,12 +171,14 @@ export function useProductManager(
     deletedProducts = [],
     isDummyUpdate = false,
     toast = true,
+    updateFlag = true,
   }: {
     newProducts?: ProductInOrderType[];
     updatedProducts?: ProductInOrderType[];
     deletedProducts?: ProductInOrderType[];
     isDummyUpdate?: boolean;
     toast?: boolean;
+    updateFlag?: boolean;
   }) => {
     if (isDummyUpdate) return;
 
@@ -175,12 +190,16 @@ export function useProductManager(
         return update ? { ...product, ...update } : product;
       });
 
+    const products = [...updatedProductsList, ...newProducts, createDummyProduct()];
+    const total = calculateOrderTotal({
+      ...order,
+      products,
+    });
+
     updateOrder({
-      products: [...updatedProductsList, ...newProducts, createDummyProduct()],
-      total: calculateOrderTotal({
-        ...order,
-        products: [...updatedProductsList, ...newProducts],
-      }),
+      products,
+      total,
+      is_receipt_printed: updateFlag ? false : undefined,
     });
 
     setNewCode("");

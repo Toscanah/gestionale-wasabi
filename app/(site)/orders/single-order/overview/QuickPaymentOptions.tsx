@@ -37,7 +37,10 @@ export default function QuickPaymentOptions({
         quickPaymentOptions.find((option) => option.value === newNote)?.label || "",
     }).then((updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
-      updateOrder({ home_order: { notes: updatedOrder.home_order?.notes } });
+      updateOrder({
+        home_order: { notes: updatedOrder.home_order?.notes },
+        is_receipt_printed: false,
+      });
     });
   };
 

@@ -11,6 +11,7 @@ import { getProductPrice } from "../../util/functions/getProductPrice";
 import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import { useOrderContext } from "../../context/OrderContext";
+import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
@@ -21,7 +22,7 @@ export default function DivideOrder({
   setPayingAction,
   products: propProducts,
 }: DividerOrderProps) {
-  const { order, createSubOrder } = useOrderContext();
+  const { order, createSubOrder, updateOrder } = useOrderContext();
   const { dialogOpen } = useOrderContext();
 
   const [goPay, setGoPay] = useState<boolean>(false);
@@ -82,6 +83,39 @@ export default function DivideOrder({
   useEffect(() => {
     if (!dialogOpen && rightProducts.length > 0 && !goPay) {
       createSubOrder(order, rightProducts);
+
+      const updatedProducts = order.products
+        .map((product) => {
+          const matchingRightProduct = rightProducts.find(
+            (rightProduct) => rightProduct.id === product.id
+          );
+
+          if (matchingRightProduct) {
+            const updatedQuantity = product.quantity - matchingRightProduct.quantity;
+
+            return updatedQuantity > 0
+              ? {
+                  ...product,
+                  quantity: updatedQuantity,
+                  total: updatedQuantity * getProductPrice(product, order.type),
+                }
+              : null;
+          }
+
+          return product;
+        })
+        .filter(Boolean) as ProductInOrderType[];
+
+      const updatedTotal = updatedProducts.reduce(
+        (sum, product) => sum + getProductPrice(product, order.type) * product.quantity,
+        0
+      );
+
+      updateOrder({
+        products: updatedProducts,
+        total: updatedTotal,
+        is_receipt_printed: false,
+      });
     }
   }, [dialogOpen]);
 

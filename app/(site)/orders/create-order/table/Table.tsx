@@ -40,7 +40,6 @@ export default function Table({ setOrder }: TableProps) {
     fetchRequest<{ order: TableOrder; new: boolean }>("POST", "/api/orders/", "createTableOrder", {
       ...content,
     }).then((newTableOrder) => {
-      console.log(newTableOrder)
       if (newTableOrder.new) {
         toastSuccess("Ordine creato con successo");
         updateGlobalState(newTableOrder.order, "add");

@@ -9,29 +9,35 @@ export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
-export function useOrderManager(order: AnyOrder, setOrder: Dispatch<SetStateAction<AnyOrder>>) {
+export function useOrderManager(orderId: number, setOrder: Dispatch<SetStateAction<AnyOrder>>) {
   const { updateGlobalState, fetchRemainingRice } = useWasabiContext();
 
-  const updateOrder = (order: RecursivePartial<AnyOrder>) => {
+  const updateOrder = (newOrder: RecursivePartial<AnyOrder>) =>
     setOrder((prevOrder) => {
+      const products = [
+        ...(newOrder.products || prevOrder.products).filter((p: any) => p.id !== -1),
+        createDummyProduct(),
+      ];
+
+      const is_receipt_printed =
+        newOrder.is_receipt_printed == undefined
+          ? prevOrder.is_receipt_printed
+          : newOrder.is_receipt_printed;
+
       const updatedOrder = {
         ...prevOrder,
-        ...order,
-        products: [
-          ...(order.products || prevOrder.products).filter((p: any) => p.id !== -1),
-          createDummyProduct(),
-        ],
-        is_receipt_printed: !order.products,
+        ...newOrder,
+        products,
+        is_receipt_printed,
       } as AnyOrder;
 
-      updateGlobalState(updatedOrder, "update");
+      updateGlobalState(updatedOrder, updatedOrder.state == "PAID" ? "delete" : "update");
       return updatedOrder;
     });
-  };
 
   const cancelOrder = (cooked: boolean = false) =>
     fetchRequest<AnyOrder>("POST", "/api/orders/", "cancelOrder", {
-      orderId: order.id,
+      orderId,
       cooked,
     }).then((deletedOrder) => {
       fetchRemainingRice();

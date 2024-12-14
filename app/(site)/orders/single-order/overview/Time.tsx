@@ -29,12 +29,14 @@ export default function Time() {
       updateOrder(
         updatedOrder.type === OrderType.PICKUP
           ? {
+              is_receipt_printed: false,
               pickup_order: {
                 ...(updatedOrder as PickupOrder).pickup_order,
                 when: (updatedOrder as PickupOrder).pickup_order?.when,
               },
             }
           : {
+            is_receipt_printed: false,
               home_order: {
                 ...(updatedOrder as HomeOrder).home_order,
                 when: (updatedOrder as HomeOrder).home_order?.when,

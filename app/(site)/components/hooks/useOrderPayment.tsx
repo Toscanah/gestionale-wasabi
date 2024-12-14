@@ -9,6 +9,7 @@ import { getProductPrice } from "../../util/functions/getProductPrice";
 import { PaymentType } from "@prisma/client";
 import { Payment } from "../../context/OrderPaymentContext";
 import { useOrderContext } from "../../context/OrderContext";
+import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
 
 export default function useOrderPayment(
   type: "full" | "partial",
@@ -17,7 +18,6 @@ export default function useOrderPayment(
   setPayment: Dispatch<SetStateAction<Payment>>,
   order: AnyOrder
 ) {
-  const { updateGlobalState } = useWasabiContext();
   const { updateOrder } = useOrderContext();
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export default function useOrderPayment(
 
   const payOrder = () => {
     const productsToPay = order.products;
+
     const payments = Object.entries(payment.paymentAmounts)
       .filter(([_, amount]) => amount && amount > 0)
       .map(([type, amount]) => ({
@@ -58,36 +59,36 @@ export default function useOrderPayment(
     }).then((updatedOrder) => {
       onOrderPaid();
 
-      if (type === "partial") {
-        const productsToPayMap = new Map(
-          productsToPay.map((product) => [product.id, product.quantity])
-        );
+      if (type == "full") return updateOrder({ state: updatedOrder.state });
 
-        updateOrder({
-          products: order.products
-            .map((product) => {
-              const paid_quantity = productsToPayMap.get(product.id) || 0;
-              const remainingQuantity = product.quantity - paid_quantity;
+      const updatedProducts = productsToPay
+        .map((product) => {
+          const paid_quantity = product.paid_quantity || 0;
+          const remainingQuantity = product.quantity - paid_quantity;
 
-              if (remainingQuantity <= 0) return null;
+          if (remainingQuantity <= 0) return null;
 
-              const newPaidQuantity = product.paid_quantity + paid_quantity;
-              const newTotal =
-                remainingQuantity * getProductPrice(product, order.type as OrderType);
+          const newPaidQuantity = paid_quantity + product.paid_quantity;
+          const newTotal = remainingQuantity * getProductPrice(product, order.type as OrderType);
 
-              return {
-                ...product,
-                quantity: remainingQuantity,
-                paid_quantity: newPaidQuantity,
-                total: newTotal,
-                is_paid_fully: newPaidQuantity >= product.quantity,
-              };
-            })
-            .filter(Boolean) as ProductInOrderType[],
-        });
-      }
+          return {
+            ...product,
+            quantity: remainingQuantity,
+            paid_quantity: newPaidQuantity,
+            total: newTotal,
+            rice_quantity: remainingQuantity * product.product.rice,
+            is_paid_fully: newPaidQuantity >= product.quantity,
+          };
+        })
+        .filter(Boolean) as ProductInOrderType[];
 
-      updateGlobalState(updatedOrder, updatedOrder.state == "PAID" ? "delete" : "update");
+      const updatedTotal = calculateOrderTotal({ ...updatedOrder, products: updatedProducts });
+
+      updateOrder({
+        state: updatedOrder.state,
+        products: updatedProducts,
+        total: updatedTotal,
+      });
     });
   };
 

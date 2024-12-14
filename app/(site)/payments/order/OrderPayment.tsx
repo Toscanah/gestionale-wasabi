@@ -32,8 +32,6 @@ export default function OrderPayment({
   const { order: contextOrder } = useOrderContext();
   const order = propOrder || contextOrder;
 
-
-
   return (
     <OrderPaymentProvider type={type} onOrderPaid={onOrderPaid} order={order}>
       <div className="w-full h-full flex flex-col gap-6">
