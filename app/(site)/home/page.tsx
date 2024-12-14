@@ -7,13 +7,13 @@ import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../orders/create-order/CreateOrder";
 import fetchRequest from "../util/functions/fetchRequest";
 import { cn } from "@/lib/utils";
-import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Header from "./Header";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
 import { Button } from "@/components/ui/button";
+import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "../models";
 
 export type UpdateStateAction = "update" | "delete" | "add";
 
@@ -42,7 +42,7 @@ export default function Home() {
     );
 
   const fetchOrdersByType = async <T,>(type: OrderType): Promise<T> =>
-    await fetchRequest<T>("GET", "/api/orders/", "getOrdersByType", {
+    await fetchRequest<T>("GET", "/api/orders", "getOrdersByType", {
       type,
     });
 
@@ -75,10 +75,6 @@ export default function Home() {
           return prevOrders;
       }
     });
-
-  // useEffect(() => {
-  //   console.log(orders["TABLE"]);
-  // }, [orders]);
 
   useEffect(() => {
     const fetchInitialOrders = async () =>
@@ -118,6 +114,17 @@ export default function Home() {
           </div>
 
           <Header toggleOrder={toggleOrder} activeOrders={activeOrders} />
+
+          <Button
+            onClick={() => {
+              console.log(orders["HOME"][0]);
+              fetchRequest<any>("POST", "/api/orders", "getTotalRice").then((idk) => {
+                console.log(idk);
+              });
+            }}
+          >
+            PROVA
+          </Button>
         </div>
 
         <Separator orientation="horizontal" />

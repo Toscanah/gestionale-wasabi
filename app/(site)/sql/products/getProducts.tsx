@@ -1,7 +1,7 @@
-import { ProductWithInfo } from "../../types/ProductWithInfo";
+import { Product } from "@/app/(site)/models";
 import prisma from "../db";
 
-export default async function getProducts(): Promise<ProductWithInfo[]> {
+export default async function getProducts(): Promise<Product[]> {
   return await prisma.product.findMany({
     include: {
       category: {

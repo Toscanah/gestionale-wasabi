@@ -1,29 +1,40 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { z } from "zod";
 import getCategories from "../../sql/categories/getCategories";
-import getRequestBody from "../../util/functions/getRequestBody";
-import { CategoryWithOptions } from "../../types/CategoryWithOptions";
 import createNewCategory from "../../sql/categories/createNewCategory";
 import updateCategory from "../../sql/categories/updateCategory";
 import toggleCategory from "../../sql/categories/toggleCategory";
+import handleRequest from "../util/handleRequest";
+import { CategoryWithOptionsSchema } from "../../models";
 
-export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
+// Define categorySchemas for validation
+export const categorySchemas = {
+  getCategories: z.undefined(),
+  updateCategory: z.object({
+    category: CategoryWithOptionsSchema,
+  }),
+  createNewCategory: z.object({
+    category: CategoryWithOptionsSchema,
+  }),
+  toggleCategory: z.object({
+    id: z.number(),
+  }),
+};
 
-  switch (params.get("action")) {
-    case "getCategories":
-      return NextResponse.json(await getCategories());
-  }
-}
+const POST_ACTIONS = new Map([
+  ["updateCategory", { func: updateCategory, schema: categorySchemas.updateCategory }],
+  ["createNewCategory", { func: createNewCategory, schema: categorySchemas.createNewCategory }],
+  ["toggleCategory", { func: toggleCategory, schema: categorySchemas.toggleCategory }],
+]);
+
+const GET_ACTIONS = new Map([
+  ["getCategories", { func: getCategories, schema: categorySchemas.getCategories }],
+]);
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getRequestBody(request);
+  return await handleRequest(request, "POST", POST_ACTIONS);
+}
 
-  switch (action) {
-    case "updateCategory":
-      return NextResponse.json(await updateCategory(content as CategoryWithOptions));
-    case "createNewCategory":
-      return NextResponse.json(await createNewCategory(content as CategoryWithOptions));
-    case "toggleCategory":
-      return NextResponse.json(await toggleCategory(content?.id));
-  }
+export async function GET(request: NextRequest) {
+  return await handleRequest(request, "GET", GET_ACTIONS);
 }

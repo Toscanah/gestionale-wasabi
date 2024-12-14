@@ -1,4 +1,5 @@
-import { OrderWithPayments } from "../../types/OrderWithPayments";
+
+import { OrderWithPayments } from "../../models";
 import prisma from "../db";
 
 export default async function getOrdersWithPayments(): Promise<OrderWithPayments[]> {
@@ -17,7 +18,7 @@ export default async function getOrdersWithPayments(): Promise<OrderWithPayments
               category: {
                 include: {
                   options: {
-                    select: {
+                    include: {
                       option: true,
                     },
                   },
@@ -25,7 +26,7 @@ export default async function getOrdersWithPayments(): Promise<OrderWithPayments
               },
             },
           },
-          options: { select: { option: true } },
+          options: { include: { option: true } },
         },
       },
     },

@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CategoryWithOptions } from "../../types/CategoryWithOptions";
 import fetchRequest from "../../util/functions/fetchRequest";
 import columns from "./columns";
 import Manager from "../Manager";
 import GoBack from "../../components/GoBack";
 import FormFields from "../FormFields";
 import { formSchema, getCategoryFields } from "./form";
-import { Option } from "../../types/Option";
-import { Triangle } from "react-loader-spinner";
 import logo from "../../../../public/logo.png";
 import Image from "next/image";
+import { CategoryWithOptions } from "../../models";
+import { Option } from "@/prisma/generated/zod";
 
 type FormValues = Partial<CategoryWithOptions>;
 
@@ -31,7 +30,7 @@ export default function CategoryDashboard() {
 
   useEffect(() => {
     fetchRequest<Option[]>("GET", "/api/options/", "getAllOptions").then((options) =>
-      setOptions(options.filter((p) => p.option.active))
+      setOptions(options.filter((p) => p.active))
     );
   }, []);
 

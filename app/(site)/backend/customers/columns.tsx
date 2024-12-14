@@ -1,13 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { OptionWithCategories } from "../../types/OptionWithCategories";
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
-import { Buildings, Pencil } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
 import OrderHistory from "../../components/order-history/OrderHistory";
+import { CustomerWithDetails } from "../../models";
 
 const columns = (
   customers: CustomerWithDetails[],

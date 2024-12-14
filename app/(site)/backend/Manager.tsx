@@ -11,7 +11,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import getColumns from "./getColumns";
 import getTable from "../util/functions/getTable";
 import { toastError, toastSuccess } from "../util/toast";
-import fetchRequest from "../util/functions/fetchRequest";
+import fetchRequest, {
+  APIEndpoint,
+  PathType,
+  ValidActionKeys,
+} from "../util/functions/fetchRequest";
 
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,12 +27,12 @@ enum Actions {
 }
 
 export type ActionsType = {
-  [key in Actions]: string;
+  [key in Actions]: ValidActionKeys;
 };
 
 interface ManagerProps<T extends { id: number; active: boolean }> {
   receivedData: T[];
-  path: `/api/${string}`;
+  path: PathType;
   fetchActions: ActionsType;
   FormFields: ComponentType<FormFieldsProps<T>>;
   columns: ColumnDef<T>[];
@@ -59,7 +63,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
     };
   };
 
-  const handleToggle = (objectToToggle: T) => {
+  const handleToggle = (objectToToggle: T) =>
     fetchRequest<T>("POST", path, fetchActions.toggle, {
       id: objectToToggle.id,
     }).then(() => {
@@ -75,9 +79,8 @@ export default function Manager<T extends { id: number; active: boolean }>({
         <>L'elemento è stato {objectToToggle.active ? "disattivato" : "attivato"} correttamente</>
       );
     });
-  };
 
-  const handleUpdate = (newValues: Partial<T>, objectToUpdate: T) => {
+  const handleUpdate = (newValues: Partial<T>, objectToUpdate: T) =>
     fetchRequest<T>("POST", path, fetchActions.update, {
       id: objectToUpdate.id,
       ...newValues,
@@ -89,10 +92,9 @@ export default function Manager<T extends { id: number; active: boolean }>({
       setData((prevData) => prevData.map((el) => (el === objectToUpdate ? updatedObject : el)));
       toastSuccess("L'elemento è stato modificato correttamente");
     });
-  };
 
-  const handleAdd = (values: Partial<T>) => {
-    fetchRequest<T>("POST", path, fetchActions.add, values).then((newObject) => {
+  const handleAdd = (values: Partial<T>) =>
+    fetchRequest<T>("POST", path, fetchActions.add, { ...values } as any).then((newObject) => {
       if (!newObject) {
         return toastError("Questo elemento esiste già");
       }
@@ -100,7 +102,6 @@ export default function Manager<T extends { id: number; active: boolean }>({
       setData((prevData) => [...prevData, newObject]);
       toastSuccess("Elemento aggiunto correttamente");
     });
-  };
 
   const getTrigger = (action: "delete" | "update" | "add", disabled: boolean = false) => (
     <Button type="button">{triggerIcons(disabled)[action]}</Button>

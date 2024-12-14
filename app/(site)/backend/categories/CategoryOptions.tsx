@@ -3,7 +3,7 @@ import { ControllerRenderProps } from "react-hook-form";
 import SelectWrapper from "../../components/select/SelectWrapper";
 import { Button } from "@/components/ui/button";
 import { X } from "@phosphor-icons/react";
-import { Option } from "../../types/Option";
+import { Option } from "@/prisma/generated/zod";
 
 interface CategoryOptionsProps {
   field: ControllerRenderProps;
@@ -15,7 +15,7 @@ export default function CategoryOptions({ field, options }: CategoryOptionsProps
   const [currentOptions, setCurrentOptions] = useState<Option[]>(field.value ?? []);
 
   const handleAddOption = (optionId: number) => {
-    const optionToAdd = allOptions.find((option) => option.option.id === optionId);
+    const optionToAdd = allOptions.find((option) => option.id === optionId);
 
     if (optionToAdd) {
       const newOptions = [...currentOptions, optionToAdd];
@@ -25,7 +25,7 @@ export default function CategoryOptions({ field, options }: CategoryOptionsProps
   };
 
   const handleRemoveOption = (optionId: number) => {
-    const newOptions = currentOptions.filter((option) => option.option.id !== optionId);
+    const newOptions = currentOptions.filter((option) => option.id !== optionId);
     setCurrentOptions(newOptions);
     field.onChange(newOptions);
   };
@@ -38,16 +38,16 @@ export default function CategoryOptions({ field, options }: CategoryOptionsProps
             <Button
               variant={"outline"}
               className="flex gap-2 items-center justify-center grow h-20 text-xl group"
-              key={option.option.id}
+              key={option.id}
               type="button"
-              onClick={() => handleRemoveOption(option.option.id)}
+              onClick={() => handleRemoveOption(option.id)}
             >
               <X
                 size={42}
                 className="transform transition-transform duration-300 
                         group-hover:rotate-[360deg] hover:font-bold hover:drop-shadow-2xl"
               />
-              {option.option.option_name}
+              {option.option_name}
             </Button>
           ))
         ) : (
@@ -68,13 +68,13 @@ export default function CategoryOptions({ field, options }: CategoryOptionsProps
               .filter((option) =>
                 currentOptions.length > 0
                   ? !currentOptions.some(
-                      (currentOption) => currentOption.option.id === option.option.id
+                      (currentOption) => currentOption.id === option.id
                     )
                   : true
               )
               .map((option) => ({
-                value: option.option.id.toString(),
-                name: option.option.option_name,
+                value: option.id.toString(),
+                name: option.option_name,
               })),
           },
         ]}

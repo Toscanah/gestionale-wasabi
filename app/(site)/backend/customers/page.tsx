@@ -9,8 +9,7 @@ import logo from "../../../../public/logo.png";
 import Manager from "../Manager";
 import columns from "./columns";
 import GoBack from "../../components/GoBack";
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
-import { Address } from "@prisma/client";
+import { CustomerWithDetails } from "@/app/(site)/models";
 
 type FormValues = Partial<CustomerWithDetails>;
 

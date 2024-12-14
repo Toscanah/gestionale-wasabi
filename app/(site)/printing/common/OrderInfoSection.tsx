@@ -1,5 +1,5 @@
 import { Br, Line, Text } from "react-thermal-printer";
-import { HomeOrder } from "../../types/PrismaOrders";
+import { HomeOrder } from "@/app/(site)/models";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
 
 export default function OrderInfoSection(

@@ -1,4 +1,4 @@
-import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import getTable from "@/app/(site)/util/functions/getTable";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Table from "@/app/(site)/components/table/Table";
@@ -15,7 +15,7 @@ import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
-  products?: ProductInOrderType[];
+  products?: ProductInOrder[];
 }
 
 export default function DivideOrder({
@@ -26,21 +26,21 @@ export default function DivideOrder({
   const { dialogOpen } = useOrderContext();
 
   const [goPay, setGoPay] = useState<boolean>(false);
-  const [leftProducts, setLeftProducts] = useState<ProductInOrderType[]>(
+  const [leftProducts, setLeftProducts] = useState<ProductInOrder[]>(
     propProducts || order.products
   );
-  const [rightProducts, setRightProducts] = useState<ProductInOrderType[]>([]);
+  const [rightProducts, setRightProducts] = useState<ProductInOrder[]>([]);
 
   const columns = getColumns(order.type as OrderType);
   const leftTable = getTable({ data: leftProducts, columns });
   const rightTable = getTable({ data: rightProducts, columns });
 
   const handleRowClick = (
-    product: ProductInOrderType,
-    source: ProductInOrderType[],
-    setSource: Dispatch<SetStateAction<ProductInOrderType[]>>,
-    target: ProductInOrderType[],
-    setTarget: Dispatch<SetStateAction<ProductInOrderType[]>>
+    product: ProductInOrder,
+    source: ProductInOrder[],
+    setSource: Dispatch<SetStateAction<ProductInOrder[]>>,
+    target: ProductInOrder[],
+    setTarget: Dispatch<SetStateAction<ProductInOrder[]>>
   ) => {
     const sourceCopy = source.map((p) => ({ ...p }));
     const targetCopy = target.map((p) => ({ ...p }));
@@ -122,14 +122,14 @@ export default function DivideOrder({
   return !goPay ? (
     <div className="w-full h-full flex flex-col gap-8">
       <div className="w-full h-full flex gap-8">
-        <Table<ProductInOrderType>
+        <Table<ProductInOrder>
           tableClassName="max-w-[50%] overflow-x-scroll select-none max-h-full"
           table={leftTable}
           onRowClick={(product) =>
             handleRowClick(product, leftProducts, setLeftProducts, rightProducts, setRightProducts)
           }
         />
-        <Table<ProductInOrderType>
+        <Table<ProductInOrder>
           tableClassName="max-w-[50%] overflow-x-scroll select-none max-h-full"
           table={rightTable}
           onRowClick={(product) =>

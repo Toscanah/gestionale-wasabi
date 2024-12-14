@@ -1,4 +1,4 @@
-import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 import formatAmount from "@/app/(site)/util/functions/formatAmount";
 import formatReceiptText from "@/app/(site)/util/functions/formatReceiptText";
@@ -10,14 +10,14 @@ import { Fragment } from "react";
 const MAX_CHAR_PER_LINE = 23;
 const LEFT_PADDING = 5;
 
-const calculateDiscountAmount = (products: ProductInOrderType[], discount: number) => {
+const calculateDiscountAmount = (products: ProductInOrder[], discount: number) => {
   const total = products.reduce((acc, product) => acc + product.total, 0);
   return total - applyDiscount(total, discount);
 };
 
 interface CustomerProductsProps {
   discount: number;
-  aggregatedProducts: ProductInOrderType[];
+  aggregatedProducts: ProductInOrder[];
 }
 
 export default function CustomerProducts({ discount, aggregatedProducts }: CustomerProductsProps) {

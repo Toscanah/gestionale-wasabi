@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import applyDiscount from "../../util/functions/applyDiscount";
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 import { PaymentType } from "@prisma/client";
 import { Payment } from "../../context/OrderPaymentContext";
@@ -49,7 +49,7 @@ export default function useOrderPayment(
       .filter(([_, amount]) => amount && amount > 0)
       .map(([type, amount]) => ({
         amount,
-        type: type.toUpperCase(),
+        type: type.toUpperCase() as PaymentType,
         order_id: order.id,
       }));
 
@@ -80,7 +80,7 @@ export default function useOrderPayment(
             is_paid_fully: newPaidQuantity >= product.quantity,
           };
         })
-        .filter(Boolean) as ProductInOrderType[];
+        .filter(Boolean) as ProductInOrder[];
 
       const updatedTotal = calculateOrderTotal({ ...updatedOrder, products: updatedProducts });
 

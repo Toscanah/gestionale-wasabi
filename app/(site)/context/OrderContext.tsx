@@ -1,8 +1,8 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
-import { AnyOrder } from "../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 import { RecursivePartial, useOrderManager } from "../components/hooks/useOrderManager";
 import { useProductManager } from "../components/hooks/useProductManager";
-import { ProductInOrderType } from "../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { Table } from "@tanstack/react-table";
 import createDummyProduct from "../util/functions/createDummyProduct";
 
@@ -22,16 +22,16 @@ type OrderContextType = {
   dialogOpen: boolean;
   toggleDialog: (dialogOpen: boolean) => void;
   cancelOrder: (cooked: boolean) => Promise<void>;
-  createSubOrder: (parentOrder: AnyOrder, products: ProductInOrderType[]) => Promise<void>;
+  createSubOrder: (parentOrder: AnyOrder, products: ProductInOrder[]) => Promise<void>;
   newCode: string;
   newQuantity: number;
   addProduct: () => void;
-  addProducts: (products: ProductInOrderType[]) => void;
+  addProducts: (products: ProductInOrder[]) => void;
   updateProduct: (key: string, value: any, index: number) => void;
   updateProductField: (key: string, value: any, index: number) => void;
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
   updateProductOption: (productInOrderId: number, optionId: number) => void;
-  updateUnprintedProducts: () => Promise<ProductInOrderType[]>;
+  updateUnprintedProducts: () => Promise<ProductInOrder[]>;
   updateOrder: (order: RecursivePartial<AnyOrder>) => void;
 };
 

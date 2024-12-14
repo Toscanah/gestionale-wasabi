@@ -1,8 +1,7 @@
 import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 import prisma from "../db";
-import { AnyOrder } from "../../types/PrismaOrders";
-
+import { AnyOrder } from "../../models";
 export default async function getOrdersByType(type: OrderType): Promise<AnyOrder[]> {
   const orders = await prisma.order.findMany({
     include: {

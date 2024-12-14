@@ -1,5 +1,5 @@
 import { OrderType } from "@prisma/client";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { getProductPrice } from "./getProductPrice";
 
 const formatOptionsString = (options: { option: { option_name: string } }[]) =>
@@ -8,10 +8,10 @@ const formatOptionsString = (options: { option: { option_name: string } }[]) =>
     .join(", ");
 
 export default function aggregateProducts(
-  products: ProductInOrderType[],
+  products: ProductInOrder[],
   orderType: OrderType
-): ProductInOrderType[] {
-  const aggregated: Record<string, ProductInOrderType> = {};
+): ProductInOrder[] {
+  const aggregated: Record<string, ProductInOrder> = {};
 
   products.forEach((product) => {
     const optionsString = formatOptionsString(product.options || []);

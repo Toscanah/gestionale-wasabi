@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { OptionWithCategories } from "../../types/OptionWithCategories";
+import { OptionWithCategories } from "@/app/(site)/models";
 
 const columns: ColumnDef<OptionWithCategories>[] = [
   TableColumn({

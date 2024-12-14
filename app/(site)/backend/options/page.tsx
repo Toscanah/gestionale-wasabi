@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import fetchRequest from "../../util/functions/fetchRequest";
 import Manager from "../Manager";
 import GoBack from "../../components/GoBack";
-import { OptionWithCategories } from "../../types/OptionWithCategories";
+import { OptionWithCategories } from "@/app/(site)/models";
 import columns from "./columns";
 import FormFields from "../FormFields";
 import { formSchema, getOptionFields } from "./form";
