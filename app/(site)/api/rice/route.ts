@@ -1,31 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import getRemainingRice from "../../sql/rice/getRemainingRice";
 import updateRice from "../../sql/rice/updateRice";
-import getRequestBody from "../../util/functions/getRequestBody";
 import getTotalRice from "../../sql/rice/getTotalRice";
 import resetRice from "../../sql/rice/resetRice";
+import { z } from "zod";
+import handleRequest from "../util/handleRequest";
+import { RiceSchema } from "@/prisma/generated/zod";
 
-export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
+export const riceSchemas = {
+  getRemainingRice: z.undefined(),
+  getTotalRice: z.undefined(),
+  updateRice: z.object({
+    rice: RiceSchema
+  }),
+  resetRice: z.undefined(),
+};
 
-  switch (params.get("action")) {
-    case "getRemainingRice": {
-      return NextResponse.json(await getRemainingRice());
-    }
+const POST_ACTIONS = new Map([
+  ["updateRice", { func: updateRice, schema: riceSchemas.updateRice }],
+  ["resetRice", { func: resetRice, schema: riceSchemas.resetRice }],
+]);
 
-    case "getTotalRice":
-      return NextResponse.json(await getTotalRice());
-  }
-}
+const GET_ACTIONS = new Map([
+  ["getRemainingRice", { func: getRemainingRice, schema: riceSchemas.getRemainingRice }],
+  ["getTotalRice", { func: getTotalRice, schema: riceSchemas.getTotalRice }],
+]);
 
 export async function POST(request: NextRequest) {
-  const { action, content } = await getRequestBody(request);
+  return await handleRequest(request, "POST", POST_ACTIONS);
+}
 
-  switch (action) {
-    case "updateRice":
-      return NextResponse.json(await updateRice(content));
-
-    case "resetRice":
-      return NextResponse.json(await resetRice());
-  }
+export async function GET(request: NextRequest) {
+  return await handleRequest(request, "GET", GET_ACTIONS);
 }

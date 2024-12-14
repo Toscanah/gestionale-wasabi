@@ -1,13 +1,13 @@
-import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import { getProductPrice } from "../../util/functions/getProductPrice";
+import { ProductInOrder } from "../../models";
 
 export default async function updateProductInOrder(
   orderId: number,
   key: string,
   value: any,
-  productInOrder: ProductInOrderType
+  productInOrder: ProductInOrder
 ) {
   const currentOrder = await prisma.order.findUnique({
     where: { id: orderId },

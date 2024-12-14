@@ -50,12 +50,24 @@ export default function AddressForm({
 }: AddressFormProps) {
   const form = getForm(formSchema);
 
-  const handleCustomerUpdate = async (actionCustomer: string, customerContent: object) => {
+  const handleCreateCustomer = async (customer: Omit<Customer, "phone_id" | "active" | "id">) => {
+    const createdCustomer = await fetchRequest<Customer>(
+      "POST",
+      "/api/customers/",
+      "createCustomer",
+      { phone, customer }
+    );
+
+    setCustomer(createdCustomer);
+    return createdCustomer;
+  };
+
+  const handleUpdateCustomer = async (customer: Customer) => {
     const updatedCustomer = await fetchRequest<Customer>(
       "POST",
       "/api/customers/",
-      actionCustomer === "create" ? "createCustomer" : "updateCustomerFromOrder",
-      actionCustomer === "create" ? { phone, customer: customerContent } : customerContent
+      "updateCustomerFromOrder",
+      { customer }
     );
 
     setCustomer(updatedCustomer);
@@ -93,12 +105,11 @@ export default function AddressForm({
     const actionCustomer = getActionType(customer);
     const actionAddress = getActionType(selectedAddress);
 
-    const customerContent = {
+    const customerCreateContent = {
       name: values.name,
       surname: values.surname,
       preferences: values.preferences,
       email: values.email,
-      id: customer?.id,
     };
 
     const addressContent = {
@@ -116,7 +127,10 @@ export default function AddressForm({
     const newExternalInfo = { notes: values.notes, contactPhone: values.contact_phone };
     setExternalInfo(newExternalInfo);
 
-    const updatedCustomer = await handleCustomerUpdate(actionCustomer, customerContent);
+    let updatedCustomer =
+      actionCustomer == "create"
+        ? await handleCreateCustomer(customerCreateContent)
+        : await handleUpdateCustomer(customerContent);
     const updatedAddress = await handleAddressUpdate(
       updatedCustomer.id,
       actionAddress,
@@ -124,8 +138,6 @@ export default function AddressForm({
     );
 
     toastSuccess("Il cliente e i suoi indirizzi sono stato correttamente aggiornato");
-
-    //createHomeOrder(updatedAddress, newExternalInfo);
   }
 
   useEffect(() => {

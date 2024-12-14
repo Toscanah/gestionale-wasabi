@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { Input } from "@/components/ui/input";
 import { OrderType } from "@prisma/client";
 import TableColumn from "../../components/table/TableColumn";
@@ -17,7 +17,7 @@ export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,
   type: OrderType,
   defaultFocusedInput: FocussableInput
-): ColumnDef<ProductInOrderType>[] {
+): ColumnDef<ProductInOrder>[] {
   const { updateProductOption: selectOption } = useOrderContext();
 
   const { getInputRef, addInputRef, setFocusedInput, handleKeyNavigation, focusedInput } =
@@ -41,7 +41,7 @@ export default function getColumns(
   };
 
   return [
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "select",
       header: "",
       sortable: false,
@@ -58,7 +58,7 @@ export default function getColumns(
         ),
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "code",
       header: "Codice",
       cellContent: (row) => (
@@ -93,7 +93,7 @@ export default function getColumns(
       ),
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "quantity",
       header: "Quantità",
       cellContent: (row) => (
@@ -132,7 +132,7 @@ export default function getColumns(
       ),
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "desc",
       header: "Descrizione",
       cellContent: (row) => (
@@ -142,7 +142,7 @@ export default function getColumns(
       ),
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "options",
       header: "Opzioni",
       cellContent: (row) => {
@@ -177,7 +177,7 @@ export default function getColumns(
       },
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "price",
       header: "Unità",
       cellContent: (row) => (
@@ -189,7 +189,7 @@ export default function getColumns(
       ),
     }),
 
-    TableColumn<ProductInOrderType>({
+    TableColumn<ProductInOrder>({
       accessorKey: "total",
       header: "Totale",
       cellContent: (row) => (

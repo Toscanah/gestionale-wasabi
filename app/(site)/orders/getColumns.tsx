@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
-import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "../types/PrismaOrders";
+import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/models";
 import TableColumn from "../components/table/TableColumn";
 import applyDiscount from "../util/functions/applyDiscount";
 import formatAmount from "../util/functions/formatAmount";

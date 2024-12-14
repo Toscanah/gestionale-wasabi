@@ -1,18 +1,15 @@
 import { OrderType } from "@prisma/client";
 import addProductsToOrder from "../products/addProductsToOrder";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "../../types/PrismaOrders";
+
 import createPickupOrder from "./createPickupOrder";
 import createHomeOrder from "./createHomeOrder";
 import createTableOrder from "./createTableOrder";
 import prisma from "../db";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 import getOrderById from "./getOrderById";
+import { AnyOrder, HomeOrder, PickupOrder, ProductInOrder, TableOrder } from "../../models";
 
-export default async function createSubOrder(
-  parentOrder: AnyOrder,
-  products: ProductInOrderType[]
-) {
+export default async function createSubOrder(parentOrder: AnyOrder, products: ProductInOrder[]) {
   let newSubOrder: { order: AnyOrder; new: boolean };
 
   const suborderCount = await prisma.order.count({

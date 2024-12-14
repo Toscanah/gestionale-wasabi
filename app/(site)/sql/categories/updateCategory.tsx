@@ -1,4 +1,4 @@
-import { CategoryWithOptions } from "../../types/CategoryWithOptions";
+import { CategoryWithOptions } from "../../models";
 import prisma from "../db";
 
 export default async function updateCategory(category: CategoryWithOptions) {
@@ -8,12 +8,11 @@ export default async function updateCategory(category: CategoryWithOptions) {
   });
 
   const currentOptionIds = currentOptions.map((opt) => opt.option_id);
-  const newOptionIds = category.options.map((opt: any) => opt.option.id);
+  const newOptionIds = category.options.map((opt) => opt.option.id);
 
   const optionsToRemove = currentOptionIds.filter((id) => !newOptionIds.includes(id));
   const optionsToAdd = newOptionIds.filter((id) => !currentOptionIds.includes(id));
 
-  // Remove options that are not in the new list
   await prisma.categoryOnOption.deleteMany({
     where: {
       category_id: category.id,
@@ -23,7 +22,6 @@ export default async function updateCategory(category: CategoryWithOptions) {
     },
   });
 
-  // Add new options that are not in the current list
   await prisma.categoryOnOption.createMany({
     data: optionsToAdd.map((optionId) => ({
       category_id: category.id,

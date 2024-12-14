@@ -1,4 +1,4 @@
-import { ProductInOrderType } from "../../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
 import aggregateProducts from "../../../util/functions/aggregateProducts";
 import React from "react";
@@ -6,7 +6,7 @@ import CustomerProducts from "./CustomerProducts";
 import KitchenProducts from "./KitchenProducts";
 
 export default function ProductsListSection(
-  products: ProductInOrderType[],
+  products: ProductInOrder[],
   orderType: OrderType,
   discount: number = 0,
   recipient: "kitchen" | "customer"

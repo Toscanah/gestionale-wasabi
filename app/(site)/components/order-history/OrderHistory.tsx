@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { CustomerWithDetails } from "../../types/CustomerWithDetails";
+import { CustomerWithDetails } from "@/app/(site)/models";
 import {
   Accordion,
   AccordionContent,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import applyDiscount from "../../util/functions/applyDiscount";
 import HistoryStats from "./HistoryStats";
 import OrderDetail from "./OrderDetail";
@@ -29,11 +29,11 @@ export type OrderStats = {
 
 interface OrderHistoryProps {
   customer: CustomerWithDetails;
-  onCreate?: (newProducts: ProductInOrderType[]) => void;
+  onCreate?: (newProducts: ProductInOrder[]) => void;
 }
 
 export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) {
-  const [selectedProducts, setSelectedProducts] = useState<ProductInOrderType[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<ProductInOrder[]>([]);
   const orderTypes = useMemo(
     () => [
       { type: "Domicilio", orders: customer.home_orders },
@@ -132,7 +132,7 @@ export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) 
     return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
   };
 
-  const handleCheckboxChange = (product: ProductInOrderType) =>
+  const handleCheckboxChange = (product: ProductInOrder) =>
     setSelectedProducts((prevSelected) =>
       prevSelected.some((p) => p.id === product.id)
         ? prevSelected.filter((p) => p.id !== product.id)

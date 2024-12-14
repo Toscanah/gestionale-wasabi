@@ -1,4 +1,4 @@
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 import { Separator } from "@/components/ui/separator";
 import applyDiscount from "../../util/functions/applyDiscount";
 import { Icon } from "@phosphor-icons/react";

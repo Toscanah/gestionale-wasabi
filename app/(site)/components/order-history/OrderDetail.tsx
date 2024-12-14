@@ -1,14 +1,14 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 import { OrderType } from "@prisma/client";
 import formatAmount from "../../util/functions/formatAmount";
 
 interface OrderDetailProps {
-  sortedProducts: ProductInOrderType[];
+  sortedProducts: ProductInOrder[];
   type: string;
-  onCreate?: (newProducts: ProductInOrderType[]) => void;
-  onCheckboxChange: (product: ProductInOrderType) => void;
+  onCreate?: (newProducts: ProductInOrder[]) => void;
+  onCheckboxChange: (product: ProductInOrder) => void;
 }
 
 export default function OrderDetail({

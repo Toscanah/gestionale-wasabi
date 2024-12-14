@@ -1,4 +1,4 @@
-import { AnyOrder } from "../../types/PrismaOrders";
+import { AnyOrder } from "@/app/(site)/models";
 import { getProductPrice } from "./getProductPrice";
 
 export default function calculateOrderTotal(order: AnyOrder) {

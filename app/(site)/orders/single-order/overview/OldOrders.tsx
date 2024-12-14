@@ -1,8 +1,8 @@
 import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
-import { CustomerWithDetails } from "@/app/(site)/types/CustomerWithDetails";
+import { CustomerWithDetails } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
-import { HomeOrder, PickupOrder } from "@/app/(site)/types/PrismaOrders";
+import { HomeOrder, PickupOrder } from "@/app/(site)/models";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";

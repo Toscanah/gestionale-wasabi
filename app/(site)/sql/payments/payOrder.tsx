@@ -1,20 +1,20 @@
-import { Payment, PaymentType } from "@prisma/client";
 import prisma from "../db";
-import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
 import getOrderById from "../orders/getOrderById";
+import { ProductInOrder } from "../../models";
+import { Payment } from "@/prisma/generated/zod";
 
-export default async function payOrder(payments: Payment[], productsToPay: ProductInOrderType[]) {
+export default async function payOrder(payments: Payment[], productsToPay: ProductInOrder[]) {
   const orderId = payments[0].order_id;
 
   // Prepare payment data for insertion
   const paymentData = payments.map((payment) => ({
     amount: payment.amount,
-    type: payment.type as PaymentType,
+    type: payment.type,
     order_id: payment.order_id,
   }));
 
   // Create payments in bulk
-  const createdPayments = await prisma.payment.createMany({
+  await prisma.payment.createMany({
     data: paymentData,
   });
 

@@ -1,15 +1,14 @@
 import { Order } from "@prisma/client";
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
-import { ProductWithInfo } from "../../types/ProductWithInfo";
-import { ProductInOrderType } from "../../types/ProductInOrderType";
 import { getProductPrice } from "../../util/functions/getProductPrice";
+import { ProductInOrder } from "../../models";
 
 export default async function addProductToOrder(
   order: Order,
   productCode: string,
   quantity: number
-): Promise<ProductInOrderType | null> {
+): Promise<ProductInOrder | null> {
   const product = await prisma.product.findFirst({
     where: {
       code: {

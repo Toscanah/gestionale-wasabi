@@ -1,4 +1,5 @@
-import { CategoryWithOptions } from "../../types/CategoryWithOptions";
+
+import { CategoryWithOptions } from "../../models";
 import prisma from "../db";
 
 export default async function createNewCategory(category: CategoryWithOptions) {

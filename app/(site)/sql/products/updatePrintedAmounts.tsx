@@ -1,8 +1,8 @@
-import { ProductInOrderType } from "../../types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import prisma from "../db";
 
 export default async function updatePrintedAmounts(orderId: number) {
-  const remainingProducts: ProductInOrderType[] = [];
+  const remainingProducts: ProductInOrder[] = [];
 
   const products = await prisma.productInOrder.findMany({
     where: { order_id: orderId },

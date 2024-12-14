@@ -1,4 +1,4 @@
-import { AnyOrder, HomeOrder } from "@/app/(site)/types/PrismaOrders";
+import { AnyOrder, HomeOrder } from "@/app/(site)/models";
 import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
@@ -8,7 +8,7 @@ import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
 import { QuickPaymentOption } from "./QuickPaymentOptions";
 import RiderReceipt from "../../../printing/receipts/RiderReceipt";
 import { OrderType } from "@prisma/client";
-import { ProductInOrderType } from "@/app/(site)/types/ProductInOrderType";
+import { ProductInOrder } from "@/app/(site)/models";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
@@ -23,7 +23,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
   const { order, updateUnprintedProducts, updateOrder, toggleDialog } = useOrderContext();
   const { updateGlobalState } = useWasabiContext();
 
-  const canSplit = (products: ProductInOrderType[]) =>
+  const canSplit = (products: ProductInOrder[]) =>
     products.length > 1 ||
     (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.HOME);
 
