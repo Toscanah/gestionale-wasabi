@@ -48,7 +48,7 @@ export const OrderProvider = ({
 
   const toggleDialog = (dialogOpen: boolean) => setDialogOpen(dialogOpen);
 
-  const { updateOrder, cancelOrder, createSubOrder } = useOrderManager(order, setOrder);
+  const { updateOrder, cancelOrder, createSubOrder } = useOrderManager(order.id, setOrder);
   const {
     addProduct,
     addProducts,

@@ -76,6 +76,10 @@ export default function Home() {
       }
     });
 
+  // useEffect(() => {
+  //   console.log(orders["TABLE"]);
+  // }, [orders]);
+
   useEffect(() => {
     const fetchInitialOrders = async () =>
       setOrders({
@@ -114,17 +118,6 @@ export default function Home() {
           </div>
 
           <Header toggleOrder={toggleOrder} activeOrders={activeOrders} />
-
-          <Button
-            onClick={() => {
-              console.log(orders["HOME"][0]);
-              fetchRequest<any>("POST", "/api/orders", "prova", orders["HOME"][0]).then((idk) => {
-                console.log(idk);
-              });
-            }}
-          >
-            PROVA
-          </Button>
         </div>
 
         <Separator orientation="horizontal" />

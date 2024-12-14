@@ -7,7 +7,9 @@ export default async function updatePrintedFlag(orderId: number) {
       id: orderId,
     },
     data: {
-      is_receipt_printed: true,
+      is_receipt_printed: {
+        set: true,
+      },
     },
   });
 

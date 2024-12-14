@@ -1,5 +1,3 @@
-import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import { OrderType } from "@prisma/client";
 import { AnyOrder } from "@/app/(site)/types/PrismaOrders";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { Input } from "@/components/ui/input";
@@ -7,10 +5,8 @@ import { useState, useCallback } from "react";
 import { debounce } from "lodash";
 import { toastSuccess } from "@/app/(site)/util/toast";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 
 export default function Discount() {
-  const { updateGlobalState } = useWasabiContext();
   const { order, updateOrder } = useOrderContext();
   const [discount, setDiscount] = useState<number | undefined>(
     order.discount == 0 ? undefined : order.discount
@@ -24,7 +20,7 @@ export default function Discount() {
           discount,
         }).then((updatedOrder) => {
           toastSuccess("Sconto aggiornato correttamente");
-          updateOrder({ discount: updatedOrder.discount });
+          updateOrder({ discount: updatedOrder.discount, is_receipt_printed: false });
         }),
       1000
     ),

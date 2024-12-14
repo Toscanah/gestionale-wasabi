@@ -21,13 +21,12 @@ interface NormalActionsProps {
 
 export default function NormalActions({ setAction, quickPaymentOption }: NormalActionsProps) {
   const { order, updateUnprintedProducts, updateOrder, toggleDialog } = useOrderContext();
-  const { updateGlobalState } = useWasabiContext();
 
   const canSplit = (products: ProductInOrderType[]) =>
     products.length > 1 ||
     (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.HOME);
 
-  const updatePrintedFlag = () =>
+  const updatePrintedFlag = async () =>
     fetchRequest<AnyOrder>("POST", "/api/orders", "updatePrintedFlag", {
       orderId: order.id,
     }).then((updatedOrder) => {
@@ -117,7 +116,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       <Button
         className="w-full text-3xl h-12"
         onClick={handleFullPayment}
-        disabled={!(order.total > 0) || !order.is_receipt_printed}
+        disabled={!(order.total > 0) } // || !order.is_receipt_printed
       >
         INCASSA
       </Button>
