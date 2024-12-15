@@ -37,14 +37,14 @@ export const PickupOrderWithOrderSchema = PickupOrderSchema.extend({
 });
 
 export const TableOrderInOrderSchema = OrderWithProductsAndPaymentsSchema.extend({
-  table_order: TableOrderSchema,
+  table_order: TableOrderSchema.nullable(),
 });
 
 export const HomeOrderInOrderSchema = OrderWithProductsAndPaymentsSchema.extend({
   home_order: HomeOrderSchema.extend({
     customer: z.lazy(() => CustomerWithPhoneSchema),
     address: AddressSchema,
-  }),
+  }).nullable(),
 });
 
 export const PickupOrderInOrderSchema = OrderWithProductsAndPaymentsSchema.extend({

@@ -81,39 +81,6 @@ export default function DivideOrder({
   useEffect(() => {
     if (!dialogOpen && rightProducts.length > 0 && !goPay) {
       createSubOrder(order, rightProducts);
-
-      const updatedProducts = order.products
-        .map((product) => {
-          const matchingRightProduct = rightProducts.find(
-            (rightProduct) => rightProduct.id === product.id
-          );
-
-          if (matchingRightProduct) {
-            const updatedQuantity = product.quantity - matchingRightProduct.quantity;
-
-            return updatedQuantity > 0
-              ? {
-                  ...product,
-                  quantity: updatedQuantity,
-                  total: updatedQuantity * getProductPrice(product, order.type),
-                }
-              : null;
-          }
-
-          return product;
-        })
-        .filter(Boolean) as ProductInOrder[];
-
-      const updatedTotal = updatedProducts.reduce(
-        (sum, product) => sum + getProductPrice(product, order.type) * product.quantity,
-        0
-      );
-
-      updateOrder({
-        products: updatedProducts,
-        total: updatedTotal,
-        is_receipt_printed: false,
-      });
     }
   }, [dialogOpen]);
 
