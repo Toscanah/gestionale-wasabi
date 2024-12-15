@@ -37,7 +37,7 @@ export default async function createSubOrder(parentOrder: AnyOrder, products: Pr
     case OrderType.HOME:
       order = parentOrder as HomeOrder;
       newSubOrder = (await createHomeOrder(
-        order.home_order.customer_id,
+        order.home_order?.customerId,
         order.home_order.address.id,
         order.home_order.contact_phone ?? "",
         order.home_order.notes ?? ""

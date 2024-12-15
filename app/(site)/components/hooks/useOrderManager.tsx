@@ -4,6 +4,8 @@ import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductInOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../context/WasabiContext";
 import createDummyProduct from "../../util/functions/createDummyProduct";
+import { getProductPrice } from "../../util/functions/getProductPrice";
+import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -46,9 +48,39 @@ export function useOrderManager(orderId: number, setOrder: Dispatch<SetStateActi
 
   const createSubOrder = (parentOrder: AnyOrder, products: ProductInOrder[]) =>
     fetchRequest<AnyOrder>("POST", "/api/orders/", "createSubOrder", {
-      parentOrder,
+      parentOrder: { ...parentOrder },
       products,
-    }).then((newSubOrder) => updateGlobalState(newSubOrder, "add"));
+    }).then((newSubOrder) => {
+      const updatedProducts = parentOrder.products
+        .map((product) => {
+          const matchingProduct = products.find((p) => p.id === product.id);
+
+          if (matchingProduct) {
+            const updatedQuantity = product.quantity - matchingProduct.quantity;
+
+            return updatedQuantity > 0
+              ? {
+                  ...product,
+                  quantity: updatedQuantity,
+                  total: updatedQuantity * getProductPrice(product, parentOrder.type),
+                }
+              : null;
+          }
+
+          return product;
+        })
+        .filter(Boolean) as ProductInOrder[];
+
+      const updatedTotal = calculateOrderTotal(parentOrder);
+
+      updateOrder({
+        products: updatedProducts,
+        total: updatedTotal,
+        is_receipt_printed: false,
+      });
+
+      updateGlobalState(newSubOrder, "add");
+    });
 
   return { updateOrder, cancelOrder, createSubOrder };
 }
