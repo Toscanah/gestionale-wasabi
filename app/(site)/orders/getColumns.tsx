@@ -64,7 +64,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
 
           case OrderType.HOME: {
             const parsedRow = row.original as HomeOrder;
-            return (parsedRow.home_order?.address.doorbell || "").toLocaleUpperCase();
+            return (parsedRow.home_order?.address?.doorbell || "").toLocaleUpperCase();
           }
         }
       },

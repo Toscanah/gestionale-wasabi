@@ -35,16 +35,19 @@ export default function Home({ setOrder }: HomeProps) {
     possibleCustomers,
   } = useFetchCustomer(setSelectedAddress);
 
-  const createHomeOrder = () =>
+  const createHomeOrder = () => {
+    if (!customer || !selectedAddress) return;
+
     fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {
-      customerId: customer?.id,
-      address: selectedAddress?.id,
-      notes: externalInfo.notes,
-      contactPhone: externalInfo.contactPhone,
+      customerId: customer.id,
+      addressId: selectedAddress.id,
+      notes: externalInfo.notes ?? "",
+      contactPhone: externalInfo.contactPhone ?? "",
     }).then((newHomeOrder) => {
       setOrder(newHomeOrder);
       updateGlobalState(newHomeOrder, "add");
     });
+  };
 
   const phoneRef = useRef<HTMLInputElement>(null);
   const doorbellSearchRef = useRef<HTMLInputElement>(null);

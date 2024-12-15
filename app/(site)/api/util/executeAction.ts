@@ -25,9 +25,9 @@ export default async function executeAction(
     if (!parsedContent.success) {
       return NextResponse.json(
         {
-          message: "Content validation failed.",
+          message: `Content validation failed in action "${action}"`,
           error: "Invalid input format.",
-          details: parsedContent.error.format(),
+          details: parsedContent.error.toString(),
         },
         { status: 400 }
       );

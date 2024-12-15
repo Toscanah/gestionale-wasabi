@@ -22,11 +22,29 @@ export default async function handleRequest(
 }
 
 async function handleGetRequest(request: NextRequest) {
+  const fieldsThatShouldRemainString = ["phone"];
+
   const params = request.nextUrl.searchParams;
   const action = params.get("action") ?? "";
+
   const content = Object.fromEntries(
-    Array.from(params.entries()).filter(([key]) => key !== "action")
+    Array.from(params.entries())
+      .map(([key, value]) => {
+        if (fieldsThatShouldRemainString.includes(key)) {
+          return [key, value];
+        }
+
+        const parsedValue = parseInt(value, 10);
+
+        if (!isNaN(parsedValue)) {
+          return [key, parsedValue];
+        }
+
+        return [key, value];
+      })
+      .filter(([key]) => key !== "action")
   );
+
   return { action, content };
 }
 

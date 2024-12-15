@@ -2,6 +2,7 @@ import { Address } from "@prisma/client";
 import prisma from "../db";
 
 export default async function updateAddress(address: Address) {
+  console.log("Ho ricevuto", address)
   return await prisma.address.update({
     data: {
       civic: address.civic,

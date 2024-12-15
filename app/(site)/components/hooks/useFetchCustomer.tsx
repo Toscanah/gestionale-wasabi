@@ -34,7 +34,7 @@ export default function useFetchCustomer(
 
   const fetchAddresses = (customerId: number) =>
     fetchRequest<Address[]>("GET", "/api/addresses/", "getAddressesByCustomer", {
-      customerId,
+      customerId: Number(customerId),
     }).then((fetchedAddresses) =>
       setAddresses(fetchedAddresses.filter((address) => !address.temporary))
     );

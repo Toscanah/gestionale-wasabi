@@ -3,7 +3,6 @@ import applyDiscount from "../../util/functions/applyDiscount";
 import { AnyOrder } from "@/app/(site)/models";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { OrderType } from "@prisma/client";
-import { useWasabiContext } from "../../context/WasabiContext";
 import { ProductInOrder } from "@/app/(site)/models";
 import { getProductPrice } from "../../util/functions/getProductPrice";
 import { PaymentType } from "@prisma/client";
@@ -18,7 +17,7 @@ export default function useOrderPayment(
   setPayment: Dispatch<SetStateAction<Payment>>,
   order: AnyOrder
 ) {
-  const { updateOrder } = useOrderContext();
+  const { updateOrder, order: originalOrder } = useOrderContext();
 
   useEffect(() => {
     const totalPaid = Object.values(payment.paymentAmounts).reduce(
@@ -59,31 +58,40 @@ export default function useOrderPayment(
     }).then((updatedOrder) => {
       onOrderPaid();
 
-      if (type == "full") return updateOrder({ state: updatedOrder.state });
+      if (type == "full") {
+        return updateOrder({ state: updatedOrder.state });
+      }
 
-      const updatedProducts = productsToPay
+      const updatedProducts = originalOrder.products
         .map((product) => {
-          const paid_quantity = product.paid_quantity || 0;
-          const remainingQuantity = product.quantity - paid_quantity;
+          const productToPay = productsToPay.find((p) => p.id === product.id);
 
-          if (remainingQuantity <= 0) return null;
+          if (productToPay) {
+            const paidQuantity = productToPay.quantity;
+            const remainingQuantity = product.quantity - paidQuantity;
 
-          const newPaidQuantity = paid_quantity + product.paid_quantity;
-          const newTotal = remainingQuantity * getProductPrice(product, order.type as OrderType);
+            const newTotal = remainingQuantity * getProductPrice(product, originalOrder.type);
+            const newRiceQuantity = remainingQuantity * product.product.rice;
 
-          return {
-            ...product,
-            quantity: remainingQuantity,
-            paid_quantity: newPaidQuantity,
-            total: newTotal,
-            rice_quantity: remainingQuantity * product.product.rice,
-            is_paid_fully: newPaidQuantity >= product.quantity,
-          };
+            const isPaidFully = paidQuantity >= product.quantity;
+
+            return {
+              ...product,
+              quantity: remainingQuantity,
+              paid_quantity: paidQuantity,
+              total: newTotal,
+              rice_quantity: newRiceQuantity,
+              is_paid_fully: isPaidFully,
+            };
+          }
+
+          return product;
         })
         .filter(Boolean) as ProductInOrder[];
 
       const updatedTotal = calculateOrderTotal({ ...updatedOrder, products: updatedProducts });
 
+      console.log(updatedProducts)
       updateOrder({
         state: updatedOrder.state,
         products: updatedProducts,

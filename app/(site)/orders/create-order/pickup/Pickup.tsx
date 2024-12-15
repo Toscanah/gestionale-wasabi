@@ -1,10 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { AnyOrder, PickupOrder } from "@/app/(site)/models";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { OrderType } from "@prisma/client";
-import { toast } from "sonner";
 import WhenSelector from "../../../components/select/WhenSelector";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import useFocusCycle from "../../../components/hooks/useFocusCycle";
@@ -22,25 +20,26 @@ export default function Pickup({ setOrder }: PickupProps) {
   const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
 
+  const [name, setName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [when, setWhen] = useState<string>("");
+
   const nameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
   const selectRef = useRef<HTMLButtonElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(
-    () => addRefs(nameRef.current, phoneRef.current, selectRef.current, buttonRef.current),
+    () => addRefs(nameRef.current, selectRef.current, phoneRef.current, buttonRef.current),
     []
   );
 
   const createPickupOrder = () => {
-    const name = nameRef.current?.value;
-    const phone = phoneRef.current?.value ?? "";
-    const when = selectRef.current?.innerText;
-    const content = { name, when, phone };
-
     if (name === "") {
       return toastError("L'ordine deve avere un nome di un cliente");
     }
+
+    const content = { name, when, phone };
 
     fetchRequest<PickupOrder>("POST", "/api/orders/", "createPickupOrder", { ...content }).then(
       (newPickupOrder) => {
@@ -61,6 +60,8 @@ export default function Pickup({ setOrder }: PickupProps) {
           id="name"
           className="w-full text-center text-6xl h-16 uppercase"
           ref={nameRef}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           onKeyDown={handleKeyDown}
         />
       </div>
@@ -69,7 +70,12 @@ export default function Pickup({ setOrder }: PickupProps) {
         <Label htmlFor="when" className="text-xl">
           Quando?
         </Label>
-        <WhenSelector ref={selectRef} onKeyDown={handleKeyDown} />
+        <WhenSelector
+          ref={selectRef}
+          value={when}
+          onValueChange={(value) => setWhen(value)}
+          onKeyDown={handleKeyDown}
+        />
       </div>
 
       <div className="w-full space-y-2">
@@ -83,10 +89,7 @@ export default function Pickup({ setOrder }: PickupProps) {
             </HoverCardTrigger>
             <HoverCardContent className="max-w-[400px] w-[400px]">
               <div className="space-y-2">
-                <h4 className="text-sm font-bold flex gap-2 items-center">
-                  {/* <Info size={24}/> */}
-                  Nota bene:
-                </h4>
+                <h4 className="text-sm font-bold flex gap-2 items-center">Nota bene:</h4>
                 <Separator orientation="horizontal" />
                 <ul className="text-sm list-disc ml-4 space-y-1">
                   <li>
@@ -115,6 +118,8 @@ export default function Pickup({ setOrder }: PickupProps) {
           id="phone"
           className="w-full text-center text-6xl h-16 uppercase"
           ref={phoneRef}
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
           onKeyDown={handleKeyDown}
         />
       </div>

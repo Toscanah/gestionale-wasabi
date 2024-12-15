@@ -114,17 +114,6 @@ export default function Home() {
           </div>
 
           <Header toggleOrder={toggleOrder} activeOrders={activeOrders} />
-
-          <Button
-            onClick={() => {
-              console.log(orders["HOME"][0]);
-              fetchRequest<any>("POST", "/api/orders", "getTotalRice").then((idk) => {
-                console.log(idk);
-              });
-            }}
-          >
-            PROVA
-          </Button>
         </div>
 
         <Separator orientation="horizontal" />

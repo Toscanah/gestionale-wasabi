@@ -12,10 +12,10 @@ import updatePrintedAmounts from "../../sql/products/updatePrintedAmounts";
 import { z } from "zod";
 import handleRequest from "../util/handleRequest";
 import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
-import { ProductInOrderWithOptionsSchema } from "../../models";
+import { NoContentSchema, ProductInOrderWithOptionsSchema } from "../../models";
 
 export const productSchemas = {
-  getProducts: z.undefined(),
+  getProducts: NoContentSchema,
   createNewProduct: z.object({
     product: ProductSchema,
   }),
@@ -58,21 +58,29 @@ const POST_ACTIONS = new Map([
   ["createNewProduct", { func: createNewProduct, schema: productSchemas.createNewProduct }],
   ["updateProduct", { func: updateProduct, schema: productSchemas.updateProduct }],
   ["addProductToOrder", { func: addProductToOrder, schema: productSchemas.addProductToOrder }],
-  ["updateProductInOrder", { func: updateProductInOrder, schema: productSchemas.updateProductInOrder }],
+  [
+    "updateProductInOrder",
+    { func: updateProductInOrder, schema: productSchemas.updateProductInOrder },
+  ],
   ["addProductsToOrder", { func: addProductsToOrder, schema: productSchemas.addProductsToOrder }],
   [
     "updateProductOptionsInOrder",
     { func: updateProductOptionsInOrder, schema: productSchemas.updateProductOptionsInOrder },
   ],
   ["toggleProduct", { func: toggleProduct, schema: productSchemas.toggleProduct }],
-  ["updatePrintedAmounts", { func: updatePrintedAmounts, schema: productSchemas.updatePrintedAmounts }],
+  [
+    "updatePrintedAmounts",
+    { func: updatePrintedAmounts, schema: productSchemas.updatePrintedAmounts },
+  ],
   [
     "deleteProductsFromOrder",
     { func: deleteProductsFromOrder, schema: productSchemas.deleteProductsFromOrder },
   ],
 ]);
 
-const GET_ACTIONS = new Map([["getProducts", { func: getProducts, schema: productSchemas.getProducts }]]);
+const GET_ACTIONS = new Map([
+  ["getProducts", { func: getProducts, schema: productSchemas.getProducts }],
+]);
 
 export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);

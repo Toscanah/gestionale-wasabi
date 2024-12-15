@@ -12,11 +12,7 @@ export type RecursivePartial<T> = {
 export function useOrderManager(orderId: number, setOrder: Dispatch<SetStateAction<AnyOrder>>) {
   const { updateGlobalState, fetchRemainingRice } = useWasabiContext();
 
-<<<<<<< HEAD
   const updateOrder = (newOrder: RecursivePartial<AnyOrder>) =>
-=======
-  const updateOrder = (order: RecursivePartial<AnyOrder>) =>
->>>>>>> 5176f9498a1680fe5ff0333c3607b0cb70b09756
     setOrder((prevOrder) => {
       const products = [
         ...(newOrder.products || prevOrder.products).filter((p: any) => p.id !== -1),

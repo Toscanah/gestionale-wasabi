@@ -13,7 +13,7 @@ import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 import deleteOrdersInBulk from "../../sql/orders/deleteOrdersInBulk";
 import deleteEverything from "../../sql/deleteEverything";
 import { z } from "zod";
-import { CreateSubOrderSchema } from "../../models";
+import { CreateSubOrderSchema, NoContentSchema } from "../../models";
 import handleRequest from "../util/handleRequest";
 
 export const orderSchemas = {
@@ -59,7 +59,7 @@ export const orderSchemas = {
   deleteOrdersInBulk: z.object({
     ordersId: z.array(z.number()),
   }),
-  deleteEverything: z.undefined(),
+  deleteEverything: NoContentSchema,
 };
 
 const GET_ACTIONS = new Map([
