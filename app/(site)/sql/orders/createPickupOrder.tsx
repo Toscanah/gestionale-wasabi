@@ -52,6 +52,7 @@ export default async function createPickupOrder(name: string, when: string, phon
       },
     },
     include: {
+      payments: true,
       pickup_order: {
         include: {
           customer: {

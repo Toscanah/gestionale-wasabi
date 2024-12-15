@@ -10,7 +10,7 @@ import getOrderById from "./getOrderById";
 import { AnyOrder, HomeOrder, PickupOrder, ProductInOrder, TableOrder } from "../../models";
 
 export default async function createSubOrder(parentOrder: AnyOrder, products: ProductInOrder[]) {
-  let newSubOrder: { order: AnyOrder; new: boolean };
+  let newSubOrder: AnyOrder;
 
   const suborderCount = await prisma.order.count({
     where: {
@@ -27,24 +27,21 @@ export default async function createSubOrder(parentOrder: AnyOrder, products: Pr
   switch (parentOrder.type) {
     case OrderType.PICKUP:
       order = parentOrder as PickupOrder;
-      newSubOrder = (await createPickupOrder({
-        name: `${order.pickup_order?.name}_${suborderNumber}`,
-        when: order.pickup_order?.when ?? "immediate",
-        phone: order.pickup_order?.customer?.phone?.phone,
-      })) as any;
+      newSubOrder = await createPickupOrder(
+        `${order.pickup_order?.name}_${suborderNumber}`,
+        order.pickup_order?.when ?? "immediate",
+        order.pickup_order?.customer?.phone?.phone
+      );
       break;
 
     case OrderType.HOME:
       order = parentOrder as HomeOrder;
-      newSubOrder = (await createHomeOrder({
-        customer: order.home_order?.customer as any,
-        address: {
-          ...(order.home_order?.address as any),
-          doorbell: `${order.home_order?.address?.doorbell ?? ""}_${suborderNumber}`,
-        },
-        contact_phone: order.home_order?.contact_phone ?? "",
-        notes: order.home_order?.notes ?? "",
-      })) as any;
+      newSubOrder = (await createHomeOrder(
+        order.home_order.customer_id,
+        order.home_order.address.id,
+        order.home_order.contact_phone ?? "",
+        order.home_order.notes ?? ""
+      )) as any; // TODO: da sistemare il tipo, any non mi va bene
       break;
 
     case OrderType.TABLE:
@@ -61,7 +58,7 @@ export default async function createSubOrder(parentOrder: AnyOrder, products: Pr
   if (newSubOrder) {
     await prisma.order.update({
       where: {
-        id: newSubOrder.order.id,
+        id: newSubOrder.id,
       },
       data: {
         suborder_of: parentOrder.id,
@@ -116,6 +113,6 @@ export default async function createSubOrder(parentOrder: AnyOrder, products: Pr
     }
   }
 
-  await addProductsToOrder(newSubOrder.order.id, products);
-  return await getOrderById(newSubOrder.order.id);
+  await addProductsToOrder(newSubOrder.id, products);
+  return await getOrderById(newSubOrder.id);
 }
