@@ -32,7 +32,7 @@ export function useProductManager(
 
   const addProducts = (products: ProductInOrder[]) =>
     fetchRequest<ProductInOrder[]>("POST", "/api/products", "addProductsToOrder", {
-      orderId: order.id,
+      targetOrderId: order.id,
       products,
     }).then(() => updateProductsList({ newProducts: products }));
 

@@ -161,7 +161,7 @@ export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) 
         }}
         type="single"
         collapsible
-        className="max-h-[450px] w-[40vw] overflow-y-auto overflow-x-hidden pr-4"
+        className="max-h-[450px] overflow-y-auto overflow-x-hidden pr-4"
       >
         <AccordionItem value={"stats"} key={"stats"}>
           <AccordionTrigger className="text-2xl">Vedi statistiche</AccordionTrigger>

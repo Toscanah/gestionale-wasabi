@@ -5,7 +5,6 @@ export default async function deleteProductsFromOrder(
   orderId: number,
   cooked: boolean = false
 ) {
-  // Fetch the products to delete based on the provided productIds
   const productsToDelete = await prisma.productInOrder.findMany({
     where: {
       id: {

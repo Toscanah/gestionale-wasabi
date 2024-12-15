@@ -28,6 +28,8 @@ export default function OldOrders() {
         ? (order as PickupOrder).pickup_order?.customer_id
         : (order as HomeOrder).home_order?.customer_id;
 
+    if (!customerId) return;
+
     fetchRequest<CustomerWithDetails>("GET", "/api/customers/", "getCustomerWithDetails", {
       customerId,
     }).then((customer) => {
@@ -53,7 +55,7 @@ export default function OldOrders() {
   return (
     customer && (
       <DialogWrapper
-      size="medium"
+        size="medium"
         trigger={
           <Button type="button" variant={"outline"} className="h-12 text-xl">
             Vedi ordini precedenti

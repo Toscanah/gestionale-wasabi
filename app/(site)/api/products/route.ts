@@ -82,10 +82,21 @@ const GET_ACTIONS = new Map([
   ["getProducts", { func: getProducts, schema: productSchemas.getProducts }],
 ]);
 
+const DELETE_ACTIONS = new Map([
+  [
+    "deleteProductsFromOrder",
+    { func: deleteProductsFromOrder, schema: productSchemas.deleteProductsFromOrder },
+  ],
+]);
+
 export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);
 }
 
 export async function GET(request: NextRequest) {
   return await handleRequest(request, "GET", GET_ACTIONS);
+}
+
+export async function DELETE(request: NextRequest) {
+  return await handleRequest(request, "DELETE", DELETE_ACTIONS);
 }
