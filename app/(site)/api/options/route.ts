@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import getAllOptions from "../../sql/options/getAllOptions";
 import updateOptionsOfCategory from "../../sql/options/updateOptionsOfCategory";
 import getAllOptionsWithCategories from "../../sql/options/getAllOptionsWithCategories";
@@ -8,11 +8,11 @@ import toggleOption from "../../sql/options/toggleOption";
 import handleRequest from "../util/handleRequest";
 import { z } from "zod";
 import { OptionSchema } from "@/prisma/generated/zod";
-import { UpdateOptionsOfCategorySchema } from "../../models";
+import { NoContentSchema, UpdateOptionsOfCategorySchema } from "../../models";
 
 export const optionSchemas = {
-  getAllOptions: z.undefined(),
-  getAllOptionsWithCategories: z.undefined(),
+  getAllOptions: NoContentSchema,
+  getAllOptionsWithCategories: NoContentSchema,
   updateOptionsOfCategory: UpdateOptionsOfCategorySchema,
   updateOption: z.object({
     option: OptionSchema,

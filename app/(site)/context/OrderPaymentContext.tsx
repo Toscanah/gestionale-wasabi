@@ -4,6 +4,7 @@ import { AnyOrder } from "@/app/(site)/models";
 import useOrderPayment from "../components/hooks/useOrderPayment";
 import formatAmount from "../util/functions/formatAmount";
 import applyDiscount from "../util/functions/applyDiscount";
+import { useOrderContext } from "./OrderContext";
 
 interface OrderPaymentContextProps {
   payment: Payment;
@@ -16,14 +17,14 @@ interface OrderPaymentContextProps {
   activeTool: "manual" | "table";
   setPaymentCalculations: React.Dispatch<React.SetStateAction<PaymentCalculation[]>>;
   resetPayment: () => void;
-  transactionOrder: AnyOrder;
+  order: AnyOrder;
 }
 
 interface OrderPaymentProvider {
   type: "full" | "partial";
   onOrderPaid: () => void;
   children: ReactNode;
-  order: AnyOrder;
+  partialOrder?: AnyOrder;
 }
 
 const OrderPaymentContext = createContext<OrderPaymentContextProps | undefined>(undefined);
@@ -42,11 +43,14 @@ export type Payment = {
 export type PaymentCalculation = { amount: number; quantity: number; total: number };
 
 export const OrderPaymentProvider = ({
-  order,
+  partialOrder,
   type,
   onOrderPaid,
   children,
 }: OrderPaymentProvider) => {
+  const { order: contextOrder } = useOrderContext();
+  const order = partialOrder || contextOrder;
+
   const [activeTool, setActiveTool] = useState<"manual" | "table">("manual");
   const [paymentCalculations, setPaymentCalculations] = useState<PaymentCalculation[]>([
     { amount: 0, quantity: 0, total: 0 },
@@ -90,7 +94,7 @@ export const OrderPaymentProvider = ({
         paymentCalculations,
         setPaymentCalculations,
         resetPayment,
-        transactionOrder: order,
+        order,
       }}
     >
       {children}

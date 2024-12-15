@@ -59,11 +59,9 @@ export default function DivideOrder({
 
     const targetProduct = targetCopy.find((p) => p.id === product.id);
     if (targetProduct) {
-      // Adjust quantity and total in target
       targetProduct.quantity += 1;
       targetProduct.total = targetProduct.quantity * getProductPrice(targetProduct, order.type); // Adjust total for target
     } else {
-      // Add new product to target and set initial quantity and total
       targetCopy.push({ ...product, quantity: 1, total: getProductPrice(product, order.type) }); // Assuming the price is available in the product object
     }
 
@@ -104,7 +102,7 @@ export default function DivideOrder({
 
           return product;
         })
-        .filter(Boolean) as ProductInOrderType[];
+        .filter(Boolean) as ProductInOrder[];
 
       const updatedTotal = updatedProducts.reduce(
         (sum, product) => sum + getProductPrice(product, order.type) * product.quantity,
@@ -173,7 +171,7 @@ export default function DivideOrder({
   ) : (
     <OrderPayment
       type="partial"
-      order={{
+      partialOrder={{
         ...order,
         products: rightProducts,
         total: rightProducts.reduce(

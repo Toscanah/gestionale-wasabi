@@ -20,7 +20,7 @@ export function useProductManager(
     fetchRequest<ProductInOrder>("POST", "/api/products/", "addProductToOrder", {
       order,
       productCode: newCode,
-      quantity: newQuantity,
+      quantity: Number(newQuantity),
     }).then((newProduct) => {
       if (newProduct) {
         updateProductsList({ newProducts: [newProduct] });

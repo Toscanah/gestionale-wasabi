@@ -3,11 +3,11 @@ import { z } from "zod";
 import handleRequest from "../util/handleRequest";
 import payOrder from "../../sql/payments/payOrder";
 import getOrdersWithPayments from "../../sql/payments/getOrdersWithPayments";
-import { PayOrderSchema } from "../../models";
+import { NoContentSchema, PayOrderSchema } from "../../models";
 
 export const paymentSchemas = {
   payOrder: PayOrderSchema,
-  getOrdersWithPayments: z.undefined(),
+  getOrdersWithPayments: NoContentSchema,
 };
 
 const POST_ACTIONS = new Map([["payOrder", { func: payOrder, schema: paymentSchemas.payOrder }]]);

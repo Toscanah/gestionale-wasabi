@@ -3,9 +3,11 @@ import getPaymentName from "../../../util/functions/getPaymentName";
 import formatAmount from "../../../util/functions/formatAmount";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import { PaymentType } from "@prisma/client";
+import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 
-export default function PaymentSummary({ totalToPay }: { totalToPay: number }) {
-  const { payment } = useOrderPaymentContext();
+export default function PaymentSummary() {
+  const { payment, order } = useOrderPaymentContext();
+  const totalToPay = applyDiscount(order.total, order.discount);
 
   const paidPayments = Object.values(PaymentType).filter((type) => {
     const amount = payment.paymentAmounts[type];

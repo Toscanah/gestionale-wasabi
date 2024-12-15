@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AnyOrder, TableOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../../context/WasabiContext";
-import { OrderType } from "@prisma/client";
 import fetchRequest from "../../../util/functions/fetchRequest";
 import { toastError, toastSuccess } from "../../../util/toast";
 import useFocusCycle from "@/app/(site)/components/hooks/useFocusCycle";
@@ -17,6 +16,10 @@ export default function Table({ setOrder }: TableProps) {
   const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
 
+  const [table, setTable] = useState<string>("");
+  const [people, setPeople] = useState<number | undefined>(undefined);
+  const [resName, setResName] = useState<string>("");
+
   const tableRef = useRef<HTMLInputElement>(null);
   const pplRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
@@ -28,14 +31,11 @@ export default function Table({ setOrder }: TableProps) {
   );
 
   const createTableOrder = () => {
-    const people = Number(pplRef.current?.value ?? 1);
-    const table = tableRef.current?.value;
-    const resName = nameRef.current?.value;
-    const content = { table, people, resName };
-
     if (table == "") {
       return toastError("Assicurati di aver aggiunto un tavolo");
     }
+
+    const content = { table, people: people ?? 1, resName };
 
     fetchRequest<{ order: TableOrder; new: boolean }>("POST", "/api/orders/", "createTableOrder", {
       ...content,
@@ -61,6 +61,8 @@ export default function Table({ setOrder }: TableProps) {
           id="table"
           className="w-full text-center text-6xl h-16"
           ref={tableRef}
+          value={table}
+          onChange={(e) => setTable(e.target.value)}
           onKeyDown={handleKeyDown}
         />
       </div>
@@ -73,6 +75,8 @@ export default function Table({ setOrder }: TableProps) {
           id="ppl"
           className="w-full text-center text-6xl h-16"
           ref={pplRef}
+          value={people}
+          onChange={(e) => setPeople(Number(e.target.value))}
           onKeyDown={handleKeyDown}
         />
       </div>
@@ -85,6 +89,8 @@ export default function Table({ setOrder }: TableProps) {
           id="name"
           className="w-full text-center text-6xl h-16"
           ref={nameRef}
+          value={resName}
+          onChange={(e) => setResName(e.target.value)}
           onKeyDown={handleKeyDown}
         />
       </div>

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import getRemainingRice from "../../sql/rice/getRemainingRice";
 import updateRice from "../../sql/rice/updateRice";
 import getTotalRice from "../../sql/rice/getTotalRice";
@@ -6,14 +6,15 @@ import resetRice from "../../sql/rice/resetRice";
 import { z } from "zod";
 import handleRequest from "../util/handleRequest";
 import { RiceSchema } from "@/prisma/generated/zod";
+import { NoContentSchema } from "../../models";
 
 export const riceSchemas = {
-  getRemainingRice: z.undefined(),
-  getTotalRice: z.undefined(),
+  getRemainingRice: NoContentSchema,
+  getTotalRice: NoContentSchema,
   updateRice: z.object({
-    rice: RiceSchema
+    rice: RiceSchema.optional()
   }),
-  resetRice: z.undefined(),
+  resetRice: NoContentSchema,
 };
 
 const POST_ACTIONS = new Map([

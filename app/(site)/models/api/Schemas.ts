@@ -1,6 +1,5 @@
 import { z } from "zod";
-import { AnyOrderSchema } from "../base/Order";
-import { ProductInOrderWithOptionsSchema } from "../base/Product";
+import { AnyOrderSchema, ProductInOrderWithOptionsSchema } from "../.";
 import {
   AddressSchema,
   CategorySchema,
@@ -8,7 +7,6 @@ import {
   OptionSchema,
   PaymentSchema,
 } from "@/prisma/generated/zod";
-import { CategoryWithOptionsSchema } from "../base/Category";
 
 export const CreateSubOrderSchema = z.object({
   parentOrder: AnyOrderSchema,
@@ -26,3 +24,9 @@ export const UpdateOptionsOfCategorySchema = z.object({
 });
 
 export const CreateCustomerSchema = CustomerSchema.omit({ id: true, phone_id: true, active: true });
+
+export const NoContentSchema = z.object({});
+
+export const UpdateAddressSchema = AddressSchema.omit({ active: true });
+
+export const CreateAddressSchema = AddressSchema.omit({ id: true, active: true });

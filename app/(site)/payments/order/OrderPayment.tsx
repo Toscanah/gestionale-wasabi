@@ -20,25 +20,22 @@ interface OrderPaymentProps {
   type: "full" | "partial";
   onOrderPaid: () => void;
   handleBackButton: () => void;
-  order?: AnyOrder;
+  partialOrder?: AnyOrder;
 }
 
 export default function OrderPayment({
   type,
   onOrderPaid,
   handleBackButton,
-  order: propOrder,
+  partialOrder,
 }: OrderPaymentProps) {
-  const { order: contextOrder } = useOrderContext();
-  const order = propOrder || contextOrder;
-
   return (
-    <OrderPaymentProvider type={type} onOrderPaid={onOrderPaid} order={order}>
+    <OrderPaymentProvider type={type} onOrderPaid={onOrderPaid} partialOrder={partialOrder} >
       <div className="w-full h-full flex flex-col gap-6">
         <PaymentMethodsSelection />
 
         <div className="w-full text-4xl flex h-full gap-4">
-          <PaymentSummary totalToPay={applyDiscount(order.total, order.discount)} />
+          <PaymentSummary  />
 
           <Separator orientation="vertical" />
 

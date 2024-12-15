@@ -32,14 +32,17 @@ const schemas = {
 };
 
 export type ValidActionKeys = keyof typeof schemas;
-
 export type PathType = `/api/${APIEndpoint}/` | `/api/${APIEndpoint}`;
+
+type ContentType = z.infer<(typeof schemas)[ValidActionKeys]>;
+type ExcludeEmptyObject<T> = T extends {} ? (keyof T extends never ? never : T) : T;
+type NonEmptyContentType = ExcludeEmptyObject<ContentType>;
 
 export default async function fetchRequest<ReturnType>(
   method: HTTPMethod,
   path: PathType,
   action: ValidActionKeys,
-  content?: z.infer<(typeof schemas)[ValidActionKeys]>
+  content?: NonEmptyContentType
 ): Promise<ReturnType> {
   let url: URL;
   let requestOptions: RequestInit = {
@@ -65,7 +68,10 @@ export default async function fetchRequest<ReturnType>(
       case "POST":
       case "DELETE":
         url = new URL(path, window.location.origin);
-        requestOptions.body = JSON.stringify({ action, content });
+        requestOptions.body = JSON.stringify({
+          action,
+          content: content == undefined ? {} : content,
+        });
         break;
 
       default:

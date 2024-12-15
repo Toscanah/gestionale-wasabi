@@ -74,31 +74,15 @@ export default function AddressForm({
     return updatedCustomer;
   };
 
-  const handleAddressUpdate = async (
-    customerId: number,
-    actionAddress: string,
-    addressContent: object
-  ) => {
-    const updatedAddress = await fetchRequest<Address>(
-      "POST",
-      "/api/addresses/",
-      actionAddress === "create" ? "createAddress" : "updateAddress",
-      { ...addressContent, customer_id: customerId }
-    );
-
-    setSelectedAddress(updatedAddress);
-    setAddresses((prevAddresses) => {
-      const addressExists = prevAddresses.some((address) => address.id === updatedAddress.id);
-
-      return addressExists
-        ? prevAddresses.map((address) =>
-            address.id === updatedAddress.id ? updatedAddress : address
-          )
-        : [...prevAddresses, updatedAddress];
+  const handleCreateAddress = async (address: Omit<Address, "id" | "active">) =>
+    await fetchRequest<Address>("POST", "/api/addresses/", "createAddress", {
+      address: { ...address },
     });
 
-    return updatedAddress;
-  };
+  const handleAddressUpdate = async (address: Omit<Address, "active">) =>
+    await fetchRequest<Address>("POST", "/api/addresses/", "updateAddress", {
+      address: { ...address },
+    });
 
   async function onSubmit(values: Partial<z.infer<typeof formSchema>>) {
     const { street, civic } = parseAddress(values.street);
@@ -113,31 +97,54 @@ export default function AddressForm({
     };
 
     const addressContent = {
-      customer_id: customer?.id,
-      street,
       civic,
       doorbell: values.doorbell,
       floor: values.floor,
       stair: values.stair,
+      street,
       street_info: values.street_info,
       temporary: selectedOption === "temp",
-      id: selectedAddress?.id,
     };
 
     const newExternalInfo = { notes: values.notes, contactPhone: values.contact_phone };
     setExternalInfo(newExternalInfo);
 
-    let updatedCustomer =
-      actionCustomer == "create"
-        ? await handleCreateCustomer(customerCreateContent)
-        : await handleUpdateCustomer(customerContent);
-    const updatedAddress = await handleAddressUpdate(
-      updatedCustomer.id,
-      actionAddress,
-      addressContent
-    );
+    // Handle customer creation or update
+    let updatedCustomer: Customer;
+    if (actionCustomer === "create") {
+      updatedCustomer = await handleCreateCustomer(customerCreateContent);
+    } else {
+      if (!customer) return;
+      updatedCustomer = await handleUpdateCustomer({ ...customer, ...customerCreateContent });
+    }
 
-    toastSuccess("Il cliente e i suoi indirizzi sono stato correttamente aggiornato");
+    let updatedAddress;
+    if (actionAddress === "create") {
+      updatedAddress = await handleCreateAddress({
+        ...addressContent,
+        customer_id: updatedCustomer.id,
+      });
+    } else {
+      if (!selectedAddress) return;
+      updatedAddress = await handleAddressUpdate({
+        ...addressContent,
+        customer_id: updatedCustomer.id,
+        id: selectedAddress.id,
+      });
+    }
+
+    setSelectedAddress(updatedAddress);
+    setAddresses((prevAddresses) => {
+      const addressExists = prevAddresses.some((address) => address.id === updatedAddress.id);
+
+      return addressExists
+        ? prevAddresses.map((address) =>
+            address.id === updatedAddress.id ? updatedAddress : address
+          )
+        : [...prevAddresses, updatedAddress];
+    });
+
+    toastSuccess("Il cliente e i suoi indirizzi sono stato correttamente aggiornati");
   }
 
   useEffect(() => {

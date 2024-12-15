@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import fetchRequest from "../util/functions/fetchRequest";
 import { Rice } from "@prisma/client";
 import { toastSuccess } from "../util/toast";
@@ -63,7 +57,7 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
     );
 
   const updateTotalRice = (total: Rice) =>
-    fetchRequest("POST", "/api/rice/", "updateRice", total).then(() => {
+    fetchRequest("POST", "/api/rice/", "updateRice", { rice: total }).then(() => {
       setRice((prevRice) => ({
         ...prevRice,
         total: { ...total, amount: total.amount + prevRice.total.amount },
