@@ -91,7 +91,6 @@ export default function useOrderPayment(
 
       const updatedTotal = calculateOrderTotal({ ...updatedOrder, products: updatedProducts });
 
-      console.log(updatedProducts)
       updateOrder({
         state: updatedOrder.state,
         products: updatedProducts,
