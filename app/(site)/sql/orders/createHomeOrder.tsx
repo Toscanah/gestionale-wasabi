@@ -7,8 +7,6 @@ export default async function createHomeOrder(
   notes: string,
   contactPhone: string
 ) {
-  console.log(customerId, addressId, notes, contactPhone);
-
   return await prisma.order.create({
     data: {
       type: OrderType.HOME,
@@ -32,6 +30,7 @@ export default async function createHomeOrder(
       },
     },
     include: {
+      payments: true,
       products: {
         include: {
           product: {
