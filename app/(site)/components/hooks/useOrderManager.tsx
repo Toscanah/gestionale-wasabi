@@ -53,18 +53,25 @@ export function useOrderManager(orderId: number, setOrder: Dispatch<SetStateActi
     }).then((newSubOrder) => {
       const updatedProducts = parentOrder.products
         .map((product) => {
-          const matchingProduct = products.find((p) => p.id === product.id);
+          const productToPay = products.find((p) => p.id === product.id);
 
-          if (matchingProduct) {
-            const updatedQuantity = product.quantity - matchingProduct.quantity;
+          if (productToPay) {
+            const paidQuantity = productToPay.quantity;
+            const remainingQuantity = product.quantity - paidQuantity;
 
-            return updatedQuantity > 0
-              ? {
-                  ...product,
-                  quantity: updatedQuantity,
-                  total: updatedQuantity * getProductPrice(product, parentOrder.type),
-                }
-              : null;
+            const newTotal = remainingQuantity * getProductPrice(product, parentOrder.type);
+            const newRiceQuantity = remainingQuantity * product.product.rice;
+
+            const isPaidFully = paidQuantity >= product.quantity;
+
+            return {
+              ...product,
+              quantity: remainingQuantity,
+              paid_quantity: paidQuantity,
+              total: newTotal,
+              rice_quantity: newRiceQuantity,
+              is_paid_fully: isPaidFully,
+            };
           }
 
           return product;
