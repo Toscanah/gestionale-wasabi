@@ -11,6 +11,7 @@ import StatsSection from "./sections/StatsSection";
 import PaymentSection from "./sections/PaymentSection";
 import RiceSection from "./sections/RiceSection";
 import KitchenSettings from "./sections/KitchenSettingsSection";
+import Footer from "./Footer";
 
 export default function WasabiSidebar() {
   return (
@@ -35,6 +36,8 @@ export default function WasabiSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <Footer />
     </Sidebar>
   );
 }

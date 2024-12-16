@@ -1,4 +1,3 @@
-
 import { CategoryWithOptions } from "../../models";
 import prisma from "../db";
 

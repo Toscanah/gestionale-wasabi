@@ -22,7 +22,7 @@ export default async function handleRequest(
 }
 
 async function handleGetRequest(request: NextRequest) {
-  const fieldsThatShouldRemainString = ["phone"];
+  const fieldsThatShouldRemainString = ["phone", "tableToJoin"];
 
   const params = request.nextUrl.searchParams;
   const action = params.get("action") ?? "";

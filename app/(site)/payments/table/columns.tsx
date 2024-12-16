@@ -1,12 +1,15 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { OrderWithPayments } from "@/app/(site)/models";
+import { AnyOrder, OrderWithPayments } from "@/app/(site)/models";
 import { Badge } from "@/components/ui/badge";
 import { OrderType } from "@prisma/client";
 import applyDiscount from "../../util/functions/applyDiscount";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import OrderSummary from "./OrderSummary";
+import print from "../../printing/print";
+import OrderReceipt from "../../printing/receipts/OrderReceipt";
+import fetchRequest from "../../util/functions/fetchRequest";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({
@@ -76,10 +79,28 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   }),
 
   TableColumn({
-    accessorKey: "ordine",
-    header: "Ordine",
-    cellContent: (row) => <OrderSummary order={row.original} />,
+    accessorKey: "print",
+    header: "Ristampa",
+    cellContent: (row) => (
+      <Button
+        onClick={async () => {
+          const order = await fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrderById", {
+            orderId: row.original.id,
+          });
+
+          await print(() => OrderReceipt<typeof order>(order, "none", false, true));
+        }}
+      >
+        Stampa
+      </Button>
+    ),
   }),
+
+  // TableColumn({
+  //   accessorKey: "ordine",
+  //   header: "Ordine",
+  //   cellContent: (row) => <OrderSummary order={row.original} />,
+  // }),
 ];
 
 export default columns;

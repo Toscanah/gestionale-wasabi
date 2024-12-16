@@ -1,5 +1,3 @@
-import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import { OrderType } from "@prisma/client";
 import { AnyOrder, HomeOrder } from "@/app/(site)/models";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { toastSuccess } from "@/app/(site)/util/toast";
@@ -19,7 +17,6 @@ export default function QuickPaymentOptions({
   setQuickPaymentOption,
 }: QuickPaymentOptionsProps) {
   const { order, updateOrder } = useOrderContext();
-  const { updateGlobalState } = useWasabiContext();
 
   const quickPaymentOptions: { value: QuickPaymentOption; label: string }[] = [
     { value: "already_paid", label: "Già pagato" },
@@ -38,7 +35,7 @@ export default function QuickPaymentOptions({
     }).then((updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
       updateOrder({
-        home_order: { notes: updatedOrder.home_order?.notes },
+        home_order: { ...updatedOrder.home_order, notes: updatedOrder.home_order?.notes },
         is_receipt_printed: false,
       });
     });

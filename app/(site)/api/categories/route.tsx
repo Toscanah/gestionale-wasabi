@@ -5,16 +5,16 @@ import createNewCategory from "../../sql/categories/createNewCategory";
 import updateCategory from "../../sql/categories/updateCategory";
 import toggleCategory from "../../sql/categories/toggleCategory";
 import handleRequest from "../util/handleRequest";
-import { CategoryWithOptionsSchema, NoContentSchema } from "../../models";
+import { CategoryWithOptionsSchema, CreateCategorySchema, NoContentSchema, UpdateCategorySchema } from "../../models";
 
 // Define categorySchemas for validation
 export const categorySchemas = {
   getCategories: NoContentSchema,
   updateCategory: z.object({
-    category: CategoryWithOptionsSchema,
+    category: UpdateCategorySchema,
   }),
   createNewCategory: z.object({
-    category: CategoryWithOptionsSchema,
+    category: CreateCategorySchema,
   }),
   toggleCategory: z.object({
     id: z.number(),

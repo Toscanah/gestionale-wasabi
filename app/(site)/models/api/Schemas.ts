@@ -1,11 +1,12 @@
 import { z } from "zod";
-import { AnyOrderSchema, ProductInOrderWithOptionsSchema } from "../.";
+import { AnyOrderSchema, CategoryWithOptionsSchema, ProductInOrderWithOptionsSchema } from "../.";
 import {
   AddressSchema,
   CategorySchema,
   CustomerSchema,
   OptionSchema,
   PaymentSchema,
+  ProductSchema,
 } from "@/prisma/generated/zod";
 
 export const CreateSubOrderSchema = z.object({
@@ -23,10 +24,34 @@ export const UpdateOptionsOfCategorySchema = z.object({
   options: z.array(OptionSchema),
 });
 
-export const CreateCustomerSchema = CustomerSchema.omit({ id: true, phone_id: true, active: true });
+export const CreateCustomerSchema = CustomerSchema.omit({
+  id: true,
+  phone_id: true,
+  name: true,
+  surname: true,
+}).extend({ phone: z.string() });
+
+export const UpdateCustomerSchema = CustomerSchema.extend({ phone: z.string() });
 
 export const NoContentSchema = z.object({});
 
 export const UpdateAddressSchema = AddressSchema.omit({ active: true });
 
-export const CreateAddressSchema = AddressSchema.omit({ id: true, active: true });
+export const CreateAddressSchema = AddressSchema.omit({ id: true });
+
+export const CreateProductSchema = ProductSchema.omit({ id: true }).partial({
+  category_id: true,
+  rice: true,
+});
+
+export const UpdateProductSchema = ProductSchema.omit({ active: true });
+
+export const CreateCategorySchema = CategoryWithOptionsSchema.omit({ id: true }).partial({
+  options: true,
+});
+
+export const UpdateCategorySchema = CategoryWithOptionsSchema.omit({ active: true });
+
+export const CreateOptionSchema = OptionSchema.omit({ id: true });
+
+export const UpdateOptionSChema = OptionSchema.omit({ active: true });

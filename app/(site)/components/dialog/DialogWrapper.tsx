@@ -96,7 +96,7 @@ export default function DialogWrapper({
             <div className="w-full flex gap-2">
               <DialogClose asChild>
                 <Button className="w-full" variant={"outline"}>
-                  Indietro, ho cambiato idea
+                  Ho cambiato idea
                 </Button>
               </DialogClose>
 

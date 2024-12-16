@@ -17,6 +17,8 @@ export default function CustomersDashboard() {
   const [customers, setCustomers] = useState<CustomerWithDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // useEffect(() => {console.log(customers[0].addresses)}, [customers])
+
   useEffect(() => {
     fetchRequest<CustomerWithDetails[]>("GET", "/api/customers/", "getCustomersWithDetails").then(
       (customers) => {
@@ -59,6 +61,7 @@ export default function CustomersDashboard() {
           </div>
         ) : (
           <Manager<CustomerWithDetails>
+            type="customer"
             receivedData={customers}
             columns={columns(customers, setCustomers)}
             FormFields={Fields}

@@ -52,6 +52,10 @@ export default function Overview({
     setLastAddressId("");
     setPermAddresses(addresses.filter((address) => !address.temporary));
     setTempAddress(addresses.find((address) => address.temporary));
+    console.log(
+      "LOL",
+      addresses.find((address) => address.temporary)
+    );
   }, [addresses]);
 
   useEffect(() => {
@@ -216,9 +220,8 @@ export default function Overview({
           <Button
             className="text-4xl h-16 w-full"
             disabled={
-              !selectedAddress ||
-              selectedOption === "new" ||
-              (selectedAddress && tempAddress !== undefined)
+              (selectedOption == "new" && selectedAddress == undefined) ||
+              (selectedOption == "temp" && selectedAddress == undefined)
             }
             onClick={createHomeOrder}
           >

@@ -20,13 +20,16 @@ const columns = (): ColumnDef<CustomerWithDetails>[] => [
   TableColumn({
     accessorKey: "addresses",
     header: "Indirizzi",
-    cellContent: (row) =>
-      row.original.addresses
-        .map(
-          (address) =>
-            address.street.charAt(0).toUpperCase() + address.street.slice(1) + " " + address.civic
-        )
-        .join(", "),
+    cellContent: (row) => (
+      <div className="max-w-64">
+        {row.original.addresses
+          .map(
+            (address) =>
+              address.street.charAt(0).toUpperCase() + address.street.slice(1) + " " + address.civic
+          )
+          .join(", ")}
+      </div>
+    ),
   }),
 
   // TableColumn({

@@ -12,15 +12,20 @@ import updatePrintedAmounts from "../../sql/products/updatePrintedAmounts";
 import { z } from "zod";
 import handleRequest from "../util/handleRequest";
 import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
-import { NoContentSchema, ProductInOrderWithOptionsSchema } from "../../models";
+import {
+  CreateProductSchema,
+  NoContentSchema,
+  ProductInOrderWithOptionsSchema,
+  UpdateProductSchema,
+} from "../../models";
 
 export const productSchemas = {
   getProducts: NoContentSchema,
   createNewProduct: z.object({
-    product: ProductSchema,
+    product: CreateProductSchema,
   }),
   updateProduct: z.object({
-    product: ProductSchema,
+    product: UpdateProductSchema,
   }),
   addProductToOrder: z.object({
     order: OrderSchema,

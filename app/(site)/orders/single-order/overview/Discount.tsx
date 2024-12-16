@@ -19,7 +19,7 @@ export default function Discount() {
       (discount: number) =>
         fetchRequest<AnyOrder>("POST", "/api/orders/", "updateDiscount", {
           orderId: order.id,
-          discount,
+          discount: discount,
         }).then((updatedOrder) => {
           toastSuccess("Sconto aggiornato correttamente");
           updateOrder({ discount: updatedOrder.discount, is_receipt_printed: false });
@@ -30,8 +30,9 @@ export default function Discount() {
   );
 
   const handleDiscount = (discount: number) => {
-    setDiscount(discount);
-    debouncedFetch(discount);
+    let correctDiscount = isNaN(discount) ? undefined : discount;
+    setDiscount(correctDiscount);
+    debouncedFetch(correctDiscount ?? 0);
   };
 
   return (
