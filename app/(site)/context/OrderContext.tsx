@@ -33,6 +33,7 @@ type OrderContextType = {
   updateProductOption: (productInOrderId: number, optionId: number) => void;
   updateUnprintedProducts: () => Promise<ProductInOrder[]>;
   updateOrder: (order: RecursivePartial<AnyOrder>) => void;
+  joinTableOrders: (tableToJoin: string) => void;
 };
 
 export const OrderProvider = ({
@@ -48,7 +49,11 @@ export const OrderProvider = ({
 
   const toggleDialog = (dialogOpen: boolean) => setDialogOpen(dialogOpen);
 
-  const { updateOrder, cancelOrder, createSubOrder } = useOrderManager(order.id, setOrder);
+  const { updateOrder, cancelOrder, createSubOrder, joinTableOrders } = useOrderManager(
+    order.id,
+    setOrder,
+    dialogOpen
+  );
   const {
     addProduct,
     addProducts,
@@ -65,6 +70,7 @@ export const OrderProvider = ({
     <OrderContext.Provider
       value={{
         order,
+        joinTableOrders,
         setOrder,
         dialogOpen,
         toggleDialog,

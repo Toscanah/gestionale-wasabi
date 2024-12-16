@@ -15,6 +15,7 @@ import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { CustomerWithDetails } from "@/app/(site)/models";
+import { toastError } from "@/app/(site)/util/toast";
 
 interface CustomerAddressesProps {
   addresses: Address[];
@@ -29,13 +30,28 @@ export default function CustomerAddresses({
 }: CustomerAddressesProps) {
   const [currentAddresses, setCurrentAddresses] = useState<Address[]>(addresses ?? []);
 
-  const saveAddresses = () =>
-    fetchRequest<CustomerWithDetails[]>("POST", "/api/customers", "updateAddressesOfCustomer", {
+  const saveAddresses = () => {
+    if (currentAddresses.some((address) => !address.civic?.trim() || !address.street?.trim())) {
+      return toastError("Tutti gli indirizzi devono avere almeno un civico e via validi");
+    }
+
+    fetchRequest<CustomerWithDetails>("POST", "/api/customers", "updateAddressesOfCustomer", {
       addresses: currentAddresses,
       customerId,
-    }).then((updatedCustomers) => {
-      setCustomers(updatedCustomers);
+    }).then((updatedCustomer) => {
+      // setCustomers((prevCustomers) =>
+      //   prevCustomers.map((customer) =>
+      //     customer.id === customerId
+      //       ? {
+      //           ...customer,
+      //           addresses: updatedCustomer.addresses,
+      //         }
+      //       : customer
+      //   )
+      // );
+      location.reload();
     });
+  };
 
   const addAddress = () =>
     setCurrentAddresses((prevAddresses) => [
@@ -54,13 +70,12 @@ export default function CustomerAddresses({
       ...prevAddresses,
     ]);
 
-  const toggleAddress = (addressToToggle: Address) => {
+  const toggleAddress = (addressToToggle: Address) =>
     setCurrentAddresses((prevAddresses) =>
       prevAddresses.map((address) =>
         address.id === addressToToggle.id ? { ...address, active: !address.active } : address
       )
     );
-  };
 
   const updateField = (addressId: number, key: keyof Address, value: any) => {
     const newAddresses = currentAddresses.map((address) => {
@@ -91,7 +106,7 @@ export default function CustomerAddresses({
       <Accordion
         type="single"
         collapsible
-        className="max-h-[450px] w-[40vw] overflow-y-auto overflow-x-hidden pr-4"
+        className="max-h-[450px] overflow-y-auto overflow-x-hidden pr-4"
       >
         {currentAddresses.length > 0 ? (
           currentAddresses.map((address, index) => (

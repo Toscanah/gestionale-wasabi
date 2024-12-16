@@ -11,17 +11,19 @@ import logo from "../../../../public/logo.png";
 import Image from "next/image";
 import { CategoryWithOptions } from "../../models";
 import { Option } from "@/prisma/generated/zod";
+import { OptionOption } from "./CategoryOptions";
 
 type FormValues = Partial<CategoryWithOptions>;
 
 export default function CategoryDashboard() {
   const [categories, setCategories] = useState<CategoryWithOptions[]>([]);
-  const [options, setOptions] = useState<Option[]>([]);
+  const [options, setOptions] = useState<OptionOption[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchRequest<CategoryWithOptions[]>("GET", "/api/categories/", "getCategories").then(
       (categories) => {
+        console.log(categories);
         setCategories(categories);
         setLoading(false);
       }
@@ -29,8 +31,8 @@ export default function CategoryDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchRequest<Option[]>("GET", "/api/options/", "getAllOptions").then((options) =>
-      setOptions(options.filter((p) => p.active))
+    fetchRequest<OptionOption[]>("GET", "/api/options/", "getAllOptions").then((options) =>
+      setOptions(options.filter((p) => p.option.active))
     );
   }, []);
 
@@ -62,6 +64,7 @@ export default function CategoryDashboard() {
           </div>
         ) : (
           <Manager<CategoryWithOptions>
+            type="category"
             receivedData={categories}
             columns={columns}
             FormFields={Fields}

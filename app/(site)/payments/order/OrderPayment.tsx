@@ -32,12 +32,6 @@ export default function OrderPayment({
 }: OrderPaymentProps) {
   const { dialogOpen, createSubOrder, order: parentOrder } = useOrderContext();
 
-  useEffect(() => {
-    if (!dialogOpen && type == "partial" && partialOrder) {
-      createSubOrder(parentOrder, partialOrder.products);
-    }
-  }, [dialogOpen]);
-
   return (
     <OrderPaymentProvider type={type} onOrderPaid={onOrderPaid} partialOrder={partialOrder}>
       <div className="w-full h-full flex flex-col gap-6">

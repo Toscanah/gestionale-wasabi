@@ -1,7 +1,12 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
+import { AnyOrder } from "../../models";
 
-export default async function createPickupOrder(name: string, when: string, phone?: string) {
+export default async function createPickupOrder(
+  name: string,
+  when: string,
+  phone?: string
+): Promise<AnyOrder> {
   let orderName = name;
   let customerData = undefined;
 
@@ -11,7 +16,6 @@ export default async function createPickupOrder(name: string, when: string, phon
       include: { customer: true },
     });
 
-    // Phone exists, connect the existing customer
     if (existingPhone) {
       const customer = existingPhone.customer;
 

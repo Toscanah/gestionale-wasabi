@@ -1,17 +1,16 @@
 import { z } from "zod";
 import getZodField from "../../util/functions/getZodField";
 import { FormFieldType } from "../FormFields";
-import CategoryOptions from "./CategoryOptions";
+import CategoryOptions, { OptionOption } from "./CategoryOptions";
 import { ControllerRenderProps } from "react-hook-form";
 import { Option } from "@/prisma/generated/zod";
 
 export const formSchema = z.object({
   category: getZodField("string"),
   options: z.array(z.any()).optional(),
-
 });
 
-export function getCategoryFields(options: Option[]): FormFieldType[] {
+export function getCategoryFields(options: OptionOption[]): FormFieldType[] {
   return [
     {
       name: "category",
@@ -29,6 +28,5 @@ export function getCategoryFields(options: Option[]): FormFieldType[] {
         );
       },
     },
-    
   ];
 }

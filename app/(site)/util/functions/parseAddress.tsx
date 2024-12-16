@@ -1,11 +1,13 @@
 export default function parseAddress(street: string) {
-  let index = 0;
-  while (index < street.length && !/\d/.test(street[index])) {
-    index++;
+  const civicMatch = street.match(/(?:\D*\d+|\s*\d+)(?=\s|$)/);
+
+  if (civicMatch) {
+    const index = street.indexOf(civicMatch[0]);
+    const streetName = street.slice(0, index).trim();
+    const civic = civicMatch[0].trim();
+
+    return { street: streetName, civic };
   }
 
-  const streetName = street.slice(0, index).trim();
-  const civic = street.slice(index).trim();
-
-  return { street: streetName, civic };
+  return { street: street.trim(), civic: "" };
 }

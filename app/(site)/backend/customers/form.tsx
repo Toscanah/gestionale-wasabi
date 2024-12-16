@@ -11,6 +11,7 @@ export const formSchema = z.object({
   email: getZodField("string", false),
   preferences: getZodField("string", false),
   phone_id: getZodField("any", false),
+  active: getZodField("boolean", false)
 });
 
 export function getCustomerFields(): FormFieldType[] {
@@ -38,6 +39,7 @@ export function getCustomerFields(): FormFieldType[] {
       children: <Textarea className="resize-none" />,
     },
     { name: "phone_id", label: "phone_id" },
+  
     // {
     //   name: "addresses",
     //   label: "Indirizzi",

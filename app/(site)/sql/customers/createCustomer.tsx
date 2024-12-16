@@ -1,14 +1,16 @@
 import { Customer } from "@prisma/client";
 import prisma from "../db";
 
-export default async function createCustomer(customer: Customer, phone: string) {
+export default async function createCustomer(customer: Customer & { phone: string }) {
+  const { phone, ...customerData } = customer;
+
   const newPhone = await prisma.phone.create({
     data: { phone },
   });
 
   return await prisma.customer.create({
     data: {
-      ...customer,
+      ...customerData,
       phone_id: newPhone.id,
     },
     include: {

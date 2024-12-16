@@ -8,17 +8,17 @@ import toggleOption from "../../sql/options/toggleOption";
 import handleRequest from "../util/handleRequest";
 import { z } from "zod";
 import { OptionSchema } from "@/prisma/generated/zod";
-import { NoContentSchema, UpdateOptionsOfCategorySchema } from "../../models";
+import { CreateOptionSchema, NoContentSchema, UpdateOptionSChema, UpdateOptionsOfCategorySchema } from "../../models";
 
 export const optionSchemas = {
   getAllOptions: NoContentSchema,
   getAllOptionsWithCategories: NoContentSchema,
   updateOptionsOfCategory: UpdateOptionsOfCategorySchema,
   updateOption: z.object({
-    option: OptionSchema,
+    option: UpdateOptionSChema,
   }),
   createNewOption: z.object({
-    newOption: OptionSchema,
+    option: CreateOptionSchema,
   }),
   toggleOption: z.object({
     id: z.number(),

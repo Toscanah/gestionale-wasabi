@@ -15,14 +15,20 @@ import deleteEverything from "../../sql/deleteEverything";
 import { z } from "zod";
 import { CreateSubOrderSchema, NoContentSchema } from "../../models";
 import handleRequest from "../util/handleRequest";
+import joinTableOrders from "../../sql/orders/joinTableOrders";
+import updateTable from "../../sql/orders/updateTable";
+import getOrderById from "../../sql/orders/getOrderById";
 
 export const orderSchemas = {
+  getOrderById: z.object({
+    orderId: z.number(),
+  }),
   getOrdersByType: z.object({
     type: z.nativeEnum(OrderType),
   }),
   updateDiscount: z.object({
     orderId: z.number(),
-    discount: z.number(),
+    discount: z.number().optional(),
   }),
   updateOrderNotes: z.object({
     orderId: z.number(),
@@ -36,7 +42,7 @@ export const orderSchemas = {
   createPickupOrder: z.object({
     name: z.string(),
     when: z.string(),
-    phone: z.string().optional(),
+    phone: z.string(),
   }),
   createHomeOrder: z.object({
     customerId: z.number(),
@@ -60,10 +66,19 @@ export const orderSchemas = {
     ordersId: z.array(z.number()),
   }),
   deleteEverything: NoContentSchema,
+  joinTableOrders: z.object({
+    tableToJoin: z.string(),
+    originalOrderId: z.number(),
+  }),
+  updateTable: z.object({
+    table: z.string(),
+    orderId: z.number(),
+  }),
 };
 
 const GET_ACTIONS = new Map([
   ["getOrdersByType", { func: getOrdersByType, schema: orderSchemas.getOrdersByType }],
+  ["getOrderById", { func: getOrderById, schema: orderSchemas.getOrderById }],
 ]);
 
 const POST_ACTIONS = new Map([
@@ -76,6 +91,8 @@ const POST_ACTIONS = new Map([
   ["cancelOrder", { func: cancelOrder, schema: orderSchemas.cancelOrder }],
   ["createSubOrder", { func: createSubOrder, schema: orderSchemas.createSubOrder }],
   ["updatePrintedFlag", { func: updatePrintedFlag, schema: orderSchemas.updatePrintedFlag }],
+  ["joinTableOrders", { func: joinTableOrders, schema: orderSchemas.joinTableOrders }],
+  ["updateTable", { func: updateTable, schema: orderSchemas.updateTable }],
 ]);
 
 const DELETE_ACTIONS = new Map([

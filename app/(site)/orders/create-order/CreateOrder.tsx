@@ -30,7 +30,11 @@ export default function CreateOrder({ type, triggerClassName, children }: Create
     [OrderType.PICKUP, { name: "Ordine per asporto", component: <Pickup setOrder={setOrder} /> }],
   ]);
 
-  useEffect(() => setOrder(generateEmptyOrder(type)), [open]);
+  useEffect(() => {
+    if (open) {
+      setOrder(generateEmptyOrder(type));
+    }
+  }, [open]);
 
   return (
     <DialogWrapper

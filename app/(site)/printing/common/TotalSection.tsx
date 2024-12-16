@@ -12,6 +12,7 @@ export default function TotalSection(
   return (
     <>
       <Br />
+      <Br />
 
       <Text size={getReceiptSize(2, 2)} align="center" bold={bold}>
         {`TOTALE: ${formatAmount(

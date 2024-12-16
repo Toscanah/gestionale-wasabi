@@ -75,6 +75,7 @@ export default function ProductDashboard() {
             columns={columns}
             FormFields={Fields}
             path="/api/products/"
+            type="product"
             fetchActions={{
               add: "createNewProduct",
               toggle: "toggleProduct",

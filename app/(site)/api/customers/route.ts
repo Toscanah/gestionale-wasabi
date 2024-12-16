@@ -9,7 +9,12 @@ import getCustomerWithDetails from "../../sql/customers/getCustomerWithDetails";
 import updateCustomerFromAdmin from "../../sql/customers/updateCustomerFromAdmin";
 import getCustomersByDoorbell from "../../sql/customers/getCustomersByDoorbell";
 import { z } from "zod";
-import { CustomerWithAddressesAndOrdersSchema, CreateCustomerSchema, NoContentSchema } from "../../models";
+import {
+  CustomerWithAddressesAndOrdersSchema,
+  CreateCustomerSchema,
+  NoContentSchema,
+  UpdateCustomerSchema,
+} from "../../models";
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import handleRequest from "../util/handleRequest";
 
@@ -19,14 +24,13 @@ export const customerSchemas = {
   getCustomersWithDetails: NoContentSchema,
   getCustomersByDoorbell: z.object({ doorbell: z.string() }),
   updateCustomerFromAdmin: z.object({
-    customer: CustomerWithAddressesAndOrdersSchema,
+    customer: UpdateCustomerSchema,
   }),
   updateCustomerFromOrder: z.object({
     customer: CustomerSchema,
   }),
   createCustomer: z.object({
     customer: CreateCustomerSchema,
-    phone: z.string(),
   }),
   toggleCustomer: z.object({ id: z.number() }),
   updateAddressesOfCustomer: z.object({
@@ -63,7 +67,7 @@ const GET_ACTIONS = new Map([
     { func: getCustomerWithDetails, schema: customerSchemas.getCustomerWithDetails },
   ],
   [
-    "fetchCustomersByDoorbell",
+    "getCustomersByDoorbell",
     { func: getCustomersByDoorbell, schema: customerSchemas.getCustomersByDoorbell },
   ],
 ]);

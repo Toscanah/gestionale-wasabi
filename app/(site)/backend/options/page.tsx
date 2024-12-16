@@ -60,6 +60,7 @@ export default function OptionsDashboard() {
             columns={columns}
             FormFields={Fields}
             path="/api/options/"
+            type="option"
             fetchActions={{
               add: "createNewOption",
               toggle: "toggleOption",

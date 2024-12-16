@@ -47,7 +47,6 @@ export default function DivideOrder({
 
     const sourceProduct = sourceCopy.find((p) => p.id === product.id);
     if (sourceProduct) {
-      // Adjust quantity and total in source
       if (sourceProduct.quantity > 1) {
         sourceProduct.quantity -= 1;
       } else {
@@ -79,8 +78,10 @@ export default function DivideOrder({
   };
 
   useEffect(() => {
-    if (!dialogOpen && rightProducts.length > 0 && !goPay) {
-      createSubOrder(order, rightProducts);
+    const asyncSubOrder = async () => await createSubOrder(order, rightProducts);
+
+    if (!dialogOpen && rightProducts.length > 0) {
+      setTimeout(asyncSubOrder, 0);
     }
   }, [dialogOpen]);
 
@@ -131,7 +132,7 @@ export default function DivideOrder({
           className="w-1/2 bg-green-500 text-black"
           disabled={rightProducts.length <= 0}
         >
-          INCASSA
+          STAMPA e INCASSA
         </Button>
       </div>
     </div>

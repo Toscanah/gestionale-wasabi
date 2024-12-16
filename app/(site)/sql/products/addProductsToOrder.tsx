@@ -43,6 +43,20 @@ export default async function addProductsToOrder(
     })
   );
 
+  const optionsToCreate = newProducts.flatMap((newProduct, index) => {
+    const originalProduct = products[index];
+    return (originalProduct.options || []).map((option) => ({
+      product_in_order_id: newProduct.id,
+      option_id: option.option.id,
+    }));
+  });
+
+  if (optionsToCreate.length > 0) {
+    await prisma.optionInProductOrder.createMany({
+      data: optionsToCreate,
+    });
+  }
+
   // Update the total price of the order
   await prisma.order.update({
     where: {

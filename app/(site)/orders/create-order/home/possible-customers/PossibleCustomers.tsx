@@ -15,8 +15,8 @@ export default function PossibleCustomers({ possibleCustomers, setPhone }: Possi
   return (
     <Table
       table={table}
-      tableClassName="*:text-2xl max-w-full"
-      headerClassName="*:text-2xl"
+      tableClassName="max-w-full "
+      headerClassName="" // *:text-2xl
       onRowClick={(customer) => setPhone(customer.phone?.phone ?? "")}
     />
   );

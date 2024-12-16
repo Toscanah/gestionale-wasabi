@@ -36,6 +36,7 @@ interface ManagerProps<T extends { id: number; active: boolean }> {
   fetchActions: ActionsType;
   FormFields: ComponentType<FormFieldsProps<T>>;
   columns: ColumnDef<T>[];
+  type: "product" | "category" | "option" | "customer";
 }
 
 interface FormFieldsProps<T extends { id: number; active: boolean }> {
@@ -50,18 +51,17 @@ export default function Manager<T extends { id: number; active: boolean }>({
   fetchActions,
   columns,
   FormFields,
+  type,
 }: ManagerProps<T>) {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
   const [data, setData] = useState<T[]>(receivedData);
   const [onlyActive, setOnlyActive] = useState<boolean>(true);
 
-  const triggerIcons = (disabled: boolean) => {
-    return {
-      delete: disabled ? "Attiva" : "Disattiva",
-      update: <Pencil size={24} className="hover:cursor-pointer" />,
-      add: <Plus size={24} className="hover:cursor-pointer" />,
-    };
-  };
+  const triggerIcons = (disabled: boolean) => ({
+    delete: disabled ? "Attiva" : "Disattiva",
+    update: <Pencil size={24} className="hover:cursor-pointer" />,
+    add: <Plus size={24} className="hover:cursor-pointer" />,
+  });
 
   const handleToggle = (objectToToggle: T) =>
     fetchRequest<T>("POST", path, fetchActions.toggle, {
@@ -82,8 +82,10 @@ export default function Manager<T extends { id: number; active: boolean }>({
 
   const handleUpdate = (newValues: Partial<T>, objectToUpdate: T) =>
     fetchRequest<T>("POST", path, fetchActions.update, {
-      id: objectToUpdate.id,
-      ...newValues,
+      [type]: {
+        id: objectToUpdate.id,
+        ...newValues,
+      },
     }).then((updatedObject) => {
       if (!updatedObject) {
         return toastError("Qualcosa è andato storto");
@@ -93,15 +95,18 @@ export default function Manager<T extends { id: number; active: boolean }>({
       toastSuccess("L'elemento è stato modificato correttamente");
     });
 
-  const handleAdd = (values: Partial<T>) =>
-    fetchRequest<T>("POST", path, fetchActions.add, { ...values } as any).then((newObject) => {
-      if (!newObject) {
-        return toastError("Questo elemento esiste già");
-      }
+  const handleAdd = (values: Partial<T>) => {
+    fetchRequest<T>("POST", path, fetchActions.add, { [type]: { ...values, active: true } }).then(
+      (newObject) => {
+        if (!newObject) {
+          return toastError("Questo elemento esiste già");
+        }
 
-      setData((prevData) => [...prevData, newObject]);
-      toastSuccess("Elemento aggiunto correttamente");
-    });
+        setData((prevData) => [...prevData, newObject]);
+        toastSuccess("Elemento aggiunto correttamente");
+      }
+    );
+  };
 
   const getTrigger = (action: "delete" | "update" | "add", disabled: boolean = false) => (
     <Button type="button">{triggerIcons(disabled)[action]}</Button>

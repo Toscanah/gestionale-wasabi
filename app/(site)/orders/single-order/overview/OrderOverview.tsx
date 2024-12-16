@@ -9,6 +9,7 @@ import Rice from "./Rice";
 import Total from "./Total";
 import NormalActions from "./NormalActions";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import TableChange from "./TableChange";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
@@ -33,6 +34,8 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
         {order.type !== OrderType.TABLE && <Time />}
         <Discount />
       </div>
+
+      {order.type == OrderType.TABLE && <TableChange />}
 
       <div className="mt-auto flex flex-col gap-6">
         <Rice />

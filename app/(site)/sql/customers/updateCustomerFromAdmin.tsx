@@ -1,45 +1,32 @@
+import { Customer } from "@prisma/client";
 import { CustomerWithDetails } from "../../models";
 import prisma from "../db";
 
 export default async function updateCustomerFromAdmin(
-  customer: CustomerWithDetails
+  customer: Customer & { phone: string }
 ): Promise<CustomerWithDetails> {
-  let phoneId: number | null = customer.phone_id ?? null;
+  let phoneId = customer.phone_id ?? null;
+  const { phone, ...customerData } = customer;
 
-  // Handle phone updates or creation
   if (phoneId) {
-    // If phone_id exists, update the phone or delete it
-    if (customer.phone?.phone !== undefined && customer.phone?.phone !== "") {
-      // Update the existing phone record
-      await prisma.phone.update({
-        where: { id: phoneId },
-        data: { phone: customer.phone.phone },
-      });
-    } else {
-      // If no phone is provided or it's an empty string, delete the phone record and set phoneId to null
-      await prisma.phone.delete({
-        where: { id: phoneId },
-      });
-      phoneId = null;
-    }
+    await prisma.phone.update({
+      where: { id: phoneId },
+      data: { phone },
+    });
   } else {
-    // Handle phone creation if a phone number is provided
-    if (customer.phone?.phone) {
-      const newPhone = await prisma.phone.create({
-        data: { phone: customer.phone.phone },
-      });
-      phoneId = newPhone.id;
-    }
+    const newPhone = await prisma.phone.create({
+      data: { phone },
+    });
+    phoneId = newPhone.id;
   }
 
-  // Update the customer record
   return await prisma.customer.update({
     where: { id: customer.id },
     data: {
-      name: customer.name,
-      surname: customer.surname,
-      email: customer.email,
-      preferences: customer.preferences,
+      name: customerData.name,
+      surname: customerData.surname,
+      email: customerData.email,
+      preferences: customerData.preferences,
       phone_id: phoneId,
     },
     include: {

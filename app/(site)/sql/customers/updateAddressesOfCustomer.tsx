@@ -1,11 +1,11 @@
 import { Address } from "@/prisma/generated/zod";
 import prisma from "../db";
 import getCustomersWithDetails from "./getCustomersWithDetails";
+import getCustomerWithDetails from "./getCustomerWithDetails";
 
 export default async function updateAddressesOfCustomer(addresses: Address[], customerId: number) {
   for (const address of addresses) {
     if (address.id > 0) {
-      // Update the existing address if it exists
       await prisma.address.update({
         where: { id: address.id },
         data: {
@@ -20,7 +20,6 @@ export default async function updateAddressesOfCustomer(addresses: Address[], cu
         },
       });
     } else {
-      // Create a new address if it doesn't exist
       await prisma.address.create({
         data: {
           customer_id: customerId,
@@ -37,5 +36,5 @@ export default async function updateAddressesOfCustomer(addresses: Address[], cu
     }
   }
 
-  return getCustomersWithDetails();
+  return getCustomerWithDetails(customerId);
 }

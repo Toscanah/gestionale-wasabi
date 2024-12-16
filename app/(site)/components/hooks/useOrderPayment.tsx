@@ -9,6 +9,7 @@ import { PaymentType } from "@prisma/client";
 import { Payment } from "../../context/OrderPaymentContext";
 import { useOrderContext } from "../../context/OrderContext";
 import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
+import { scaleProducts } from "../../util/functions/scaleProducts";
 
 export default function useOrderPayment(
   type: "full" | "partial",
@@ -62,34 +63,11 @@ export default function useOrderPayment(
         return updateOrder({ state: updatedOrder.state });
       }
 
-      const updatedProducts = originalOrder.products
-        .map((product) => {
-          const productToPay = productsToPay.find((p) => p.id === product.id);
-
-          if (productToPay) {
-            const paidQuantity = productToPay.quantity;
-            const remainingQuantity = product.quantity - paidQuantity;
-
-            const newTotal = remainingQuantity * getProductPrice(product, originalOrder.type);
-            const newRiceQuantity = remainingQuantity * product.product.rice;
-
-            const isPaidFully = paidQuantity >= product.quantity;
-
-            return {
-              ...product,
-              quantity: remainingQuantity,
-              paid_quantity: paidQuantity,
-              total: newTotal,
-              rice_quantity: newRiceQuantity,
-              is_paid_fully: isPaidFully,
-            };
-          }
-
-          return product;
-        })
-        .filter(Boolean) as ProductInOrder[];
-
-      const updatedTotal = calculateOrderTotal({ ...updatedOrder, products: updatedProducts });
+      const { updatedProducts, updatedTotal } = scaleProducts({
+        originalProducts: originalOrder.products,
+        productsToScale: productsToPay,
+        orderType: originalOrder.type,
+      });
 
       updateOrder({
         state: updatedOrder.state,

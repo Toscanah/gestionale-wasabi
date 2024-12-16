@@ -19,10 +19,12 @@ const columns = (
   TableColumn({
     accessorKey: "boordbells",
     header: "Campanelli",
-    cellContent: (row) =>
-      row.original.addresses
+    cellContent: (row) => {
+      // console.log(row.original.addresses);
+      return row.original.addresses
         .map((address) => address.doorbell.charAt(0).toUpperCase() + address.doorbell.slice(1))
-        .join(", "),
+        .join(", ");
+    },
   }),
 
   TableColumn({

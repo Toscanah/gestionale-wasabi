@@ -1,18 +1,23 @@
-import { Dispatch, SetStateAction } from "react";
-import { AnyOrder } from "@/app/(site)/models";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { AnyOrder, TableOrder } from "@/app/(site)/models";
 import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductInOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../context/WasabiContext";
 import createDummyProduct from "../../util/functions/createDummyProduct";
-import { getProductPrice } from "../../util/functions/getProductPrice";
-import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
+import { toastSuccess } from "../../util/toast";
+import { scaleProducts } from "../../util/functions/scaleProducts";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
-export function useOrderManager(orderId: number, setOrder: Dispatch<SetStateAction<AnyOrder>>) {
+export function useOrderManager(
+  orderId: number,
+  setOrder: Dispatch<SetStateAction<AnyOrder>>,
+  dialogOpen: boolean
+) {
   const { updateGlobalState, fetchRemainingRice } = useWasabiContext();
+  const [joinedTables, setJoinedTables] = useState<TableOrder[]>([]);
 
   const updateOrder = (newOrder: RecursivePartial<AnyOrder>) =>
     setOrder((prevOrder) => {
@@ -33,11 +38,14 @@ export function useOrderManager(orderId: number, setOrder: Dispatch<SetStateActi
         is_receipt_printed,
       } as AnyOrder;
 
-      updateGlobalState(updatedOrder, updatedOrder.state == "PAID" ? "delete" : "update");
+      updateGlobalState(
+        updatedOrder,
+        updatedOrder.state == "PAID" || updatedOrder.state == "CANCELLED" ? "delete" : "update"
+      );
       return updatedOrder;
     });
 
-  const cancelOrder = (cooked: boolean = false) =>
+  const cancelOrder = async (cooked: boolean = false) =>
     fetchRequest<AnyOrder>("POST", "/api/orders/", "cancelOrder", {
       orderId,
       cooked,
@@ -46,48 +54,45 @@ export function useOrderManager(orderId: number, setOrder: Dispatch<SetStateActi
       updateGlobalState(deletedOrder, "delete");
     });
 
-  const createSubOrder = (parentOrder: AnyOrder, products: ProductInOrder[]) =>
+  const createSubOrder = async (parentOrder: AnyOrder, products: ProductInOrder[]) =>
     fetchRequest<AnyOrder>("POST", "/api/orders/", "createSubOrder", {
       parentOrder: { ...parentOrder },
       products,
     }).then((newSubOrder) => {
-      const updatedProducts = parentOrder.products
-        .map((product) => {
-          const productToPay = products.find((p) => p.id === product.id);
+      const { updatedProducts, updatedTotal } = scaleProducts({
+        originalProducts: parentOrder.products,
+        productsToScale: products,
+        orderType: parentOrder.type,
+      });
 
-          if (productToPay) {
-            const paidQuantity = productToPay.quantity;
-            const remainingQuantity = product.quantity - paidQuantity;
-
-            const newTotal = remainingQuantity * getProductPrice(product, parentOrder.type);
-            const newRiceQuantity = remainingQuantity * product.product.rice;
-
-            const isPaidFully = paidQuantity >= product.quantity;
-
-            return {
-              ...product,
-              quantity: remainingQuantity,
-              paid_quantity: paidQuantity,
-              total: newTotal,
-              rice_quantity: newRiceQuantity,
-              is_paid_fully: isPaidFully,
-            };
-          }
-
-          return product;
-        })
-        .filter(Boolean) as ProductInOrder[];
-
-      const updatedTotal = calculateOrderTotal(parentOrder);
+      updateGlobalState(newSubOrder, "add");
 
       updateOrder({
         products: updatedProducts,
         total: updatedTotal,
         is_receipt_printed: false,
       });
-
-      updateGlobalState(newSubOrder, "add");
     });
 
-  return { updateOrder, cancelOrder, createSubOrder };
+  const joinTableOrders = (tableToJoin: string) => {
+    fetchRequest<{ updatedOrder: TableOrder; joinedTable: TableOrder }>(
+      "POST",
+      "/api/orders/",
+      "joinTableOrders",
+      { originalOrderId: orderId, tableToJoin }
+    ).then((result) => {
+      setJoinedTables((prev) => [...prev, result.joinedTable]);
+      updateOrder({ ...result.updatedOrder });
+      toastSuccess("Tavoli uniti con successo");
+    });
+  };
+
+  useEffect(() => {
+    if (joinedTables.length > 0) {
+      joinedTables.forEach((table) => updateGlobalState(table, "delete"));
+      setJoinedTables([]);
+    }
+  }, [dialogOpen]);
+
+  return { updateOrder, cancelOrder, createSubOrder, joinTableOrders };
 }
