@@ -2,13 +2,13 @@ import { ProductInOrder } from "@/app/(site)/models";
 import formatReceiptText from "@/app/(site)/util/functions/formatReceiptText";
 import getReceiptSize from "@/app/(site)/util/functions/getReceiptSize";
 import { Fragment } from "react";
-import { Br, Line, Row, Text, TextSize } from "react-thermal-printer";
+import { Line, Text } from "react-thermal-printer";
 
-export default function KitchenProducts({
-  aggregatedProducts,
-}: {
+interface KitchenProductsProps {
   aggregatedProducts: ProductInOrder[];
-}) {
+}
+
+export default function KitchenProducts({ aggregatedProducts }: KitchenProductsProps) {
   const groupedProducts: { [key: string]: ProductInOrder[] } = {};
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);

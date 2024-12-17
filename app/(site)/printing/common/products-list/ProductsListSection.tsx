@@ -17,6 +17,6 @@ export default function ProductsListSection(
   );
 
   return recipient == "customer"
-    ? CustomerProducts({ aggregatedProducts, discount })
+    ? CustomerProducts({ aggregatedProducts, discount,orderType })
     : KitchenProducts({ aggregatedProducts });
 }

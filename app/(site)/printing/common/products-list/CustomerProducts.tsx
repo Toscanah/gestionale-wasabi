@@ -6,6 +6,8 @@ import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
 import formatOptionsString from "@/app/(site)/util/functions/formatOptionsString";
 import { Fragment } from "react";
+import { getProductPrice } from "@/app/(site)/util/functions/getProductPrice";
+import { OrderType } from "@prisma/client";
 
 const MAX_CHAR_PER_LINE = 23;
 const LEFT_PADDING = 5;
@@ -18,9 +20,45 @@ const calculateDiscountAmount = (products: ProductInOrder[], discount: number) =
 interface CustomerProductsProps {
   discount: number;
   aggregatedProducts: ProductInOrder[];
+  orderType: OrderType;
 }
 
-export default function CustomerProducts({ discount, aggregatedProducts }: CustomerProductsProps) {
+export default function CustomerProducts({
+  discount,
+  aggregatedProducts,
+  orderType,
+}: CustomerProductsProps) {
+  const ProductLine = ({ product }: { product: ProductInOrder }) => {
+    // Calculate dynamic lengths for quantity x price and total
+    const quantityLength = String(product.quantity).length; // 1 or 2 chars
+    const priceLength = getProductPrice(product, orderType).toFixed(2).length; // Always 5 chars (e.g., "10.45")
+    const totalLength = product.total.toFixed(2).length; // 1–6 chars
+
+    const quantityPriceLength = quantityLength + 3 + priceLength; // Quantity + "x" + Price
+    const padding = 4;
+    // Remaining space for description
+    const descriptionMax =
+      48 - (4 + padding + quantityPriceLength + padding + totalLength + padding);
+
+    return (
+      <Fragment>
+        <Text inline>{formatReceiptText(product.product.code.toUpperCase(), 4, padding)}</Text>
+
+        <Text inline>{formatReceiptText(product.product.desc, descriptionMax, padding)}</Text>
+
+        <Text inline>
+          {formatReceiptText(
+            product.quantity + " x " + getProductPrice(product, orderType).toFixed(2),
+            quantityPriceLength,
+            padding
+          )}
+        </Text>
+
+        <Text>{formatReceiptText(product.total.toFixed(2), totalLength)}</Text>
+      </Fragment>
+    );
+  };
+
   return (
     <>
       <Text>
@@ -33,19 +71,7 @@ export default function CustomerProducts({ discount, aggregatedProducts }: Custo
 
       {aggregatedProducts.map((product, index) => (
         <Fragment key={product + "-" + index}>
-          <Text >
-            {formatReceiptText(
-              `${product.product.code.toUpperCase()} ${product.product.desc}`,
-              MAX_CHAR_PER_LINE,
-              LEFT_PADDING
-            ) +
-              formatReceiptText(
-                `${product.quantity} x ${formatAmount(product.product.home_price ?? 0)}`,
-                10,
-                Math.max(LEFT_PADDING - (String(product.total).length - 2), 0)
-              )}
-            {formatAmount(product.total).trim()}
-          </Text>
+          {ProductLine({ product })}
 
           {product.options.length > 0 && <Text> - {formatOptionsString(15, product.options)}</Text>}
         </Fragment>

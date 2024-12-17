@@ -39,7 +39,7 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
 
   return (
     <DialogWrapper
-      size="small"
+      size="medium"
       variant="delete"
       trigger={DialogTrigger}
       onDelete={() => onDelete(productsCooked)}

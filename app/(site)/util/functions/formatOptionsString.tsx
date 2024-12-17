@@ -1,6 +1,6 @@
-import { Option } from "@/app/(site)/models";
+import { OptionOption } from "../../backend/categories/CategoryOptions";
 
-export default function formatOptionsString(maxChar: number, options: Option[]) {
+export default function formatOptionsString(maxChar: number, options: OptionOption[]) {
   return options
     .map(
       ({ option }) =>
