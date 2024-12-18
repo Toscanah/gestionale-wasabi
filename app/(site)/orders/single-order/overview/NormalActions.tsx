@@ -98,7 +98,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       <div className="flex gap-6">
         <Button
           className="w-full text-3xl h-12"
-          disabled={order.products.length === 0}
+          disabled={order.products.filter((product) => product.id !== -1).length === 0}
           onClick={handlePrint}
         >
           Stampa
@@ -106,7 +106,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
         <Button
           className="w-full text-3xl h-12"
-          disabled={order.products.length === 0}
+          disabled={order.products.filter((product) => product.id !== -1).length === 0}
           onClick={handleRePrint}
         >
           Ristampa

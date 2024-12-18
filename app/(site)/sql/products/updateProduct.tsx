@@ -24,7 +24,7 @@ export default async function updateProduct(product: Product) {
       home_price: Number(product.home_price) ?? 0,
       rice: product.rice,
       kitchen: product.kitchen,
-      category_id: Number(product.category_id) !== -1 ? Number(product.category_id) : null,
+      category_id: Number(product.category_id) !== undefined ? Number(product.category_id) : null,
     },
     include: {
       category: {

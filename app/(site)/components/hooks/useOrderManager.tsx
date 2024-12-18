@@ -4,7 +4,7 @@ import fetchRequest from "../../util/functions/fetchRequest";
 import { ProductInOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../context/WasabiContext";
 import createDummyProduct from "../../util/functions/createDummyProduct";
-import { toastSuccess } from "../../util/toast";
+import { toastError, toastSuccess } from "../../util/toast";
 import { scaleProducts } from "../../util/functions/scaleProducts";
 
 export type RecursivePartial<T> = {
@@ -81,6 +81,10 @@ export function useOrderManager(
       "joinTableOrders",
       { originalOrderId: orderId, tableToJoin }
     ).then((result) => {
+      if (!result) {
+        return toastError("Tavolo da unire non trovato oppure più ordini con lo stesso tavolo trovati")
+      }
+
       setJoinedTables((prev) => [...prev, result.joinedTable]);
       updateOrder({ ...result.updatedOrder });
       toastSuccess("Tavoli uniti con successo");

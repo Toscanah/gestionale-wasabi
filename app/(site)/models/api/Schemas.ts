@@ -44,7 +44,9 @@ export const CreateProductSchema = ProductSchema.omit({ id: true }).partial({
   rice: true,
 });
 
-export const UpdateProductSchema = ProductSchema.omit({ active: true });
+export const UpdateProductSchema = ProductSchema.omit({ active: true }).partial({
+  category_id: true,
+});
 
 export const CreateCategorySchema = CategoryWithOptionsSchema.omit({ id: true }).partial({
   options: true,

@@ -17,8 +17,6 @@ export default function CustomersDashboard() {
   const [customers, setCustomers] = useState<CustomerWithDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // useEffect(() => {console.log(customers[0].addresses)}, [customers])
-
   useEffect(() => {
     fetchRequest<CustomerWithDetails[]>("GET", "/api/customers/", "getCustomersWithDetails").then(
       (customers) => {

@@ -137,7 +137,7 @@ export default function AddressForm({
         id: selectedAddress.id,
       });
     }
-    console.log(updatedAddress);
+    
     setSelectedAddress(updatedAddress);
     setAddresses((prevAddresses) => {
       const addressExists = prevAddresses.some((address) => address.id === updatedAddress.id);

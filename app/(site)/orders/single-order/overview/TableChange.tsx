@@ -2,7 +2,6 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { TableOrder } from "@/app/(site)/models";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 import { toastSuccess } from "@/app/(site)/util/toast";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
@@ -29,31 +28,37 @@ export default function TableChange() {
     []
   );
 
+  const debouncedHandleTableJoin = useCallback(
+    debounce((tableToJoin: string) => {
+      if (tableToJoin !== "") {
+        joinTableOrders(tableToJoin);
+      }
+    }, 1000),
+    [joinTableOrders]
+  );
+
   const handleTableInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTable = e.target.value;
     setTable(newTable);
     debouncedHandleTableChange(newTable);
   };
 
-  const handleTableJoin = () => {
-    if (join !== "") {
-      joinTableOrders(join);
-    }
+  const handleTableJoinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tableToJoin = e.target.value;
+    setJoin(tableToJoin);
+    debouncedHandleTableJoin(tableToJoin);
   };
 
   return (
     <div className="w-full flex gap-2 items-center">
       <div className="w-1/2 flex flex-col space-y-2">
         <span>Tavolo</span>
-        <Input className="text-xl" value={table} onChange={handleTableInputChange} />
+        <Input className="text-xl h-12" value={table} onChange={handleTableInputChange} />
       </div>
 
       <div className="w-1/2 flex flex-col space-y-2">
         <span>Unisci</span>
-        <div className="flex gap-2 items-center">
-          <Input value={join} onChange={(e) => setJoin(e.target.value)} />
-          <Button onClick={handleTableJoin}>UNISCI</Button>
-        </div>
+        <Input value={join} onChange={handleTableJoinInputChange} className="h-12 text-xl" />
       </div>
     </div>
   );

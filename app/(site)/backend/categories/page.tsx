@@ -23,7 +23,6 @@ export default function CategoryDashboard() {
   useEffect(() => {
     fetchRequest<CategoryWithOptions[]>("GET", "/api/categories/", "getCategories").then(
       (categories) => {
-        console.log(categories);
         setCategories(categories);
         setLoading(false);
       }
