@@ -3,7 +3,7 @@ import addProductsToOrder from "../products/addProductsToOrder";
 import getOrderById from "./getOrderById";
 
 export default async function joinTableOrders(originalOrderId: number, tableToJoin: string) {
-  const orderToJoinId = await prisma.order.findFirst({
+  const possibleOrdersToJoin = await prisma.order.findMany({
     where: {
       table_order: {
         table: String(tableToJoin),
@@ -13,12 +13,13 @@ export default async function joinTableOrders(originalOrderId: number, tableToJo
     select: { id: true },
   });
 
-  if (!orderToJoinId) {
-    throw new Error(`Join table ${tableToJoin} not found`);
+  if (!possibleOrdersToJoin || possibleOrdersToJoin.length !== 1) {
+    return null;
   }
 
+  const orderToJoinId = possibleOrdersToJoin[0];
+
   const orderToJoin = await getOrderById(orderToJoinId.id);
-  const originalOrder = await getOrderById(originalOrderId);
 
   await addProductsToOrder(originalOrderId, orderToJoin.products);
   await Promise.all(

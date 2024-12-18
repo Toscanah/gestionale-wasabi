@@ -95,7 +95,7 @@ export default async function fetchRequest<ReturnType>(
     return await response.json();
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.log(error.message);
+      console.error(error.message);
       throw new Error(`Fetch request failed: ${error.message}`);
     } else {
       throw new Error("An unknown error occurred during fetch.");

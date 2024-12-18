@@ -9,8 +9,16 @@ import { Fragment } from "react";
 import { getProductPrice } from "@/app/(site)/util/functions/getProductPrice";
 import { OrderType } from "@prisma/client";
 
-const MAX_CHAR_PER_LINE = 23;
-const LEFT_PADDING = 5;
+const PRODUCT_HEADER_MAX = 23;
+const PRODUCT_HEADER_PADDING = 5;
+const UNIT_PRICE_HEADER_MAX = 7;
+
+const PRODUCT_CODE_LENGTH = 4;
+const DESCRIPTION_LENGTH = 16;
+const QUANTITY_PRICE_LENGTH = 10;
+const MAX_TOTAL_LENGTH = 6;
+
+const DEFAULT_PADDING = 4;
 
 const calculateDiscountAmount = (products: ProductInOrder[], discount: number) => {
   const total = products.reduce((acc, product) => acc + product.total, 0);
@@ -29,41 +37,53 @@ export default function CustomerProducts({
   orderType,
 }: CustomerProductsProps) {
   const ProductLine = ({ product }: { product: ProductInOrder }) => {
-    // Calculate dynamic lengths for quantity x price and total
-    const quantityLength = String(product.quantity).length; // 1 or 2 chars
-    const priceLength = getProductPrice(product, orderType).toFixed(2).length; // Always 5 chars (e.g., "10.45")
-    const totalLength = product.total.toFixed(2).length; // 1–6 chars
-
-    const quantityPriceLength = quantityLength + 3 + priceLength; // Quantity + "x" + Price
-    const padding = 4;
-    // Remaining space for description
-    const descriptionMax =
-      48 - (4 + padding + quantityPriceLength + padding + totalLength + padding);
+    const actualTotalLength = Math.min(formatAmount(product.total).length, MAX_TOTAL_LENGTH);
+    const additionalPadding = MAX_TOTAL_LENGTH - actualTotalLength;
 
     return (
       <Fragment>
-        <Text inline>{formatReceiptText(product.product.code.toUpperCase(), 4, padding)}</Text>
+        <Text inline>
+          {formatReceiptText(
+            product.product.code.toUpperCase(),
+            PRODUCT_CODE_LENGTH,
+            DEFAULT_PADDING
+          )}
+        </Text>
 
-        <Text inline>{formatReceiptText(product.product.desc, descriptionMax, padding)}</Text>
+        <Text inline>
+          {formatReceiptText(product.product.desc, DESCRIPTION_LENGTH, DEFAULT_PADDING)}
+        </Text>
 
         <Text inline>
           {formatReceiptText(
             product.quantity + " x " + getProductPrice(product, orderType).toFixed(2),
-            quantityPriceLength,
-            padding
+            QUANTITY_PRICE_LENGTH,
+            DEFAULT_PADDING + additionalPadding
           )}
         </Text>
 
-        <Text>{formatReceiptText(product.total.toFixed(2), totalLength)}</Text>
+        <Text>{formatReceiptText(product.total.toFixed(2), actualTotalLength)}</Text>
       </Fragment>
     );
   };
 
+  const maxActualTotalLength = Math.max(
+    ...aggregatedProducts.map((product) =>
+      Math.min(formatAmount(product.total).length, MAX_TOTAL_LENGTH)
+    )
+  );
+
+  let dynamicUnitPricePadding = UNIT_PRICE_HEADER_MAX + (MAX_TOTAL_LENGTH - maxActualTotalLength);
+
+  if (maxActualTotalLength <= 4) {
+    dynamicUnitPricePadding = dynamicUnitPricePadding - 1;
+  }
+
   return (
     <>
       <Text>
-        {formatReceiptText("Prodotto", MAX_CHAR_PER_LINE, LEFT_PADDING)}
-        {formatReceiptText("P.Unit.", 7, 8)}
+        {formatReceiptText("Prodotto", PRODUCT_HEADER_MAX, PRODUCT_HEADER_PADDING)}
+        {formatReceiptText("P.Unit.", UNIT_PRICE_HEADER_MAX, dynamicUnitPricePadding)}
         Tot €
       </Text>
 
@@ -79,7 +99,7 @@ export default function CustomerProducts({
 
       {discount > 0 && (
         <Row
-          left={<Text>Sconto {discount}%</Text>}
+          left={<Text>- {discount}%</Text>}
           right={
             <Text>- {formatAmount(calculateDiscountAmount(aggregatedProducts, discount))}</Text>
           }

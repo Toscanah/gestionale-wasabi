@@ -67,11 +67,7 @@ export default function getColumns(
           ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 0 })}
           className="max-w-28 text-2xl uppercase"
           defaultValue={row.original.product?.code ?? ""}
-          autoFocus={
-            row.original.product_id == -1 
-            // && focusedInput.colIndex == 0 &&
-            // focusedInput.rowIndex == row.index
-          }
+          autoFocus={row.original.product_id == -1}
           onKeyDown={(e: any) => {
             const currentInput = getInputRef({ rowIndex: row.index, colIndex: 0 });
             const inputValue = currentInput?.value || "";
@@ -81,7 +77,10 @@ export default function getColumns(
                 handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
               }
             } else {
-              if (e.key === "Enter") {
+              if (
+                (e.key === "Enter" || e.key === "ArrowRight") &&
+                row.original.product.code !== inputValue
+              ) {
                 handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
                 handleFieldChange("code", e.target.value, row.index);
               } else {
@@ -114,8 +113,14 @@ export default function getColumns(
             autoFocus={focusedInput.rowIndex === row.index && focusedInput.colIndex === 1}
             defaultValue={row.original.quantity == 0 ? 1 : row.original.quantity}
             onKeyDown={(e: any) => {
+              const currentInput = getInputRef({ rowIndex: row.index, colIndex: 1 });
+              const inputValue = Number(currentInput?.value) || 0;
+
               handleKeyNavigation(e, { rowIndex: row.index, colIndex: 1 });
-              if (e.key === "Enter") {
+              if (
+                (e.key === "Enter" || e.key === "ArrowRight") &&
+                row.original.quantity !== inputValue
+              ) {
                 handleFieldChange("quantity", e.target.value, row.index);
               }
             }}

@@ -23,30 +23,37 @@ export default function OrderReceipt<T extends AnyOrder>(
   return (
     <>
       {HeaderSection()}
-      <Br />
 
       {tableOrder && (
-        <Text align="right" size={bigSize}>
-          Tavolo {tableOrder.table}
-        </Text>
+        <>
+          <Br />
+
+          <Text align="right" size={bigSize}>
+            Tavolo {tableOrder.table}
+          </Text>
+          <Br />
+        </>
       )}
 
       {pickupOrder && (
-        <Row
-          left={
-            <Text align="center" size={bigSize}>
-              {pickupOrder.name.toLocaleUpperCase()}
-            </Text>
-          }
-          right={
-            <Text align="center" size={bigSize}>
-              {pickupOrder.when}
-            </Text>
-          }
-        />
+        <>
+          <Br />
+          <Row
+            left={
+              <Text align="center" size={bigSize}>
+                {pickupOrder.name.toLocaleUpperCase()}
+              </Text>
+            }
+            right={
+              <Text align="center" size={bigSize}>
+                {pickupOrder.when == "immediate" ? "Prima possibile" : pickupOrder.when}
+              </Text>
+            }
+          />
+          <Br />
+        </>
       )}
 
-      <Br />
       <Line />
       <Br />
 

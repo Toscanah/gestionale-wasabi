@@ -22,7 +22,7 @@ export default function Pickup({ setOrder }: PickupProps) {
 
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
-  const [when, setWhen] = useState<string>("");
+  const [when, setWhen] = useState<string>("immediate");
 
   const nameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);

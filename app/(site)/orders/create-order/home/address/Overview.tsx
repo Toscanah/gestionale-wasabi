@@ -52,10 +52,6 @@ export default function Overview({
     setLastAddressId("");
     setPermAddresses(addresses.filter((address) => !address.temporary));
     setTempAddress(addresses.find((address) => address.temporary));
-    console.log(
-      "LOL",
-      addresses.find((address) => address.temporary)
-    );
   }, [addresses]);
 
   useEffect(() => {
