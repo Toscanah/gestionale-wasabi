@@ -101,6 +101,17 @@ export default async function createSubOrder(parentOrder: AnyOrder, products: Pr
     }
   }
 
+  const remainingProducts = await prisma.productInOrder.findMany({
+    where: { order_id: parentOrder.id, state: { not: "DELETED_COOKED" } },
+  });
+
+  const updatedTotal = remainingProducts.reduce((sum, product) => sum + product.total, 0);
+
+  await prisma.order.update({
+    where: { id: parentOrder.id },
+    data: { total: updatedTotal },
+  });
+
   await addProductsToOrder(newSubOrder.id, products);
   return await getOrderById(newSubOrder.id);
 }
