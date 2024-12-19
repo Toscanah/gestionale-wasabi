@@ -22,6 +22,7 @@ import getOrderById from "../../sql/orders/getOrderById";
 export const orderSchemas = {
   getOrderById: z.object({
     orderId: z.number(),
+    variant: z.string().default("onlyPaid"),
   }),
   getOrdersByType: z.object({
     type: z.nativeEnum(OrderType),

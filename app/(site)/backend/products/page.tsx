@@ -13,15 +13,11 @@ import { getProductFields } from "./form";
 import logo from "../../../../public/logo.png";
 import Image from "next/image";
 
-export type ProductAndCategory = Omit<Product, "category"> & {
-  category: string;
-};
-
-type FormValues = Partial<ProductAndCategory>;
+type FormValues = Partial<Product>;
 
 export default function ProductDashboard() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [products, setProducts] = useState<ProductAndCategory[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<CategoryWithOptions[]>([]);
 
   useEffect(() => {
@@ -31,7 +27,7 @@ export default function ProductDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchRequest<ProductAndCategory[]>("GET", "/api/products/", "getProducts").then((products) => {
+    fetchRequest<Product[]>("GET", "/api/products/", "getProducts").then((products) => {
       setProducts(products);
       setLoading(false);
     });
@@ -43,7 +39,7 @@ export default function ProductDashboard() {
     footerName,
   }: {
     handleSubmit: (values: FormValues) => void;
-    object?: ProductAndCategory;
+    object?: Product;
     footerName: string;
   }) => (
     <FormFields
@@ -51,7 +47,6 @@ export default function ProductDashboard() {
       footerName={footerName}
       defaultValues={{
         ...object,
-        category: object?.category ?? "",
         category_id: object?.category_id ? Number(object?.category_id) : undefined,
         // home_price: object?.home_price || undefined,
         // site_price: object?.site_price || undefined,
@@ -70,7 +65,7 @@ export default function ProductDashboard() {
             <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
           </div>
         ) : (
-          <Manager<ProductAndCategory>
+          <Manager<Product>
             receivedData={products}
             columns={columns}
             FormFields={Fields}

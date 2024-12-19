@@ -2,9 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/app/(site)/models";
 import TableColumn from "../../components/table/TableColumn";
 import { KitchenType } from "@prisma/client";
-import { ProductAndCategory } from "./page";
 
-const columns: ColumnDef<ProductAndCategory>[] = [
+const columns: ColumnDef<Product>[] = [
   TableColumn({
     accessorKey: "code",
     header: "Codice",
@@ -59,6 +58,8 @@ const columns: ColumnDef<ProductAndCategory>[] = [
   TableColumn({
     accessorKey: "category.category",
     header: "Categoria",
+    cellContent: (row) =>
+      row.original.category == null ? "Nessuna" : row.original.category?.category,
   }),
 ];
 

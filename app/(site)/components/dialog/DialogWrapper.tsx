@@ -70,8 +70,7 @@ export default function DialogWrapper({
         )}
         showCloseButton={showCloseButton}
       >
-        
-        {title || isDeleteVariant && (
+        {(title || isDeleteVariant) && (
           <DialogHeader>
             <DialogTitle className="text-2xl">
               {isDeleteVariant ? (
