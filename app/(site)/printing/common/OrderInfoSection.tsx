@@ -8,13 +8,26 @@ export default function OrderInfoSection(
 ) {
   return (
     <>
-      {order.home_order?.customer.preferences && (
+      {(order.home_order?.customer.preferences || order.home_order?.notes) && (
         <>
-          <Text bold inline>
-            Preferenze:{" "}
-          </Text>
-          <Text>{order.home_order.customer.preferences.toUpperCase()}</Text>
-          <Br />
+          {order.home_order?.customer.preferences && (
+            <>
+              <Text bold inline>
+                Preferenze:{" "}
+              </Text>
+              <Text>{order.home_order.customer.preferences.toUpperCase()}</Text>
+              {!order.home_order?.notes && <Br />}
+            </>
+          )}
+          {order.home_order?.notes && (
+            <>
+              <Text bold inline>
+                Note ordine:{" "}
+              </Text>
+              <Text>{order.home_order.notes.toUpperCase()}</Text>
+              <Br />
+            </>
+          )}
           <Line />
           <Br />
         </>
@@ -51,12 +64,28 @@ export default function OrderInfoSection(
       <Br />
 
       {(order.home_order?.address.floor || order.home_order?.address.stair) && (
-        <Text bold inline>
-          {order.home_order?.address.floor && `Piano: ${order.home_order.address.floor}`}
-          {order.home_order?.address.floor && order.home_order?.address.stair && ", "}
-          {order.home_order?.address.stair && `Scala: ${order.home_order.address.stair}`}
-          <Br />
-        </Text>
+        <>
+          {order.home_order?.address.floor && (
+            <>
+              <Text bold inline>
+                Piano:{" "}
+              </Text>
+              <Text inline={order.home_order?.address.stair !== undefined}>
+                {order.home_order.address.floor}
+              </Text>
+
+              {order.home_order?.address.stair && <Text inline>{", "}</Text>}
+            </>
+          )}
+          {order.home_order?.address.stair && (
+            <>
+              <Text bold inline>
+                Scala:{" "}
+              </Text>
+              <Text>{order.home_order.address.stair}</Text>
+            </>
+          )}
+        </>
       )}
 
       {quickPaymentOption !== "none" && (

@@ -93,7 +93,7 @@ export default function CustomerProducts({
         <Fragment key={product + "-" + index}>
           {ProductLine({ product })}
 
-          {product.options.length > 0 && <Text> - {formatOptionsString(15, product.options)}</Text>}
+          {product.options.length > 0 && <Text>- {formatOptionsString(15, product.options)}</Text>}
         </Fragment>
       ))}
 
