@@ -7,7 +7,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { CaretDown} from "@phosphor-icons/react";
+import { CaretDown } from "@phosphor-icons/react";
 import { Gear } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 
@@ -46,7 +46,7 @@ export default function AdminSection() {
           <CollapsibleContent>
             <SidebarMenuSub>
               {adminItems.map((item) => (
-                <SidebarMenuSubItem>
+                <SidebarMenuSubItem key={item.path}>
                   <SidebarMenuSubButton asChild>
                     <Link href={item.path}>
                       {/* {item.icon} */}

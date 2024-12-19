@@ -31,7 +31,7 @@ export default function StatsSection() {
           <CollapsibleContent>
             <SidebarMenuSub>
               {statsItems.map((item) => (
-                <SidebarMenuSubItem>
+                <SidebarMenuSubItem key={item.path}>
                   <SidebarMenuSubButton asChild>
                     <Link href={item.path}>
                       {/* {item.icon} */}

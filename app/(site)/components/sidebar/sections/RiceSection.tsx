@@ -28,8 +28,8 @@ export default function RiceSection() {
 
           <CollapsibleContent>
             <SidebarMenuSub>
-              {riceItems.map((item: JSX.Element) => (
-                <SidebarMenuSubItem>{item}</SidebarMenuSubItem>
+              {riceItems.map((item: JSX.Element, index) => (
+                <SidebarMenuSubItem key={index}>{item}</SidebarMenuSubItem>
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>
