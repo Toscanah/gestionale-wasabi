@@ -1,16 +1,23 @@
 import { AnyOrder } from "../../models";
 import prisma from "../db";
 
-export default async function getOrderById(orderId: number): Promise<AnyOrder> {
+export default async function getOrderById(
+  orderId: number,
+  variant = "onlyPaid"
+): Promise<AnyOrder> {
   return (await prisma.order.findUnique({
     where: {
       id: orderId,
     },
     include: {
       products: {
-        where: {
-          is_paid_fully: false,
-        },
+        ...(variant !== "onlyPaid"
+          ? {}
+          : {
+              where: {
+                is_paid_fully: false,
+              },
+            }),
         include: {
           product: {
             include: {

@@ -24,7 +24,16 @@ export default async function updateProduct(product: Product) {
       home_price: Number(product.home_price) ?? 0,
       rice: product.rice,
       kitchen: product.kitchen,
-      category_id: Number(product.category_id) !== undefined ? Number(product.category_id) : null,
+      category:
+        product.category_id !== -1
+          ? {
+              connect: {
+                id: Number(product.category_id),
+              },
+            }
+          : {
+              disconnect: true, // Explicitly disconnect category if `category_id` is null
+            },
     },
     include: {
       category: {

@@ -3,21 +3,27 @@ import { CustomerWithDetails } from "../../models";
 import prisma from "../db";
 
 export default async function updateCustomerFromAdmin(
-  customer: Customer & { phone: string }
+  customer: Customer & { phone: string | null }
 ): Promise<CustomerWithDetails> {
   let phoneId = customer.phone_id ?? null;
   const { phone, ...customerData } = customer;
 
-  if (phoneId) {
-    await prisma.phone.update({
-      where: { id: phoneId },
-      data: { phone },
-    });
+  if (phone) {
+    // Update existing phone or create a new one
+    if (phoneId) {
+      await prisma.phone.update({
+        where: { id: phoneId },
+        data: { phone },
+      });
+    } else {
+      const newPhone = await prisma.phone.create({
+        data: { phone },
+      });
+      phoneId = newPhone.id;
+    }
   } else {
-    const newPhone = await prisma.phone.create({
-      data: { phone },
-    });
-    phoneId = newPhone.id;
+    // Disconnect phone if no phone is provided
+    phoneId = null;
   }
 
   return await prisma.customer.update({
@@ -27,7 +33,7 @@ export default async function updateCustomerFromAdmin(
       surname: customerData.surname,
       email: customerData.email,
       preferences: customerData.preferences,
-      phone_id: phoneId,
+      phone: phoneId ? { connect: { id: phoneId } } : { disconnect: true }, // Handle connect or disconnect
     },
     include: {
       phone: true,
@@ -43,9 +49,7 @@ export default async function updateCustomerFromAdmin(
                       category: {
                         include: {
                           options: {
-                            include: {
-                              option: true,
-                            },
+                            include: { option: true },
                           },
                         },
                       },
@@ -69,9 +73,7 @@ export default async function updateCustomerFromAdmin(
                       category: {
                         include: {
                           options: {
-                            include: {
-                              option: true,
-                            },
+                            include: { option: true },
                           },
                         },
                       },

@@ -86,6 +86,7 @@ const columns: ColumnDef<OrderWithPayments>[] = [
         onClick={async () => {
           const order = await fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrderById", {
             orderId: row.original.id,
+            variant: "allProducts",
           });
 
           await print(() => OrderReceipt<typeof order>(order, "none", false, true));

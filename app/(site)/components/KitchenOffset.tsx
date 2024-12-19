@@ -19,11 +19,17 @@ export default function KitchenOffset({ variant }: KitchenOffsetProps) {
     const currentOffset = localStorage.getItem("kitchenOffset");
 
     if (currentOffset) {
-      setOffset(parseInt(currentOffset, 10));
+      const parsedOffset = parseInt(currentOffset, 10);
+      setOffset(isNaN(parsedOffset) ? 0 : parsedOffset); // NaN check with fallback to 0
     } else {
       localStorage.setItem("kitchenOffset", "0");
     }
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const parsedValue = parseInt(e.target.value, 10);
+    setOffset(isNaN(parsedValue) ? 0 : parsedValue); // NaN check with fallback to 0
+  };
 
   return (
     <DialogWrapper
@@ -57,7 +63,7 @@ export default function KitchenOffset({ variant }: KitchenOffsetProps) {
         <Label>
           Anticipo cottura prodotti <p className="text-muted-foreground inline-block">(minuti)</p>
         </Label>
-        <Input onChange={(e) => setOffset(parseInt(e.target.value, 10))} value={offset} />
+        <Input onChange={handleInputChange} value={offset} />
       </div>
     </DialogWrapper>
   );

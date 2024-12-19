@@ -80,7 +80,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             variant="delete"
             onDelete={resetRice}
             trigger={
-              <Button className="w-full border-red-600 text-red-600" variant={"outline"}>
+              <Button className="w-full border-red-600 text-red-600 text-xl" variant={"outline"}>
                 Azzera
               </Button>
             }
@@ -88,7 +88,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             Stai per azzerare il riso, sei sicuro?
           </DialogWrapper>
 
-          <Button type="submit" onClick={() => updateTotalRice(newRice)} className="w-full">
+          <Button type="submit" onClick={() => updateTotalRice(newRice)} className="w-full text-xl">
             Salva
           </Button>
         </>
@@ -119,8 +119,8 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           />
         </div>
 
-        <div className="flex w-full justify-between gap-4">
-          <div className="space-y-2">
+        <div className="flex w-full justify-between space-x-4">
+          <div className="space-y-2 w-full">
             <Label htmlFor="add-rice" className="text-xl">
               Riso da AGGIUNGERE
             </Label>
@@ -133,7 +133,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 w-full">
             <Label htmlFor="rem-rice" className="text-xl">
               Riso da TOGLIERE
             </Label>
@@ -147,8 +147,8 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           </div>
         </div>
 
-        <div className="flex w-full justify-between gap-4">
-          <div className="space-y-2">
+        <div className="flex w-full justify-between space-x-4">
+          <div className="space-y-2 w-full">
             <Label htmlFor="threshold" className="text-xl">
               Soglia avviso
             </Label>
@@ -163,7 +163,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 w-full ">
             <Label htmlFor="total" className="text-xl">
               Riso totale fin ad ora
             </Label>
