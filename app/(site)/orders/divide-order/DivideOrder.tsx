@@ -81,7 +81,7 @@ export default function DivideOrder({
     const asyncSubOrder = async () => await createSubOrder(order, rightProducts);
 
     if (!dialogOpen && rightProducts.length > 0) {
-      setTimeout(asyncSubOrder, 0);
+      asyncSubOrder()
     }
   }, [dialogOpen]);
 
