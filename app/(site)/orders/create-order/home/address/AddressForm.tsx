@@ -137,7 +137,7 @@ export default function AddressForm({
         id: selectedAddress.id,
       });
     }
-    
+
     setSelectedAddress(updatedAddress);
     setAddresses((prevAddresses) => {
       const addressExists = prevAddresses.some((address) => address.id === updatedAddress.id);
@@ -157,7 +157,7 @@ export default function AddressForm({
       street:
         selectedAddress?.street && selectedAddress?.civic
           ? `${selectedAddress.street} ${selectedAddress.civic}`
-          : "",
+          : selectedAddress?.street,
       name: customer?.name || "",
       surname: customer?.surname || "",
       floor: selectedAddress?.floor || "",
