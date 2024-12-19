@@ -42,6 +42,7 @@ export function useOrderManager(
         updatedOrder,
         updatedOrder.state == "PAID" || updatedOrder.state == "CANCELLED" ? "delete" : "update"
       );
+
       return updatedOrder;
     });
 
@@ -67,18 +68,14 @@ export function useOrderManager(
 
       updateGlobalState(newSubOrder, "add");
 
-      setTimeout(
-        () =>
-          updateOrder({
-            products: updatedProducts,
-            total: updatedTotal,
-            is_receipt_printed: false,
-          }),
-        0
-      );
+      updateOrder({
+        products: updatedProducts,
+        total: updatedTotal,
+        is_receipt_printed: false,
+      });
     });
 
-  const joinTableOrders = (tableToJoin: string) => {
+  const joinTableOrders = (tableToJoin: string) =>
     fetchRequest<{ updatedOrder: TableOrder; joinedTable: TableOrder }>(
       "POST",
       "/api/orders/",
@@ -95,7 +92,6 @@ export function useOrderManager(
       updateOrder({ ...result.updatedOrder });
       toastSuccess("Tavoli uniti con successo");
     });
-  };
 
   useEffect(() => {
     if (joinedTables.length > 0) {
