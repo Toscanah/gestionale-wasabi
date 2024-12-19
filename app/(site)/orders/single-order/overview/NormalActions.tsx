@@ -40,7 +40,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
   ) => {
     const content = [];
 
-    if (!isRePrint) {
+    if (!isRePrint && !order.suborder_of) {
       const unprintedProducts = await updateUnprintedProducts();
 
       if (unprintedProducts.length > 0) {
