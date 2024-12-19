@@ -50,24 +50,13 @@ export default function OrderInfoSection(
       <Text inline>{order.home_order?.address.doorbell.toUpperCase()}</Text>
       <Br />
 
-      {order.home_order?.address.floor && (
-        <>
-          <Text bold inline>
-            Piano:{" "}
-          </Text>
-          <Text inline>{order.home_order.address.floor}</Text>
+      {(order.home_order?.address.floor || order.home_order?.address.stair) && (
+        <Text bold inline>
+          {order.home_order?.address.floor && `Piano: ${order.home_order.address.floor}`}
+          {order.home_order?.address.floor && order.home_order?.address.stair && ", "}
+          {order.home_order?.address.stair && `Scala: ${order.home_order.address.stair}`}
           <Br />
-        </>
-      )}
-
-      {order.home_order?.address.stair && (
-        <>
-          <Text bold inline>
-            {order.home_order?.address.floor && ", "}Scala:{" "}
-          </Text>
-          <Text inline>{order.home_order.address.stair}</Text>
-          <Br />
-        </>
+        </Text>
       )}
 
       {quickPaymentOption !== "none" && (
