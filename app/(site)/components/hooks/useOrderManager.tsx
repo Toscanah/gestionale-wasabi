@@ -67,11 +67,15 @@ export function useOrderManager(
 
       updateGlobalState(newSubOrder, "add");
 
-      updateOrder({
-        products: updatedProducts,
-        total: updatedTotal,
-        is_receipt_printed: false,
-      });
+      setTimeout(
+        () =>
+          updateOrder({
+            products: updatedProducts,
+            total: updatedTotal,
+            is_receipt_printed: false,
+          }),
+        0
+      );
     });
 
   const joinTableOrders = (tableToJoin: string) => {
@@ -82,7 +86,9 @@ export function useOrderManager(
       { originalOrderId: orderId, tableToJoin }
     ).then((result) => {
       if (!result) {
-        return toastError("Tavolo da unire non trovato oppure più ordini con lo stesso tavolo trovati")
+        return toastError(
+          "Tavolo da unire non trovato oppure più ordini con lo stesso tavolo trovati"
+        );
       }
 
       setJoinedTables((prev) => [...prev, result.joinedTable]);
