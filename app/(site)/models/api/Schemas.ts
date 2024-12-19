@@ -29,6 +29,7 @@ export const CreateCustomerSchema = CustomerSchema.omit({
   phone_id: true,
   name: true,
   surname: true,
+  active: true,
 }).extend({ phone: z.string() });
 
 export const UpdateCustomerSchema = CustomerSchema.extend({ phone: z.string() });
@@ -37,7 +38,7 @@ export const NoContentSchema = z.object({});
 
 export const UpdateAddressSchema = AddressSchema.omit({ active: true });
 
-export const CreateAddressSchema = AddressSchema.omit({ id: true });
+export const CreateAddressSchema = AddressSchema.omit({ id: true }).partial({ active: true });
 
 export const CreateProductSchema = ProductSchema.omit({ id: true }).partial({
   category_id: true,
