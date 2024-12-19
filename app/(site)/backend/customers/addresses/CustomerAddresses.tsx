@@ -32,7 +32,7 @@ export default function CustomerAddresses({
 
   const saveAddresses = () => {
     console.log(currentAddresses)
-    if (currentAddresses.some((address) => !address.civic?.trim() || !address.street?.trim())) {
+    if (currentAddresses.some((address) => !address.civic?.trim())) {
       return toastError("Tutti gli indirizzi devono avere almeno un civico e via validi");
     }
 
