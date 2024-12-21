@@ -59,13 +59,13 @@ export default function Overview({
       fetchRequest<HomeOrder>("GET", "/api/addresses/", "getLastAddressOfCustomer", { phone }).then(
         (lastAddress) => {
           if (lastAddress?.home_order) {
-            setLastAddressId(
-              addresses.some(
-                (addr) => addr.id === lastAddress.home_order?.address_id && addr.active
-              )
-                ? lastAddress.home_order.address_id.toString()
-                : ""
-            );
+            const address = addresses.some(
+              (addr) => addr.id === lastAddress.home_order?.address_id && addr.active
+            )
+              ? lastAddress.home_order.address_id.toString()
+              : "";
+            setLastAddressId(address);
+            setSelectedOption(address);
           }
         }
       );

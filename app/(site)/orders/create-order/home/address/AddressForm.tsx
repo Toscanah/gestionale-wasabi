@@ -154,10 +154,11 @@ export default function AddressForm({
 
   useEffect(() => {
     form.reset({
-      street:
-        selectedAddress?.street && selectedAddress?.civic
-          ? `${selectedAddress.street} ${selectedAddress.civic}`
-          : selectedAddress?.street,
+      street: !selectedAddress
+        ? ""
+        : selectedAddress?.street && selectedAddress?.civic
+        ? `${selectedAddress.street} ${selectedAddress.civic}`
+        : selectedAddress?.street,
       name: customer?.name || "",
       surname: customer?.surname || "",
       floor: selectedAddress?.floor || "",

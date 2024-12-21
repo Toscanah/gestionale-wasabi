@@ -21,7 +21,7 @@ export default async function getLastAddressOfCustomer(phone: string) {
       created_at: "desc",
     },
     include: {
-      home_order: true,
+      home_order: true
     },
   });
 

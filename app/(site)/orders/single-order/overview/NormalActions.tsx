@@ -1,5 +1,4 @@
 import { AnyOrder, HomeOrder } from "@/app/(site)/models";
-import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { PayingAction } from "../OrderTable";
@@ -10,7 +9,6 @@ import RiderReceipt from "../../../printing/receipts/RiderReceipt";
 import { OrderType } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/models";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
-import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
 
@@ -75,6 +73,8 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
   const handleFullPayment = () => setAction("payFull");
 
+  const hasProducts = order.products.filter((product) => product.id !== -1).length > 0;
+
   return (
     <>
       <div className="flex gap-6">
@@ -89,27 +89,19 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
         <Button
           onClick={() => setAction("payRoman")}
           className="w-full text-3xl h-12"
-          disabled={order.products.length <= 0 || order.type === OrderType.HOME}
+          disabled={true} // order.products.length <= 0 || order.type === OrderType.HOME
         >
           Romana
         </Button>
       </div>
 
       <div className="flex gap-6">
-        <Button
-          className="w-full text-3xl h-12"
-          disabled={order.products.filter((product) => product.id !== -1).length === 0}
-          onClick={handlePrint}
-        >
+        <Button className="w-full text-3xl h-12" disabled={!hasProducts} onClick={handlePrint}>
           Stampa
         </Button>
 
-        <Button
-          className="w-full text-3xl h-12"
-          disabled={order.products.filter((product) => product.id !== -1).length === 0}
-          onClick={handleRePrint}
-        >
-          Ristampa
+        <Button className="w-full text-3xl h-12" disabled={!hasProducts} onClick={handleRePrint}>
+          Re-Stampa
         </Button>
       </div>
 
