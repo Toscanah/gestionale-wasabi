@@ -21,7 +21,12 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   const [riceToRemove, setRiceToRemove] = useState<number>(0);
   const [riceDefaults, setRiceDefaults] = useState<RiceDefault[]>([]);
 
-  useEffect(() => getRiceDefaults, []);
+  useEffect(() => {
+    getRiceDefaults();
+    setNewRice({ ...rice.total, amount: 0 });
+    setRiceToAdd(0)
+    setRiceToRemove(0)
+  }, []);
 
   const getRiceDefaults = () => {
     const defaults = localStorage.getItem("riceDefaults");
