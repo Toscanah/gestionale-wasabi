@@ -1,4 +1,3 @@
-
 import { Customer } from "@/prisma/generated/zod";
 import prisma from "../db";
 
@@ -8,7 +7,10 @@ export default async function updateCustomerFromOrder(customer: Customer): Promi
       id: customer.id,
     },
     data: {
-      ...customer,
-    },
+      name: customer.name,
+      surname: customer.surname,
+      email: customer.email,
+      preferences: customer.preferences,
+    }
   });
 }

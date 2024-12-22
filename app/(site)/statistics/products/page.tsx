@@ -1,9 +1,11 @@
+"use client";
+
 import Table from "../../components/table/Table";
 
-export function ProductsStats() {
+export default function ProductsStats() {
   return (
     <div>
-      <Table />
+      {/* <Table /> */}
     </div>
   );
 }

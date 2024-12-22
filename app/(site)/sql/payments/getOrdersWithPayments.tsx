@@ -1,4 +1,3 @@
-
 import { OrderWithPayments } from "../../models";
 import prisma from "../db";
 
@@ -11,6 +10,9 @@ export default async function getOrdersWithPayments(): Promise<OrderWithPayments
     },
     include: {
       payments: true,
+      home_order: true,
+      pickup_order: true,
+      table_order: true,
       products: {
         include: {
           product: {
