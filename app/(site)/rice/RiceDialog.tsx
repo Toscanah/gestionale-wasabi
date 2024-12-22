@@ -21,11 +21,10 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   const [riceToRemove, setRiceToRemove] = useState<number>(0);
   const [riceDefaults, setRiceDefaults] = useState<RiceDefault[]>([]);
 
+  const [open, setOpen] = useState<boolean>(false);
+
   useEffect(() => {
-    getRiceDefaults();
-    setNewRice({ ...rice.total, amount: 0 });
-    setRiceToAdd(0)
-    setRiceToRemove(0)
+    getRiceDefaults;
   }, []);
 
   const getRiceDefaults = () => {
@@ -63,6 +62,8 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
       size="medium"
       onOpenChange={() => {
         setNewRice({ ...rice.total, amount: 0 });
+        setRiceToAdd(0);
+        setRiceToRemove(0);
         getRiceDefaults();
       }}
       title={"Gestione riso"}
