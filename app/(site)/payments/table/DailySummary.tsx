@@ -9,7 +9,7 @@ export default function DailySummary({ orders }: { orders: OrderWithPayments[] }
   const totalDaily = (totalCash + totalCard + totalVouch + totalCredit).toFixed(2);
 
   return (
-    <table className="mt-auto w-72 text-xl">
+    <table className="w-72 text-xl">
       <tbody>
         <tr>
           <td className="text-left">Totale ordini:</td>

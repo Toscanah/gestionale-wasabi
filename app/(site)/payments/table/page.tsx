@@ -18,10 +18,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarIcon } from "lucide-react";
 import { OrderType } from "@prisma/client";
 import fetchRequest from "../../util/functions/fetchRequest";
+import PrintSummary from "./PrintSummary";
 
 export default function PaymentsTable() {
-  const [allOrders, setAllOrders] = useState<OrderWithPayments[]>([]); // Unfiltered data
-  const [filteredOrders, setFilteredOrders] = useState<OrderWithPayments[]>([]); // Filtered data
+  const [allOrders, setAllOrders] = useState<OrderWithPayments[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<OrderWithPayments[]>([]);
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
   const [date, setDate] = useState<Date | undefined>(new Date());
 
@@ -29,7 +30,7 @@ export default function PaymentsTable() {
     fetchRequest<OrderWithPayments[]>("GET", "/api/payments", "getOrdersWithPayments").then(
       (ordersWithPayments) => {
         setAllOrders(ordersWithPayments);
-        setFilteredOrders(ordersWithPayments); // Initialize filtered orders
+        setFilteredOrders(ordersWithPayments);
       }
     );
   }, []);
@@ -68,7 +69,7 @@ export default function PaymentsTable() {
 
   const resetFilters = () => {
     setDate(new Date());
-    setFilteredOrders(allOrders); // Reset filtered data to original
+    setFilteredOrders(allOrders);
   };
 
   const table = getTable({
@@ -127,7 +128,24 @@ export default function PaymentsTable() {
 
         <Table table={table} />
 
-        <DailySummary orders={filteredOrders} />
+        <div className="mt-auto flex justify-between">
+          <DailySummary orders={filteredOrders} />
+          <PrintSummary
+            orders={
+              date
+                ? allOrders.filter((order) => {
+                    const orderDate = new Date(order.created_at);
+
+                    return (
+                      orderDate.getFullYear() === date.getFullYear() &&
+                      orderDate.getMonth() === date.getMonth() &&
+                      orderDate.getDate() === date.getDate()
+                    );
+                  })
+                : allOrders
+            }
+          />
+        </div>
       </div>
 
       <GoBack path="/home" />
