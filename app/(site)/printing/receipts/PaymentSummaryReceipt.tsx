@@ -14,7 +14,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
     weekday: "long",
     day: "numeric",
     month: "long",
-  }).format(date);
+  }).format(date).replace('ì', "i'");
 
   const smallSize = getReceiptSize(1, 1);
   const bigSize = getReceiptSize(2, 2);
