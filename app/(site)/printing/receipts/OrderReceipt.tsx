@@ -29,7 +29,7 @@ export default function OrderReceipt<T extends AnyOrder>(
           <Br />
 
           <Text align="right" size={bigSize}>
-            Tavolo {tableOrder.table}
+            TAVOLO {tableOrder.table}
           </Text>
           <Br />
         </>
