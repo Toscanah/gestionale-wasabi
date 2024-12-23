@@ -107,7 +107,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {pickupOrder.when == "immediate" ? "Prima possibile" : pickupOrder.when}
+              {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
             </Text>
           }
         />
@@ -123,7 +123,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           right={
             <Text bold size={bigSize}>
               {homeOrder.when == "immediate"
-                ? "Prima possibile"
+                ? "PRIMA POSSIBILE"
                 : calculateAdjustedTime(homeOrder.when ?? "")}
             </Text>
           }

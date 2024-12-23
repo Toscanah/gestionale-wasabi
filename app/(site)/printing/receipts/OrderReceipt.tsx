@@ -46,7 +46,7 @@ export default function OrderReceipt<T extends AnyOrder>(
             }
             right={
               <Text align="center" size={bigSize}>
-                {pickupOrder.when == "immediate" ? "Prima possibile" : pickupOrder.when}
+                {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
               </Text>
             }
           />

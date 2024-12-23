@@ -14,7 +14,9 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
     weekday: "long",
     day: "numeric",
     month: "long",
-  }).format(date).replace('ì', "i'");
+  })
+    .format(date)
+    .replace("ì", "i'");
 
   const smallSize = getReceiptSize(1, 1);
   const bigSize = getReceiptSize(2, 2);
@@ -77,7 +79,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {summaryData.homeOrdersAmount.toString()} €
+            {formatAmount(summaryData.homeOrdersAmount)} €
           </Text>
         }
       />
@@ -89,7 +91,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {summaryData.pickupOrdersAmount.toString()} €
+            {formatAmount(summaryData.pickupOrdersAmount)} €
           </Text>
         }
       />
@@ -101,10 +103,50 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {summaryData.tableOrdersAmount.toString()} €
+            {formatAmount(summaryData.tableOrdersAmount)} €
           </Text>
         }
       />
+
+      <Row
+        left={
+          <Text bold size={smallSize}>
+            CONTEGGIO DOMICILIO
+          </Text>
+        }
+        right={
+          <Text bold size={smallSize}>
+            {formatAmount(summaryData.homeOrdersCount)}
+          </Text>
+        }
+      />
+
+      <Row
+        left={
+          <Text bold size={smallSize}>
+            CONTEGGIO ASPORTO
+          </Text>
+        }
+        right={
+          <Text bold size={smallSize}>
+            {formatAmount(summaryData.pickupOrdersCount)}
+          </Text>
+        }
+      />
+
+      <Row
+        left={
+          <Text bold size={smallSize}>
+            CONTEGGIO TAVOLO
+          </Text>
+        }
+        right={
+          <Text bold size={smallSize}>
+            {formatAmount(summaryData.tableOrdersCount)}
+          </Text>
+        }
+      />
+
       <Row
         left={
           <Text bold size={smallSize}>
