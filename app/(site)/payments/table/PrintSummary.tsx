@@ -71,7 +71,7 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
       if (order.type === OrderType.TABLE) {
         inPlaceAmount += order.total;
         tableOrdersAmount += order.total;
-        customersCount += order.table_order?.people || 0;
+        customersCount += order.table_order?.people || 1;
       } else if (order.type === OrderType.HOME) {
         takeawayAmount += order.total;
         homeOrdersAmount += order.total;

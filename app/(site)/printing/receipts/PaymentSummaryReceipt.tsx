@@ -31,12 +31,12 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         <Row
           key={label}
           left={
-            <Text bold size={bigSize}>
-              {data.label}
+            <Text bold size={smallSize}>
+              {data.label.toLocaleUpperCase()}
             </Text>
           }
           right={
-            <Text bold size={bigSize}>
+            <Text bold size={smallSize}>
               {formatAmount(data.total)} €
             </Text>
           }
@@ -48,7 +48,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Row
         left={
           <Text bold size={smallSize}>
-            Totale in loco
+            TOTALE IN LOCO
           </Text>
         }
         right={
@@ -60,7 +60,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Row
         left={
           <Text bold size={smallSize}>
-            Totale domicilio + asporto
+            TOTALE DOMICILIO + ASPORTO
           </Text>
         }
         right={
@@ -72,7 +72,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Row
         left={
           <Text bold size={smallSize}>
-            Totale domicilio
+            TOTALE DOMICILIO
           </Text>
         }
         right={
@@ -84,7 +84,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Row
         left={
           <Text bold size={smallSize}>
-            Totale asporto
+            TOTALE ASPORTO
           </Text>
         }
         right={
@@ -96,7 +96,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Row
         left={
           <Text bold size={smallSize}>
-            Totale tavoli
+            TOTALE TAVOLI
           </Text>
         }
         right={
@@ -108,7 +108,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Row
         left={
           <Text bold size={smallSize}>
-            Clienti totali
+            CLIENTI TOTALI
           </Text>
         }
         right={
@@ -123,7 +123,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Row
         left={
           <Text bold size={bigSize}>
-            Totale
+            TOTALE
           </Text>
         }
         right={
