@@ -24,6 +24,7 @@ export default function PaymentsTable() {
   const [allOrders, setAllOrders] = useState<OrderWithPayments[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderWithPayments[]>([]);
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
+  const [typeFilter, setTypeFilter] = useState<string>("-1");
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   useEffect(() => {
@@ -65,11 +66,13 @@ export default function PaymentsTable() {
       return matchesDate && matchesType;
     });
     setFilteredOrders(filtered);
+    setTypeFilter(value);
   };
 
   const resetFilters = () => {
     setDate(new Date());
     setFilteredOrders(allOrders);
+    setTypeFilter("-1");
   };
 
   const table = getTable({
@@ -103,6 +106,7 @@ export default function PaymentsTable() {
                 ],
               },
             ]}
+            value={typeFilter}
             defaultValue="-1"
             onValueChange={handleTypeFilter}
           />
