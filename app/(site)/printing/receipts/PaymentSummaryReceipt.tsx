@@ -116,7 +116,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {formatAmount(summaryData.homeOrdersCount)}
+            {summaryData.homeOrdersCount.toString()}
           </Text>
         }
       />
@@ -129,7 +129,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {formatAmount(summaryData.pickupOrdersCount)}
+            {summaryData.pickupOrdersCount.toString()}
           </Text>
         }
       />
@@ -142,7 +142,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {formatAmount(summaryData.tableOrdersCount)}
+            {summaryData.tableOrdersCount.toString()}
           </Text>
         }
       />
