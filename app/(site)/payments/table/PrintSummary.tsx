@@ -15,11 +15,18 @@ interface PrintSummaryProps {
 
 export interface SummaryData {
   totals: PaymentTotals;
+  /** */
   inPlaceAmount: number;
   takeawayAmount: number;
+  /** (soldi) */
   tableOrdersAmount: number;
   homeOrdersAmount: number;
   pickupOrdersAmount: number;
+  /** (quanti, conteggio) */
+  tableOrdersCount: number;
+  homeOrdersCount: number;
+  pickupOrdersCount: number;
+  /** altro */
   customersCount: number;
   totalAmount: number;
 }
@@ -39,6 +46,9 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
     pickupOrdersAmount: 0,
     customersCount: 0,
     totalAmount: 0,
+    homeOrdersCount: 0,
+    pickupOrdersCount: 0,
+    tableOrdersCount: 0,
   });
 
   useEffect(() => {
@@ -61,6 +71,9 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
     let tableOrdersAmount = 0;
     let customersCount = 0;
     let totalAmount = 0;
+    let homeOrdersCount = 0;
+    let pickupOrdersCount = 0;
+    let tableOrdersCount = 0;
 
     orders.forEach((order) => {
       order.payments.forEach((payment) => {
@@ -72,12 +85,15 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
         inPlaceAmount += order.total;
         tableOrdersAmount += order.total;
         customersCount += order.table_order?.people || 1;
+        tableOrdersCount++;
       } else if (order.type === OrderType.HOME) {
         takeawayAmount += order.total;
         homeOrdersAmount += order.total;
+        homeOrdersCount++;
       } else if (order.type === OrderType.PICKUP) {
         takeawayAmount += order.total;
         pickupOrdersAmount += order.total;
+        pickupOrdersCount++;
       }
     });
 
@@ -90,6 +106,9 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
       tableOrdersAmount,
       customersCount,
       totalAmount,
+      homeOrdersCount,
+      pickupOrdersCount,
+      tableOrdersCount,
     });
   };
 
