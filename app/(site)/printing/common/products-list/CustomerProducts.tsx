@@ -106,7 +106,7 @@ export default function CustomerProducts({
         />
       )}
 
-      {TotalSection(aggregatedProducts, discount)}
+      {TotalSection(aggregatedProducts, discount, true)}
       <Br />
       <Br />
     </>

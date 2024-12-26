@@ -99,6 +99,7 @@ export default function AddressForm({
       surname: values.surname,
       preferences: values.preferences,
       email: values.email,
+      score: 0,
     };
 
     const addressContent = {

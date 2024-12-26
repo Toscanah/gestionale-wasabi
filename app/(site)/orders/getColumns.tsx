@@ -75,6 +75,11 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     case OrderType.HOME:
       columns.push(
         TableColumn<HomeOrder>({
+          accessorKey: "customer.phone.phone",
+          header: "Indirizzo",
+        }),
+
+        TableColumn<HomeOrder>({
           accessorKey: "address.street",
           header: "Indirizzo",
           cellContent: (row) =>
@@ -82,6 +87,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
               row.original.home_order?.address?.civic ?? ""
             ).toUpperCase()}`,
         }),
+
         TableColumn<HomeOrder>({
           accessorKey: "home_order.when",
           header: "Quando",

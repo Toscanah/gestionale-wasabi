@@ -52,7 +52,7 @@ export default function OrderInfoSection(
           <Text bold inline>
             Informazioni strad:{" "}
           </Text>
-          <Text inline>{order.home_order.address.street_info.toUpperCase()}</Text>
+          <Text inline>{order.home_order?.address.street_info.toUpperCase()}</Text>
           <Br />
         </>
       )}
@@ -70,7 +70,7 @@ export default function OrderInfoSection(
               <Text bold inline>
                 Piano:{" "}
               </Text>
-              <Text inline={order.home_order?.address.stair !== undefined}>
+              <Text inline={order.home_order?.address.stair !== ""}>
                 {order.home_order.address.floor}
               </Text>
 
