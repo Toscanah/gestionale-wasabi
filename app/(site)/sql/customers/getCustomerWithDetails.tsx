@@ -23,7 +23,7 @@ export default async function getCustomerWithDetails(
                       category: {
                         include: {
                           options: {
-                            select: {
+                            include: {
                               option: true,
                             },
                           },
@@ -53,7 +53,7 @@ export default async function getCustomerWithDetails(
                       category: {
                         include: {
                           options: {
-                            select: {
+                            include: {
                               option: true,
                             },
                           },

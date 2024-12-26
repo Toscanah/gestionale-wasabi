@@ -11,6 +11,7 @@ export default async function updateProduct(product: Product) {
     },
   });
 
+  console.log(product);
   if (existingProduct) return null;
 
   return await prisma.product.update({
@@ -25,7 +26,7 @@ export default async function updateProduct(product: Product) {
       rice: product.rice,
       kitchen: product.kitchen,
       category:
-        product.category_id !== -1
+        product.category_id && product.category_id !== -1
           ? {
               connect: {
                 id: Number(product.category_id),

@@ -24,7 +24,7 @@ export default function OrderInfoSection(
               <Text bold inline>
                 Note ordine:{" "}
               </Text>
-              <Text>{order.home_order.notes.toUpperCase()}</Text>
+              <Text>{order.home_order.notes.toUpperCase().replace("À", "A'")}</Text>
               <Br />
             </>
           )}
@@ -36,7 +36,10 @@ export default function OrderInfoSection(
       <Text bold inline>
         Tel:{" "}
       </Text>
-      <Text inline>{order.home_order?.customer.phone?.phone}</Text>
+      <Text inline>
+        {order.home_order?.customer.phone?.phone}
+        {order.home_order?.contact_phone !== "" && " oppure " + order.home_order?.contact_phone}
+      </Text>
       <Br />
 
       <Text bold inline>
@@ -74,7 +77,7 @@ export default function OrderInfoSection(
                 {order.home_order.address.floor}
               </Text>
 
-              {order.home_order?.address.stair && <Text inline>{", "}</Text>}
+              {order.home_order?.address.stair !== "" && <Text inline>{", "}</Text>}
             </>
           )}
           {order.home_order?.address.stair && (
@@ -91,10 +94,15 @@ export default function OrderInfoSection(
       {quickPaymentOption !== "none" && (
         <>
           <Text bold inline>
-            Pagamento:{" "}
+            Tipo pagamento:{" "}
           </Text>
-          <Text inline>{quickPaymentOption === "cash" ? "CONTANTI" : "CARTA"}</Text>
-          <Br />
+          <Text>
+            {quickPaymentOption === "cash"
+              ? "CONTANTI"
+              : quickPaymentOption === "already_paid"
+              ? " GIA' PAGATO"
+              : "CARTA"}
+          </Text>
         </>
       )}
 

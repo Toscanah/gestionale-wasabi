@@ -75,8 +75,9 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     case OrderType.HOME:
       columns.push(
         TableColumn<HomeOrder>({
-          accessorKey: "customer.phone.phone",
-          header: "Indirizzo",
+          accessorKey: "home_order.customer.phone.phone",
+          header: "Telefono",
+          // cellContent:(row) => row.original.home_order?.customer?.phone?.phone ?? "",
         }),
 
         TableColumn<HomeOrder>({
