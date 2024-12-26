@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -22,6 +22,7 @@ const sizes = {
 };
 
 type DialogWrapperProps = {
+  double?: boolean;
   children?: ReactNode;
   trigger: ReactNode;
   showCloseButton?: boolean;
@@ -40,6 +41,7 @@ type DialogWrapperProps = {
 );
 
 export default function DialogWrapper({
+  double = false,
   children,
   title,
   trigger,
@@ -56,9 +58,26 @@ export default function DialogWrapper({
 }: DialogWrapperProps) {
   const isDeleteVariant = variant === "delete";
 
+  const thisOnOpenChange = (open: boolean) => {
+    onOpenChange?.(open);
+  };
+
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogTrigger asChild className={triggerClassName}>
+    <Dialog onOpenChange={thisOnOpenChange} open={open}>
+      <DialogTrigger
+        asChild
+        className={triggerClassName}
+        onClick={(e) => {
+          if (double) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+        onDoubleClick={(e) => {
+          thisOnOpenChange(true);
+          e.stopPropagation();
+        }}
+      >
         {trigger}
       </DialogTrigger>
       <DialogContent

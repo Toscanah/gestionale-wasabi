@@ -17,7 +17,7 @@ export default async function getCustomersWithDetails(): Promise<CustomerWithDet
                       category: {
                         include: {
                           options: {
-                            select: {
+                            include: {
                               option: true,
                             },
                           },
@@ -47,7 +47,7 @@ export default async function getCustomersWithDetails(): Promise<CustomerWithDet
                       category: {
                         include: {
                           options: {
-                            select: {
+                            include: {
                               option: true,
                             },
                           },

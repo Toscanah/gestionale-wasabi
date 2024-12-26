@@ -26,6 +26,7 @@ export default function Order({ cell, className }: OrderProps) {
   return (
     <DialogWrapper
       open={open}
+      // double
       onOpenChange={setOpen}
       size="large"
       contentClassName="h-[95vh] flex"
