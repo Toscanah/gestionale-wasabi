@@ -22,7 +22,7 @@ export const PickupOrderScalarFieldEnumSchema = z.enum(['id','order_id','custome
 
 export const AddressScalarFieldEnumSchema = z.enum(['id','customer_id','street','civic','doorbell','floor','stair','street_info','active','temporary']);
 
-export const CustomerScalarFieldEnumSchema = z.enum(['id','name','surname','email','preferences','active','phone_id']);
+export const CustomerScalarFieldEnumSchema = z.enum(['id','name','surname','email','preferences','score','active','phone_id']);
 
 export const PhoneScalarFieldEnumSchema = z.enum(['id','phone']);
 
@@ -163,6 +163,7 @@ export const CustomerSchema = z.object({
   surname: z.string().nullable(),
   email: z.string().nullable(),
   preferences: z.string().nullable(),
+  score: z.number().nullable(),
   active: z.boolean(),
   phone_id: z.number().int().nullable(),
 })

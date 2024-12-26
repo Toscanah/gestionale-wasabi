@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction } from "react";
 
-const PAGE_SIZE = 99999;
+const PAGE_SIZE = 999999;
 const noop = () => {};
 
 interface TableProps<T> {

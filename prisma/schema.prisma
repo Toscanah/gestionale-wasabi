@@ -115,6 +115,7 @@ model Customer {
     surname       String?
     email         String?
     preferences   String?
+    score         Float?        @default(0)
     active        Boolean       @default(true)
     phone_id      Int?          @unique
     phone         Phone?        @relation(fields: [phone_id], references: [id], onDelete: SetNull)

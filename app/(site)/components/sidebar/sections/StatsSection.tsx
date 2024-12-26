@@ -12,8 +12,8 @@ import Link from "next/link";
 
 export default function StatsSection() {
   const statsItems = [
-    { label: "Prodottti", path: "/" },
-    { label: "Clienti", path: "/" },
+    { label: "Clienti", path: "/statistics/customers/" },
+    { label: "Prodottti", path: "/statistics/products/" },
   ];
 
   return (

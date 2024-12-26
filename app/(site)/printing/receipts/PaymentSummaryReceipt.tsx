@@ -29,6 +29,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Br />
       <Line />
       <Br />
+      
       {Object.entries(summaryData.totals).map(([label, data]) => (
         <Row
           key={label}
@@ -44,9 +45,11 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
           }
         />
       ))}
+
       <Br />
       <Line />
       <Br />
+
       <Row
         left={
           <Text bold size={smallSize}>
