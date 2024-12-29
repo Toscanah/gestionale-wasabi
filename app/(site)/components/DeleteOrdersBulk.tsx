@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useWasabiContext } from "../context/WasabiContext";
-import fetchRequest from "../util/functions/fetchRequest";
+import fetchRequest from "../functions/api/fetchRequest";
 import OrderDeletionDialog from "./dialog/OrderDeletionDialog";
 import { AnyOrder } from "@/app/(site)/models";
 

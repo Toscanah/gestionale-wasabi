@@ -2,8 +2,8 @@ import WhenSelector from "@/app/(site)/components/select/WhenSelector";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/models";
-import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
-import { toastSuccess } from "@/app/(site)/util/toast";
+import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
+import { toastSuccess } from "@/app/(site)/functions/toast";
 import { useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 

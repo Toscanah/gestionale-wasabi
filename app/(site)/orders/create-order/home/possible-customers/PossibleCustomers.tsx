@@ -1,6 +1,6 @@
 import { CustomerWithDetails } from "@/app/(site)/models";
 import columns from "./columns";
-import getTable from "@/app/(site)/util/functions/getTable";
+import getTable from "@/app/(site)/functions/util/getTable";
 import Table from "@/app/(site)/components/table/Table";
 import { Dispatch, SetStateAction } from "react";
 

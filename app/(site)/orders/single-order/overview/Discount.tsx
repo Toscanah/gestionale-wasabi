@@ -1,11 +1,11 @@
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { OrderType } from "@prisma/client";
 import { AnyOrder } from "@/app/(site)/models";
-import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
+import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { Input } from "@/components/ui/input";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
-import { toastSuccess } from "@/app/(site)/util/toast";
+import { toastSuccess } from "@/app/(site)/functions/toast";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 export default function Discount() {

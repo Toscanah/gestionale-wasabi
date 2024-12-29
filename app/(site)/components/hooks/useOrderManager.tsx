@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AnyOrder, TableOrder } from "@/app/(site)/models";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 import { ProductInOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../context/WasabiContext";
-import createDummyProduct from "../../util/functions/createDummyProduct";
-import { toastError, toastSuccess } from "../../util/toast";
-import { scaleProducts } from "../../util/functions/scaleProducts";
+import generateDummyProduct from "../../functions/product-management/generateDummyProduct";
+import { toastError, toastSuccess } from "../../functions/toast";
+import scaleProducts from "../../functions/product-management/scaleProducts";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -23,7 +23,7 @@ export function useOrderManager(
     setOrder((prevOrder) => {
       const products = [
         ...(newOrder.products || prevOrder.products).filter((p: any) => p.id !== -1),
-        createDummyProduct(),
+        generateDummyProduct(),
       ];
 
       const is_receipt_printed =

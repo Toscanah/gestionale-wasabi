@@ -1,6 +1,6 @@
 import { Br, Text } from "react-thermal-printer";
 import TimeSection from "./TimeSection";
-import getReceiptSize from "../../util/functions/getReceiptSize";
+import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 
 export default function HeaderSection() {
   const bigSize = getReceiptSize(2, 2);

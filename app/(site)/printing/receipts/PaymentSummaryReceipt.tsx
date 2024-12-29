@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import { SummaryData } from "../../payments/table/PrintSummary";
-import formatAmount from "../../util/functions/formatAmount";
-import getReceiptSize from "../../util/functions/getReceiptSize";
+import formatAmount from "../../functions/formatting-parsing/formatAmount";
+import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
+import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 
 interface PaymentSummaryReceiptProps {
   summaryData: SummaryData;
@@ -10,13 +11,13 @@ interface PaymentSummaryReceiptProps {
 
 export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryReceiptProps) {
   const date = new Date();
-  const formattedDate = new Intl.DateTimeFormat("it-IT", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  })
-    .format(date)
-    .replace("ì", "i'");
+  const formattedDate = sanitazeReceiptText(
+    new Intl.DateTimeFormat("it-IT", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    }).format(date)
+  );
 
   const smallSize = getReceiptSize(1, 1);
   const bigSize = getReceiptSize(2, 2);
@@ -29,7 +30,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Br />
       <Line />
       <Br />
-      
+
       {Object.entries(summaryData.totals).map(([label, data]) => (
         <Row
           key={label}

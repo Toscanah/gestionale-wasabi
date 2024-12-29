@@ -1,6 +1,6 @@
 import { ProductInOrder } from "@/app/(site)/models";
 
-export default function createDummyProduct(): ProductInOrder {
+export default function generateDummyProduct(): ProductInOrder {
   return {
     rice_quantity: 0,
     state: "IN_ORDER",

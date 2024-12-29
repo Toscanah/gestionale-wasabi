@@ -5,7 +5,7 @@ import { OrderType } from "@prisma/client";
 import { WasabiProvider } from "../context/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../orders/create-order/CreateOrder";
-import fetchRequest from "../util/functions/fetchRequest";
+import fetchRequest from "../functions/api/fetchRequest";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";

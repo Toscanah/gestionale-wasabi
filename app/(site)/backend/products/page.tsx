@@ -2,7 +2,7 @@
 
 import GoBack from "../../components/GoBack";
 import { Product } from "@/app/(site)/models";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 import Manager from "../Manager";
 import columns from "./columns";
 import { useEffect, useState } from "react";

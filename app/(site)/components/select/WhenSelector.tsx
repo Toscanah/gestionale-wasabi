@@ -1,6 +1,6 @@
 import { forwardRef, KeyboardEvent } from "react";
 import { ControllerRenderProps } from "react-hook-form";
-import generateTimeSlots from "../../util/functions/generateTimeSlots";
+import generateTimeSlots from "../../functions/util/generateTimeSlots";
 import SelectWrapper from "./SelectWrapper";
 import { addHours, subHours } from "date-fns";
 

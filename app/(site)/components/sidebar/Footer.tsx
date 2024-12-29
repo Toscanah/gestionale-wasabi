@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { SidebarFooter, SidebarMenu } from "@/components/ui/sidebar";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 import DialogWrapper from "../dialog/DialogWrapper";
 
 export default function Footer() {

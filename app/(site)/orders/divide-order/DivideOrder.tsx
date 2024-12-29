@@ -1,5 +1,5 @@
 import { ProductInOrder } from "@/app/(site)/models";
-import getTable from "@/app/(site)/util/functions/getTable";
+import getTable from "@/app/(site)/functions/util/getTable";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Table from "@/app/(site)/components/table/Table";
 import getColumns from "./getColumns";
@@ -7,7 +7,7 @@ import { OrderType } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
 import { PayingAction } from "../single-order/OrderTable";
-import { getProductPrice } from "../../util/functions/getProductPrice";
+import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import { useOrderContext } from "../../context/OrderContext";

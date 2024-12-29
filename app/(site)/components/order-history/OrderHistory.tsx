@@ -9,7 +9,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductInOrder } from "@/app/(site)/models";
-import applyDiscount from "../../util/functions/applyDiscount";
+import applyDiscount from "../../functions/order-management/applyDiscount";
 import HistoryStats from "./HistoryStats";
 import OrderDetail from "./OrderDetail";
 

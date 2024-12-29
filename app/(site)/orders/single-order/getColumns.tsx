@@ -9,7 +9,7 @@ import useGridFocus, { FocussableInput } from "../../components/hooks/useGridFoc
 import { Button } from "@/components/ui/button";
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { debounce } from "lodash";
-import { getProductPrice } from "../../util/functions/getProductPrice";
+import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import { useOrderContext } from "../../context/OrderContext";
 import { useCallback, useEffect, useRef } from "react";
 

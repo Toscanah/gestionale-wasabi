@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { AnyOrder, OptionInProductOrder } from "@/app/(site)/models";
-import createDummyProduct from "../../util/functions/createDummyProduct";
+import generateDummyProduct from "../../functions/product-management/generateDummyProduct";
 import { ProductInOrder } from "@/app/(site)/models";
-import fetchRequest from "../../util/functions/fetchRequest";
-import { toastError, toastSuccess } from "../../util/toast";
+import fetchRequest from "../../functions/api/fetchRequest";
+import { toastError, toastSuccess } from "../../functions/toast";
 import { Table } from "@tanstack/react-table";
-import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
+import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 import { RecursivePartial } from "./useOrderManager";
-import { getProductPrice } from "../../util/functions/getProductPrice";
+import { getProductPrice } from "../../functions/product-management/getProductPrice";
 
 export function useProductManager(
   order: AnyOrder,
@@ -25,7 +25,7 @@ export function useProductManager(
       if (newProduct) {
         updateProductsList({ newProducts: [newProduct] });
       } else {
-        updateProductsList({ updatedProducts: [createDummyProduct()] });
+        updateProductsList({ updatedProducts: [generateDummyProduct()] });
         toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
       }
     });
@@ -185,7 +185,7 @@ export function useProductManager(
         return update ? { ...product, ...update } : product;
       });
 
-    const products = [...updatedProductsList, ...newProducts, createDummyProduct()];
+    const products = [...updatedProductsList, ...newProducts, generateDummyProduct()];
     const total = calculateOrderTotal({
       ...order,
       products,

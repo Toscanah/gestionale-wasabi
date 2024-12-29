@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import TableColumn from "../../components/table/TableColumn";
 import { ProductInOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
-import { getProductPrice } from "../../util/functions/getProductPrice";
+import { getProductPrice } from "../../functions/product-management/getProductPrice";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {
   return [

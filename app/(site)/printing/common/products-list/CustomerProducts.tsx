@@ -1,13 +1,14 @@
 import { ProductInOrder } from "@/app/(site)/models";
-import applyDiscount from "@/app/(site)/util/functions/applyDiscount";
-import formatAmount from "@/app/(site)/util/functions/formatAmount";
-import formatReceiptText from "@/app/(site)/util/functions/formatReceiptText";
+import applyDiscount from "@/app/(site)/functions/order-management/applyDiscount";
+import formatAmount from "@/app/(site)/functions/formatting-parsing/formatAmount";
+import padReceiptText from "@/app/(site)/functions/formatting-parsing/printing/padReceiptText";
 import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
-import formatOptionsString from "@/app/(site)/util/functions/formatOptionsString";
+import padOptionsString from "@/app/(site)/functions/formatting-parsing/printing/padOptionsString";
 import { Fragment } from "react";
-import { getProductPrice } from "@/app/(site)/util/functions/getProductPrice";
+import { getProductPrice } from "@/app/(site)/functions/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
+import sanitazeReceiptText from "@/app/(site)/functions/formatting-parsing/printing/sanitazeReceiptText";
 
 const PRODUCT_HEADER_MAX = 23;
 const PRODUCT_HEADER_PADDING = 5;
@@ -43,26 +44,22 @@ export default function CustomerProducts({
     return (
       <Fragment>
         <Text inline>
-          {formatReceiptText(
-            product.product.code.toUpperCase(),
-            PRODUCT_CODE_LENGTH,
-            DEFAULT_PADDING
-          )}
+          {padReceiptText(product.product.code.toUpperCase(), PRODUCT_CODE_LENGTH, DEFAULT_PADDING)}
         </Text>
 
         <Text inline>
-          {formatReceiptText(product.product.desc, DESCRIPTION_LENGTH, DEFAULT_PADDING)}
+          {padReceiptText(product.product.desc, DESCRIPTION_LENGTH, DEFAULT_PADDING)}
         </Text>
 
         <Text inline>
-          {formatReceiptText(
-            product.quantity + " x " + getProductPrice(product, orderType).toFixed(2),
+          {padReceiptText(
+            product.quantity + " x " + formatAmount(getProductPrice(product, orderType)),
             QUANTITY_PRICE_LENGTH,
             DEFAULT_PADDING + additionalPadding
           )}
         </Text>
 
-        <Text>{formatReceiptText(product.total.toFixed(2), actualTotalLength)}</Text>
+        <Text>{padReceiptText(formatAmount(product.total), actualTotalLength)}</Text>
       </Fragment>
     );
   };
@@ -82,8 +79,8 @@ export default function CustomerProducts({
   return (
     <>
       <Text>
-        {formatReceiptText("Prodotto", PRODUCT_HEADER_MAX, PRODUCT_HEADER_PADDING)}
-        {formatReceiptText("P.Unit.", UNIT_PRICE_HEADER_MAX, dynamicUnitPricePadding)}
+        {padReceiptText("Prodotto", PRODUCT_HEADER_MAX, PRODUCT_HEADER_PADDING)}
+        {padReceiptText("P.Unit.", UNIT_PRICE_HEADER_MAX, dynamicUnitPricePadding)}
         Tot €
       </Text>
 
@@ -93,7 +90,7 @@ export default function CustomerProducts({
         <Fragment key={product + "-" + index}>
           {ProductLine({ product })}
 
-          {product.options.length > 0 && <Text>- {formatOptionsString(15, product.options)}</Text>}
+          {product.options.length > 0 && <Text>- {padOptionsString(15, product.options)}</Text>}
         </Fragment>
       ))}
 

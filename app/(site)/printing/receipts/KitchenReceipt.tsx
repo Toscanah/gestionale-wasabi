@@ -3,7 +3,8 @@ import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/model
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType, OrderType } from "@prisma/client";
-import getReceiptSize from "../../util/functions/getReceiptSize";
+import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
+import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 
 const calculateAdjustedTime = (originalTime: string) => {
   const timeParts = originalTime.split(":");
@@ -64,7 +65,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       <Line />
       {tableOrder && (
         <Text bold size={bigSize} align="right">
-          TAV {tableOrder.table.toLocaleUpperCase()}
+          TAV {sanitazeReceiptText(tableOrder.table)}
         </Text>
       )}
 
@@ -77,7 +78,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {pickupOrder.name.toLocaleUpperCase()}
+              {sanitazeReceiptText(pickupOrder.name)}
             </Text>
           }
         />
@@ -92,7 +93,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {homeOrder.address.doorbell.toLocaleUpperCase()}
+              {sanitazeReceiptText(homeOrder.address.doorbell)}
             </Text>
           }
         />

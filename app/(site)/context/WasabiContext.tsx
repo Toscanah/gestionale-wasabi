@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import fetchRequest from "../util/functions/fetchRequest";
+import fetchRequest from "../functions/api/fetchRequest";
 import { Rice } from "@prisma/client";
-import { toastSuccess } from "../util/toast";
+import { toastSuccess } from "../functions/toast";
 import { AnyOrder } from "@/app/(site)/models";
 import { UpdateStateAction } from "../home/page";
 

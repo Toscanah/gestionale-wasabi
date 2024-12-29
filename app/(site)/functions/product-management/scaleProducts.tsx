@@ -1,7 +1,7 @@
 import { ProductInOrder } from "@/app/(site)/models"; // Replace with your actual types// Adjust as needed
-import { getProductPrice } from "./getProductPrice";
+import { getProductPrice } from "../product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
-import calculateOrderTotal from "./calculateOrderTotal";
+import calculateOrderTotal from "../order-management/calculateOrderTotal";
 
 type ScaleProductsParams = {
   originalProducts: ProductInOrder[];
@@ -9,7 +9,7 @@ type ScaleProductsParams = {
   orderType: OrderType;
 };
 
-export function scaleProducts({
+export default function scaleProducts({
   originalProducts,
   productsToScale,
   orderType,

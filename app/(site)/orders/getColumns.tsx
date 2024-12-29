@@ -4,8 +4,8 @@ import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/models";
 import TableColumn from "../components/table/TableColumn";
-import applyDiscount from "../util/functions/applyDiscount";
-import formatAmount from "../util/functions/formatAmount";
+import applyDiscount from "../functions/order-management/applyDiscount";
+import formatAmount from "../functions/formatting-parsing/formatAmount";
 import { useWasabiContext } from "../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
 
