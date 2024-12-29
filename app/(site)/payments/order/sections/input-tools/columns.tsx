@@ -2,7 +2,7 @@ import TableColumn from "@/app/(site)/components/table/TableColumn";
 import { Input } from "@/components/ui/input";
 import { ColumnDef } from "@tanstack/react-table";
 import useGridFocus from "@/app/(site)/components/hooks/useGridFocus";
-import formatAmount from "@/app/(site)/util/functions/formatAmount";
+import formatAmount from "@/app/(site)/functions/formatting-parsing/formatAmount";
 import { PaymentCalculation } from "@/app/(site)/context/OrderPaymentContext";
 import { X } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction } from "react";

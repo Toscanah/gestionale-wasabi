@@ -3,12 +3,12 @@ import { Dispatch, KeyboardEvent, RefObject, SetStateAction, useEffect, useState
 import { Form } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import FormField from "@/app/(site)/components/FormField";
-import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
-import parseAddress from "@/app/(site)/util/functions/parseAddress";
-import getForm from "@/app/(site)/util/functions/getForm";
+import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
+import parseAddress from "@/app/(site)/functions/formatting-parsing/parseAddress";
+import getForm from "@/app/(site)/functions/util/getForm";
 import formSchema from "./form";
 import { z } from "zod";
-import { toastSuccess } from "@/app/(site)/util/toast";
+import { toastSuccess } from "@/app/(site)/functions/toast";
 
 function getActionType(object: object | undefined): string {
   return object === undefined ? "create" : "update";

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import OrderTable from "../single-order/OrderTable";
 import { OrderProvider } from "../../context/OrderContext";
 import Home from "./home/Home";
-import generateEmptyOrder from "../../util/functions/generateEmptyOrder";
+import generateEmptyOrder from "../../functions/order-management/generateEmptyOrder";
 import Pickup from "./pickup/Pickup";
 
 interface CreateOrderProps {

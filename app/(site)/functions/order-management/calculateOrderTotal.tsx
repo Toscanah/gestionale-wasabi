@@ -1,5 +1,5 @@
 import { AnyOrder, ProductInOrder } from "@/app/(site)/models";
-import { getProductPrice } from "./getProductPrice";
+import { getProductPrice } from "../product-management/getProductPrice";
 
 export default function calculateOrderTotal(order: AnyOrder) {
   return order.products.reduce(

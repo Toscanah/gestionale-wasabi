@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
 import { OptionWithCategories } from "@/app/(site)/models";
+import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
 
 const columns: ColumnDef<OptionWithCategories>[] = [
   TableColumn({
@@ -11,12 +12,7 @@ const columns: ColumnDef<OptionWithCategories>[] = [
   TableColumn({
     accessorKey: "categories",
     header: "Usata in",
-    cellContent: (row) => row.original.categories
-    .map(
-      (cat) =>
-        cat.category.category.charAt(0).toUpperCase() + cat.category.category.slice(1)
-    )
-    .join(", "),
+    cellContent: (row) => joinItemsWithComma(row.original, "categories"),
   }),
 ];
 

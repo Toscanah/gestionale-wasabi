@@ -4,7 +4,7 @@ import { RecursivePartial, useOrderManager } from "../components/hooks/useOrderM
 import { useProductManager } from "../components/hooks/useProductManager";
 import { ProductInOrder } from "@/app/(site)/models";
 import { Table } from "@tanstack/react-table";
-import createDummyProduct from "../util/functions/createDummyProduct";
+import generateDummyProduct from "../functions/product-management/generateDummyProduct";
 
 interface OrderProviderProps {
   order: AnyOrder;
@@ -44,7 +44,7 @@ export const OrderProvider = ({
 }: OrderProviderProps) => {
   const [order, setOrder] = useState<AnyOrder>({
     ...initialOrder,
-    products: [...(initialOrder.products ?? []).filter((p) => p.id !== -1), createDummyProduct()],
+    products: [...(initialOrder.products ?? []).filter((p) => p.id !== -1), generateDummyProduct()],
   });
 
   const toggleDialog = (dialogOpen: boolean) => setDialogOpen(dialogOpen);

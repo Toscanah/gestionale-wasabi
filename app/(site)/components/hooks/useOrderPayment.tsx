@@ -1,15 +1,15 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
-import applyDiscount from "../../util/functions/applyDiscount";
+import applyDiscount from "../../functions/order-management/applyDiscount";
 import { AnyOrder } from "@/app/(site)/models";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 import { OrderType } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/models";
-import { getProductPrice } from "../../util/functions/getProductPrice";
+import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import { PaymentType } from "@prisma/client";
 import { Payment } from "../../context/OrderPaymentContext";
 import { useOrderContext } from "../../context/OrderContext";
-import calculateOrderTotal from "../../util/functions/calculateOrderTotal";
-import { scaleProducts } from "../../util/functions/scaleProducts";
+import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
+import scaleProducts from "../../functions/product-management/scaleProducts";
 
 export default function useOrderPayment(
   type: "full" | "partial",

@@ -1,8 +1,8 @@
 import { Br, Text } from "react-thermal-printer";
 import { ProductInOrder } from "@/app/(site)/models";
-import applyDiscount from "../../util/functions/applyDiscount";
-import formatAmount from "../../util/functions/formatAmount";
-import getReceiptSize from "../../util/functions/getReceiptSize";
+import applyDiscount from "../../functions/order-management/applyDiscount";
+import formatAmount from "../../functions/formatting-parsing/formatAmount";
+import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 
 export default function TotalSection(
   products: ProductInOrder[],

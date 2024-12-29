@@ -1,5 +1,5 @@
 import { OrderType } from "@prisma/client";
-import { getProductPrice } from "../../util/functions/getProductPrice";
+import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import prisma from "../db";
 import { AnyOrder } from "../../models";
 export default async function getOrdersByType(type: OrderType): Promise<AnyOrder[]> {

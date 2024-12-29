@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { CustomerWithDetails } from "../../models";
-import fetchRequest from "../../util/functions/fetchRequest";
-import getTable from "../../util/functions/getTable";
+import fetchRequest from "../../functions/api/fetchRequest";
+import getTable from "../../functions/util/getTable";
 import Table from "../../components/table/Table";
 import columns from "./columns";
 import TableControls from "../../components/table/TableControls";

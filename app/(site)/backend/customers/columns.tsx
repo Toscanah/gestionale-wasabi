@@ -6,6 +6,7 @@ import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
 import OrderHistory from "../../components/order-history/OrderHistory";
 import { CustomerWithDetails } from "../../models";
+import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
 
 const columns = (
   customers: CustomerWithDetails[],
@@ -19,10 +20,7 @@ const columns = (
   TableColumn({
     accessorKey: "boordbells",
     header: "Campanelli",
-    cellContent: (row) =>
-      row.original.addresses
-        .map((address) => address.doorbell.charAt(0).toUpperCase() + address.doorbell.slice(1))
-        .join(", "),
+    cellContent: (row) => joinItemsWithComma(row.original, "doorbells"),
   }),
 
   TableColumn({

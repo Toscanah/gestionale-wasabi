@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CustomerWithDetails } from "@/app/(site)/models";
 import TableColumn from "@/app/(site)/components/table/TableColumn";
+import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
 
 const columns = (): ColumnDef<CustomerWithDetails>[] => [
   TableColumn({
@@ -11,24 +12,14 @@ const columns = (): ColumnDef<CustomerWithDetails>[] => [
   TableColumn({
     accessorKey: "addresses",
     header: "Campanelli",
-    cellContent: (row) =>
-      row.original.addresses
-        .map((address) => address.doorbell.charAt(0).toUpperCase() + address.doorbell.slice(1))
-        .join(", "),
+    cellContent: (row) => joinItemsWithComma(row.original, "doorbells"),
   }),
 
   TableColumn({
     accessorKey: "addresses",
     header: "Indirizzi",
     cellContent: (row) => (
-      <div className="max-w-64">
-        {row.original.addresses
-          .map(
-            (address) =>
-              address.street.charAt(0).toUpperCase() + address.street.slice(1) + " " + address.civic
-          )
-          .join(", ")}
-      </div>
+      <div className="max-w-64">{joinItemsWithComma(row.original, "addresses")}</div>
     ),
   }),
 

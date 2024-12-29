@@ -1,7 +1,8 @@
 import { Br, Line, Text } from "react-thermal-printer";
 import { HomeOrder } from "@/app/(site)/models";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
-import getReceiptSize from "../../util/functions/getReceiptSize";
+import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
+import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 
 export default function OrderInfoSection(
   order: HomeOrder,
@@ -19,7 +20,9 @@ export default function OrderInfoSection(
               <Text bold inline size={smallSize}>
                 Preferenze:{" "}
               </Text>
-              <Text size={bigSize}>{order.home_order.customer.preferences.toUpperCase()}</Text>
+              <Text size={bigSize}>
+                {sanitazeReceiptText(order.home_order.customer.preferences)}
+              </Text>
               {!order.home_order?.notes && <Br />}
             </>
           )}
@@ -28,7 +31,7 @@ export default function OrderInfoSection(
               <Text bold inline size={smallSize}>
                 Note ordine:{" "}
               </Text>
-              <Text size={bigSize}>{order.home_order.notes.toUpperCase().replace("À", "A'")}</Text>
+              <Text size={bigSize}>{sanitazeReceiptText(order.home_order.notes)}</Text>
               {/* <Br /> */}
             </>
           )}
@@ -41,7 +44,9 @@ export default function OrderInfoSection(
         Via:{" "}
       </Text>
       <Text inline size={bigSize}>
-        {(order.home_order?.address.street + " " + order.home_order?.address.civic).toUpperCase()}
+        {sanitazeReceiptText(
+          order.home_order?.address.street + " " + order.home_order?.address.civic
+        ).toUpperCase()}
       </Text>
       <Br />
 
@@ -51,7 +56,7 @@ export default function OrderInfoSection(
             Informazioni strad:{" "}
           </Text>
           <Text inline size={bigSize}>
-            {order.home_order?.address.street_info.toUpperCase()}
+            {sanitazeReceiptText(order.home_order?.address.street_info)}
           </Text>
           <Br />
         </>
@@ -61,7 +66,7 @@ export default function OrderInfoSection(
         Campanello:{" "}
       </Text>
       <Text inline size={bigSize}>
-        {order.home_order?.address.doorbell.toUpperCase()}
+        {sanitazeReceiptText(order.home_order?.address.doorbell)}
       </Text>
       <Br />
 
@@ -73,7 +78,7 @@ export default function OrderInfoSection(
                 Piano:{" "}
               </Text>
               <Text inline={order.home_order?.address.stair !== ""} size={bigSize}>
-                {order.home_order.address.floor}
+                {sanitazeReceiptText(order.home_order.address.floor)}
               </Text>
 
               {order.home_order?.address.stair !== "" && (
@@ -88,7 +93,7 @@ export default function OrderInfoSection(
               <Text bold inline size={smallSize}>
                 Scala:{" "}
               </Text>
-              <Text size={bigSize}>{order.home_order.address.stair}</Text>
+              <Text size={bigSize}>{sanitazeReceiptText(order.home_order.address.stair)}</Text>
             </>
           )}
         </>

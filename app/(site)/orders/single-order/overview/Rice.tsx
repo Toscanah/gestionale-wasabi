@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import formatRice from "../../../util/functions/formatRice";
+import formatRice from "../../../functions/formatting-parsing/formatRice";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import { AnyOrder } from "@/app/(site)/models";

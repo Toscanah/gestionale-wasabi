@@ -1,6 +1,6 @@
 import { Address, Customer } from "@prisma/client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 import { CustomerWithDetails } from "@/app/(site)/models";
 
 export default function useFetchCustomer(

@@ -1,6 +1,6 @@
 import { ProductInOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
-import aggregateProducts from "../../../util/functions/aggregateProducts";
+import aggregateProducts from "../../../functions/product-management/aggregateProducts";
 import React from "react";
 import CustomerProducts from "./CustomerProducts";
 import KitchenProducts from "./KitchenProducts";
@@ -17,6 +17,6 @@ export default function ProductsListSection(
   );
 
   return recipient == "customer"
-    ? CustomerProducts({ aggregatedProducts, discount,orderType })
+    ? CustomerProducts({ aggregatedProducts, discount, orderType })
     : KitchenProducts({ aggregatedProducts });
 }

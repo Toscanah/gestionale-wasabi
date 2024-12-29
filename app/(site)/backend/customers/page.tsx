@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 import FormFields from "../FormFields";
 import { formSchema, getCustomerFields } from "./form";
 import Image from "next/image";

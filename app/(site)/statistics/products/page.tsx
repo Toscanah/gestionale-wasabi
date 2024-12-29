@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
 import { Product } from "../../models";
-import getTable from "../../util/functions/getTable";
+import getTable from "../../functions/util/getTable";
 import columns from "./columns";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 
 export default function ProductsStats() {
   const [products, setProducts] = useState<Product[]>([]);

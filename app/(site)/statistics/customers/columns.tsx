@@ -5,6 +5,7 @@ import { format } from "date-fns"; // Ensure date-fns is installed
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import ScoreDialog from "./ScoreDialog";
+import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
 
 const columns: ColumnDef<CustomerWithDetails>[] = [
   TableColumn({
@@ -24,20 +25,9 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
   TableColumn({
     accessorKey: "addresses",
     header: "Campanelli",
-    cellContent: (row) => {
-      const { addresses } = row.original;
-      if (!addresses || addresses.length === 0) return "N/A";
-      return (
-        <div className="max-w-36">
-          {addresses
-            .map((address) => {
-              const doorbell = address?.doorbell || "N/A";
-              return doorbell.charAt(0).toUpperCase() + doorbell.slice(1);
-            })
-            .join(", ")}
-        </div>
-      );
-    },
+    cellContent: (row) => (
+      <div className="max-w-36">{joinItemsWithComma(row.original, "doorbells")}</div>
+    ),
   }),
 
   TableColumn({

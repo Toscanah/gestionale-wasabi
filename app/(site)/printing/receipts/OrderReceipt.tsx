@@ -6,7 +6,8 @@ import OrderInfoSection from "../common/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
 import { OrderType } from "@prisma/client";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
-import getReceiptSize from "../../util/functions/getReceiptSize";
+import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
+import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,
@@ -29,7 +30,7 @@ export default function OrderReceipt<T extends AnyOrder>(
           <Br />
 
           <Text align="right" size={bigSize}>
-            TAVOLO {tableOrder.table}
+            TAVOLO {sanitazeReceiptText(tableOrder.table)}
           </Text>
           <Br />
         </>
@@ -41,7 +42,7 @@ export default function OrderReceipt<T extends AnyOrder>(
           <Row
             left={
               <Text align="center" size={bigSize}>
-                {pickupOrder.name.toLocaleUpperCase()}
+                {sanitazeReceiptText(pickupOrder.name)}
               </Text>
             }
             right={

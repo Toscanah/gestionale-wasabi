@@ -10,7 +10,7 @@ import { OrderType } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/models";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
+import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;

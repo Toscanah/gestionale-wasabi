@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 import Manager from "../Manager";
 import GoBack from "../../components/GoBack";
 import { OptionWithCategories } from "@/app/(site)/models";

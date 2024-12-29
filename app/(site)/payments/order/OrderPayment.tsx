@@ -1,6 +1,6 @@
 import { AnyOrder } from "@/app/(site)/models";
 import { Separator } from "@/components/ui/separator";
-import applyDiscount from "../../util/functions/applyDiscount";
+import applyDiscount from "../../functions/order-management/applyDiscount";
 import { Icon } from "@phosphor-icons/react";
 import PaymentSummary from "./sections/PaymentSummary";
 import { Button } from "@/components/ui/button";

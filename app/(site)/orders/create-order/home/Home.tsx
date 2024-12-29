@@ -3,7 +3,7 @@ import Overview from "./address/Overview";
 import AddressForm, { ExternalInfo } from "./address/AddressForm";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Address } from "@prisma/client";
-import fetchRequest from "../../../util/functions/fetchRequest";
+import fetchRequest from "../../../functions/api/fetchRequest";
 import { AnyOrder, HomeOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { OrderType } from "@prisma/client";

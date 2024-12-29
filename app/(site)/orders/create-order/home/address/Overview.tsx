@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
-import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
+import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { HomeOrder } from "@/app/(site)/models";
 import { Badge } from "@/components/ui/badge";
 

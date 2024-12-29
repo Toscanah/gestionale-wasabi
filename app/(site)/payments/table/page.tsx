@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
-import getTable from "../../util/functions/getTable";
+import getTable from "../../functions/util/getTable";
 import columns from "./columns";
 import useGlobalFilter from "../../components/hooks/useGlobalFilter";
 import GoBack from "../../components/GoBack";
@@ -17,7 +17,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { OrderType } from "@prisma/client";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 import PrintSummary from "./PrintSummary";
 
 export default function PaymentsTable() {

@@ -3,13 +3,13 @@ import TableColumn from "../../components/table/TableColumn";
 import { AnyOrder, OrderWithPayments } from "@/app/(site)/models";
 import { Badge } from "@/components/ui/badge";
 import { OrderType } from "@prisma/client";
-import applyDiscount from "../../util/functions/applyDiscount";
+import applyDiscount from "../../functions/order-management/applyDiscount";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import OrderSummary from "./OrderSummary";
 import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
-import fetchRequest from "../../util/functions/fetchRequest";
+import fetchRequest from "../../functions/api/fetchRequest";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({

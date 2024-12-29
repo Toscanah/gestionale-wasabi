@@ -3,7 +3,7 @@ import addProductsToOrder from "../products/addProductsToOrder";
 import createPickupOrder from "./createPickupOrder";
 import createTableOrder from "./createTableOrder";
 import prisma from "../db";
-import { getProductPrice } from "../../util/functions/getProductPrice";
+import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import getOrderById from "./getOrderById";
 import { AnyOrder, PickupOrder, ProductInOrder, TableOrder } from "../../models";
 

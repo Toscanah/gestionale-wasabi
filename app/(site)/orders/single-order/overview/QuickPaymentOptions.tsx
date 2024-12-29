@@ -1,6 +1,6 @@
 import { AnyOrder, HomeOrder } from "@/app/(site)/models";
-import fetchRequest from "@/app/(site)/util/functions/fetchRequest";
-import { toastSuccess } from "@/app/(site)/util/toast";
+import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
+import { toastSuccess } from "@/app/(site)/functions/toast";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";

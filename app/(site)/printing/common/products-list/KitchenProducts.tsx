@@ -1,8 +1,9 @@
 import { ProductInOrder } from "@/app/(site)/models";
-import formatReceiptText from "@/app/(site)/util/functions/formatReceiptText";
-import getReceiptSize from "@/app/(site)/util/functions/getReceiptSize";
+import padReceiptText from "@/app/(site)/functions/formatting-parsing/printing/padReceiptText";
+import getReceiptSize from "@/app/(site)/functions/formatting-parsing/printing/getReceiptSize";
 import { Fragment } from "react";
 import { Line, Text } from "react-thermal-printer";
+import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
 
 interface KitchenProductsProps {
   aggregatedProducts: ProductInOrder[];
@@ -17,10 +18,7 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
     const optionsKey =
       product.options.length === 0
         ? "no_options"
-        : product.options
-            .map(({ option }) => option.option_name)
-            .sort()
-            .join(", ");
+        : joinItemsWithComma(product, "options", { sort: true });
 
     if (!groupedProducts[optionsKey]) {
       groupedProducts[optionsKey] = [];
@@ -43,18 +41,20 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
     }
   });
 
+  console.log(aggregatedProducts);
+
   const ProductLine = ({ product }: { product: ProductInOrder }) => (
     <Fragment>
       <Text inline bold size={bigSize}>
-        {formatReceiptText(product.product.code.toUpperCase(), 4, 2)}
+        {padReceiptText(product.product.code.toUpperCase(), 4, 2)}
       </Text>
 
       <Text inline bold size={smallSize}>
-        {formatReceiptText(product.product.desc, 27, String(product.quantity).length > 1 ? 5 : 7)}
+        {padReceiptText(product.product.desc, 27, String(product.quantity).length > 1 ? 5 : 7)}
       </Text>
 
       <Text bold size={bigSize}>
-        {formatReceiptText(product.quantity.toString(), String(product.quantity).length)}
+        {padReceiptText(product.quantity.toString(), String(product.quantity).length)}
       </Text>
     </Fragment>
   );
@@ -72,7 +72,7 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
             {products.map((product) => ProductLine({ product }))}
 
             <Text bold size={smallSize}>
-              {" - " + formatReceiptText(optionsKey, 36)}
+              {" - " + padReceiptText(optionsKey, 36)}
             </Text>
 
             {idx < arr.length - 1 && arr.length > 1 && <Line />}
