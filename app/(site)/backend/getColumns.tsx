@@ -20,7 +20,7 @@ export default function getColumns<T extends { id: number; active: boolean }>(
           //variant={row.original.active ? "default" : "destructive"}
           className={cn(
             row.original.active
-              ? "dark:bg-successGreen-dark bg-successGreen-light text-foreground"
+              ? "bg-green-400 text-foreground"
               : "bg-destructive"
           )}
         >

@@ -1,91 +1,94 @@
 import { Br, Line, Text } from "react-thermal-printer";
 import { HomeOrder } from "@/app/(site)/models";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
+import getReceiptSize from "../../util/functions/getReceiptSize";
 
 export default function OrderInfoSection(
   order: HomeOrder,
   quickPaymentOption?: QuickPaymentOption
 ) {
+  const bigSize = getReceiptSize(2, 2);
+  const smallSize = getReceiptSize(1, 1);
+
   return (
     <>
       {(order.home_order?.customer.preferences || order.home_order?.notes) && (
         <>
           {order.home_order?.customer.preferences && (
             <>
-              <Text bold inline>
+              <Text bold inline size={smallSize}>
                 Preferenze:{" "}
               </Text>
-              <Text>{order.home_order.customer.preferences.toUpperCase()}</Text>
+              <Text size={bigSize}>{order.home_order.customer.preferences.toUpperCase()}</Text>
               {!order.home_order?.notes && <Br />}
             </>
           )}
           {order.home_order?.notes && (
             <>
-              <Text bold inline>
+              <Text bold inline size={smallSize}>
                 Note ordine:{" "}
               </Text>
-              <Text>{order.home_order.notes.toUpperCase().replace("À", "A'")}</Text>
-              <Br />
+              <Text size={bigSize}>{order.home_order.notes.toUpperCase().replace("À", "A'")}</Text>
+              {/* <Br /> */}
             </>
           )}
           <Line />
-          <Br />
+          {/* <Br /> */}
         </>
       )}
 
-      <Text bold inline>
-        Tel:{" "}
-      </Text>
-      <Text inline>
-        {order.home_order?.customer.phone?.phone}
-        {order.home_order?.contact_phone !== "" && " oppure " + order.home_order?.contact_phone}
-      </Text>
-      <Br />
-
-      <Text bold inline>
+      <Text bold inline size={smallSize}>
         Via:{" "}
       </Text>
-      <Text inline>
+      <Text inline size={bigSize}>
         {(order.home_order?.address.street + " " + order.home_order?.address.civic).toUpperCase()}
       </Text>
       <Br />
 
       {order.home_order?.address.street_info && (
         <>
-          <Text bold inline>
+          <Text bold inline size={smallSize}>
             Informazioni strad:{" "}
           </Text>
-          <Text inline>{order.home_order?.address.street_info.toUpperCase()}</Text>
+          <Text inline size={bigSize}>
+            {order.home_order?.address.street_info.toUpperCase()}
+          </Text>
           <Br />
         </>
       )}
 
-      <Text bold inline>
+      <Text bold inline size={smallSize}>
         Campanello:{" "}
       </Text>
-      <Text inline>{order.home_order?.address.doorbell.toUpperCase()}</Text>
+      <Text inline size={bigSize}>
+        {order.home_order?.address.doorbell.toUpperCase()}
+      </Text>
       <Br />
 
       {(order.home_order?.address.floor || order.home_order?.address.stair) && (
         <>
           {order.home_order?.address.floor && (
             <>
-              <Text bold inline>
+              <Text bold inline size={smallSize}>
                 Piano:{" "}
               </Text>
-              <Text inline={order.home_order?.address.stair !== ""}>
+              <Text inline={order.home_order?.address.stair !== ""} size={bigSize}>
                 {order.home_order.address.floor}
               </Text>
 
-              {order.home_order?.address.stair !== "" && <Text inline>{", "}</Text>}
+              {order.home_order?.address.stair !== "" && (
+                <Text inline size={bigSize}>
+                  {", "}
+                </Text>
+              )}
             </>
           )}
           {order.home_order?.address.stair && (
             <>
-              <Text bold inline>
+              <Text bold inline size={smallSize}>
                 Scala:{" "}
               </Text>
-              <Text>{order.home_order.address.stair}</Text>
+              <Text size={bigSize}>{order.home_order.address.stair}</Text>
             </>
           )}
         </>
@@ -93,10 +96,10 @@ export default function OrderInfoSection(
 
       {quickPaymentOption !== "none" && (
         <>
-          <Text bold inline>
+          <Text bold inline size={smallSize}>
             Tipo pagamento:{" "}
           </Text>
-          <Text>
+          <Text size={bigSize}>
             {quickPaymentOption === "cash"
               ? "CONTANTI"
               : quickPaymentOption === "already_paid"
@@ -106,11 +109,19 @@ export default function OrderInfoSection(
         </>
       )}
 
-      <Text bold inline>
+      <Text bold inline size={smallSize}>
         Quando:{" "}
       </Text>
-      <Text>
+      <Text size={bigSize}>
         {order.home_order?.when !== "immediate" ? order.home_order?.when : "PRIMA POSSIBILE"}
+      </Text>
+
+      <Text bold inline size={smallSize}>
+        Tel:{" "}
+      </Text>
+      <Text size={bigSize}>
+        {order.home_order?.customer.phone?.phone}
+        {order.home_order?.contact_phone !== "" && " oppure " + order.home_order?.contact_phone}
       </Text>
 
       <Br />
