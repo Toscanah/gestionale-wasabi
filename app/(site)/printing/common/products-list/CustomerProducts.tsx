@@ -108,7 +108,6 @@ export default function CustomerProducts({
 
       {TotalSection(aggregatedProducts, discount, true)}
       <Br />
-      <Br />
     </>
   );
 }
