@@ -10,11 +10,12 @@ type RiceState = { total: Rice; remaining: Rice };
 interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: UpdateStateAction) => void;
   rice: RiceState;
-  fetchRemainingRice: () => void;
   updateTotalRice: (total: Rice) => void;
   resetRice: () => void;
   selectedOrders: number[];
   toggleOrderSelection: (orderId: number) => void;
+  updateRemainingRice: (amount: number) => void;
+  fetchRemainingRice: () => void
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);
@@ -46,45 +47,58 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
         : [...prevSelected, orderId]
     );
 
-  const fetchTotalRice = () =>
-    fetchRequest<Rice>("GET", "/api/rice/", "getTotalRice").then((total) =>
-      setRice((prevRice) => ({ ...prevRice, total }))
-    );
-
-  const fetchRemainingRice = () =>
-    fetchRequest<Rice>("GET", "/api/rice", "getRemainingRice").then((remaining) =>
-      setRice((prevRice) => ({ ...prevRice, remaining }))
-    );
-
   const updateTotalRice = (total: Rice) =>
     fetchRequest("POST", "/api/rice/", "updateRice", { rice: total }).then(() => {
       setRice((prevRice) => ({
         ...prevRice,
         total: { ...total, amount: total.amount + prevRice.total.amount },
       }));
-      fetchRemainingRice();
       toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
     });
 
-  const basicRiceFetch = () => {
-    fetchTotalRice();
-    fetchRemainingRice();
+  const updateRemainingRice = (amount: number) =>
+    setRice((prevRice) => ({
+      ...prevRice,
+      remaining: {
+        ...prevRice.remaining,
+        amount: prevRice.remaining.amount - amount,
+      },
+    }));
+
+  const fetchInitialRice = async () => {
+    const [totalRice, remainingRice] = await Promise.all([
+      fetchRequest<Rice>("GET", "/api/rice/", "getTotalRice"),
+      fetchRequest<Rice>("GET", "/api/rice", "getRemainingRice"),
+    ]);
+
+    setRice({
+      total: totalRice,
+      remaining: remainingRice,
+    });
   };
 
-  const resetRice = () => fetchRequest("POST", "/api/rice/", "resetRice").then(basicRiceFetch);
+  const fetchRemainingRice = () =>
+    fetchRequest<Rice>("GET", "/api/rice", "getRemainingRice").then((remaining) =>
+      setRice((prevRice) => ({ ...prevRice, remaining }))
+    );
 
-  useEffect(basicRiceFetch, []);
+  const resetRice = () => fetchRequest("POST", "/api/rice/", "resetRice").then(fetchInitialRice);
+
+  useEffect(() => {
+    fetchInitialRice();
+  }, []);
 
   return (
     <WasabiContext.Provider
       value={{
         updateGlobalState,
         rice,
-        fetchRemainingRice,
         updateTotalRice,
+        updateRemainingRice,
         resetRice,
         selectedOrders,
         toggleOrderSelection,
+        fetchRemainingRice,
       }}
     >
       {children}
