@@ -8,7 +8,7 @@ import parseAddress from "@/app/(site)/functions/formatting-parsing/parseAddress
 import getForm from "@/app/(site)/functions/util/getForm";
 import formSchema from "./form";
 import { z } from "zod";
-import { toastSuccess } from "@/app/(site)/functions/toast";
+import { toastSuccess } from "@/app/(site)/functions/util/toast";
 
 function getActionType(object: object | undefined): string {
   return object === undefined ? "create" : "update";

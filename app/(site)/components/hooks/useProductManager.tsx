@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AnyOrder, OptionInProductOrder } from "@/app/(site)/models";
 import generateDummyProduct from "../../functions/product-management/generateDummyProduct";
 import { ProductInOrder } from "@/app/(site)/models";
 import fetchRequest from "../../functions/api/fetchRequest";
-import { toastError, toastSuccess } from "../../functions/toast";
+import { toastError, toastSuccess } from "../../functions/util/toast";
 import { Table } from "@tanstack/react-table";
 import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 import { RecursivePartial } from "./useOrderManager";

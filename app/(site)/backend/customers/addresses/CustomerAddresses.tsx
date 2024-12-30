@@ -15,7 +15,7 @@ import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { CustomerWithDetails } from "@/app/(site)/models";
-import { toastError } from "@/app/(site)/functions/toast";
+import { toastError } from "@/app/(site)/functions/util/toast";
 
 interface CustomerAddressesProps {
   addresses: Address[];

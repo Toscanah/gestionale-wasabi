@@ -1,6 +1,4 @@
 export default function sanitazeReceiptText(input: string | undefined): string {
-  if (!input) return "";
-
   const replacements: Record<string, string> = {
     À: "A'",
     È: "E'",
@@ -14,5 +12,7 @@ export default function sanitazeReceiptText(input: string | undefined): string {
     ù: "u'",
   };
 
-  return input.replace(/[ÀÈÌÒÙàèìòù]/g, (char) => replacements[char] || char).toLocaleUpperCase();
+  return !input
+    ? ""
+    : input.replace(/[ÀÈÌÒÙàèìòù]/g, (char) => replacements[char] || char).toLocaleUpperCase();
 }

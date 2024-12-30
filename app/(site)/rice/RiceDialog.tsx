@@ -21,12 +21,6 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   const [riceToRemove, setRiceToRemove] = useState<number>(0);
   const [riceDefaults, setRiceDefaults] = useState<RiceDefault[]>([]);
 
-  const [open, setOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    getRiceDefaults;
-  }, []);
-
   const getRiceDefaults = () => {
     const defaults = localStorage.getItem("riceDefaults");
 
@@ -38,6 +32,8 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
       setRiceDefaults(JSON.parse(defaults) as RiceDefault[]);
     }
   };
+
+  useEffect(getRiceDefaults, []);
 
   const handleAddRice = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.valueAsNumber;
@@ -57,15 +53,17 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
     setNewRice({ ...newRice, amount: selectedRice });
   };
 
+  const handleOpenChange = () => {
+    setNewRice({ ...rice.total, amount: 0 });
+    setRiceToAdd(0);
+    setRiceToRemove(0);
+    getRiceDefaults();
+  };
+
   return (
     <DialogWrapper
       size="medium"
-      onOpenChange={() => {
-        setNewRice({ ...rice.total, amount: 0 });
-        setRiceToAdd(0);
-        setRiceToRemove(0);
-        getRiceDefaults();
-      }}
+      onOpenChange={handleOpenChange}
       title={"Gestione riso"}
       desc="Tutti i valori sono calcolati in grammi"
       contentClassName="border-t-4 border-t-gray-400 gap-6"

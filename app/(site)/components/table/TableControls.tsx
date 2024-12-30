@@ -22,6 +22,12 @@ export default function TableControls({
   title,
   onReset,
 }: TableControlsProps) {
+  const handleReset = () => {
+    onReset?.();
+    table.resetSorting();
+    setGlobalFilter("");
+  };
+
   return (
     <div className="flex gap-4 items-center">
       {title}
@@ -33,15 +39,10 @@ export default function TableControls({
         onChange={(e) => setGlobalFilter(String(e.target.value))}
         className="max-w-sm"
       />
+
       {children}
-      <Button
-        variant={"outline"}
-        onClick={() => {
-          onReset?.();
-          table.resetSorting();
-          setGlobalFilter("");
-        }}
-      >
+
+      <Button variant={"outline"} onClick={handleReset}>
         Reimposta filtri
       </Button>
     </div>
