@@ -8,20 +8,19 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 export default function Rice() {
   const { order } = useOrderContext();
-  const { rice, fetchRemainingRice } = useWasabiContext();
+  const { rice, updateRemainingRice, fetchRemainingRice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
 
   useEffect(() => {
-    setUsedRice(order.products.reduce((total, product) => total + (product.rice_quantity ?? 0), 0));
+    const currentUsedRice = order.products.reduce(
+      (total, product) => total + (product.rice_quantity ?? 0),
+      0
+    );
+    setUsedRice(currentUsedRice);
 
-    const debouncedFetch = debounce(() => {
-      fetchRemainingRice();
-    }, 0);
-    debouncedFetch();
+    fetchRemainingRice();
 
-    return () => {
-      debouncedFetch.cancel();
-    };
+    // updateRemainingRice(currentUsedRice);
   }, [order.products]);
 
   return (

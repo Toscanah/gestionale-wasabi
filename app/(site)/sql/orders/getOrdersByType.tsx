@@ -3,6 +3,9 @@ import { getProductPrice } from "../../functions/product-management/getProductPr
 import prisma from "../db";
 import { AnyOrder } from "../../models";
 export default async function getOrdersByType(type: OrderType): Promise<AnyOrder[]> {
+
+  const startTime = performance.now();
+
   const orders = await prisma.order.findMany({
     include: {
       products: {
@@ -43,6 +46,10 @@ export default async function getOrdersByType(type: OrderType): Promise<AnyOrder
       created_at: "asc",
     },
   });
+
+  const endTime = performance.now();
+  console.log(`Query took ${(endTime - startTime).toFixed(2)} milliseconds.`);
+  console.log(orders.length)
 
   const adjustedOrders = orders.map((order) => {
     const unpaidProducts = order.products
