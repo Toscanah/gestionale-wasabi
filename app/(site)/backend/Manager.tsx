@@ -10,7 +10,7 @@ import DialogWrapper from "../components/dialog/DialogWrapper";
 import { ColumnDef } from "@tanstack/react-table";
 import getColumns from "./getColumns";
 import getTable from "../functions/util/getTable";
-import { toastError, toastSuccess } from "../functions/toast";
+import { toastError, toastSuccess } from "../functions/util/toast";
 import fetchRequest, {
   APIEndpoint,
   PathType,

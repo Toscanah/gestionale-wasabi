@@ -3,7 +3,7 @@ import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/models";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
-import { toastSuccess } from "@/app/(site)/functions/toast";
+import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import { useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 

@@ -5,7 +5,7 @@ import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { Input } from "@/components/ui/input";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
-import { toastSuccess } from "@/app/(site)/functions/toast";
+import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 export default function Discount() {

@@ -20,7 +20,8 @@ export default function Footer() {
           }
         >
           Stai per eliminare pagamenti, ordini e tutti i loro contenuti della giornata odierna, sei
-          sicuro? Questa azione è finale e non reversibile.
+          sicuro? Questa azione è finale e non reversibile. La pagina si riavvierà automaticamente
+          al concludersi dell'azione
         </DialogWrapper>
       </SidebarMenu>
     </SidebarFooter>

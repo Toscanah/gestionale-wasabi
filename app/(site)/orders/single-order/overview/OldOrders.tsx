@@ -42,6 +42,7 @@ export default function OldOrders() {
           (homeOrder) => homeOrder.order_id !== order.id
         );
       }
+      
       if (order.type === OrderType.PICKUP) {
         filteredCustomer.pickup_orders = customer.pickup_orders.filter(
           (pickupOrder) => pickupOrder.order_id !== order.id

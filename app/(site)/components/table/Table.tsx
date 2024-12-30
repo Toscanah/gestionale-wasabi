@@ -24,7 +24,7 @@ interface TableProps<T> {
   cellClassName?: (index: number) => string;
   CustomCell?: ({ cell, className }: CustomeCellProps<T>) => JSX.Element;
   onRowClick?: (original: T) => void;
-  stickyRowIndex?: number; // Add stickyRowIndex prop
+  stickyRowIndex?: number;
 }
 
 export default function Table<T>({

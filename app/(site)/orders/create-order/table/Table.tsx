@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { AnyOrder, TableOrder } from "@/app/(site)/models";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import fetchRequest from "../../../functions/api/fetchRequest";
-import { toastError, toastSuccess } from "../../../functions/toast";
+import { toastError, toastSuccess } from "../../../functions/util/toast";
 import useFocusCycle from "@/app/(site)/components/hooks/useFocusCycle";
 
 interface TableProps {
