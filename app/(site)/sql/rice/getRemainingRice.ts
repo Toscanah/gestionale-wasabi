@@ -5,10 +5,7 @@ import getTotalRice from "./getTotalRice";
 
 export default async function getRemainingRice(): Promise<Rice | null> {
   const rice = await getTotalRice();
-
   const today = new Date();
-  const startTime = performance.now();
-
   const usedRice = await prisma.productInOrder.aggregate({
     _sum: {
       rice_quantity: true,
@@ -25,9 +22,6 @@ export default async function getRemainingRice(): Promise<Rice | null> {
       },
     },
   });
-
-  const endTime = performance.now();
-  console.log(`La query del riso ci ha messo ${(endTime - startTime).toFixed(2)} millisecondi.`);
 
   const totalUsedRice = usedRice._sum.rice_quantity ?? 0;
 

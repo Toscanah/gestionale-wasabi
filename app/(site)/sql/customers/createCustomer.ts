@@ -4,13 +4,9 @@ import prisma from "../db";
 export default async function createCustomer(customer: Customer & { phone: string }) {
   const { phone, ...customerData } = customer;
 
-  console.log(customer);
-
   const newPhone = await prisma.phone.create({
     data: { phone },
   });
-
-  console.log(newPhone);
 
   return await prisma.customer.create({
     data: {

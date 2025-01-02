@@ -11,7 +11,6 @@ export default async function updateProduct(product: Product) {
     },
   });
 
-  console.log(product);
   if (existingProduct) return null;
 
   return await prisma.product.update({

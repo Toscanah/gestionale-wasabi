@@ -23,7 +23,6 @@ export default async function executeAction(
     const parsedContent = schema.safeParse(content);
 
     if (!parsedContent.success) {
-      console.log(content, action)
       return NextResponse.json(
         {
           message: `Content validation failed in action "${action}"`,

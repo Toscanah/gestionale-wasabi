@@ -31,7 +31,6 @@ export default function CustomerAddresses({
   const [currentAddresses, setCurrentAddresses] = useState<Address[]>(addresses ?? []);
 
   const saveAddresses = () => {
-    console.log(currentAddresses)
     if (currentAddresses.some((address) => !address.civic?.trim())) {
       return toastError("Tutti gli indirizzi devono avere almeno un civico e via validi");
     }

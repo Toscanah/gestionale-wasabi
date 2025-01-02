@@ -56,7 +56,8 @@ export default function useOrderPayment(
       onOrderPaid();
 
       if (type == "full") {
-        return updateOrder({ state: updatedOrder.state });
+        updateOrder({ state: "PAID" });
+        return
       }
 
       const { updatedProducts, updatedTotal } = scaleProducts({

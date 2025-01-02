@@ -7,8 +7,9 @@ import TotalSection from "../TotalSection";
 import { Fragment } from "react";
 import { getProductPrice } from "@/app/(site)/functions/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
-import sanitazeReceiptText from "@/app/(site)/functions/formatting-parsing/printing/sanitazeReceiptText";
 import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
+import { ProductLineProps } from "./KitchenProducts";
+import { uniqueId } from "lodash";
 
 const PRODUCT_HEADER_MAX = 23;
 const PRODUCT_HEADER_PADDING = 5;
@@ -37,12 +38,12 @@ export default function CustomerProducts({
   aggregatedProducts,
   orderType,
 }: CustomerProductsProps) {
-  const ProductLine = ({ product }: { product: ProductInOrder }) => {
+  const ProductLine = ({ product }: ProductLineProps) => {
     const actualTotalLength = Math.min(formatAmount(product.total).length, MAX_TOTAL_LENGTH);
     const additionalPadding = MAX_TOTAL_LENGTH - actualTotalLength;
 
     return (
-      <Fragment>
+      <Fragment key={uniqueId()}>
         <Text inline>
           {padReceiptText(product.product.code.toUpperCase(), PRODUCT_CODE_LENGTH, DEFAULT_PADDING)}
         </Text>

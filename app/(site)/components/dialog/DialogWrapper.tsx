@@ -64,7 +64,7 @@ export default function DialogWrapper({
     <Dialog onOpenChange={thisOnOpenChange} open={open}>
       <DialogTrigger
         asChild
-        className={triggerClassName}
+        className={cn("select-none", triggerClassName)}
         onClick={(e) => {
           if (double) {
             e.preventDefault();

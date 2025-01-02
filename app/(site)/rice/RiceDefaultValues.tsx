@@ -29,7 +29,7 @@ export default function RiceDefaultValues() {
       const duplicate = riceDefaults.some(
         (defaultValue) => defaultValue.label === riceDefault.label
       );
-  
+
       if (duplicate) {
         toastError("Un valore con la stessa etichetta esiste già.");
         return;
@@ -45,7 +45,6 @@ export default function RiceDefaultValues() {
 
   const removeDefaultValue = (riceDefault: RiceDefault) => {
     const updatedDefaults = riceDefaults.filter((defaultValue) => defaultValue !== riceDefault);
-    console.log(updatedDefaults);
     setRiceDefaults(updatedDefaults);
     localStorage.setItem("riceDefaults", JSON.stringify(updatedDefaults));
   };
@@ -69,8 +68,8 @@ export default function RiceDefaultValues() {
         </SidebarMenuSubButton>
       }
     >
-      <div className="max-h-[40vh] overflow-y-auto pr-4"> 
-        {riceDefaults.length > 0 && (
+      <div className="max-h-[40vh] overflow-y-auto pr-4">
+        {riceDefaults.length > 0 ? (
           <div className="flex flex-col gap-2 items-center w-full">
             {riceDefaults.map((riceDefault, index) => (
               <div className="flex items-center gap-2 w-full" key={index}>
@@ -81,7 +80,7 @@ export default function RiceDefaultValues() {
                   defaultValue={riceDefault.value}
                   onChange={(e) => updateDefaultValue(index, { value: parseFloat(e.target.value) })}
                 />
-  
+
                 <Input
                   className="w-[40%]"
                   type="text"
@@ -89,7 +88,7 @@ export default function RiceDefaultValues() {
                   value={riceDefault.label || ""}
                   onChange={(e) => updateDefaultValue(index, { label: e.target.value })}
                 />
-  
+
                 {/* Remove button */}
                 <Button className="group w-[20%]">
                   <Trash
@@ -102,10 +101,13 @@ export default function RiceDefaultValues() {
               </div>
             ))}
           </div>
+        ) : (
+          <div className="w-full text-center text-xl">Nessun valore di default presente!</div>
         )}
       </div>
 
       <Separator />
+      
       <div className="w-full flex gap-2">
         <Input
           className="w-[40%]"
