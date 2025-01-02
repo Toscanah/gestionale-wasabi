@@ -1,7 +1,7 @@
 import { Br, QRCode, Text } from "react-thermal-printer";
+import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
 
 export default function FooterSection(orderId: number) {
-
   const currentDate = new Date();
   const options: Intl.DateTimeFormatOptions = {
     weekday: "short",
@@ -14,8 +14,8 @@ export default function FooterSection(orderId: number) {
   return (
     <>
       <Text align="center">
-        ({currentDate.toLocaleTimeString("it-IT")} -{" "}
-        {formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)}, n° {orderId})
+        ({currentDate.toLocaleTimeString("it-IT")} - {capitalizeFirstLetter(formattedDate)}, n°{" "}
+        {orderId})
       </Text>
       <Br />
 

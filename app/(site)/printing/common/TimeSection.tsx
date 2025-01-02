@@ -1,4 +1,5 @@
 import { Row, Text } from "react-thermal-printer";
+import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
 
 export default function TimeSection() {
   const currentDate = new Date();
@@ -12,7 +13,7 @@ export default function TimeSection() {
 
   return (
     <Row
-      left={<Text>{formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)}</Text>}
+      left={<Text>{capitalizeFirstLetter(formattedDate)}</Text>}
       right={<Text>{currentDate.toLocaleTimeString("it-IT")}</Text>}
     />
   );

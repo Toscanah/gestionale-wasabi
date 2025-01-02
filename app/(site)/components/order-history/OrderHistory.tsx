@@ -12,6 +12,7 @@ import { ProductInOrder } from "@/app/(site)/models";
 import applyDiscount from "../../functions/order-management/applyDiscount";
 import HistoryStats from "./HistoryStats";
 import OrderDetail from "./OrderDetail";
+import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
 
 type ProductStats = {
   desc: string;
@@ -128,8 +129,8 @@ export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) 
       month: "2-digit",
       year: "numeric",
     }).format(new Date(dateString));
-
-    return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+    
+return capitalizeFirstLetter(formattedDate);
   };
 
   const handleCheckboxChange = (product: ProductInOrder) =>

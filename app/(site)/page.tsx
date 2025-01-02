@@ -9,7 +9,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    +setTheme("light");
+    setTheme("light");
     router.push("./home");
   }, [router]);
 

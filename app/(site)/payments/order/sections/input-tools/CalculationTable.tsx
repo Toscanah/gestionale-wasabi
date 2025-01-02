@@ -32,10 +32,8 @@ export default function CalculationTable() {
   const table = getTable({ data: paymentCalculations, columns });
 
   return (
-    <div className="w-full h-full flex items-center flex-col gap-4 justify-between">
-      <div className="flex max-h-[500px]">
-        <Table table={table} tableClassName="border-none " />
-      </div>
+    <div className="w-full flex max-h-[500px] items-center flex-col gap-4 justify-between">
+      <Table table={table} tableClassName="border-none " />
     </div>
   );
 }

@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { AnyOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
 import { OrderWithPayments } from "@/app/(site)/models";
-import padOptionsString from "../../functions/formatting-parsing/printing/padOptionsString";
 import formatAmount from "../../functions/formatting-parsing/formatAmount";
+import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
 
 interface OrderSummaryProps {
   order: OrderWithPayments;
@@ -39,7 +39,7 @@ export default function OrderSummary({ order }: OrderSummaryProps) {
               <span className="text-xl font-bold">
                 {product.product.desc}{" "}
                 {product.options.length > 0 &&
-                  "(" + padOptionsString(100, product.options) + ")"}
+                  "(" + joinItemsWithComma(product, "options", { maxChar: 100 }) + ")"}
               </span>
             </div>
           ))}
