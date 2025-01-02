@@ -4,6 +4,11 @@ import getReceiptSize from "@/app/(site)/functions/formatting-parsing/printing/g
 import { Fragment } from "react";
 import { Line, Text } from "react-thermal-printer";
 import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
+import { uniqueId } from "lodash";
+
+export interface ProductLineProps {
+  product: ProductInOrder;
+}
 
 interface KitchenProductsProps {
   aggregatedProducts: ProductInOrder[];
@@ -41,10 +46,8 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
     }
   });
 
-  console.log(aggregatedProducts);
-
-  const ProductLine = ({ product }: { product: ProductInOrder }) => (
-    <Fragment>
+  const ProductLine = ({ product }: ProductLineProps) => (
+    <Fragment key={uniqueId()}>
       <Text inline bold size={bigSize}>
         {padReceiptText(product.product.code.toUpperCase(), 4, 2)}
       </Text>
@@ -61,7 +64,7 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
 
   return (
     <>
-      {groupedProducts["no_options"]?.map((product, index) => ProductLine({ product }))}
+      {groupedProducts["no_options"]?.map((product) => ProductLine({ product }))}
 
       {groupedProducts["no_options"]?.length > 0 && <Line />}
 

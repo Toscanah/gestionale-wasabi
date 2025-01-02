@@ -1,4 +1,4 @@
-import { Br, Cut, Line, Row, Text, TextSize } from "react-thermal-printer";
+import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/models";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";

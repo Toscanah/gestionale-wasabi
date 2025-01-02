@@ -9,6 +9,7 @@ export default function TimeSection() {
     month: "numeric",
     day: "numeric",
   };
+  
   const formattedDate = currentDate.toLocaleDateString("it-IT", options);
 
   return (

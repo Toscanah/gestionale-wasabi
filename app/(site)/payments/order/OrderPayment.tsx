@@ -30,8 +30,6 @@ export default function OrderPayment({
   handleBackButton,
   partialOrder,
 }: OrderPaymentProps) {
-  const { dialogOpen, createSubOrder, order: parentOrder } = useOrderContext();
-
   return (
     <OrderPaymentProvider type={type} onOrderPaid={onOrderPaid} partialOrder={partialOrder}>
       <div className="w-full h-full flex flex-col gap-6">
