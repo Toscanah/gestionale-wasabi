@@ -139,7 +139,6 @@ export default function AddressForm({
       });
     }
 
-    setSelectedAddress(updatedAddress);
     setAddresses((prevAddresses) => {
       const addressExists = prevAddresses.some((address) => address.id === updatedAddress.id);
 
@@ -149,6 +148,7 @@ export default function AddressForm({
           )
         : [...prevAddresses, updatedAddress];
     });
+    setSelectedAddress(updatedAddress);
 
     toastSuccess("Il cliente e i suoi indirizzi sono stato correttamente aggiornati");
   }

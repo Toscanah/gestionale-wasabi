@@ -51,12 +51,9 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
     tableOrdersCount: 0,
   });
 
-  useEffect(() => {
-    calculateSummaryData(orders);
-  }, [orders]);
+  useEffect(() => calculateSummaryData(orders), [orders]);
 
   const calculateSummaryData = (orders: OrderWithPayments[]) => {
-    // Reset totals before recalculating
     const newTotals: PaymentTotals = {
       [PaymentType.CASH]: { label: "Contanti", total: 0 },
       [PaymentType.CARD]: { label: "Carta", total: 0 },

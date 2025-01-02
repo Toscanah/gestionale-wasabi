@@ -90,6 +90,7 @@ export default function OrderTable() {
     <div className="w-full h-full flex gap-6 justify-between">
       <div className="w-[75%] h-full flex flex-col gap-6 justify-between">
         <Table
+          headerClassName="[&:nth-child(2)]:w-32 [&:nth-child(3)]:w-52 [&:nth-child(4)]:w-80"
           table={table}
           tableClassName="h-full max-h-full"
           stickyRowIndex={order.products.length - 1}

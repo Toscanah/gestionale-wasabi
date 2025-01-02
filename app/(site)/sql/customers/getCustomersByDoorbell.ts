@@ -11,7 +11,7 @@ export default async function getCustomersByDoorbell(
       addresses: {
         some: {
           doorbell: {
-            equals: doorbell,
+            contains: doorbell,
             mode: "insensitive", // Case-insensitive comparison
           },
         },

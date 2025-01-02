@@ -61,11 +61,12 @@ export default function getColumns(
     TableColumn<ProductInOrder>({
       accessorKey: "code",
       header: "Codice",
+      sortable: false,
       cellContent: (row) => (
         <Input
           onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 0 })}
           ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 0 })}
-          className="max-w-28 text-2xl uppercase"
+          className="max-w-32 w-32 text-2xl uppercase"
           defaultValue={row.original.product?.code ?? ""}
           autoFocus={row.original.product_id == -1}
           onKeyDown={(e: any) => {
@@ -95,6 +96,7 @@ export default function getColumns(
     TableColumn<ProductInOrder>({
       accessorKey: "quantity",
       header: "Quantità",
+      sortable: false,
       cellContent: (row) => (
         <div className="flex gap-2 items-center">
           <Button
@@ -140,6 +142,7 @@ export default function getColumns(
     TableColumn<ProductInOrder>({
       accessorKey: "desc",
       header: "Descrizione",
+      sortable: false,
       cellContent: (row) => (
         <div className="flex items-center justify-start overflow-hidden text-ellipsis w-full text-2xl">
           {row.original.product?.desc}
@@ -150,6 +153,7 @@ export default function getColumns(
     TableColumn<ProductInOrder>({
       accessorKey: "options",
       header: "Opzioni",
+      sortable: false,
       cellContent: (row) => {
         if (row.original.product_id == -1) return <></>;
 
@@ -185,6 +189,7 @@ export default function getColumns(
     TableColumn<ProductInOrder>({
       accessorKey: "price",
       header: "Unità",
+      sortable: false,
       cellContent: (row) => (
         <span className="text-2xl">
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
@@ -197,6 +202,7 @@ export default function getColumns(
     TableColumn<ProductInOrder>({
       accessorKey: "total",
       header: "Totale",
+      sortable: false,
       cellContent: (row) => (
         <span className="text-2xl">{row.original.total == 0 ? "" : `€ ${row.original.total}`}</span>
       ),

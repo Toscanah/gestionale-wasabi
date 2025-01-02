@@ -104,6 +104,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             Valori di base
           </Label>
           <SelectWrapper
+            disabled={riceDefaults.length === 0}
             className="h-10 text-xl"
             groups={
               riceDefaults && riceDefaults.length > 0
