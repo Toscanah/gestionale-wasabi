@@ -40,11 +40,12 @@ export default function CreateOrder({ type, triggerClassName, children }: Create
     <DialogWrapper
       size="medium"
       open={open}
+      // title={components.get(type)?.name}
       onOpenChange={() => setOpen(!open)}
       contentClassName={cn(
         "flex flex-col gap-6 items-center",
         type === OrderType.HOME || order.id !== -1
-          ? "w-[97.5vw] max-w-screen max-h-screen h-[95vh]"
+          ? "w-[97.5vw] max-w-screen max-h-screen h-[95vh] "
           : "w-[40vw] "
       )}
       trigger={

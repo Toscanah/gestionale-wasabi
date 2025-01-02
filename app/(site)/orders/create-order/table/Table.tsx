@@ -50,7 +50,7 @@ export default function Table({ setOrder }: TableProps) {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-4 AAAAAAAAAAAAAAAAA">
       <div className="w-full space-y-2">
         <Label htmlFor="table" className="text-xl">
           Tavolo*
@@ -80,7 +80,7 @@ export default function Table({ setOrder }: TableProps) {
           onKeyDown={handleKeyDown}
         />
       </div>
-      <div className="w-full space-y-2">
+      {/* <div className="w-full space-y-2">
         <Label htmlFor="name" className="text-xl">
           Nome prenotazione
         </Label>
@@ -93,7 +93,7 @@ export default function Table({ setOrder }: TableProps) {
           onChange={(e) => setResName(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-      </div>
+      </div> */}
 
       <Button ref={buttonRef} type="submit" className="w-full" onClick={createTableOrder}>
         CREA ORDINE

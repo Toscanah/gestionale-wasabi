@@ -129,8 +129,8 @@ export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) 
       month: "2-digit",
       year: "numeric",
     }).format(new Date(dateString));
-    
-return capitalizeFirstLetter(formattedDate);
+
+    return capitalizeFirstLetter(formattedDate);
   };
 
   const handleCheckboxChange = (product: ProductInOrder) =>
