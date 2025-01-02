@@ -34,7 +34,7 @@ export default function Home() {
     [OrderType.PICKUP]: boolean;
   }>({ [OrderType.TABLE]: true, [OrderType.HOME]: true, [OrderType.PICKUP]: true });
 
-  const toggleOrder = (type: OrderType) =>
+  const toggleOrdersByType = (type: OrderType) =>
     setActiveOrders((prev) =>
       Object.keys(prev).filter((key) => prev[key as OrderType]).length === 1 && prev[type]
         ? prev
@@ -99,10 +99,10 @@ export default function Home() {
             <SidebarTrigger /> Wasabi Sushi
             <Button onClick={() => {
               fetchRequest("POST", "/api/orders", "dummy")
-            }}>Test</Button>
+            }} disabled>Test</Button>
           </div>
 
-          <Header toggleOrder={toggleOrder} activeOrders={activeOrders} />
+          <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />
         </div>
 
         <Separator orientation="horizontal" />

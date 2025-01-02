@@ -24,6 +24,7 @@ interface SelectWrapperProps {
   value?: string;
   onKeyDown?: (e: KeyboardEvent<any>) => void;
   onValueChange?: (value: string) => void;
+  disabled?: boolean;
 }
 
 const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
@@ -38,10 +39,12 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
       value,
       onKeyDown,
       onValueChange,
+      disabled = false,
     },
     ref
   ) => (
     <Select
+      disabled={disabled}
       onValueChange={field ? field.onChange : onValueChange}
       defaultValue={placeholder ? undefined : field ? field.value : defaultValue}
       value={value ? value : fixedValue ? "" : undefined}

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import DeleteOrdersBulk from "../components/DeleteOrdersBulk";
 
 interface HeaderProps {
-  toggleOrder: (type: OrderType) => void;
+  toggleOrdersByType: (type: OrderType) => void;
   activeOrders: {
     [OrderType.TABLE]: boolean;
     [OrderType.HOME]: boolean;
@@ -25,7 +25,7 @@ const orderLabels: { type: OrderType; label: string }[] = [
   { type: OrderType.PICKUP, label: "Asporto" },
 ];
 
-export default function Header({ toggleOrder, activeOrders }: HeaderProps) {
+export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps) {
   const { selectedOrders } = useWasabiContext();
 
   return (
@@ -43,7 +43,7 @@ export default function Header({ toggleOrder, activeOrders }: HeaderProps) {
               <Checkbox
                 id={label}
                 checked={activeOrders[type]}
-                onCheckedChange={() => toggleOrder(type)}
+                onCheckedChange={() => toggleOrdersByType(type)}
               />
               <Label htmlFor={label}>{label}</Label>
             </div>

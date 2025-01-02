@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, Trash, X } from "@phosphor-icons/react";
 import { RiceDefault } from "../types/RiceDefault";
 import { Separator } from "@/components/ui/separator";
+import { toastSuccess, toastError } from "../functions/util/toast";
 
 export default function RiceDefaultValues() {
   const [newDefault, setNewDefault] = useState<RiceDefault>();
@@ -24,14 +25,27 @@ export default function RiceDefaultValues() {
   const addDefaultValue = (riceDefault: RiceDefault | undefined) => {
     if (!riceDefault) return;
 
+    if (riceDefault.label) {
+      const duplicate = riceDefaults.some(
+        (defaultValue) => defaultValue.label === riceDefault.label
+      );
+  
+      if (duplicate) {
+        toastError("Un valore con la stessa etichetta esiste già.");
+        return;
+      }
+    }
+
     const updatedDefaults = [...riceDefaults, riceDefault];
     setRiceDefaults(updatedDefaults);
     localStorage.setItem("riceDefaults", JSON.stringify(updatedDefaults));
     setNewDefault(undefined);
+    toastSuccess("Nuovo valore aggiunto con successo!");
   };
 
   const removeDefaultValue = (riceDefault: RiceDefault) => {
     const updatedDefaults = riceDefaults.filter((defaultValue) => defaultValue !== riceDefault);
+    console.log(updatedDefaults);
     setRiceDefaults(updatedDefaults);
     localStorage.setItem("riceDefaults", JSON.stringify(updatedDefaults));
   };
@@ -47,46 +61,49 @@ export default function RiceDefaultValues() {
     <DialogWrapper
       size="medium"
       title="Valori di default del riso"
-      contentClassName="max-w-[30vw] w-[30vw]"
+      desc="I valori si salvano automaticamente"
+      contentClassName=""
       trigger={
-        <SidebarMenuSubButton className="hover:cursor-pointer">
+        <SidebarMenuSubButton className="hover:cursor-pointer ">
           Valori di default
         </SidebarMenuSubButton>
       }
     >
-      {riceDefaults.length > 0 && (
-        <div className="flex flex-col gap-2 items-center w-full">
-          {riceDefaults.map((riceDefault, index) => (
-            <div className="flex items-center gap-2 w-full" key={index}>
-              <Input
-                className="w-[40%]"
-                type="number"
-                placeholder="Modifica valore"
-                defaultValue={riceDefault.value}
-                onChange={(e) => updateDefaultValue(index, { value: parseFloat(e.target.value) })}
-              />
-
-              <Input
-                className="w-[40%]"
-                type="text"
-                placeholder="Modifica etichetta"
-                value={riceDefault.label || ""}
-                onChange={(e) => updateDefaultValue(index, { label: e.target.value })}
-              />
-
-              {/* Remove button */}
-              <Button className="group w-[20%]">
-                <Trash
-                  onClick={() => removeDefaultValue(riceDefault)}
-                  size={24}
-                  className="transform transition-transform duration-300 
-                        group-hover:rotate-[360deg] hover:font-bold hover:drop-shadow-2xl"
+      <div className="max-h-[40vh] overflow-y-auto pr-4"> 
+        {riceDefaults.length > 0 && (
+          <div className="flex flex-col gap-2 items-center w-full">
+            {riceDefaults.map((riceDefault, index) => (
+              <div className="flex items-center gap-2 w-full" key={index}>
+                <Input
+                  className="w-[40%]"
+                  type="number"
+                  placeholder="Modifica valore"
+                  defaultValue={riceDefault.value}
+                  onChange={(e) => updateDefaultValue(index, { value: parseFloat(e.target.value) })}
                 />
-              </Button>
-            </div>
-          ))}
-        </div>
-      )}
+  
+                <Input
+                  className="w-[40%]"
+                  type="text"
+                  placeholder="Modifica etichetta"
+                  value={riceDefault.label || ""}
+                  onChange={(e) => updateDefaultValue(index, { label: e.target.value })}
+                />
+  
+                {/* Remove button */}
+                <Button className="group w-[20%]">
+                  <Trash
+                    onClick={() => removeDefaultValue(riceDefault)}
+                    size={24}
+                    className="transform transition-transform duration-300 
+                          group-hover:rotate-[360deg] hover:font-bold hover:drop-shadow-2xl"
+                  />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <Separator />
       <div className="w-full flex gap-2">
