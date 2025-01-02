@@ -88,7 +88,7 @@
         "usb": "^2.14.0",
         "uuid": "^10.0.0",
         "vaul": "^0.9.1",
-        "zod": "^3.23.8",
+        "zod": "^3.24.1",
         "zod-prisma-types": "^3.2.1"
     },
     "devDependencies": {

@@ -4,11 +4,11 @@ import formatAmount from "@/app/(site)/functions/formatting-parsing/formatAmount
 import padReceiptText from "@/app/(site)/functions/formatting-parsing/printing/padReceiptText";
 import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
-import padOptionsString from "@/app/(site)/functions/formatting-parsing/printing/padOptionsString";
 import { Fragment } from "react";
 import { getProductPrice } from "@/app/(site)/functions/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 import sanitazeReceiptText from "@/app/(site)/functions/formatting-parsing/printing/sanitazeReceiptText";
+import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
 
 const PRODUCT_HEADER_MAX = 23;
 const PRODUCT_HEADER_PADDING = 5;
@@ -90,7 +90,9 @@ export default function CustomerProducts({
         <Fragment key={product + "-" + index}>
           {ProductLine({ product })}
 
-          {product.options.length > 0 && <Text>- {padOptionsString(15, product.options)}</Text>}
+          {product.options.length > 0 && (
+            <Text>- {joinItemsWithComma(product, "options", { maxChar: 15 })}</Text>
+          )}
         </Fragment>
       ))}
 

@@ -1,6 +1,7 @@
 import { CategoryWithOptions, CustomerWithDetails, OptionWithCategories } from "../../models";
+import capitalizeFirstLetter from "./capitalizeFirstLetter";
 
-type ItemsType = "addresses" | "customers" | "options" | "categories" | "doorbells";
+type ItemType = "addresses" | "customers" | "options" | "categories" | "doorbells";
 
 function formatItems<T>(items: T[], formatFn: (item: T) => string, sort: boolean): string {
   const formattedItems = items.map(formatFn);
@@ -9,39 +10,39 @@ function formatItems<T>(items: T[], formatFn: (item: T) => string, sort: boolean
 
 export default function joinItemsWithComma<T>(
   item: T,
-  type: ItemsType,
-  options = { sort: false }
+  type: ItemType,
+  options: { sort?: boolean; maxChar?: number } = { sort: false, maxChar: Infinity }
 ): string {
-  const { sort } = options;
+  const { sort = false, maxChar = Infinity } = options;
+
+  const truncate = (str: string) => str.slice(0, Math.min(str.length, maxChar));
 
   switch (type) {
     case "doorbells":
       return formatItems(
         (item as CustomerWithDetails).addresses,
-        (address) => address.doorbell.charAt(0).toUpperCase() + address.doorbell.slice(1),
+        (address) => capitalizeFirstLetter(truncate(address.doorbell)),
         sort
       );
 
     case "categories":
       return formatItems(
         (item as OptionWithCategories).categories,
-        (cat) => cat.category.category.charAt(0).toUpperCase() + cat.category.category.slice(1),
+        (cat) => capitalizeFirstLetter(truncate(cat.category.category)),
         sort
       );
 
     case "addresses":
       return formatItems(
         (item as CustomerWithDetails).addresses,
-        (address) =>
-          address.street.charAt(0).toUpperCase() + address.street.slice(1) + " " + address.civic,
+        (address) => capitalizeFirstLetter(truncate(address.street)) + " " + address.civic,
         sort
       );
 
     case "options":
       return formatItems(
         (item as CategoryWithOptions).options,
-        (option) =>
-          option.option.option_name.charAt(0).toUpperCase() + option.option.option_name.slice(1),
+        (option) => capitalizeFirstLetter(truncate(option.option.option_name)),
         sort
       );
 
