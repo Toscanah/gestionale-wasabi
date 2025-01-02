@@ -53,6 +53,7 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
         ...prevRice,
         total: { ...total, amount: total.amount + prevRice.total.amount },
       }));
+      fetchRemainingRice();
       toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
     });
 
