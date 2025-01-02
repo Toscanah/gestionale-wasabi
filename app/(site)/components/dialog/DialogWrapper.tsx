@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import {
   Dialog,
   DialogClose,
@@ -58,9 +58,7 @@ export default function DialogWrapper({
 }: DialogWrapperProps) {
   const isDeleteVariant = variant === "delete";
 
-  const thisOnOpenChange = (open: boolean) => {
-    onOpenChange?.(open);
-  };
+  const thisOnOpenChange = (open: boolean) => onOpenChange?.(open);
 
   return (
     <Dialog onOpenChange={thisOnOpenChange} open={open}>
