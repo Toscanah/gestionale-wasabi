@@ -31,7 +31,7 @@ export default async function deleteProductsFromOrder(
     },
   });
 
-  // Remove associated options regardless of the cooked state
+  console.log("Sono entrato in deleteproducts from order")
   await prisma.optionInProductOrder.deleteMany({
     where: {
       product_in_order_id: {
@@ -40,7 +40,6 @@ export default async function deleteProductsFromOrder(
     },
   });
 
-  // Update the order total
   return await prisma.order.update({
     where: {
       id: orderId,

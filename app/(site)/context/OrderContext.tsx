@@ -34,6 +34,7 @@ type OrderContextType = {
   updateUnprintedProducts: () => Promise<ProductInOrder[]>;
   updateOrder: (order: RecursivePartial<AnyOrder>) => void;
   joinTableOrders: (tableToJoin: string) => void;
+  updateAddionalNote: (note: string, productInOrderId: number) => void;
 };
 
 export const OrderProvider = ({
@@ -64,6 +65,7 @@ export const OrderProvider = ({
     deleteProducts,
     updateProductOption,
     updateUnprintedProducts,
+    updateAddionalNote,
   } = useProductManager(order, updateOrder);
 
   return (
@@ -86,6 +88,7 @@ export const OrderProvider = ({
         updateProductOption,
         updateUnprintedProducts,
         updateOrder,
+        updateAddionalNote,
       }}
     >
       {children}
