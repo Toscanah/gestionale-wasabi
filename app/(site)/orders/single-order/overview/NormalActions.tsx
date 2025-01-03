@@ -73,7 +73,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
   const handleFullPayment = async () =>
     await print(() =>
-      OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.HOME)
+      OrderReceipt<typeof order>(order, quickPaymentOption, false)
     ).then(() => setAction("payFull"));
 
   const hasProducts = order.products.filter((product) => product.id !== -1).length > 0;
