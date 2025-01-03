@@ -52,12 +52,12 @@ export default async function addProductsToOrder(
   });
 
   if (optionsToCreate.length > 0) {
+    console.log("Sono entrato in addPRoductToORder")
     await prisma.optionInProductOrder.createMany({
       data: optionsToCreate,
     });
   }
 
-  // Update the total price of the order
   await prisma.order.update({
     where: {
       id: targetOrderId,
