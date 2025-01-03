@@ -91,8 +91,18 @@ export default function CustomerProducts({
         <Fragment key={product + "-" + index}>
           {ProductLine({ product })}
 
+          {product.additional_note !== "" && (
+            <Text>
+              {" ".repeat(4)}
+              {product.additional_note}
+            </Text>
+          )}
+
           {product.options.length > 0 && (
-            <Text>- {joinItemsWithComma(product, "options", { maxChar: 15 })}</Text>
+            <Text>
+              {" ".repeat(4)}
+              {joinItemsWithComma(product, "options", { maxChar: 15 })}
+            </Text>
           )}
         </Fragment>
       ))}

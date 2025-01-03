@@ -162,19 +162,20 @@ model Product {
 }
 
 model ProductInOrder {
-    id             Int                    @id @default(autoincrement())
-    product_id     Int
-    order_id       Int
-    quantity       Int                    @default(0)
-    total          Float                  @default(0)
-    is_paid_fully  Boolean                @default(false)
-    paid_quantity  Int                    @default(0)
-    rice_quantity  Float                  @default(0)
-    printed_amount Int                    @default(0)
-    state          ProductInOrderState    @default(IN_ORDER)
-    options        OptionInProductOrder[]
-    product        Product                @relation(fields: [product_id], references: [id])
-    order          Order                  @relation(fields: [order_id], references: [id])
+    id              Int                    @id @default(autoincrement())
+    product_id      Int
+    order_id        Int
+    quantity        Int                    @default(0)
+    total           Float                  @default(0)
+    is_paid_fully   Boolean                @default(false)
+    paid_quantity   Int                    @default(0)
+    rice_quantity   Float                  @default(0)
+    printed_amount  Int                    @default(0)
+    state           ProductInOrderState    @default(IN_ORDER)
+    additional_note String                 @default("")
+    options         OptionInProductOrder[]
+    product         Product                @relation(fields: [product_id], references: [id])
+    order           Order                  @relation(fields: [order_id], references: [id])
 }
 
 model Category {
