@@ -189,7 +189,7 @@ export default function getColumns(
 
             <Input
               type="text"
-              defaultValue={row.original.additional_note}
+              defaultValue={row.original.additional_note ?? ""}
               onChange={(e) => debouncedAddNoteChange(e.target.value, row.original.id)}
             />
           </div>
