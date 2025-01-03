@@ -88,6 +88,10 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
             {idx < arr.length - 1 && arr.length > 1 && <Line />}
           </Fragment>
         ))}
+
+      {Object.entries(groupedProducts).filter(([key]) => key !== "no_options").length > 0 && (
+        <Line />
+      )}
     </>
   );
 }

@@ -103,7 +103,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
+              {pickupOrder.when == "immediate" ? "SUBITO" : pickupOrder.when}
             </Text>
           }
         />
