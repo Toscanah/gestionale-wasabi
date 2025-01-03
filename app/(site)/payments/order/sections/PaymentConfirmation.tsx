@@ -16,7 +16,7 @@ export default function PaymentConfirmation() {
         </span>
       </h1>
       <div className="w-full flex gap-6 items-center justify-center">
-        <Button className="h-32 w-48 text-3xl " variant={"destructive"} onClick={resetPayment}>
+        <Button className="h-32 w-48 text-3xl" variant={"destructive"} onClick={resetPayment}>
           Cancella
         </Button>
 

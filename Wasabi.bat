@@ -34,4 +34,4 @@ call npm start
 
 REM Open in browser
 echo Opening in browser...
-call start "" "http://localhost:3000"
+call explorer "http://localhost:3000"
