@@ -71,10 +71,11 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     await print(...content).then(() => toggleDialog(false));
   };
 
-  const handleFullPayment = async () =>
-    await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false)).then(() =>
-      setAction("payFull")
-    );
+  const handleFullPayment = async () =>setAction("payFull")
+    // questo deve stampare solo quando non ho stampato
+    // await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false)).then(() =>
+      
+    // );
 
   const hasProducts = order.products.filter((product) => product.id !== -1).length > 0;
 
