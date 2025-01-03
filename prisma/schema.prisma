@@ -172,7 +172,7 @@ model ProductInOrder {
     rice_quantity   Float                  @default(0)
     printed_amount  Int                    @default(0)
     state           ProductInOrderState    @default(IN_ORDER)
-    additional_note String                 @default("")
+    additional_note String?                @default("")
     options         OptionInProductOrder[]
     product         Product                @relation(fields: [product_id], references: [id])
     order           Order                  @relation(fields: [order_id], references: [id])
