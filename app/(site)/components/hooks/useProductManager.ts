@@ -160,6 +160,17 @@ export function useProductManager(
     return unprintedProducts;
   };
 
+  const updateAddionalNote = (note: string, productInOrderId: number) =>
+    fetchRequest<ProductInOrder>("POST", "/api/products/", "updateAdditionalNote", {
+      note,
+      productInOrderId,
+    }).then((updatedProduct) => {
+      if (updatedProduct) {
+        updateProductsList({ updatedProducts: [updatedProduct] });
+        // toastSuccess("Note aggiuntiva aggiornata");
+      }
+    });
+
   const updateProductsList = ({
     newProducts = [],
     updatedProducts = [],
@@ -213,5 +224,6 @@ export function useProductManager(
     deleteProducts,
     updateProductOption,
     updateUnprintedProducts,
+    updateAddionalNote,
   };
 }

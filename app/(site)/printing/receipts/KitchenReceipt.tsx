@@ -55,11 +55,6 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
   const renderReceiptSection = (title: ReceiptTitle, products: typeof order.products) => (
     <>
-      <Text align="center" bold size={bigSize}>
-        {title.toUpperCase()}
-      </Text>
-      <Br />
-
       {TimeSection()}
 
       <Line />
@@ -108,7 +103,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
+              {pickupOrder.when == "immediate" ? "SUBITO" : pickupOrder.when}
             </Text>
           }
         />
@@ -134,6 +129,11 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       <Line />
       <Br />
       {ProductsListSection(products, order.type as OrderType, 0, "kitchen")}
+      <Br />
+
+      <Text align="center" bold size={smallSize}>
+        {title.toUpperCase()}
+      </Text>
 
       <Cut />
     </>

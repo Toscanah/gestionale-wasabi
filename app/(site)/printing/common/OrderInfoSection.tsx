@@ -20,7 +20,7 @@ export default function OrderInfoSection(
               <Text bold inline size={smallSize}>
                 Preferenze:{" "}
               </Text>
-              <Text size={bigSize}>
+              <Text size={smallSize}>
                 {sanitazeReceiptText(order.home_order.customer.preferences)}
               </Text>
               {!order.home_order?.notes && <Br />}
@@ -31,7 +31,7 @@ export default function OrderInfoSection(
               <Text bold inline size={smallSize}>
                 Note ordine:{" "}
               </Text>
-              <Text size={bigSize}>{sanitazeReceiptText(order.home_order.notes)}</Text>
+              <Text size={smallSize}>{sanitazeReceiptText(order.home_order.notes)}</Text>
               {/* <Br /> */}
             </>
           )}
@@ -40,9 +40,9 @@ export default function OrderInfoSection(
         </>
       )}
 
-      <Text bold inline size={smallSize}>
+      {/* <Text bold inline size={smallSize}>
         Via:{" "}
-      </Text>
+      </Text> */}
       <Text inline size={bigSize}>
         {sanitazeReceiptText(
           order.home_order?.address.street + " " + order.home_order?.address.civic
@@ -52,9 +52,9 @@ export default function OrderInfoSection(
 
       {order.home_order?.address.street_info && (
         <>
-          <Text bold inline size={smallSize}>
+          {/* <Text bold inline size={smallSize}>
             Informazioni strad:{" "}
-          </Text>
+          </Text> */}
           <Text inline size={bigSize}>
             {sanitazeReceiptText(order.home_order?.address.street_info)}
           </Text>
@@ -62,9 +62,9 @@ export default function OrderInfoSection(
         </>
       )}
 
-      <Text bold inline size={smallSize}>
+      {/* <Text bold inline size={smallSize}>
         Campanello:{" "}
-      </Text>
+      </Text> */}
       <Text inline size={bigSize}>
         {sanitazeReceiptText(order.home_order?.address.doorbell)}
       </Text>
@@ -74,9 +74,9 @@ export default function OrderInfoSection(
         <>
           {order.home_order?.address.floor && (
             <>
-              <Text bold inline size={smallSize}>
+              {/* <Text bold inline size={smallSize}>
                 Piano:{" "}
-              </Text>
+              </Text> */}
               <Text inline={order.home_order?.address.stair !== ""} size={bigSize}>
                 {sanitazeReceiptText(order.home_order.address.floor)}
               </Text>
@@ -90,9 +90,9 @@ export default function OrderInfoSection(
           )}
           {order.home_order?.address.stair && (
             <>
-              <Text bold inline size={smallSize}>
+              {/* <Text bold inline size={smallSize}>
                 Scala:{" "}
-              </Text>
+              </Text> */}
               <Text size={bigSize}>{sanitazeReceiptText(order.home_order.address.stair)}</Text>
             </>
           )}
@@ -101,9 +101,9 @@ export default function OrderInfoSection(
 
       {quickPaymentOption !== "none" && (
         <>
-          <Text bold inline size={smallSize}>
+          {/* <Text bold inline size={smallSize}>
             Tipo pagamento:{" "}
-          </Text>
+          </Text> */}
           <Text size={bigSize}>
             {quickPaymentOption === "cash"
               ? "CONTANTI"
@@ -114,16 +114,16 @@ export default function OrderInfoSection(
         </>
       )}
 
-      <Text bold inline size={smallSize}>
+      {/* <Text bold inline size={smallSize}>
         Quando:{" "}
-      </Text>
+      </Text> */}
       <Text size={bigSize}>
         {order.home_order?.when !== "immediate" ? order.home_order?.when : "PRIMA POSSIBILE"}
       </Text>
 
-      <Text bold inline size={smallSize}>
+      {/* <Text bold inline size={smallSize}>
         Tel:{" "}
-      </Text>
+      </Text> */}
       <Text size={bigSize}>
         {order.home_order?.customer.phone?.phone}
         {order.home_order?.contact_phone !== "" && " oppure " + order.home_order?.contact_phone}

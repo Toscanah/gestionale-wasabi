@@ -28,12 +28,10 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
         azione è finale e non reversibile.
       </span>
 
-      {type == "single" && (
-        <div className="flex gap-2 items-center">
-          <Label className="text-lg font-normal">Ho cucinato i prodotti di questo ordine</Label>
-          <Checkbox checked={productsCooked} onCheckedChange={(e) => setProductsCooked(!!e)} />
-        </div>
-      )}
+      <div className="flex gap-2 items-center">
+        <Label className="text-lg font-normal">Ho cucinato i prodotti di questo ordine</Label>
+        <Checkbox checked={productsCooked} onCheckedChange={(e) => setProductsCooked(!!e)} />
+      </div>
     </div>
   );
 

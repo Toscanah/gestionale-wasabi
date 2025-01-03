@@ -83,10 +83,13 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
         TableColumn<HomeOrder>({
           accessorKey: "address.street",
           header: "Indirizzo",
-          cellContent: (row) =>
-            `${(row.original.home_order?.address?.street ?? "").toUpperCase()} ${(
+          cellContent: (row) => (
+            <div className="w-52 max-w-52">{`${(
+              row.original.home_order?.address?.street ?? ""
+            ).toUpperCase()} ${(
               row.original.home_order?.address?.civic ?? ""
-            ).toUpperCase()}`,
+            ).toUpperCase()}`}</div>
+          ),
         }),
 
         TableColumn<HomeOrder>({

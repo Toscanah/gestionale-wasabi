@@ -49,7 +49,7 @@ export default function CreateOrder({ type, triggerClassName, children }: Create
           : "w-[40vw] "
       )}
       trigger={
-        <Button className={cn("w-full text-2xl h-12", triggerClassName)}>
+        <Button className={cn("w-full text-3xl h-24", triggerClassName)}>
           <Plus className="mr-2 h-5 w-5" /> {components.get(type)?.name} {children}
         </Button>
       }

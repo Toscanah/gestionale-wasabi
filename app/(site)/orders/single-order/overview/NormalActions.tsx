@@ -71,7 +71,11 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     await print(...content).then(() => toggleDialog(false));
   };
 
-  const handleFullPayment = () => setAction("payFull");
+  const handleFullPayment = async () =>setAction("payFull")
+    // questo deve stampare solo quando non ho stampato
+    // await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false)).then(() =>
+      
+    // );
 
   const hasProducts = order.products.filter((product) => product.id !== -1).length > 0;
 
@@ -108,7 +112,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       <Button
         className="w-full text-3xl h-12"
         onClick={handleFullPayment}
-        disabled={!(order.total > 0) || !order.is_receipt_printed} //
+        disabled={!(order.total > 0)} //
       >
         INCASSA
       </Button>
