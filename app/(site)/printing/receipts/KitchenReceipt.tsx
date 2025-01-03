@@ -131,7 +131,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {ProductsListSection(products, order.type as OrderType, 0, "kitchen")}
       <Br />
 
-      <Text align="center" bold size={smallSize}>
+      <Text align="right" bold size={smallSize}>
         {title.toUpperCase()}
       </Text>
 
