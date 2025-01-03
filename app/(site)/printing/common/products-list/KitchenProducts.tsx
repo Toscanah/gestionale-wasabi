@@ -62,7 +62,7 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
 
       {product.additional_note !== "" && (
         <Text bold size={smallSize}>
-          {" ".repeat(4)}
+          {" -" + " ".repeat(4)}
           {product.additional_note}
         </Text>
       )}

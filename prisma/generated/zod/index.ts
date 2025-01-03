@@ -240,7 +240,7 @@ export const ProductInOrderSchema = z.object({
   paid_quantity: z.number().int(),
   rice_quantity: z.number(),
   printed_amount: z.number().int(),
-  additional_note: z.string(),
+  additional_note: z.string().nullable(),
 })
 
 export type ProductInOrder = z.infer<typeof ProductInOrderSchema>
