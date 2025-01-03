@@ -18,9 +18,14 @@ import {
   ProductInOrderWithOptionsSchema,
   UpdateProductSchema,
 } from "../../models";
+import updateAdditionalNote from "../../sql/customers/updateAdditionalNote";
 
 export const productSchemas = {
   getProducts: NoContentSchema,
+  updateAdditionalNote: z.object({
+    note: z.string(),
+    productInOrderId: z.number(),
+  }),
   createNewProduct: z.object({
     product: CreateProductSchema,
   }),
@@ -63,6 +68,10 @@ const POST_ACTIONS = new Map([
   ["createNewProduct", { func: createNewProduct, schema: productSchemas.createNewProduct }],
   ["updateProduct", { func: updateProduct, schema: productSchemas.updateProduct }],
   ["addProductToOrder", { func: addProductToOrder, schema: productSchemas.addProductToOrder }],
+  [
+    "updateAdditionalNote",
+    { func: updateAdditionalNote, schema: productSchemas.updateAdditionalNote },
+  ],
   [
     "updateProductInOrder",
     { func: updateProductInOrder, schema: productSchemas.updateProductInOrder },

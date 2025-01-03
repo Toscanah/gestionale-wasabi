@@ -32,7 +32,7 @@ export const RiceScalarFieldEnumSchema = z.enum(['id','amount','threshold']);
 
 export const ProductScalarFieldEnumSchema = z.enum(['id','category_id','code','desc','site_price','home_price','rice','active','kitchen']);
 
-export const ProductInOrderScalarFieldEnumSchema = z.enum(['id','product_id','order_id','quantity','total','is_paid_fully','paid_quantity','rice_quantity','printed_amount','state']);
+export const ProductInOrderScalarFieldEnumSchema = z.enum(['id','product_id','order_id','quantity','total','is_paid_fully','paid_quantity','rice_quantity','printed_amount','state','additional_note']);
 
 export const CategoryScalarFieldEnumSchema = z.enum(['id','category','active']);
 
@@ -240,6 +240,7 @@ export const ProductInOrderSchema = z.object({
   paid_quantity: z.number().int(),
   rice_quantity: z.number(),
   printed_amount: z.number().int(),
+  additional_note: z.string(),
 })
 
 export type ProductInOrder = z.infer<typeof ProductInOrderSchema>

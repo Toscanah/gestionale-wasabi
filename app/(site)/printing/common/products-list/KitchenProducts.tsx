@@ -59,6 +59,13 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
       <Text bold size={bigSize}>
         {padReceiptText(product.quantity.toString(), String(product.quantity).length)}
       </Text>
+
+      {product.additional_note !== "" && (
+        <Text bold size={smallSize}>
+          {" ".repeat(4)}
+          {product.additional_note}
+        </Text>
+      )}
     </Fragment>
   );
 
@@ -75,7 +82,7 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
             {products.map((product) => ProductLine({ product }))}
 
             <Text bold size={smallSize}>
-              {" - " + padReceiptText(optionsKey, 36)}
+              {" -" + " ".repeat(4) + padReceiptText(optionsKey, 36)}
             </Text>
 
             {idx < arr.length - 1 && arr.length > 1 && <Line />}
