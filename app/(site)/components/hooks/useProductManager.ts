@@ -39,6 +39,7 @@ export function useProductManager(
   const updateProduct = (key: string, value: any, index: number) => {
     let productToUpdate = order.products[index];
 
+    console.log("?????", key, value, index)
     if (key == "quantity" && value < 0) {
       return toastError("La quantità non può essere negativa");
     }

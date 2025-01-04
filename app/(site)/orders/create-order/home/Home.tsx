@@ -10,12 +10,17 @@ import { OrderType } from "@prisma/client";
 import useFocusCycle from "@/app/(site)/components/hooks/useFocusCycle";
 import useFetchCustomer from "@/app/(site)/components/hooks/useFetchCustomer";
 import PossibleCustomers from "./possible-customers/PossibleCustomers";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import generateEmptyOrder from "@/app/(site)/functions/order-management/generateEmptyOrder";
 
 interface HomeProps {
   setOrder: Dispatch<SetStateAction<AnyOrder>>;
+  initialPhone: string;
+  initialDoorbell: string;
 }
 
-export default function Home({ setOrder }: HomeProps) {
+export default function Home({ setOrder, initialPhone, initialDoorbell }: HomeProps) {
   const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
 
@@ -33,9 +38,11 @@ export default function Home({ setOrder }: HomeProps) {
     setPhone,
     setDoorbellSearch,
     possibleCustomers,
-  } = useFetchCustomer(setSelectedAddress);
+  } = useFetchCustomer(setSelectedAddress, initialPhone, initialDoorbell);
 
   const createHomeOrder = () => {
+
+
     if (!customer || !selectedAddress) return;
 
     fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {

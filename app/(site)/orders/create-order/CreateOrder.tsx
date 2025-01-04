@@ -13,6 +13,7 @@ import { OrderProvider } from "../../context/OrderContext";
 import Home from "./home/Home";
 import generateEmptyOrder from "../../functions/order-management/generateEmptyOrder";
 import Pickup from "./pickup/Pickup";
+import SearchHome from "./home/SearchHome";
 
 interface CreateOrderProps {
   type: OrderType;
@@ -24,43 +25,38 @@ export default function CreateOrder({ type, triggerClassName, children }: Create
   const [order, setOrder] = useState<AnyOrder>(generateEmptyOrder(type));
   const [open, setOpen] = useState<boolean>(false);
 
-  const components = new Map<OrderType, { name: string; component: ReactNode }>([
-    [OrderType.TABLE, { name: "Ordine al tavolo", component: <Table setOrder={setOrder} /> }],
-    [OrderType.HOME, { name: "Ordine a domicilio", component: <Home setOrder={setOrder} /> }],
-    [OrderType.PICKUP, { name: "Ordine per asporto", component: <Pickup setOrder={setOrder} /> }],
+  const components = new Map<OrderType, { component: ReactNode }>([
+    [
+      OrderType.TABLE,
+      {
+        component: (
+          <Table setOrder={setOrder} open={open} order={order} setOpen={setOpen}>
+            {children}
+          </Table>
+        ),
+      },
+    ],
+    [
+      OrderType.HOME,
+      {
+        component: (
+          <SearchHome setOrder={setOrder} open={open} order={order} setOpen={setOpen}>
+            {children}
+          </SearchHome>
+        ),
+      },
+    ],
+    [
+      OrderType.PICKUP,
+      {
+        component: (
+          <Pickup setOrder={setOrder} order={order} open={open} setOpen={setOpen}>
+            {children}
+          </Pickup>
+        ),
+      },
+    ],
   ]);
 
-  useEffect(() => {
-    if (open) {
-      setOrder(generateEmptyOrder(type));
-    }
-  }, [open]);
-
-  return (
-    <DialogWrapper
-      size="medium"
-      open={open}
-      // title={components.get(type)?.name}
-      onOpenChange={() => setOpen(!open)}
-      contentClassName={cn(
-        "flex flex-col gap-6 items-center",
-        type === OrderType.HOME || order.id !== -1
-          ? "w-[97.5vw] max-w-screen max-h-screen h-[95vh] "
-          : "w-[40vw] "
-      )}
-      trigger={
-        <Button className={cn("w-full text-3xl h-24", triggerClassName)}>
-          <Plus className="mr-2 h-5 w-5" /> {components.get(type)?.name} {children}
-        </Button>
-      }
-    >
-      {order.id == -1 ? (
-        <div className="w-full h-full">{components.get(type)?.component}</div>
-      ) : (
-        <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen}>
-          <OrderTable />
-        </OrderProvider>
-      )}
-    </DialogWrapper>
-  );
+  return components.get(type)?.component;
 }

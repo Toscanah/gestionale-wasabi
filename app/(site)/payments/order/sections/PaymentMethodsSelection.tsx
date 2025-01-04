@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 
 const paymentMethods: PaymentMethod[] = [
+  { type: PaymentType.VOUCH, label: "Buoni pasto", icon: ForkKnife },
   { type: PaymentType.CASH, label: "Contanti", icon: Money },
   { type: PaymentType.CARD, label: "Carta", icon: CreditCard },
-  { type: PaymentType.VOUCH, label: "Buoni pasto", icon: ForkKnife },
-  { type: PaymentType.CREDIT, label: "Credito", icon: Coins },
+  // { type: PaymentType.CREDIT, label: "Credito", icon: Coins },
 ];
 
 export default function PaymentMethodsSelection() {

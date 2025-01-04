@@ -4,10 +4,12 @@ import fetchRequest from "../../functions/api/fetchRequest";
 import { CustomerWithDetails } from "@/app/(site)/models";
 
 export default function useFetchCustomer(
-  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>
+  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>,
+  initialPhone?: string,
+  initialDoorbell?: string
 ) {
-  const [phone, setPhone] = useState<string>("");
-  const [doorbellSearch, setDoorbellSearch] = useState<string>("");
+  const [phone, setPhone] = useState<string>(initialPhone ?? "");
+  const [doorbellSearch, setDoorbellSearch] = useState<string>(initialDoorbell ?? "");
   const [possibleCustomers, setPossibleCustomers] = useState<CustomerWithDetails[]>([]);
   const [customer, setCustomer] = useState<Customer | undefined>(undefined);
   const [addresses, setAddresses] = useState<Address[]>([]);

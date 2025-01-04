@@ -24,7 +24,7 @@ const sizes = {
 type DialogWrapperProps = {
   double?: boolean;
   children?: ReactNode;
-  trigger: ReactNode;
+  trigger?: ReactNode | undefined;
   showCloseButton?: boolean;
   variant?: "delete" | "normal";
   contentClassName?: string;
@@ -62,22 +62,24 @@ export default function DialogWrapper({
 
   return (
     <Dialog onOpenChange={thisOnOpenChange} open={open}>
-      <DialogTrigger
-        asChild
-        className={cn("select-none", triggerClassName)}
-        onClick={(e) => {
-          if (double) {
-            e.preventDefault();
+      {trigger && (
+        <DialogTrigger
+          asChild
+          className={cn("select-none", triggerClassName)}
+          onClick={(e) => {
+            if (double) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+          onDoubleClick={(e) => {
+            thisOnOpenChange(true);
             e.stopPropagation();
-          }
-        }}
-        onDoubleClick={(e) => {
-          thisOnOpenChange(true);
-          e.stopPropagation();
-        }}
-      >
-        {trigger}
-      </DialogTrigger>
+          }}
+        >
+          {trigger}
+        </DialogTrigger>
+      )}
       <DialogContent
         className={cn(
           "w-auto max-h-screen",
