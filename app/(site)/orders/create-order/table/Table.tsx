@@ -59,6 +59,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
 
       setOrder(newTableOrder.order);
       setOpen(true);
+      setTable("")
     });
   };
 

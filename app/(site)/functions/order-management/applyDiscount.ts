@@ -1,7 +1,9 @@
+import formatAmount from "../formatting-parsing/formatAmount";
+
 export default function applyDiscount(orderTotal: number, discountPercentage: number): number {
-  if (orderTotal <= 0) return 0;
+  if (orderTotal <= 0 || isNaN(orderTotal) || isNaN(discountPercentage)) return 0;
 
   return parseFloat(
-    (orderTotal * (1 - Math.min(Math.max(discountPercentage, 0), 100) / 100)).toFixed(2)
+    formatAmount(orderTotal * (1 - Math.min(Math.max(discountPercentage, 0), 100) / 100))
   );
 }

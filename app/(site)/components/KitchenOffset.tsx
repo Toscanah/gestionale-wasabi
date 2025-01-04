@@ -20,7 +20,7 @@ export default function KitchenOffset({ variant }: KitchenOffsetProps) {
 
     if (currentOffset) {
       const parsedOffset = parseInt(currentOffset, 10);
-      setOffset(isNaN(parsedOffset) ? 0 : parsedOffset); // NaN check with fallback to 0
+      setOffset(isNaN(parsedOffset) ? 0 : parsedOffset);
     } else {
       localStorage.setItem("kitchenOffset", "0");
     }
@@ -28,7 +28,7 @@ export default function KitchenOffset({ variant }: KitchenOffsetProps) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const parsedValue = parseInt(e.target.value, 10);
-    setOffset(isNaN(parsedValue) ? 0 : parsedValue); // NaN check with fallback to 0
+    setOffset(isNaN(parsedValue) ? 0 : parsedValue);
   };
 
   return (

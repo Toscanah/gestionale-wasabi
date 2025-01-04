@@ -21,7 +21,11 @@ interface SearchHomeProps {
 }
 
 export default function SearchHome({ children, setOrder, open, setOpen, order }: SearchHomeProps) {
-  const { handleKeyDown, addRefs } = useFocusCycle();
+  const { handleKeyDown: handlePhoneKeyDown, addRefs: addPhoneRefs } = useFocusCycle();
+  const { handleKeyDown: handleDoorbellKeyDown, addRefs: addDoorbellRefs } = useFocusCycle();
+
+  const [homePhone, setHomePhone] = useState<string>("");
+  const [homeDoorbell, setHomeDoorbell] = useState<string>("");
 
   const [phone, setPhone] = useState<string>("");
   const [doorbell, setDoorbell] = useState<string>("");
@@ -30,14 +34,30 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
   const doorbellRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => addRefs(phoneRef.current, doorbellRef.current, buttonRef.current), []);
+  useEffect(() => {
+    addPhoneRefs(phoneRef.current, buttonRef.current);
+    addDoorbellRefs(doorbellRef.current, buttonRef.current);
+  }, []);
 
   const searchHome = () => {
-    // check che manda direttamente all'ordine in base al numero di telefono
+    console.log("AAA")
+    if (phone !== "") {
+      setInterval(() => {
+        console.log("what")
+        phoneRef.current?.focus();
+        phoneRef.current?.select();
+      }, 1);
+    } else if (doorbell !== "") {
+      doorbellRef.current?.select();
+    }
 
     if (phone !== "" || doorbell !== "") {
       setOrder(generateEmptyOrder(OrderType.HOME));
       setOpen(true);
+      setHomePhone(phone);
+      setHomeDoorbell(doorbell);
+      setPhone("");
+      setDoorbell("");
     } else {
       toastError("Assicurati di aver inserito un numero di telefono o un campanello");
     }
@@ -49,14 +69,12 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
         <div className="w-full">
           <Input
             placeholder="Telefono"
-            autoFocus
             type="text"
             className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-            //  border-l-0
             ref={phoneRef}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={handlePhoneKeyDown} // Use phone-specific key handler
           />
         </div>
 
@@ -65,11 +83,10 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
             placeholder="Campanello"
             type="text"
             className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-            //  border-l-0
             ref={doorbellRef}
             value={doorbell}
             onChange={(e) => setDoorbell(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={handleDoorbellKeyDown} // Use doorbell-specific key handler
           />
         </div>
       </div>
@@ -90,7 +107,11 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
         contentClassName="flex flex-col gap-6 items-center max-w-screen max-h-screen h-[95vh]"
       >
         {order.id == -1 ? (
-          <Home setOrder={setOrder} initialPhone={phone ?? ""} initialDoorbell={doorbell ?? ""} />
+          <Home
+            setOrder={setOrder}
+            initialPhone={homePhone ?? ""}
+            initialDoorbell={homeDoorbell ?? ""}
+          />
         ) : (
           <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen}>
             <OrderTable />

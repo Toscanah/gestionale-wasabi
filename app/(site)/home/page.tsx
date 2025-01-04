@@ -17,22 +17,24 @@ import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "../models";
 
 export type UpdateStateAction = "update" | "delete" | "add";
 
+export type BuildOrderState<TTable, THome, TPickup> = {
+  [OrderType.TABLE]: TTable;
+  [OrderType.HOME]: THome;
+  [OrderType.PICKUP]: TPickup;
+};
+
 export default function Home() {
-  const [orders, setOrders] = useState<{
-    [OrderType.TABLE]: TableOrder[];
-    [OrderType.HOME]: HomeOrder[];
-    [OrderType.PICKUP]: PickupOrder[];
-  }>({
+  const [orders, setOrders] = useState<BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>>({
     [OrderType.TABLE]: [],
     [OrderType.HOME]: [],
     [OrderType.PICKUP]: [],
   });
 
-  const [activeOrders, setActiveOrders] = useState<{
-    [OrderType.TABLE]: boolean;
-    [OrderType.HOME]: boolean;
-    [OrderType.PICKUP]: boolean;
-  }>({ [OrderType.TABLE]: true, [OrderType.HOME]: true, [OrderType.PICKUP]: true });
+  const [activeOrders, setActiveOrders] = useState<BuildOrderState<boolean, boolean, boolean>>({
+    [OrderType.TABLE]: true,
+    [OrderType.HOME]: true,
+    [OrderType.PICKUP]: true,
+  });
 
   const toggleOrdersByType = (type: OrderType) =>
     setActiveOrders((prev) =>
@@ -120,7 +122,7 @@ export default function Home() {
                 id={type}
                 className="h-full flex flex-col items-center"
               >
-                <div className="flex w-full justify-between items-center ">
+                <div className="flex w-full justify-between items-center">
                   <CreateOrder
                     type={type}
                     triggerClassName={cn(

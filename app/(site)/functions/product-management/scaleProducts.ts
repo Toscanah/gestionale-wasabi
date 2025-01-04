@@ -1,4 +1,4 @@
-import { ProductInOrder } from "@/app/(site)/models"; // Replace with your actual types// Adjust as needed
+import { AnyOrder, ProductInOrder } from "@/app/(site)/models"; // Replace with your actual types// Adjust as needed
 import { getProductPrice } from "../product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 import calculateOrderTotal from "../order-management/calculateOrderTotal";
@@ -43,10 +43,7 @@ export default function scaleProducts({
     })
     .filter(Boolean) as ProductInOrder[];
 
-  const updatedTotal = updatedProducts.reduce(
-    (acc, product) => acc + product.quantity * getProductPrice(product, orderType),
-    0
-  );
+  const updatedTotal = calculateOrderTotal({ products: updatedProducts, type: orderType } as AnyOrder);
 
   return { updatedProducts, updatedTotal };
 }

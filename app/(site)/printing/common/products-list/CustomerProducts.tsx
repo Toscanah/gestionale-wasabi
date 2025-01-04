@@ -98,6 +98,42 @@ export default function CustomerProducts({
             </Text>
           )}
 
+          {/**
+           * const wrapTextWithPadding = (text: string, maxChars: number, padding: number): string[] => {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let currentLine = "";
+
+  words.forEach((word) => {
+    if (currentLine.length + word.length + 1 > maxChars) {
+      lines.push(" ".repeat(padding) + currentLine.trim());
+      currentLine = word;
+    } else {
+      currentLine += ` ${word}`;
+    }
+  });
+
+  if (currentLine) {
+    lines.push(" ".repeat(padding) + currentLine.trim());
+  }
+
+  return lines;
+};
+
+{product.options.length > 0 && (
+  wrapTextWithPadding(
+    joinItemsWithComma(product, "options", { maxChar: 15 }),
+    32, // max characters per line
+    4   // padding of 4 spaces
+  ).map((line, index) => (
+    <Text key={`option-line-${index}`}>{line}</Text>
+  ))
+)}
+
+           * 
+           * 
+           */}
+
           {product.options.length > 0 && (
             <Text>
               {" ".repeat(4)}
