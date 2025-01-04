@@ -71,11 +71,12 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     await print(...content).then(() => toggleDialog(false));
   };
 
-  const handleFullPayment = async () =>setAction("payFull")
-    // questo deve stampare solo quando non ho stampato
-    // await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false)).then(() =>
-      
-    // );
+  const handleFullPayment = async () => {
+    await updatePrintedFlag();
+    await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false, true)).then(() =>
+      setAction("payFull")
+    );
+  };
 
   const hasProducts = order.products.filter((product) => product.id !== -1).length > 0;
 
@@ -114,7 +115,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
         onClick={handleFullPayment}
         disabled={!(order.total > 0)} //
       >
-        INCASSA
+        STAMPA e INCASSA
       </Button>
     </>
   );

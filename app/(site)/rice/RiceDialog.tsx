@@ -9,6 +9,7 @@ import DialogWrapper from "../components/dialog/DialogWrapper";
 import SelectWrapper from "../components/select/SelectWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { RiceDefault } from "../types/RiceDefault";
+import RiceCalculationsDetails from "./RiceCalculationsDetails";
 
 interface RiceDialogProps {
   variant: "header" | "sidebar";
@@ -113,7 +114,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                       items: riceDefaults
                         .sort((a, b) => b.value - a.value)
                         .map((item) => ({
-                          name: item.label ? String(item.label) : String(item.value),
+                          name: String(item.label || item.value),
                           value: String(item.value),
                         })),
                     },
@@ -172,13 +173,16 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             <Label htmlFor="total" className="text-xl">
               Riso totale fin ad ora
             </Label>
-            <Input
-              disabled
-              className="h-10 text-2xl"
-              type="number"
-              id="total"
-              value={rice.total.amount}
-            />
+            <div className="flex gap-2">
+              <Input
+                disabled
+                className="h-10 text-2xl"
+                type="number"
+                id="total"
+                value={rice.total.amount}
+              />
+              <RiceCalculationsDetails riceDefaults={riceDefaults} />
+            </div>
           </div>
         </div>
       </div>

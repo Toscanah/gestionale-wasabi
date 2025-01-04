@@ -26,10 +26,10 @@ export default function OrdersTable({ data, type }: OrdersTableProps) {
   );
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full ">
       <Table
         table={table}
-        tableClassName="max-h-[100%] h-[100%] rounded-none"
+        tableClassName="max-h-[100%] h-[100%] rounded-none "
         rowClassName={"hover:cursor-pointer w-full h-16 max-h-16 text-xl "}
         cellClassName={(index) => (index == 3 && type == OrderType.HOME ? "max-w-42 truncate" : "")}
         CustomCell={CustomCell}

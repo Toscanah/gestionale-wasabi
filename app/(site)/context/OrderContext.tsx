@@ -43,6 +43,7 @@ export const OrderProvider = ({
   dialogOpen,
   setDialogOpen,
 }: OrderProviderProps) => {
+  console.log(initialOrder)
   const [order, setOrder] = useState<AnyOrder>({
     ...initialOrder,
     products: [...(initialOrder.products ?? []).filter((p) => p.id !== -1), generateDummyProduct()],

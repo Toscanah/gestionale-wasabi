@@ -36,7 +36,7 @@ export default async function updateProductInOrder(
 
       const newTotal =
         productInOrder.quantity *
-        getProductPrice({ product: { ...newProduct } } as any, currentOrder.type as OrderType);
+        getProductPrice({ product: { ...newProduct } } as any, currentOrder.type);
 
       const updatedProduct = await prisma.productInOrder.update({
         where: { id: productInOrder.id },
@@ -58,19 +58,29 @@ export default async function updateProductInOrder(
         },
       });
 
-      console.log("Sono entrato in updatePRoductInOrder parte 1")
+      console.log("Sono entrato in updatePRoductInOrder parte 1");
       await prisma.optionInProductOrder.deleteMany({
-        where: { product_in_order_id: updatedProduct.id },
+        where: { product_in_order_id: productInOrder.id },
       });
 
-      if (newProduct.category) {
-        console.log("Sono entrato in updatePRoductInOrder parte 2")
-        await prisma.optionInProductOrder.createMany({
-          data: newProduct.category.options.map((option) => ({
-            product_in_order_id: updatedProduct.id,
-            option_id: option.option.id,
-          })),
-        });
+      const oldProductOptions = productInOrder?.options ?? [];
+
+      if (oldProductOptions.length > 0 && newProduct.category) {
+        const validOptions = oldProductOptions.filter((oldOption) =>
+          newProduct.category?.options.some(
+            (newOption) => newOption.option.id === oldOption.option.id
+          )
+        );
+
+        if (validOptions.length > 0) {
+          // Create new options for the updated product
+          await prisma.optionInProductOrder.createMany({
+            data: validOptions.map((option) => ({
+              product_in_order_id: updatedProduct.id,
+              option_id: option.option.id,
+            })),
+          });
+        }
       }
 
       const difference = newTotal - productInOrder.total;
@@ -92,7 +102,7 @@ export default async function updateProductInOrder(
 
       if (newQuantity == 0) {
         if (productInOrder.paid_quantity === 0) {
-          console.log("Sono entrato in updatePRoductInOrder parte 3")
+          console.log("Sono entrato in updatePRoductInOrder parte 3");
           await prisma.optionInProductOrder.deleteMany({
             where: { product_in_order_id: productInOrder.id },
           });
