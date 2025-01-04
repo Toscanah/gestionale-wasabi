@@ -11,6 +11,7 @@ import TableColumn from "../../components/table/TableColumn";
 import { ProductInOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../functions/product-management/getProductPrice";
+import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {
   return [
@@ -47,7 +48,8 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[]
 
         return (
           <div className="space-y-2 max-h-20 overflow-auto">
-            {avalOptions &&
+            {joinItemsWithComma(row.original, "options")}
+            {/* {avalOptions &&
               avalOptions.map((option) => (
                 <div key={option.option.id} className="flex items-center space-x-2">
                   <Checkbox
@@ -62,7 +64,7 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[]
                     {option.option.option_name}
                   </Label>
                 </div>
-              ))}
+              ))} */}
           </div>
         );
       },

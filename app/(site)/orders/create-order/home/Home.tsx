@@ -41,8 +41,6 @@ export default function Home({ setOrder, initialPhone, initialDoorbell }: HomePr
   } = useFetchCustomer(setSelectedAddress, initialPhone, initialDoorbell);
 
   const createHomeOrder = () => {
-
-
     if (!customer || !selectedAddress) return;
 
     fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {

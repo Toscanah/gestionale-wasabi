@@ -9,14 +9,11 @@ import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
 import { Button } from "@/components/ui/button";
 import DeleteOrdersBulk from "../components/DeleteOrdersBulk";
+import { BuildOrderState } from "./page";
 
 interface HeaderProps {
   toggleOrdersByType: (type: OrderType) => void;
-  activeOrders: {
-    [OrderType.TABLE]: boolean;
-    [OrderType.HOME]: boolean;
-    [OrderType.PICKUP]: boolean;
-  };
+  activeOrders: BuildOrderState<boolean, boolean, boolean>;
 }
 
 const orderLabels: { type: OrderType; label: string }[] = [

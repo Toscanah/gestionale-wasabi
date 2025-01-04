@@ -12,6 +12,7 @@ import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import { useOrderContext } from "../../context/OrderContext";
 import updateOrderNotes from "../../sql/orders/updateOrderNotes";
+import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
@@ -22,7 +23,7 @@ export default function DivideOrder({
   setPayingAction,
   products: propProducts,
 }: DividerOrderProps) {
-  const { order, createSubOrder, updateOrder } = useOrderContext();
+  const { order, createSubOrder } = useOrderContext();
   const { dialogOpen } = useOrderContext();
 
   const [goPay, setGoPay] = useState<boolean>(false);
@@ -81,7 +82,7 @@ export default function DivideOrder({
     const asyncSubOrder = async () => await createSubOrder(order, rightProducts);
 
     if (!dialogOpen && rightProducts.length > 0) {
-      asyncSubOrder()
+      asyncSubOrder();
     }
   }, [dialogOpen]);
 
@@ -110,24 +111,16 @@ export default function DivideOrder({
         </Button>
         <Button
           onClick={async () => {
+            const partialOrder = {
+              ...order,
+              products: rightProducts,
+              total: calculateOrderTotal({ ...order, products: rightProducts }),
+            };
+
             setPayingAction("payPart");
             setGoPay(true);
 
-            await print(() =>
-              OrderReceipt(
-                {
-                  ...order,
-                  products: rightProducts,
-                  total: rightProducts.reduce(
-                    (total, p) => total + getProductPrice(p, order.type) * p.quantity,
-                    0
-                  ),
-                },
-                "none",
-                false,
-                true
-              )
-            );
+            await print(() => OrderReceipt(partialOrder, "none", false, true));
           }}
           className="w-1/2 bg-green-500 text-black"
           disabled={rightProducts.length <= 0}
@@ -142,10 +135,7 @@ export default function DivideOrder({
       partialOrder={{
         ...order,
         products: rightProducts,
-        total: rightProducts.reduce(
-          (total, p) => total + getProductPrice(p, order.type) * p.quantity,
-          0
-        ),
+        total: calculateOrderTotal({ ...order, products: rightProducts }),
       }}
       handleBackButton={() => setGoPay(false)}
       onOrderPaid={handleOrderPaid}

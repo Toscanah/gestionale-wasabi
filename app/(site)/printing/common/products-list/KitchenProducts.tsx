@@ -82,7 +82,7 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
             {products.map((product) => ProductLine({ product }))}
 
             <Text bold size={smallSize}>
-              {" -" + " ".repeat(4) + padReceiptText(optionsKey, 36)}
+              {" -" + " ".repeat(4) + optionsKey}
             </Text>
 
             {idx < arr.length - 1 && arr.length > 1 && <Line />}
