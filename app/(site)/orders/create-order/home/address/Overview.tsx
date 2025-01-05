@@ -49,12 +49,25 @@ export default function Overview({
   const [permAddresses, setPermAddresses] = useState<Address[]>([]);
   const [tempAddress, setTempAddress] = useState<Address | undefined>();
   const [lastAddressId, setLastAddressId] = useState<string>("");
+  const [orderDisabled, setOrderDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    setOrderDisabled(
+      (selectedOption == "new" && selectedAddress == undefined) ||
+        (selectedOption == "temp" && selectedAddress == undefined)
+    );
+  }, [selectedOption, selectedAddress]);
+
+  useEffect(() => {
+    if (!orderDisabled) {
+      createOrderRef.current?.focus();
+    }
+  }, [orderDisabled]);
 
   useEffect(() => {
     setLastAddressId("");
     setPermAddresses(addresses.filter((address) => !address.temporary));
     setTempAddress(addresses.find((address) => address.temporary));
-    createOrderRef.current?.focus();
   }, [addresses]);
 
   useEffect(() => {
@@ -220,10 +233,7 @@ export default function Overview({
             className="text-4xl h-16 w-full"
             autoFocus
             ref={createOrderRef}
-            disabled={
-              (selectedOption == "new" && selectedAddress == undefined) ||
-              (selectedOption == "temp" && selectedAddress == undefined)
-            }
+            disabled={orderDisabled}
             onClick={createHomeOrder}
           >
             CREA ORDINE
