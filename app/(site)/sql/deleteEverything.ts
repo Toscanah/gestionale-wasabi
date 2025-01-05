@@ -44,56 +44,56 @@ export default async function deleteTodayOrders() {
   );
   const orderIds = todayOrders.map((order) => order.id);
 
-  await prisma.optionInProductOrder.deleteMany();
-  await prisma.productInOrder.deleteMany();
-  await prisma.payment.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.homeOrder.deleteMany();
-  await prisma.pickupOrder.deleteMany();
-  await prisma.tableOrder.deleteMany();
+  // await prisma.optionInProductOrder.deleteMany();
+  // await prisma.productInOrder.deleteMany();
+  // await prisma.payment.deleteMany();
+  // await prisma.order.deleteMany();
+  // await prisma.homeOrder.deleteMany();
+  // await prisma.pickupOrder.deleteMany();
+  // await prisma.tableOrder.deleteMany();
 
   // Delete records in proper dependency order
-  // await prisma.optionInProductOrder.deleteMany({
-  //   where: {
-  //     id: { in: optionInProductOrderIds },
-  //   },
-  // });
+  await prisma.optionInProductOrder.deleteMany({
+    where: {
+      id: { in: optionInProductOrderIds },
+    },
+  });
 
-  // await prisma.productInOrder.deleteMany({
-  //   where: {
-  //     id: { in: productInOrderIds },
-  //   },
-  // });
+  await prisma.productInOrder.deleteMany({
+    where: {
+      id: { in: productInOrderIds },
+    },
+  });
 
-  // await prisma.payment.deleteMany({
-  //   where: {
-  //     id: { in: paymentIds },
-  //   },
-  // });
+  await prisma.payment.deleteMany({
+    where: {
+      id: { in: paymentIds },
+    },
+  });
 
-  // await prisma.homeOrder.deleteMany({
-  //   where: {
-  //     id: { in: homeOrderIds },
-  //   },
-  // });
+  await prisma.homeOrder.deleteMany({
+    where: {
+      id: { in: homeOrderIds },
+    },
+  });
 
-  // await prisma.pickupOrder.deleteMany({
-  //   where: {
-  //     id: { in: pickupOrderIds },
-  //   },
-  // });
+  await prisma.pickupOrder.deleteMany({
+    where: {
+      id: { in: pickupOrderIds },
+    },
+  });
 
-  // await prisma.tableOrder.deleteMany({
-  //   where: {
-  //     id: { in: tableOrderIds },
-  //   },
-  // });
+  await prisma.tableOrder.deleteMany({
+    where: {
+      id: { in: tableOrderIds },
+    },
+  });
 
-  // await prisma.order.deleteMany({
-  //   where: {
-  //     id: { in: orderIds },
-  //   },
-  // });
+  await prisma.order.deleteMany({
+    where: {
+      id: { in: orderIds },
+    },
+  });
 
   return `Deleted all records related to today's orders (${orderIds.length} orders).`;
 }
