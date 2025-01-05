@@ -59,7 +59,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
 
       setOrder(newTableOrder.order);
       setOpen(true);
-      setTable("")
+      setTable("");
     });
   };
 
@@ -69,7 +69,6 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
         <div className="w-full">
           <Input
             placeholder="Nome tavolo"
-            autoFocus
             type="text"
             id="table"
             className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
@@ -106,7 +105,13 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
       <DialogWrapper
         size="large"
         open={open}
-        onOpenChange={() => setOpen(!open)}
+        onOpenChange={() => {
+          setOpen(!open);
+          setTimeout(() => {
+            tableRef.current?.focus();
+            tableRef.current?.select();
+          }, 1);
+        }}
         contentClassName="flex flex-col gap-6 items-center max-w-screen max-h-screen h-[95vh]"
       >
         <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen}>

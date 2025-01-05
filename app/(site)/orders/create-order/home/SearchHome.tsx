@@ -40,13 +40,6 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
   }, []);
 
   const searchHome = () => {
-    if (phone !== "") {
-      phoneRef.current?.focus();
-      phoneRef.current?.select();
-    } else if (doorbell !== "") {
-      doorbellRef.current?.select();
-    }
-
     if (phone !== "" || doorbell !== "") {
       setOrder(generateEmptyOrder(OrderType.HOME));
       setOpen(true);
@@ -54,9 +47,6 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
       setHomeDoorbell(doorbell);
       setPhone("");
       setDoorbell("");
-      setTimeout(() => {
-        console.log("YO?");
-      }, 500);
     } else {
       toastError("Assicurati di aver inserito un numero di telefono o un campanello");
     }
@@ -102,7 +92,13 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
       <DialogWrapper
         size="large"
         open={open}
-        onOpenChange={() => setOpen(!open)}
+        onOpenChange={() => {
+          setOpen(!open);
+          setTimeout(() => {
+            phoneRef.current?.focus();
+            phoneRef.current?.select();
+          }, 1);
+        }}
         contentClassName="flex flex-col gap-6 items-center max-w-screen max-h-screen h-[95vh]"
       >
         {order.id == -1 ? (
