@@ -1,6 +1,6 @@
 import { ProductInOrder } from "@/app/(site)/models";
 import applyDiscount from "@/app/(site)/functions/order-management/applyDiscount";
-import formatAmount from "@/app/(site)/functions/formatting-parsing/formatAmount";
+import roundToTwo from "@/app/(site)/functions/formatting-parsing/roundToTwo";
 import padReceiptText from "@/app/(site)/functions/formatting-parsing/printing/padReceiptText";
 import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
@@ -40,7 +40,7 @@ export default function CustomerProducts({
   orderType,
 }: CustomerProductsProps) {
   const ProductLine = ({ product }: ProductLineProps) => {
-    const actualTotalLength = Math.min(formatAmount(product.total).length, MAX_TOTAL_LENGTH);
+    const actualTotalLength = Math.min(roundToTwo(product.total).length, MAX_TOTAL_LENGTH);
     const additionalPadding = MAX_TOTAL_LENGTH - actualTotalLength;
 
     return (
@@ -55,20 +55,20 @@ export default function CustomerProducts({
 
         <Text inline>
           {padReceiptText(
-            product.quantity + " x " + formatAmount(getProductPrice(product, orderType)),
+            product.quantity + " x " + roundToTwo(getProductPrice(product, orderType)),
             QUANTITY_PRICE_LENGTH,
             DEFAULT_PADDING + additionalPadding
           )}
         </Text>
 
-        <Text>{padReceiptText(formatAmount(product.total), actualTotalLength)}</Text>
+        <Text>{padReceiptText(roundToTwo(product.total), actualTotalLength)}</Text>
       </Fragment>
     );
   };
 
   const maxActualTotalLength = Math.max(
     ...aggregatedProducts.map((product) =>
-      Math.min(formatAmount(product.total).length, MAX_TOTAL_LENGTH)
+      Math.min(roundToTwo(product.total).length, MAX_TOTAL_LENGTH)
     )
   );
 
@@ -99,15 +99,6 @@ export default function CustomerProducts({
             </Text>
           )}
 
-          {/**
-           * 
-
-
-
-           * 
-           * 
-           */}
-
           {/* {product.options.length > 0 && (
             <Text>
               {" ".repeat(4)}
@@ -126,7 +117,7 @@ export default function CustomerProducts({
         <Row
           left={<Text>- {discount}%</Text>}
           right={
-            <Text>- {formatAmount(calculateDiscountAmount(aggregatedProducts, discount))}</Text>
+            <Text>- {roundToTwo(calculateDiscountAmount(aggregatedProducts, discount))}</Text>
           }
         />
       )}

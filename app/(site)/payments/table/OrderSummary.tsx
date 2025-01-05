@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { AnyOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
 import { OrderWithPayments } from "@/app/(site)/models";
-import formatAmount from "../../functions/formatting-parsing/formatAmount";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
 
 interface OrderSummaryProps {
@@ -26,7 +26,7 @@ export default function OrderSummary({ order }: OrderSummaryProps) {
               : "Asporto"}
           </Badge>
           Ordine del {new Date(order.created_at).toLocaleDateString("it-IT")} - €{" "}
-          {formatAmount(order.total)}
+          {roundToTwo(order.total)}
         </div>
       }
     >

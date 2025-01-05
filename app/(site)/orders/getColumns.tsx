@@ -5,7 +5,7 @@ import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/models";
 import TableColumn from "../components/table/TableColumn";
 import applyDiscount from "../functions/order-management/applyDiscount";
-import formatAmount from "../functions/formatting-parsing/formatAmount";
+import roundToTwo from "../functions/formatting-parsing/roundToTwo";
 import { useWasabiContext } from "../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -130,7 +130,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
       accessorKey: "total",
       header: "Totale",
       cellContent: (row) =>
-        `€ ${formatAmount(applyDiscount(row.original.total, row.original.discount))}`,
+        `€ ${roundToTwo(applyDiscount(row.original.total, row.original.discount))}`,
     })
   );
 

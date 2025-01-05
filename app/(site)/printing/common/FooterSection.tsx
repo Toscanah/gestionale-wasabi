@@ -21,16 +21,16 @@ export default function FooterSection(orderId: number) {
 
       {/* <Text align="center">
         Se sei soddisfatto del nostro servizio per favore dacci un giudizio
-      </Text> */}
+      </Text>
 
-      {/* <Br />
+      <Br />
       <QRCode
         content="https://github.com/seokju-na/react-thermal-printer"
         align="center"
         cellSize={5}
-      /> */}
+      />
 
-      {/* <Br />
+      <Br />
       <Text bold align="center">
         Arrivederci e a presto da Wasabi Sushi!
       </Text> */}

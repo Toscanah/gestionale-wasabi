@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import getPaymentName from "../../../functions/order-management/getPaymentName";
-import formatAmount from "../../../functions/formatting-parsing/formatAmount";
+import roundToTwo from "../../../functions/formatting-parsing/roundToTwo";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import { PaymentType } from "@prisma/client";
 import applyDiscount from "@/app/(site)/functions/order-management/applyDiscount";
@@ -27,7 +27,7 @@ export default function PaymentSummary() {
             {paidPayments.map((type) => (
               <tr key={type}>
                 <td>{getPaymentName(type)}</td>
-                <td className="text-right">{formatAmount(payment.paymentAmounts[type])}</td>
+                <td className="text-right">{roundToTwo(payment.paymentAmounts[type])}</td>
               </tr>
             ))}
           </tbody>
@@ -41,11 +41,11 @@ export default function PaymentSummary() {
         <tbody>
           <tr>
             <td className="text-left">Subtotale:</td>
-            <td className="text-right">€ {formatAmount(payment.paidAmount)}</td>
+            <td className="text-right">€ {roundToTwo(payment.paidAmount)}</td>
           </tr>
           <tr>
             <td className="text-left">Rimanente (resto):</td>
-            <td className="text-right">€ {formatAmount(payment.remainingAmount)}</td>
+            <td className="text-right">€ {roundToTwo(payment.remainingAmount)}</td>
           </tr>
         </tbody>
       </table>
@@ -57,7 +57,7 @@ export default function PaymentSummary() {
         <tbody>
           <tr>
             <td className="text-left font-bold">Totale da Pagare:</td>
-            <td className="text-right font-bold">€ {formatAmount(totalToPay)}</td>
+            <td className="text-right font-bold">€ {roundToTwo(totalToPay)}</td>
           </tr>
         </tbody>
       </table>

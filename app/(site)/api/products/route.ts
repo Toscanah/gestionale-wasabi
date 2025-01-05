@@ -14,11 +14,13 @@ import handleRequest from "../util/handleRequest";
 import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
 import {
   CreateProductSchema,
+  GetProductsWithStatsSchema,
   NoContentSchema,
   ProductInOrderWithOptionsSchema,
   UpdateProductSchema,
 } from "../../models";
 import updateAdditionalNote from "../../sql/customers/updateAdditionalNote";
+import getProductsWithStats from "../../sql/products/getProductsWithStats";
 
 export const productSchemas = {
   getProducts: NoContentSchema,
@@ -62,6 +64,7 @@ export const productSchemas = {
     orderId: z.number(),
     cooked: z.boolean().default(false),
   }),
+  getProductsWithStats: GetProductsWithStatsSchema,
 };
 
 const POST_ACTIONS = new Map([
@@ -94,6 +97,7 @@ const POST_ACTIONS = new Map([
 
 const GET_ACTIONS = new Map([
   ["getProducts", { func: getProducts, schema: productSchemas.getProducts }],
+  ["getProductsWithStats", { func: getProductsWithStats, schema: productSchemas.getProducts }],
 ]);
 
 const DELETE_ACTIONS = new Map([

@@ -1,12 +1,22 @@
 import { OrderWithPayments } from "@/app/(site)/models";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 export default function DailySummary({ orders }: { orders: OrderWithPayments[] }) {
-  const totalCash = orders.reduce((sum, order) => sum + order.totalCash, 0);
-  const totalCard = orders.reduce((sum, order) => sum + order.totalCard, 0);
-  const totalVouch = orders.reduce((sum, order) => sum + order.totalVouch, 0);
-  const totalCredit = orders.reduce((sum, order) => sum + order.totalCredit, 0);
   const totalOrders = orders.length;
-  const totalDaily = (totalCash + totalCard + totalVouch + totalCredit).toFixed(2);
+  const totals = orders.reduce(
+    (acc, order) => {
+      acc.totalCash += order.totalCash;
+      acc.totalCard += order.totalCard;
+      acc.totalVouch += order.totalVouch;
+      acc.totalCredit += order.totalCredit;
+      return acc;
+    },
+    { totalCash: 0, totalCard: 0, totalVouch: 0, totalCredit: 0 }
+  );
+
+  const totalDaily = roundToTwo(
+    totals.totalCash + totals.totalCard + totals.totalVouch + totals.totalCredit
+  );
 
   return (
     <table className="w-72 text-xl">
@@ -17,19 +27,19 @@ export default function DailySummary({ orders }: { orders: OrderWithPayments[] }
         </tr>
         <tr>
           <td className="text-left">Totale contanti:</td>
-          <td className="text-right">€{totalCash.toFixed(2)}</td>
+          <td className="text-right">€{roundToTwo(totals.totalCash)}</td>
         </tr>
         <tr>
           <td className="text-left">Totale carta:</td>
-          <td className="text-right">€{totalCard.toFixed(2)}</td>
+          <td className="text-right">€{roundToTwo(totals.totalCard)}</td>
         </tr>
         <tr>
           <td className="text-left">Totale buoni pasto:</td>
-          <td className="text-right">€{totalVouch.toFixed(2)}</td>
+          <td className="text-right">€{roundToTwo(totals.totalVouch)}</td>
         </tr>
         <tr>
           <td className="text-left">Totale credito:</td>
-          <td className="text-right">€{totalCredit.toFixed(2)}</td>
+          <td className="text-right">€{roundToTwo(totals.totalCredit)}</td>
         </tr>
         <tr>
           <td className="font-bold text-left">Totale giornaliero:</td>

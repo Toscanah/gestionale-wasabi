@@ -3,7 +3,7 @@ import DialogWrapper from "../components/dialog/DialogWrapper";
 import { useWasabiContext } from "../context/WasabiContext";
 import { RiceDefault } from "../types/RiceDefault";
 import { useEffect, useState } from "react";
-import formatAmount from "../functions/formatting-parsing/formatAmount";
+import roundToTwo from "../functions/formatting-parsing/roundToTwo";
 
 interface RiceCalculationsDetailsProps {
   riceDefaults: RiceDefault[];
@@ -32,7 +32,7 @@ export default function RiceCalculationsDetails({ riceDefaults }: RiceCalculatio
         <ul className="text-xl space-y-2">
           {calculatedRiceDefaults.map((entry, index) => (
             <li key={index} className="">
-              <strong>{entry.label}</strong>: {formatAmount(entry.ricePortion)} unità
+              <strong>{entry.label}</strong>: {roundToTwo(entry.ricePortion)} unità
             </li>
           ))}
         </ul>

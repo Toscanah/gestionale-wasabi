@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { PaymentType } from "@prisma/client";
 import { AnyOrder } from "@/app/(site)/models";
 import useOrderPayment from "../components/hooks/useOrderPayment";
-import formatAmount from "../functions/formatting-parsing/formatAmount";
+import roundToTwo from "../functions/formatting-parsing/roundToTwo";
 import applyDiscount from "../functions/order-management/applyDiscount";
 import { useOrderContext } from "./OrderContext";
 
@@ -67,7 +67,7 @@ export const OrderPaymentProvider = ({
     remainingAmount: applyDiscount(order.total, order.discount) ?? 0,
   });
 
-  const [typedAmount, setTypedAmount] = useState<string>(formatAmount(payment.remainingAmount));
+  const [typedAmount, setTypedAmount] = useState<string>(roundToTwo(payment.remainingAmount));
   const { handlePaymentChange, payOrder } = useOrderPayment(
     type,
     onOrderPaid,

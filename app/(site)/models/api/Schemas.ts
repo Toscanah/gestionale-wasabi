@@ -8,6 +8,7 @@ import {
   PaymentSchema,
   ProductSchema,
 } from "@/prisma/generated/zod";
+import { TimeFilter } from "../../sql/products/getProductsWithStats";
 
 export const CreateSubOrderSchema = z.object({
   parentOrder: AnyOrderSchema,
@@ -58,3 +59,9 @@ export const UpdateCategorySchema = CategoryWithOptionsSchema.omit({ active: tru
 export const CreateOptionSchema = OptionSchema.omit({ id: true });
 
 export const UpdateOptionSChema = OptionSchema.omit({ active: true });
+
+export const GetProductsWithStatsSchema = z.object({
+  timeFilter: z.nativeEnum(TimeFilter),
+  from: z.date().optional(),
+  to: z.date().optional(),
+});

@@ -1,6 +1,6 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import applyDiscount from "@/app/(site)/functions/order-management/applyDiscount";
-import formatAmount from "@/app/(site)/functions/formatting-parsing/formatAmount";
+import roundToTwo from "@/app/(site)/functions/formatting-parsing/roundToTwo";
 
 export default function Total() {
   const { order } = useOrderContext();
@@ -11,7 +11,7 @@ export default function Total() {
         TOTALE
       </div>
       <div className="w-full text-center text-2xl h-12 font-bold border-x border-b rounded-b-lg flex flex-col justify-center">
-        € {formatAmount(applyDiscount(order.total, order.discount))}
+        € {roundToTwo(applyDiscount(order.total, order.discount))}
       </div>
     </div>
   );
