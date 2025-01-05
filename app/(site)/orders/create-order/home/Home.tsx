@@ -68,6 +68,8 @@ export default function Home({ setOrder, initialPhone, initialDoorbell }: HomePr
   const notesRef = useRef<HTMLInputElement>(null);
   const prefRef = useRef<HTMLInputElement>(null);
 
+  const createOrderRef = useRef<HTMLButtonElement>(null);
+
   useEffect(
     () =>
       addRefs(
@@ -91,6 +93,7 @@ export default function Home({ setOrder, initialPhone, initialDoorbell }: HomePr
   return (
     <div className="w-full flex gap-6 h-full">
       <Overview
+        createOrderRef={createOrderRef}
         selectedAddress={selectedAddress}
         setSelectedAddress={setSelectedAddress}
         addresses={addresses}

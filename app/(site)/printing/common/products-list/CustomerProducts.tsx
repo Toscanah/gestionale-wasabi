@@ -10,6 +10,7 @@ import { OrderType } from "@prisma/client";
 import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
 import { ProductLineProps } from "./KitchenProducts";
 import { uniqueId } from "lodash";
+import splitOptionsInLines from "@/app/(site)/functions/formatting-parsing/printing/splitOptionsInLines";
 
 const PRODUCT_HEADER_MAX = 23;
 const PRODUCT_HEADER_PADDING = 5;
@@ -99,47 +100,25 @@ export default function CustomerProducts({
           )}
 
           {/**
-           * const wrapTextWithPadding = (text: string, maxChars: number, padding: number): string[] => {
-  const words = text.split(" ");
-  const lines: string[] = [];
-  let currentLine = "";
+           * 
 
-  words.forEach((word) => {
-    if (currentLine.length + word.length + 1 > maxChars) {
-      lines.push(" ".repeat(padding) + currentLine.trim());
-      currentLine = word;
-    } else {
-      currentLine += ` ${word}`;
-    }
-  });
 
-  if (currentLine) {
-    lines.push(" ".repeat(padding) + currentLine.trim());
-  }
-
-  return lines;
-};
-
-{product.options.length > 0 && (
-  wrapTextWithPadding(
-    joinItemsWithComma(product, "options", { maxChar: 15 }),
-    32, // max characters per line
-    4   // padding of 4 spaces
-  ).map((line, index) => (
-    <Text key={`option-line-${index}`}>{line}</Text>
-  ))
-)}
 
            * 
            * 
            */}
 
-          {product.options.length > 0 && (
+          {/* {product.options.length > 0 && (
             <Text>
               {" ".repeat(4)}
               {joinItemsWithComma(product, "options", { maxChar: 15 })}
             </Text>
-          )}
+          )} */}
+
+          {product.options.length > 0 &&
+            splitOptionsInLines(joinItemsWithComma(product, "options", { maxChar: 15 }), 48, 4).map(
+              (line, index) => <Text key={`option-line-${index}`}>{line}</Text>
+            )}
         </Fragment>
       ))}
 

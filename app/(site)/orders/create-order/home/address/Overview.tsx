@@ -26,6 +26,7 @@ interface OverviewProps {
   doorbellSearchRef: RefObject<any>;
   handleKeyDown: (e: KeyboardEvent) => void;
   createHomeOrder: () => void;
+  createOrderRef: RefObject<HTMLButtonElement>;
 }
 
 export default function Overview({
@@ -33,6 +34,7 @@ export default function Overview({
   setSelectedAddress,
   addresses,
   setPhone,
+  createOrderRef,
   phone,
   selectedOption,
   setSelectedOption,
@@ -52,6 +54,7 @@ export default function Overview({
     setLastAddressId("");
     setPermAddresses(addresses.filter((address) => !address.temporary));
     setTempAddress(addresses.find((address) => address.temporary));
+    createOrderRef.current?.focus();
   }, [addresses]);
 
   useEffect(() => {
@@ -215,6 +218,8 @@ export default function Overview({
 
           <Button
             className="text-4xl h-16 w-full"
+            autoFocus
+            ref={createOrderRef}
             disabled={
               (selectedOption == "new" && selectedAddress == undefined) ||
               (selectedOption == "temp" && selectedAddress == undefined)

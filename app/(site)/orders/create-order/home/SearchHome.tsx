@@ -90,6 +90,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
       </Button>
 
       <DialogWrapper
+        autoFocus={false}
         size="large"
         open={open}
         onOpenChange={() => {
