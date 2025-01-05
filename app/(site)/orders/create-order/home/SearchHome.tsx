@@ -52,6 +52,15 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
     }
   };
 
+  useEffect(() => {
+    if (!open) {
+      setTimeout(() => {
+        phoneRef.current?.focus();
+        phoneRef.current?.select();
+      }, 200);
+    }
+  }, [open]);
+
   return (
     <div className="w-full h-full flex items-center px-4 pb-4 gap-4">
       <div className="w-full flex flex-col gap-4">
@@ -95,10 +104,6 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
         open={open}
         onOpenChange={() => {
           setOpen(!open);
-          setTimeout(() => {
-            phoneRef.current?.focus();
-            phoneRef.current?.select();
-          }, 1);
         }}
         contentClassName="flex flex-col gap-6 items-center max-w-screen max-h-screen h-[95vh]"
       >
