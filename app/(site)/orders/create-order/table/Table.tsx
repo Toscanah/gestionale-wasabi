@@ -64,6 +64,15 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
     });
   };
 
+  useEffect(() => {
+    if (!open) {
+      setTimeout(() => {
+        tableRef.current?.focus();
+        tableRef.current?.select();
+      }, 200);
+    }
+  }, [open]);
+
   return (
     <div className="w-full h-full flex items-center pr-4 pb-4 gap-4">
       <div className="w-full flex flex-col gap-4">
@@ -108,10 +117,6 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
         open={open}
         onOpenChange={() => {
           setOpen(!open);
-          setTimeout(() => {
-            tableRef.current?.focus();
-            tableRef.current?.select();
-          }, 1);
         }}
         contentClassName="flex flex-col gap-6 items-center max-w-screen max-h-screen h-[95vh]"
       >
