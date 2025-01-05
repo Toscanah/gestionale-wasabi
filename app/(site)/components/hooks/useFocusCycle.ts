@@ -11,6 +11,8 @@ export default function useFocusCycle() {
       }
     });
 
+  const cleanRefs = () => refs.current.clear();
+
   const getIndexOfFocusedElement = () =>
     Array.from(refs.current).findIndex((el) => el === document.activeElement);
 
@@ -42,5 +44,6 @@ export default function useFocusCycle() {
   return {
     addRefs,
     handleKeyDown,
+    cleanRefs,
   };
 }

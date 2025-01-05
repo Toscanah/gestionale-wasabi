@@ -113,7 +113,7 @@ export default function Overview({
     <div className="h-full flex flex-col w-[30%] max-w-[30%]  min-w-[30%] justify-between">
       <div className="flex w-full justify-center flex-col space-y-4">
         <Label htmlFor="phone" className="text-xl">
-          Numero tel. cliente
+          Ricerca per numero tel. cliente
         </Label>
 
         <Input
@@ -128,7 +128,7 @@ export default function Overview({
         />
 
         <Label htmlFor="customer-name" className="text-xl">
-          Campanello del cliente
+          Ricerca per campanello
         </Label>
 
         <Input
@@ -138,6 +138,7 @@ export default function Overview({
           defaultValue={doorbellSearch}
           value={doorbellSearch}
           type="text"
+          disabled
           onKeyDown={handleKeyDown}
           onChange={(e: any) => setDoorbellSearch(e.target.value)}
         />

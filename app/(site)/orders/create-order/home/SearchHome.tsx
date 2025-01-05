@@ -71,7 +71,10 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
             className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
             ref={phoneRef}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              setDoorbell("");
+            }}
             onKeyDown={handlePhoneKeyDown} // Use phone-specific key handler
           />
         </div>
@@ -83,7 +86,10 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
             className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
             ref={doorbellRef}
             value={doorbell}
-            onChange={(e) => setDoorbell(e.target.value)}
+            onChange={(e) => {
+              setDoorbell(e.target.value);
+              setPhone("");
+            }}
             onKeyDown={handleDoorbellKeyDown} // Use doorbell-specific key handler
           />
         </div>
