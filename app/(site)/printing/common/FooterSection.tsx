@@ -30,10 +30,10 @@ export default function FooterSection(orderId: number) {
         cellSize={5}
       /> */}
 
-      <Br />
+      {/* <Br />
       <Text bold align="center">
         Arrivederci e a presto da Wasabi Sushi!
-      </Text>
+      </Text> */}
     </>
   );
 }
