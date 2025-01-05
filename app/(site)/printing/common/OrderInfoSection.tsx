@@ -128,8 +128,6 @@ export default function OrderInfoSection(
         {order.home_order?.customer.phone?.phone}
         {order.home_order?.contact_phone !== "" && " oppure " + order.home_order?.contact_phone}
       </Text>
-
-      <Br />
     </>
   );
 }

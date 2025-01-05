@@ -12,16 +12,16 @@ export default function HeaderSection() {
         WASABI SUSHI
       </Text>
       <Br />
-      <Text size={smallSize} bold align="center">
+      <Text size={smallSize} align="center">
         34135 TRIESTE
       </Text>
-      <Text size={smallSize} bold align="center">
+      <Text size={smallSize} align="center">
         SCALA AL BELVEDERE 2/B
       </Text>
-      <Text size={smallSize} bold align="center">
+      <Text size={smallSize} align="center">
         Tel: 040 4702081
       </Text>
-      <Text size={smallSize} bold align="center">
+      <Text size={smallSize} align="center">
         Cell: 338 1278651
       </Text>
       <Text size={smallSize} align="center">
