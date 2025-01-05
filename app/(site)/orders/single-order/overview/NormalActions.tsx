@@ -73,15 +73,11 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
   const handleFullPayment = async () => {
     if (!order.is_receipt_printed) {
-      console.log("Primo")
       await updatePrintedFlag();
-      await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false, true)).then(
-        () => setAction("payFull")
-      );
-    } else {
-      console.log("Secondo")
-      setAction("payFull");
+      await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false, true));
     }
+
+    setAction("payFull");
   };
 
   const hasProducts = order.products.filter((product) => product.id !== -1).length > 0;
