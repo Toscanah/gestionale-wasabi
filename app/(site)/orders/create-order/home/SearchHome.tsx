@@ -40,13 +40,9 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
   }, []);
 
   const searchHome = () => {
-    console.log("AAA")
     if (phone !== "") {
-      setInterval(() => {
-        console.log("what")
-        phoneRef.current?.focus();
-        phoneRef.current?.select();
-      }, 1);
+      phoneRef.current?.focus();
+      phoneRef.current?.select();
     } else if (doorbell !== "") {
       doorbellRef.current?.select();
     }
@@ -58,6 +54,9 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
       setHomeDoorbell(doorbell);
       setPhone("");
       setDoorbell("");
+      setTimeout(() => {
+        console.log("YO?");
+      }, 500);
     } else {
       toastError("Assicurati di aver inserito un numero di telefono o un campanello");
     }
