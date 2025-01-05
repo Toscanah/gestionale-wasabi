@@ -51,7 +51,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Line />
       <Br />
 
-      <Row
+      {/* <Row
         left={
           <Text bold size={smallSize}>
             TOTALE IN LOCO
@@ -62,8 +62,8 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
             {formatAmount(summaryData.inPlaceAmount)} €
           </Text>
         }
-      />
-      <Row
+      /> */}
+      {/* <Row
         left={
           <Text bold size={smallSize}>
             TOTALE DOMICILIO + ASPORTO
@@ -74,7 +74,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
             {formatAmount(summaryData.takeawayAmount)} €
           </Text>
         }
-      />
+      /> */}
       <Row
         left={
           <Text bold size={smallSize}>
