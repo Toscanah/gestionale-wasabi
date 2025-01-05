@@ -19,6 +19,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { OrderType } from "@prisma/client";
 import fetchRequest from "../../functions/api/fetchRequest";
 import PrintSummary from "./PrintSummary";
+import { it } from "date-fns/locale";
 
 export default function PaymentsTable() {
   const [allOrders, setAllOrders] = useState<OrderWithPayments[]>([]);
@@ -121,7 +122,7 @@ export default function PaymentsTable() {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>Seleziona una data</span>}
+                {date ? format(date, "PPP", { locale: it }) : <span>Seleziona una data</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">

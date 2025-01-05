@@ -2,7 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ProductInOrder } from "@/app/(site)/models";
 import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
-import formatAmount from "../../functions/formatting-parsing/formatAmount";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
 
 interface OrderDetailProps {
@@ -30,7 +30,7 @@ export default function OrderDetail({
             {product.options.length > 0 && <span>({joinItemsWithComma(product, "options")})</span>}
           </span>
           <span className="font-semibold">
-            {`€ ${formatAmount(
+            {`€ ${roundToTwo(
               product.quantity *
                 getProductPrice(product, type === "Domicilio" ? OrderType.HOME : OrderType.TABLE)
             )}`}

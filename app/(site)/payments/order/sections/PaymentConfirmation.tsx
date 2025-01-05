@@ -1,7 +1,7 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import applyDiscount from "@/app/(site)/functions/order-management/applyDiscount";
-import formatAmount from "@/app/(site)/functions/formatting-parsing/formatAmount";
+import roundToTwo from "@/app/(site)/functions/formatting-parsing/roundToTwo";
 import { Button } from "@/components/ui/button";
 
 export default function PaymentConfirmation() {
@@ -12,7 +12,7 @@ export default function PaymentConfirmation() {
       <h1>
         <span>
           Vuoi procedere con l'incasso di{" "}
-          <b>€ {formatAmount(applyDiscount(order.total, order.discount))}</b>?
+          <b>€ {roundToTwo(applyDiscount(order.total, order.discount))}</b>?
         </span>
       </h1>
       <div className="w-full flex gap-6 items-center justify-center">

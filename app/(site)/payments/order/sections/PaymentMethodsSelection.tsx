@@ -2,7 +2,7 @@ import { PaymentType } from "@prisma/client";
 import { PaymentMethod } from "../OrderPayment";
 import { Coins, CreditCard, ForkKnife, Money } from "@phosphor-icons/react";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
-import formatAmount from "@/app/(site)/functions/formatting-parsing/formatAmount";
+import roundToTwo from "@/app/(site)/functions/formatting-parsing/roundToTwo";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 
@@ -29,11 +29,11 @@ export default function PaymentMethodsSelection() {
       const totalAmount = paymentCalculations.reduce((sum, row) => sum + row.total, 0);
 
       handlePaymentChange(type, totalAmount);
-      setTypedAmount(formatAmount(payment.remainingAmount - totalAmount));
+      setTypedAmount(roundToTwo(payment.remainingAmount - totalAmount));
       setPaymentCalculations([{ amount: 0, quantity: 0, total: 0 }]);
     } else {
       handlePaymentChange(type, Number(typedAmount));
-      setTypedAmount(formatAmount(payment.remainingAmount - Number(typedAmount)));
+      setTypedAmount(roundToTwo(payment.remainingAmount - Number(typedAmount)));
     }
   };
 
@@ -58,7 +58,7 @@ export default function PaymentMethodsSelection() {
               </div>
 
               <span className="border rounded-b-lg w-full flex p-2 justify-center items-center text-xl">
-                € {formatAmount(payment.paymentAmounts[type])}
+                € {roundToTwo(payment.paymentAmounts[type])}
               </span>
             </div>
           </div>

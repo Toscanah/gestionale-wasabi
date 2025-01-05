@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import { SummaryData } from "../../payments/table/PrintSummary";
-import formatAmount from "../../functions/formatting-parsing/formatAmount";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 
@@ -41,7 +41,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
           }
           right={
             <Text bold size={smallSize}>
-              {formatAmount(data.total)} €
+              {roundToTwo(data.total)} €
             </Text>
           }
         />
@@ -59,7 +59,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {formatAmount(summaryData.inPlaceAmount)} €
+            {roundToTwo(summaryData.inPlaceAmount)} €
           </Text>
         }
       /> */}
@@ -71,7 +71,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {formatAmount(summaryData.takeawayAmount)} €
+            {roundToTwo(summaryData.takeawayAmount)} €
           </Text>
         }
       /> */}
@@ -83,7 +83,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {formatAmount(summaryData.homeOrdersAmount)} €
+            {roundToTwo(summaryData.homeOrdersAmount)} €
           </Text>
         }
       />
@@ -95,7 +95,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {formatAmount(summaryData.pickupOrdersAmount)} €
+            {roundToTwo(summaryData.pickupOrdersAmount)} €
           </Text>
         }
       />
@@ -107,7 +107,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={smallSize}>
-            {formatAmount(summaryData.tableOrdersAmount)} €
+            {roundToTwo(summaryData.tableOrdersAmount)} €
           </Text>
         }
       />
@@ -174,7 +174,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
         }
         right={
           <Text bold size={bigSize}>
-            {formatAmount(summaryData.totalAmount)} €
+            {roundToTwo(summaryData.totalAmount)} €
           </Text>
         }
       />

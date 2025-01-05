@@ -2,7 +2,7 @@ import TableColumn from "@/app/(site)/components/table/TableColumn";
 import { Input } from "@/components/ui/input";
 import { ColumnDef } from "@tanstack/react-table";
 import useGridFocus from "@/app/(site)/components/hooks/useGridFocus";
-import formatAmount from "@/app/(site)/functions/formatting-parsing/formatAmount";
+import roundToTwo from "@/app/(site)/functions/formatting-parsing/roundToTwo";
 import { PaymentCalculation } from "@/app/(site)/context/OrderPaymentContext";
 import { X } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction } from "react";
@@ -67,7 +67,7 @@ export default function getColumns(
     TableColumn({
       accessorKey: "total",
       header: "Totale",
-      cellContent: (row) => <span>{formatAmount(row.original.total)}</span>,
+      cellContent: (row) => <span>{roundToTwo(row.original.total)}</span>,
     }),
 
     TableColumn({

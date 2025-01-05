@@ -6,6 +6,7 @@ import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import ScoreDialog from "./ScoreDialog";
 import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 const columns: ColumnDef<CustomerWithDetails>[] = [
   TableColumn({
@@ -73,7 +74,7 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
       const orders = [...row.original.home_orders, ...row.original.pickup_orders];
       if (orders.length === 0) return "N/A";
       const totalSpent = orders.reduce((sum, order) => sum + (order.order.total || 0), 0);
-      return (totalSpent / orders.length).toFixed(2);
+      return roundToTwo(totalSpent / orders.length);
     },
   }),
 
@@ -97,7 +98,7 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
     cellContent: (row) => {
       const orders = [...row.original.home_orders, ...row.original.pickup_orders];
       const totalSpent = orders.reduce((sum, order) => sum + (order.order.total || 0), 0);
-      return totalSpent.toFixed(2);
+      return roundToTwo(totalSpent);
     },
   }),
 

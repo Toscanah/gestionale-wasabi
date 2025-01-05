@@ -1,7 +1,7 @@
 import { Br, Text } from "react-thermal-printer";
 import { ProductInOrder } from "@/app/(site)/models";
 import applyDiscount from "../../functions/order-management/applyDiscount";
-import formatAmount from "../../functions/formatting-parsing/formatAmount";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 
 export default function TotalSection(
@@ -14,7 +14,7 @@ export default function TotalSection(
       <Br />
 
       <Text size={getReceiptSize(2, 2)} align="center" bold={bold}>
-        {`TOTALE: ${formatAmount(
+        {`TOTALE: ${roundToTwo(
           applyDiscount(
             products.reduce((acc, product) => acc + product.total, 0),
             discount
