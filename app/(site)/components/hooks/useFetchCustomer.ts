@@ -1,7 +1,9 @@
 import { Address, Customer } from "@prisma/client";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState, useCallback } from "react";
+
 import fetchRequest from "../../functions/api/fetchRequest";
 import { CustomerWithDetails } from "@/app/(site)/models";
+import { debounce } from "lodash";
 
 export default function useFetchCustomer(
   setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>,
@@ -21,18 +23,22 @@ export default function useFetchCustomer(
     setPossibleCustomers([]);
   };
 
-  const fetchCustomer = () =>
-    fetchRequest<Customer>("GET", "/api/customers", "getCustomerByPhone", {
-      phone,
-    }).then((fetchedCustomer) => {
-      setCustomer(fetchedCustomer || undefined);
+  const fetchCustomer = useCallback(
+    debounce((phone: string) => {
+      fetchRequest<Customer>("GET", "/api/customers", "getCustomerByPhone", {
+        phone,
+      }).then((fetchedCustomer) => {
+        setCustomer(fetchedCustomer || undefined);
 
-      if (fetchedCustomer) {
-        fetchAddresses(fetchedCustomer.id);
-      } else {
-        setAddresses([]);
-      }
-    });
+        if (fetchedCustomer) {
+          fetchAddresses(fetchedCustomer.id);
+        } else {
+          setAddresses([]);
+        }
+      });
+    }, 700),
+    [] // Dependencies of debounce should remain empty to avoid recreation
+  );
 
   const fetchAddresses = (customerId: number) =>
     fetchRequest<Address[]>("GET", "/api/addresses/", "getAddressesByCustomer", {
@@ -41,26 +47,30 @@ export default function useFetchCustomer(
       setAddresses(fetchedAddresses.filter((address) => !address.temporary))
     );
 
-  const fetchCustomersByDoorbell = () =>
-    fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "getCustomersByDoorbell", {
-      doorbell: doorbellSearch,
-    }).then((customers) => setPossibleCustomers(customers));
+  const fetchCustomersByDoorbell = useCallback(
+    debounce((doorbell: string) => {
+      fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "getCustomersByDoorbell", {
+        doorbell,
+      }).then((customers) => setPossibleCustomers(customers));
+    }, 700),
+    [] // Dependencies of debounce should remain empty to avoid recreation
+  );
 
   useEffect(() => {
     if (phone) {
       resetState();
       setDoorbellSearch("");
-      fetchCustomer();
+      fetchCustomer(phone);
     }
-  }, [phone]);
+  }, [phone, fetchCustomer]);
 
   useEffect(() => {
     if (doorbellSearch) {
       resetState();
       setPhone("");
-      fetchCustomersByDoorbell();
+      fetchCustomersByDoorbell(doorbellSearch);
     }
-  }, [doorbellSearch]);
+  }, [doorbellSearch, fetchCustomersByDoorbell]);
 
   return {
     customer,

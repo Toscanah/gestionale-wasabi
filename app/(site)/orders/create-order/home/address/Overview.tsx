@@ -121,6 +121,7 @@ export default function Overview({
           ref={phoneRef}
           className="w-full text-center text-3xl h-16"
           defaultValue={phone}
+          value={phone}
           type="number"
           onKeyDown={handleKeyDown}
           onChange={(e: any) => setPhone(e.target.value)}
@@ -135,6 +136,7 @@ export default function Overview({
           ref={doorbellSearchRef}
           className="w-full text-center text-3xl h-16"
           defaultValue={doorbellSearch}
+          value={doorbellSearch}
           type="text"
           onKeyDown={handleKeyDown}
           onChange={(e: any) => setDoorbellSearch(e.target.value)}
