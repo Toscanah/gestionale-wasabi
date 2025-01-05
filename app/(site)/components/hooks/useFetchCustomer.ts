@@ -36,7 +36,7 @@ export default function useFetchCustomer(
           setAddresses([]);
         }
       });
-    }, 700),
+    }, 0),
     [] // Dependencies of debounce should remain empty to avoid recreation
   );
 
@@ -52,7 +52,7 @@ export default function useFetchCustomer(
       fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "getCustomersByDoorbell", {
         doorbell,
       }).then((customers) => setPossibleCustomers(customers));
-    }, 700),
+    }, 0),
     [] // Dependencies of debounce should remain empty to avoid recreation
   );
 

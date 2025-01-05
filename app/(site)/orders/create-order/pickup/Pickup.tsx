@@ -34,18 +34,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
   const [phone, setPhone] = useState<string>("");
   const [when, setWhen] = useState<string>("immediate");
 
-  const nameRef = useRef<HTMLInputElement>(null);
-  const phoneRef = useRef<HTMLInputElement>(null);
-  const selectRef = useRef<HTMLButtonElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(
-    () => addRefs(nameRef.current, selectRef.current, phoneRef.current, buttonRef.current),
-    []
-  );
-
   const createPickupOrder = () => {
-    console.log(order.id);
     setOrder(generateEmptyOrder(OrderType.PICKUP));
 
     if (name === "") {
@@ -70,14 +59,18 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
         <div className="w-full pl-4 pb-4">
           <Button className="w-full text-3xl h-24 rounded-none">
             <Plus className="mr-2 h-5 w-5" /> Ordine per asporto
-            {/* {children} */}
+            {children}
           </Button>
         </div>
       }
       onOpenChange={() => {
         if (open) {
+          setName("");
+          setPhone("");
+          setWhen("immediate");
           setOrder(generateEmptyOrder(OrderType.PICKUP));
         }
+
         setOpen(!open);
       }}
       contentClassName={cn(
@@ -95,7 +88,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               type="text"
               id="name"
               className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-              ref={nameRef}
+              ref={(ref) => addRefs(ref)}
               value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -107,7 +100,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               Quando?
             </Label>
             <WhenSelector
-              ref={selectRef}
+              ref={(ref) => addRefs(ref)}
               value={when}
               onValueChange={(value) => setWhen(value)}
               onKeyDown={handleKeyDown}
@@ -155,14 +148,19 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               type="number"
               id="phone"
               className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-              ref={phoneRef}
+              ref={(ref) => addRefs(ref)}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               onKeyDown={handleKeyDown}
             />
           </div>
 
-          <Button type="submit" className="w-full" onClick={createPickupOrder} ref={buttonRef}>
+          <Button
+            type="submit"
+            className="w-full"
+            onClick={createPickupOrder}
+            ref={(ref) => addRefs(ref)}
+          >
             CREA ORDINE
           </Button>
         </div>
