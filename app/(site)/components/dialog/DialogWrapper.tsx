@@ -23,6 +23,7 @@ const sizes = {
 
 type DialogWrapperProps = {
   double?: boolean;
+  autoFocus?: boolean;
   children?: ReactNode;
   trigger?: ReactNode | undefined;
   showCloseButton?: boolean;
@@ -51,6 +52,7 @@ export default function DialogWrapper({
   contentClassName,
   triggerClassName,
   open,
+  autoFocus = true,
   footer,
   onDelete,
   onOpenChange,
@@ -81,6 +83,11 @@ export default function DialogWrapper({
         </DialogTrigger>
       )}
       <DialogContent
+        onOpenAutoFocus={(e) => {
+          if (!autoFocus) {
+            e.preventDefault();
+          }
+        }}
         className={cn(
           "w-auto max-h-screen",
           sizes[size],

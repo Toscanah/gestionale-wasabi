@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { Line, Text } from "react-thermal-printer";
 import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
 import { uniqueId } from "lodash";
+import splitOptionsInLines from "@/app/(site)/functions/formatting-parsing/printing/splitOptionsInLines";
 
 export interface ProductLineProps {
   product: ProductInOrder;
@@ -62,8 +63,7 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
 
       {product.additional_note !== "" && (
         <Text bold size={smallSize}>
-          {" -" + " ".repeat(4)}
-          {product.additional_note}
+          {" ".repeat(4) + product.additional_note}
         </Text>
       )}
     </Fragment>
@@ -81,9 +81,11 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
           <Fragment key={`group-${idx}`}>
             {products.map((product) => ProductLine({ product }))}
 
-            <Text bold size={smallSize}>
-              {" -" + " ".repeat(4) + optionsKey}
-            </Text>
+            {splitOptionsInLines(optionsKey, 48, 4).map((line, lineIdx) => (
+              <Text bold size={smallSize} key={`options-${idx}-${lineIdx}`}>
+                {line}
+              </Text>
+            ))}
 
             {idx < arr.length - 1 && arr.length > 1 && <Line />}
           </Fragment>
