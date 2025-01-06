@@ -47,7 +47,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
       return toastError("Assicurati di aver inserito un tavolo");
     }
 
-    const content = { table, people: people ?? 1, resName };
+    const content = { table, people: people || 1, resName };
 
     fetchRequest<{ order: TableOrder; new: boolean }>("POST", "/api/orders/", "createTableOrder", {
       ...content,

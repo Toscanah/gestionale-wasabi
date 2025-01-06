@@ -32,6 +32,6 @@ export default function TableColumn<T>({
         header
       ),
     cell: ({ row }) =>
-      cellContent ? cellContent(row) : String(getNestedValue(row.original, accessorKey)),
+      cellContent ? cellContent(row) : String(getNestedValue<T>(row.original, accessorKey)),
   };
 }
