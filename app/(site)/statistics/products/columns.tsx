@@ -9,7 +9,7 @@ const columns: ColumnDef<ProductWithStats>[] = [
     header: "Codice",
   }),
 
-  TableColumn({ 
+  TableColumn({
     accessorKey: "desc",
     header: "Descrizione",
   }),
@@ -22,8 +22,8 @@ const columns: ColumnDef<ProductWithStats>[] = [
   TableColumn({
     accessorKey: "total",
     header: "Totale",
-  })
-
-]
+    cellContent: (row) => "€ " + row.original.total,
+  }),
+];
 
 export default columns;
