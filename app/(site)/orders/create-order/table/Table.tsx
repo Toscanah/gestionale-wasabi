@@ -68,6 +68,11 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
         </div>
       }
       onOpenChange={() => {
+        if (open) {
+          setTable("");
+          setPeople(undefined);
+          setResName("");
+        }
         setOpen(!open);
       }}
       contentClassName={cn(

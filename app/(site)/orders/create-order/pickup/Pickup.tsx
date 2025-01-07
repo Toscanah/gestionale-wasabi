@@ -62,6 +62,12 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
         </div>
       }
       onOpenChange={() => {
+        if (open) {
+          setName("");
+          setPhone("");
+          setWhen("immediate");
+        }
+
         setOpen(!open);
       }}
       contentClassName={cn(
