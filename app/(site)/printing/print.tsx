@@ -46,6 +46,8 @@ export default async function print(...contents: (() => ReactNode)[]) {
     </Printer>
   );
 
+  console.log(receipt)
+
   const data: Uint8Array = await render(receipt);
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
 

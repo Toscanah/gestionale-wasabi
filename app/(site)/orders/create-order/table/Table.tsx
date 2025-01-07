@@ -36,8 +36,14 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
   const nameRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  useEffect(() => {
+    if (open) {
+      setOrder(generateEmptyOrder(OrderType.TABLE));
+    }
+  }, [open]);
+
   const createTableOrder = () => {
-    setOrder(generateEmptyOrder(OrderType.TABLE));
+    // setOrder(generateEmptyOrder(OrderType.TABLE));
 
     if (table == "") {
       return toastError("Assicurati di aver inserito un tavolo");
@@ -74,9 +80,9 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
       }
       onOpenChange={() => {
         if (open) {
-          setOrder(generateEmptyOrder(OrderType.PICKUP));
           setTable("");
           setPeople(NaN);
+          setOrder(generateEmptyOrder(OrderType.PICKUP));
         }
 
         setOpen(!open);
