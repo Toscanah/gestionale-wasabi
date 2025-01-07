@@ -34,15 +34,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
   const [phone, setPhone] = useState<string>("");
   const [when, setWhen] = useState<string>("immediate");
 
-  useEffect(() => {
-    if (open) {
-      setOrder(generateEmptyOrder(OrderType.PICKUP));
-    }
-  }, [open]);
-
   const createPickupOrder = () => {
-    // setOrder(generateEmptyOrder(OrderType.PICKUP));
-
     if (name === "") {
       return toastError("L'ordine deve avere un nome di un cliente");
     }
@@ -70,13 +62,6 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
         </div>
       }
       onOpenChange={() => {
-        if (open) {
-          setName("");
-          setPhone("");
-          setWhen("immediate");
-          setOrder(generateEmptyOrder(OrderType.PICKUP));
-        }
-
         setOpen(!open);
       }}
       contentClassName={cn(
