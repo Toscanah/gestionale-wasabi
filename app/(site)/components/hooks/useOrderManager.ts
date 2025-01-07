@@ -26,11 +26,6 @@ export function useOrderManager(
         generateDummyProduct(),
       ];
 
-      console.log(
-        "Opzioni nei prodotti:",
-        products.map((product) => product?.options?.map((option) => option?.option?.option_name))
-      );
-
       const is_receipt_printed =
         newOrder.is_receipt_printed == undefined
           ? prevOrder.is_receipt_printed

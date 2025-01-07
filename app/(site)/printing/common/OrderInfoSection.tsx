@@ -11,6 +11,8 @@ export default function OrderInfoSection(
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
+
+
   return (
     <>
       {(order.home_order?.customer.preferences || order.home_order?.notes) && (

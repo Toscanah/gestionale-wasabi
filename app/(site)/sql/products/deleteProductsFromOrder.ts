@@ -31,7 +31,6 @@ export default async function deleteProductsFromOrder(
     },
   });
 
-  console.log("Sono entrato in deleteproducts from order")
   await prisma.optionInProductOrder.deleteMany({
     where: {
       product_in_order_id: {

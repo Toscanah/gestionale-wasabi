@@ -33,8 +33,6 @@ export default async function getProductsWithStats(
     }
   }
 
-  console.log(startDate, endDate);
-
   const dateFilter = startDate && endDate ? { gte: startDate, lte: endDate } : undefined;
 
   const productsWithStats = await prisma.product.findMany({

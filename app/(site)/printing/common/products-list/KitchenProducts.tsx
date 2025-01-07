@@ -46,6 +46,8 @@ export default function KitchenProducts({ aggregatedProducts }: KitchenProductsP
       });
     }
   });
+  
+  console.log(aggregatedProducts);
 
   const ProductLine = ({ product }: ProductLineProps) => (
     <Fragment key={uniqueId()}>

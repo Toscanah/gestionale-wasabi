@@ -6,7 +6,6 @@ export default async function updateProductOptionsInOrder(
   optionId: number
 ): Promise<OptionInProductOrder> {
   // Check if the option already exists in the product order
-  console.log("Sono entrato in updateProductOptionsInOrder");
   const optionPresent = await prisma.optionInProductOrder.findFirst({
     where: {
       product_in_order_id: productInOrderId,

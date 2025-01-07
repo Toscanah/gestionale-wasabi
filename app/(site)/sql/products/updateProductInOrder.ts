@@ -58,7 +58,6 @@ export default async function updateProductInOrder(
         },
       });
 
-      console.log("Sono entrato in updatePRoductInOrder parte 1");
       await prisma.optionInProductOrder.deleteMany({
         where: { product_in_order_id: productInOrder.id },
       });
@@ -102,7 +101,6 @@ export default async function updateProductInOrder(
 
       if (newQuantity == 0) {
         if (productInOrder.paid_quantity === 0) {
-          console.log("Sono entrato in updatePRoductInOrder parte 3");
           await prisma.optionInProductOrder.deleteMany({
             where: { product_in_order_id: productInOrder.id },
           });

@@ -5,6 +5,7 @@ import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType, OrderType } from "@prisma/client";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
+import { Fragment } from "react";
 
 const calculateAdjustedTime = (originalTime: string) => {
   const timeParts = originalTime.split(":");
@@ -65,33 +66,27 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       )}
 
       {pickupOrder && (
-        <Row
-          left={
-            <Text bold size={smallSize}>
-              ASPORTO
-            </Text>
-          }
-          right={
-            <Text bold size={bigSize}>
-              {sanitazeReceiptText(pickupOrder.name)}
-            </Text>
-          }
-        />
+        <Fragment>
+          <Text bold size={smallSize} inline>
+            ASPORTO
+          </Text>
+
+          <Text bold size={bigSize}>
+            {sanitazeReceiptText(pickupOrder.name)}
+          </Text>
+        </Fragment>
       )}
 
       {homeOrder && (
-        <Row
-          left={
-            <Text bold size={smallSize}>
-              DELIVERY
-            </Text>
-          }
-          right={
-            <Text bold size={bigSize}>
-              {sanitazeReceiptText(homeOrder.address.doorbell)}
-            </Text>
-          }
-        />
+        <Fragment>
+          <Text bold size={smallSize}>
+            DELIVERY
+          </Text>
+
+          <Text bold size={bigSize}>
+            {sanitazeReceiptText(homeOrder.address.doorbell)}
+          </Text>
+        </Fragment>
       )}
 
       {pickupOrder && (
@@ -119,7 +114,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           right={
             <Text bold size={bigSize}>
               {homeOrder.when == "immediate"
-                ? "PRIMA POSSIBILE"
+                ? "SUBITO"
                 : calculateAdjustedTime(homeOrder.when ?? "")}
             </Text>
           }

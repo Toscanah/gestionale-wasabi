@@ -71,7 +71,7 @@ export default function Overview({
   }, [addresses]);
 
   useEffect(() => {
-    if (phone) {
+    if (phone && !selectedAddress) {
       fetchRequest<HomeOrder>("GET", "/api/addresses/", "getLastAddressOfCustomer", { phone }).then(
         (lastAddress) => {
           if (lastAddress?.home_order) {

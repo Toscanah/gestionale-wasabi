@@ -52,7 +52,6 @@ export default async function addProductsToOrder(
   });
 
   if (optionsToCreate.length > 0) {
-    console.log("Sono entrato in addPRoductToORder")
     await prisma.optionInProductOrder.createMany({
       data: optionsToCreate,
     });
