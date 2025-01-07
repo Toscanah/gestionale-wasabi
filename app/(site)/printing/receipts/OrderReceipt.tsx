@@ -62,7 +62,6 @@ export default function OrderReceipt<T extends AnyOrder>(
 
       {ProductsListSection(order.products, order.type, order.discount, "customer")}
       <Line />
-      <Br />
 
       {homeOrder && putInfo && (
         <>

@@ -11,8 +11,6 @@ export default function OrderInfoSection(
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
-
-
   return (
     <>
       {(order.home_order?.customer.preferences || order.home_order?.notes) && (
@@ -34,13 +32,17 @@ export default function OrderInfoSection(
                 Note ordine:{" "}
               </Text>
               <Text size={smallSize}>{sanitazeReceiptText(order.home_order.notes)}</Text>
-              {/* <Br /> */}
             </>
           )}
           <Line />
-          {/* <Br /> */}
         </>
       )}
+
+      {/* <Text bold inline size={smallSize}>
+        Campanello:{" "}
+      </Text> */}
+      <Text size={bigSize}>{sanitazeReceiptText(order.home_order?.address.doorbell)}</Text>
+      <Line />
 
       <Text bold inline size={smallSize}>
         Via:{" "}
@@ -64,12 +66,6 @@ export default function OrderInfoSection(
         </>
       )}
 
-      <Text bold inline size={smallSize}>
-        Campanello:{" "}
-      </Text>
-      <Text inline size={smallSize}>
-        {sanitazeReceiptText(order.home_order?.address.doorbell)}
-      </Text>
       <Br />
 
       {(order.home_order?.address.floor || order.home_order?.address.stair) && (
@@ -117,18 +113,19 @@ export default function OrderInfoSection(
       )}
 
       <Text bold inline size={smallSize}>
-        Quando:{" "}
-      </Text>
-      <Text size={smallSize}>
-        {order.home_order?.when !== "immediate" ? order.home_order?.when : "PRIMA POSSIBILE"}
-      </Text>
-
-      <Text bold inline size={smallSize}>
-        Tel:{" "}
+        Telefono:{" "}
       </Text>
       <Text size={smallSize}>
         {order.home_order?.customer.phone?.phone}
         {order.home_order?.contact_phone !== "" && " oppure " + order.home_order?.contact_phone}
+      </Text>
+
+      <Line />
+      {/* <Text bold inline size={smallSize}>
+        Quando:{" "}
+      </Text> */}
+      <Text size={bigSize}>
+        {order.home_order?.when !== "immediate" ? order.home_order?.when : "PRIMA POSSIBILE"}
       </Text>
     </>
   );

@@ -96,7 +96,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
         <Button
           onClick={() => setAction("payRoman")}
           className="w-full text-3xl h-12"
-          disabled={true} // order.products.length <= 0 || order.type === OrderType.HOME
+          disabled={false} // order.products.length <= 0 || order.type === OrderType.HOME
         >
           Romana
         </Button>

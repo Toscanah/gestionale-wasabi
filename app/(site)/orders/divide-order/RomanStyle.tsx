@@ -58,7 +58,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
       {ppl !== 0 && currentPerson <= ppl && (
         <OrderPayment
           key={currentPerson}
-          order={{
+          partialOrder={{
             ...order,
             total: order.total / ppl,
             products: currentPerson === ppl ? order.products : [],

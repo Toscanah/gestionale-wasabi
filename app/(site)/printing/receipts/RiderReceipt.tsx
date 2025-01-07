@@ -13,7 +13,6 @@ export default function RiderReceipt(order: HomeOrder, quickPaymentOption: Quick
       {TimeSection()}
 
       <Line />
-      <Br />
       {OrderInfoSection(order, quickPaymentOption)}
 
       <Line />
