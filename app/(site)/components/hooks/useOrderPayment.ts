@@ -40,7 +40,19 @@ export default function useOrderPayment(
             : (prevPayment.paymentAmounts[type] || 0) + value, // Add to the current value (0 if it's not defined)
       },
     }));
-    
+
+  const resetPaymentValues = () =>
+    setPayment((prevPayment) => ({
+      paymentAmounts: {
+        [PaymentType.CASH]: undefined,
+        [PaymentType.CARD]: undefined,
+        [PaymentType.VOUCH]: undefined,
+        [PaymentType.CREDIT]: undefined,
+      },
+      paidAmount: 0,
+      remainingAmount: applyDiscount(order.total, order.discount) ?? 0,
+    }));
+
   const payOrder = () => {
     const productsToPay = order.products;
 
@@ -77,5 +89,5 @@ export default function useOrderPayment(
     });
   };
 
-  return { handlePaymentChange, payOrder };
+  return { handlePaymentChange, payOrder, resetPaymentValues };
 }

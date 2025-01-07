@@ -68,7 +68,7 @@ export const OrderPaymentProvider = ({
   });
 
   const [typedAmount, setTypedAmount] = useState<string>(roundToTwo(payment.remainingAmount));
-  const { handlePaymentChange, payOrder } = useOrderPayment(
+  const { handlePaymentChange, payOrder, resetPaymentValues } = useOrderPayment(
     type,
     onOrderPaid,
     payment,
@@ -77,7 +77,7 @@ export const OrderPaymentProvider = ({
   );
 
   const resetPayment = () => {
-    Object.values(PaymentType).map((type) => handlePaymentChange(type, undefined));
+    resetPaymentValues();
     setTypedAmount((applyDiscount(order.total, order.discount) ?? 0).toString());
   };
 
