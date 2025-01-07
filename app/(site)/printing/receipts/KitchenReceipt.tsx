@@ -67,7 +67,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       {pickupOrder && (
         <Fragment>
-          <Text bold size={smallSize} inline>
+          <Text bold inline size={smallSize} >
             ASPORTO
           </Text>
 
@@ -79,7 +79,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       {homeOrder && (
         <Fragment>
-          <Text bold size={smallSize}>
+          <Text bold inline size={smallSize}>
             DELIVERY
           </Text>
 
