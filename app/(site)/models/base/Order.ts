@@ -34,16 +34,6 @@ export const PickupOrderInOrderSchema = OrderWithProductsAndPaymentsSchema.exten
   }).nullable(),
 });
 
-export const OrderWithPaymentsAndTotalsSchema = OrderWithProductsAndPaymentsSchema.extend({
-  totalCash: z.number().int(),
-  totalCard: z.number().int(),
-  totalVouch: z.number().int(),
-  totalCredit: z.number().int(),
-  table_order: TableOrderSchema.nullable(),
-  home_order: HomeOrderSchema.nullable(),
-  pickup_order: PickupOrderSchema.nullable(),
-});
-
 export const TableOrderWithOrderSchema = TableOrderSchema.extend({
   order: OrderWithProductsSchema,
 });
@@ -55,6 +45,16 @@ export const HomeOrderWithOrderSchema = HomeOrderSchema.extend({
 export const PickupOrderWithOrderSchema = PickupOrderSchema.extend({
   order: OrderWithProductsSchema,
 });
+
+export const OrderWithPaymentsAndTotalsSchema = OrderWithProductsAndPaymentsSchema.extend({
+  totalCash: z.number().int(),
+  totalCard: z.number().int(),
+  totalVouch: z.number().int(),
+  totalCredit: z.number().int(),
+})
+  .merge(TableOrderInOrderSchema)
+  .merge(HomeOrderInOrderSchema)
+  .merge(PickupOrderInOrderSchema);
 
 export const AnyOrderSchema = z.union([
   TableOrderInOrderSchema,

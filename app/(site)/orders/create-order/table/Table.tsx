@@ -13,6 +13,7 @@ import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
 import generateEmptyOrder from "@/app/(site)/functions/order-management/generateEmptyOrder";
 import { OrderType } from "@prisma/client";
+import { Plus } from "@phosphor-icons/react";
 
 interface TableProps {
   setOrder: Dispatch<SetStateAction<AnyOrder>>;
@@ -34,11 +35,6 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
   const pplRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(
-    () => addRefs(tableRef.current, pplRef.current, nameRef.current, buttonRef.current),
-    []
-  );
 
   const createTableOrder = () => {
     setOrder(generateEmptyOrder(OrderType.TABLE));
@@ -64,66 +60,82 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
     });
   };
 
-  useEffect(() => {
-    if (!open) {
-      setTimeout(() => {
-        tableRef.current?.focus();
-        tableRef.current?.select();
-      }, 200);
-    }
-  }, [open]);
-
   return (
-    <div className="w-full h-full flex items-center pr-4 pb-4 gap-4">
-      <div className="w-full flex flex-col gap-4">
-        <div className="w-full">
-          <Input
-            placeholder="Nome tavolo"
-            type="text"
-            id="table"
-            className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-            ref={tableRef}
-            value={table}
-            onChange={(e) => setTable(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
+    <DialogWrapper
+      size={order.id !== -1 ? "large" : "medium"}
+      open={open}
+      trigger={
+        <div className="w-full pr-4 pb-4">
+          <Button className="w-full text-3xl h-24 rounded-none">
+            <Plus className="mr-2 h-5 w-5" /> Ordine al tavolo
+            {children}
+          </Button>
         </div>
+      }
+      onOpenChange={() => {
+        if (open) {
+          setOrder(generateEmptyOrder(OrderType.PICKUP));
+          setTable("");
+          setPeople(NaN);
+        }
 
-        <div className="w-full space-y-2">
-          <Input
-            placeholder="Numero persone"
-            type="number"
-            id="ppl"
-            className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-            ref={pplRef}
-            value={people}
-            onChange={(e) => setPeople(Number(e.target.value))}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
-      </div>
+        setOpen(!open);
+      }}
+      contentClassName={cn(
+        "flex flex-col gap-6 items-center max-w-screen max-h-screen",
+        order.id !== -1 && "h-[95vh]"
+      )}
+    >
+      {order.id == -1 ? (
+        <>
+          <div className="w-full flex flex-col gap-4">
+            <div className="w-full space-y-2">
+              <Label htmlFor="table" className="text-xl">
+                Nome tavolo
+              </Label>
+              <Input
+                // placeholder="Nome tavolo"
+                type="text"
+                id="table"
+                className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+                ref={(tableRef) => addRefs(tableRef)}
+                value={table}
+                onChange={(e) => setTable(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
 
-      <Button
-        ref={buttonRef}
-        type="submit"
-        className="rounded-none text-3xl h-full w-52"
-        onClick={createTableOrder}
-      >
-        Vai {children}
-      </Button>
+            <div className="w-full space-y-2">
+              <Label htmlFor="ppl" className="text-xl">
+                Numero persone
+              </Label>
+              <Input
+                // placeholder="N° persone"
+                type="number"
+                id="ppl"
+                className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+                ref={(pplRef) => addRefs(pplRef)}
+                value={people}
+                onChange={(e) => setPeople(Number(e.target.value))}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+          </div>
 
-      <DialogWrapper
-        size="large"
-        open={open}
-        onOpenChange={() => {
-          setOpen(!open);
-        }}
-        contentClassName="flex flex-col gap-6 items-center max-w-screen max-h-screen h-[95vh]"
-      >
+          <Button
+            ref={(buttonRef) => addRefs(buttonRef)}
+            type="submit"
+            className="w-full"
+            onClick={createTableOrder}
+          >
+            Vai {children}
+          </Button>
+        </>
+      ) : (
         <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen}>
           <OrderTable />
         </OrderProvider>
-      </DialogWrapper>
-    </div>
+      )}
+    </DialogWrapper>
   );
 }

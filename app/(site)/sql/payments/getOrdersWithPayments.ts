@@ -10,8 +10,14 @@ export default async function getOrdersWithPayments(): Promise<OrderWithPayments
     },
     include: {
       payments: true,
-      home_order: true,
-      pickup_order: true,
+      home_order: {
+        include: { address: true, customer: { include: { phone: true } } },
+      },
+      pickup_order: {
+        include: {
+          customer: { include: { phone: true } },
+        },
+      },
       table_order: true,
       products: {
         include: {
