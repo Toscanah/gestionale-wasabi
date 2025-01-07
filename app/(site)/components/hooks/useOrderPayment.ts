@@ -34,10 +34,13 @@ export default function useOrderPayment(
       ...prevPayment,
       paymentAmounts: {
         ...prevPayment.paymentAmounts,
-        [type]: value === undefined || isNaN(value) ? undefined : value,
+        [type]:
+          value === undefined || isNaN(value)
+            ? prevPayment.paymentAmounts[type] // Keep the current value if the new value is invalid
+            : (prevPayment.paymentAmounts[type] || 0) + value, // Add to the current value (0 if it's not defined)
       },
     }));
-
+    
   const payOrder = () => {
     const productsToPay = order.products;
 
@@ -57,7 +60,7 @@ export default function useOrderPayment(
 
       if (type == "full") {
         updateOrder({ state: "PAID" });
-        return
+        return;
       }
 
       const { updatedProducts, updatedTotal } = scaleProducts({
