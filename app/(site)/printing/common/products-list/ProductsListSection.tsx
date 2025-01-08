@@ -12,7 +12,12 @@ export default function ProductsListSection(
   recipient: "kitchen" | "customer"
 ) {
   const aggregatedProducts = aggregateProducts(
-    products.filter((product) => product.id !== -1),
+    products.filter(
+      (product) =>
+        product.id !== -1 &&
+        product.state !== "DELETED_COOKED" &&
+        product.state !== "DELETED_UNCOOKED"
+    ),
     orderType
   );
 
