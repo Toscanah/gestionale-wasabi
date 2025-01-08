@@ -56,7 +56,9 @@ export default function OrderTable() {
   });
 
   const table = getTable<ProductInOrder>({
-    data: order.products,
+    data: order.products.sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    ),
     columns,
     rowSelection,
     setRowSelection,

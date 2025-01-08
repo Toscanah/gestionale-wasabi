@@ -173,6 +173,7 @@ model ProductInOrder {
     printed_amount  Int                    @default(0)
     state           ProductInOrderState    @default(IN_ORDER)
     additional_note String?                @default("")
+    created_at      DateTime               @default(now())
     options         OptionInProductOrder[]
     product         Product                @relation(fields: [product_id], references: [id])
     order           Order                  @relation(fields: [order_id], references: [id])

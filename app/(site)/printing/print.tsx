@@ -49,10 +49,9 @@ export default async function print(...contents: (() => ReactNode)[]) {
   const data: Uint8Array = await render(receipt);
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
 
-  // console.log(data.map((d) => d));
-  // const decoder = new TextDecoder();
-  // const str = decoder.decode(data);
-  // console.log(str);
+  const decoder = new TextDecoder();
+  const str = decoder.decode(data);
+  console.log(str);
 
   if (ports.length == 0) return false;
 

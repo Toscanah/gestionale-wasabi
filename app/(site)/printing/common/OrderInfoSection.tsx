@@ -23,7 +23,7 @@ export default function OrderInfoSection(
               <Text size={smallSize}>
                 {sanitazeReceiptText(order.home_order.customer.preferences)}
               </Text>
-              {!order.home_order?.notes && <Br />}
+              {/* {!order.home_order?.notes && <Br />} */}
             </>
           )}
           {order.home_order?.notes && (
@@ -65,8 +65,6 @@ export default function OrderInfoSection(
           <Br />
         </>
       )}
-
-      <Br />
 
       {(order.home_order?.address.floor || order.home_order?.address.stair) && (
         <>
