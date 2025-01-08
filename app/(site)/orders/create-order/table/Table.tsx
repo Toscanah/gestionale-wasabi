@@ -31,10 +31,10 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
   const [people, setPeople] = useState<number | undefined>(undefined);
   const [resName, setResName] = useState<string>("");
 
-  const tableRef = useRef<HTMLInputElement>(null);
-  const pplRef = useRef<HTMLInputElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  // const tableRef = useRef<HTMLInputElement>(null);
+  // const pplRef = useRef<HTMLInputElement>(null);
+  // const nameRef = useRef<HTMLInputElement>(null);
+  // const buttonRef = useRef<HTMLButtonElement>(null);
 
   const createTableOrder = () => {
     if (table == "") {
@@ -43,15 +43,15 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
 
     const content = { table, people: people || 1, resName };
 
-    fetchRequest<{ order: TableOrder; new: boolean }>("POST", "/api/orders/", "createTableOrder", {
+    fetchRequest<{ order: TableOrder; isNewOrder: boolean }>("POST", "/api/orders/", "createTableOrder", {
       ...content,
-    }).then((newTableOrder) => {
-      if (newTableOrder.new) {
+    }).then((tableOrder) => {
+      if (tableOrder.isNewOrder) {
         toastSuccess("Ordine creato con successo");
-        updateGlobalState(newTableOrder.order, "add");
+        updateGlobalState(tableOrder.order, "add");
       }
 
-      setOrder(newTableOrder.order);
+      setOrder(tableOrder.order);
     });
   };
 

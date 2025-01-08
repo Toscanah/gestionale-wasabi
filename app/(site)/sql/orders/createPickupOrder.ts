@@ -6,9 +6,57 @@ export default async function createPickupOrder(
   name: string,
   when: string,
   phone?: string
-): Promise<AnyOrder> {
+): Promise<{ order: AnyOrder; isNewOrder: boolean }> {
   let orderName = name;
   let customerData = undefined;
+
+  const existingOrder = await prisma.order.findFirst({
+    where: {
+      type: OrderType.PICKUP,
+      pickup_order: {
+        name,
+      },
+      state: "ACTIVE",
+    },
+    include: {
+      payments: true,
+      pickup_order: {
+        include: {
+          customer: {
+            include: {
+              phone: true,
+            },
+          },
+        },
+      },
+      products: {
+        include: {
+          product: {
+            include: {
+              category: {
+                include: {
+                  options: {
+                    include: {
+                      option: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          options: {
+            include: {
+              option: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (existingOrder) {
+    return { order: existingOrder, isNewOrder: false };
+  }
 
   if (phone) {
     const existingPhone = await prisma.phone.findFirst({
@@ -91,5 +139,5 @@ export default async function createPickupOrder(
     },
   });
 
-  return createdOrder;
+  return { order: createdOrder, isNewOrder: true };
 }

@@ -7,7 +7,7 @@ import WhenSelector from "../../../components/select/WhenSelector";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import useFocusCycle from "../../../components/hooks/useFocusCycle";
 import fetchRequest from "../../../functions/api/fetchRequest";
-import { toastError } from "../../../functions/util/toast";
+import { toastError, toastSuccess } from "../../../functions/util/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Plus, Question } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
@@ -41,12 +41,19 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
 
     const content = { name, when, phone };
 
-    fetchRequest<PickupOrder>("POST", "/api/orders/", "createPickupOrder", { ...content }).then(
-      (newPickupOrder) => {
-        setOrder(newPickupOrder);
-        updateGlobalState(newPickupOrder, "add");
+    fetchRequest<{ order: PickupOrder; isNewOrder: boolean }>(
+      "POST",
+      "/api/orders/",
+      "createPickupOrder",
+      { ...content }
+    ).then((pickupOrder) => {
+      if (pickupOrder.isNewOrder) {
+        toastSuccess("Ordine creato con successo");
+        updateGlobalState(pickupOrder.order, "add");
       }
-    );
+
+      setOrder(pickupOrder.order);
+    });
   };
 
   return (

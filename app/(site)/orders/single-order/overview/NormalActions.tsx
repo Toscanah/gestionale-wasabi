@@ -1,6 +1,6 @@
 import { AnyOrder, HomeOrder } from "@/app/(site)/models";
 import { Button } from "@/components/ui/button";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { PayingAction } from "../OrderTable";
 import print from "@/app/(site)/printing/print";
 import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
@@ -19,6 +19,19 @@ interface NormalActionsProps {
 
 export default function NormalActions({ setAction, quickPaymentOption }: NormalActionsProps) {
   const { order, updateUnprintedProducts, updateOrder, toggleDialog } = useOrderContext();
+
+  useEffect(() => {
+    const handlePrintShortcut = (event: KeyboardEvent) => {
+      if (event.altKey && event.key === "p") {
+        handlePrint();
+      }
+    };
+
+    window.addEventListener("keydown", handlePrintShortcut);
+    return () => {
+      window.removeEventListener("keydown", handlePrintShortcut);
+    };
+  }, []);
 
   const canSplit = (products: ProductInOrder[]) =>
     products.length > 1 ||
@@ -117,7 +130,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
         onClick={handleFullPayment}
         disabled={!(order.total > 0)} //
       >
-        STAMPA e INCASSA
+        INCASSA
       </Button>
     </>
   );

@@ -11,6 +11,8 @@ import DangerActions from "./overview/DangerActions";
 import { useOrderContext } from "../../context/OrderContext";
 import print from "../../printing/print";
 import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
+import NormalActions from "./overview/NormalActions";
+import { QuickPaymentOption } from "./overview/QuickPaymentOptions";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
@@ -28,6 +30,7 @@ export default function OrderTable() {
   } = useOrderContext();
 
   const [payingAction, setPayingAction] = useState<PayingAction>("none");
+  const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
   const [rowSelection, setRowSelection] = useState({});
 
   useEffect(() => {
@@ -98,9 +101,13 @@ export default function OrderTable() {
           stickyRowIndex={order.products.length - 1}
         />
         <DangerActions table={table} />
+        <NormalActions setAction={setPayingAction} quickPaymentOption={quickPaymentOption} />
       </div>
-
-      <OrderOverview setAction={setPayingAction} />
+      <OrderOverview
+        setAction={setPayingAction}
+        quickPaymentOption={quickPaymentOption}
+        setQuickPaymentOption={setQuickPaymentOption}
+      />
     </div>
   ) : payingAction == "payFull" ? (
     <OrderPayment
