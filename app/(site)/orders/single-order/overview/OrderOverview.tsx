@@ -13,16 +13,17 @@ import TableChange from "./TableChange";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
-  quickPaymentOption: QuickPaymentOption;
-  setQuickPaymentOption: Dispatch<SetStateAction<QuickPaymentOption>>;
+  // quickPaymentOption: QuickPaymentOption;
+  // setQuickPaymentOption: Dispatch<SetStateAction<QuickPaymentOption>>;
 }
 
 export default function OrderOverview({
   setAction,
-  quickPaymentOption,
-  setQuickPaymentOption,
-}: OrderOverviewProps) {
+}: // quickPaymentOption,
+// setQuickPaymentOption,
+OrderOverviewProps) {
   const { order } = useOrderContext();
+  const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
 
   return (
     <div className="w-[25%] flex flex-col gap-6 h-full">
@@ -45,6 +46,7 @@ export default function OrderOverview({
       <div className="mt-auto flex flex-col gap-6">
         <Rice />
         <Total />
+        <NormalActions setAction={setAction} quickPaymentOption={quickPaymentOption} />
       </div>
     </div>
   );
