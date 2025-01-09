@@ -58,6 +58,7 @@
         "@types/w3c-web-usb": "^1.0.10",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
+        "concurrently": "^9.1.2",
         "date-fns": "^3.6.0",
         "debounce": "^2.1.0",
         "escpos": "^3.0.0-alpha.6",

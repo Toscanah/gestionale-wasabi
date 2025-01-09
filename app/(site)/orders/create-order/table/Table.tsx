@@ -73,6 +73,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
           setPeople(undefined);
           setResName("");
         }
+        
         setOpen(!open);
       }}
       contentClassName={cn(

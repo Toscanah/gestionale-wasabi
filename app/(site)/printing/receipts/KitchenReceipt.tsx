@@ -60,33 +60,48 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       <Line />
       {tableOrder && (
-        <Text bold size={bigSize} align="right">
-          TAV {sanitazeReceiptText(tableOrder.table)}
-        </Text>
+        <Row
+          left={
+            <Text bold size={smallSize}>
+              TAVOLO
+            </Text>
+          }
+          right={
+            <Text bold size={bigSize}>
+              {sanitazeReceiptText(tableOrder.table.slice(0, 14))}
+            </Text>
+          }
+        />
       )}
 
       {pickupOrder && (
-        <Fragment>
-          <Text bold inline size={smallSize} >
-            ASPORTO
-          </Text>
-
-          <Text bold size={bigSize}>
-            {sanitazeReceiptText(pickupOrder.name)}
-          </Text>
-        </Fragment>
+        <Row
+          left={
+            <Text bold size={smallSize}>
+              ASPORTO
+            </Text>
+          }
+          right={
+            <Text bold size={bigSize}>
+              {sanitazeReceiptText(pickupOrder.name.slice(0, 14))}
+            </Text>
+          }
+        />
       )}
 
       {homeOrder && (
-        <Fragment>
-          <Text bold inline size={smallSize}>
-            DELIVERY
-          </Text>
-
-          <Text bold size={bigSize}>
-            {sanitazeReceiptText(homeOrder.address.doorbell)}
-          </Text>
-        </Fragment>
+        <Row
+          left={
+            <Text bold size={smallSize}>
+              DELIVERY
+            </Text>
+          }
+          right={
+            <Text bold size={bigSize}>
+              {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, 14))}
+            </Text>
+          }
+        />
       )}
 
       {pickupOrder && (

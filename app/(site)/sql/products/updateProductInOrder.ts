@@ -32,9 +32,9 @@ export default async function updateProductInOrder(
 
       if (!newProduct) {
         return { error: "Product not found" };
-      }
+      } 
 
-      if (newProductCode == newProduct.code) {
+      if (productInOrder.product.code.toLocaleUpperCase() == newProduct.code.toLocaleUpperCase()) {
         return { updatedProduct: productInOrder };
       }
 
