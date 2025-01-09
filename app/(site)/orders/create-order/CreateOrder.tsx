@@ -25,6 +25,12 @@ export default function CreateOrder({ type, triggerClassName, children }: Create
   const [order, setOrder] = useState<AnyOrder>(generateEmptyOrder(type));
   const [open, setOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (open) {
+      setOrder(generateEmptyOrder(type));
+    }
+  }, [open]);
+
   const components = new Map<OrderType, { component: ReactNode }>([
     [
       OrderType.TABLE,

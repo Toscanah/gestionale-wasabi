@@ -32,6 +32,10 @@ export default async function updateProductInOrder(
 
       if (!newProduct) {
         return { error: "Product not found" };
+      } 
+
+      if (productInOrder.product.code.toLocaleUpperCase() == newProduct.code.toLocaleUpperCase()) {
+        return { updatedProduct: productInOrder };
       }
 
       const newTotal =
@@ -44,6 +48,7 @@ export default async function updateProductInOrder(
           product_id: newProduct.id,
           total: newTotal,
           rice_quantity: newProduct.rice * productInOrder.quantity,
+          printed_amount: 0,
         },
         include: {
           product: {
@@ -58,7 +63,6 @@ export default async function updateProductInOrder(
         },
       });
 
-      console.log("Sono entrato in updatePRoductInOrder parte 1");
       await prisma.optionInProductOrder.deleteMany({
         where: { product_in_order_id: productInOrder.id },
       });
@@ -102,7 +106,6 @@ export default async function updateProductInOrder(
 
       if (newQuantity == 0) {
         if (productInOrder.paid_quantity === 0) {
-          console.log("Sono entrato in updatePRoductInOrder parte 3");
           await prisma.optionInProductOrder.deleteMany({
             where: { product_in_order_id: productInOrder.id },
           });

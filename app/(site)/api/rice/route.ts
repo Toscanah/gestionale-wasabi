@@ -7,14 +7,16 @@ import { z } from "zod";
 import handleRequest from "../util/handleRequest";
 import { RiceSchema } from "@/prisma/generated/zod";
 import { NoContentSchema } from "../../models";
+import getRiceBatches from "../../sql/rice/getRiceBatches";
 
 export const riceSchemas = {
   getRemainingRice: NoContentSchema,
   getTotalRice: NoContentSchema,
   updateRice: z.object({
-    rice: RiceSchema.optional()
+    rice: RiceSchema.optional(),
   }),
   resetRice: NoContentSchema,
+  getRiceBatches: NoContentSchema,
 };
 
 const POST_ACTIONS = new Map([
@@ -25,6 +27,7 @@ const POST_ACTIONS = new Map([
 const GET_ACTIONS = new Map([
   ["getRemainingRice", { func: getRemainingRice, schema: riceSchemas.getRemainingRice }],
   ["getTotalRice", { func: getTotalRice, schema: riceSchemas.getTotalRice }],
+  ["getRiceBatches", { func: getRiceBatches, schema: riceSchemas.getRiceBatches }],
 ]);
 
 export async function POST(request: NextRequest) {

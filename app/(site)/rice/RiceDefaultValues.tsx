@@ -7,10 +7,17 @@ import { Plus, Trash, X } from "@phosphor-icons/react";
 import { RiceDefault } from "../types/RiceDefault";
 import { Separator } from "@/components/ui/separator";
 import { toastSuccess, toastError } from "../functions/util/toast";
+import fetchRequest from "../functions/api/fetchRequest";
+import { RiceBatch } from "@prisma/client";
 
 export default function RiceDefaultValues() {
   const [newDefault, setNewDefault] = useState<RiceDefault>();
   const [riceDefaults, setRiceDefaults] = useState<RiceDefault[]>([]);
+
+  const [riceBatches, setRiceBatches] = useState<RiceBatch[]>([]);
+
+  const fetchRiceBatches = () =>
+    fetchRequest<RiceBatch[]>("GET", "/api/rice/", "getRiceBatches").then(setRiceBatches);
 
   useEffect(() => {
     const defaults = localStorage.getItem("riceDefaults");
@@ -107,7 +114,6 @@ export default function RiceDefaultValues() {
       </div>
 
       <Separator />
-      
       <div className="w-full flex gap-2">
         <Input
           className="w-[40%]"

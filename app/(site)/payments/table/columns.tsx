@@ -29,6 +29,22 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   }),
 
   TableColumn({
+    accessorKey: "who",
+    header: "Chi",
+    cellContent: (row) => {
+      const order = row.original;
+
+      return (
+        (order.type === OrderType.TABLE
+          ? order.table_order?.table
+          : order.type === OrderType.PICKUP
+          ? order.pickup_order?.name
+          : order.home_order?.address.doorbell) || ""
+      ).toLocaleUpperCase();
+    },
+  }),
+
+  TableColumn({
     accessorKey: "quando",
     header: "Quando",
     cellContent: (row) => {

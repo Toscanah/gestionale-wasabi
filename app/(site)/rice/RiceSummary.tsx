@@ -17,7 +17,7 @@ export default function RiceSummary() {
     >
       <tbody>
         <tr className="w-full">
-          <td className="text-right text-2xl w-[60%]">Corrente</td>
+          <td className="text-right text-2xl w-[60%]">Rimanente</td>
           <td
             className={cn(
               "text-right font-bold pl-3",

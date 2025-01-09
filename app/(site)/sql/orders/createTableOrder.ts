@@ -6,7 +6,7 @@ export default async function createTableOrder(
   table: string,
   people: number,
   resName?: string
-): Promise<{ order: AnyOrder; new: boolean }> {
+): Promise<{ order: AnyOrder; isNewOrder: boolean }> {
   const existingOrder = await prisma.order.findFirst({
     where: {
       type: OrderType.TABLE,
@@ -44,7 +44,7 @@ export default async function createTableOrder(
   });
 
   if (existingOrder) {
-    return { order: existingOrder, new: false };
+    return { order: existingOrder, isNewOrder: false };
   }
 
   const newOrder = await prisma.order.create({
@@ -87,5 +87,5 @@ export default async function createTableOrder(
     },
   });
 
-  return { order: newOrder, new: true };
+  return { order: newOrder, isNewOrder: true };
 }

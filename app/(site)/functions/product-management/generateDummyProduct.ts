@@ -2,6 +2,7 @@ import { ProductInOrder } from "@/app/(site)/models";
 
 export default function generateDummyProduct(): ProductInOrder {
   return {
+    created_at: new Date(),
     additional_note: "",
     rice_quantity: 0,
     state: "IN_ORDER",

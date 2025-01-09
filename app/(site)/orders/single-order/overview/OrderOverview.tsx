@@ -13,9 +13,15 @@ import TableChange from "./TableChange";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
+  // quickPaymentOption: QuickPaymentOption;
+  // setQuickPaymentOption: Dispatch<SetStateAction<QuickPaymentOption>>;
 }
 
-export default function OrderOverview({ setAction }: OrderOverviewProps) {
+export default function OrderOverview({
+  setAction,
+}: // quickPaymentOption,
+// setQuickPaymentOption,
+OrderOverviewProps) {
   const { order } = useOrderContext();
   const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
 

@@ -147,6 +147,20 @@ model Rice {
     threshold Float
 }
 
+model RiceBatchLog {
+    id                    Int       @id @default(autoincrement())
+    created_at            DateTime  @default(now())
+    rice_default_value_id Int
+    rice_default          RiceBatch @relation(fields: [rice_default_value_id], references: [id])
+}
+
+model RiceBatch {
+    id             Int            @id @default(autoincrement())
+    amount         Float          @default(0)
+    label          String?
+    rice_batch_log RiceBatchLog[]
+}
+
 model Product {
     id          Int              @id @default(autoincrement())
     category_id Int?
@@ -173,6 +187,7 @@ model ProductInOrder {
     printed_amount  Int                    @default(0)
     state           ProductInOrderState    @default(IN_ORDER)
     additional_note String?                @default("")
+    created_at      DateTime               @default(now())
     options         OptionInProductOrder[]
     product         Product                @relation(fields: [product_id], references: [id])
     order           Order                  @relation(fields: [order_id], references: [id])

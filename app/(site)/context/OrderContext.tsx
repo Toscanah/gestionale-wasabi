@@ -45,7 +45,10 @@ export const OrderProvider = ({
 }: OrderProviderProps) => {
   const [order, setOrder] = useState<AnyOrder>({
     ...initialOrder,
-    products: [...(initialOrder.products ?? []).filter((p) => p.id !== -1), generateDummyProduct()],
+    products: [
+      ...(initialOrder.products ?? []).filter((p) => p.id !== -1),
+      generateDummyProduct(),
+    ].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()),
   });
 
   const toggleDialog = (dialogOpen: boolean) => setDialogOpen(dialogOpen);
