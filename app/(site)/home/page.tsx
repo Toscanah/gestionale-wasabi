@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Header from "./Header";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
 import { Button } from "@/components/ui/button";
 import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "../models";
@@ -93,61 +93,63 @@ export default function Home() {
 
   return (
     <WasabiProvider updateGlobalState={updateGlobalState}>
-      <WasabiSidebar />
 
-      <div className="w-full p-4 h-screen flex flex-col gap-4">
-        <div className="w-full flex justify-between items-center">
-          <div className="flex items-center gap-4 text-2xl w-[28rem]">
-            <SidebarTrigger /> Wasabi Sushi
-            {/* <Button
-              onClick={() => {
-                fetchRequest("POST", "/api/orders", "dummy");
-              }}
-              disabled
-            >
-              Test
-            </Button> */}
-          </div>
-
-          <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />
-        </div>
-
-        <Separator orientation="horizontal" />
-
-        <ResizablePanelGroup direction="horizontal">
-          {activeOrderTypes.map((type, index) => (
-            <Fragment key={type}>
-              <ResizablePanel
-                defaultSize={100 / activeOrderTypes.length}
-                id={type}
-                className="h-full flex flex-col items-center"
+      
+        <WasabiSidebar />
+        <div className="w-full overflow-x-hidden p-4 h-screen flex flex-col gap-4">
+          <div className="w-full flex justify-between items-center">
+            <div className="flex items-center gap-4 text-2xl w-[28rem]">
+              <SidebarTrigger /> Wasabi Sushi
+              {/* <Button
+                onClick={() => {
+                  fetchRequest("POST", "/api/orders", "dummy");
+                }}
+                disabled
               >
-                <div className="flex w-full justify-between items-center">
-                  <CreateOrder
-                    type={type}
-                    triggerClassName={cn(
-                      "rounded-none",
-                      index === 0 && "rounded-tl-md",
-                      index === activeOrderTypes.length - 1 && "rounded-tr-md"
+                Test
+              </Button> */}
+            </div>
+  
+            <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />
+          </div>
+  
+          <Separator orientation="horizontal" />
+  
+          <ResizablePanelGroup direction="horizontal">
+            {activeOrderTypes.map((type, index) => (
+              <Fragment key={type}>
+                <ResizablePanel
+                  defaultSize={100 / activeOrderTypes.length}
+                  id={type}
+                  className="h-full flex flex-col items-center"
+                >
+                  <div className="flex w-full justify-between items-center">
+                    <CreateOrder
+                      type={type}
+                      triggerClassName={cn(
+                        "rounded-none",
+                        index === 0 && "rounded-tl-md",
+                        index === activeOrderTypes.length - 1 && "rounded-tr-md"
+                      )}
+                    >
+                      {orders[type].length !== 0 && "(" + orders[type].length + ")"}
+                    </CreateOrder>
+                  </div>
+  
+                  <OrdersTable
+                    data={orders[type].sort(
+                      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
                     )}
-                  >
-                    {orders[type].length !== 0 && "(" + orders[type].length + ")"}
-                  </CreateOrder>
-                </div>
-
-                <OrdersTable
-                  data={orders[type].sort(
-                    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-                  )}
-                  type={type}
-                />
-              </ResizablePanel>
-
-              {index < activeOrderTypes.length - 1 && <ResizableHandle />}
-            </Fragment>
-          ))}
-        </ResizablePanelGroup>
-      </div>
+                    type={type}
+                  />
+                </ResizablePanel>
+  
+                {index < activeOrderTypes.length - 1 && <ResizableHandle />}
+              </Fragment>
+            ))}
+          </ResizablePanelGroup>
+        </div>
+     
     </WasabiProvider>
   );
 }

@@ -125,7 +125,7 @@ export default function DivideOrder({
           className="w-1/2 bg-green-500 text-black"
           disabled={rightProducts.length <= 0}
         >
-          STAMPA e INCASSA
+          INCASSA 收钱
         </Button>
       </div>
     </div>

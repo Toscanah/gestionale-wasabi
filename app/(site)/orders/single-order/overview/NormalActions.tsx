@@ -103,7 +103,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
           onClick={() => setAction("payPart")}
           disabled={!canSplit(order.products.filter((product) => product.id !== -1))}
         >
-          Dividi
+          Dividi 分单
         </Button>
 
         <Button
@@ -117,7 +117,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
       <div className="flex gap-6">
         <Button className="w-full text-3xl h-12" disabled={!hasProducts} onClick={handlePrint}>
-          Stampa
+          Stampa 打印
         </Button>
 
         <Button className="w-full text-3xl h-12" disabled={!hasProducts} onClick={handleRePrint}>
@@ -130,7 +130,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
         onClick={handleFullPayment}
         disabled={!(order.total > 0)} //
       >
-        INCASSA
+        INCASSA 收钱
       </Button>
     </>
   );
