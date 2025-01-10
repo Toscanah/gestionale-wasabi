@@ -24,6 +24,7 @@ interface TableProps<T> {
   cellClassName?: (index: number) => string;
   CustomCell?: ({ cell, className }: CustomeCellProps<T>) => JSX.Element;
   onRowClick?: (original: T) => void;
+  double?: boolean;
   stickyRowIndex?: number;
 }
 
@@ -36,6 +37,7 @@ export default function Table<T>({
   CustomCell,
   onRowClick,
   stickyRowIndex,
+  double = false,
 }: TableProps<T>) {
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +79,12 @@ export default function Table<T>({
 
                 return (
                   <TableRow
-                    onClick={() => (onRowClick ? onRowClick(row.original) : undefined)}
+                    onClick={() =>
+                      onRowClick && double == false ? onRowClick(row.original) : undefined
+                    }
+                    onDoubleClick={() =>
+                      onRowClick && double == true ? onRowClick(row.original) : undefined
+                    }
                     key={row.id}
                     className={cn(
                       "h-8 max-h-8 transition",
