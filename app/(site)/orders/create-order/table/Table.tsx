@@ -67,8 +67,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
       trigger={
         <div className="w-full pr-4 pb-4">
           <Button className="w-full text-3xl h-24 rounded-none">
-            <Plus className="mr-2 h-5 w-5" /> Ordine al tavolo{" "}
-            {children}
+            <Plus className="mr-2 h-5 w-5" /> Ordine al tavolo {children}
           </Button>
         </div>
       }
@@ -99,10 +98,10 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                 id="table"
                 className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
                 ref={(tableRef) => {
+                  // if (tableRef) {
+                  //   tableRef.value = "";
+                  // }
                   addRefs(tableRef);
-                  if (tableRef) {
-                    tableRef.value = "";
-                  }
                 }}
                 value={table}
                 onChange={(e) => setTable(e.target.value)}
@@ -120,11 +119,10 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                 id="ppl"
                 className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
                 ref={(pplRef) => {
+                  // if (pplRef) {
+                  //   pplRef.value = "";
+                  // }
                   addRefs(pplRef);
-
-                  if (pplRef) {
-                    pplRef.value = "";
-                  }
                 }}
                 value={people}
                 onChange={(e) => setPeople(Number(e.target.value))}

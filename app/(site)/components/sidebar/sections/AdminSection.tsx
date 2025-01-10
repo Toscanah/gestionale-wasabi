@@ -14,12 +14,12 @@ import Link from "next/link";
 export default function AdminSection() {
   const adminItems: { label: string; path: string }[] = [
     {
-      label: "Prodotti",
-      path: "/backend/products",
-    },
-    {
       label: "Clienti",
       path: "/backend/customers",
+    },
+    {
+      label: "Prodotti",
+      path: "/backend/products",
     },
     {
       label: "Categorie",
