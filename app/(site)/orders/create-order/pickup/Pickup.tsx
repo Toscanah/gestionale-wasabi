@@ -68,11 +68,9 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
         </div>
       }
       onOpenChange={() => {
-        if (open) {
           setName("");
           setPhone("");
           setWhen("immediate");
-        }
 
         setOpen(!open);
       }}
@@ -98,6 +96,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
                 // }
               }}
               value={name}
+              defaultValue={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={handleKeyDown}
             />
@@ -168,6 +167,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
                 // }
               }}
               value={phone}
+              defaultValue={phone}
               onChange={(e) => setPhone(e.target.value)}
               onKeyDown={handleKeyDown}
             />

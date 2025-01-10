@@ -1,18 +1,14 @@
 import { ProductInOrder } from "@/app/(site)/models";
-import getTable from "@/app/(site)/functions/util/getTable";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import Table from "@/app/(site)/components/table/Table";
-import getColumns from "./getColumns";
-import { OrderType } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
 import { PayingAction } from "../single-order/OrderTable";
-import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import { useOrderContext } from "../../context/OrderContext";
-import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
+import DivideTable from "./DivideTable";
+import shiftProductsInDivideOrder from "../../functions/order-management/shiftProductsInDivideOrder";
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
@@ -31,42 +27,20 @@ export default function DivideOrder({
     propProducts || order.products
   );
   const [rightProducts, setRightProducts] = useState<ProductInOrder[]>([]);
+  const [productsToPay, setProductsToPay] = useState<ProductInOrder[]>([]);
 
-  const columns = getColumns(order.type as OrderType);
-  const leftTable = getTable({ data: leftProducts, columns });
-  const rightTable = getTable({ data: rightProducts, columns });
+  const handlePayClick = async (products: ProductInOrder[]) => {
+    const partialOrder = {
+      ...order,
+      products,
+      total: calculateOrderTotal({ ...order, products }),
+    };
 
-  const handleRowClick = (
-    product: ProductInOrder,
-    source: ProductInOrder[],
-    setSource: Dispatch<SetStateAction<ProductInOrder[]>>,
-    target: ProductInOrder[],
-    setTarget: Dispatch<SetStateAction<ProductInOrder[]>>
-  ) => {
-    const sourceCopy = source.map((p) => ({ ...p }));
-    const targetCopy = target.map((p) => ({ ...p }));
+    setProductsToPay(products);
+    setPayingAction("payPart");
+    setGoPay(true);
 
-    const sourceProduct = sourceCopy.find((p) => p.id === product.id);
-    if (sourceProduct) {
-      if (sourceProduct.quantity > 1) {
-        sourceProduct.quantity -= 1;
-      } else {
-        const index = sourceCopy.findIndex((p) => p.id === product.id);
-        sourceCopy.splice(index, 1);
-      }
-      sourceProduct.total = sourceProduct.quantity * getProductPrice(sourceProduct, order.type); // Adjust total for source
-    }
-
-    const targetProduct = targetCopy.find((p) => p.id === product.id);
-    if (targetProduct) {
-      targetProduct.quantity += 1;
-      targetProduct.total = targetProduct.quantity * getProductPrice(targetProduct, order.type); // Adjust total for target
-    } else {
-      targetCopy.push({ ...product, quantity: 1, total: getProductPrice(product, order.type) }); // Assuming the price is available in the product object
-    }
-
-    setSource(sourceCopy);
-    setTarget(targetCopy);
+    await print(() => OrderReceipt(partialOrder, "none", false, true));
   };
 
   const handleOrderPaid = () => {
@@ -89,43 +63,42 @@ export default function DivideOrder({
   return !goPay ? (
     <div className="w-full h-full flex flex-col gap-8">
       <div className="w-full h-full flex gap-8">
-        <Table<ProductInOrder>
-          tableClassName="max-w-[50%] overflow-x-scroll select-none max-h-full"
-          table={leftTable}
+        <DivideTable
+          onPayClick={handlePayClick}
+          orderType={order.type}
+          products={leftProducts}
           onRowClick={(product) =>
-            handleRowClick(product, leftProducts, setLeftProducts, rightProducts, setRightProducts)
+            shiftProductsInDivideOrder(
+              product,
+              leftProducts,
+              setLeftProducts,
+              rightProducts,
+              setRightProducts,
+              order.type
+            )
           }
         />
-        <Table<ProductInOrder>
-          tableClassName="max-w-[50%] overflow-x-scroll select-none max-h-full"
-          table={rightTable}
+
+        <DivideTable
+          onPayClick={handlePayClick}
+          orderType={order.type}
+          products={rightProducts}
           onRowClick={(product) =>
-            handleRowClick(product, rightProducts, setRightProducts, leftProducts, setLeftProducts)
+            shiftProductsInDivideOrder(
+              product,
+              rightProducts,
+              setRightProducts,
+              leftProducts,
+              setLeftProducts,
+              order.type
+            )
           }
         />
       </div>
 
       <div className="flex gap-8 *:h-14 *:text-xl">
-        <Button onClick={() => setPayingAction("none")} className="w-1/2">
+        <Button onClick={() => setPayingAction("none")} className="w-full">
           Indietro
-        </Button>
-        <Button
-          onClick={async () => {
-            const partialOrder = {
-              ...order,
-              products: rightProducts,
-              total: calculateOrderTotal({ ...order, products: rightProducts }),
-            };
-
-            setPayingAction("payPart");
-            setGoPay(true);
-
-            await print(() => OrderReceipt(partialOrder, "none", false, true));
-          }}
-          className="w-1/2 bg-green-500 text-black"
-          disabled={rightProducts.length <= 0}
-        >
-          INCASSA 收钱
         </Button>
       </div>
     </div>
@@ -134,8 +107,8 @@ export default function DivideOrder({
       type="partial"
       partialOrder={{
         ...order,
-        products: rightProducts,
-        total: calculateOrderTotal({ ...order, products: rightProducts }),
+        products: productsToPay,
+        total: calculateOrderTotal({ ...order, products: productsToPay }),
       }}
       handleBackButton={() => setGoPay(false)}
       onOrderPaid={handleOrderPaid}

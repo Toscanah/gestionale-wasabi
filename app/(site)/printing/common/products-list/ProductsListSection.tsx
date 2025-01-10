@@ -4,6 +4,42 @@ import aggregateProducts from "../../../functions/product-management/aggregatePr
 import React from "react";
 import CustomerProducts from "./CustomerProducts";
 import KitchenProducts from "./KitchenProducts";
+import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
+
+export type GroupedProductsByOptions = Record<string, ProductInOrder[]>;
+
+function groupProductsByOptions(products: ProductInOrder[]): GroupedProductsByOptions {
+  const groupedProducts: Record<string, ProductInOrder[]> = {};
+
+  products.forEach((product) => {
+    const optionsKey =
+      product.options.length === 0
+        ? "no_options"
+        : joinItemsWithComma(product, "options", { sort: true });
+
+    if (!groupedProducts[optionsKey]) {
+      groupedProducts[optionsKey] = [];
+    }
+
+    const existingProductIndex = groupedProducts[optionsKey].findIndex(
+      (item) => item.product.code === product.product.code
+    );
+
+    if (existingProductIndex !== -1) {
+      groupedProducts[optionsKey][existingProductIndex].quantity += product.quantity;
+    } else {
+      groupedProducts[optionsKey].push({
+        ...product,
+        options: product.options.map((option) => ({
+          ...option,
+          option_name: option.option.option_name.slice(0, 6),
+        })),
+      });
+    }
+  });
+
+  return groupedProducts;
+}
 
 export default function ProductsListSection(
   products: ProductInOrder[],
@@ -25,7 +61,14 @@ export default function ProductsListSection(
     orderType
   );
 
+  const groupedProducts = groupProductsByOptions(aggregatedProducts);
+
   return recipient == "customer"
-    ? CustomerProducts({ aggregatedProducts, discount, orderType })
-    : KitchenProducts({ aggregatedProducts });
+    ? CustomerProducts({
+        groupedProducts,
+        discount,
+        orderType,
+        originalProducts: aggregatedProducts,
+      })
+    : KitchenProducts({ groupedProducts });
 }

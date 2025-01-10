@@ -72,11 +72,9 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
         </div>
       }
       onOpenChange={() => {
-        if (open) {
-          setTable("");
-          setPeople(undefined);
-          setResName("");
-        }
+        setTable("");
+        setPeople(undefined);
+        setResName("");
 
         setOpen(!open);
       }}
@@ -104,6 +102,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                   addRefs(tableRef);
                 }}
                 value={table}
+                defaultValue={table}
                 onChange={(e) => setTable(e.target.value)}
                 onKeyDown={handleKeyDown}
               />
@@ -125,6 +124,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                   addRefs(pplRef);
                 }}
                 value={people}
+                defaultValue={people}
                 onChange={(e) => setPeople(Number(e.target.value))}
                 onKeyDown={handleKeyDown}
               />

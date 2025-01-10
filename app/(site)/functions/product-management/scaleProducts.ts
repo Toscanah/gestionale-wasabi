@@ -43,7 +43,7 @@ export default function scaleProducts({
     })
     .filter(Boolean) as ProductInOrder[];
 
-  const updatedTotal = calculateOrderTotal({ products: updatedProducts, type: orderType } as AnyOrder);
+  const updatedTotal = calculateOrderTotal({ products: updatedProducts, type: orderType });
 
   return { updatedProducts, updatedTotal };
 }

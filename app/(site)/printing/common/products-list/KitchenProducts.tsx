@@ -3,51 +3,21 @@ import padReceiptText from "@/app/(site)/functions/formatting-parsing/printing/p
 import getReceiptSize from "@/app/(site)/functions/formatting-parsing/printing/getReceiptSize";
 import { Fragment } from "react";
 import { Line, Text } from "react-thermal-printer";
-import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
 import { uniqueId } from "lodash";
 import splitOptionsInLines from "@/app/(site)/functions/formatting-parsing/printing/splitOptionsInLines";
+import { GroupedProductsByOptions } from "./ProductsListSection";
 
 export interface ProductLineProps {
   product: ProductInOrder;
 }
 
 interface KitchenProductsProps {
-  aggregatedProducts: ProductInOrder[];
+  groupedProducts: GroupedProductsByOptions;
 }
 
-export default function KitchenProducts({ aggregatedProducts }: KitchenProductsProps) {
-  const groupedProducts: { [key: string]: ProductInOrder[] } = {};
+export default function KitchenProducts({ groupedProducts }: KitchenProductsProps) {
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
-
-  aggregatedProducts.forEach((product) => {
-    const optionsKey =
-      product.options.length === 0
-        ? "no_options"
-        : joinItemsWithComma(product, "options", { sort: true });
-
-    if (!groupedProducts[optionsKey]) {
-      groupedProducts[optionsKey] = [];
-    }
-
-    const existingProductIndex = groupedProducts[optionsKey].findIndex(
-      (item) => item.product.code === product.product.code
-    );
-
-    if (existingProductIndex !== -1) {
-      groupedProducts[optionsKey][existingProductIndex].quantity += product.quantity;
-    } else {
-      groupedProducts[optionsKey].push({
-        ...product,
-        options: product.options.map((option) => ({
-          ...option,
-          option_name: option.option.option_name.slice(0, 6),
-        })),
-      });
-    }
-  });
-  
-  console.log(aggregatedProducts);
 
   const ProductLine = ({ product }: ProductLineProps) => (
     <Fragment key={uniqueId()}>

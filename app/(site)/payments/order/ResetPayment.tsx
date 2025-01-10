@@ -5,7 +5,7 @@ export default function ResetPayment() {
   const { resetPayment } = useOrderPaymentContext();
 
   return (
-    <Button onClick={resetPayment} variant={"destructive"} className="text-lg w-[10%] h-16">
+    <Button onClick={resetPayment} variant={"destructive"} className="text-2xl w-[30%] h-16">
       Annulla
     </Button>
   );

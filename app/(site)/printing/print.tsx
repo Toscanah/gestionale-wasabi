@@ -48,12 +48,8 @@ export default async function print(...contents: (() => ReactNode)[]) {
 
   const data: Uint8Array = await render(receipt);
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
-  // Filter out invalid characters
-  const sanitizedData = Array.from(data)
-    .map((byte) => (byte >= 32 && byte <= 126 ? byte : 63)) // Replace invalid bytes with '?'
-    .reduce((acc, byte) => acc + String.fromCharCode(byte), "");
 
-  console.log(sanitizedData);
+  console.log(new TextDecoder().decode(data));
 
   if (ports.length == 0) return false;
 
