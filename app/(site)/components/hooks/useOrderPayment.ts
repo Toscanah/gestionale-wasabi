@@ -42,7 +42,7 @@ export default function useOrderPayment(
     }));
 
   const resetPaymentValues = () =>
-    setPayment((prevPayment) => ({
+    setPayment({
       paymentAmounts: {
         [PaymentType.CASH]: undefined,
         [PaymentType.CARD]: undefined,
@@ -51,7 +51,7 @@ export default function useOrderPayment(
       },
       paidAmount: 0,
       remainingAmount: applyDiscount(order.total, order.discount) ?? 0,
-    }));
+    });
 
   const payOrder = () => {
     const productsToPay = order.products;

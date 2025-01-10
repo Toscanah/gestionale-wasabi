@@ -10,6 +10,7 @@ import PaymentMethodsSelection from "./sections/PaymentMethodsSelection";
 import PaymentConfirmationAndTools from "./sections/PaymentConfirmationAndTools";
 import { useOrderContext } from "../../context/OrderContext";
 import { useEffect } from "react";
+import ResetPayment from "./ResetPayment";
 
 export type PaymentMethod = {
   type: PaymentType;

@@ -172,7 +172,7 @@ export default function Overview({
                 disabled={!address.active}
                 onClick={() => setSelectedOption(address.id.toString())}
               >
-                <span className="truncate flex gap-2 items-center font-bold">
+                <span className="truncate flex gap-2 items-center font-bold uppercase">
                   {!address.active && <Badge variant={"destructive"}>Non attivo</Badge>}
                   {address.street.charAt(0).toUpperCase() + address.street.substring(1)}{" "}
                   {address.civic}

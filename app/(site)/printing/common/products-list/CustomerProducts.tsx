@@ -141,6 +141,7 @@ import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinIt
 import { ProductLineProps } from "./KitchenProducts";
 import { uniqueId } from "lodash";
 import splitOptionsInLines from "@/app/(site)/functions/formatting-parsing/printing/splitOptionsInLines";
+import getReceiptSize from "@/app/(site)/functions/formatting-parsing/printing/getReceiptSize";
 
 const TOTAL_ROW_WIDTH = 48;
 
@@ -223,6 +224,8 @@ export default function CustomerProducts({
   aggregatedProducts,
   orderType,
 }: CustomerProductsProps) {
+  const bigSize = getReceiptSize(2, 2);
+
   const ProductLine = ({ product }: ProductLineProps) => {
     return (
       <Fragment key={uniqueId()}>
@@ -267,11 +270,12 @@ export default function CustomerProducts({
           {ProductLine({ product })}
 
           {product.additional_note !== "" && (
-            <Text>
-              {padReceiptText(
-                product.additional_note ?? "",
-                TOTAL_ROW_WIDTH - OPTIONS_START_PADDING
-              ).padStart(OPTIONS_START_PADDING, " ")}
+            <Text size={bigSize}>
+              {" ".repeat(OPTIONS_START_PADDING) +
+                padReceiptText(
+                  product.additional_note ?? "",
+                  TOTAL_ROW_WIDTH - OPTIONS_START_PADDING
+                )}
             </Text>
           )}
 

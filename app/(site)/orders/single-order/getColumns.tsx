@@ -12,6 +12,7 @@ import { debounce } from "lodash";
 import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import { useOrderContext } from "../../context/OrderContext";
 import { useCallback, useEffect, useRef } from "react";
+import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
 
 export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,
@@ -166,10 +167,13 @@ export default function getColumns(
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
 
         return (
-          <div className="space-y-2">
+          <div className="space-y-2 h-24 overflow-y-auto">
             {avalOptions &&
               avalOptions.map((option) => (
-                <div key={option.option.id} className="flex items-center space-x-2">
+                <div
+                  key={option.option.id}
+                  className="flex items-center space-x-2 max-h-20 overflow-y-visible"
+                >
                   <Checkbox
                     defaultChecked={selectedOptions.includes(option.option.id)}
                     onCheckedChange={(e) => {
@@ -182,7 +186,7 @@ export default function getColumns(
                     htmlFor={`option-${option.option.id}-${row.index}`}
                     className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    {option.option.option_name}
+                    {capitalizeFirstLetter(option.option.option_name)}
                   </Label>
                 </div>
               ))}

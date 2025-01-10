@@ -113,16 +113,16 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
       );
       break;
 
-    case OrderType.TABLE:
-      columns.push(
-        TableColumn<TableOrder>({
-          accessorKey: "table_order.res_name",
-          header: "Nome",
-          cellContent: (row) =>
-            row.original.table_order?.res_name ? row.original.table_order?.res_name : "",
-        })
-      );
-      break;
+    // case OrderType.TABLE:
+    //   columns.push(
+    //     TableColumn<TableOrder>({
+    //       accessorKey: "table_order.res_name",
+    //       header: "Nome",
+    //       cellContent: (row) =>
+    //         row.original.table_order?.res_name ? row.original.table_order?.res_name : "",
+    //     })
+    //   );
+    //   break;
   }
 
   columns.push(

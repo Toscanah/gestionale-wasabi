@@ -17,6 +17,8 @@ import {
 } from "../../models";
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import handleRequest from "../util/handleRequest";
+import deleteCustomeById from "../../sql/customers/deleteCustomerById";
+import deleteCustomerById from "../../sql/customers/deleteCustomerById";
 
 export const customerSchemas = {
   getCustomerByPhone: z.object({ phone: z.string() }),
@@ -37,6 +39,9 @@ export const customerSchemas = {
     addresses: z.array(AddressSchema),
     customerId: z.number(),
   }),
+  deleteCustomerById: z.object({
+    id: z.number(),
+  }),
 };
 
 const POST_ACTIONS = new Map([
@@ -54,6 +59,7 @@ const POST_ACTIONS = new Map([
     "updateAddressesOfCustomer",
     { func: updateAddressesOfCustomer, schema: customerSchemas.updateAddressesOfCustomer },
   ],
+  ["deleteCustomerById", { func: deleteCustomerById, schema: customerSchemas.deleteCustomerById }],
 ]);
 
 const GET_ACTIONS = new Map([

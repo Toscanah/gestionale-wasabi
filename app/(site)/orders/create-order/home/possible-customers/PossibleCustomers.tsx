@@ -7,10 +7,18 @@ import { Dispatch, SetStateAction } from "react";
 interface PossibleCustomersProps {
   possibleCustomers: CustomerWithDetails[];
   setPhone: Dispatch<SetStateAction<string>>;
+  setPossibleCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>;
 }
 
-export default function PossibleCustomers({ possibleCustomers, setPhone }: PossibleCustomersProps) {
-  const table = getTable<CustomerWithDetails>({ data: possibleCustomers, columns: columns() });
+export default function PossibleCustomers({
+  possibleCustomers,
+  setPhone,
+  setPossibleCustomers,
+}: PossibleCustomersProps) {
+  const table = getTable<CustomerWithDetails>({
+    data: possibleCustomers,
+    columns: columns(setPossibleCustomers),
+  });
 
   return (
     <Table

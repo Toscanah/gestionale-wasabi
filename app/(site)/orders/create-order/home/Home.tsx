@@ -38,6 +38,7 @@ export default function Home({ setOrder, initialPhone, initialDoorbell }: HomePr
     setPhone,
     setDoorbellSearch,
     possibleCustomers,
+    setPossibleCustomers,
   } = useFetchCustomer(setSelectedAddress, initialPhone, initialDoorbell);
 
   const createHomeOrder = () => {
@@ -143,7 +144,11 @@ export default function Home({ setOrder, initialPhone, initialDoorbell }: HomePr
         ) : (
           doorbellSearch.length > 0 &&
           possibleCustomers.length > 0 && (
-            <PossibleCustomers possibleCustomers={possibleCustomers} setPhone={setPhone} />
+            <PossibleCustomers
+              possibleCustomers={possibleCustomers}
+              setPhone={setPhone}
+              setPossibleCustomers={setPossibleCustomers}
+            />
           )
         )}
       </div>

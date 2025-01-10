@@ -26,15 +26,37 @@ export default function OrderInfoSection(
               {/* {!order.home_order?.notes && <Br />} */}
             </>
           )}
-          {order.home_order?.notes && (
-            <>
-              <Text bold inline size={smallSize}>
-                Note ordine:{" "}
-              </Text>
-              <Text size={smallSize}>{sanitazeReceiptText(order.home_order.notes)}</Text>
-            </>
-          )}
-          <Line />
+          {order.home_order?.notes &&
+            (() => {
+              const sanitizedNotes = sanitazeReceiptText(
+                order.home_order.notes
+              ).toLocaleUpperCase();
+              const quickPaymentText =
+                quickPaymentOption === "cash"
+                  ? "CONTANTI"
+                  : quickPaymentOption === "already_paid"
+                  ? "GIA' PAGATO"
+                  : quickPaymentOption === "card"
+                  ? "CARTA"
+                  : "";
+
+              // Remove the quick payment text from the notes
+              const filteredNotes = sanitizedNotes
+                .replace(quickPaymentText, "")
+                .trim()
+                .replace(/,?$/, ""); // Remove any trailing commas or spaces
+
+              return filteredNotes ? (
+                <>
+                  <Text bold inline size={smallSize}>
+                    Note ordine:{" "}
+                  </Text>
+                  <Text size={smallSize}>{filteredNotes}</Text>
+                  <Line />
+                </>
+              ) : null;
+            })()}
+          {/* {!order.home_order?.notes && quickPaymentOption == "none"} */}
         </>
       )}
 

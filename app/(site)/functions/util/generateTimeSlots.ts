@@ -24,7 +24,7 @@ export default function generateTimeSlots(
       times.push(timeString);
     }
 
-    currentSlotMinute += 15;
+    currentSlotMinute += 10;
     if (currentSlotMinute >= 60) {
       currentSlotMinute -= 60;
       currentSlotHour += 1;

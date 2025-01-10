@@ -51,7 +51,7 @@ export default function useFetchCustomer(
     debounce((doorbell: string) => {
       fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "getCustomersByDoorbell", {
         doorbell,
-      }).then((customers) => setPossibleCustomers(customers));
+      }).then(setPossibleCustomers);
     }, 0),
     [] // Dependencies of debounce should remain empty to avoid recreation
   );
@@ -82,5 +82,6 @@ export default function useFetchCustomer(
     setAddresses,
     setPhone,
     setDoorbellSearch,
+    setPossibleCustomers
   };
 }

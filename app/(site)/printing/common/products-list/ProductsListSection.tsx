@@ -12,12 +12,16 @@ export default function ProductsListSection(
   recipient: "kitchen" | "customer"
 ) {
   const aggregatedProducts = aggregateProducts(
-    products.filter(
-      (product) =>
-        product.id !== -1 &&
-        product.state !== "DELETED_COOKED" &&
-        product.state !== "DELETED_UNCOOKED"
-    ),
+    products
+      .filter(
+        (product) =>
+          product.id !== -1 &&
+          product.state !== "DELETED_COOKED" &&
+          product.state !== "DELETED_UNCOOKED"
+      )
+      .sort((a, b) =>
+        a.product.code.toLocaleUpperCase().localeCompare(b.product.code.toLocaleUpperCase())
+      ),
     orderType
   );
 
