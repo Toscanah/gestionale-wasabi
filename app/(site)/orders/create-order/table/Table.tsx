@@ -122,7 +122,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                 ref={(pplRef) => {
                   addRefs(pplRef);
 
-                  if (pplRef) {c
+                  if (pplRef) {
                     pplRef.value = "";
                   }
                 }}
