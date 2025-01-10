@@ -63,8 +63,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
       trigger={
         <div className="w-full pl-4 pb-4">
           <Button className="w-full text-3xl h-24 rounded-none">
-            <Plus className="mr-2 h-5 w-5" /> Ordine per asporto{" "}
-            {children}
+            <Plus className="mr-2 h-5 w-5" /> Ordine per asporto {children}
           </Button>
         </div>
       }
@@ -94,9 +93,9 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
               ref={(ref) => {
                 addRefs(ref);
-                if (ref) {
-                  ref.value = "";
-                }
+                // if (ref) {
+                //   ref.value = "";
+                // }
               }}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -111,9 +110,9 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
             <WhenSelector
               ref={(ref) => {
                 addRefs(ref);
-                if (ref) {
-                  ref.value = "immediate";
-                }
+                // if (ref) {
+                //   ref.value = "immediate";
+                // }
               }}
               value={when}
               onValueChange={(value) => setWhen(value)}
@@ -164,9 +163,9 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
               ref={(ref) => {
                 addRefs(ref);
-                if (ref) {
-                  ref.value = "";
-                }
+                // if (ref) {
+                //   ref.value = "";
+                // }
               }}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
