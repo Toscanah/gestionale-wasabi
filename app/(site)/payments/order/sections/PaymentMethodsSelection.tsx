@@ -22,6 +22,7 @@ export default function PaymentMethodsSelection() {
     paymentCalculations,
     setPaymentCalculations,
     typedAmount,
+    setActiveTool,
   } = useOrderPaymentContext();
 
   const handlePaymentClick = (type: PaymentType) => {
@@ -31,6 +32,10 @@ export default function PaymentMethodsSelection() {
       handlePaymentChange(type, totalAmount);
       setTypedAmount(roundToTwo(payment.remainingAmount - totalAmount));
       setPaymentCalculations([{ amount: 0, quantity: 0, total: 0 }]);
+
+      if (totalAmount > 0) {
+        setActiveTool("manual");
+      }
     } else {
       handlePaymentChange(type, Number(typedAmount));
       setTypedAmount(roundToTwo(payment.remainingAmount - Number(typedAmount)));

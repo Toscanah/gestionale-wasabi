@@ -8,7 +8,7 @@ import {
 } from "@/app/(site)/context/OrderPaymentContext";
 
 export default function CalculationTable() {
-  const { setPaymentCalculations, paymentCalculations } = useOrderPaymentContext();
+  const { setPaymentCalculations, paymentCalculations, setActiveTool } = useOrderPaymentContext();
 
   const handleFieldChange = (key: keyof PaymentCalculation, value: number, rowIndex: number) =>
     setPaymentCalculations((prevCalcs) => {
@@ -23,6 +23,7 @@ export default function CalculationTable() {
       updatedCalcs[rowIndex] = row;
       if (row.amount > 0 && row.quantity > 0 && rowIndex === updatedCalcs.length - 1) {
         updatedCalcs.push({ amount: 0, quantity: 0, total: 0 });
+        // setActiveTool("manual");
       }
 
       return updatedCalcs;

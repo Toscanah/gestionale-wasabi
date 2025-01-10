@@ -18,22 +18,22 @@ export default function getColumns(
 
   return [
     TableColumn({
-      accessorKey: "amount",
-      header: "Ammontare",
+      accessorKey: "quantity",
+      header: "Quantità",
       cellContent: (row) => {
         const focussableInput = { rowIndex: row.index, colIndex: 0 };
 
         return (
           <Input
             type="number"
-            autoFocus={row.original.total == 0}
-            defaultValue={row.original.amount}
             onClick={() => setFocusedInput(focussableInput)}
             ref={(ref) => addInputRef(ref, focussableInput)}
+            defaultValue={row.original.quantity}
+            autoFocus={row.original.amount == 0}
             onKeyDown={(e: any) => {
               handleKeyNavigation(e, focussableInput);
               if (e.key === "Enter") {
-                handleFieldChange("amount", parseFloat(e.target.value), row.index);
+                handleFieldChange("quantity", parseFloat(e.target.value), row.index);
               }
             }}
           />
@@ -42,21 +42,21 @@ export default function getColumns(
     }),
 
     TableColumn({
-      accessorKey: "quantity",
-      header: "Quantità",
+      accessorKey: "amount",
+      header: "Ammontare",
       cellContent: (row) => {
         const focussableInput = { rowIndex: row.index, colIndex: 1 };
 
         return (
           <Input
             type="number"
+            defaultValue={row.original.amount}
             onClick={() => setFocusedInput(focussableInput)}
             ref={(ref) => addInputRef(ref, focussableInput)}
-            defaultValue={row.original.quantity}
             onKeyDown={(e: any) => {
               handleKeyNavigation(e, focussableInput);
               if (e.key === "Enter") {
-                handleFieldChange("quantity", parseFloat(e.target.value), row.index);
+                handleFieldChange("amount", parseFloat(e.target.value), row.index);
               }
             }}
           />

@@ -17,10 +17,10 @@ export default function Tools() {
     <div className="w-full h-full flex flex-col justify-between items-center">
       {activeTool === "manual" ? <ManualInput /> : <CalculationTable />}
 
-      <Button variant="outline" className="h-16 w-16 p-0" onClick={toggleTool}>
-        {/* {toggleLabel} */}
+      <Button variant="outline" className="h-16 w-full text-2xl" onClick={toggleTool}>
+        {toggleLabel}
         {/* <ArrowsLeftRight size={48}/> */}
-        {activeTool == "manual" ? <ToggleRight size={48}/> : <ToggleLeft size={48}/>}
+        {/* {activeTool == "manual" ? <ToggleRight size={48}/> : <ToggleLeft size={48}/>} */}
         {/* <ArrowsClockwise size={32} /> */}
       </Button>
     </div>
