@@ -43,9 +43,14 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
 
     const content = { table, people: people || 1, resName };
 
-    fetchRequest<{ order: TableOrder; isNewOrder: boolean }>("POST", "/api/orders/", "createTableOrder", {
-      ...content,
-    }).then((tableOrder) => {
+    fetchRequest<{ order: TableOrder; isNewOrder: boolean }>(
+      "POST",
+      "/api/orders/",
+      "createTableOrder",
+      {
+        ...content,
+      }
+    ).then((tableOrder) => {
       if (tableOrder.isNewOrder) {
         toastSuccess("Ordine creato con successo");
         updateGlobalState(tableOrder.order, "add");
@@ -73,7 +78,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
           setPeople(undefined);
           setResName("");
         }
-        
+
         setOpen(!open);
       }}
       contentClassName={cn(
@@ -93,7 +98,12 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                 type="text"
                 id="table"
                 className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-                ref={(tableRef) => addRefs(tableRef)}
+                ref={(tableRef) => {
+                  addRefs(tableRef);
+                  if (tableRef) {
+                    tableRef.value = "";
+                  }
+                }}
                 value={table}
                 onChange={(e) => setTable(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -109,7 +119,13 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                 type="number"
                 id="ppl"
                 className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-                ref={(pplRef) => addRefs(pplRef)}
+                ref={(pplRef) => {
+                  addRefs(pplRef);
+
+                  if (pplRef) {c
+                    pplRef.value = "";
+                  }
+                }}
                 value={people}
                 onChange={(e) => setPeople(Number(e.target.value))}
                 onKeyDown={handleKeyDown}

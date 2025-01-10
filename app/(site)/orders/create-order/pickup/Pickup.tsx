@@ -92,7 +92,12 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               type="text"
               id="name"
               className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-              ref={(ref) => addRefs(ref)}
+              ref={(ref) => {
+                addRefs(ref);
+                if (ref) {
+                  ref.value = "";
+                }
+              }}
               value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -104,7 +109,12 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               Quando?
             </Label>
             <WhenSelector
-              ref={(ref) => addRefs(ref)}
+              ref={(ref) => {
+                addRefs(ref);
+                if (ref) {
+                  ref.value = "immediate";
+                }
+              }}
               value={when}
               onValueChange={(value) => setWhen(value)}
               onKeyDown={handleKeyDown}
@@ -152,7 +162,12 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               type="number"
               id="phone"
               className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-              ref={(ref) => addRefs(ref)}
+              ref={(ref) => {
+                addRefs(ref);
+                if (ref) {
+                  ref.value = "";
+                }
+              }}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               onKeyDown={handleKeyDown}
