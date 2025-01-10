@@ -9,7 +9,7 @@ export default function PaymentSection() {
         <SidebarMenuButton asChild>
           <Link href={"../../../payments/table"}>
             <Money />
-            <span >Pagamenti</span>
+            <span>Pagamenti 总单</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>

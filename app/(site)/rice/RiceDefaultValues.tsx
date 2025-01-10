@@ -114,7 +114,6 @@ export default function RiceDefaultValues() {
       </div>
 
       <Separator />
-
       <div className="w-full flex gap-2">
         <Input
           className="w-[40%]"

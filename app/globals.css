@@ -3,35 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    /* Widths in viewports */
-    --dialog-small-width: 30vw; /* Small Dialog Width */
-    --dialog-medium-width: 50vw; /* Medium Dialog Width */
-    --dialog-large-width: 97.5vw; /* Large Dialog Width */
-    --dialog-full-width: 100%; /* Full Dialog Width */
-
-    /* Heights in viewports */
-    --dialog-small-height: 30vh; /* Small Dialog Height */
-    --dialog-medium-height: 50vh; /* Medium Dialog Height */
-    --dialog-large-height: 95vh; /* Large Dialog Height */
-    --dialog-full-height: 100%; /* Full Dialog Height */
-  }
-
-  .dialog-small {
-    width: var(--dialog-small-width);
-    height: var(--dialog-small-height);
-  }
-
-  .dialog-medium {
-    width: var(--dialog-medium-width);
-    height: var(--dialog-medium-height);
-  }
-
-  .dialog-large {
-    width: var(--dialog-large-width);
-    height: var(--dialog-large-height);
-  }
-
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"] {

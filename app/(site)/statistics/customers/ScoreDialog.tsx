@@ -9,6 +9,48 @@ interface ScoreDialogProps {
   customer: CustomerWithDetails;
 }
 
+/**
+ * Calcolo del punteggio cliente - Costanti principali
+ *
+ * Questo file contiene le costanti utilizzate per calcolare il punteggio di un cliente
+ * basato su diversi fattori: frequenza degli ordini, spesa complessiva/media e recenza.
+ * Ogni costante contribuisce a modellare il comportamento del calcolo e può essere regolata
+ * per adattarsi alle esigenze aziendali. Di seguito una descrizione dettagliata.
+ *
+ * ### FREQUENZA
+ * - **FREQUENCY_WEEK_MULTIPLIER**: Peso relativo degli ordini settimanali rispetto ad altre frequenze.
+ *   Valori più alti premiano i clienti con acquisti frequenti su base settimanale.
+ * - **FREQUENCY_MONTH_MULTIPLIER**: Peso degli ordini mensili rispetto a quelli settimanali.
+ *   Ad esempio, un valore di 0.3 implica che gli ordini mensili hanno un peso del 30% rispetto ai settimanali.
+ * - **FREQUENCY_YEAR_MULTIPLIER**: Peso degli ordini annuali rispetto a quelli settimanali.
+ *   Un valore basso riduce significativamente l'impatto degli ordini poco frequenti.
+ *
+ * ### SPESA
+ * - **SPENDING_TOTAL_MULTIPLIER**: Influenza del totale speso dal cliente sul punteggio complessivo.
+ *   Un valore alto premia i clienti che hanno speso di più in assoluto.
+ * - **SPENDING_AVERAGE_MULTIPLIER**: Importanza della spesa media per ordine.
+ *   Questo valore confronta la qualità degli ordini (spesa media) rispetto alla quantità (frequenza).
+ *
+ * ### RECENZA
+ * - **RECENCY_DECAY_RATE**: Tasso di decadimento del punteggio in base all'inattività.
+ *   Indica il numero di giorni dopo i quali un cliente inattivo inizia a perdere punti.
+ *   Attualmente, il punteggio scende di 1 punto ogni 30 giorni senza ordini.
+ *
+ * ### PESI GENERALI
+ * - **WEIGHTS**: Pesi relativi dei tre fattori principali (frequenza, spesa, recenza) nel calcolo del punteggio totale.
+ *   La somma dei pesi deve essere 1.0 per un bilanciamento corretto.
+ *   - `frequency`: Influenza della frequenza degli ordini (40% attualmente).
+ *   - `spending`: Influenza della spesa complessiva/media (40% attualmente).
+ *   - `recency`: Influenza della recenza (20% attualmente).
+ *
+ * ### SCALING
+ * - **SCORE_SCALING_FACTOR**: Scala del punteggio finale per renderlo più leggibile.
+ *   Un valore di 10 moltiplica il punteggio per 10, trasformando numeri decimali in valori interi leggibili.
+ *
+ * ### Uso previsto:
+ * Queste costanti vengono utilizzate nel calcolo del punteggio cliente per determinare i clienti più
+ * preziosi per il business. Regola i valori per adattare il modello alle strategie aziendali.
+ */
 export default function ScoreDialog({ customer }: ScoreDialogProps) {
   // State for calculated scores and manual input score
   const [frequencyScore, setFrequencyScore] = useState(0);
@@ -100,9 +142,9 @@ export default function ScoreDialog({ customer }: ScoreDialogProps) {
     }
   };
 
-  // useEffect(() => {
-  //   calculateCustomerScore();
-  // }, []);
+  useEffect(() => {
+    calculateCustomerScore();
+  }, []);
 
   return suggestedScore.toFixed(2);
   // <div>

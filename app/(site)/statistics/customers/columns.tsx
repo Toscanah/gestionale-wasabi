@@ -19,7 +19,7 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
     header: "Chi",
     cellContent: (row) => {
       const { name, surname } = row.original;
-      return [name, surname].filter(Boolean).join(" ") || ""; // Graceful fallback
+      return [name, surname].filter(Boolean).join(" ") || "";
     },
   }),
 
@@ -102,10 +102,10 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
     },
   }),
 
-  TableColumn({
-    accessorKey: "score",
-    header: "Punteggio",
-  }),
+  // TableColumn({
+  //   accessorKey: "score",
+  //   header: "Punteggio",
+  // }),
 
   TableColumn({
     accessorKey: "customer_score",

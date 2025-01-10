@@ -63,7 +63,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
       trigger={
         <div className="w-full pl-4 pb-4">
           <Button className="w-full text-3xl h-24 rounded-none">
-            <Plus className="mr-2 h-5 w-5" /> Ordine per asporto
+            <Plus className="mr-2 h-5 w-5" /> Ordine per asporto{" "}
             {children}
           </Button>
         </div>
