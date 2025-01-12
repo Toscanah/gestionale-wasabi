@@ -13,6 +13,9 @@ function getRandomDate(startDate: Date, endDate: Date): Date {
 }
 
 export default async function dummy() {
+
+  return null;
+
   await deleteEverything();
 
   const oneMonthAgo = new Date();

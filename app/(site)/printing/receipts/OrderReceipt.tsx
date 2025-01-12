@@ -21,8 +21,6 @@ export default function OrderReceipt<T extends AnyOrder>(
 
   const bigSize = getReceiptSize(2, 2);
 
-  console.log(order)
-
   return (
     <>
       {HeaderSection()}

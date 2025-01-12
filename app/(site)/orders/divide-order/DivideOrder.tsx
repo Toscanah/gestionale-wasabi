@@ -30,6 +30,7 @@ export default function DivideOrder({
   const [productsToPay, setProductsToPay] = useState<ProductInOrder[]>([]);
 
   const handlePayClick = async (products: ProductInOrder[]) => {
+    console.log(products);
     const partialOrder = {
       ...order,
       products,
@@ -46,7 +47,12 @@ export default function DivideOrder({
   const handleOrderPaid = () => {
     setRightProducts([]);
 
-    const isOrderFullyPaid = leftProducts.length === 0;
+    const updatedLeftProducts = leftProducts.filter(
+      (leftProduct) => !productsToPay.some((paidProduct) => paidProduct.id === leftProduct.id)
+    );
+
+    setLeftProducts(updatedLeftProducts);
+    const isOrderFullyPaid = updatedLeftProducts.length === 0;
     setPayingAction(isOrderFullyPaid ? "paidFull" : "payPart");
 
     if (!isOrderFullyPaid) setGoPay(false);

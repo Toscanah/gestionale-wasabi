@@ -119,6 +119,8 @@ export default function CustomerProducts({
         </Text>
 
         <Text>{padReceiptText(roundToTwo(product.total), MAX_TOTAL_WIDTH, 0)}</Text>
+
+        {product.additional_note !== "" && <Text>{" ".repeat(4) + product.additional_note}</Text>}
       </Fragment>
     );
   };
@@ -169,29 +171,6 @@ export default function CustomerProducts({
 
       {TotalSection(originalProducts, discount, true)}
       <Br />
-
-      {/* {aggregatedProducts.map((product, index) => (
-        <Fragment key={product + "-" + index}>
-          {ProductLine({ product })}
-
-          {product.additional_note !== "" && (
-            <Text size={bigSize}>
-              {" ".repeat(OPTIONS_START_PADDING) +
-                padReceiptText(
-                  product.additional_note ?? "",
-                  TOTAL_ROW_WIDTH - OPTIONS_START_PADDING
-                )}
-            </Text>
-          )}
-
-          {product.options.length > 0 &&
-            splitOptionsInLines(
-              joinItemsWithComma(product, "options", { maxChar: 15 }),
-              TOTAL_ROW_WIDTH,
-              OPTIONS_START_PADDING
-            ).map((line, index) => <Text key={`option-line-${index}`}>{line}</Text>)}
-        </Fragment>
-      ))} */}
     </>
   );
 }

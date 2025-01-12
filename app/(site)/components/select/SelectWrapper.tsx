@@ -52,7 +52,13 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
       <SelectTrigger
         className={cn(className ? className : "w-full text-3xl h-16")}
         ref={ref}
-        onKeyDown={(e) => (onKeyDown ? onKeyDown(e) : e.preventDefault())}
+        onKeyDown={(e) => {
+          if (onKeyDown) {
+            onKeyDown(e);
+          } else {
+            e.preventDefault();
+          }
+        }}
       >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

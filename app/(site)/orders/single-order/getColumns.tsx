@@ -13,6 +13,7 @@ import { getProductPrice } from "../../functions/product-management/getProductPr
 import { useOrderContext } from "../../context/OrderContext";
 import { useCallback, useEffect, useRef } from "react";
 import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,
@@ -31,7 +32,7 @@ export default function getColumns(
 
   const debouncedAddNoteChange = debounce(
     (note: string, productInOrderId: number) => updateAddionalNote(note, productInOrderId),
-    1000
+    1500
   );
 
   const handleQuantityArrows = (direction: "up" | "down", rowIndex: number) => {
@@ -209,7 +210,7 @@ export default function getColumns(
         <span className="text-2xl">
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
-            : `€ ${getProductPrice(row.original, type)}`}
+            : `€ ${roundToTwo(getProductPrice(row.original, type))}`}
         </span>
       ),
     }),
@@ -219,7 +220,9 @@ export default function getColumns(
       header: "Totale",
       sortable: false,
       cellContent: (row) => (
-        <span className="text-2xl">{row.original.total == 0 ? "" : `€ ${row.original.total}`}</span>
+        <span className="text-2xl">
+          {row.original.total == 0 ? "" : `€ ${roundToTwo(row.original.total)}`}
+        </span>
       ),
     }),
   ];

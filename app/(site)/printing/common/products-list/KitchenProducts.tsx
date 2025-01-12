@@ -34,7 +34,7 @@ export default function KitchenProducts({ groupedProducts }: KitchenProductsProp
       </Text>
 
       {product.additional_note !== "" && (
-        <Text bold size={smallSize}>
+        <Text bold size={bigSize}>
           {" ".repeat(4) + product.additional_note}
         </Text>
       )}

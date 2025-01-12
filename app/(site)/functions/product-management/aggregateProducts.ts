@@ -1,28 +1,43 @@
-import { OrderType } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/models";
+import { OrderType } from "@prisma/client";
 import { getProductPrice } from "./getProductPrice";
 import joinItemsWithComma from "../formatting-parsing/joinItemsWithComma";
 
 export default function aggregateProducts(
   products: ProductInOrder[],
   orderType: OrderType
-): ProductInOrder[] {
-  const aggregated: Record<string, ProductInOrder> = {};
+): Record<string, ProductInOrder[]> {
+  const groupedProducts: Record<string, ProductInOrder[]> = {};
 
   products.forEach((product) => {
-    const optionsString = joinItemsWithComma(product, "options");
-    const key = `${product.product.code} ${product.product.desc || ""} ${optionsString}`;
+    // Create a key based on options
+    const optionsKey = product.options.length
+      ? joinItemsWithComma(product, "options", { sort: true })
+      : "no_options";
 
-    const aggregatedProduct = aggregated[key];
-
-    if (aggregatedProduct) {
-      aggregatedProduct.quantity += product.quantity;
-    } else {
-      aggregated[key] = { ...product, quantity: product.quantity };
+    if (!groupedProducts[optionsKey]) {
+      groupedProducts[optionsKey] = [];
     }
 
-    aggregated[key].total = aggregated[key].quantity * getProductPrice(product, orderType);
+    // Find if a product with the same code and no conflicting note already exists in the group
+    const existingProductIndex = groupedProducts[optionsKey].findIndex(
+      (existingProduct) =>
+        existingProduct.product.code === product.product.code &&
+        !existingProduct.additional_note && // The existing product must have no note
+        !product.additional_note // The new product must also have no note
+    );
+
+    if (existingProductIndex !== -1) {
+      // Aggregate quantities if both products have no notes
+      groupedProducts[optionsKey][existingProductIndex].quantity += product.quantity;
+      groupedProducts[optionsKey][existingProductIndex].total =
+        groupedProducts[optionsKey][existingProductIndex].quantity *
+        getProductPrice(groupedProducts[optionsKey][existingProductIndex], orderType);
+    } else {
+      // Add the product to the group as-is
+      groupedProducts[optionsKey].push({ ...product });
+    }
   });
 
-  return Object.values(aggregated);
+  return groupedProducts;
 }

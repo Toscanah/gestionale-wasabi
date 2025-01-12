@@ -1,6 +1,6 @@
 import { KeyboardEvent, useRef } from "react";
 
-export default function useFocusCycle() {
+export default function useFocusCycle(selectAtIndex?: number[]) {
   const refs = useRef<Set<HTMLElement>>(new Set());
   const currentRefIndex = useRef(0);
 
@@ -24,6 +24,13 @@ export default function useFocusCycle() {
 
     currentRefIndex.current = (currentRefIndex.current + delta + totalElements) % totalElements;
     elements[currentRefIndex.current]?.focus();
+
+    // selectAtIndex?.map((index) => {
+    //   console.log(elements[currentRefIndex.current]);
+    //   if (index === currentRefIndex.current) {
+    //     (elements[currentRefIndex.current] as HTMLInputElement)?.select();
+    //   }
+    // });
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {

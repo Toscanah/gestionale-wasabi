@@ -6,6 +6,7 @@ import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
 import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 import generateEmptyOrder from "../../functions/order-management/generateEmptyOrder";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 interface DivideTableProps {
   products: ProductInOrder[];
@@ -39,7 +40,7 @@ export default function DivideTable({
           INCASSA 收钱
         </Button>
         <span className="h-14 text-xl flex items-center justify-center border rounded-md w-[30%]">
-          TOTALE: € {calculateOrderTotal({ type: orderType, products })}
+          TOTALE: € {roundToTwo(calculateOrderTotal({ type: orderType, products }))}
         </span>
       </div>
     </div>

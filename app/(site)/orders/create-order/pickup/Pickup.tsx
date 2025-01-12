@@ -28,7 +28,7 @@ interface PickupProps {
 
 export default function Pickup({ children, setOrder, order, open, setOpen }: PickupProps) {
   const { updateGlobalState } = useWasabiContext();
-  const { handleKeyDown, addRefs } = useFocusCycle();
+  const { handleKeyDown, addRefs } = useFocusCycle([1]);
 
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
@@ -68,9 +68,9 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
         </div>
       }
       onOpenChange={() => {
-          setName("");
-          setPhone("");
-          setWhen("immediate");
+        setName("");
+        setPhone("");
+        setWhen("immediate");
 
         setOpen(!open);
       }}
@@ -113,6 +113,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
                 //   ref.value = "immediate";
                 // }
               }}
+              className="h-16 text-6xl w-full"
               value={when}
               onValueChange={(value) => setWhen(value)}
               onKeyDown={handleKeyDown}

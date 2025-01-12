@@ -28,7 +28,7 @@ const calculateAdjustedTime = (originalTime: string) => {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
-type ReceiptTitle = "Cucina fredda" | "Cucina calda" | "Altro";
+type ReceiptTitle = "SUSHI" | "CUCINA" | "ALTRO";
 
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
   const bigSize = getReceiptSize(2, 2);
@@ -151,9 +151,9 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
   return (
     <>
-      {coldProducts.length > 0 && renderReceiptSection("Cucina fredda", coldProducts)}
-      {hotProducts.length > 0 && renderReceiptSection("Cucina calda", hotProducts)}
-      {otherProducts.length > 0 && renderReceiptSection("Altro", otherProducts)}
+      {coldProducts.length > 0 && renderReceiptSection("SUSHI", coldProducts)}
+      {hotProducts.length > 0 && renderReceiptSection("CUCINA", hotProducts)}
+      {otherProducts.length > 0 && renderReceiptSection("ALTRO", otherProducts)}
     </>
   );
 }
