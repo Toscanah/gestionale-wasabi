@@ -93,14 +93,12 @@ export default function Home() {
 
   return (
     <WasabiProvider updateGlobalState={updateGlobalState}>
-
-      
-        <WasabiSidebar />
-        <div className="w-full overflow-x-hidden p-4 h-screen flex flex-col gap-4">
-          <div className="w-full flex justify-between items-center">
-            <div className="flex items-center gap-4 text-2xl w-[28rem]">
-              <SidebarTrigger /> Wasabi Sushi
-              {/* <Button
+      <WasabiSidebar />
+      <div className="w-full overflow-x-hidden p-4 h-screen flex flex-col gap-4">
+        <div className="w-full flex justify-between items-center">
+          <div className="flex items-center gap-4 text-2xl w-[28rem]">
+            <SidebarTrigger /> Wasabi Sushi
+            {/* <Button
                 onClick={() => {
                   fetchRequest("POST", "/api/orders", "dummy");
                 }}
@@ -108,18 +106,33 @@ export default function Home() {
               >
                 Test
               </Button> */}
-            </div>
-  
-            <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />
           </div>
-  
-          <Separator orientation="horizontal" />
-  
-          <ResizablePanelGroup direction="horizontal">
-            {activeOrderTypes.map((type, index) => (
+
+          <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />
+        </div>
+
+        <Separator orientation="horizontal" />
+
+        <ResizablePanelGroup direction="horizontal">
+          {activeOrderTypes.map((type, index) => {
+            const totalTypes = activeOrderTypes.length;
+            let defaultSize;
+
+            if (totalTypes === 1) {
+              defaultSize = 100;
+            } else if (totalTypes === 2) {
+              defaultSize = 50;
+            } else if (totalTypes === 3) {
+              defaultSize = index === 1 ? 60 : 30;
+            } else {
+              // Even distribution for more than 3
+              defaultSize = 100 / totalTypes;
+            }
+
+            return (
               <Fragment key={type}>
                 <ResizablePanel
-                  defaultSize={100 / activeOrderTypes.length}
+                  defaultSize={defaultSize}
                   id={type}
                   className="h-full flex flex-col items-center"
                 >
@@ -129,13 +142,13 @@ export default function Home() {
                       triggerClassName={cn(
                         "rounded-none",
                         index === 0 && "rounded-tl-md",
-                        index === activeOrderTypes.length - 1 && "rounded-tr-md"
+                        index === totalTypes - 1 && "rounded-tr-md"
                       )}
                     >
                       {orders[type].length !== 0 && "(" + orders[type].length + ")"}
                     </CreateOrder>
                   </div>
-  
+
                   <OrdersTable
                     data={orders[type].sort(
                       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -143,13 +156,13 @@ export default function Home() {
                     type={type}
                   />
                 </ResizablePanel>
-  
-                {index < activeOrderTypes.length - 1 && <ResizableHandle />}
+
+                {index < totalTypes - 1 && <ResizableHandle />}
               </Fragment>
-            ))}
-          </ResizablePanelGroup>
-        </div>
-     
+            );
+          })}
+        </ResizablePanelGroup>
+      </div>
     </WasabiProvider>
   );
 }
