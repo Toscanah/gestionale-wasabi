@@ -14,7 +14,7 @@ export default async function updatePrintedAmounts(orderId: number) {
   }
 
   const products = await prisma.productInOrder.findMany({
-    where: { order_id: orderId },
+    where: { order_id: orderId, state: "IN_ORDER" },
     include: {
       options: {
         include: {

@@ -14,6 +14,7 @@ import {
 import { Check } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils"; // Utility className handler (optional)
 import generateTimeSlots from "@/app/(site)/functions/util/generateTimeSlots";
+import { subHours } from "date-fns";
 
 interface WhenSelectorProps {
   className?: string;
