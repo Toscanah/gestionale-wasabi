@@ -36,15 +36,22 @@ export default function CustomersStats() {
     }
 
     if (filter === "highest-spending") {
+      if (customers.length === 0) {
+        setFilteredCustomers([]);
+        return;
+      }
+
       const highestSpender = customers.reduce((topCustomer, currentCustomer) => {
         const currentSpent = [
           ...currentCustomer.home_orders,
           ...currentCustomer.pickup_orders,
-        ].reduce((sum, order) => sum + order.order.total, 0);
+        ].reduce((sum, order) => sum + (order.order?.total || 0), 0);
+
         const topSpent = [...topCustomer.home_orders, ...topCustomer.pickup_orders].reduce(
-          (sum, order) => sum + order.order.total,
+          (sum, order) => sum + (order.order?.total || 0),
           0
         );
+
         return currentSpent > topSpent ? currentCustomer : topCustomer;
       }, customers[0]);
 
@@ -54,25 +61,35 @@ export default function CustomersStats() {
 
     const filtered = customers.filter((customer) => {
       const orders = [...customer.home_orders, ...customer.pickup_orders];
-      const weeks = new Set(
-        orders.map((order) => new Date(order.order.created_at).toISOString().slice(0, 10))
+
+      // Map orders to unique ISO week numbers
+      const uniqueWeeks = new Set(
+        orders.map((order) => {
+          const date = new Date(order.order.created_at);
+
+          const day = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+          const daysToTuesday = (day + 6) % 7; // How far back to go to Tuesday
+          date.setDate(date.getDate() - daysToTuesday);
+
+          return date.toISOString().slice(0, 10); // Format as YYYY-MM-DD
+        })
       ).size;
 
       switch (filter) {
         case "1-week":
-          return weeks === 1;
+          return uniqueWeeks === 1;
         case "2-week":
-          return weeks === 2;
+          return uniqueWeeks === 2;
         case "3-week":
-          return weeks === 3;
+          return uniqueWeeks === 3;
         case "more-week":
-          return weeks > 3;
+          return uniqueWeeks > 3;
         case "1-2-weeks":
-          return weeks >= 1 && weeks <= 2;
+          return uniqueWeeks >= 1 && uniqueWeeks <= 2;
         case "1-3-weeks":
-          return weeks >= 1 && weeks <= 3;
+          return uniqueWeeks >= 1 && uniqueWeeks <= 3;
         case "1-month":
-          return weeks <= 4;
+          return uniqueWeeks <= 4;
         default:
           return true;
       }
@@ -116,20 +133,6 @@ export default function CustomersStats() {
             },
           ]}
         />
-        {/* <Button
-          onClick={() => {
-            fetchRequest("POST", "/api/orders", "dummy").then(() => document.location.reload());
-          }}
-        >
-          HO TANTA PAURA
-        </Button>
-        <Button
-          onClick={() => {
-            fetchRequest("DELETE", "/api/orders", "deleteEverything");
-          }}
-        >
-          ELIMINA
-        </Button> */}
       </TableControls>
       <Table table={table} tableClassName="max-h-max" />
     </div>

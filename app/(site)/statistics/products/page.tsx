@@ -25,23 +25,30 @@ export default function ProductsStats() {
   const [products, setProducts] = useState<ProductWithStats[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductWithStats[]>([]);
 
+  const defaultStartDate = new Date(new Date().setHours(0, 0, 0, 0)); 
+  const defaultEndDate = new Date(new Date().setHours(23, 59, 59, 999));
+
   const [timeFilter, setTimeFilter] = useState<TimeFilter>(TimeFilter.ALL);
   const [dateFilter, setDateFilter] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
+    from: defaultStartDate,
+    to: defaultEndDate,
   });
 
-  const table = getTable({ data: filteredProducts, columns });
+  const table = getTable({ data: filteredProducts, columns, globalFilter, setGlobalFilter });
 
   useEffect(() => {
     fetchInitialProducts();
   }, []);
 
   useEffect(() => {
-    if (dateFilter && timeFilter == TimeFilter.CUSTOM) {
-      fetchProductsWithFilter(timeFilter, dateFilter);
+    if (timeFilter == TimeFilter.CUSTOM) {
+      if (dateFilter?.from && dateFilter.to) {
+        fetchProductsWithFilter(timeFilter, dateFilter);
+      } else {
+        setFilteredProducts([]);
+      }
     } else {
-      fetchInitialProducts()
+      fetchInitialProducts();
     }
   }, [timeFilter, dateFilter]);
 
@@ -55,7 +62,7 @@ export default function ProductsStats() {
       setFilteredProducts(products);
     });
 
-  const fetchProductsWithFilter = (timeFilter: TimeFilter, value?: DateRange | undefined) =>
+  const fetchProductsWithFilter = (timeFilter: TimeFilter, value: DateRange) =>
     fetchRequest<ProductWithStats[]>("GET", "/api/products", "getProductsWithStats", {
       timeFilter,
       ...value,
@@ -63,10 +70,24 @@ export default function ProductsStats() {
       setFilteredProducts(products);
     });
 
+  const handleReset = () => {
+    setTimeFilter(TimeFilter.ALL);
+    setDateFilter({
+      from: defaultStartDate,
+      to: defaultEndDate,
+    });
+    fetchInitialProducts();
+  };
+
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
-        <TableControls globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} table={table}>
+        <TableControls
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          table={table}
+          onReset={handleReset}
+        >
           <SelectWrapper
             value={timeFilter}
             className="h-10"

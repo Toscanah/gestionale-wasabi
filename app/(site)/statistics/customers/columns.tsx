@@ -33,37 +33,85 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
 
   TableColumn({
     accessorKey: "orders_per_week",
-    header: "A settimana",
+    header: "Media a settimana",
     cellContent: (row) => {
       const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      const weeks = new Set(
-        orders.map((order) => format(new Date(order.order.created_at), "yyyy-ww"))
+      const orderDates = orders.map((order) => new Date(order.order.created_at));
+
+      if (orderDates.length === 0) return 0;
+
+      // Calculate the first and last order dates
+      const { firstOrder, lastOrder } = orderDates.reduce(
+        (acc, date) => {
+          if (date < acc.firstOrder) acc.firstOrder = date;
+          if (date > acc.lastOrder) acc.lastOrder = date;
+          return acc;
+        },
+        { firstOrder: orderDates[0], lastOrder: orderDates[0] }
       );
-      return weeks.size || 0;
+
+      // Calculate the total number of weeks between the first and last order
+      const totalWeeks = (lastOrder.getTime() - firstOrder.getTime()) / (1000 * 60 * 60 * 24 * 7);
+
+      // Calculate the average
+      return orders.length / totalWeeks;
     },
   }),
 
   TableColumn({
     accessorKey: "orders_per_month",
-    header: "Al mese",
+    header: "Media al mese",
     cellContent: (row) => {
       const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      const months = new Set(
-        orders.map((order) => format(new Date(order.order.created_at), "yyyy-MM"))
+      const orderDates = orders.map((order) => new Date(order.order.created_at));
+
+      if (orderDates.length === 0) return 0;
+
+      // Calculate the first and last order dates
+      const { firstOrder, lastOrder } = orderDates.reduce(
+        (acc, date) => {
+          if (date < acc.firstOrder) acc.firstOrder = date;
+          if (date > acc.lastOrder) acc.lastOrder = date;
+          return acc;
+        },
+        { firstOrder: orderDates[0], lastOrder: orderDates[0] }
       );
-      return months.size || 0;
+
+      // Calculate the total number of months between the first and last order
+      const totalMonths =
+        (lastOrder.getFullYear() - firstOrder.getFullYear()) * 12 +
+        (lastOrder.getMonth() - firstOrder.getMonth()) +
+        1;
+
+      // Calculate the average
+      return (orders.length / totalMonths).toFixed(2);
     },
   }),
 
   TableColumn({
     accessorKey: "orders_per_year",
-    header: "All'anno",
+    header: "Media all'anno",
     cellContent: (row) => {
       const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      const years = new Set(
-        orders.map((order) => format(new Date(order.order.created_at), "yyyy"))
+      const orderDates = orders.map((order) => new Date(order.order.created_at));
+
+      if (orderDates.length === 0) return 0;
+
+      // Calculate the first and last order dates
+      const { firstOrder, lastOrder } = orderDates.reduce(
+        (acc, date) => {
+          if (date < acc.firstOrder) acc.firstOrder = date;
+          if (date > acc.lastOrder) acc.lastOrder = date;
+          return acc;
+        },
+        { firstOrder: orderDates[0], lastOrder: orderDates[0] }
       );
-      return years.size || 0;
+
+      // Calculate the total number of years between the first and last order
+      const totalYears = lastOrder.getFullYear() - firstOrder.getFullYear() + 1;
+
+      // Calculate the average
+      return (orders.length / totalYears).toFixed(2);
     },
   }),
 
@@ -72,7 +120,7 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
     header: "Spesa media",
     cellContent: (row) => {
       const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      if (orders.length === 0) return "N/A";
+      if (orders.length === 0) return "";
       const totalSpent = orders.reduce((sum, order) => sum + (order.order.total || 0), 0);
       return roundToTwo(totalSpent / orders.length);
     },
@@ -83,7 +131,7 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
     header: "Ultimo ordine",
     cellContent: (row) => {
       const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      if (orders.length === 0) return "N/A";
+      if (orders.length === 0) return "";
       const lastOrder = orders.reduce((latest, order) => {
         const orderDate = new Date(order.order.created_at);
         return orderDate > latest ? orderDate : latest;
