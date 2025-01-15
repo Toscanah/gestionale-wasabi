@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { OrderType } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useOrderContext } from "../../context/OrderContext";
+import fetchRequest from "../../functions/api/fetchRequest";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 interface RomanStyleProps {
   handleBackButton: () => void;
@@ -17,11 +19,17 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
   const [ppl, setPpl] = useState<number>(0);
   const [currentPerson, setCurrentPerson] = useState<number>(1);
 
-  useEffect(
-    () =>
-      setPpl(order.type == OrderType.TABLE ? (order as TableOrder).table_order?.people ?? 0 : 0),
-    []
-  );
+  useEffect(() => {
+    const ppl = order.type == OrderType.TABLE ? (order as TableOrder).table_order?.people ?? 0 : 0;
+
+    setPpl(ppl);
+    console.log(ppl, order.total / ppl);
+
+    fetchRequest<number>("GET", "/api/payments/", "getRomanPaymentsByOrder", {
+      orderId: order.id,
+      amount: roundToTwo(order.total / ppl),
+    }).then((count) => setCurrentPerson((prev) => prev + count));
+  }, []);
 
   const handleOrderPaymentComplete = () => {
     if (currentPerson < ppl) {
@@ -30,6 +38,12 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
       handleOrderPaid();
     }
   };
+
+  // TODO: rimane sempre un possibile, ma improbabile problema:
+  /**
+   * quando ho già eseguito un pagamento con ppl = 4 per esempio, e torno in dietro, poi torno dentro
+   * e metto ppl = 1, mi softblocco perchè ora è disabled il campo del ppl
+   */
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
@@ -50,7 +64,9 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
         {ppl !== 0 && (
           <div className="ml-auto flex gap-4 items-center">
             {currentPerson} di {ppl} persone
-            <Button onClick={handleOrderPaymentComplete}>Salta questo pagamento</Button>
+            <Button onClick={handleOrderPaymentComplete} disabled={currentPerson == ppl}>
+              Salta questo pagamento
+            </Button>
           </div>
         )}
       </div>
@@ -63,7 +79,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
             total: order.total / ppl,
             products: currentPerson === ppl ? order.products : [],
           }}
-          type="full"
+          type={currentPerson === ppl ? "full" : "partial"}
           handleBackButton={handleBackButton}
           onOrderPaid={handleOrderPaymentComplete}
         />
