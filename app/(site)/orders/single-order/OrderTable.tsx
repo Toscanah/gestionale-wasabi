@@ -77,7 +77,6 @@ export default function OrderTable() {
     const printKitchenRec = async () => {
       const unprintedProducts = await updateUnprintedProducts();
 
-      console.log(unprintedProducts);
 
       if (unprintedProducts.length > 0) {
         await print(() => KitchenReceipt({ ...order, products: unprintedProducts }));

@@ -27,9 +27,9 @@ export default async function getProductsWithStats(
     } else {
       parsedStartDate.setHours(0, 0, 0, 0);
       parsedEndDate.setHours(23, 59, 59, 999);
-      
-      startDate = parsedStartDate;
-      endDate = parsedEndDate;
+
+      startDate = new Date(parsedStartDate.getTime() - parsedStartDate.getTimezoneOffset() * 60000);
+      endDate = new Date(parsedEndDate.getTime() - parsedEndDate.getTimezoneOffset() * 60000);
     }
   }
 
@@ -38,14 +38,6 @@ export default async function getProductsWithStats(
   const productsWithStats = await prisma.product.findMany({
     where: {
       active: true,
-      orders: {
-        some: {
-          order: {
-            state: { not: "CANCELLED" },
-            created_at: dateFilter,
-          },
-        },
-      },
     },
     include: {
       category: {
@@ -65,7 +57,27 @@ export default async function getProductsWithStats(
     },
   });
 
-  return productsWithStats.map((product) => {
+  const filteredProducts = productsWithStats
+    .map((product) => {
+      const filteredOrders = product.orders.filter((productInOrder) => {
+        const order = productInOrder.order;
+        
+        if (!dateFilter) {
+          return true;
+        }
+
+        return order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte;
+      });
+
+      if (filteredOrders.length > 0) {
+        return { ...product, orders: filteredOrders };
+      }
+
+      return null;
+    })
+    .filter(Boolean) as typeof productsWithStats;
+
+  return filteredProducts.map((product) => {
     const stats = product.orders.reduce(
       (acc, productInOrder) => {
         acc.quantity += productInOrder.quantity;

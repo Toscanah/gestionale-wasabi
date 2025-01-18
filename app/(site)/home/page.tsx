@@ -98,14 +98,13 @@ export default function Home() {
         <div className="w-full flex justify-between items-center">
           <div className="flex items-center gap-4 text-2xl w-[28rem]">
             <SidebarTrigger /> Wasabi Sushi
-            {/* <Button
-                onClick={() => {
-                  fetchRequest("POST", "/api/orders", "dummy");
-                }}
-                disabled
-              >
-                Test
-              </Button> */}
+            <Button
+              onClick={() => {
+                fetchRequest("POST", "/api/orders", "dummy");
+              }}
+            >
+              Test
+            </Button>
           </div>
 
           <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />

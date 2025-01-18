@@ -11,13 +11,24 @@ export default function RiceSummary() {
   return (
     <table
       className={cn(
-        "w-[28rem] text-3xl border-collapse",
+        "w-[28rem] text-2xl border-collapse",
         rice.remaining.amount < rice.remaining.threshold && "text-destructive"
       )}
     >
       <tbody>
         <tr className="w-full">
-          <td className="text-right text-2xl w-[60%]">Quantità rimanente</td>
+          <td className="text-right text-2xl w-[60%]">Riso consumato</td>
+          <td
+            className={cn(
+              "text-right font-bold pl-3",
+              rice.total.amount - rice.remaining.amount > rice.total.amount && "text-red-600"
+            )}
+          >
+            {formatRice(rice.total.amount - rice.remaining.amount)}
+          </td>
+        </tr>
+        <tr className="w-full">
+          <td className="text-right text-2xl w-[60%]">Riso rimanente</td>
           <td
             className={cn(
               "text-right font-bold pl-3",

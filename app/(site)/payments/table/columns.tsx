@@ -10,6 +10,7 @@ import OrderSummary from "./OrderSummary";
 import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import fetchRequest from "../../functions/api/fetchRequest";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({
@@ -71,22 +72,26 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({
     accessorKey: "totalCash",
     header: "Totale contanti",
+    cellContent: (row) => roundToTwo(row.original.totalCash),
   }),
 
   TableColumn({
     accessorKey: "totalCard",
     header: "Totale carta",
+    cellContent: (row) => roundToTwo(row.original.totalCard),
   }),
 
   TableColumn({
     accessorKey: "totalVouch",
     header: "Totale buoni",
+    cellContent: (row) => roundToTwo(row.original.totalVouch),
   }),
 
-  TableColumn({
-    accessorKey: "totalCredit",
-    header: "Totale credito",
-  }),
+  // TableColumn({
+  //   accessorKey: "totalCredit",
+  //   header: "Totale credito",
+  //   cellContent: (row) => roundToTwo(row.original.totalCredit),
+  // }),
 
   TableColumn({
     accessorKey: "order.total",

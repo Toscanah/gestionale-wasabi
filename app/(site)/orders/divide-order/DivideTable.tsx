@@ -13,6 +13,7 @@ interface DivideTableProps {
   onPayClick: (products: ProductInOrder[]) => void;
   orderType: OrderType;
   onRowClick: (product: ProductInOrder) => void;
+  disabled: boolean;
 }
 
 export default function DivideTable({
@@ -20,6 +21,7 @@ export default function DivideTable({
   onPayClick,
   orderType,
   onRowClick,
+  disabled,
 }: DivideTableProps) {
   const columns = getColumns(orderType);
   const table = getTable({ data: products, columns });
@@ -34,7 +36,7 @@ export default function DivideTable({
       <div className="flex gap-8">
         <Button
           className="bg-green-500 text-black h-14 text-xl w-[70%]"
-          disabled={products.length === 0}
+          disabled={disabled}
           onClick={() => onPayClick(products)}
         >
           INCASSA 收钱

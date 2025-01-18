@@ -144,7 +144,7 @@ export default function CustomerProducts({
 
             {splitOptionsInLines(optionsKey, TOTAL_ROW_WIDTH, OPTIONS_START_PADDING).map(
               (line, lineIdx) => (
-                <Text bold key={`options-${idx}-${lineIdx}`}>
+                <Text key={`options-${idx}-${lineIdx}`}>
                   {line}
                 </Text>
               )

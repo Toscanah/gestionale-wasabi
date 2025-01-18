@@ -3,6 +3,7 @@ import { Product } from "../../models";
 import TableColumn from "../../components/table/TableColumn";
 import { ProductWithStats } from "../../types/ProductWithStats";
 import formatRice from "../../functions/formatting-parsing/formatRice";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 const columns: ColumnDef<ProductWithStats>[] = [
   TableColumn({
@@ -23,7 +24,7 @@ const columns: ColumnDef<ProductWithStats>[] = [
   TableColumn({
     accessorKey: "total",
     header: "Totale",
-    cellContent: (row) => "€ " + row.original.total,
+    cellContent: (row) => "€ " + roundToTwo(row.original.total),
   }),
 
   TableColumn({

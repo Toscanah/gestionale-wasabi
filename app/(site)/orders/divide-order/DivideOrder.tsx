@@ -12,22 +12,27 @@ import shiftProductsInDivideOrder from "../../functions/order-management/shiftPr
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
-  products?: ProductInOrder[];
+  products: ProductInOrder[];
 }
 
-export default function DivideOrder({
-  setPayingAction,
-  products: propProducts,
-}: DividerOrderProps) {
+export default function DivideOrder({ setPayingAction, products }: DividerOrderProps) {
   const { order, createSubOrder } = useOrderContext();
   const { dialogOpen } = useOrderContext();
 
   const [goPay, setGoPay] = useState<boolean>(false);
-  const [leftProducts, setLeftProducts] = useState<ProductInOrder[]>(
-    propProducts || order.products
-  );
+  const [leftProducts, setLeftProducts] = useState<ProductInOrder[]>(products);
   const [rightProducts, setRightProducts] = useState<ProductInOrder[]>([]);
   const [productsToPay, setProductsToPay] = useState<ProductInOrder[]>([]);
+
+  useEffect(() => {
+    setLeftProducts(products);
+  }, [products]);
+
+  useEffect(() => {
+    if (leftProducts.length === 0 && rightProducts.length === 0) {
+      setPayingAction("paidFull");
+    }
+  }, [leftProducts]);
 
   const handlePayClick = async (products: ProductInOrder[]) => {
     const partialOrder = {
@@ -46,15 +51,27 @@ export default function DivideOrder({
   const handleOrderPaid = () => {
     setRightProducts([]);
 
-    const updatedLeftProducts = leftProducts.filter(
-      (leftProduct) => !productsToPay.some((paidProduct) => paidProduct.id === leftProduct.id)
-    );
+    const updatedRightProducts = rightProducts
+      .map((rightProduct) => {
+        const paidProduct = productsToPay.find((p) => p.id === rightProduct.id);
+        if (paidProduct) {
+          const remainingQuantity = rightProduct.quantity - paidProduct.quantity;
+          return remainingQuantity > 0 ? { ...rightProduct, quantity: remainingQuantity } : null;
+        }
+        return rightProduct;
+      })
+      .filter((product) => product !== null);
 
-    setLeftProducts(updatedLeftProducts);
-    const isOrderFullyPaid = updatedLeftProducts.length === 0;
+    setLeftProducts(leftProducts);
+    setRightProducts(updatedRightProducts);
+
+    const isOrderFullyPaid = leftProducts.length === 0 && updatedRightProducts.length === 0;
+
     setPayingAction(isOrderFullyPaid ? "paidFull" : "payPart");
 
-    if (!isOrderFullyPaid) setGoPay(false);
+    if (!isOrderFullyPaid) {
+      setGoPay(false);
+    }
   };
 
   useEffect(() => {
@@ -73,6 +90,7 @@ export default function DivideOrder({
           onPayClick={handlePayClick}
           orderType={order.type}
           products={leftProducts}
+          disabled={leftProducts.length === 0 || rightProducts.length > 0}
           onRowClick={(product) =>
             shiftProductsInDivideOrder(
               product,
@@ -88,6 +106,7 @@ export default function DivideOrder({
         <DivideTable
           onPayClick={handlePayClick}
           orderType={order.type}
+          disabled={rightProducts.length === 0}
           products={rightProducts}
           onRowClick={(product) =>
             shiftProductsInDivideOrder(

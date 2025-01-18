@@ -6,7 +6,7 @@ export default function ResetPayment() {
 
   return (
     <Button onClick={resetPayment} variant={"destructive"} className="text-2xl w-[30%] h-16">
-      Annulla
+      Cancella
     </Button>
   );
 }
