@@ -22,7 +22,11 @@ type OrderContextType = {
   dialogOpen: boolean;
   toggleDialog: (dialogOpen: boolean) => void;
   cancelOrder: (cooked: boolean) => Promise<void>;
-  createSubOrder: (parentOrder: AnyOrder, products: ProductInOrder[]) => Promise<void>;
+  createSubOrder: (
+    parentOrder: AnyOrder,
+    products: ProductInOrder[],
+    isReceiptPrinted: boolean
+  ) => Promise<void>;
   newCode: string;
   newQuantity: number;
   addProduct: () => void;

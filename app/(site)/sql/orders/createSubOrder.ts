@@ -6,8 +6,13 @@ import prisma from "../db";
 import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import getOrderById from "./getOrderById";
 import { AnyOrder, PickupOrder, ProductInOrder, TableOrder } from "../../models";
+import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 
-export default async function createSubOrder(parentOrder: AnyOrder, products: ProductInOrder[]) {
+export default async function createSubOrder(
+  parentOrder: AnyOrder,
+  products: ProductInOrder[],
+  isReceiptPrinted: boolean
+) {
   let newSubOrder: AnyOrder | undefined;
 
   const suborderCount = await prisma.order.count({
@@ -25,11 +30,12 @@ export default async function createSubOrder(parentOrder: AnyOrder, products: Pr
   switch (parentOrder.type) {
     case OrderType.PICKUP:
       order = parentOrder as PickupOrder;
-      newSubOrder = await createPickupOrder(
+      const pickupOrderResponse = await createPickupOrder(
         `${order.pickup_order?.name}_${suborderNumber}`,
         order.pickup_order?.when ?? "immediate",
         order.pickup_order?.customer?.phone?.phone
       );
+      newSubOrder = pickupOrderResponse?.order;
       break;
 
     case OrderType.TABLE:
@@ -113,5 +119,12 @@ export default async function createSubOrder(parentOrder: AnyOrder, products: Pr
   });
 
   await addProductsToOrder(newSubOrder.id, products);
+  await prisma.order.update({
+    where: { id: newSubOrder.id },
+    data: {
+      is_receipt_printed: isReceiptPrinted,
+    },
+  });
+
   return await getOrderById(newSubOrder.id);
 }

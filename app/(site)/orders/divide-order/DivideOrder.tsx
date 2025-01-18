@@ -30,7 +30,6 @@ export default function DivideOrder({
   const [productsToPay, setProductsToPay] = useState<ProductInOrder[]>([]);
 
   const handlePayClick = async (products: ProductInOrder[]) => {
-    console.log(products);
     const partialOrder = {
       ...order,
       products,
@@ -59,10 +58,11 @@ export default function DivideOrder({
   };
 
   useEffect(() => {
-    const asyncSubOrder = async () => await createSubOrder(order, rightProducts);
+    const asyncSubOrder = async (isReceiptPrinted: boolean) =>
+      await createSubOrder(order, rightProducts, isReceiptPrinted);
 
     if (!dialogOpen && rightProducts.length > 0) {
-      asyncSubOrder();
+      asyncSubOrder(goPay ? true : false);
     }
   }, [dialogOpen]);
 

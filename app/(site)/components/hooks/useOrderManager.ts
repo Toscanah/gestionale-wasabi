@@ -55,10 +55,15 @@ export function useOrderManager(
       updateGlobalState(deletedOrder, "delete");
     });
 
-  const createSubOrder = async (parentOrder: AnyOrder, products: ProductInOrder[]) =>
+  const createSubOrder = async (
+    parentOrder: AnyOrder,
+    products: ProductInOrder[],
+    isReceiptPrinted: boolean
+  ) =>
     fetchRequest<AnyOrder>("POST", "/api/orders/", "createSubOrder", {
       parentOrder: { ...parentOrder },
       products,
+      isReceiptPrinted,
     }).then((newSubOrder) => {
       const { updatedProducts, updatedTotal } = scaleProducts({
         originalProducts: parentOrder.products,
