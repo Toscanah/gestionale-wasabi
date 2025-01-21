@@ -75,10 +75,11 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
   };
 
   useEffect(() => {
-    const asyncSubOrder = async () => await createSubOrder(order, rightProducts);
+    const asyncSubOrder = async (isReceiptPrinted: boolean) =>
+      await createSubOrder(order, rightProducts, isReceiptPrinted);
 
     if (!dialogOpen && rightProducts.length > 0) {
-      asyncSubOrder();
+      asyncSubOrder(goPay ? true : false);
     }
   }, [dialogOpen]);
 

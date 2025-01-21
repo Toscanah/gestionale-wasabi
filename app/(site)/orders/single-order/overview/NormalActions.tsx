@@ -40,9 +40,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
   const updatePrintedFlag = async () =>
     fetchRequest<AnyOrder>("POST", "/api/orders", "updatePrintedFlag", {
       orderId: order.id,
-    }).then((updatedOrder) => {
-      updateOrder({ is_receipt_printed: updatedOrder.is_receipt_printed });
-    });
+    }).then((updatedOrder) => updateOrder({ is_receipt_printed: updatedOrder.is_receipt_printed }));
 
   const buildPrintContent = async (
     order: AnyOrder,
@@ -128,7 +126,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       <Button
         className="w-full text-3xl h-12"
         onClick={handleFullPayment}
-        disabled={!(order.total > 0)} //
+        disabled={!(order.total > 0)}
       >
         INCASSA 收钱
       </Button>
