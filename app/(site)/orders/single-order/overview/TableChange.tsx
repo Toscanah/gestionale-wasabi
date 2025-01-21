@@ -50,7 +50,7 @@ export default function TableChange() {
   };
 
   return (
-    <div className="w-full flex gap-2 items-center">
+    <div className="w-full flex gap-6 items-center">
       <div className="w-1/2 flex flex-col space-y-2">
         <span>Tavolo</span>
         <Input className="text-xl h-12" value={table} onChange={handleTableInputChange} />

@@ -8,6 +8,7 @@ import { OrderType } from "@prisma/client";
 import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
+import padReceiptText from "../../functions/formatting-parsing/printing/padReceiptText";
 
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,
@@ -39,7 +40,7 @@ export default function OrderReceipt<T extends AnyOrder>(
       {pickupOrder && (
         <>
           <Br />
-          <Row
+          {/* <Row
             left={
               <Text align="center" size={bigSize}>
                 {sanitazeReceiptText(pickupOrder.name)}
@@ -50,7 +51,14 @@ export default function OrderReceipt<T extends AnyOrder>(
                 {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
               </Text>
             }
-          />
+          /> */}
+
+          <Text align="right">
+            {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
+          </Text>
+          <Text align="right" size={bigSize}>
+            {padReceiptText(sanitazeReceiptText(pickupOrder.name), 22)}
+          </Text>
           <Br />
         </>
       )}

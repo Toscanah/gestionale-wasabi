@@ -17,16 +17,12 @@ interface OrderOverviewProps {
   // setQuickPaymentOption: Dispatch<SetStateAction<QuickPaymentOption>>;
 }
 
-export default function OrderOverview({
-  setAction,
-}: // quickPaymentOption,
-// setQuickPaymentOption,
-OrderOverviewProps) {
+export default function OrderOverview({ setAction }: OrderOverviewProps) {
   const { order } = useOrderContext();
   const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
 
   return (
-    <div className="w-[25%] flex flex-col gap-6 h-full">
+    <div className="w-[28%] flex flex-col gap-6 h-full">
       {order.type == OrderType.HOME && (
         <QuickPaymentOptions
           quickPaymentOption={quickPaymentOption}
@@ -43,9 +39,10 @@ OrderOverviewProps) {
 
       {order.type == OrderType.TABLE && <TableChange />}
 
+      <Rice />
+      <Total />
+
       <div className="mt-auto flex flex-col gap-6">
-        <Rice />
-        <Total />
         <NormalActions setAction={setAction} quickPaymentOption={quickPaymentOption} />
       </div>
     </div>

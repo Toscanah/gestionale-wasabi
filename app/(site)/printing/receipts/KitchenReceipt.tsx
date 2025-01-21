@@ -68,7 +68,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {sanitazeReceiptText(tableOrder.table.slice(0, 14))}
+              {sanitazeReceiptText(tableOrder.table.slice(0, 17))}
             </Text>
           }
         />
@@ -83,7 +83,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {sanitazeReceiptText(pickupOrder.name.slice(0, 14))}
+              {sanitazeReceiptText(pickupOrder.name.slice(0, 17))}
             </Text>
           }
         />
@@ -98,7 +98,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, 14))}
+              {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, 17))}
             </Text>
           }
         />

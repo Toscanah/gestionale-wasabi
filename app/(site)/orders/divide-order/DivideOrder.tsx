@@ -1,4 +1,4 @@
-import { ProductInOrder } from "@/app/(site)/models";
+import { AnyOrder, ProductInOrder } from "@/app/(site)/models";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
@@ -9,6 +9,7 @@ import { useOrderContext } from "../../context/OrderContext";
 import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 import DivideTable from "./DivideTable";
 import shiftProductsInDivideOrder from "../../functions/order-management/shiftProductsInDivideOrder";
+import fetchRequest from "../../functions/api/fetchRequest";
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
@@ -16,13 +17,18 @@ interface DividerOrderProps {
 }
 
 export default function DivideOrder({ setPayingAction, products }: DividerOrderProps) {
-  const { order, createSubOrder } = useOrderContext();
+  const { order, createSubOrder, updateOrder } = useOrderContext();
   const { dialogOpen } = useOrderContext();
 
   const [goPay, setGoPay] = useState<boolean>(false);
   const [leftProducts, setLeftProducts] = useState<ProductInOrder[]>(products);
   const [rightProducts, setRightProducts] = useState<ProductInOrder[]>([]);
   const [productsToPay, setProductsToPay] = useState<ProductInOrder[]>([]);
+
+  const updatePrintedFlag = async () =>
+    fetchRequest<AnyOrder>("POST", "/api/orders", "updatePrintedFlag", {
+      orderId: order.id,
+    }).then((updatedOrder) => updateOrder({ is_receipt_printed: updatedOrder.is_receipt_printed }));
 
   useEffect(() => {
     setLeftProducts(products);
@@ -87,7 +93,10 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
     <div className="w-full h-full flex flex-col gap-8">
       <div className="w-full h-full flex gap-8">
         <DivideTable
-          onPayClick={handlePayClick}
+          onPayClick={async (products) => {
+            await updatePrintedFlag();
+            handlePayClick(products);
+          }}
           orderType={order.type}
           products={leftProducts}
           disabled={leftProducts.length === 0 || rightProducts.length > 0}

@@ -1,6 +1,6 @@
 import { AnyOrder, HomeOrder } from "@/app/(site)/models";
 import { Button } from "@/components/ui/button";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { PayingAction } from "../OrderTable";
 import print from "@/app/(site)/printing/print";
 import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
@@ -11,6 +11,7 @@ import { ProductInOrder } from "@/app/(site)/models";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
+import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
@@ -19,6 +20,7 @@ interface NormalActionsProps {
 
 export default function NormalActions({ setAction, quickPaymentOption }: NormalActionsProps) {
   const { order, updateUnprintedProducts, updateOrder, toggleDialog } = useOrderContext();
+  const [rePrintDialog, setRePrintDialog] = useState<boolean>(false);
 
   useEffect(() => {
     const handlePrintShortcut = (event: KeyboardEvent) => {
@@ -70,7 +72,18 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     return content;
   };
 
-  const handleRePrint = async () => {
+  const handleKitchenRePrint = async () => await print(() => KitchenReceipt<typeof order>(order));
+
+  const handleOrderRePrint = async () => {
+    await print(
+      () => OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.HOME),
+      ...(order.type === OrderType.HOME
+        ? [() => RiderReceipt(order as HomeOrder, quickPaymentOption)]
+        : [])
+    );
+  };
+
+  const handleFullRePrint = async () => {
     await updatePrintedFlag();
     const content = await buildPrintContent(order, quickPaymentOption, true);
     await print(...content);
@@ -93,6 +106,43 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
   const hasProducts = order.products.filter((product) => product.id !== -1).length > 0;
 
+  const RePrintButton = () => (
+    <DialogWrapper
+      open={rePrintDialog}
+      onOpenChange={setRePrintDialog}
+      title="Cosa vuoi re-stampare?"
+      trigger={
+        <Button className="w-full text-3xl h-12" disabled={!hasProducts}>
+          Re-Stampa
+        </Button>
+      }
+    >
+      <div className="flex gap-6">
+        <Button
+          className="w-full text-4xl h-24"
+          onClick={() => {
+            handleKitchenRePrint();
+            setRePrintDialog(false);
+          }}
+        >
+          Cucina
+        </Button>
+        <Button className="w-full text-4xl h-24" onClick={handleFullRePrint}>
+          Tutto
+        </Button>
+        <Button
+          className="w-full text-4xl h-24"
+          onClick={() => {
+            handleOrderRePrint();
+            setRePrintDialog(false);
+          }}
+        >
+          Ordine
+        </Button>
+      </div>
+    </DialogWrapper>
+  );
+
   return (
     <>
       <div className="flex gap-6">
@@ -113,23 +163,21 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
         </Button>
       </div>
 
+      <RePrintButton />
+
       <div className="flex gap-6">
-        <Button className="w-full text-3xl h-12" disabled={!hasProducts} onClick={handlePrint}>
-          Stampa 打印
+        <Button className="w-full text-3xl h-36" disabled={!hasProducts} onClick={handlePrint}>
+          STAMPA 打印
         </Button>
 
-        <Button className="w-full text-3xl h-12" disabled={!hasProducts} onClick={handleRePrint}>
-          Re-Stampa
+        <Button
+          className="w-full text-3xl h-36"
+          onClick={handleFullPayment}
+          disabled={!(order.total > 0)}
+        >
+          INCASSA 收钱
         </Button>
       </div>
-
-      <Button
-        className="w-full text-3xl h-12"
-        onClick={handleFullPayment}
-        disabled={!(order.total > 0)}
-      >
-        INCASSA 收钱
-      </Button>
     </>
   );
 }
