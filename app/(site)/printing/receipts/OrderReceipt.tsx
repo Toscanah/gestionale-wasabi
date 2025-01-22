@@ -53,11 +53,9 @@ export default function OrderReceipt<T extends AnyOrder>(
             }
           /> */}
 
-          <Text align="right">
-            {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
-          </Text>
+          <Text align="right">{padReceiptText(sanitazeReceiptText(pickupOrder.name), 22)}</Text>
           <Text align="right" size={bigSize}>
-            {padReceiptText(sanitazeReceiptText(pickupOrder.name), 22)}
+            {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
           </Text>
           <Br />
         </>
