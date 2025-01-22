@@ -60,7 +60,7 @@ export default async function print(...contents: (() => ReactNode)[]) {
 
     if (info.usbProductId === EURO_USB_PRODUCT_ID && info.usbVendorId === EURO_USB_VENDOR_ID) {
       selectedPort = port;
-      characterSetToUse = "pc858_euro";
+      characterSetToUse = "wpc1256_arabic"; // pc858_euro
       break;
     }
   }

@@ -53,7 +53,7 @@ export default function OrderReceipt<T extends AnyOrder>(
             }
           /> */}
 
-          <Text align="right">{padReceiptText(sanitazeReceiptText(pickupOrder.name), 40)}</Text>
+          <Text align="right">{sanitazeReceiptText(pickupOrder.name)}</Text>
           <Text align="right" size={bigSize}>
             {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
           </Text>
