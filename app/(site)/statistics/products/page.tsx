@@ -19,13 +19,27 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { it } from "date-fns/locale";
 import GoBack from "../../components/GoBack";
+import { Category } from "@prisma/client";
+
+const allCategories = {
+  id: -1,
+  category: "all",
+  active: true,
+};
 
 export default function ProductsStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
   const [products, setProducts] = useState<ProductWithStats[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductWithStats[]>([]);
 
-  const defaultStartDate = new Date(new Date().setHours(0, 0, 0, 0)); 
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<Category>({
+    id: -1,
+    category: "all",
+    active: true,
+  });
+
+  const defaultStartDate = new Date(new Date().setHours(0, 0, 0, 0));
   const defaultEndDate = new Date(new Date().setHours(23, 59, 59, 999));
 
   const [timeFilter, setTimeFilter] = useState<TimeFilter>(TimeFilter.ALL);
@@ -38,6 +52,7 @@ export default function ProductsStats() {
 
   useEffect(() => {
     fetchInitialProducts();
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -51,6 +66,24 @@ export default function ProductsStats() {
       fetchInitialProducts();
     }
   }, [timeFilter, dateFilter]);
+
+  useEffect(() => {
+    setFilteredProducts((currentFilteredProducts) => {
+      if (selectedCategory.id === -1) {
+        return currentFilteredProducts;
+      } else {
+        return currentFilteredProducts.filter(
+          (product) => product.category_id === selectedCategory.id
+        );
+      }
+    });
+  }, [selectedCategory]);
+
+  const fetchCategories = () =>
+    fetchRequest<Category[]>("GET", "/api/categories/", "getCategories").then((categories) => {
+      setCategories(categories.filter((c) => c.active));
+      console.log(categories);
+    });
 
   const fetchInitialProducts = () =>
     fetchRequest<ProductWithStats[]>("GET", "/api/products", "getProductsWithStats", {
@@ -88,6 +121,26 @@ export default function ProductsStats() {
           table={table}
           onReset={handleReset}
         >
+          <SelectWrapper
+            defaultValue="all"
+            value={selectedCategory.id.toString()}
+            className="h-10"
+            onValueChange={(value) =>
+              setSelectedCategory(categories.find((c) => c.id.toString() == value) || allCategories)
+            }
+            groups={[
+              {
+                items: [
+                  { name: "Tutte le categorie", value: "-1" },
+                  ...categories.map((category) => ({
+                    name: category.category.toString(),
+                    value: category.id.toString(),
+                  })),
+                ],
+              },
+            ]}
+          />
+
           <SelectWrapper
             value={timeFilter}
             className="h-10"
