@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { Table } from "@tanstack/react-table";
 import { SetStateAction, Dispatch, ReactNode } from "react";
 
@@ -11,6 +12,7 @@ interface TableControlsProps {
   children?: ReactNode;
   title?: ReactNode;
   onReset?: () => void;
+  resetClassName?: string;
 }
 
 export default function TableControls({
@@ -21,6 +23,7 @@ export default function TableControls({
   children,
   title,
   onReset,
+  resetClassName,
 }: TableControlsProps) {
   const handleReset = () => {
     onReset?.();
@@ -29,7 +32,7 @@ export default function TableControls({
   };
 
   return (
-    <div className="flex gap-4 items-center">
+    <div className={cn("flex gap-4 items-center")}>
       {title}
       {AddComponent}
 
@@ -42,7 +45,7 @@ export default function TableControls({
 
       {children}
 
-      <Button variant={"outline"} onClick={handleReset}>
+      <Button variant={"outline"} onClick={handleReset} className={resetClassName}>
         Reimposta filtri
       </Button>
     </div>

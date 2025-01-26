@@ -4,9 +4,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { PayingAction } from "../OrderTable";
 import print from "@/app/(site)/printing/print";
 import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
-import { QuickPaymentOption } from "./QuickPaymentOptions";
 import RiderReceipt from "../../../printing/receipts/RiderReceipt";
-import { OrderType } from "@prisma/client";
+import { OrderType, QuickPaymentOption } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/models";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
@@ -23,9 +22,9 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
   const [rePrintDialog, setRePrintDialog] = useState<boolean>(false);
 
   useEffect(() => {
-    const handlePrintShortcut = (event: KeyboardEvent) => {
+    const handlePrintShortcut = async (event: KeyboardEvent) => {
       if (event.altKey && event.key === "p") {
-        handlePrint();
+        await handlePrint();
       }
     };
 
@@ -113,31 +112,28 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       title="Cosa vuoi re-stampare?"
       trigger={
         <Button className="w-full text-3xl h-12" disabled={!hasProducts}>
-          Re-Stampa
+          Re-Stampa 重新打印
         </Button>
       }
     >
       <div className="flex gap-6">
         <Button
           className="w-full text-4xl h-24"
-          onClick={() => {
-            handleKitchenRePrint();
-            setRePrintDialog(false);
-          }}
+          onClick={() => handleKitchenRePrint().then(() => setRePrintDialog(false))}
         >
-          Cucina
-        </Button>
-        <Button className="w-full text-4xl h-24" onClick={handleFullRePrint}>
-          Tutto
+          Cucina 厨房
         </Button>
         <Button
           className="w-full text-4xl h-24"
-          onClick={() => {
-            handleOrderRePrint();
-            setRePrintDialog(false);
-          }}
+          onClick={() => handleFullRePrint().then(() => setRePrintDialog(false))}
         >
-          Ordine
+          Tutto 所有
+        </Button>
+        <Button
+          className="w-full text-4xl h-24"
+          onClick={() => handleOrderRePrint().then(() => setRePrintDialog(false))}
+        >
+          Ordine 客人
         </Button>
       </div>
     </DialogWrapper>

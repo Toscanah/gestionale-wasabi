@@ -1,11 +1,15 @@
+import { useWasabiContext } from "../../context/WasabiContext";
+
 export default function generateTimeSlots(
   startHour: number,
   startMinute: number,
   endHour: number,
   endMinute: number,
   currentHour: number,
-  currentMinute: number,
+  currentMinute: number
 ) {
+  const { settings } = useWasabiContext();
+
   const times = [];
   let currentSlotHour = startHour;
   let currentSlotMinute = startMinute;
@@ -24,7 +28,7 @@ export default function generateTimeSlots(
       times.push(timeString);
     }
 
-    currentSlotMinute += 5;
+    currentSlotMinute += settings.whenSelectorGap ?? 5;
     if (currentSlotMinute >= 60) {
       currentSlotMinute -= 60;
       currentSlotHour += 1;

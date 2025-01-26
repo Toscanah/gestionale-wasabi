@@ -1,11 +1,10 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import fetchRequest from "../functions/api/fetchRequest";
-import { Rice } from "@prisma/client";
 import { toastSuccess } from "../functions/util/toast";
 import { AnyOrder } from "@/app/(site)/models";
 import { UpdateStateAction } from "../home/page";
-
-type RiceState = { total: Rice; remaining: Rice };
+import { GlobalSettings } from "../types/GlobalSettings";
+import useRice, { Rice, RiceState } from "../hooks/useRice";
 
 interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: UpdateStateAction) => void;
@@ -15,7 +14,9 @@ interface WasabiContextProps {
   selectedOrders: number[];
   toggleOrderSelection: (orderId: number) => void;
   updateRemainingRice: (amount: number) => void;
-  fetchRemainingRice: () => void
+  fetchRemainingRice: () => void;
+  settings: GlobalSettings;
+  updateSettings: (key: keyof GlobalSettings, value: any) => void;
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);
@@ -34,11 +35,47 @@ interface WasabiProviderProps {
 }
 
 export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderProps) => {
+  const defaultSettings = {
+    iva: "00000000000",
+    kitchenOffset: 0,
+    whenSelectorGap: 0,
+  };
+
+  const [settings, setSettings] = useState<GlobalSettings>(defaultSettings);
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
-  const [rice, setRice] = useState<RiceState>({
-    total: { id: 1, amount: -1, threshold: -1 },
-    remaining: { id: 1, amount: -1, threshold: -1 },
-  });
+
+  const { rice, updateTotalRice, updateRemainingRice, resetRice } = useRice();
+
+  const getSettings = () => {
+    const storedSettings = localStorage.getItem("settings");
+
+    if (storedSettings) {
+      const parsedSettings = JSON.parse(storedSettings);
+      setSettings(parsedSettings);
+    } else {
+      setSettings(defaultSettings);
+      localStorage.setItem("settings", JSON.stringify(defaultSettings));
+    }
+  };
+
+  const updateSettings = (key: keyof GlobalSettings, value: any) => {
+    let newValue = value;
+
+    if (key === "kitchenOffset" && (value === null || isNaN(Number(value)))) {
+      newValue = 0;
+    }
+
+    if (key === "whenSelectorGap" && (value === null || isNaN(Number(value)))) {
+      newValue = 0;
+    }
+
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      [key]: newValue,
+    }));
+
+    localStorage.setItem("settings", JSON.stringify({ ...settings, [key]: newValue }));
+  };
 
   const toggleOrderSelection = (orderId: number) =>
     setSelectedOrders((prevSelected) =>
@@ -47,47 +84,7 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
         : [...prevSelected, orderId]
     );
 
-  const updateTotalRice = (total: Rice) =>
-    fetchRequest("POST", "/api/rice/", "updateRice", { rice: total }).then(() => {
-      setRice((prevRice) => ({
-        ...prevRice,
-        total: { ...total, amount: total.amount + prevRice.total.amount },
-      }));
-      fetchRemainingRice();
-      toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
-    });
-
-  const updateRemainingRice = (amount: number) =>
-    setRice((prevRice) => ({
-      ...prevRice,
-      remaining: {
-        ...prevRice.remaining,
-        amount: prevRice.remaining.amount - amount,
-      },
-    }));
-
-  const fetchInitialRice = async () => {
-    const [totalRice, remainingRice] = await Promise.all([
-      fetchRequest<Rice>("GET", "/api/rice/", "getTotalRice"),
-      fetchRequest<Rice>("GET", "/api/rice", "getRemainingRice"),
-    ]);
-
-    setRice({
-      total: totalRice,
-      remaining: remainingRice,
-    });
-  };
-
-  const fetchRemainingRice = () =>
-    fetchRequest<Rice>("GET", "/api/rice", "getRemainingRice").then((remaining) =>
-      setRice((prevRice) => ({ ...prevRice, remaining }))
-    );
-
-  const resetRice = () => fetchRequest("POST", "/api/rice/", "resetRice").then(fetchInitialRice);
-
-  useEffect(() => {
-    fetchInitialRice();
-  }, []);
+  useEffect(() => getSettings(), []);
 
   return (
     <WasabiContext.Provider
@@ -99,7 +96,9 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
         resetRice,
         selectedOrders,
         toggleOrderSelection,
-        fetchRemainingRice,
+        fetchRemainingRice: updateRemainingRice,
+        settings,
+        updateSettings,
       }}
     >
       {children}

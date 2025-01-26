@@ -5,7 +5,7 @@ import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType, OrderType } from "@prisma/client";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
-import { Fragment } from "react";
+import { GlobalSettings } from "../../types/GlobalSettings";
 
 const calculateAdjustedTime = (originalTime: string) => {
   const timeParts = originalTime.split(":");
@@ -14,7 +14,14 @@ const calculateAdjustedTime = (originalTime: string) => {
     return "Orario non valido";
   }
 
-  const offset = parseInt(localStorage.getItem("kitchenOffset") ?? "0", 10);
+  const settings = localStorage.getItem("settings");
+  let offset: number = 0;
+
+  if (settings) {
+    const parsedSettings: GlobalSettings = JSON.parse(settings);
+    offset = parsedSettings.kitchenOffset;
+  }
+
   const now = new Date();
   const date = new Date(
     now.getFullYear(),

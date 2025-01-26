@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
 import getTable from "../../functions/util/getTable";
 import columns from "./columns";
-import useGlobalFilter from "../../components/hooks/useGlobalFilter";
+import useGlobalFilter from "../../hooks/useGlobalFilter";
 import GoBack from "../../components/GoBack";
 import TableControls from "../../components/table/TableControls";
 import { OrderWithPayments } from "@/app/(site)/models";

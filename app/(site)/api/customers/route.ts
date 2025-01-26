@@ -19,6 +19,7 @@ import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import handleRequest from "../util/handleRequest";
 import deleteCustomeById from "../../sql/customers/deleteCustomerById";
 import deleteCustomerById from "../../sql/customers/deleteCustomerById";
+import getCustomersWithStats from "../../sql/customers/getCustomersWithStats";
 
 export const customerSchemas = {
   getCustomerByPhone: z.object({ phone: z.string() }),
@@ -41,6 +42,10 @@ export const customerSchemas = {
   }),
   deleteCustomerById: z.object({
     id: z.number(),
+  }),
+  getCustomersWithStats: z.object({
+    from: z.coerce.date().optional(),
+    to: z.coerce.date().optional(),
   }),
 };
 
@@ -75,6 +80,10 @@ const GET_ACTIONS = new Map([
   [
     "getCustomersByDoorbell",
     { func: getCustomersByDoorbell, schema: customerSchemas.getCustomersByDoorbell },
+  ],
+  [
+    "getCustomersWithStats",
+    { func: getCustomersWithStats, schema: customerSchemas.getCustomersWithStats },
   ],
 ]);
 

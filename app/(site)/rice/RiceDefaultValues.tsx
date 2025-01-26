@@ -1,67 +1,64 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DialogWrapper from "../components/dialog/DialogWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash, X } from "@phosphor-icons/react";
-import { RiceDefault } from "../types/RiceDefault";
+import { Plus, Trash } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 import { toastSuccess, toastError } from "../functions/util/toast";
 import fetchRequest from "../functions/api/fetchRequest";
 import { RiceBatch } from "@prisma/client";
+import { debounce } from "lodash";
 
 export default function RiceDefaultValues() {
-  const [newDefault, setNewDefault] = useState<RiceDefault>();
-  const [riceDefaults, setRiceDefaults] = useState<RiceDefault[]>([]);
-
+  const defaultNewBatch = { id: -1, amount: 0, label: "" };
+  const [newBatch, setNewBatch] = useState<RiceBatch>(defaultNewBatch);
   const [riceBatches, setRiceBatches] = useState<RiceBatch[]>([]);
 
-  const fetchRiceBatches = () =>
+  const fetchRiceBatches = async () =>
     fetchRequest<RiceBatch[]>("GET", "/api/rice/", "getRiceBatches").then(setRiceBatches);
 
   useEffect(() => {
-    const defaults = localStorage.getItem("riceDefaults");
-
-    if (defaults) {
-      setRiceDefaults(JSON.parse(defaults) as RiceDefault[]);
-    } else {
-      localStorage.setItem("riceDefaults", JSON.stringify([]));
-    }
+    fetchRiceBatches();
   }, []);
 
-  const addDefaultValue = (riceDefault: RiceDefault | undefined) => {
-    if (!riceDefault) return;
+  const addRiceBatch = async () => {
+    if (!newBatch?.amount || !newBatch?.label) return;
 
-    if (riceDefault.label) {
-      const duplicate = riceDefaults.some(
-        (defaultValue) => defaultValue.label === riceDefault.label
-      );
+    fetchRequest<RiceBatch>("POST", "/api/rice/", "addRiceBatch", {
+      batch: { amount: newBatch.amount, label: newBatch.label },
+    }).then((createdBatch) => {
+      setRiceBatches((prev) => {
+        const isDuplicate = prev.some((batch) => batch.id === createdBatch.id);
 
-      if (duplicate) {
-        toastError("Un valore con la stessa etichetta esiste già.");
-        return;
-      }
-    }
+        if (!isDuplicate) {
+          return [...prev, createdBatch];
+        }
 
-    const updatedDefaults = [...riceDefaults, riceDefault];
-    setRiceDefaults(updatedDefaults);
-    localStorage.setItem("riceDefaults", JSON.stringify(updatedDefaults));
-    setNewDefault(undefined);
-    toastSuccess("Nuovo valore aggiunto con successo!");
+        return prev;
+      });
+
+      setNewBatch(defaultNewBatch);
+      toastSuccess("Valore aggiunto con successo");
+    });
   };
 
-  const removeDefaultValue = (riceDefault: RiceDefault) => {
-    const updatedDefaults = riceDefaults.filter((defaultValue) => defaultValue !== riceDefault);
-    setRiceDefaults(updatedDefaults);
-    localStorage.setItem("riceDefaults", JSON.stringify(updatedDefaults));
-  };
+  const removeRiceBatch = async (batchId: number) =>
+    fetchRequest("DELETE", `/api/rice/`, "deleteRiceBatch", { batchId }).then(() => {
+      setRiceBatches((prev) => prev.filter((batch) => batch.id !== batchId));
+      toastSuccess("Valore rimosso con successo");
+    });
 
-  const updateDefaultValue = (index: number, updatedField: Partial<RiceDefault>) => {
-    const updatedDefaults = [...riceDefaults];
-    updatedDefaults[index] = { ...updatedDefaults[index], ...updatedField };
-    setRiceDefaults(updatedDefaults);
-    localStorage.setItem("riceDefaults", JSON.stringify(updatedDefaults));
-  };
+  const debouncedUpdateBatch = useCallback(
+    debounce(
+      (batchId: number, field: keyof Omit<RiceBatch, "id">, value: any) =>
+        fetchRequest("POST", `/api/rice/`, "updateRiceBatch", { batchId, field, value }).then(() =>
+          toastSuccess("Valore aggiornato con successo")
+        ),
+      2000
+    ),
+    []
+  );
 
   return (
     <DialogWrapper
@@ -69,6 +66,7 @@ export default function RiceDefaultValues() {
       title="Valori di default del riso"
       desc="I valori si salvano automaticamente"
       contentClassName=""
+      autoFocus={false}
       trigger={
         <SidebarMenuSubButton className="hover:cursor-pointer ">
           Valori di default
@@ -76,30 +74,28 @@ export default function RiceDefaultValues() {
       }
     >
       <div className="max-h-[40vh] overflow-y-auto pr-4">
-        {riceDefaults.length > 0 ? (
+        {riceBatches.length > 0 ? (
           <div className="flex flex-col gap-2 items-center w-full">
-            {riceDefaults.map((riceDefault, index) => (
-              <div className="flex items-center gap-2 w-full" key={index}>
+            {riceBatches.map((riceBatch) => (
+              <div className="flex items-center gap-2 w-full" key={riceBatch.id}>
                 <Input
                   className="w-[40%]"
                   type="number"
                   placeholder="Modifica valore"
-                  defaultValue={riceDefault.value}
-                  onChange={(e) => updateDefaultValue(index, { value: parseFloat(e.target.value) })}
+                  defaultValue={riceBatch.amount}
+                  onChange={(e) =>
+                    debouncedUpdateBatch(riceBatch.id, "amount", parseFloat(e.target.value) || 0)
+                  }
                 />
-
                 <Input
                   className="w-[40%]"
                   type="text"
                   placeholder="Modifica etichetta"
-                  value={riceDefault.label || ""}
-                  onChange={(e) => updateDefaultValue(index, { label: e.target.value })}
+                  defaultValue={riceBatch.label || ""}
+                  onChange={(e) => debouncedUpdateBatch(riceBatch.id, "label", e.target.value)}
                 />
-
-                {/* Remove button */}
-                <Button className="group w-[20%]">
+                <Button className="group w-[20%]" onClick={() => removeRiceBatch(riceBatch.id)}>
                   <Trash
-                    onClick={() => removeDefaultValue(riceDefault)}
                     size={24}
                     className="transform transition-transform duration-300 
                           group-hover:rotate-[360deg] hover:font-bold hover:drop-shadow-2xl"
@@ -114,40 +110,35 @@ export default function RiceDefaultValues() {
       </div>
 
       <Separator />
+
       <div className="w-full flex gap-2">
         <Input
           className="w-[40%]"
           type="number"
           placeholder="Aggiungi valore"
-          value={newDefault?.value || ""}
+          value={newBatch.amount || ""}
           onChange={(e) =>
-            setNewDefault((prevDefault) => ({
-              ...prevDefault,
-              value: parseFloat(e.target.value) || 0,
+            setNewBatch((prevBatch) => ({
+              ...prevBatch,
+              amount: parseFloat(e.target.value) || 0,
             }))
           }
         />
+
         <Input
           className="w-[40%]"
           type="text"
           placeholder="Aggiungi etichetta"
-          value={newDefault?.label || ""}
+          value={newBatch.label || ""}
           onChange={(e) =>
-            setNewDefault((prevDefault) =>
-              prevDefault
-                ? {
-                    ...prevDefault,
-                    label: e.target.value,
-                  }
-                : undefined
-            )
+            setNewBatch((prevBatch) => ({
+              ...prevBatch,
+              label: e.target.value,
+            }))
           }
         />
-        <Button
-          className="w-[20%]"
-          onClick={() => addDefaultValue(newDefault)}
-          disabled={!newDefault?.value}
-        >
+
+        <Button className="w-[20%]" onClick={addRiceBatch} disabled={!newBatch.amount}>
           <Plus size={24} />
         </Button>
       </div>

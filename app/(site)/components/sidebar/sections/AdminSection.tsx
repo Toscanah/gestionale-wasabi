@@ -8,8 +8,9 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { CaretDown } from "@phosphor-icons/react";
-import { Gear } from "@phosphor-icons/react/dist/ssr";
+
 import Link from "next/link";
+import { UserCircleGear } from "@phosphor-icons/react/dist/ssr";
 
 export default function AdminSection() {
   const adminItems: { label: string; path: string }[] = [
@@ -37,7 +38,7 @@ export default function AdminSection() {
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>
             <SidebarMenuButton>
-              <Gear className="w-4 h-4" />
+              <UserCircleGear className="w-4 h-4" />
               Admin
               <CaretDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
             </SidebarMenuButton>

@@ -1,7 +1,7 @@
 "use client";
 
-import { ComponentType, useEffect, useState } from "react";
-import useGlobalFilter from "../components/hooks/useGlobalFilter";
+import { ComponentType, ReactNode, useEffect, useState } from "react";
+import useGlobalFilter from "../hooks/useGlobalFilter";
 import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import TableControls from "../components/table/TableControls";
@@ -19,6 +19,7 @@ import fetchRequest, {
 
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { TablePagination } from "../components/table/TablePagination";
 
 enum Actions {
   UPDATE = "update",
@@ -37,6 +38,8 @@ interface ManagerProps<T extends { id: number; active: boolean }> {
   FormFields: ComponentType<FormFieldsProps<T>>;
   columns: ColumnDef<T>[];
   type: "product" | "category" | "option" | "customer";
+  addionalFilters?: ReactNode[];
+  pagination?: boolean;
 }
 
 interface FormFieldsProps<T extends { id: number; active: boolean }> {
@@ -52,10 +55,16 @@ export default function Manager<T extends { id: number; active: boolean }>({
   columns,
   FormFields,
   type,
+  addionalFilters,
+  pagination = false,
 }: ManagerProps<T>) {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
   const [data, setData] = useState<T[]>(receivedData);
   const [onlyActive, setOnlyActive] = useState<boolean>(true);
+
+  useEffect(() => {
+    setData(receivedData);
+  }, [receivedData]);
 
   const triggerIcons = (disabled: boolean) => ({
     delete: disabled ? "Attiva" : "Disattiva",
@@ -153,28 +162,40 @@ export default function Manager<T extends { id: number; active: boolean }>({
   return (
     <div className="w-full flex flex-col gap-4">
       <TableControls
+        resetClassName="ml-auto"
         table={table}
         AddComponent={actions.add}
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
         onReset={() => setOnlyActive(true)}
       >
-        <div className="space-x-2 flex items-center">
+        <div className="space-x-4 flex items-center ">
+          {addionalFilters &&
+            addionalFilters?.length > 0 &&
+            addionalFilters?.map((filter) => filter)}
+
           <Checkbox
             checked={onlyActive}
             onCheckedChange={() => {
               setOnlyActive(!onlyActive);
             }}
           />
-          <Label className="text-xl">Solo attivi?</Label>
+          <Label className="text-xl flex flex-1 items-center h-10 w-full">Solo attivi?</Label>
         </div>
       </TableControls>
 
       <Table<T> table={table} />
 
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredRowModel().rows.length} elementi totali
-      </div>
+      {pagination ? (
+        <TablePagination
+          table={table}
+          totalCount={table.getFilteredRowModel().rows.length + " elementi totali"}
+        />
+      ) : (
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredRowModel().rows.length} elementi totali
+        </div>
+      )}
     </div>
   );
 }

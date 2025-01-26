@@ -13,4 +13,9 @@ export const CustomerWithPhoneSchema = CustomerSchema.extend({
   phone: PhoneSchema.nullable(),
 });
 
+export const CustomerWithAddressesSchema = CustomerWithPhoneSchema.extend({
+  addresses: z.array(AddressSchema),
+});
+
 export type CustomerWithDetails = z.infer<typeof CustomerWithAddressesAndOrdersSchema>;
+export type CustomerWithAddresses = z.infer<typeof CustomerWithAddressesSchema>;

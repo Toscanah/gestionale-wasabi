@@ -7,7 +7,7 @@ import updateOrderTime from "../../sql/orders/updateOrderTime";
 import cancelOrder from "../../sql/orders/cancelOrder";
 import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 import updateDiscount from "../../sql/orders/updateDiscount";
-import { OrderType } from "@prisma/client";
+import { OrderType, QuickPaymentOption } from "@prisma/client";
 import createSubOrder from "../../sql/orders/createSubOrder";
 import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 import deleteOrdersInBulk from "../../sql/orders/deleteOrdersInBulk";
@@ -19,6 +19,7 @@ import joinTableOrders from "../../sql/orders/joinTableOrders";
 import updateTable from "../../sql/orders/updateTable";
 import getOrderById from "../../sql/orders/getOrderById";
 import dummy from "../../sql/dummy";
+import updateOrderPayment from "../../sql/orders/updateOrderPayment";
 
 export const orderSchemas = {
   getOrderById: z.object({
@@ -34,7 +35,11 @@ export const orderSchemas = {
   }),
   updateOrderNotes: z.object({
     orderId: z.number(),
-    quickPaymentOption: z.string(),
+    notes: z.string(),
+  }),
+  updateOrderPayment: z.object({
+    orderId: z.number(),
+    payment: z.nativeEnum(QuickPaymentOption),
   }),
   createTableOrder: z.object({
     table: z.string(),
@@ -97,6 +102,7 @@ const POST_ACTIONS = new Map([
   ["updatePrintedFlag", { func: updatePrintedFlag, schema: orderSchemas.updatePrintedFlag }],
   ["joinTableOrders", { func: joinTableOrders, schema: orderSchemas.joinTableOrders }],
   ["updateTable", { func: updateTable, schema: orderSchemas.updateTable }],
+  ["updateOrderPayment", { func: updateOrderPayment, schema: orderSchemas.updateOrderPayment }],
 ]);
 
 const DELETE_ACTIONS = new Map([

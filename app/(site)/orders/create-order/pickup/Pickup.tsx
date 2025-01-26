@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import WhenSelector from "../../../components/select/WhenSelector";
 import { useWasabiContext } from "../../../context/WasabiContext";
-import useFocusCycle from "../../../components/hooks/useFocusCycle";
+import useFocusCycle from "../../../hooks/useFocusCycle";
 import fetchRequest from "../../../functions/api/fetchRequest";
 import { toastError, toastSuccess } from "../../../functions/util/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -109,12 +109,10 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
             <WhenSelector
               ref={(ref) => {
                 addRefs(ref);
-                // if (ref) {
-                //   ref.value = "immediate";
-                // }
               }}
               className="h-16 text-6xl w-full"
               value={when}
+              source="pickup"
               onValueChange={(value) => setWhen(value)}
               onKeyDown={handleKeyDown}
             />

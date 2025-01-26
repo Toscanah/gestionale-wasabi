@@ -13,7 +13,7 @@ import Link from "next/link";
 export default function StatsSection() {
   const statsItems = [
     { label: "Clienti", path: "/statistics/customers/" },
-    { label: "Prodottti", path: "/statistics/products/" },
+    { label: "Prodotti", path: "/statistics/products/" },
   ];
 
   return (
@@ -23,7 +23,7 @@ export default function StatsSection() {
           <CollapsibleTrigger asChild>
             <SidebarMenuButton>
               <ChartBar className="w-4 h-4" />
-              Statistiche
+              Statistiche 数据分析
               <CaretDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
             </SidebarMenuButton>
           </CollapsibleTrigger>

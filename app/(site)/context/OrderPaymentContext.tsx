@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { PaymentType } from "@prisma/client";
 import { AnyOrder } from "@/app/(site)/models";
-import useOrderPayment from "../components/hooks/useOrderPayment";
+import useOrderPayment from "../hooks/useOrderPayment";
 import roundToTwo from "../functions/formatting-parsing/roundToTwo";
 import applyDiscount from "../functions/order-management/applyDiscount";
 import { useOrderContext } from "./OrderContext";

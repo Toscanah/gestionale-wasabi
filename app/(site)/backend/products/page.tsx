@@ -12,13 +12,32 @@ import { formSchema } from "./form";
 import { getProductFields } from "./form";
 import logo from "../../../../public/logo.png";
 import Image from "next/image";
+import SelectWrapper from "../../components/select/SelectWrapper";
+import { Category } from "@prisma/client";
+import { allCategories } from "../../hooks/statistics/useProductsStats";
 
 type FormValues = Partial<Product>;
+
+// const allCategories: Category = {
+//   id: -1,
+//   category: "all",
+//   active: true,
+// };
 
 export default function ProductDashboard() {
   const [loading, setLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<CategoryWithOptions[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<Category>(allCategories);
+
+  useEffect(() => {
+    setFilteredProducts(() =>
+      selectedCategory.id === -1
+        ? products
+        : products.filter((product) => product.category_id === selectedCategory.id)
+    );
+  }, [selectedCategory]);
 
   useEffect(() => {
     fetchRequest<CategoryWithOptions[]>("GET", "/api/categories/", "getCategories").then(
@@ -29,6 +48,7 @@ export default function ProductDashboard() {
   useEffect(() => {
     fetchRequest<Product[]>("GET", "/api/products/", "getProducts").then((products) => {
       setProducts(products);
+      setFilteredProducts(products);
       setLoading(false);
     });
   }, []);
@@ -51,7 +71,7 @@ export default function ProductDashboard() {
         // home_price: object?.home_price || undefined,
         // site_price: object?.site_price || undefined,
       }}
-      layout={[{ fieldsPerRow: 2 }, { fieldsPerRow: 1 }, { fieldsPerRow: 3 }, { fieldsPerRow: 1 }]}
+      layout={[{ fieldsPerRow: 4 }, { fieldsPerRow: 1 }, { fieldsPerRow: 3 }, { fieldsPerRow: 1 }]}
       formFields={getProductFields(categories)}
       formSchema={formSchema}
     />
@@ -66,7 +86,30 @@ export default function ProductDashboard() {
           </div>
         ) : (
           <Manager<Product>
-            receivedData={products}
+            addionalFilters={[
+              <SelectWrapper
+                defaultValue="all"
+                value={selectedCategory.id.toString()}
+                className="h-10 w-64"
+                onValueChange={(value) =>
+                  setSelectedCategory(
+                    categories.find((c) => c.id.toString() === value) || allCategories
+                  )
+                }
+                groups={[
+                  {
+                    items: [
+                      { name: "Tutte le categorie", value: "-1" },
+                      ...categories.map((category) => ({
+                        name: category.category,
+                        value: category.id.toString(),
+                      })),
+                    ],
+                  },
+                ]}
+              />,
+            ]}
+            receivedData={filteredProducts}
             columns={columns}
             FormFields={Fields}
             path="/api/products/"

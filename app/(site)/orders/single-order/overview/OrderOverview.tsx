@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { PayingAction } from "../OrderTable";
-import { OrderType } from "@prisma/client";
-import QuickPaymentOptions, { QuickPaymentOption } from "./QuickPaymentOptions";
+import { OrderType, QuickPaymentOption } from "@prisma/client";
 import Discount from "./Discount";
 import Time from "./Time";
 import OldOrders from "./OldOrders";
@@ -10,21 +9,20 @@ import Total from "./Total";
 import NormalActions from "./NormalActions";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableChange from "./TableChange";
+import Notes from "./Notes";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
-  // quickPaymentOption: QuickPaymentOption;
-  // setQuickPaymentOption: Dispatch<SetStateAction<QuickPaymentOption>>;
 }
 
 export default function OrderOverview({ setAction }: OrderOverviewProps) {
   const { order } = useOrderContext();
-  const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
+  const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("UNKNOWN");
 
   return (
     <div className="w-[28%] flex flex-col gap-6 h-full">
       {order.type == OrderType.HOME && (
-        <QuickPaymentOptions
+        <Notes
           quickPaymentOption={quickPaymentOption}
           setQuickPaymentOption={setQuickPaymentOption}
         />

@@ -31,9 +31,10 @@ export type OrderStats = {
 interface OrderHistoryProps {
   customer: CustomerWithDetails;
   onCreate?: (newProducts: ProductInOrder[]) => void;
+  noStatistics?: boolean;
 }
 
-export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) {
+export default function OrderHistory({ customer, onCreate, noStatistics }: OrderHistoryProps) {
   const [selectedProducts, setSelectedProducts] = useState<ProductInOrder[]>([]);
   const orderTypes = useMemo(
     () => [
@@ -164,10 +165,12 @@ export default function OrderHistory({ customer, onCreate }: OrderHistoryProps) 
         collapsible
         className="max-h-[450px] overflow-y-auto overflow-x-hidden pr-4"
       >
-        <AccordionItem value={"stats"} key={"stats"}>
-          <AccordionTrigger className="text-2xl">Vedi statistiche</AccordionTrigger>
-          <HistoryStats stats={stats} />
-        </AccordionItem>
+        {!noStatistics && (
+          <AccordionItem value={"stats"} key={"stats"}>
+            <AccordionTrigger className="text-2xl">Vedi statistiche</AccordionTrigger>
+            <HistoryStats stats={stats} />
+          </AccordionItem>
+        )}
 
         {orderTypes.map(({ type, orders }) =>
           orders

@@ -1,18 +1,63 @@
 import { Br, Line, Text } from "react-thermal-printer";
 import { HomeOrder } from "@/app/(site)/models";
-import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
+import { QuickPaymentOption } from "@prisma/client";
 
-export default function OrderInfoSection(
-  order: HomeOrder,
-  quickPaymentOption?: QuickPaymentOption
-) {
+interface OrderInfoSectionProps {
+  order: HomeOrder;
+  quickPaymentOption?: QuickPaymentOption;
+  soupsAndSalads?: boolean;
+}
+
+export default function OrderInfoSection({
+  order,
+  quickPaymentOption,
+  soupsAndSalads = true,
+}: OrderInfoSectionProps) {
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
+  const totalSoups = order.products.reduce((sum, product) => sum + (product.product.soup || 0), 0);
+  const totalSalads = order.products.reduce(
+    (sum, product) => sum + (product.product.salad || 0),
+    0
+  );
+
+  const hasSoups = order.products.some((product) => product.product.soup ?? 0 > 0);
+  const hasSalads = order.products.some((product) => product.product.salad ?? 0 > 0);
+
   return (
     <>
+      {soupsAndSalads && (hasSoups || hasSalads) && (
+        <>
+          {hasSoups && (
+            <>
+              <Text bold inline size={smallSize}>
+                Zuppe:{" "}
+              </Text>
+              <Text inline size={smallSize}>
+                {totalSoups}
+              </Text>
+
+              {hasSalads && (
+                <Text inline size={smallSize}>
+                  {", "}
+                </Text>
+              )}
+            </>
+          )}
+          {hasSalads && (
+            <>
+              <Text bold inline size={smallSize}>
+                Salate:{" "}
+              </Text>
+              <Text size={smallSize}>{totalSalads}</Text>
+            </>
+          )}
+        </>
+      )}
+
       {(order.home_order?.customer.preferences || order.home_order?.notes) && (
         <>
           {order.home_order?.customer.preferences && (
@@ -26,37 +71,14 @@ export default function OrderInfoSection(
               {/* {!order.home_order?.notes && <Br />} */}
             </>
           )}
-          {order.home_order?.notes &&
-            (() => {
-              const sanitizedNotes = sanitazeReceiptText(
-                order.home_order.notes
-              ).toLocaleUpperCase();
-              const quickPaymentText =
-                quickPaymentOption === "cash"
-                  ? "CONTANTI"
-                  : quickPaymentOption === "already_paid"
-                  ? "GIA' PAGATO"
-                  : quickPaymentOption === "card"
-                  ? "CARTA"
-                  : "";
-
-              // Remove the quick payment text from the notes
-              const filteredNotes = sanitizedNotes
-                .replace(quickPaymentText, "")
-                .trim()
-                .replace(/,?$/, ""); // Remove any trailing commas or spaces
-
-              return filteredNotes ? (
-                <>
-                  <Text bold inline size={smallSize}>
-                    Note ordine:{" "}
-                  </Text>
-                  <Text size={smallSize}>{filteredNotes}</Text>
-                  <Line />
-                </>
-              ) : null;
-            })()}
-          {/* {!order.home_order?.notes && quickPaymentOption == "none"} */}
+          {order.home_order?.notes && (
+            <>
+              <Text bold inline size={smallSize}>
+                Note ordine:{" "}
+              </Text>
+              <Text size={smallSize}>{order.home_order.notes}</Text>
+            </>
+          )}
         </>
       )}
 
@@ -117,15 +139,15 @@ export default function OrderInfoSection(
         </>
       )}
 
-      {quickPaymentOption !== "none" && (
+      {quickPaymentOption !== "UNKNOWN" && (
         <>
           <Text bold inline size={smallSize}>
             Tipo pagamento:{" "}
           </Text>
           <Text size={smallSize}>
-            {quickPaymentOption === "cash"
+            {quickPaymentOption === "CASH"
               ? "CONTANTI"
-              : quickPaymentOption === "already_paid"
+              : quickPaymentOption === "ALREADY_PAID"
               ? " GIA' PAGATO"
               : "CARTA"}
           </Text>

@@ -37,6 +37,13 @@ enum PaymentType {
     CREDIT
 }
 
+enum QuickPaymentOption {
+    ALREADY_PAID
+    CASH
+    CARD
+    UNKNOWN
+}
+
 enum KitchenType {
     HOT
     COLD
@@ -74,16 +81,17 @@ model TableOrder {
 }
 
 model HomeOrder {
-    id            Int      @id @default(autoincrement())
-    order_id      Int      @unique
+    id            Int                @id @default(autoincrement())
+    order_id      Int                @unique
     address_id    Int
     customer_id   Int
-    when          String   @default("immediate")
+    when          String             @default("immediate")
     notes         String?
+    payment       QuickPaymentOption @default(UNKNOWN)
     contact_phone String?
-    order         Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
-    address       Address  @relation(fields: [address_id], references: [id])
-    customer      Customer @relation(fields: [customer_id], references: [id])
+    order         Order              @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    address       Address            @relation(fields: [address_id], references: [id])
+    customer      Customer           @relation(fields: [customer_id], references: [id])
 }
 
 model PickupOrder {
@@ -141,17 +149,12 @@ model Payment {
     order      Order       @relation(fields: [order_id], references: [id])
 }
 
-model Rice {
-    id        Int   @id @default(autoincrement())
-    amount    Float
-    threshold Float
-}
-
 model RiceBatchLog {
-    id                    Int       @id @default(autoincrement())
-    created_at            DateTime  @default(now())
-    rice_default_value_id Int
-    rice_default          RiceBatch @relation(fields: [rice_default_value_id], references: [id])
+    id            Int        @id @default(autoincrement())
+    created_at    DateTime   @default(now())
+    rice_batch_id Int?
+    rice_batch    RiceBatch? @relation(fields: [rice_batch_id], references: [id])
+    value         Float?
 }
 
 model RiceBatch {
@@ -169,6 +172,8 @@ model Product {
     site_price  Float?           @default(0)
     home_price  Float?           @default(0)
     rice        Float            @default(0)
+    salad       Int?             @default(0)
+    soup        Int?             @default(0)
     active      Boolean          @default(true)
     kitchen     KitchenType      @default(NONE)
     orders      ProductInOrder[]

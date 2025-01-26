@@ -124,7 +124,6 @@ export default function Home() {
             } else if (totalTypes === 3) {
               defaultSize = index === 1 ? 60 : 30;
             } else {
-              // Even distribution for more than 3
               defaultSize = 100 / totalTypes;
             }
 

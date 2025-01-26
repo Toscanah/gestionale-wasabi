@@ -13,7 +13,7 @@ import { TimeFilter } from "../../sql/products/getProductsWithStats";
 export const CreateSubOrderSchema = z.object({
   parentOrder: AnyOrderSchema,
   products: z.array(ProductInOrderWithOptionsSchema),
-  isReceiptPrinted: z.boolean()
+  isReceiptPrinted: z.boolean(),
 });
 
 export const PayOrderSchema = z.object({

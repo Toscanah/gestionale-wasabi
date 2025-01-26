@@ -1,16 +1,16 @@
-import { AnyOrder, HomeOrder } from "@/app/(site)/models";
+import { HomeOrder } from "@/app/(site)/models";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import { Label } from "@/components/ui/label";
+import { QuickPaymentOption } from "@prisma/client";
 
 interface QuickPaymentOptionsProps {
   quickPaymentOption: QuickPaymentOption;
   setQuickPaymentOption: Dispatch<SetStateAction<QuickPaymentOption>>;
 }
-
-export type QuickPaymentOption = "already_paid" | "cash" | "card" | "none";
 
 export default function QuickPaymentOptions({
   quickPaymentOption,
@@ -19,19 +19,18 @@ export default function QuickPaymentOptions({
   const { order, updateOrder } = useOrderContext();
 
   const quickPaymentOptions: { value: QuickPaymentOption; label: string }[] = [
-    { value: "already_paid", label: "Già pagato" },
-    { value: "cash", label: "Contanti" },
-    { value: "card", label: "Carta" },
+    { value: "ALREADY_PAID", label: "Già pagato" },
+    { value: "CASH", label: "Contanti" },
+    { value: "CARD", label: "Carta" },
   ];
 
   const handleQuickPaymentOption = (value: QuickPaymentOption) => {
-    const newNote = quickPaymentOption === value ? "none" : value;
+    const newNote = quickPaymentOption === value ? "UNKNOWN" : value;
     setQuickPaymentOption(newNote);
 
-    fetchRequest<HomeOrder>("POST", "/api/orders/", "updateOrderNotes", {
+    fetchRequest<HomeOrder>("POST", "/api/orders/", "updateOrderPayment", {
       orderId: order.id,
-      quickPaymentOption:
-        quickPaymentOptions.find((option) => option.value === newNote)?.label || "",
+      payment: quickPaymentOptions.find((option) => option.value === newNote)?.value || "UNKNOWN",
     }).then((updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
       updateOrder({
@@ -57,20 +56,23 @@ export default function QuickPaymentOptions({
   }, []);
 
   return (
-    <ToggleGroup
-      variant="outline"
-      className="flex w-full gap-6"
-      type="single"
-      value={quickPaymentOption}
-      onValueChange={(value: QuickPaymentOption) =>
-        handleQuickPaymentOption(value ? value : "none")
-      }
-    >
-      {quickPaymentOptions.map(({ value, label }) => (
-        <ToggleGroupItem key={value} value={value} className="flex-1 h-12 text-xl">
-          {label}
-        </ToggleGroupItem>
-      ))}
-    </ToggleGroup>
+    <div className="space-y-2">
+      <Label className="text-xl">Pagamento rapido</Label>
+      <ToggleGroup
+        variant="outline"
+        className="flex w-full gap-6"
+        type="single"
+        value={quickPaymentOption}
+        onValueChange={(value: QuickPaymentOption) =>
+          handleQuickPaymentOption(value ? value : "UNKNOWN")
+        }
+      >
+        {quickPaymentOptions.map(({ value, label }) => (
+          <ToggleGroupItem key={value} value={value} className="flex-1 h-12 text-xl">
+            {label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    </div>
   );
 }

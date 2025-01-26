@@ -12,9 +12,8 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { Check } from "@phosphor-icons/react";
-import { cn } from "@/lib/utils"; // Utility className handler (optional)
+import { cn } from "@/lib/utils";
 import generateTimeSlots from "@/app/(site)/functions/util/generateTimeSlots";
-import { subHours } from "date-fns";
 
 interface WhenSelectorProps {
   className?: string;
@@ -22,12 +21,12 @@ interface WhenSelectorProps {
   field?: ControllerRenderProps;
   onValueChange?: (value: string) => void;
   onKeyDown?: (e: KeyboardEvent<any>) => void;
+  source?: string;
 }
 
 const WhenSelector = forwardRef<HTMLDivElement, WhenSelectorProps>(
-  ({ className, field, value, onValueChange, onKeyDown }, ref) => {
+  ({ className, field, value, onValueChange, onKeyDown, source = "" }, ref) => {
     const [open, setOpen] = useState<boolean>(false);
-    const [isTimeSelected, setIsTimeSelected] = useState<boolean>(false);
 
     const now = new Date();
     const currentHour = now.getHours();
@@ -51,7 +50,7 @@ const WhenSelector = forwardRef<HTMLDivElement, WhenSelectorProps>(
 
     const renderGroup = (groupOptions: any[], groupLabel?: string) =>
       groupOptions.length > 0 && (
-        <CommandGroup >
+        <CommandGroup>
           {groupLabel && <div className="px-2 py-1 text-sm font-semibold">{groupLabel}</div>}
           {groupOptions.map((option) => (
             <CommandItem
@@ -61,7 +60,6 @@ const WhenSelector = forwardRef<HTMLDivElement, WhenSelectorProps>(
                 if (onValueChange) onValueChange(currentValue);
                 if (field) field.onChange(currentValue);
                 setOpen(false);
-                setIsTimeSelected(true);
               }}
             >
               {option.label}
@@ -78,9 +76,16 @@ const WhenSelector = forwardRef<HTMLDivElement, WhenSelectorProps>(
         <PopoverTrigger asChild>
           <Button
             onKeyDown={(e) => {
-              if (isTimeSelected && onKeyDown) {
-                onKeyDown(e);
-                setIsTimeSelected(false);
+              if (source === "pickup") {
+                if (e.key === "Enter" || e.key === "ArrowDown") {
+                  e.preventDefault();
+                  onKeyDown?.(e);
+                  return false;
+                }
+
+                setOpen(true);
+              } else {
+                onKeyDown?.(e);
               }
             }}
             ref={ref as any}
@@ -96,9 +101,9 @@ const WhenSelector = forwardRef<HTMLDivElement, WhenSelectorProps>(
         </PopoverTrigger>
 
         <PopoverContent className="p-0">
-          <Command >
+          <Command>
             <CommandInput placeholder="Cerca un orario" className="h-9" />
-            <CommandList >
+            <CommandList>
               <CommandEmpty>Nessun orario trovato</CommandEmpty>
 
               {renderGroup(additionalOptions, "Altre opzioni")}

@@ -64,6 +64,7 @@ export default function CustomersDashboard() {
             columns={columns(customers, setCustomers)}
             FormFields={Fields}
             path="/api/customers/"
+            pagination
             fetchActions={{
               add: "createCustomer",
               toggle: "toggleCustomer",

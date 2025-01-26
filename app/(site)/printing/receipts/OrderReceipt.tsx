@@ -4,8 +4,7 @@ import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
-import { OrderType } from "@prisma/client";
-import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
+import { OrderType, QuickPaymentOption } from "@prisma/client";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 import padReceiptText from "../../functions/formatting-parsing/printing/padReceiptText";
@@ -69,7 +68,7 @@ export default function OrderReceipt<T extends AnyOrder>(
 
       {homeOrder && putInfo && (
         <>
-          {OrderInfoSection(order as HomeOrder, quickPaymentOption)}
+          {OrderInfoSection({ order: order as HomeOrder, quickPaymentOption })}
           <Line />
         </>
       )}

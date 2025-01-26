@@ -1,10 +1,7 @@
-import { Rice } from "@prisma/client";
 import prisma from "../db";
 import { endOfDay, startOfDay } from "date-fns";
-import getTotalRice from "./getTotalRice";
 
-export default async function getRemainingRice(): Promise<Rice | null> {
-  const rice = await getTotalRice();
+export default async function getDailyRiceUsage(): Promise<number> {
   const today = new Date();
   const usedRice = await prisma.productInOrder.aggregate({
     _sum: {
@@ -23,9 +20,5 @@ export default async function getRemainingRice(): Promise<Rice | null> {
     },
   });
 
-  const totalUsedRice = usedRice._sum.rice_quantity ?? 0;
-
-  return rice
-    ? { ...rice, amount: rice.amount - totalUsedRice }
-    : { id: 1, amount: 0, threshold: 0 };
+  return usedRice._sum.rice_quantity ?? 0;
 }

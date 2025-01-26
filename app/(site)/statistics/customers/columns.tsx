@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import ScoreDialog from "./ScoreDialog";
 import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
 import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import { CustomerWithStats } from "../../types/CustomerWithStats";
+import OrderHistory from "../../components/order-history/OrderHistory";
 
-const columns: ColumnDef<CustomerWithDetails>[] = [
+const columns: ColumnDef<CustomerWithStats>[] = [
   TableColumn({
     accessorKey: "phone.phone",
     header: "Telefono",
@@ -32,122 +34,35 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
   }),
 
   TableColumn({
-    accessorKey: "orders_per_week",
+    accessorKey: "averageOrdersWeek",
     header: "Media a settimana",
-    cellContent: (row) => {
-      const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      const orderDates = orders.map((order) => new Date(order.order.created_at));
-
-      if (orderDates.length === 0) return 0;
-
-      // Calculate the first and last order dates
-      const { firstOrder, lastOrder } = orderDates.reduce(
-        (acc, date) => {
-          if (date < acc.firstOrder) acc.firstOrder = date;
-          if (date > acc.lastOrder) acc.lastOrder = date;
-          return acc;
-        },
-        { firstOrder: orderDates[0], lastOrder: orderDates[0] }
-      );
-
-      // Calculate the total number of weeks between the first and last order
-      const totalWeeks = (lastOrder.getTime() - firstOrder.getTime()) / (1000 * 60 * 60 * 24 * 7);
-
-      // Calculate the average
-      return orders.length / totalWeeks;
-    },
   }),
 
   TableColumn({
-    accessorKey: "orders_per_month",
+    accessorKey: "averageOrdersMonth",
     header: "Media al mese",
-    cellContent: (row) => {
-      const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      const orderDates = orders.map((order) => new Date(order.order.created_at));
-
-      if (orderDates.length === 0) return 0;
-
-      // Calculate the first and last order dates
-      const { firstOrder, lastOrder } = orderDates.reduce(
-        (acc, date) => {
-          if (date < acc.firstOrder) acc.firstOrder = date;
-          if (date > acc.lastOrder) acc.lastOrder = date;
-          return acc;
-        },
-        { firstOrder: orderDates[0], lastOrder: orderDates[0] }
-      );
-
-      // Calculate the total number of months between the first and last order
-      const totalMonths =
-        (lastOrder.getFullYear() - firstOrder.getFullYear()) * 12 +
-        (lastOrder.getMonth() - firstOrder.getMonth()) +
-        1;
-
-      // Calculate the average
-      return (orders.length / totalMonths).toFixed(2);
-    },
   }),
 
   TableColumn({
-    accessorKey: "orders_per_year",
+    accessorKey: "averageOrdersYear",
     header: "Media all'anno",
-    cellContent: (row) => {
-      const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      const orderDates = orders.map((order) => new Date(order.order.created_at));
-
-      if (orderDates.length === 0) return 0;
-
-      // Calculate the first and last order dates
-      const { firstOrder, lastOrder } = orderDates.reduce(
-        (acc, date) => {
-          if (date < acc.firstOrder) acc.firstOrder = date;
-          if (date > acc.lastOrder) acc.lastOrder = date;
-          return acc;
-        },
-        { firstOrder: orderDates[0], lastOrder: orderDates[0] }
-      );
-
-      // Calculate the total number of years between the first and last order
-      const totalYears = lastOrder.getFullYear() - firstOrder.getFullYear() + 1;
-
-      // Calculate the average
-      return (orders.length / totalYears).toFixed(2);
-    },
   }),
 
   TableColumn({
-    accessorKey: "average_spending",
+    accessorKey: "averageSpending",
     header: "Spesa media",
-    cellContent: (row) => {
-      const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      if (orders.length === 0) return "";
-      const totalSpent = orders.reduce((sum, order) => sum + (order.order.total || 0), 0);
-      return roundToTwo(totalSpent / orders.length);
-    },
   }),
 
   TableColumn({
-    accessorKey: "last_order_date",
+    accessorKey: "lastOrder",
     header: "Ultimo ordine",
-    cellContent: (row) => {
-      const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      if (orders.length === 0) return "";
-      const lastOrder = orders.reduce((latest, order) => {
-        const orderDate = new Date(order.order.created_at);
-        return orderDate > latest ? orderDate : latest;
-      }, new Date(0));
-      return format(lastOrder, "dd/MM/yyyy");
-    },
+    cellContent: (row) =>
+      row.original.lastOrder ? format(row.original.lastOrder, "dd-MM-yyyy") : "",
   }),
 
   TableColumn({
-    accessorKey: "total_spent",
+    accessorKey: "totalSpending",
     header: "Spesa totale",
-    cellContent: (row) => {
-      const orders = [...row.original.home_orders, ...row.original.pickup_orders];
-      const totalSpent = orders.reduce((sum, order) => sum + (order.order.total || 0), 0);
-      return roundToTwo(totalSpent);
-    },
   }),
 
   // TableColumn({
@@ -155,10 +70,32 @@ const columns: ColumnDef<CustomerWithDetails>[] = [
   //   header: "Punteggio",
   // }),
 
+  // TableColumn({
+  //   accessorKey: "customer_score",
+  //   header: "Punteggio",
+  //   cellContent: (row) => <ScoreDialog customer={row.original} />,
+  // }),
+
   TableColumn({
-    accessorKey: "customer_score",
-    header: "Punteggio",
-    cellContent: (row) => <ScoreDialog customer={row.original} />,
+    accessorKey: "orderHistory",
+    header: "Storico ordini",
+    cellContent: (row) => {
+      const customer = row.original;
+
+      return (
+        <DialogWrapper
+          size="medium"
+          title="Storico ordini"
+          trigger={
+            <Button type="button" variant={"outline"}>
+              Vedi ordini precedenti
+            </Button>
+          }
+        >
+          <OrderHistory noStatistics customer={customer} />
+        </DialogWrapper>
+      );
+    },
   }),
 
   TableColumn({

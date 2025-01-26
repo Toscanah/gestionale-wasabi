@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
 import { AnyOrder } from "@/app/(site)/models";
-import { RecursivePartial, useOrderManager } from "../components/hooks/useOrderManager";
-import { useProductManager } from "../components/hooks/useProductManager";
+import { RecursivePartial, useOrderManager } from "../hooks/useOrderManager";
+import { useProductManager } from "../hooks/useProductManager";
 import { ProductInOrder } from "@/app/(site)/models";
 import { Table } from "@tanstack/react-table";
 import generateDummyProduct from "../functions/product-management/generateDummyProduct";

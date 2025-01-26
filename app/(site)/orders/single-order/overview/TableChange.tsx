@@ -57,7 +57,7 @@ export default function TableChange() {
       </div>
 
       <div className="w-1/2 flex flex-col space-y-2">
-        <span>Unisci</span>
+        <span>Unisci tavolo</span>
         <Input value={join} onChange={handleTableJoinInputChange} className="h-12 text-xl" />
       </div>
     </div>

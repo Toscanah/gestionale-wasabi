@@ -4,10 +4,8 @@ import RiceDialog from "../rice/RiceDialog";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import RiceSummary from "../rice/RiceSummary";
-import KitchenOffset from "../components/KitchenOffset";
 import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
-import { Button } from "@/components/ui/button";
 import DeleteOrdersBulk from "../components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";
 
@@ -28,10 +26,10 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
-        <div className="flex items-center gap-2 w-full">
+        <div className="flex items-center gap-2 w-full justify-center">
           <RiceDialog variant="header" />
           {selectedOrders.length > 0 && <DeleteOrdersBulk />}
-          <KitchenOffset variant="header" />
+          {/* <KitchenOffset variant="header" /> */}
         </div>
 
         <div className="flex justify-evenly w-80">

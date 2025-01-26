@@ -48,10 +48,6 @@ export default async function print(...contents: (() => ReactNode)[]) {
 
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
 
-  if (ports.length === 0) {
-    return false;
-  }
-
   let selectedPort: SerialPort | null = null;
   let characterSetToUse: CharacterSet = "wpc1256_arabic";
 
@@ -77,6 +73,10 @@ export default async function print(...contents: (() => ReactNode)[]) {
 
   const data: Uint8Array = await render(receipt);
   console.log(new TextDecoder().decode(data));
+
+  if (ports.length === 0) {
+    return false;
+  }
 
   try {
     await selectedPort.open({ baudRate: 19200 });

@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../db";
 
 export default async function deleteCustomerById(id: number) {
   await prisma.$transaction(async (tx) => {
@@ -33,12 +31,10 @@ export default async function deleteCustomerById(id: number) {
       },
     });
 
-    // Delete all related home orders
     await tx.homeOrder.deleteMany({
       where: { customer_id: id },
     });
 
-    // Delete all related pickup orders
     await tx.pickupOrder.deleteMany({
       where: { customer_id: id },
     });
@@ -57,12 +53,10 @@ export default async function deleteCustomerById(id: number) {
       },
     });
 
-    // Delete all related addresses
     await tx.address.deleteMany({
       where: { customer_id: id },
     });
 
-    // Nullify phone association (if phone onDelete is SetNull)
     await tx.customer.updateMany({
       where: { id },
       data: { phone_id: null },
@@ -74,7 +68,6 @@ export default async function deleteCustomerById(id: number) {
       },
     });
 
-    // Delete the customer itself
     await tx.customer.delete({
       where: { id },
     });

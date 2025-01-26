@@ -2,8 +2,6 @@ import { cn } from "@/lib/utils";
 import formatRice from "../../../functions/formatting-parsing/formatRice";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { useEffect, useState } from "react";
-import { AnyOrder } from "@/app/(site)/models";
-import { debounce } from "lodash";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 export default function Rice() {

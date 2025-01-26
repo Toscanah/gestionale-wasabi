@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Warning } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
+import TooltipWrapper from "../TooltipWrapper";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const sizes = {
   small: "max-w-[25vw] w-[25vw]",
@@ -35,10 +37,42 @@ type DialogWrapperProps = {
   onDelete?: () => void;
   onOpenChange?: (open: boolean) => void;
   size?: keyof typeof sizes;
+  tooltip?: ReactNode;
 } & (
   | { title: ReactNode; desc?: ReactNode }
   | { title: ReactNode; desc: ReactNode }
   | { title?: never; desc?: never }
+);
+
+interface DialogTriggerWrapperProps {
+  trigger: React.ReactNode;
+  triggerClassName?: string;
+  double?: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+}
+
+const DialogTriggerWrapper = ({
+  trigger,
+  triggerClassName,
+  double,
+  onOpenChange,
+}: DialogTriggerWrapperProps) => (
+  <DialogTrigger
+    asChild
+    className={cn("select-none", triggerClassName)}
+    onClick={(e) => {
+      if (double) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }}
+    onDoubleClick={(e) => {
+      onOpenChange(true);
+      e.stopPropagation();
+    }}
+  >
+    {trigger}
+  </DialogTrigger>
 );
 
 export default function DialogWrapper({
@@ -57,6 +91,7 @@ export default function DialogWrapper({
   onDelete,
   onOpenChange,
   size = "medium",
+  tooltip,
 }: DialogWrapperProps) {
   const isDeleteVariant = variant === "delete";
 
@@ -65,23 +100,16 @@ export default function DialogWrapper({
   return (
     <Dialog onOpenChange={thisOnOpenChange} open={open}>
       {trigger && (
-        <DialogTrigger
-          asChild
-          className={cn("select-none", triggerClassName)}
-          onClick={(e) => {
-            if (double) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
-          }}
-          onDoubleClick={(e) => {
-            thisOnOpenChange(true);
-            e.stopPropagation();
-          }}
-        >
-          {trigger}
-        </DialogTrigger>
+        <>
+          <DialogTriggerWrapper
+            trigger={trigger}
+            triggerClassName={triggerClassName}
+            double={double}
+            onOpenChange={thisOnOpenChange}
+          />
+        </>
       )}
+
       <DialogContent
         onOpenAutoFocus={(e) => {
           if (!autoFocus) {

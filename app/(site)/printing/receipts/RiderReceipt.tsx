@@ -1,9 +1,9 @@
 import { Br, Cut, Line } from "react-thermal-printer";
-import { QuickPaymentOption } from "../../orders/single-order/overview/QuickPaymentOptions";
 import { AnyOrder, HomeOrder } from "@/app/(site)/models";
 import OrderInfoSection from "../common/OrderInfoSection";
 import TimeSection from "../common/TimeSection";
 import TotalSection from "../common/TotalSection";
+import { QuickPaymentOption } from "@prisma/client";
 
 export default function RiderReceipt(order: HomeOrder, quickPaymentOption: QuickPaymentOption) {
   return (
@@ -13,7 +13,7 @@ export default function RiderReceipt(order: HomeOrder, quickPaymentOption: Quick
       {TimeSection()}
 
       <Line />
-      {OrderInfoSection(order, quickPaymentOption)}
+      {OrderInfoSection({ order, quickPaymentOption, soupsAndSalads: false })}
 
       <Line />
       {TotalSection(order.products, order.discount, true)}

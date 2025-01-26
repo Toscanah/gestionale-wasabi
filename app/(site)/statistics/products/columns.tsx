@@ -1,5 +1,4 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Product } from "../../models";
 import TableColumn from "../../components/table/TableColumn";
 import { ProductWithStats } from "../../types/ProductWithStats";
 import formatRice from "../../functions/formatting-parsing/formatRice";

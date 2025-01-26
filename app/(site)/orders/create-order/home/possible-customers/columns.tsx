@@ -55,6 +55,7 @@ const columns = (
     cellContent: (row) => (
       <DialogWrapper
         variant="delete"
+        size="small"
         trigger={<Button variant={"destructive"}>Elimina</Button>}
         onDelete={() =>
           fetchRequest<boolean>("POST", "/api/customers", "deleteCustomerById", {
@@ -66,7 +67,7 @@ const columns = (
           )
         }
       >
-        Stai per eliminare il seguenti con tutti i suoi dati correlati. Questa azione è definitiva e
+        Stai per eliminare il seguente cliente con tutti i suoi dati correlati. Questa azione è definitiva e
         irriversibile
       </DialogWrapper>
     ),

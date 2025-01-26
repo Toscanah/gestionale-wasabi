@@ -6,6 +6,7 @@ import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import { useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import TooltipWrapper from "@/app/(site)/components/TooltipWrapper";
 
 export default function Time() {
   const { order, updateOrder } = useOrderContext();
@@ -36,7 +37,7 @@ export default function Time() {
               },
             }
           : {
-            is_receipt_printed: false,
+              is_receipt_printed: false,
               home_order: {
                 ...(updatedOrder as HomeOrder).home_order,
                 when: (updatedOrder as HomeOrder).home_order?.when,
@@ -48,12 +49,14 @@ export default function Time() {
   };
 
   return (
-    <div className="flex gap-2 justify-between items-center w-full">
-      <WhenSelector
-        className="h-12 text-2xl uppercase w-full"
-        value={orderTime == "immediate" ? "immediate" : orderTime}
-        onValueChange={updateOrderTime}
-      />
-    </div>
+   
+      <div className="flex gap-2 justify-between items-center w-full">
+        <WhenSelector
+          className="h-12 text-2xl uppercase w-full"
+          value={orderTime == "immediate" ? "immediate" : orderTime}
+          onValueChange={updateOrderTime}
+        />
+      </div>
+  
   );
 }

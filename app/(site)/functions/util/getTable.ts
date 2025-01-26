@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction } from "react";
 
-const PAGE_SIZE = 999999;
+const DEFAULT_PAGE_SIZE = 999999;
 const noop = () => {};
 
 interface TableProps<T> {
@@ -19,6 +19,7 @@ interface TableProps<T> {
   setGlobalFilter?: Dispatch<SetStateAction<string>>;
   rowSelection?: Record<string, boolean>;
   setRowSelection?: Dispatch<SetStateAction<Record<string, boolean>>>;
+  pagination?: { putPagination: boolean; pageSize: number };
 }
 
 export default function getTable<T>({
@@ -28,6 +29,7 @@ export default function getTable<T>({
   setGlobalFilter = noop,
   rowSelection = {},
   setRowSelection = noop,
+  pagination = { putPagination: false, pageSize: DEFAULT_PAGE_SIZE },
 }: TableProps<T>): Table<T> {
   return useReactTable({
     data,
@@ -45,7 +47,7 @@ export default function getTable<T>({
     autoResetPageIndex: false,
     initialState: {
       pagination: {
-        pageSize: PAGE_SIZE,
+        pageSize: pagination.putPagination ? pagination.pageSize : DEFAULT_PAGE_SIZE,
       },
     },
   });

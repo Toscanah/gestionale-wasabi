@@ -12,7 +12,6 @@ import { useOrderContext } from "../../context/OrderContext";
 import print from "../../printing/print";
 import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
 import NormalActions from "./overview/NormalActions";
-import { QuickPaymentOption } from "./overview/QuickPaymentOptions";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
@@ -30,7 +29,6 @@ export default function OrderTable() {
   } = useOrderContext();
 
   const [payingAction, setPayingAction] = useState<PayingAction>("none");
-  // const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("none");
   const [rowSelection, setRowSelection] = useState({});
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import { OrderType } from "@prisma/client";
 import TableColumn from "../../components/table/TableColumn";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import useGridFocus, { FocussableInput } from "../../components/hooks/useGridFocus";
+import useGridFocus, { FocussableInput } from "../../hooks/useGridFocus";
 import { Button } from "@/components/ui/button";
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { debounce } from "lodash";

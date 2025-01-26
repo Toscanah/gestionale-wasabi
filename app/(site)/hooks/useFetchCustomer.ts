@@ -1,7 +1,7 @@
 import { Address, Customer } from "@prisma/client";
 import { Dispatch, SetStateAction, useEffect, useState, useCallback } from "react";
 
-import fetchRequest from "../../functions/api/fetchRequest";
+import fetchRequest from "../functions/api/fetchRequest";
 import { CustomerWithDetails } from "@/app/(site)/models";
 import { debounce } from "lodash";
 
