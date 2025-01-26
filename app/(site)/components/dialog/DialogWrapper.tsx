@@ -14,8 +14,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Warning } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
-import TooltipWrapper from "../TooltipWrapper";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const sizes = {
   small: "max-w-[25vw] w-[25vw]",
@@ -51,29 +49,14 @@ interface DialogTriggerWrapperProps {
   onOpenChange: (isOpen: boolean) => void;
 }
 
-const DialogTriggerWrapper = ({
-  trigger,
-  triggerClassName,
-  double,
-  onOpenChange,
-}: DialogTriggerWrapperProps) => (
-  <DialogTrigger
-    asChild
-    className={cn("select-none", triggerClassName)}
-    onClick={(e) => {
-      if (double) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    }}
-    onDoubleClick={(e) => {
-      onOpenChange(true);
-      e.stopPropagation();
-    }}
-  >
-    {trigger}
-  </DialogTrigger>
-);
+// const DialogTriggerWrapper = ({
+//   trigger,
+//   triggerClassName,
+//   double,
+//   onOpenChange,
+// }: DialogTriggerWrapperProps) => (
+
+// );
 
 export default function DialogWrapper({
   double = false,
@@ -100,14 +83,22 @@ export default function DialogWrapper({
   return (
     <Dialog onOpenChange={thisOnOpenChange} open={open}>
       {trigger && (
-        <>
-          <DialogTriggerWrapper
-            trigger={trigger}
-            triggerClassName={triggerClassName}
-            double={double}
-            onOpenChange={thisOnOpenChange}
-          />
-        </>
+        <DialogTrigger
+          asChild
+          className={cn("select-none", triggerClassName)}
+          onClick={(e) => {
+            if (double) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+          onDoubleClick={(e) => {
+            thisOnOpenChange(true);
+            e.stopPropagation();
+          }}
+        >
+          {trigger}
+        </DialogTrigger>
       )}
 
       <DialogContent

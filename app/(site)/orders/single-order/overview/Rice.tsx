@@ -6,20 +6,20 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 export default function Rice() {
   const { order } = useOrderContext();
-  const { rice, updateRemainingRice, fetchRemainingRice } = useWasabiContext();
+  const { rice, fetchRemainingRice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
 
-  useEffect(() => {
-    const currentUsedRice = order.products.reduce(
-      (total, product) => total + (product.rice_quantity ?? 0),
-      0
-    );
-    setUsedRice(currentUsedRice);
+  // useEffect(() => {
+  //   const currentUsedRice = order.products.reduce(
+  //     (total, product) => total + (product.rice_quantity ?? 0),
+  //     0
+  //   );
+  //   setUsedRice(currentUsedRice);
 
-    fetchRemainingRice();
+  //   fetchRemainingRice();
 
-    // updateRemainingRice(currentUsedRice);
-  }, [order.products]);
+  //   // updateRemainingRice(currentUsedRice);
+  // }, [order.products]);
 
   return (
     <div className="w-full flex flex-col overflow-hidden border-foreground">

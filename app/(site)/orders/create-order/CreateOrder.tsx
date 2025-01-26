@@ -1,16 +1,9 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { Plus } from "@phosphor-icons/react";
 import { OrderType } from "@prisma/client";
 import Table from "./table/Table";
-import { cn } from "@/lib/utils";
 import { AnyOrder } from "@/app/(site)/models";
-import DialogWrapper from "../../components/dialog/DialogWrapper";
-import { Button } from "@/components/ui/button";
-import OrderTable from "../single-order/OrderTable";
-import { OrderProvider } from "../../context/OrderContext";
-import Home from "./home/Home";
 import generateEmptyOrder from "../../functions/order-management/generateEmptyOrder";
 import Pickup from "./pickup/Pickup";
 import SearchHome from "./home/SearchHome";

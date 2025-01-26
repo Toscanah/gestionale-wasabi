@@ -38,7 +38,7 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
   const defaultSettings = {
     iva: "00000000000",
     kitchenOffset: 0,
-    whenSelectorGap: 0,
+    whenSelectorGap: 1,
   };
 
   const [settings, setSettings] = useState<GlobalSettings>(defaultSettings);
@@ -66,7 +66,7 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
     }
 
     if (key === "whenSelectorGap" && (value === null || isNaN(Number(value)))) {
-      newValue = 0;
+      newValue = 1;
     }
 
     setSettings((prevSettings) => ({

@@ -11,7 +11,7 @@ import toggleProduct from "../../sql/products/toggleProduct";
 import updatePrintedAmounts from "../../sql/products/updatePrintedAmounts";
 import { z } from "zod";
 import handleRequest from "../util/handleRequest";
-import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
+import { OrderSchema } from "@/prisma/generated/zod";
 import {
   CreateProductSchema,
   GetProductsWithStatsSchema,

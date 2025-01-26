@@ -122,7 +122,7 @@ export default function Home() {
             } else if (totalTypes === 2) {
               defaultSize = 50;
             } else if (totalTypes === 3) {
-              defaultSize = index === 1 ? 60 : 30;
+              defaultSize = index === 1 ? 60 : 20;
             } else {
               defaultSize = 100 / totalTypes;
             }

@@ -11,7 +11,6 @@ import DangerActions from "./overview/DangerActions";
 import { useOrderContext } from "../../context/OrderContext";
 import print from "../../printing/print";
 import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
-import NormalActions from "./overview/NormalActions";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 

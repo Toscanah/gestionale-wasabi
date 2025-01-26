@@ -3,9 +3,7 @@ import OrderDeletionDialog from "@/app/(site)/components/dialog/OrderDeletionDia
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DialogClose } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Warning } from "@phosphor-icons/react";
 import { Table } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 

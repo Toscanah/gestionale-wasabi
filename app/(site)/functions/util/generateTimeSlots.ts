@@ -28,7 +28,7 @@ export default function generateTimeSlots(
       times.push(timeString);
     }
 
-    currentSlotMinute += settings.whenSelectorGap ?? 5;
+    currentSlotMinute += settings.whenSelectorGap || 1;
     if (currentSlotMinute >= 60) {
       currentSlotMinute -= 60;
       currentSlotHour += 1;

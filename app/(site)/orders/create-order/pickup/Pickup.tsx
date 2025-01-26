@@ -15,9 +15,6 @@ import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
 import { cn } from "@/lib/utils";
-import generateEmptyOrder from "@/app/(site)/functions/order-management/generateEmptyOrder";
-import { OrderType } from "@prisma/client";
-
 interface PickupProps {
   setOrder: Dispatch<SetStateAction<AnyOrder>>;
   order: AnyOrder;
