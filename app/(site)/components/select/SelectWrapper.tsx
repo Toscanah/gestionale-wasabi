@@ -25,6 +25,7 @@ interface SelectWrapperProps {
   onKeyDown?: (e: KeyboardEvent<any>) => void;
   onValueChange?: (value: string) => void;
   disabled?: boolean;
+  id?: string;
 }
 
 const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
@@ -33,6 +34,7 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
       field,
       defaultValue,
       className,
+      id,
       groups,
       placeholder,
       fixedValue,
@@ -63,7 +65,7 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
-      <SelectContent>
+      <SelectContent id={id}>
         {groups
           .filter((group) => group.items.length > 0)
           .map((group, groupIndex) => (

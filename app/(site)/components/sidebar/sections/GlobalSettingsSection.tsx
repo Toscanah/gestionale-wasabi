@@ -1,5 +1,5 @@
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import GlobalSettingsDialog from "../../dialog/GlobalSettingsDialog";
+import GlobalSettingsDialog from "../../settings/GlobalSettingsDialog";
 
 export default function GlobalSettingsSection() {
   return (

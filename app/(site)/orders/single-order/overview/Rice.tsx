@@ -9,17 +9,17 @@ export default function Rice() {
   const { rice, fetchRemainingRice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
 
-  // useEffect(() => {
-  //   const currentUsedRice = order.products.reduce(
-  //     (total, product) => total + (product.rice_quantity ?? 0),
-  //     0
-  //   );
-  //   setUsedRice(currentUsedRice);
+  useEffect(() => {
+    const currentUsedRice = order.products.reduce(
+      (total, product) => total + (product.rice_quantity ?? 0),
+      0
+    );
+    setUsedRice(currentUsedRice);
 
-  //   fetchRemainingRice();
+    fetchRemainingRice();
 
-  //   // updateRemainingRice(currentUsedRice);
-  // }, [order.products]);
+    // updateRemainingRice(currentUsedRice);
+  }, [order.products]);
 
   return (
     <div className="w-full flex flex-col overflow-hidden border-foreground">
@@ -31,7 +31,7 @@ export default function Rice() {
         <div
           className={cn(
             "w-1/2 border-r p-2 h-12",
-            rice.remaining.amount < rice.total.threshold && "text-destructive"
+            rice.remaining < rice.threshold && "text-destructive"
           )}
         >
           Rimanente
@@ -43,10 +43,10 @@ export default function Rice() {
         <div
           className={cn(
             "w-1/2 border-r p-2 h-12",
-            rice.remaining.amount < rice.total.threshold && "text-destructive"
+            rice.remaining < rice.threshold && "text-destructive"
           )}
         >
-          {formatRice(rice.remaining.amount)}
+          {formatRice(rice.remaining)}
         </div>
         <div className="w-1/2 p-2 h-12">{formatRice(usedRice)}</div>
       </div>

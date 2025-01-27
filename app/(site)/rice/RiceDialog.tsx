@@ -18,9 +18,11 @@ interface RiceDialogProps {
 }
 
 export default function RiceDialog({ variant }: RiceDialogProps) {
-  const { rice, updateTotalRice, resetRice } = useWasabiContext();
+  const { rice, updateRice, resetRice } = useWasabiContext();
 
-  const [newRice, setNewRice] = useState<Rice>({ ...rice.total, amount: 0 });
+  const defaultNewRice = { ...rice, total: 0 };
+
+  const [newRice, setNewRice] = useState<Rice>(defaultNewRice);
   const [riceToAdd, setRiceToAdd] = useState<number>(0);
   const [riceToRemove, setRiceToRemove] = useState<number>(0);
   const [selectedRiceBatchId, setSelectedRiceBatchId] = useState<number | null>(null);
@@ -43,7 +45,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
     }
 
     setRiceToAdd(value);
-    setNewRice({ ...newRice, amount: value });
+    setNewRice({ ...newRice, total: value });
     setSelectedRiceBatchId(null);
   };
 
@@ -55,7 +57,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
     }
 
     setRiceToRemove(value);
-    setNewRice({ ...newRice, amount: -value });
+    setNewRice({ ...newRice, total: -value });
     setSelectedRiceBatchId(null);
   };
 
@@ -66,7 +68,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
     if (batch) {
       setSelectedRiceBatchId(batch.id);
       setRiceToAdd(selectedRice);
-      setNewRice({ ...newRice, amount: selectedRice });
+      setNewRice({ ...newRice, total: selectedRice });
     }
   };
 
@@ -87,11 +89,11 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
 
   const handleSave = () => {
     logRiceChange();
-    updateTotalRice(newRice);
+    updateRice(newRice);
   };
 
   const handleOpenChange = () => {
-    setNewRice({ ...rice.total, amount: 0 });
+    setNewRice(defaultNewRice);
     setRiceToAdd(0);
     setRiceToRemove(0);
     setSelectedRiceBatchId(null);
@@ -201,9 +203,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
               type="number"
               id="threshold"
               value={newRice.threshold}
-              onChange={(e) =>
-                setNewRice({ amount: newRice.amount, threshold: e.target.valueAsNumber || 0 })
-              }
+              onChange={(e) => setNewRice({ ...newRice, threshold: e.target.valueAsNumber || 0 })}
             />
           </div>
 
@@ -218,7 +218,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                 className="h-10 text-2xl"
                 type="number"
                 id="total"
-                value={rice.total.amount}
+                value={rice.total}
               />
 
               <RiceHistory />

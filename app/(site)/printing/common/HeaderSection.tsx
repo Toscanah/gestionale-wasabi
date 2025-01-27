@@ -9,11 +9,11 @@ export default function HeaderSection() {
   const smallSize = getReceiptSize(1, 1);
 
   const settings = localStorage.getItem("settings");
-  let iva: string | undefined = undefined;
+  let pIva: string | undefined = undefined;
 
   if (settings) {
     const parsedSettings: GlobalSettings = JSON.parse(settings);
-    iva = parsedSettings.iva;
+    pIva = parsedSettings.pIva;
   }
 
   return (
@@ -37,7 +37,7 @@ export default function HeaderSection() {
         Cell: 338 1278651
       </Text>
       <Text size={smallSize} align="center">
-        P.iva {iva}
+        P.iva {pIva}
       </Text>
       <Br />
 

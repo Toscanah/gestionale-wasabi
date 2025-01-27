@@ -1,5 +1,8 @@
+import { Printer } from "../components/settings/PrinterChoice";
+
 export type GlobalSettings = {
   kitchenOffset: number;
-  iva: string;
+  pIva: string;
   whenSelectorGap: number;
+  selectedPrinter: Printer;
 };

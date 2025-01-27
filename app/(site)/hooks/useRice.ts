@@ -2,28 +2,28 @@ import { useEffect, useState } from "react";
 import { toastSuccess } from "../functions/util/toast";
 import fetchRequest from "../functions/api/fetchRequest";
 
-export type Rice = { amount: number; threshold: number };
-export type RiceState = { total: Rice; remaining: Rice };
+export type Rice = { total: number; remaining: number; threshold: number };
 
 export default function useRice() {
-  const defaultRice: RiceState = {
-    total: { amount: 0, threshold: 0 },
-    remaining: { amount: 0, threshold: 0 },
+  const defaultRice: Rice = {
+    total: 0,
+    remaining: 0,
+    threshold: 0,
   };
 
-  const [rice, setRice] = useState<RiceState>(defaultRice);
+  const [rice, setRice] = useState<Rice>(defaultRice);
 
-  const saveRiceToLocalStorage = (updater: (prevRice: RiceState) => RiceState) =>
+  const saveRiceToLocalStorage = (updater: (prevRice: Rice) => Rice) =>
     setRice((prevRice) => {
       const newRice = updater(prevRice);
       localStorage.setItem("rice", JSON.stringify(newRice));
       return newRice;
     });
 
-  const updateTotalRice = (total: Rice) => {
+  const updateRice = (newRice: Rice) => {
     saveRiceToLocalStorage((prevRice) => ({
       ...prevRice,
-      total: { ...total, amount: total.amount + prevRice.total.amount },
+      ...newRice,
     }));
 
     updateRemainingRice();
@@ -31,12 +31,12 @@ export default function useRice() {
   };
 
   const updateRemainingRice = () =>
-    fetchRequest<number>("GET", "/api/rice", "getDailyRiceUsage").then((dailyUsage) => {
+    fetchRequest<number>("GET", "/api/rice", "getDailyRiceUsage").then((dailyUsage) =>
       saveRiceToLocalStorage((prevRice) => ({
         ...prevRice,
-        remaining: { ...prevRice.remaining, amount: prevRice.total.amount - dailyUsage },
-      }));
-    });
+        remaining: prevRice.total - dailyUsage,
+      }))
+    );
 
   const fetchDailyRiceUsage = async (): Promise<number> =>
     await fetchRequest<number>("GET", "/api/rice", "getDailyRiceUsage");
@@ -44,44 +44,35 @@ export default function useRice() {
   const resetRice = async () => {
     const dailyUsage = await fetchDailyRiceUsage();
 
-    saveRiceToLocalStorage((prevRice) => ({
-      ...prevRice,
-      total: {
-        ...prevRice.total,
-        amount: 0,
-      },
-      remaining: {
-        ...prevRice.remaining,
-        amount: -dailyUsage,
-      },
+    saveRiceToLocalStorage(() => ({
+      threshold: 0,
+      total: 0,
+      remaining: -dailyUsage,
     }));
   };
 
-  const initializeRiceState = async () => {
+  const initializeRice = async () => {
     const storedRice = localStorage.getItem("rice");
     const dailyUsage = await fetchDailyRiceUsage();
     let rice;
 
     if (storedRice) {
-      const parsedRice: RiceState = JSON.parse(storedRice);
+      const parsedRice: Rice = JSON.parse(storedRice);
 
       rice = {
         ...parsedRice,
-        remaining: {
-          ...parsedRice.remaining,
-          amount: parsedRice.total.amount - dailyUsage,
-        },
+        remaining: parsedRice.total - dailyUsage,
       };
     } else {
-      rice = { ...defaultRice, remaining: { ...defaultRice.remaining, amount: -dailyUsage } };
+      rice = { ...defaultRice, remaining: -dailyUsage };
     }
 
     saveRiceToLocalStorage(() => rice);
   };
 
   useEffect(() => {
-    initializeRiceState();
+    initializeRice();
   }, []);
 
-  return { rice, resetRice, updateTotalRice, updateRemainingRice };
+  return { rice, resetRice, updateRice, updateRemainingRice };
 }

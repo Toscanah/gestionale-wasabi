@@ -1,17 +1,20 @@
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import DialogWrapper from "./DialogWrapper";
+import DialogWrapper from "../dialog/DialogWrapper";
 import { Gear } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useWasabiContext } from "../../context/WasabiContext";
 import useFocusOnClick from "../../hooks/useFocusOnClick";
+import PrinterChoice from "./PrinterChoice";
 
 export default function GlobalSettingsDialog() {
   const { settings, updateSettings } = useWasabiContext();
-  useFocusOnClick(["iva", "kitchen-offset", "when-selector-gap"]);
+  useFocusOnClick(["pIva", "kitchen-offset", "when-selector-gap"]);
 
   return (
     <DialogWrapper
+      title="Impostazioni"
+      desc="Tutti i dati vengono salvati automaticamente"
       autoFocus={false}
       trigger={
         <SidebarMenuButton>
@@ -22,12 +25,12 @@ export default function GlobalSettingsDialog() {
     >
       <div className="flex gap-6">
         <div className="space-y-2 w-full">
-          <Label htmlFor="iva">Partita IVA</Label>
+          <Label htmlFor="pIva">Partita IVA</Label>
           <Input
             type="text"
-            id="iva"
-            value={settings.iva}
-            onChange={(iva) => updateSettings("iva", iva.target.value)}
+            id="pIva"
+            value={settings.pIva}
+            onChange={(pIva) => updateSettings("pIva", pIva.target.value)}
           />
         </div>
 
@@ -55,6 +58,10 @@ export default function GlobalSettingsDialog() {
               updateSettings("whenSelectorGap", whenSelectorGap.target.valueAsNumber)
             }
           />
+        </div>
+
+        <div className="space-y-2 w-full">
+          <PrinterChoice />
         </div>
       </div>
     </DialogWrapper>

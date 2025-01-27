@@ -1,5 +1,8 @@
 import { ReactNode } from "react";
 import { CharacterSet, Printer, render } from "react-thermal-printer";
+import { GlobalSettings } from "../types/GlobalSettings";
+import { Printer as SelectedPrinter } from "../components/settings/PrinterChoice";
+import { defaultSettings } from "../hooks/useSettings";
 
 interface SerialPort {
   open(options: { baudRate: number }): Promise<void>;
@@ -42,28 +45,24 @@ declare global {
  * - I dati vengono quindi inviati alla stampante tramite la porta seriale utilizzando il tasso di trasmissione configurato.
  * - Alla fine, la connessione alla porta viene chiusa.
  */
-export default async function print(...contents: (() => ReactNode)[]) {
-  const EURO_USB_PRODUCT_ID = 9123;
-  const EURO_USB_VENDOR_ID = 1659;
+
+type PrinterContent = () => ReactNode;
+
+export default async function print(...contents: PrinterContent[]) {
+  const selectedPrinter: SelectedPrinter = (
+    JSON.parse(
+      localStorage.getItem("settings") || JSON.stringify(defaultSettings)
+    ) as GlobalSettings
+  ).selectedPrinter;
 
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
 
-  let selectedPort: SerialPort | null = null;
-  let characterSetToUse: CharacterSet = "wpc1256_arabic";
-
-  for (const port of ports) {
-    const info = port.getInfo();
-
-    if (info.usbProductId === EURO_USB_PRODUCT_ID && info.usbVendorId === EURO_USB_VENDOR_ID) {
-      selectedPort = port;
-      characterSetToUse = "wpc1256_arabic"; // pc858_euro
-      break;
-    }
+  if (ports.length == 0) {
+    return false;
   }
 
-  if (!selectedPort) {
-    selectedPort = ports[0];
-  }
+  let selectedPort: SerialPort = ports[0];
+  let characterSetToUse: CharacterSet = selectedPrinter.charSet;
 
   const receipt = (
     <Printer characterSet={characterSetToUse} type="epson">
@@ -73,10 +72,6 @@ export default async function print(...contents: (() => ReactNode)[]) {
 
   const data: Uint8Array = await render(receipt);
   console.log(new TextDecoder().decode(data));
-
-  if (ports.length === 0) {
-    return false;
-  }
 
   try {
     await selectedPort.open({ baudRate: 19200 });
