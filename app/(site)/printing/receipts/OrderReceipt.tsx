@@ -68,7 +68,7 @@ export default function OrderReceipt<T extends AnyOrder>(
 
       {homeOrder && putInfo && (
         <>
-          {OrderInfoSection({ order: order as HomeOrder, quickPaymentOption })}
+          {OrderInfoSection({ order: order as HomeOrder, quickPaymentOption, when: false })}
           <Line />
         </>
       )}

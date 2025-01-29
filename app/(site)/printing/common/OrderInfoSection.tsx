@@ -8,12 +8,14 @@ interface OrderInfoSectionProps {
   order: HomeOrder;
   quickPaymentOption?: QuickPaymentOption;
   soupsAndSalads?: boolean;
+  when?: boolean;
 }
 
 export default function OrderInfoSection({
   order,
   quickPaymentOption,
   soupsAndSalads = true,
+  when = true,
 }: OrderInfoSectionProps) {
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
@@ -162,13 +164,14 @@ export default function OrderInfoSection({
         {order.home_order?.contact_phone !== "" && " oppure " + order.home_order?.contact_phone}
       </Text>
 
-      <Line />
-      {/* <Text bold inline size={smallSize}>
-        Quando:{" "}
-      </Text> */}
-      <Text size={bigSize}>
-        {order.home_order?.when !== "immediate" ? order.home_order?.when : "PRIMA POSSIBILE"}
-      </Text>
+      {when && (
+        <>
+          <Line />
+          <Text size={bigSize}>
+            {order.home_order?.when !== "immediate" ? order.home_order?.when : "PRIMA POSSIBILE"}
+          </Text>
+        </>
+      )}
     </>
   );
 }
