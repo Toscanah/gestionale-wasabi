@@ -53,46 +53,73 @@ export function useCustomerStats() {
     fetchRequest<CustomerWithStats[]>("GET", "/api/customers", "getCustomersWithStats", {
       ...value,
     }).then((filteredCustomers) => {
+      setFilteredCustomers(filteredCustomers);
       applyFilter(selectedFilter, filteredCustomers);
     });
 
-  const applyFilter = (filter: string, customers: CustomerWithStats[]) => {
+  const sortByMetric = (customers: CustomerWithStats[], metric: keyof CustomerWithStats) =>
+    [...customers].sort((a, b) => (b[metric] as number) - (a[metric] as number));
+
+  const applyFilter = (filter: string, customersOverride?: CustomerWithStats[]) => {
     setSelectedFilter(filter);
 
+    const sourceCustomers = customersOverride || filteredCustomers;
+
     if (!filter || filter === "all") {
-      setFilteredCustomers(customers);
+      setFilteredCustomers(sourceCustomers);
       return;
     }
 
-    let filtered = [...customers];
+    let filtered = [...sourceCustomers];
 
     switch (filter) {
       case "1-week":
-        filtered = filtered.filter(
-          (customer) => customer.averageOrdersWeek >= 1 && customer.averageOrdersWeek < 2
+        filtered = sortByMetric(
+          filtered.filter(
+            (customer) => customer.averageOrdersWeek >= 1 && customer.averageOrdersWeek < 2
+          ),
+          "averageOrdersWeek"
         );
         break;
       case "2-week":
-        filtered = filtered.filter(
-          (customer) => customer.averageOrdersWeek >= 2 && customer.averageOrdersWeek < 3
+        filtered = sortByMetric(
+          filtered.filter(
+            (customer) => customer.averageOrdersWeek >= 2 && customer.averageOrdersWeek < 3
+          ),
+          "averageOrdersWeek"
         );
         break;
       case "3-week":
-        filtered = filtered.filter(
-          (customer) => customer.averageOrdersWeek >= 3 && customer.averageOrdersWeek < 4
+        filtered = sortByMetric(
+          filtered.filter(
+            (customer) => customer.averageOrdersWeek >= 3 && customer.averageOrdersWeek < 4
+          ),
+          "averageOrdersWeek"
         );
         break;
       case "more-week":
-        filtered = filtered.filter((customer) => customer.averageOrdersWeek >= 4);
+        filtered = sortByMetric(
+          filtered.filter((customer) => customer.averageOrdersWeek >= 4),
+          "averageOrdersWeek"
+        );
         break;
       case "1-2-weeks":
-        filtered = filtered.filter((customer) => customer.averageOrdersWeek >= 0.5);
+        filtered = sortByMetric(
+          filtered.filter((customer) => customer.averageOrdersWeek >= 0.5),
+          "averageOrdersWeek"
+        );
         break;
       case "1-3-weeks":
-        filtered = filtered.filter((customer) => customer.averageOrdersWeek >= 0.33);
+        filtered = sortByMetric(
+          filtered.filter((customer) => customer.averageOrdersWeek >= 0.33),
+          "averageOrdersWeek"
+        );
         break;
       case "1-month":
-        filtered = filtered.filter((customer) => customer.averageOrdersMonth >= 1);
+        filtered = sortByMetric(
+          filtered.filter((customer) => customer.averageOrdersMonth >= 1),
+          "averageOrdersMonth"
+        );
         break;
       case "highest-spending":
         const highestSpending = Math.max(...filtered.map((customer) => customer.totalSpending));
@@ -155,6 +182,6 @@ export function useCustomerStats() {
     setDateFilter,
     handlePresetSelect,
     applyFilter,
-    handleReset
+    handleReset,
   };
 }

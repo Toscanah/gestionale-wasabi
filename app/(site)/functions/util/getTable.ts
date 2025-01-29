@@ -12,6 +12,16 @@ import { Dispatch, SetStateAction } from "react";
 const DEFAULT_PAGE_SIZE = 999999;
 const noop = () => {};
 
+interface PaginationEnabled {
+  putPagination: true;
+  pageSize: number;
+}
+
+interface PaginationDisabled {
+  putPagination: false;
+  pageSize?: never;
+}
+
 interface TableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
@@ -19,7 +29,7 @@ interface TableProps<T> {
   setGlobalFilter?: Dispatch<SetStateAction<string>>;
   rowSelection?: Record<string, boolean>;
   setRowSelection?: Dispatch<SetStateAction<Record<string, boolean>>>;
-  pagination?: { putPagination: boolean; pageSize: number };
+  pagination?: PaginationEnabled | PaginationDisabled;
 }
 
 export default function getTable<T>({
@@ -29,7 +39,7 @@ export default function getTable<T>({
   setGlobalFilter = noop,
   rowSelection = {},
   setRowSelection = noop,
-  pagination = { putPagination: false, pageSize: DEFAULT_PAGE_SIZE },
+  pagination = { putPagination: false },
 }: TableProps<T>): Table<T> {
   return useReactTable({
     data,

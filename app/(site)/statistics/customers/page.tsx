@@ -49,15 +49,15 @@ export default function CustomersStats() {
         >
           <SelectWrapper
             className="h-10"
-            onValueChange={(value) => applyFilter(value, customers)}
+            onValueChange={(value) => applyFilter(value)}
             value={selectedFilter ?? "all"}
             groups={[
               {
                 items: [
                   { name: "Tutti", value: "all" },
-                  { name: "Chi chiama 1 volta alla settimana", value: "1-week" },
-                  { name: "Chi chiama 2 volte alla settimana", value: "2-week" },
-                  { name: "Chi chiama 3 volte alla settimana", value: "3-week" },
+                  { name: "Chi chiama da 1 a 2 volta alla settimana", value: "1-week" },
+                  { name: "Chi chiama da 2 a 3 volte alla settimana", value: "2-week" },
+                  { name: "Chi chiama da 3 a 4 volte alla settimana", value: "3-week" },
                   { name: "Chi chiama più volte alla settimana", value: "more-week" },
                   { name: "Chi chiama almeno 1 volta ogni 2 settimane", value: "1-2-weeks" },
                   { name: "Chi chiama almeno 1 volta ogni 3 settimane", value: "1-3-weeks" },

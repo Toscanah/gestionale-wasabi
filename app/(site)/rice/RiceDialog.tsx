@@ -20,7 +20,7 @@ interface RiceDialogProps {
 export default function RiceDialog({ variant }: RiceDialogProps) {
   const { rice, updateRice, resetRice } = useWasabiContext();
 
-  const defaultNewRice = { ...rice, total: 0 };
+  const defaultNewRice: Rice = { ...rice, total: 0, threshold: 0 };
 
   const [newRice, setNewRice] = useState<Rice>(defaultNewRice);
   const [riceToAdd, setRiceToAdd] = useState<number>(0);
@@ -123,7 +123,10 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <DialogWrapper
             size="small"
             variant="delete"
-            onDelete={resetRice}
+            onDelete={() => {
+              setNewRice(defaultNewRice);
+              resetRice();
+            }}
             trigger={
               <Button className="w-full border-red-600 text-red-600 text-xl" variant={"outline"}>
                 Azzera

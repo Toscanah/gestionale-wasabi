@@ -157,6 +157,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
     columns: tableColumns,
     globalFilter,
     setGlobalFilter,
+    pagination: pagination ? { putPagination: pagination, pageSize: 10 } : undefined,
   });
 
   return (

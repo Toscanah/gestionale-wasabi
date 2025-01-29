@@ -24,6 +24,7 @@ export default function useRice() {
     saveRiceToLocalStorage((prevRice) => ({
       ...prevRice,
       ...newRice,
+      total: prevRice.total + newRice.total,
     }));
 
     updateRemainingRice();

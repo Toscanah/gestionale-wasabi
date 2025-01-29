@@ -20,7 +20,9 @@ export default function useSettings() {
   const getSettings = () => {
     const storedSettings = localStorage.getItem("settings");
     saveSettingsToLocalStorage(
-      storedSettings ? { ...defaultSettings, ...JSON.parse(storedSettings) } : defaultSettings
+      storedSettings
+        ? { ...defaultSettings, ...(JSON.parse(storedSettings) as GlobalSettings) }
+        : defaultSettings
     );
   };
 
