@@ -22,7 +22,7 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
   const DialogTrigger = trigger || DefaultTrigger;
 
   const DialogContent = () => (
-    <div className="space-y-2">
+    <div className="space-y-2 w-full">
       <span className="text-lg">
         Stai per eliminare {type === "single" ? "questo ordine." : "gli ordini selezionati."} Questa
         azione è finale e non reversibile.

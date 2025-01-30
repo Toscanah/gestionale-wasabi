@@ -11,6 +11,8 @@ import DangerActions from "./overview/DangerActions";
 import { useOrderContext } from "../../context/OrderContext";
 import print from "../../printing/print";
 import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
+import Notes from "./overview/Notes";
+import ExtraItems from "./overview/ExtraItems";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
@@ -74,7 +76,6 @@ export default function OrderTable() {
     const printKitchenRec = async () => {
       const unprintedProducts = await updateUnprintedProducts();
 
-
       if (unprintedProducts.length > 0) {
         await print(() => KitchenReceipt({ ...order, products: unprintedProducts }));
       }
@@ -98,6 +99,12 @@ export default function OrderTable() {
           tableClassName="h-full max-h-full"
           stickyRowIndex={order.products.length - 1}
         />
+
+        <div className="flex space-x-6">
+          <Notes />
+          {/* <ExtraItems />   */}
+        </div>
+
         <DangerActions table={table} />
       </div>
 

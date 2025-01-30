@@ -57,7 +57,7 @@ export default function QuickPaymentOptions({
 
   return (
     <div className="space-y-2">
-      <Label className="text-xl">Pagamento rapido</Label>
+      {/* <Label className="text-xl">Pagamento rapido</Label> */}
       <ToggleGroup
         variant="outline"
         className="flex w-full gap-6"

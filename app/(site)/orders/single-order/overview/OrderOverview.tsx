@@ -10,6 +10,7 @@ import NormalActions from "./NormalActions";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableChange from "./TableChange";
 import Notes from "./Notes";
+import QuickPaymentOptions from "./QuickPaymentOptions";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
@@ -22,7 +23,7 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
   return (
     <div className="w-[28%] flex flex-col gap-6 h-full">
       {order.type == OrderType.HOME && (
-        <Notes
+        <QuickPaymentOptions
           quickPaymentOption={quickPaymentOption}
           setQuickPaymentOption={setQuickPaymentOption}
         />

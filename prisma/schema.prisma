@@ -59,6 +59,9 @@ model Order {
     total              Float            @default(0)
     discount           Float            @default(0)
     is_receipt_printed Boolean          @default(false)
+    soups              Int?
+    salads             Int?
+    rices              Int?
     suborder_of        Int?
     state              OrderState       @default(ACTIVE)
     type               OrderType
@@ -172,8 +175,9 @@ model Product {
     site_price  Float?           @default(0)
     home_price  Float?           @default(0)
     rice        Float            @default(0)
-    salad       Int?             @default(0)
-    soup        Int?             @default(0)
+    salads      Int?             @default(0)
+    soups       Int?             @default(0)
+    rices       Int?             @default(0)
     active      Boolean          @default(true)
     kitchen     KitchenType      @default(NONE)
     orders      ProductInOrder[]

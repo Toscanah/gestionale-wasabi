@@ -58,7 +58,7 @@ export default async function print(...contents: PrinterContent[]) {
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
 
   if (ports.length == 0) {
-    return false;
+    // return false;
   }
 
   let selectedPort: SerialPort = ports[0];

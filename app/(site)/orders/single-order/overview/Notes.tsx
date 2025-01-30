@@ -16,7 +16,7 @@ interface NotesProps {
   setQuickPaymentOption: Dispatch<SetStateAction<QuickPaymentOption>>;
 }
 
-export default function Notes({ quickPaymentOption, setQuickPaymentOption }: NotesProps) {
+export default function Notes() {
   const { order, updateOrder } = useOrderContext();
   const possibleNotes = ["Già pagato", "Contanti", "Carta"];
 
@@ -58,24 +58,26 @@ export default function Notes({ quickPaymentOption, setQuickPaymentOption }: Not
   };
 
   return (
-    <DialogWrapper
-      autoFocus={false}
-      tooltip="Modifica le note dell'ordine"
-      trigger={
-        <Button className="h-12 text-xl" variant={"outline"}>
-          Note ordine
-        </Button>
-      }
-    >
-      <QuickPaymentOptions
-        quickPaymentOption={quickPaymentOption}
-        setQuickPaymentOption={setQuickPaymentOption}
-      />
+    // <DialogWrapper
+    //   autoFocus={false}
+    //   tooltip="Modifica le note dell'ordine"
+    //   trigger={
+    //     <Button className="h-12 text-xl" variant={"outline"}>
+    //       Note ordine
+    //     </Button>
+    //   }
+    // >
+    //   <QuickPaymentOptions
+    //     quickPaymentOption={quickPaymentOption}
+    //     setQuickPaymentOption={setQuickPaymentOption}
+    //   />
 
-      <div className="space-y-2">
-        <Label className="text-xl">Note addizionali</Label>
-        <Input className="h-12" value={additionalNotes} onChange={handleNotesChange} />
-      </div>
-    </DialogWrapper>
+    //   <div className="space-y-2">
+    //     <Label className="text-xl">Note addizionali</Label>
+    //     <Input className="h-12" value={additionalNotes} onChange={handleNotesChange} />
+    //   </div>
+    // </DialogWrapper>
+
+    <Input className="h-12 text-xl w-full" value={additionalNotes} onChange={handleNotesChange} />
   );
 }
