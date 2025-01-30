@@ -3,4 +3,4 @@ export const reactStrictMode = false;
 export const typescript = {
   ignoreBuildErrors: true,
 };
-export const distDir = "build"
+export const distDir = "build";

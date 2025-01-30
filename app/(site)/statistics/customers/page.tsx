@@ -49,7 +49,7 @@ export default function CustomersStats() {
         >
           <SelectWrapper
             className="h-10"
-            onValueChange={(value) => applyFilter(value)}
+            onValueChange={(value) => applyFilter(value, customers)}
             value={selectedFilter ?? "all"}
             groups={[
               {

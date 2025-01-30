@@ -7,7 +7,6 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    icon: "./public/logo.ico",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -21,6 +20,8 @@ const createWindow = () => {
     }
     return false;
   });
+
+  // mainWindow.setIcon(path.join(__dirname, "/public/logo.png"));
 
   // Load the Next.js app
   mainWindow.loadURL("http://localhost:3000"); // Development URL
