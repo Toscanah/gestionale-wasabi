@@ -15,6 +15,13 @@ const createWindow = () => {
     },
   });
 
+  mainWindow.webContents.session.setDevicePermissionHandler((details) => {
+    if (details.deviceType === "serial") {
+      return true;
+    }
+    return false;
+  });
+
   // Load the Next.js app
   mainWindow.loadURL("http://localhost:3000"); // Development URL
 
