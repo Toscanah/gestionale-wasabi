@@ -2,6 +2,7 @@ import { Order } from "@prisma/client";
 import { CustomerWithStats } from "../../types/CustomerWithStats";
 import prisma from "../db";
 import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import getCustomersWithDetails from "./getCustomersWithDetails";
 
 const calculateAverageOrders = (allOrders: Order[]) => {
   if (allOrders.length === 0) {
@@ -10,7 +11,7 @@ const calculateAverageOrders = (allOrders: Order[]) => {
 
   const now = new Date();
   const firstOrderDate = allOrders.reduce((earliest, order) => {
-    const date = order?.created_at || new Date();
+    const date = order.created_at;
     return date < earliest ? date : earliest;
   }, now);
 
@@ -32,75 +33,7 @@ export default async function getCustomersWithStats(
   from: Date | undefined,
   to: Date | undefined
 ): Promise<CustomerWithStats[]> {
-  const customers = await prisma.customer.findMany({
-    where: {
-      active: true,
-    },
-    include: {
-      addresses: true,
-      phone: true,
-      home_orders: {
-        include: {
-          order: {
-            include: {
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      category: {
-                        include: {
-                          options: {
-                            include: {
-                              option: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      pickup_orders: {
-        include: {
-          order: {
-            include: {
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      category: {
-                        include: {
-                          options: {
-                            include: {
-                              option: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+  const customers = (await getCustomersWithDetails()).filter((customer) => customer.active);
 
   const customersWithStats = customers.map((customer) => {
     let allOrders = [
@@ -127,7 +60,7 @@ export default async function getCustomersWithStats(
     }
 
     const totalSpending = allOrders.reduce((sum, order) => sum + (order.total || 0), 0);
-    
+
     const lastOrderDate =
       allOrders.length > 0
         ? allOrders.reduce((latest, order) => {
@@ -138,7 +71,7 @@ export default async function getCustomersWithStats(
     const firstOrderDate =
       allOrders.length > 0
         ? allOrders.reduce((earliest, order) => {
-            const date = order.created_at; 
+            const date = order.created_at;
             return date < earliest ? date : earliest;
           }, new Date())
         : undefined;
