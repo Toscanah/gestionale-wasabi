@@ -13,8 +13,9 @@ export default function useSettings() {
   const [settings, setSettings] = useState<GlobalSettings>(defaultSettings);
 
   const saveSettingsToLocalStorage = (newSettings: GlobalSettings) => {
+    console.log("New settings: " + JSON.stringify(newSettings));
     setSettings(newSettings);
-    localStorage.setItem("settings", JSON.stringify(defaultSettings));
+    localStorage.setItem("settings", JSON.stringify(newSettings));
   };
 
   const getSettings = () => {
