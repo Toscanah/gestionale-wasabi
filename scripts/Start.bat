@@ -19,5 +19,6 @@ if %errorlevel% neq 0 (
 echo Il server è pronto!
 
 echo Apro l'app desktop...
+cd ..
 cd dist\win-unpacked
 start gestionale-wasabi.exe
