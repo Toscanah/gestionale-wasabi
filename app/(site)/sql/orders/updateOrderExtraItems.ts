@@ -11,7 +11,7 @@ export default async function updateOrderExtraItems(
       id: orderId,
     },
     data: {
-      [items]: value <= 0 ? null : value,
+      [items]: value < 0 ? null : value,
     },
   });
 }

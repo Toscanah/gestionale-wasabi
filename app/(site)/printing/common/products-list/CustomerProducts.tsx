@@ -7,10 +7,10 @@ import TotalSection from "../TotalSection";
 import { Fragment } from "react";
 import { getProductPrice } from "@/app/(site)/functions/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
-import { ProductLineProps } from "./KitchenProducts";
 import { uniqueId } from "lodash";
 import splitOptionsInLines from "@/app/(site)/functions/formatting-parsing/printing/splitOptionsInLines";
-import { GroupedProductsByOptions } from "./ProductsListSection";
+import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
+import sanitazeReceiptText from "@/app/(site)/functions/formatting-parsing/printing/sanitazeReceiptText";
 
 const TOTAL_ROW_WIDTH = 48;
 
@@ -103,11 +103,19 @@ export default function CustomerProducts({
         </Text>
 
         <Text inline>
-          {padReceiptText(product.product.code.toUpperCase(), MAX_CODE_WIDTH, CODE_PADDING)}
+          {padReceiptText(
+            sanitazeReceiptText(product.product.code.toUpperCase()),
+            MAX_CODE_WIDTH,
+            CODE_PADDING
+          )}
         </Text>
 
         <Text inline>
-          {padReceiptText(product.product.desc, MAX_DESCRIPTION_WIDTH, DESCRIPTION_PADDING)}
+          {padReceiptText(
+            sanitazeReceiptText(product.product.desc),
+            MAX_DESCRIPTION_WIDTH,
+            DESCRIPTION_PADDING
+          )}
         </Text>
 
         <Text inline>
@@ -120,7 +128,9 @@ export default function CustomerProducts({
 
         <Text>{padReceiptText(roundToTwo(product.total), MAX_TOTAL_WIDTH, 0)}</Text>
 
-        {product.additional_note !== "" && <Text>{" ".repeat(4) + product.additional_note}</Text>}
+        {product.additional_note && (
+          <Text>{" ".repeat(4) + sanitazeReceiptText(product.additional_note)}</Text>
+        )}
       </Fragment>
     );
   };
@@ -144,9 +154,7 @@ export default function CustomerProducts({
 
             {splitOptionsInLines(optionsKey, TOTAL_ROW_WIDTH, OPTIONS_START_PADDING).map(
               (line, lineIdx) => (
-                <Text key={`options-${idx}-${lineIdx}`}>
-                  {line}
-                </Text>
+                <Text key={`options-${idx}-${lineIdx}`}>{line}</Text>
               )
             )}
 

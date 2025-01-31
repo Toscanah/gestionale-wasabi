@@ -35,6 +35,8 @@ const calculateAdjustedTime = (originalTime: string) => {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
+const MAX_LABEL = 17;
+
 type ReceiptTitle = "SUSHI" | "CUCINA" | "ALTRO";
 
 export default function KitchenReceipt<T extends AnyOrder>(order: T) {
@@ -75,7 +77,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {sanitazeReceiptText(tableOrder.table.slice(0, 17))}
+              {sanitazeReceiptText(tableOrder.table.slice(0, MAX_LABEL))}
             </Text>
           }
         />
@@ -90,7 +92,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {sanitazeReceiptText(pickupOrder.name.slice(0, 17))}
+              {sanitazeReceiptText(pickupOrder.name.slice(0, MAX_LABEL))}
             </Text>
           }
         />
@@ -105,7 +107,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
           }
           right={
             <Text bold size={bigSize}>
-              {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, 17))}
+              {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, MAX_LABEL))}
             </Text>
           }
         />

@@ -1,4 +1,4 @@
-import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
+import { Br, Cut, Line, Text } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/models";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
@@ -7,7 +7,6 @@ import FooterSection from "../common/FooterSection";
 import { OrderType, QuickPaymentOption } from "@prisma/client";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
-import padReceiptText from "../../functions/formatting-parsing/printing/padReceiptText";
 
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,

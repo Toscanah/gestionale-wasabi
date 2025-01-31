@@ -23,7 +23,6 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
   useEffect(() => {
     const handlePrintShortcut = async (event: KeyboardEvent) => {
-      console.log("ciao!");
       if (event.altKey && event.key === "p") {
         await handlePrint();
       }
@@ -53,8 +52,6 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
     if (!isRePrint && !order.suborder_of) {
       const unprintedProducts = await updateUnprintedProducts();
-
-      console.log(unprintedProducts)
 
       if (unprintedProducts.length > 0) {
         content.push(() => KitchenReceipt<typeof order>({ ...order, products: unprintedProducts }));

@@ -9,11 +9,13 @@ export default function TotalSection(
   discount: number = 0,
   bold: boolean = false
 ) {
+  const bigSize = getReceiptSize(2, 2);
+
   return (
     <>
       <Br />
 
-      <Text size={getReceiptSize(2, 2)} align="center" bold={bold}>
+      <Text size={bigSize} align="center" bold={bold}>
         {`TOTALE: ${roundToTwo(
           applyDiscount(
             products.reduce((acc, product) => acc + product.total, 0),

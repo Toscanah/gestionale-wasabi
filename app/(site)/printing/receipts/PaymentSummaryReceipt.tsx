@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import { SummaryData } from "../../payments/table/PrintSummary";
 import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
@@ -25,7 +24,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
   return (
     <>
       <Text inline>Recapito del giorno</Text>
-      <Text bold> {formattedDate}</Text>
+      <Text bold>{" "}{formattedDate}</Text>
 
       <Br />
       <Line />
@@ -51,30 +50,6 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Line />
       <Br />
 
-      {/* <Row
-        left={
-          <Text bold size={smallSize}>
-            TOTALE IN LOCO
-          </Text>
-        }
-        right={
-          <Text bold size={smallSize}>
-            {roundToTwo(summaryData.inPlaceAmount)} €
-          </Text>
-        }
-      /> */}
-      {/* <Row
-        left={
-          <Text bold size={smallSize}>
-            TOTALE DOMICILIO + ASPORTO
-          </Text>
-        }
-        right={
-          <Text bold size={smallSize}>
-            {roundToTwo(summaryData.takeawayAmount)} €
-          </Text>
-        }
-      /> */}
       <Row
         left={
           <Text bold size={smallSize}>
@@ -87,6 +62,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
           </Text>
         }
       />
+
       <Row
         left={
           <Text bold size={smallSize}>
@@ -99,6 +75,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
           </Text>
         }
       />
+
       <Row
         left={
           <Text bold size={smallSize}>
@@ -163,9 +140,11 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
           </Text>
         }
       />
+
       <Br />
       <Line />
       <Br />
+      
       <Row
         left={
           <Text bold size={bigSize}>

@@ -31,8 +31,6 @@ export default function OrderInfoSection({
   const hasSalads = totalSalads > 0;
   const hasRices = totalRices > 0;
 
-  console.log(totalSoups, totalSalads, totalRices);
-
   return (
     <>
       {extraItems && (hasSoups || hasSalads || hasRices) && (
@@ -84,6 +82,8 @@ export default function OrderInfoSection({
         </>
       )}
 
+      {extraItems && (hasSoups || hasSalads || hasRices) && <Br />}
+
       {(order.home_order?.customer.preferences || order.home_order?.notes) && (
         <>
           {order.home_order?.customer.preferences && (
@@ -94,7 +94,6 @@ export default function OrderInfoSection({
               <Text size={smallSize}>
                 {sanitazeReceiptText(order.home_order.customer.preferences)}
               </Text>
-              {/* {!order.home_order?.notes && <Br />} */}
             </>
           )}
           {order.home_order?.notes && (
@@ -108,9 +107,6 @@ export default function OrderInfoSection({
         </>
       )}
 
-      {/* <Text bold inline size={smallSize}>
-        Campanello:{" "}
-      </Text> */}
       <Text size={bigSize}>{sanitazeReceiptText(order.home_order?.address.doorbell)}</Text>
       <Line />
 
@@ -171,11 +167,13 @@ export default function OrderInfoSection({
             Tipo pagamento:{" "}
           </Text>
           <Text size={smallSize}>
-            {quickPaymentOption === "CASH"
-              ? "CONTANTI"
-              : quickPaymentOption === "ALREADY_PAID"
-              ? " GIA' PAGATO"
-              : "CARTA"}
+            {sanitazeReceiptText(
+              quickPaymentOption === "CASH"
+                ? "CONTANTI"
+                : quickPaymentOption === "ALREADY_PAID"
+                ? " GIA' PAGATO"
+                : "CARTA"
+            )}
           </Text>
         </>
       )}

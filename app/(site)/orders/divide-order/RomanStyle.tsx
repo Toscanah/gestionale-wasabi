@@ -23,7 +23,6 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
     const ppl = order.type == OrderType.TABLE ? (order as TableOrder).table_order?.people ?? 0 : 0;
 
     setPpl(ppl);
-    console.log(ppl, order.total / ppl);
 
     fetchRequest<number>("GET", "/api/payments/", "getRomanPaymentsByOrder", {
       orderId: order.id,

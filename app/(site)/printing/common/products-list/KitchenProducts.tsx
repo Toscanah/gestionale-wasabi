@@ -1,15 +1,11 @@
-import { ProductInOrder } from "@/app/(site)/models";
 import padReceiptText from "@/app/(site)/functions/formatting-parsing/printing/padReceiptText";
 import getReceiptSize from "@/app/(site)/functions/formatting-parsing/printing/getReceiptSize";
 import { Fragment } from "react";
 import { Line, Text } from "react-thermal-printer";
 import { uniqueId } from "lodash";
 import splitOptionsInLines from "@/app/(site)/functions/formatting-parsing/printing/splitOptionsInLines";
-import { GroupedProductsByOptions } from "./ProductsListSection";
-
-export interface ProductLineProps {
-  product: ProductInOrder;
-}
+import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
+import sanitazeReceiptText from "@/app/(site)/functions/formatting-parsing/printing/sanitazeReceiptText";
 
 interface KitchenProductsProps {
   groupedProducts: GroupedProductsByOptions;
@@ -22,20 +18,24 @@ export default function KitchenProducts({ groupedProducts }: KitchenProductsProp
   const ProductLine = ({ product }: ProductLineProps) => (
     <Fragment key={uniqueId()}>
       <Text inline bold size={bigSize}>
-        {padReceiptText(product.product.code.toUpperCase(), 4, 2)}
+        {padReceiptText(sanitazeReceiptText(product.product.code.toUpperCase()), 4, 2)}
       </Text>
 
       <Text inline bold size={smallSize}>
-        {padReceiptText(product.product.desc, 27, String(product.quantity).length > 1 ? 5 : 7)}
+        {padReceiptText(
+          sanitazeReceiptText(product.product.desc),
+          27,
+          String(product.quantity).length > 1 ? 5 : 7
+        )}
       </Text>
 
       <Text bold size={bigSize}>
         {padReceiptText(product.quantity.toString(), String(product.quantity).length)}
       </Text>
 
-      {product.additional_note !== "" && (
+      {product.additional_note && (
         <Text bold size={bigSize}>
-          {" ".repeat(4) + product.additional_note}
+          {" ".repeat(4) + sanitazeReceiptText(product.additional_note)}
         </Text>
       )}
     </Fragment>

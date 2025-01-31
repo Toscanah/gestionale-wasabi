@@ -8,6 +8,10 @@ import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinIt
 
 export type GroupedProductsByOptions = Record<string, ProductInOrder[]>;
 
+export interface ProductLineProps {
+  product: ProductInOrder;
+}
+
 export default function ProductsListSection(
   products: ProductInOrder[],
   orderType: OrderType,

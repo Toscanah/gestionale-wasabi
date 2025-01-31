@@ -46,9 +46,9 @@ declare global {
  * - Alla fine, la connessione alla porta viene chiusa.
  */
 
-type PrinterContent = () => ReactNode;
+type PrintContent = () => ReactNode;
 
-export default async function print(...contents: PrinterContent[]) {
+export default async function print(...content: PrintContent[]) {
   const selectedPrinter: SelectedPrinter = (
     JSON.parse(
       localStorage.getItem("settings") || JSON.stringify(defaultSettings)
@@ -57,21 +57,21 @@ export default async function print(...contents: PrinterContent[]) {
 
   const ports: SerialPort[] = await window.navigator.serial.getPorts();
 
-  if (ports.length == 0) {
-    // return false;
-  }
-
-  let selectedPort: SerialPort = ports[0];
+  let selectedPort: SerialPort | null = ports[0] ?? null;
   let characterSetToUse: CharacterSet = selectedPrinter.charSet;
 
   const receipt = (
     <Printer characterSet={characterSetToUse} type="epson">
-      {contents.map((content) => content())}
+      {content.map((content) => content())}
     </Printer>
   );
 
   const data: Uint8Array = await render(receipt);
   console.log(new TextDecoder().decode(data));
+
+  if (!selectedPort) {
+    return false;
+  }
 
   try {
     await selectedPort.open({ baudRate: 19200 });
