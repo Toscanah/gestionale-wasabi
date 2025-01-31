@@ -36,8 +36,8 @@ export default function useOrderPayment(
         ...prevPayment.paymentAmounts,
         [type]:
           value === undefined || isNaN(value)
-            ? prevPayment.paymentAmounts[type] // Keep the current value if the new value is invalid
-            : (prevPayment.paymentAmounts[type] || 0) + value, // Add to the current value (0 if it's not defined)
+            ? prevPayment.paymentAmounts[type]
+            : (prevPayment.paymentAmounts[type] || 0) + value,
       },
     }));
 

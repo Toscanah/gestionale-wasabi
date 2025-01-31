@@ -7,31 +7,35 @@ import { QuickPaymentOption } from "@prisma/client";
 interface OrderInfoSectionProps {
   order: HomeOrder;
   quickPaymentOption?: QuickPaymentOption;
-  soupsAndSalads?: boolean;
+  extraItems?: boolean;
   when?: boolean;
 }
 
 export default function OrderInfoSection({
   order,
   quickPaymentOption,
-  soupsAndSalads = true,
+  extraItems = true,
   when = true,
 }: OrderInfoSectionProps) {
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
-  const totalSoups = order.products.reduce((sum, product) => sum + (product.product.soup || 0), 0);
-  const totalSalads = order.products.reduce(
-    (sum, product) => sum + (product.product.salad || 0),
-    0
-  );
+  const totalSoups =
+    order.soups ?? order.products.reduce((sum, product) => sum + (product.product.soups || 0), 0);
+  const totalSalads =
+    order.salads ?? order.products.reduce((sum, product) => sum + (product.product.salads || 0), 0);
+  const totalRices =
+    order.rices ?? order.products.reduce((sum, product) => sum + (product.product.rices || 0), 0);
 
-  const hasSoups = order.products.some((product) => product.product.soup ?? 0 > 0);
-  const hasSalads = order.products.some((product) => product.product.salad ?? 0 > 0);
+  const hasSoups = totalSoups > 0;
+  const hasSalads = totalSalads > 0;
+  const hasRices = totalRices > 0;
+
+  console.log(totalSoups, totalSalads, totalRices);
 
   return (
     <>
-      {soupsAndSalads && (hasSoups || hasSalads) && (
+      {extraItems && (hasSoups || hasSalads || hasRices) && (
         <>
           {hasSoups && (
             <>
@@ -41,20 +45,40 @@ export default function OrderInfoSection({
               <Text inline size={smallSize}>
                 {totalSoups}
               </Text>
-
-              {hasSalads && (
-                <Text inline size={smallSize}>
-                  {", "}
-                </Text>
-              )}
             </>
           )}
+
+          {hasSoups && (hasSalads || hasRices) && (
+            <Text inline size={smallSize}>
+              {", "}
+            </Text>
+          )}
+
           {hasSalads && (
             <>
               <Text bold inline size={smallSize}>
-                Salate:{" "}
+                Insalate:{" "}
               </Text>
-              <Text size={smallSize}>{totalSalads}</Text>
+              <Text inline size={smallSize}>
+                {totalSalads}
+              </Text>
+            </>
+          )}
+
+          {hasSalads && hasRices && (
+            <Text inline size={smallSize}>
+              {", "}
+            </Text>
+          )}
+
+          {hasRices && (
+            <>
+              <Text bold inline size={smallSize}>
+                Riso extra:{" "}
+              </Text>
+              <Text inline size={smallSize}>
+                {totalRices}
+              </Text>
             </>
           )}
         </>
@@ -141,7 +165,7 @@ export default function OrderInfoSection({
         </>
       )}
 
-      {quickPaymentOption !== "UNKNOWN" && (
+      {quickPaymentOption !== QuickPaymentOption.UNKNOWN && (
         <>
           <Text bold inline size={smallSize}>
             Tipo pagamento:{" "}

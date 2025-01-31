@@ -25,7 +25,7 @@ interface PickupProps {
 
 export default function Pickup({ children, setOrder, order, open, setOpen }: PickupProps) {
   const { updateGlobalState } = useWasabiContext();
-  const { handleKeyDown, addRefs } = useFocusCycle([1]);
+  const { handleKeyDown, addRefs } = useFocusCycle();
 
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");

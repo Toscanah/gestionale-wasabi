@@ -4,7 +4,6 @@ import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { Label } from "@/components/ui/label";
 import { QuickPaymentOption } from "@prisma/client";
 
 interface QuickPaymentOptionsProps {
@@ -25,12 +24,14 @@ export default function QuickPaymentOptions({
   ];
 
   const handleQuickPaymentOption = (value: QuickPaymentOption) => {
-    const newNote = quickPaymentOption === value ? "UNKNOWN" : value;
+    const newNote = quickPaymentOption === value ? QuickPaymentOption.UNKNOWN : value;
     setQuickPaymentOption(newNote);
 
     fetchRequest<HomeOrder>("POST", "/api/orders/", "updateOrderPayment", {
       orderId: order.id,
-      payment: quickPaymentOptions.find((option) => option.value === newNote)?.value || "UNKNOWN",
+      payment:
+        quickPaymentOptions.find((option) => option.value === newNote)?.value ||
+        QuickPaymentOption.UNKNOWN,
     }).then((updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
       updateOrder({
@@ -57,14 +58,13 @@ export default function QuickPaymentOptions({
 
   return (
     <div className="space-y-2">
-      {/* <Label className="text-xl">Pagamento rapido</Label> */}
       <ToggleGroup
         variant="outline"
         className="flex w-full gap-6"
         type="single"
         value={quickPaymentOption}
         onValueChange={(value: QuickPaymentOption) =>
-          handleQuickPaymentOption(value ? value : "UNKNOWN")
+          handleQuickPaymentOption(value ? value : QuickPaymentOption.UNKNOWN)
         }
       >
         {quickPaymentOptions.map(({ value, label }) => (

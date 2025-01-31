@@ -37,7 +37,7 @@ export default function useFetchCustomer(
         }
       });
     }, 0),
-    [] // Dependencies of debounce should remain empty to avoid recreation
+    []
   );
 
   const fetchAddresses = (customerId: number) =>

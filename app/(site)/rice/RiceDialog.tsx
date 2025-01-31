@@ -112,7 +112,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
         variant == "sidebar" ? (
           <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
         ) : (
-          <Button variant={"outline"} className="w-44">
+          <Button variant={"outline"} className="w-full">
             <Gear className="mr-2 h-4 w-4" />
             Riso
           </Button>

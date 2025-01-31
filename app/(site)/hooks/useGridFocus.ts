@@ -34,30 +34,35 @@ export default function useGridFocus(defaultFocusedInput: FocussableInput, maxCo
     (e: KeyboardEvent<HTMLInputElement>, currentInput: FocussableInput) => {
       const { rowIndex, colIndex } = currentInput;
 
-      switch (e.key) {
-        case "Enter":
-        case "ArrowRight":
-          if (colIndex < maxCols) {
-            return { rowIndex, colIndex: colIndex + 1 };
-          } else {
-            return { rowIndex: rowIndex + 1, colIndex: 0 };
-          }
-        case "ArrowDown":
-          return { rowIndex: rowIndex + 1, colIndex };
-        case "ArrowUp":
-          if (rowIndex > 0) {
-            return { rowIndex: rowIndex - 1, colIndex };
-          }
-          break;
-        case "ArrowLeft":
-          if (colIndex == 0) {
-            return { rowIndex: rowIndex - 1, colIndex: colIndex + 1 };
-          } else {
-            return { rowIndex, colIndex: colIndex - 1 };
-          }
-        default:
-          return null;
-      }
+      const keyMap = new Map<string, () => FocussableInput | null>([
+        [
+          "Enter",
+          () =>
+            colIndex < maxCols
+              ? { rowIndex, colIndex: colIndex + 1 }
+              : { rowIndex: rowIndex + 1, colIndex: 0 },
+        ],
+        [
+          "ArrowRight",
+          () =>
+            colIndex < maxCols
+              ? { rowIndex, colIndex: colIndex + 1 }
+              : { rowIndex: rowIndex + 1, colIndex: 0 },
+        ],
+        ["ArrowDown", () => ({ rowIndex: rowIndex + 1, colIndex })],
+        ["ArrowUp", () => (rowIndex > 0 ? { rowIndex: rowIndex - 1, colIndex } : null)],
+        [
+          "ArrowLeft",
+          () =>
+            colIndex === 0
+              ? rowIndex > 0
+                ? { rowIndex: rowIndex - 1, colIndex: maxCols }
+                : null
+              : { rowIndex, colIndex: colIndex - 1 },
+        ],
+      ]);
+
+      return keyMap.get(e.key)?.() || null;
     },
     []
   );

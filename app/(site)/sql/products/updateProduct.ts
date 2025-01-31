@@ -24,8 +24,9 @@ export default async function updateProduct(product: Product) {
       home_price: Number(product.home_price) ?? 0,
       rice: product.rice,
       kitchen: product.kitchen,
-      salad: product.salad,
-      soup: product.soup,
+      salads: product.salads,
+      soups: product.soups,
+      rices: product.rices,
       category:
         product.category_id && product.category_id !== -1
           ? {

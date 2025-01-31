@@ -71,7 +71,13 @@ export default function ProductDashboard() {
         // home_price: object?.home_price || undefined,
         // site_price: object?.site_price || undefined,
       }}
-      layout={[{ fieldsPerRow: 4 }, { fieldsPerRow: 1 }, { fieldsPerRow: 3 }, { fieldsPerRow: 1 }]}
+      layout={[
+        { fieldsPerRow: 2 },
+        { fieldsPerRow: 3 },
+        { fieldsPerRow: 1 },
+        { fieldsPerRow: 3 },
+        { fieldsPerRow: 1 },
+      ]}
       formFields={getProductFields(categories)}
       formSchema={formSchema}
     />

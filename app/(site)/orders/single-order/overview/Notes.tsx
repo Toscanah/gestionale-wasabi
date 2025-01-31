@@ -1,8 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
-import { Button } from "@/components/ui/button";
-import QuickPaymentOptions from "./QuickPaymentOptions";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
@@ -18,19 +14,9 @@ interface NotesProps {
 
 export default function Notes() {
   const { order, updateOrder } = useOrderContext();
-  const possibleNotes = ["Già pagato", "Contanti", "Carta"];
-
-  const extractOtherNotes = (notes: string | undefined) => {
-    if (!notes) return "";
-    return notes
-      .split(",")
-      .map((note) => note.trim())
-      .filter((note) => !possibleNotes.includes(note))
-      .join(", ");
-  };
 
   const [additionalNotes, setAdditionalNotes] = useState<string>(
-    extractOtherNotes((order as HomeOrder).home_order?.notes ?? "")
+    (order as HomeOrder).home_order?.notes ?? ""
   );
 
   const updateOrderNotes = (notes: string) => {
@@ -58,26 +44,11 @@ export default function Notes() {
   };
 
   return (
-    // <DialogWrapper
-    //   autoFocus={false}
-    //   tooltip="Modifica le note dell'ordine"
-    //   trigger={
-    //     <Button className="h-12 text-xl" variant={"outline"}>
-    //       Note ordine
-    //     </Button>
-    //   }
-    // >
-    //   <QuickPaymentOptions
-    //     quickPaymentOption={quickPaymentOption}
-    //     setQuickPaymentOption={setQuickPaymentOption}
-    //   />
-
-    //   <div className="space-y-2">
-    //     <Label className="text-xl">Note addizionali</Label>
-    //     <Input className="h-12" value={additionalNotes} onChange={handleNotesChange} />
-    //   </div>
-    // </DialogWrapper>
-
-    <Input className="h-12 text-xl w-full" value={additionalNotes} onChange={handleNotesChange} />
+    <Input
+      className="h-12 text-xl w-full"
+      placeholder="Note dell'ordine"
+      value={additionalNotes}
+      onChange={handleNotesChange}
+    />
   );
 }

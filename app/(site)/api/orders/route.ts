@@ -20,6 +20,7 @@ import updateTable from "../../sql/orders/updateTable";
 import getOrderById from "../../sql/orders/getOrderById";
 import dummy from "../../sql/dummy";
 import updateOrderPayment from "../../sql/orders/updateOrderPayment";
+import updateOrderExtraItems from "../../sql/orders/updateOrderExtraItems";
 
 export const orderSchemas = {
   getOrderById: z.object({
@@ -81,6 +82,11 @@ export const orderSchemas = {
     table: z.string(),
     orderId: z.number(),
   }),
+  updateOrderExtraItems: z.object({
+    orderId: z.number(),
+    items: z.enum(["salads" , "soups" , "rices"]),
+    value: z.number(),
+  }),
   dummy: NoContentSchema,
 };
 
@@ -103,6 +109,10 @@ const POST_ACTIONS = new Map([
   ["joinTableOrders", { func: joinTableOrders, schema: orderSchemas.joinTableOrders }],
   ["updateTable", { func: updateTable, schema: orderSchemas.updateTable }],
   ["updateOrderPayment", { func: updateOrderPayment, schema: orderSchemas.updateOrderPayment }],
+  [
+    "updateOrderExtraItems",
+    { func: updateOrderExtraItems, schema: orderSchemas.updateOrderExtraItems },
+  ],
 ]);
 
 const DELETE_ACTIONS = new Map([

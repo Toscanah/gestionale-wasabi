@@ -18,7 +18,9 @@ interface OrderOverviewProps {
 
 export default function OrderOverview({ setAction }: OrderOverviewProps) {
   const { order } = useOrderContext();
-  const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>("UNKNOWN");
+  const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>(
+    QuickPaymentOption.UNKNOWN
+  );
 
   return (
     <div className="w-[28%] flex flex-col gap-6 h-full">

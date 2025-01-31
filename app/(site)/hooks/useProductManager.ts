@@ -105,28 +105,28 @@ export function useProductManager(
     fetchRequest<OptionInProductOrder>("POST", "/api/products/", "updateProductOptionsInOrder", {
       productInOrderId,
       optionId,
-    }).then((newOption) => {
-      const updatedProducts = order.products.map((product) => {
-        if (product.id !== productInOrderId) {
-          return product;
-        }
+    }).then((newOption) =>
+      updateProductsList({
+        updatedProducts: order.products.map((product) => {
+          if (product.id !== productInOrderId) {
+            return product;
+          }
 
-        const isOptionPresent = product.options.some(
-          (selectedOption) => selectedOption.option.id === newOption.option_id
-        );
+          const isOptionPresent = product.options.some(
+            (selectedOption) => selectedOption.option.id === newOption.option_id
+          );
 
-        return {
-          ...product,
-          options: isOptionPresent
-            ? product.options.filter(
-                (selectedOption) => selectedOption.option.id !== newOption.option_id
-              )
-            : [...product.options, { ...newOption }],
-        };
-      });
-
-      updateProductsList({ updatedProducts });
-    });
+          return {
+            ...product,
+            options: isOptionPresent
+              ? product.options.filter(
+                  (selectedOption) => selectedOption.option.id !== newOption.option_id
+                )
+              : [...product.options, { ...newOption }],
+          };
+        }),
+      })
+    );
 
   const updateUnprintedProducts = async () => {
     const unprintedProducts = await fetchRequest<ProductInOrder[]>(
@@ -167,7 +167,6 @@ export function useProductManager(
     }).then((updatedProduct) => {
       if (updatedProduct) {
         updateProductsList({ updatedProducts: [updatedProduct] });
-        // toastSuccess("Note aggiuntiva aggiornata");
       }
     });
 
