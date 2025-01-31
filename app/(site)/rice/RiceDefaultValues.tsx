@@ -24,9 +24,10 @@ export default function RiceDefaultValues() {
 
   const addRiceBatch = async () => {
     if (!newBatch?.amount || !newBatch?.label) return;
+    const { amount, label } = newBatch;
 
     fetchRequest<RiceBatch>("POST", "/api/rice/", "addRiceBatch", {
-      batch: { amount: newBatch.amount, label: newBatch.label },
+      batch: { amount, label },
     }).then((createdBatch) => {
       setRiceBatches((prev) => {
         const isDuplicate = prev.some((batch) => batch.id === createdBatch.id);

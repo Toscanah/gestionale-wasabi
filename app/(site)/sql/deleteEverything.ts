@@ -1,6 +1,8 @@
 import prisma from "./db";
 
 export default async function deleteTodayOrders() {
+  return false;
+  
   const today = new Date();
   const startOfDay = new Date(today.setHours(0, 0, 0, 0));
   const endOfDay = new Date(today.setHours(23, 59, 59, 999));

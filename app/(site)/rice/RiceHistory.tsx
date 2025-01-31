@@ -27,7 +27,7 @@ export default function RiceHistory() {
       trigger={<Button variant={"outline"}>Storico</Button>}
       title="Storico di oggi"
       size="small"
-      onOpenChange={() => fetchLogs()}
+      onOpenChange={fetchLogs}
     >
       {logs.length > 0 ? (
         <ul className="text-xl space-y-2 max-h-96 overflow-y-auto">

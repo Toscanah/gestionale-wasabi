@@ -10,9 +10,8 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Header from "./Header";
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
-import { Button } from "@/components/ui/button";
 import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "../models";
 
 export type UpdateStateAction = "update" | "delete" | "add";

@@ -18,7 +18,7 @@ export default async function updateRiceBatch(
     throw new Error("Value is required");
   }
 
-  let parsedValue;
+  let parsedValue: number | string;
 
   if (field == "label") {
     parsedValue = String(value);
