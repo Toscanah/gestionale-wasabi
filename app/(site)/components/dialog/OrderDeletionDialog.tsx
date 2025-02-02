@@ -14,7 +14,7 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
   const [productsCooked, setProductsCooked] = useState<boolean>(false);
 
   const DefaultTrigger = (
-    <Button className="w-full h-12 text-xl" variant={"destructive"}>
+    <Button className="w-full flex-1 h-12 text-xl" variant={"destructive"}>
       Elimina ordine
     </Button>
   );
@@ -22,7 +22,7 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
   const DialogTrigger = trigger || DefaultTrigger;
 
   const DialogContent = () => (
-    <div className="space-y-2 w-full">
+    <div className="space-y-2">
       <span className="text-lg">
         Stai per eliminare {type === "single" ? "questo ordine." : "gli ordini selezionati."} Questa
         azione è finale e non reversibile.
@@ -39,6 +39,7 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
     <DialogWrapper
       size="medium"
       variant="delete"
+      triggerClassName="flex-1"
       trigger={DialogTrigger}
       onDelete={() => onDelete(productsCooked)}
     >

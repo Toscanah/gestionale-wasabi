@@ -13,9 +13,6 @@ export default function OldOrders() {
   const { order, addProducts } = useOrderContext();
 
   useEffect(() => {
-    // I tavoli non hanno un cliente => no cronologia ordini
-    // I pickup order possono o meno avere un cliente => (possibile) no cronologia ordini
-
     if (
       order.type === OrderType.TABLE ||
       (order.type === OrderType.PICKUP && !(order as PickupOrder).pickup_order?.customer_id)

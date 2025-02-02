@@ -49,15 +49,6 @@ interface DialogTriggerWrapperProps {
   onOpenChange: (isOpen: boolean) => void;
 }
 
-// const DialogTriggerWrapper = ({
-//   trigger,
-//   triggerClassName,
-//   double,
-//   onOpenChange,
-// }: DialogTriggerWrapperProps) => (
-
-// );
-
 export default function DialogWrapper({
   double = false,
   children,
@@ -102,11 +93,7 @@ export default function DialogWrapper({
       )}
 
       <DialogContent
-        onOpenAutoFocus={(e) => {
-          if (!autoFocus) {
-            e.preventDefault();
-          }
-        }}
+        onOpenAutoFocus={(e) => !autoFocus && e.preventDefault()}
         className={cn(
           "w-auto max-h-screen",
           sizes[size],

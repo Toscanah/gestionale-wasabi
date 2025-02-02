@@ -73,14 +73,13 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
   const handleKitchenRePrint = async () => await print(() => KitchenReceipt<typeof order>(order));
 
-  const handleOrderRePrint = async () => {
+  const handleOrderRePrint = async () =>
     await print(
       () => OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.HOME),
       ...(order.type === OrderType.HOME
         ? [() => RiderReceipt(order as HomeOrder, quickPaymentOption)]
         : [])
     );
-  };
 
   const handleFullRePrint = async () => {
     await updatePrintedFlag();

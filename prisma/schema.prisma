@@ -122,19 +122,36 @@ model Address {
     home_orders HomeOrder[]
 }
 
+model Promotion {
+    id                     Int      @id @default(autoincrement())
+    customer_id            Int
+    start_date             DateTime @default(now())
+    exp_date               DateTime
+    discount_percentage    Float?
+    discount_amount        Float?
+    extra_product_id       Int?
+    extra_product_discount Float?
+    redeemed               Boolean  @default(false)
+
+    extra_product Product? @relation(fields: [extra_product_id], references: [id])
+    customer      Customer @relation(fields: [customer_id], references: [id])
+}
+
 model Customer {
-    id            Int           @id @default(autoincrement())
-    name          String?
-    surname       String?
-    email         String?
-    preferences   String?
-    score         Float?        @default(0)
-    active        Boolean       @default(true)
-    phone_id      Int?          @unique
-    phone         Phone?        @relation(fields: [phone_id], references: [id], onDelete: SetNull)
-    addresses     Address[]
-    home_orders   HomeOrder[]
-    pickup_orders PickupOrder[]
+    id              Int           @id @default(autoincrement())
+    name            String?
+    surname         String?
+    email           String?
+    preferences     String?
+    score           Float?        @default(0)
+    print_review_qr Boolean       @default(true)
+    active          Boolean       @default(true)
+    phone_id        Int?          @unique
+    phone           Phone?        @relation(fields: [phone_id], references: [id], onDelete: SetNull)
+    addresses       Address[]
+    home_orders     HomeOrder[]
+    pickup_orders   PickupOrder[]
+    promotion       Promotion[]
 }
 
 model Phone {
@@ -182,6 +199,7 @@ model Product {
     kitchen     KitchenType      @default(NONE)
     orders      ProductInOrder[]
     category    Category?        @relation(fields: [category_id], references: [id])
+    promotion   Promotion[]
 }
 
 model ProductInOrder {

@@ -10,8 +10,9 @@ export default function generateDummyProduct(): ProductInOrder {
     product: {
       kitchen: "NONE",
       active: true,
-      salad: 0,
-      soup: 0,
+      salads: 0,
+      soups: 0,
+      rices:0,
       category: {
         active: false,
         id: -1,

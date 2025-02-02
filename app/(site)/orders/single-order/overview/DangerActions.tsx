@@ -31,7 +31,7 @@ export default function DangerActions({ table }: DangerActionsProps) {
         variant="delete"
         trigger={
           <Button
-            className="w-full h-12 text-xl "
+            className="w-1/2 h-12 text-xl"
             variant={"warnining"}
             disabled={table.getFilteredSelectedRowModel().rows.length == 0}
           >

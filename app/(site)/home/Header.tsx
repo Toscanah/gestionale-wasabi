@@ -26,9 +26,8 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
   return (
     <>
       <div className="flex flex-col gap-4 items-center">
-        <div className="flex items-center space-x-2 w-full justify-center">
-          <RiceDialog variant="header" />
-          {selectedOrders.length > 0 && <DeleteOrdersBulk />}
+        <div className="flex items-center w-full">
+          {selectedOrders.length > 0 ? <DeleteOrdersBulk /> : <RiceDialog variant="header" />}
         </div>
 
         <div className="flex justify-evenly w-80">

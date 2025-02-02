@@ -1,6 +1,7 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
+import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,15 +28,12 @@ const ExtraItem = ({ label, value, onValueChange }: ExtraItemProps) => (
       -1
     </Button>
     <Input
+      id={label}
       value={value}
       onChange={(e) => onValueChange(Number(e.target.value) || 0)}
       className="h-12 text-xl"
     />
-    <Button
-      className="h-10 w-10"
-      variant="outline"
-      onClick={() => onValueChange(value + 1)}
-    >
+    <Button className="h-10 w-10" variant="outline" onClick={() => onValueChange(value + 1)}>
       +1
     </Button>
   </>
@@ -46,6 +44,8 @@ export default function ExtraItems() {
   const [soups, setSoups] = useState<number>(0);
   const [rices, setRices] = useState<number>(0);
   const { order, updateOrder } = useOrderContext();
+
+  useFocusOnClick(["Zuppe", "Insalate", "Riso"]);
 
   useEffect(() => {
     setSalads(order.salads ?? order.products.reduce((sum, p) => sum + (p.product.salads || 0), 0));
@@ -64,7 +64,7 @@ export default function ExtraItems() {
     });
 
   const debouncedUpdateOrderExtraItems = useCallback(
-    debounce((items: ExtraItems, value: number) => updateOrderExtraItems(items, value), 1500),
+    debounce((items: ExtraItems, value: number) => updateOrderExtraItems(items, value), 1000),
     []
   );
 
@@ -86,9 +86,9 @@ export default function ExtraItems() {
   return (
     <div className="h-12 w-full flex gap-2 items-center">
       <ExtraItem label="Zuppe" value={salads} onValueChange={onSaladsChange} />
-      <Separator orientation="vertical" className="mx-16" />
+      <Separator orientation="horizontal" className="max-w-8 mx-16" />
       <ExtraItem label="Insalate" value={soups} onValueChange={onSoupsChange} />
-      <Separator orientation="vertical" className="mx-16" />
+      <Separator orientation="horizontal" className="max-w-8 mx-16" />
       <ExtraItem label="Riso" value={rices} onValueChange={onRicesChange} />
     </div>
   );

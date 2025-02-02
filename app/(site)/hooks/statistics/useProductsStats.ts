@@ -64,11 +64,13 @@ export default function useProductsStats() {
       from: undefined,
       to: undefined,
     }).then((initialProducts) => {
-      setProducts(initialProducts);
+      const sortedProducts = initialProducts.sort((a, b) => b.quantity - a.quantity);
+
+      setProducts(sortedProducts);
       setFilteredProducts(
         selectedCategory.id === -1
-          ? initialProducts
-          : initialProducts.filter((product) => product.category_id === selectedCategory.id)
+          ? sortedProducts
+          : sortedProducts.filter((product) => product.category_id === selectedCategory.id)
       );
     });
 

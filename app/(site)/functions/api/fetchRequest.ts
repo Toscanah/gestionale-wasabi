@@ -7,6 +7,7 @@ import { orderSchemas } from "../../api/orders/route";
 import { paymentSchemas } from "../../api/payments/route";
 import { productSchemas } from "../../api/products/route";
 import { riceSchemas } from "../../api/rice/route";
+import { promotionsSchemas } from "../../api/promotions/route";
 
 export type HTTPMethod = "POST" | "GET" | "DELETE" | "PUT" | "PATCH";
 
@@ -18,6 +19,7 @@ export type APIEndpoint =
   | "orders"
   | "payments"
   | "products"
+  | "promotions"
   | "rice";
 
 const schemas = {
@@ -29,6 +31,7 @@ const schemas = {
   ...paymentSchemas,
   ...productSchemas,
   ...riceSchemas,
+  ...promotionsSchemas,
 };
 
 export type ValidActionKeys = keyof typeof schemas;

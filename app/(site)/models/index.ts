@@ -4,3 +4,4 @@ export * from "./base/Order";
 export * from "./base/Product";
 export * from "./base/Customer";
 export * from "./api/Schemas";
+export * from "./base/Promotion"
