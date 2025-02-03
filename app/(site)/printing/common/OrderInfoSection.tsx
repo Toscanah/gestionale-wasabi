@@ -72,7 +72,7 @@ export default function OrderInfoSection({
           {hasRices && (
             <>
               <Text bold inline size={smallSize}>
-                Riso extra:{" "}
+                Riso:{" "}
               </Text>
               <Text inline size={smallSize}>
                 {totalRices}

@@ -1,5 +1,3 @@
-:: git fetch origin && git checkout origin/main -- path/to/file
-
 @echo off
 setlocal
 

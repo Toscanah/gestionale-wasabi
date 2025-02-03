@@ -30,7 +30,7 @@ export function useCustomerStats() {
   }, []);
 
   useEffect(() => {
-    if (dateFilter) {
+    if (dateFilter && dateFilter.from && dateFilter.to) {
       fetchCustomersWithFilter(dateFilter);
     }
   }, [dateFilter]);

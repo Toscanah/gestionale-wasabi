@@ -47,10 +47,21 @@ export default function ExtraItems() {
 
   useFocusOnClick(["Zuppe", "Insalate", "Riso"]);
 
+  /** 🛠 Function to calculate extra items from products */
+  const calculateExtraItemsFromProducts = () => ({
+    salads: order.products.reduce((sum, p) => sum + (p.product.salads || 0), 0),
+    soups: order.products.reduce((sum, p) => sum + (p.product.soups || 0), 0),
+    rices: order.products.reduce((sum, p) => sum + (p.product.rices || 0), 0),
+  });
+
+  // 🛠 Reset to product values when products change
   useEffect(() => {
-    setSalads(order.salads ?? order.products.reduce((sum, p) => sum + (p.product.salads || 0), 0));
-    setSoups(order.soups ?? order.products.reduce((sum, p) => sum + (p.product.soups || 0), 0));
-    setRices(order.rices ?? order.products.reduce((sum, p) => sum + (p.product.rices || 0), 0));
+
+    const { salads, soups, rices } = calculateExtraItemsFromProducts();
+    setSalads(order.salads ?? salads);
+    setSoups(order.soups ?? soups);
+    setRices(order.rices ?? rices);
+
   }, [order.products]);
 
   const updateOrderExtraItems = (items: ExtraItems, value: number) =>
@@ -85,9 +96,9 @@ export default function ExtraItems() {
 
   return (
     <div className="h-12 w-full flex gap-2 items-center">
-      <ExtraItem label="Zuppe" value={salads} onValueChange={onSaladsChange} />
+      <ExtraItem label="Zuppe" value={soups} onValueChange={onSoupsChange} />
       <Separator orientation="horizontal" className="max-w-8 mx-16" />
-      <ExtraItem label="Insalate" value={soups} onValueChange={onSoupsChange} />
+      <ExtraItem label="Insalate" value={salads} onValueChange={onSaladsChange} />
       <Separator orientation="horizontal" className="max-w-8 mx-16" />
       <ExtraItem label="Riso" value={rices} onValueChange={onRicesChange} />
     </div>

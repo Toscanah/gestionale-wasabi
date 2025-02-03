@@ -10,9 +10,9 @@ import KitchenType from "./KitchenType";
 export const formSchema = z.object({
   code: getZodField("string"),
   salads: getZodField("number"),
-  soups: getZodField("number"),
-  rices: getZodField("number"),
-  desc: getZodField("string"),
+  soups: getZodField("number", false),
+  rices: getZodField("number", false),
+  desc: getZodField("string", false),
   site_price: getZodField("number"),
   home_price: getZodField("number"),
   rice: getZodField("number", false),
