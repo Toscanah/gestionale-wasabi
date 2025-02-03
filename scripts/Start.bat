@@ -1,8 +1,10 @@
+:: git fetch origin && git checkout origin/main -- path/to/file
+
 @echo off
 setlocal
 
 :: Check if the first parameter is "build"
-if "%1"=="build" (
+if "%1"=="-b" (
     call :update_dependencies
 )
 
