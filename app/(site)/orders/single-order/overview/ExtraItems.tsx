@@ -47,21 +47,18 @@ export default function ExtraItems() {
 
   useFocusOnClick(["Zuppe", "Insalate", "Riso"]);
 
-  /** 🛠 Function to calculate extra items from products */
   const calculateExtraItemsFromProducts = () => ({
     salads: order.products.reduce((sum, p) => sum + (p.product.salads || 0), 0),
     soups: order.products.reduce((sum, p) => sum + (p.product.soups || 0), 0),
     rices: order.products.reduce((sum, p) => sum + (p.product.rices || 0), 0),
   });
 
-  // 🛠 Reset to product values when products change
   useEffect(() => {
-
     const { salads, soups, rices } = calculateExtraItemsFromProducts();
-    setSalads(order.salads ?? salads);
-    setSoups(order.soups ?? soups);
-    setRices(order.rices ?? rices);
 
+    // setSalads((prevSalads) => + prevSalads- (order.salads ?? salads) );
+    // setSoups((prevSoups) => (order.soups ?? soups) + prevSoups);
+    // setRices((prevRices) => (order.rices ?? rices) + prevRices);
   }, [order.products]);
 
   const updateOrderExtraItems = (items: ExtraItems, value: number) =>

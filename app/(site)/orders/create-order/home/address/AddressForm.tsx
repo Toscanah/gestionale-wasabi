@@ -94,11 +94,12 @@ export default function AddressForm({
     const actionCustomer = getActionType(customer);
     const actionAddress = getActionType(selectedAddress);
 
-    const customerCreateContent = {
+    const customerCreateContent: Omit<Customer, "phone_id" | "active" | "id"> = {
       name: values.name,
       surname: values.surname,
       preferences: values.preferences,
       email: values.email,
+      print_review_qr: true,
       score: 0,
     };
 
