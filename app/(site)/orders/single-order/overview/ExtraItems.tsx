@@ -114,8 +114,6 @@ export default function ExtraItems() {
   //   debouncedUpdateOrderExtraItems(item, 0);
   // };
 
-  console.log("Sup")
-
   const computeExtraItems = (key: "rices" | "salads" | "soups") =>
     order.products.reduce((sum, p) => sum + (p.product[key] || 0) * p.quantity, 0);
 
