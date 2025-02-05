@@ -85,7 +85,7 @@ export const orderSchemas = {
   updateOrderExtraItems: z.object({
     orderId: z.number(),
     items: z.enum(["salads" , "soups" , "rices"]),
-    value: z.number(),
+    value: z.number().nullable(),
   }),
   dummy: NoContentSchema,
 };

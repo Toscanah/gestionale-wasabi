@@ -4,14 +4,12 @@ import prisma from "../db";
 export default async function updateOrderExtraItems(
   orderId: number,
   items: ExtraItems,
-  value: number
+  value: number | null
 ) {
+  const newValue = value === null || value < 0 ? null : value;
+
   return await prisma.order.update({
-    where: {
-      id: orderId,
-    },
-    data: {
-      [items]: value <= 0 ? null : value,
-    },
+    where: { id: orderId },
+    data: { [items]: newValue },
   });
 }

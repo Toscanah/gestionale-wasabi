@@ -3,6 +3,7 @@ import { HomeOrder } from "@/app/(site)/models";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 import { QuickPaymentOption } from "@prisma/client";
+import calculateExtraItems from "../../functions/order-management/calculateExtraItems";
 
 interface OrderInfoSectionProps {
   order: HomeOrder;
@@ -20,16 +21,11 @@ export default function OrderInfoSection({
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
-  const totalSoups =
-    order.soups ?? order.products.reduce((sum, product) => sum + (product.product.soups || 0), 0);
-  const totalSalads =
-    order.salads ?? order.products.reduce((sum, product) => sum + (product.product.salads || 0), 0);
-  const totalRices =
-    order.rices ?? order.products.reduce((sum, product) => sum + (product.product.rices || 0), 0);
+  const { ricesFinal, soupsFinal, saladsFinal } = calculateExtraItems(order);
 
-  const hasSoups = totalSoups > 0;
-  const hasSalads = totalSalads > 0;
-  const hasRices = totalRices > 0;
+  const hasSoups = soupsFinal > 0;
+  const hasSalads = saladsFinal > 0;
+  const hasRices = ricesFinal > 0;
 
   return (
     <>
@@ -41,7 +37,7 @@ export default function OrderInfoSection({
                 Zuppe:{" "}
               </Text>
               <Text inline size={smallSize}>
-                {totalSoups}
+                {soupsFinal}
               </Text>
             </>
           )}
@@ -58,7 +54,7 @@ export default function OrderInfoSection({
                 Insalate:{" "}
               </Text>
               <Text inline size={smallSize}>
-                {totalSalads}
+                {saladsFinal}
               </Text>
             </>
           )}
@@ -75,7 +71,7 @@ export default function OrderInfoSection({
                 Riso:{" "}
               </Text>
               <Text inline size={smallSize}>
-                {totalRices}
+                {ricesFinal}
               </Text>
             </>
           )}
