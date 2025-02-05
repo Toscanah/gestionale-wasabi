@@ -100,7 +100,7 @@ export default function OrderTable() {
           stickyRowIndex={order.products.length - 1}
         />
 
-        {/* <ExtraItems /> */}
+        <ExtraItems />
         <div className="flex space-x-6">
           <Notes />
         </div>

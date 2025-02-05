@@ -33,7 +33,7 @@ export default function OrderInfoSection({
 
   return (
     <>
-      {/* {extraItems && (hasSoups || hasSalads || hasRices) && (
+      {extraItems && (hasSoups || hasSalads || hasRices) && (
         <>
           {hasSoups && (
             <>
@@ -82,7 +82,7 @@ export default function OrderInfoSection({
         </>
       )}
 
-      {extraItems && (hasSoups || hasSalads || hasRices) && <Br />} */}
+      {extraItems && (hasSoups || hasSalads || hasRices) && <Br />}
 
       {(order.home_order?.customer.preferences || order.home_order?.notes) && (
         <>

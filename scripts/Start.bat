@@ -28,7 +28,7 @@ call npx prisma db push
 call npx prisma generate
 popd
 
-echo [INFO] Buildo il programma...
+echo [INFO] Costruisco il programma...
 call npm run build
 
 exit /b
