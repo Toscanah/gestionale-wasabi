@@ -68,6 +68,9 @@ export default function ProductDashboard() {
       defaultValues={{
         ...object,
         category_id: object?.category_id ? Number(object?.category_id) : undefined,
+        rices: object?.rices ? Number(object?.rices) : 0,
+        salads: object?.salads ? Number(object?.salads) : 0,
+        soups: object?.soups ? Number(object?.soups) : 0,
         // home_price: object?.home_price || undefined,
         // site_price: object?.site_price || undefined,
       }}

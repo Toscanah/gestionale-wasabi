@@ -7,6 +7,7 @@ import FooterSection from "../common/FooterSection";
 import { OrderType, QuickPaymentOption } from "@prisma/client";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
+import ExtraItems from "../common/ExtraItems";
 
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,
@@ -69,6 +70,14 @@ export default function OrderReceipt<T extends AnyOrder>(
         <>
           {OrderInfoSection({ order: order as HomeOrder, quickPaymentOption, when: false })}
           <Line />
+        </>
+      )}
+
+      {pickupOrder && (
+        <>
+          <Br />
+          {ExtraItems({ order })}
+          <Br />
         </>
       )}
 

@@ -110,7 +110,7 @@ const columns: ColumnDef<OrderWithPayments>[] = [
             variant: "allProducts",
           });
 
-          await print(() => OrderReceipt<typeof order>(order, "none", false, true));
+          await print(() => OrderReceipt<typeof order>(order, "UNKNOWN", false, true));
         }}
       >
         Stampa

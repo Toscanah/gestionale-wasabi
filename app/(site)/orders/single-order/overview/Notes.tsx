@@ -1,19 +1,15 @@
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { HomeOrder } from "@/app/(site)/models";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
-import { QuickPaymentOption } from "@prisma/client";
-
-interface NotesProps {
-  quickPaymentOption: QuickPaymentOption;
-  setQuickPaymentOption: Dispatch<SetStateAction<QuickPaymentOption>>;
-}
+import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 
 export default function Notes() {
   const { order, updateOrder } = useOrderContext();
+  useFocusOnClick(["notes-field"])
 
   const [additionalNotes, setAdditionalNotes] = useState<string>(
     (order as HomeOrder).home_order?.notes ?? ""
@@ -47,6 +43,7 @@ export default function Notes() {
     <Input
       className="h-12 text-xl w-full"
       placeholder="Note dell'ordine"
+      id="notes-field"
       value={additionalNotes}
       onChange={handleNotesChange}
     />

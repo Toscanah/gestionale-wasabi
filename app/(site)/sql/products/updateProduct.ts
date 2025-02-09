@@ -2,6 +2,9 @@ import { Product } from "../../models";
 import prisma from "../db";
 
 export default async function updateProduct(product: Product) {
+  console.log(product)
+
+  
   const existingProduct = await prisma.product.findFirst({
     where: {
       code: product.code,

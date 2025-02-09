@@ -51,7 +51,7 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
     setPayingAction("payPart");
     setGoPay(true);
 
-    await print(() => OrderReceipt(partialOrder, "none", false, true));
+    await print(() => OrderReceipt(partialOrder, "UNKNOWN", false, true));
   };
 
   const handleOrderPaid = () => {

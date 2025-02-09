@@ -56,7 +56,7 @@ export const OrderPaymentProvider = ({
     { amount: 0, quantity: 0, total: 0 },
   ]);
 
-  const [payment, setPayment] = useState<Payment>({
+  const defaultPayment: Payment = {
     paymentAmounts: {
       [PaymentType.CASH]: undefined,
       [PaymentType.CARD]: undefined,
@@ -65,7 +65,9 @@ export const OrderPaymentProvider = ({
     },
     paidAmount: 0,
     remainingAmount: applyDiscount(order.total, order.discount) ?? 0,
-  });
+  };
+
+  const [payment, setPayment] = useState<Payment>(defaultPayment);
 
   const [typedAmount, setTypedAmount] = useState<string>(roundToTwo(payment.remainingAmount));
   const { handlePaymentChange, payOrder, resetPaymentValues } = useOrderPayment(
@@ -75,6 +77,11 @@ export const OrderPaymentProvider = ({
     setPayment,
     order
   );
+
+  useEffect(() => {
+    setPayment(defaultPayment);
+    setTypedAmount(roundToTwo(defaultPayment.remainingAmount))
+  }, [order.total]);
 
   const resetPayment = () => {
     resetPaymentValues();

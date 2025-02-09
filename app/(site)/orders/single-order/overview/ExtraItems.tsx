@@ -5,10 +5,9 @@ import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { debounce } from "lodash";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface ExtraItemProps {
   label: string;
@@ -100,6 +99,8 @@ export default function ExtraItems() {
   }, [order.products]);
 
   const updateOrderExtraItems = (items: ExtraItems, value: number) => {
+    const { soupsFromProducts, saladsFromProducts, ricesFromProducts } = calculateExtraItems(order);
+
     const computedValue =
       items === "soups"
         ? soupsFromProducts
@@ -147,7 +148,7 @@ export default function ExtraItems() {
         stateValue={salads}
         onValueChange={(val) => handleManualChange("salads", val)}
       />
-      
+
       <ExtraItem
         computedValue={ricesFromProducts}
         label="Riso"

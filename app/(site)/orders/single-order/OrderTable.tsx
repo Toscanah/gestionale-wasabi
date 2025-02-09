@@ -13,6 +13,7 @@ import print from "../../printing/print";
 import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
 import Notes from "./overview/Notes";
 import ExtraItems from "./overview/ExtraItems";
+import { OrderType } from "@prisma/client";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
@@ -101,9 +102,12 @@ export default function OrderTable() {
         />
 
         <ExtraItems />
-        <div className="flex space-x-6">
-          <Notes />
-        </div>
+        
+        {order.type !== OrderType.TABLE && (
+          <div className="flex space-x-6">
+            <Notes />
+          </div>
+        )}
 
         <DangerActions table={table} />
       </div>
