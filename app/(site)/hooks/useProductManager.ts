@@ -196,13 +196,17 @@ export function useProductManager(
       });
 
     const products = [...updatedProductsList, ...newProducts, generateDummyProduct()];
+    const finalProducts = [
+      ...products.filter((p) => p.id !== -1),
+      ...products.filter((p) => p.id == 1),
+    ];
     const total = calculateOrderTotal({
       ...order,
-      products,
+      products: finalProducts,
     });
 
     updateOrder({
-      products,
+      products: finalProducts,
       total,
       is_receipt_printed: updateFlag ? false : undefined,
     });
