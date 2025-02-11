@@ -3,6 +3,7 @@ import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import calculateExtraItems from "@/app/(site)/functions/order-management/calculateExtraItems";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
+import { AnyOrder } from "@/app/(site)/models";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -98,7 +99,7 @@ export default function ExtraItems() {
     setSoups(soupsFinal);
   }, [order.products]);
 
-  const updateOrderExtraItems = (items: ExtraItems, value: number) => {
+  const updateOrderExtraItems = (items: ExtraItems, value: number, order: AnyOrder) => {
     const { soupsFromProducts, saladsFromProducts, ricesFromProducts } = calculateExtraItems(order);
 
     const computedValue =
@@ -121,7 +122,11 @@ export default function ExtraItems() {
   };
 
   const debouncedUpdateOrderExtraItems = useCallback(
-    debounce((items: ExtraItems, value: number) => updateOrderExtraItems(items, value), 1000),
+    debounce(
+      (items: ExtraItems, value: number, order: AnyOrder) =>
+        updateOrderExtraItems(items, value, order),
+      1000
+    ),
     []
   );
 
@@ -130,7 +135,7 @@ export default function ExtraItems() {
     if (type === "soups") setSoups(value);
     if (type === "rices") setRices(value);
 
-    debouncedUpdateOrderExtraItems(type, value);
+    debouncedUpdateOrderExtraItems(type, value, order);
   };
 
   return (

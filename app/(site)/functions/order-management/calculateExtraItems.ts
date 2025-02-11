@@ -2,7 +2,9 @@ import { AnyOrder, ProductInOrder } from "../../models";
 import { ExtraItems } from "../../orders/single-order/overview/ExtraItems";
 
 const computeItemsByKey = (key: ExtraItems, products: ProductInOrder[]) =>
-  products.reduce((sum, p) => sum + (p.product[key] || 0) * p.quantity, 0);
+  products
+    .filter((p) => p.id !== -1)
+    .reduce((sum, p) => sum + (p.product[key] || 0) * p.quantity, 0);
 
 export default function calculateExtraItems(order: AnyOrder) {
   const soupsFromProducts = computeItemsByKey("soups", order.products);
