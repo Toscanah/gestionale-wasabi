@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { predefinedPrinters } from "../components/settings/PrinterChoice";
-import { GlobalSettings } from "../types/GlobalSettings";
+import { GlobalSettings } from "../types/Settings";
+import { predefinedPrinters } from "../components/settings/application/PrinterChoice";
 
 export const defaultSettings: GlobalSettings = {
+  address: { cap: "34135", city: "Trieste", civic: "2/b", street: "Scala al Belvedere" },
+  name: "Wasabi Sushi",
+  slogan: "",
+  cellNumber: "338 1278651",
+  telNumber: "040 4702081",
   pIva: "01152790323",
-  kitchenOffset: 0,
-  whenSelectorGap: 1,
-  selectedPrinter: predefinedPrinters[1],
+  kitchenOffset: 20,
+  whenSelectorGap: 5,
+  selectedPrinter: predefinedPrinters[0],
 };
 
 export default function useSettings() {

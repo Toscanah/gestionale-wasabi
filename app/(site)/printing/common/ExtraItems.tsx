@@ -34,7 +34,7 @@ export default function ExtraItems({ order, putExtraItems = true }: ExtraItemsPr
 
           {hasSoups && (hasSalads || hasRices) && (
             <Text inline size={smallSize}>
-              {", "}
+              {" "}
             </Text>
           )}
 
@@ -51,7 +51,7 @@ export default function ExtraItems({ order, putExtraItems = true }: ExtraItemsPr
 
           {hasSalads && hasRices && (
             <Text inline size={smallSize}>
-              {", "}
+              {" "}
             </Text>
           )}
 

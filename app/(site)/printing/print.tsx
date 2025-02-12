@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { CharacterSet, Printer, render } from "react-thermal-printer";
-import { GlobalSettings } from "../types/GlobalSettings";
-import { Printer as SelectedPrinter } from "../components/settings/PrinterChoice";
+import { Printer as SelectedPrinter } from "../components/settings/application/PrinterChoice";
 import { defaultSettings } from "../hooks/useSettings";
+import { GlobalSettings } from "../types/Settings";
 
 interface SerialPort {
   open(options: { baudRate: number }): Promise<void>;
