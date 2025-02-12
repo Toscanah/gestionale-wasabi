@@ -166,7 +166,7 @@ model Payment {
     order_id   Int
     created_at DateTime    @default(now())
     type       PaymentType
-    order      Order       @relation(fields: [order_id], references: [id])
+    order      Order       @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }
 
 model RiceBatchLog {
@@ -217,7 +217,7 @@ model ProductInOrder {
     created_at      DateTime               @default(now())
     options         OptionInProductOrder[]
     product         Product                @relation(fields: [product_id], references: [id])
-    order           Order                  @relation(fields: [order_id], references: [id])
+    order           Order                  @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -248,6 +248,6 @@ model OptionInProductOrder {
     id                  Int            @id @default(autoincrement())
     product_in_order_id Int
     option_id           Int
-    product_in_order    ProductInOrder @relation(fields: [product_in_order_id], references: [id])
+    product_in_order    ProductInOrder @relation(fields: [product_in_order_id], references: [id], onDelete: Cascade)
     option              Option         @relation(fields: [option_id], references: [id])
 }
