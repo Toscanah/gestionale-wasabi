@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { GlobalSettings } from "../types/Settings";
-import { predefinedPrinters } from "../components/settings/application/PrinterChoice";
+import { PREDEFINED_PRINTERS } from "../components/settings/application/PrinterChoice";
 
-export const defaultSettings: GlobalSettings = {
+export const DEFAULT_SETTINGS: GlobalSettings = {
   address: { cap: "34135", city: "Trieste", civic: "2/b", street: "Scala al Belvedere" },
   name: "Wasabi Sushi",
   slogan: "",
@@ -11,11 +11,11 @@ export const defaultSettings: GlobalSettings = {
   pIva: "01152790323",
   kitchenOffset: 20,
   whenSelectorGap: 5,
-  selectedPrinter: predefinedPrinters[0],
+  selectedPrinter: PREDEFINED_PRINTERS[0],
 };
 
 export default function useSettings() {
-  const [settings, setSettings] = useState<GlobalSettings>(defaultSettings);
+  const [settings, setSettings] = useState<GlobalSettings>(DEFAULT_SETTINGS);
 
   const saveSettingsToLocalStorage = (newSettings: GlobalSettings) => {
     setSettings(newSettings);
@@ -26,8 +26,8 @@ export default function useSettings() {
     const storedSettings = localStorage.getItem("settings");
     saveSettingsToLocalStorage(
       storedSettings
-        ? { ...defaultSettings, ...(JSON.parse(storedSettings) as GlobalSettings) }
-        : defaultSettings
+        ? { ...DEFAULT_SETTINGS, ...(JSON.parse(storedSettings) as GlobalSettings) }
+        : DEFAULT_SETTINGS
     );
   };
 

@@ -18,7 +18,7 @@ export default function WasabiSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup key={"group-1"}>
-          <SidebarGroupLabel>Wasabi Sushi</SidebarGroupLabel>
+          <SidebarGroupLabel>Generale</SidebarGroupLabel>
 
           <SidebarGroupContent>
             <AdminSection />

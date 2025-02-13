@@ -7,7 +7,7 @@ export type Printer = {
   charSet: "wpc1256_arabic" | "pc858_euro";
 };
 
-export const predefinedPrinters: Printer[] = [
+export const PREDEFINED_PRINTERS: Printer[] = [
   { name: "Stampante nera", charSet: "pc858_euro" },
   { name: "Stampante bianca", charSet: "wpc1256_arabic" },
 ];
@@ -23,7 +23,7 @@ export default function PrinterChoice() {
         className="h-10"
         value={settings.selectedPrinter.name}
         onValueChange={(printerName) => {
-          const selectedPrinter = predefinedPrinters.find(
+          const selectedPrinter = PREDEFINED_PRINTERS.find(
             (printer) => printer.name === printerName
           );
           if (selectedPrinter) {
@@ -32,7 +32,7 @@ export default function PrinterChoice() {
         }}
         groups={[
           {
-            items: predefinedPrinters.map((printer) => printer.name),
+            items: PREDEFINED_PRINTERS.map((printer) => printer.name),
           },
         ]}
       />

@@ -1,30 +1,47 @@
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import DialogWrapper from "../dialog/DialogWrapper";
-import { Building, Gear } from "@phosphor-icons/react";
-import { ReactNode } from "react";
+import { Gear } from "@phosphor-icons/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ApplicationSettings from "../sidebar/sections/settings/ApplicationSettings";
+import RestaurantSettings from "../sidebar/sections/settings/RestaurantSettings";
 
-interface SettingsDialogProps {
-  type: "application" | "restaurant";
-  children: ReactNode;
-}
-
-export default function SettingsDialog({ type, children }: SettingsDialogProps) {
-  const MenuIcon = type == "application" ? Gear : Building;
-
+export default function SettingsDialog() {
   return (
     <DialogWrapper
-      title={type == "application" ? "Impostazioni applicazione" : "Impostazioni ristorante"}
+      title={"Impostazioni"}
       desc="Tutti i dati vengono salvati automaticamente"
       autoFocus={false}
       trigger={
         <SidebarMenuButton>
-          <MenuIcon className="h-4 w-4" />{" "}
-          {type == "application" ? "Impostazioni applicazione" : "Impostazioni ristorante"}
+          <Gear className="h-4 w-4" /> Impostazioni
         </SidebarMenuButton>
       }
-      contentClassName="flex flex-col gap-6"
+      contentClassName="h-[45rem] max-h-[45rem] flex flex-col gap-6"
     >
-      {children}
+      <Tabs defaultValue="application" className="w-full">
+        <TabsList className="w-full mb-6">
+          <TabsTrigger
+            value="application"
+            className="w-full data-[state=active]:bg-foreground data-[state=active]:text-muted"
+          >
+            Applicazione
+          </TabsTrigger>
+          <TabsTrigger
+            value="restaurant"
+            className="w-full data-[state=active]:bg-foreground data-[state=active]:text-muted"
+          >
+            Ristorante
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="application" className="space-y-6">
+          <ApplicationSettings />
+        </TabsContent>
+
+        <TabsContent value="restaurant" className="space-y-6">
+          <RestaurantSettings />
+        </TabsContent>
+      </Tabs>
     </DialogWrapper>
   );
 }

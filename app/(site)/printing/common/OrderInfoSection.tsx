@@ -38,6 +38,7 @@ export default function OrderInfoSection({
               </Text>
             </>
           )}
+
           {order.home_order?.notes && (
             <>
               <Text bold inline size={smallSize}>
@@ -92,6 +93,7 @@ export default function OrderInfoSection({
               )}
             </>
           )}
+          
           {order.home_order?.address.stair && (
             <>
               <Text bold inline size={smallSize}>

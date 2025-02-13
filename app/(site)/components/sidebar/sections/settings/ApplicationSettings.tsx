@@ -28,6 +28,9 @@ export default function ApplicationSettings() {
             }
           />
         </div>
+      </div>
+      
+      <div className="flex gap-6">
         <div className="space-y-2 w-full">
           <Label htmlFor="when-selector-gap">Intervallo orario (minuti)</Label>
           <Input

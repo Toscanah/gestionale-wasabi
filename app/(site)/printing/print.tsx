@@ -1,29 +1,29 @@
 import { ReactNode } from "react";
-import { CharacterSet, Printer, render } from "react-thermal-printer";
+import { CharacterSet, Printer, PrinterType, render } from "react-thermal-printer";
 import { Printer as SelectedPrinter } from "../components/settings/application/PrinterChoice";
-import { defaultSettings } from "../hooks/useSettings";
+import { DEFAULT_SETTINGS } from "../hooks/useSettings";
 import { GlobalSettings } from "../types/Settings";
 
-interface SerialPort {
-  open(options: { baudRate: number }): Promise<void>;
-  close(): Promise<void>;
-  writable: WritableStream | null;
-  getInfo(): {
-    usbVendorId?: number;
-    usbProductId?: number;
-  };
-}
+// interface SerialPort {
+//   open(options: { baudRate: number }): Promise<void>;
+//   close(): Promise<void>;
+//   writable: WritableStream | null;
+//   getInfo(): {
+//     usbVendorId?: number;
+//     usbProductId?: number;
+//   };
+// }
 
-interface Serial {
-  getPorts(): Promise<SerialPort[]>;
-  requestPort(): Promise<SerialPort>;
-}
+// interface Serial {
+//   getPorts(): Promise<SerialPort[]>;
+//   requestPort(): Promise<SerialPort>;
+// }
 
-declare global {
-  interface Navigator {
-    serial: Serial;
-  }
-}
+// declare global {
+//   interface Navigator {
+//     serial: Serial;
+//   }
+// }
 
 /**
  * Passaggi per configurare la stampante termica:
@@ -47,11 +47,12 @@ declare global {
  */
 
 type PrintContent = () => ReactNode;
+const PRINTER_MODEL: PrinterType = "epson"
 
 export default async function print(...content: PrintContent[]) {
   const selectedPrinter: SelectedPrinter = (
     JSON.parse(
-      localStorage.getItem("settings") || JSON.stringify(defaultSettings)
+      localStorage.getItem("settings") || JSON.stringify(DEFAULT_SETTINGS)
     ) as GlobalSettings
   ).selectedPrinter;
 
@@ -61,7 +62,7 @@ export default async function print(...content: PrintContent[]) {
   let characterSetToUse: CharacterSet = selectedPrinter.charSet;
 
   const receipt = (
-    <Printer characterSet={characterSetToUse} type="epson">
+    <Printer characterSet={characterSetToUse} type={PRINTER_MODEL}>
       {content.map((content) => content())}
     </Printer>
   );

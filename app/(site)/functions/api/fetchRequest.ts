@@ -20,7 +20,7 @@ export type APIEndpoint =
   | "payments"
   | "products"
   | "promotions"
-  | "rice";
+  | "rice"
 
 const schemas = {
   ...addressSchemas,

@@ -7,12 +7,7 @@ export default function SettingsSection() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SettingsDialog type="application">
-          <ApplicationSettings />
-        </SettingsDialog>
-        <SettingsDialog type="restaurant">
-          <RestaurantSettings />
-        </SettingsDialog>
+        <SettingsDialog />
       </SidebarMenuItem>
     </SidebarMenu>
   );
