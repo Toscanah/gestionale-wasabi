@@ -30,6 +30,7 @@ type DialogWrapperProps = {
   variant?: "delete" | "normal";
   contentClassName?: string;
   triggerClassName?: string;
+  putSeparator?: boolean;
   open?: boolean;
   footer?: ReactNode;
   onDelete?: () => void;
@@ -52,6 +53,7 @@ interface DialogTriggerWrapperProps {
 export default function DialogWrapper({
   double = false,
   children,
+  putSeparator = false,
   title,
   trigger,
   showCloseButton = true,
@@ -118,7 +120,7 @@ export default function DialogWrapper({
           </DialogHeader>
         )}
 
-        {desc && <Separator />}
+        {(desc || putSeparator) && <Separator />}
 
         {children}
 

@@ -3,7 +3,7 @@ setlocal
 
 :: Check if the first parameter is "build"
 if "%1"=="-b" (
-    call :update_dependencies
+  call :update_dependencies
 )
 
 call :start_server
@@ -52,11 +52,11 @@ timeout /t 5 >nul
 curl -s http://localhost:3000 >nul 2>&1
 
 if %errorlevel% neq 0 (
-    echo [INFO] Il server non è ancora pronto, riprovo...
-    goto check_server
+  echo [INFO] Il server non è ancora pronto, riprovo...
+  goto check_server
 )
 
-echo [SUCCESS] Il server è pronto!
+echo [SUCCESSO] Il server è pronto!
 exit /b
 
 :: --------------------------------------------
@@ -68,10 +68,10 @@ pushd ..
 cd dist\win-unpacked
 
 if exist gestionale-wasabi.exe (
-    start gestionale-wasabi.exe
-    echo [SUCCESS] Applicazione avviata con successo.
-) else (
-    echo [ERROR] File gestionale-wasabi.exe non trovato!
+  start gestionale-wasabi.exe
+  echo [SUCCESS]O Applicazione avviata con successo.
+  ) else (
+  echo [ERRORE] File gestionale-wasabi.exe non trovato!
 )
 
 popd

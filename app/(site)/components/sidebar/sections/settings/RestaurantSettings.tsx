@@ -7,20 +7,22 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 const parseAddress = (input: string) => {
-  const regex = /^(.+?)\s(\d+\S*)(?:\s(\d+))?$/;
+  const regex = /^(.+?)\s(\d[\S]*)\s(\d+)\s(.+)$/;
   const match = input.match(regex);
 
   if (match) {
     return {
       street: match[1],
       civic: match[2],
-      cap: match[3] || "",
+      cap: match[3],
+      city: match[4],
     };
   } else {
     return {
       street: input,
       civic: "",
       cap: "",
+      city: "",
     };
   }
 };
@@ -85,21 +87,6 @@ export default function RestaurantSettings() {
     <>
       <div className="flex gap-6">
         <div className="space-y-2 w-full">
-          <Label htmlFor="address">Indirizzo</Label>
-          <Input
-            type="text"
-            id="address"
-            defaultValue={`${settings.address.street} ${settings.address.civic} ${settings.address.cap}`}
-            onChange={(e) => {
-              const parsedAddress = parseAddress(e.target.value);
-              updateSettings("address", { ...settings.address, ...parsedAddress });
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="flex gap-6">
-        <div className="space-y-2 w-full">
           <Label htmlFor="name">Nome</Label>
           <Input
             type="text"
@@ -116,6 +103,21 @@ export default function RestaurantSettings() {
             id="slogan"
             value={settings.slogan}
             onChange={(slogan) => updateSettings("slogan", slogan.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-6">
+        <div className="space-y-2 w-full">
+          <Label htmlFor="address">Indirizzo</Label>
+          <Input
+            type="text"
+            id="address"
+            defaultValue={`${settings.address.street} ${settings.address.civic} ${settings.address.cap} ${settings.address.city}`}
+            onChange={(e) => {
+              const parsedAddress = parseAddress(e.target.value);
+              updateSettings("address", { ...settings.address, ...parsedAddress });
+            }}
           />
         </div>
       </div>

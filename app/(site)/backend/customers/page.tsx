@@ -43,6 +43,8 @@ export default function CustomersDashboard() {
         phone: (object?.phone?.phone ?? "") as any,
         email: object?.email ?? "",
         preferences: object?.preferences ?? "",
+        score: object?.score ?? 0,
+        print_review_qr: object?.print_review_qr ?? true,
       }}
       layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 2 }, { fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
       formFields={getCustomerFields()}

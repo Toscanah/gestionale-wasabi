@@ -11,7 +11,8 @@ import StatsSection from "./sections/StatsSection";
 import PaymentSection from "./sections/PaymentSection";
 import RiceSection from "./sections/RiceSection";
 import Footer from "./Footer";
-import SettingsSection from "./sections/settings/SettingsSection";
+import SettingsSection from "./sections/SettingsSection";
+import MarketingSection from "./sections/MarketingSection";
 
 export default function WasabiSidebar() {
   return (
@@ -30,6 +31,16 @@ export default function WasabiSidebar() {
         <SidebarSeparator key={"sep-1"} />
 
         <SidebarGroup key={"group-2"}>
+          <SidebarGroupLabel>Marketing</SidebarGroupLabel>
+
+          <SidebarGroupContent>
+            <MarketingSection />
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator key={"sep-2"} />
+
+        <SidebarGroup key={"group-3"}>
           <SidebarGroupLabel>Riso</SidebarGroupLabel>
 
           <SidebarGroupContent>
@@ -37,9 +48,9 @@ export default function WasabiSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator key={"sep-2"} />
+        <SidebarSeparator key={"sep-3"} />
 
-        <SidebarGroup key={"group-3"}>
+        <SidebarGroup key={"group-4"}>
           <SidebarGroupLabel>Impostazioni</SidebarGroupLabel>
 
           <SidebarGroupContent>

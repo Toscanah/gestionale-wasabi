@@ -32,11 +32,11 @@ export default function HeaderSection() {
       <Br />
 
       <Text size={smallSize} align="center">
-        {truncate(sanitazeReceiptText(settings.address.cap + " " + settings.address.city), 40)}
+        {truncate(sanitazeReceiptText(settings.address.street + " " + settings.address.civic), 40)}
       </Text>
 
       <Text size={smallSize} align="center">
-        {truncate(sanitazeReceiptText(settings.address.street + " " + settings.address.civic), 40)}
+        {truncate(sanitazeReceiptText(settings.address.cap + " " + settings.address.city), 40)}
       </Text>
 
       <Text size={smallSize} align="center">

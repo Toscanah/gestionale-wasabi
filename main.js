@@ -1,9 +1,16 @@
 const { app, BrowserWindow, screen } = require("electron");
 const path = require("path");
+const { exec } = require("child_process");
 
 let mainWindow;
+let secondWindow;
 
-const createWindow = () => {
+const createWindows = () => {
+  const displays = screen.getAllDisplays();
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const secondaryDisplay = displays.find((d) => d.id !== primaryDisplay.id);
+
+  // Create the main window on the primary monitor
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
@@ -14,31 +21,52 @@ const createWindow = () => {
     },
   });
 
-  mainWindow.webContents.session.setDevicePermissionHandler((details) => {
-    if (details.deviceType === "serial") {
-      return true;
-    }
-    return false;
-  });
-
-  // mainWindow.setIcon(path.join(__dirname, "/public/logo.png"));
-
-  // Load the Next.js app
-  mainWindow.loadURL("http://localhost:3000"); // Development URL
-
+  mainWindow.loadURL("http://localhost:3000");
   mainWindow.maximize();
+
+  // if (secondaryDisplay) {
+  //   secondWindow = new BrowserWindow({
+  //     width: 1920,
+  //     height: 1080,
+  //     x: secondaryDisplay.bounds.x,
+  //     y: secondaryDisplay.bounds.y,
+  //     webPreferences: {
+  //       preload: path.join(__dirname, "preload.js"),
+  //       contextIsolation: true,
+  //       nodeIntegration: false,
+  //     },
+  //   });
+
+  //   secondWindow.loadURL("http://youtube.com");
+  //   secondWindow.maximize();
+  // }
 };
 
-app.on("ready", createWindow);
+const runBackup = () => {
+  const backupScript = path.join(__dirname, "scripts", "Backup.ps1");
+  const backupDir = path.dirname(backupScript);
+
+  exec(
+    `start powershell -ExecutionPolicy Bypass -Command "& { $host.UI.RawUI.BackgroundColor = 'Black'; Clear-Host; & '${backupScript}' }"`,
+    {
+      cwd: backupDir,
+      detached: true,
+      stdio: "ignore",
+    }
+  );
+};
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
+    runBackup();
     app.quit();
   }
 });
 
+app.on("ready", createWindows);
+
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    createWindows();
   }
 });
