@@ -1,6 +1,6 @@
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import DialogWrapper from "../components/dialog/DialogWrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,13 @@ export default function EmailSender() {
   const [emails, setEmails] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    setEmails("")
+    setSubject("")
+    setBody("")
+  }, [open])
 
   const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,7 +26,7 @@ export default function EmailSender() {
 
   const sendEmails = () => {
     const emailList = emails
-      .split("\n")
+      .split(/,\s*|\n/)
       .map((email) => email.trim())
       .filter((email) => email);
 
@@ -36,6 +43,16 @@ export default function EmailSender() {
       return;
     }
 
+    if (!subject) {
+      toastError("Inserisci l'oggetto dell'email", "Oggetto mancante");
+      return;
+    }
+
+    if (!body) {
+      toastError("Inserisci il corpo dell'email", "Corpo mancante");
+      return;
+    }
+
     const mailtoLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
       uniqueEmails.join(",")
     )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -45,14 +62,17 @@ export default function EmailSender() {
 
   return (
     <DialogWrapper
+      autoFocus={false}
       title="Email ai clienti"
       putSeparator
+      open={open}
+      onOpenChange={setOpen}
       trigger={
         <SidebarMenuSubButton className="hover:cursor-pointer">Manda email</SidebarMenuSubButton>
       }
     >
       <div className="space-y-2">
-        <Label>Lista di email (una per linea)</Label>
+        <Label>Lista di email (separate da una virgola)</Label>
         <Textarea
           value={emails}
           onChange={(e) => setEmails(e.target.value)}

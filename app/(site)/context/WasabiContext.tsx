@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { AnyOrder } from "@/app/(site)/models";
 import { UpdateStateAction } from "../home/page";
 import useRice, { Rice } from "../hooks/useRice";

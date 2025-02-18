@@ -3,6 +3,7 @@ import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import calculateExtraItems from "@/app/(site)/functions/order-management/calculateExtraItems";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
+import useLocalExtraItems from "@/app/(site)/hooks/useLocalExtraItems";
 import { AnyOrder } from "@/app/(site)/models";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,6 +93,7 @@ export default function ExtraItems() {
   } = calculateExtraItems(order);
 
   useFocusOnClick(["Zuppe", "Insalate", "Riso"]);
+  useLocalExtraItems();
 
   useEffect(() => {
     setRices(ricesFinal);

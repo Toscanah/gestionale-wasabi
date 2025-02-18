@@ -37,7 +37,7 @@
     ".next/types/**/*.ts",
     "app/(site)/backend/categories/.CategoryDialog.tsx",
     "build/types/**/*.ts"
-  ],
+, "app/(site)/api/extra-items-socket.js"  ],
   "exclude": [
     "node_modules"
   ]

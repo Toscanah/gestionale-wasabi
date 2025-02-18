@@ -38,11 +38,12 @@ function Backup-Database {
     Write-Host "[INFO] Avvio del backup del database" -ForegroundColor Magenta
     $isUSBConnected = Test-Path "F:\backup"
   
-    $pcBackupFile = "$BACKUP_FOLDER\gestionale-wasabi.dump"
-    $usbBackupFile = if ($isUSBConnected) { "F:\backup\gestionale-wasabi.dump" } else { $null }
+    $pcBackupFile = "$BACKUP_FOLDER\$env:PGDATABASE.dump"
+    $usbBackupFile = if ($isUSBConnected) { "F:\backup\$env:PGDATABASE.dump" } else { $null }
 
-    Write-Host "Eseguo il dump del database in: $pcBackupFile"
+    Write-Host "Eseguo il dump del database sul PC in: $pcBackupFile"
     & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F c -f "$pcBackupFile"
+    # & openssl enc -aes-256-cbc -salt -pbkdf2 -in "$pcBackupFile" -out "$pcBackupFile.enc" -pass pass:$env:PGPASSWORD
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERRORE] Backup fallito sul PC" -ForegroundColor Red

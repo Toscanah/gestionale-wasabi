@@ -11,6 +11,13 @@ interface KitchenProductsProps {
   groupedProducts: GroupedProductsByOptions;
 }
 
+const CODE_MAX_LENGTH = 4;
+const CODE_PADDING = 2;
+const DESC_MAX_LENGTH = 27;
+const DESC_PADDING_SHORT = 5;
+const DESC_PADDING_LONG = 7;
+const NOTE_LEFT_PADDING = 4;
+
 export default function KitchenProducts({ groupedProducts }: KitchenProductsProps) {
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
@@ -18,24 +25,28 @@ export default function KitchenProducts({ groupedProducts }: KitchenProductsProp
   const ProductLine = ({ product }: ProductLineProps) => (
     <Fragment key={uniqueId()}>
       <Text inline bold size={bigSize}>
-        {padReceiptText(sanitazeReceiptText(product.product.code.toUpperCase()), 4, 2)}
+        {padReceiptText(
+          sanitazeReceiptText(product.product.code.toUpperCase()),
+          CODE_MAX_LENGTH,
+          CODE_PADDING
+        )}
       </Text>
 
       <Text inline bold size={smallSize}>
         {padReceiptText(
           sanitazeReceiptText(product.product.desc),
-          27,
-          String(product.quantity).length > 1 ? 5 : 7
+          DESC_MAX_LENGTH,
+          String(product.printed_amount).length > 1 ? DESC_PADDING_SHORT : DESC_PADDING_LONG
         )}
       </Text>
 
       <Text bold size={bigSize}>
-        {padReceiptText(product.quantity.toString(), String(product.quantity).length)}
+        {padReceiptText(product.printed_amount.toString(), String(product.printed_amount).length)}
       </Text>
 
       {product.additional_note && (
         <Text bold size={bigSize}>
-          {" ".repeat(4) + sanitazeReceiptText(product.additional_note)}
+          {" ".repeat(NOTE_LEFT_PADDING) + sanitazeReceiptText(product.additional_note)}
         </Text>
       )}
     </Fragment>

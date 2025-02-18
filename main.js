@@ -43,7 +43,7 @@ const createWindows = () => {
 };
 
 const runBackup = () => {
-  const backupScript = path.join(__dirname, "scripts", "Backup.ps1");
+  const backupScript = path.join(__dirname, "scripts", "Backup-Database.ps1");
   const backupDir = path.dirname(backupScript);
 
   exec(
