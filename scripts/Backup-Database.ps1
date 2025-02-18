@@ -50,11 +50,11 @@ function Backup-Database {
     # & openssl enc -aes-256-cbc -salt -pbkdf2 -in "$pcBackupFile" -out "$pcBackupFile.enc" -pass pass:$env:PGPASSWORD
 
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "[ERRORE] Backup fallito sul PC" -ForegroundColor Red
+        Write-Host "[ERRORE] Backup fallito sul PC `n" -ForegroundColor Red
         exit 1
     }
     else {
-        Write-Host "[SUCCESSO] Backup completato sul PC: $pcBackupFile" -ForegroundColor Green
+        Write-Host "[SUCCESSO] Backup completato sul PC: $pcBackupFile `n" -ForegroundColor Green
     }
 
     if ($isUSBConnected) {
@@ -62,10 +62,10 @@ function Backup-Database {
         & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F p -f "$usbBackupFile"
 
         if ($LASTEXITCODE -ne 0) {
-            Write-Host "[ERRORE] Backup fallito su USB" -ForegroundColor Red
+            Write-Host "[ERRORE] Backup fallito su USB `n" -ForegroundColor Red
         }
         else {
-            Write-Host "[SUCCESSO] Backup completato sulla USB: $usbBackupFile" -ForegroundColor Green
+            Write-Host "[SUCCESSO] Backup completato sulla USB: $usbBackupFile `n" -ForegroundColor Green
         }
     }
 }
@@ -79,5 +79,10 @@ $env:PGPASSWORD = ""
 Initialize-Environment
 New-Backup-Folder
 Backup-Database
+
+for ($i = 5; $i -ge 0; $i--) {
+    Write-Host "`rQuesta schermata si chiudera' fra $i secondi" -NoNewline -ForegroundColor Magenta
+    Start-Sleep 1
+}
 
 exit 0

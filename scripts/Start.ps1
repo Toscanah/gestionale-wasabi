@@ -11,6 +11,8 @@ function Update-Dependencies {
 
     Write-Host "`n[INFO] Installo le librerie necessarie" -ForegroundColor Magenta
     & npm install
+    & npm install prisma@latest
+    & npm install @prisma/client@latest
 
     Write-Host "`n[INFO] Genero il database" -ForegroundColor Magenta
     Push-Location ..
