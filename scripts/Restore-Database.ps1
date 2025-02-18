@@ -11,7 +11,7 @@ function Restore-Database {
     }
 
     Write-Host "[INFO] Ripristino del database da: $backupFile" -ForegroundColor Magenta
-    & psql -U $env:PGUSER -h $env:PGHOST -p $env:PGPORT -d $env:PGDATABASE --clean "$backupFile"
+    & psql -U $env:PGUSER -h $env:PGHOST -p $env:PGPORT -d $env:PGDATABASE -f "$backupFile" > $null 2>&1
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERRORE] Ripristino del database fallito!" -ForegroundColor Red
