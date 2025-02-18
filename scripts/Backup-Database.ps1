@@ -48,7 +48,8 @@ function Backup-Database {
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERRORE] Backup fallito sul PC" -ForegroundColor Red
         exit 1
-    } else {
+    }
+    else {
         Write-Host "[SUCCESSO] Backup completato sul PC: $pcBackupFile" -ForegroundColor Green
     }
 
@@ -58,7 +59,8 @@ function Backup-Database {
 
         if ($LASTEXITCODE -ne 0) {
             Write-Host "[ERRORE] Backup fallito su USB" -ForegroundColor Red
-        } else {
+        }
+        else {
             Write-Host "[SUCCESSO] Backup completato sulla USB: $usbBackupFile" -ForegroundColor Green
         }
     }
@@ -73,3 +75,5 @@ $env:PGPASSWORD = ""
 Initialize-Environment
 New-Backup-Folder
 Backup-Database
+
+exit 0

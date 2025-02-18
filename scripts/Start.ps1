@@ -6,29 +6,29 @@ $host.UI.RawUI.BackgroundColor = 'Black'
 Clear-Host
 
 function Update-Dependencies {
-    Write-Host "[INFO] Scarico gli aggiornamenti..." -ForegroundColor Gray
-    git pull
+    Write-Host "[INFO] Scarico gli aggiornamenti" -ForegroundColor Magenta
+    & git pull
 
-    Write-Host "[INFO] Installo le librerie necessarie..." -ForegroundColor Gray
-    npm install
+    Write-Host "`n[INFO] Installo le librerie necessarie" -ForegroundColor Magenta
+    & npm install
 
-    Write-Host "[INFO] Genero il database..." -ForegroundColor Gray
+    Write-Host "`n[INFO] Genero il database" -ForegroundColor Magenta
     Push-Location ..
-    npx prisma db push
-    npx prisma generate
+    & npx prisma db push
+    & npx prisma generate
     Pop-Location
 
-    Write-Host "[INFO] Costruisco il programma..." -ForegroundColor Gray
-    npm run build
+    Write-Host "`n[INFO] Costruisco il programma" -ForegroundColor Magenta
+    & npm run build
 }
 
 function Start-Server {
-    Write-Host "[INFO] Avvio il server locale..." -ForegroundColor Gray
+    Write-Host "`n[INFO] Avvio il server locale" -ForegroundColor Magenta
     Start-Process -WindowStyle Minimized -FilePath "cmd.exe" -ArgumentList "/k npm run start"
 }
 
 function Wait-For-Server {
-    Write-Host "[INFO] Attendo che il server sia pronto..." -ForegroundColor Gray
+    Write-Host "[INFO] Attendo che il server sia pronto" -ForegroundColor Magenta
 
     $maxAttempts = 5
     $attempts = 0
@@ -38,12 +38,12 @@ function Wait-For-Server {
         $response = Invoke-WebRequest -Uri "http://localhost:3000" -UseBasicParsing -ErrorAction SilentlyContinue
 
         if ($response.StatusCode -eq 200) {
-            Write-Host "[SUCCESSO] Il server è pronto!" -ForegroundColor Green
+            Write-Host "[SUCCESSO] Il server e' pronto!`n" -ForegroundColor Green
             return
         }
 
         $attempts++
-        Write-Host "[INFO] Tentativo ${attempts}/${maxAttempts}: il server non è ancora pronto, riprovo..." -ForegroundColor Gray
+        Write-Host "[INFO] Tentativo ${attempts}/${maxAttempts}: il server non è ancora pronto, riprovo"
     } while ($attempts -lt $maxAttempts)
 
     Write-Host "[ERRORE] Il server non è pronto dopo $maxAttempts tentativi. Uscita dal processo." -ForegroundColor Red
@@ -51,7 +51,7 @@ function Wait-For-Server {
 }
 
 function Start-App {
-    Write-Host "[INFO] Apro l'app desktop..." -ForegroundColor Gray
+    Write-Host "[INFO] Apro l'app desktop" -ForegroundColor Magenta
 
     Push-Location ..
     Set-Location "dist\win-unpacked"
@@ -66,7 +66,7 @@ function Start-App {
     Pop-Location
 }
 
-if ($Mode -eq "-b") {
+if ($Mode -eq "b") {
     Update-Dependencies
 }
 
@@ -74,5 +74,5 @@ Start-Server
 Wait-For-Server
 Start-App
 
-Write-Host "[SUCCESSO] Processo completato." -ForegroundColor Green
+Write-Host "`n[SUCCESSO] Processo completato." -ForegroundColor Green
 exit
