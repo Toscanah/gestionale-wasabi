@@ -1,5 +1,9 @@
 . "$PSScriptRoot\functions\Initialize-Environment.ps1"
 
+# per far funzionare: mettere enviroment varaible di postegres sql, e poi runnare da powersheel 
+# Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+
 function New-Backup-Folder {
     Write-Host "[INFO] Verifica della cartella di backup" -ForegroundColor Magenta
     $global:BACKUP_FOLDER = (Get-Item $PSScriptRoot).Parent.FullName + "\backup"
@@ -42,7 +46,7 @@ function Backup-Database {
     $usbBackupFile = if ($isUSBConnected) { "F:\backup\$env:PGDATABASE.dump" } else { $null }
 
     Write-Host "Eseguo il dump del database sul PC in: $pcBackupFile"
-    & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F c -f "$pcBackupFile"
+    & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F p -f "$pcBackupFile"
     # & openssl enc -aes-256-cbc -salt -pbkdf2 -in "$pcBackupFile" -out "$pcBackupFile.enc" -pass pass:$env:PGPASSWORD
 
     if ($LASTEXITCODE -ne 0) {
@@ -55,7 +59,7 @@ function Backup-Database {
 
     if ($isUSBConnected) {
         Write-Host "[INFO] Eseguo il dump del database sulla USB in: $usbBackupFile"
-        & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F c -f "$usbBackupFile"
+        & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F p -f "$usbBackupFile"
 
         if ($LASTEXITCODE -ne 0) {
             Write-Host "[ERRORE] Backup fallito su USB" -ForegroundColor Red
