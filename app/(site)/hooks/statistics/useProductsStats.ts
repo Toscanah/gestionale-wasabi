@@ -89,6 +89,7 @@ export default function useProductsStats() {
   const handleReset = () => {
     setTimeFilter(TimeFilter.ALL);
     setDateFilter(defaultDate);
+    setSelectedCategory(allCategories)
     fetchInitialProducts();
   };
 

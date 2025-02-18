@@ -10,12 +10,14 @@ import Manager from "../Manager";
 import columns from "./columns";
 import GoBack from "../../components/GoBack";
 import { CustomerWithDetails } from "@/app/(site)/models";
+import { Input } from "@/components/ui/input";
 
 type FormValues = Partial<CustomerWithDetails>;
 
 export default function CustomersDashboard() {
   const [customers, setCustomers] = useState<CustomerWithDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     fetchRequest<CustomerWithDetails[]>("GET", "/api/customers/", "getCustomersWithDetails").then(

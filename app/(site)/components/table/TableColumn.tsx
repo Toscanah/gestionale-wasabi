@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { ColumnDef, FilterFnOption, filterFns, Row } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import getNestedValue from "../../functions/util/getNestedValue";
 
@@ -9,6 +9,7 @@ type TableColumnProps<T> = {
   accessorKey: string;
   header: ReactNode;
   cellContent?: (row: Row<T>) => ReactNode;
+  accessorFn?: (row: T) => unknown;
 };
 
 export default function TableColumn<T>({
@@ -16,9 +17,11 @@ export default function TableColumn<T>({
   accessorKey,
   header,
   cellContent,
+  accessorFn,
 }: TableColumnProps<T>): ColumnDef<T> {
   return {
     accessorKey,
+    accessorFn,
     header: ({ column }) =>
       sortable ? (
         <Button
@@ -33,5 +36,6 @@ export default function TableColumn<T>({
       ),
     cell: ({ row }) =>
       cellContent ? cellContent(row) : String(getNestedValue<T>(row.original, accessorKey)),
+    filterFn: "includesString",
   };
 }

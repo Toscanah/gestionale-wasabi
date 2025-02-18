@@ -14,7 +14,7 @@ function Update-Dependencies {
     & npm install prisma@latest
     & npm install @prisma/client@latest
 
-    Write-Host "`n[INFO] Genero il database" -ForegroundColor Magenta
+    Write-Host "`n[INFO] Imposto il database" -ForegroundColor Magenta
     Push-Location ..
     & npx prisma db push
     & npx prisma generate
@@ -48,7 +48,7 @@ function Wait-For-Server {
         Write-Host "[INFO] Tentativo ${attempts}/${maxAttempts}: il server non è ancora pronto, riprovo"
     } while ($attempts -lt $maxAttempts)
 
-    Write-Host "[ERRORE] Il server non è pronto dopo $maxAttempts tentativi. Uscita dal processo." -ForegroundColor Red
+    Write-Host "[ERRORE] Il server non è pronto dopo $maxAttempts tentativi. Uscita dal processo" -ForegroundColor Red
     exit 1
 }
 
@@ -60,9 +60,9 @@ function Start-App {
 
     if (Test-Path "gestionale-wasabi.exe") {
         Start-Process "gestionale-wasabi.exe"
-        Write-Host "[SUCCESSO] Applicazione avviata con successo." -ForegroundColor Green
+        Write-Host "[SUCCESSO] Applicazione avviata con successo" -ForegroundColor Green
     } else {
-        Write-Host "[ERRORE] File gestionale-wasabi.exe non trovato!" -ForegroundColor Red
+        Write-Host "[ERRORE] File gestionale-wasabi.exe non trovato" -ForegroundColor Red
     }
 
     Pop-Location
@@ -77,4 +77,3 @@ Wait-For-Server
 Start-App
 
 Write-Host "`n[SUCCESSO] Processo completato." -ForegroundColor Green
-exit

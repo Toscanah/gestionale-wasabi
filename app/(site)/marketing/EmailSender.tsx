@@ -6,23 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toastError } from "../functions/util/toast";
-
 export default function EmailSender() {
   const [emails, setEmails] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setEmails("")
-    setSubject("")
-    setBody("")
-  }, [open])
+    setEmails("");
+    setSubject("");
+    setBody("");
+  }, [open]);
 
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const sendEmails = () => {
     const emailList = emails

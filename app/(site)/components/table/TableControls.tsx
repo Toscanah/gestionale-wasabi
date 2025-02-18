@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Table } from "@tanstack/react-table";
+import { setGlobal } from "next/dist/trace";
 import { SetStateAction, Dispatch, ReactNode } from "react";
 
 interface TableControlsProps {
@@ -13,6 +14,7 @@ interface TableControlsProps {
   title?: ReactNode;
   onReset?: () => void;
   resetClassName?: string;
+  searchBar?: boolean;
 }
 
 export default function TableControls({
@@ -24,6 +26,7 @@ export default function TableControls({
   title,
   onReset,
   resetClassName,
+  searchBar = true,
 }: TableControlsProps) {
   const handleReset = () => {
     onReset?.();
@@ -36,12 +39,17 @@ export default function TableControls({
       {title}
       {AddComponent}
 
-      <Input
-        placeholder="Cerca"
-        value={globalFilter ?? ""}
-        onChange={(e) => setGlobalFilter(String(e.target.value))}
-        className="max-w-sm"
-      />
+      {searchBar && (
+        <Input
+          placeholder="Cerca"
+          value={globalFilter ?? ""}
+          onChange={(e) => {
+            
+            setGlobalFilter(e.target.value);
+          }}
+          className="max-w-sm"
+        />
+      )}
 
       {children}
 

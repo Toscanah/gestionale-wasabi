@@ -41,31 +41,36 @@ function New-Backup-Folder {
 function Backup-Database {
     Write-Host "[INFO] Avvio del backup del database" -ForegroundColor Magenta
     $isUSBConnected = Test-Path "F:\backup"
-  
+
     $pcBackupFile = "$BACKUP_FOLDER\$env:PGDATABASE.dump"
     $usbBackupFile = if ($isUSBConnected) { "F:\backup\$env:PGDATABASE.dump" } else { $null }
 
     Write-Host "Eseguo il dump del database sul PC in: $pcBackupFile"
-    & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F p -f "$pcBackupFile"
-    # & openssl enc -aes-256-cbc -salt -pbkdf2 -in "$pcBackupFile" -out "$pcBackupFile.enc" -pass pass:$env:PGPASSWORD
+
+    $pcBackupTime = Measure-Command {
+        & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F p -f "$pcBackupFile"
+    }
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERRORE] Backup fallito sul PC `n" -ForegroundColor Red
         exit 1
     }
     else {
-        Write-Host "[SUCCESSO] Backup completato sul PC: $pcBackupFile `n" -ForegroundColor Green
+        Write-Host "[SUCCESSO] Backup completato sul PC: $pcBackupFile ($($pcBackupTime.TotalSeconds) sec) `n" -ForegroundColor Green
     }
 
     if ($isUSBConnected) {
         Write-Host "[INFO] Eseguo il dump del database sulla USB in: $usbBackupFile"
-        & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F p -f "$usbBackupFile"
+
+        $usbBackupTime = Measure-Command {
+            & pg_dump -U $env:PGUSER -d $env:PGDATABASE -h $env:PGHOST -p $env:PGPORT -c -F p -f "$usbBackupFile"
+        }
 
         if ($LASTEXITCODE -ne 0) {
             Write-Host "[ERRORE] Backup fallito su USB `n" -ForegroundColor Red
         }
         else {
-            Write-Host "[SUCCESSO] Backup completato sulla USB: $usbBackupFile `n" -ForegroundColor Green
+            Write-Host "[SUCCESSO] Backup completato sulla USB: $usbBackupFile ($($usbBackupTime.TotalSeconds) sec) `n" -ForegroundColor Green
         }
     }
 }

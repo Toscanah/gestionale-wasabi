@@ -6,16 +6,22 @@ function Restore-Database {
     $backupFile = "$global:RESTORE_FOLDER\gestionale-wasabi.dump"
 
     if (!(Test-Path $backupFile)) {
-        Write-Host "[ERRORE] Nessuna file di backup trovato in $global:RESTORE_FOLDER. Ripristino impossibile!" -ForegroundColor Red
+        Write-Host "[ERRORE] Nessun file di backup trovato in $global:RESTORE_FOLDER. Ripristino impossibile!" -ForegroundColor Red
         exit 1
     }
 
     Write-Host "[INFO] Ripristino del database da: $backupFile" -ForegroundColor Magenta
-    & psql -U $env:PGUSER -h $env:PGHOST -p $env:PGPORT -d $env:PGDATABASE -f "$backupFile" > $null 2>&1
+
+    $restoreTime = Measure-Command {
+        & psql -U $env:PGUSER -h $env:PGHOST -p $env:PGPORT -d $env:PGDATABASE -f "$backupFile" > $null 2>&1
+    }
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERRORE] Ripristino del database fallito!" -ForegroundColor Red
         exit 1
+    }
+    else {
+        Write-Host "[SUCCESSO] Ripristino completato in $($restoreTime.TotalSeconds) sec" -ForegroundColor Green
     }
 }
 

@@ -1,4 +1,4 @@
-import { ProductWithStats } from "../../types/ProductWithStats";
+import { ProductWithStats, OptionStats } from "../../types/ProductWithStats";
 import prisma from "../db";
 
 export enum TimeFilter {
@@ -52,6 +52,11 @@ export default async function getProductsWithStats(
       orders: {
         include: {
           order: true,
+          options: {
+            include: {
+              option: true,
+            },
+          },
         },
       },
     },
@@ -61,7 +66,7 @@ export default async function getProductsWithStats(
     .map((product) => {
       const filteredOrders = product.orders.filter((productInOrder) => {
         const order = productInOrder.order;
-        
+
         if (!dateFilter) {
           return true;
         }
@@ -82,10 +87,25 @@ export default async function getProductsWithStats(
       (acc, productInOrder) => {
         acc.quantity += productInOrder.quantity;
         acc.total += productInOrder.total;
+
+        productInOrder.options.forEach((optionInOrder) => {
+          const optionName = optionInOrder.option.option_name;
+          acc.options[optionName] = (acc.options[optionName] || 0) + productInOrder.quantity;
+        });
+
         return acc;
       },
-      { quantity: 0, total: 0 }
+      { quantity: 0, total: 0, options: {} as Record<string, number> }
     );
+
+    // Convert options object to sorted array
+    const optionsRank: OptionStats[] = Object.entries(stats.options)
+      .map(([optionName, count], index) => ({
+        option: optionName,
+        count,
+        position: index + 1,
+      }))
+      .sort((a, b) => b.count - a.count);
 
     const { orders, ...productWithoutOrders } = product;
 
@@ -93,6 +113,7 @@ export default async function getProductsWithStats(
       ...productWithoutOrders,
       quantity: stats.quantity,
       total: stats.total,
+      optionsRank,
     };
   });
 }

@@ -1,4 +1,4 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ const columns = (
   TableColumn({
     accessorKey: "boordbells",
     header: "Campanelli",
+    accessorFn: (original) => joinItemsWithComma(original, "doorbells"),
     cellContent: (row) => joinItemsWithComma(row.original, "doorbells"),
   }),
 

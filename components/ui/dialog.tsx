@@ -57,6 +57,7 @@ const DialogContent = React.forwardRef<
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close
+          autoFocus={false}
           className="absolute -right-5 -top-5 rounded-full p-2 bg-muted-foreground 
         ring-offset-background transition-opacity hover:opacity-100 
         focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 
