@@ -21,7 +21,7 @@ function Restore-Database {
         exit 1
     }
     else {
-        Write-Host "[SUCCESSO] Ripristino completato in $($restoreTime.TotalSeconds) sec" -ForegroundColor Green
+        Write-Host "[SUCCESSO] Ripristino completato ($($restoreTime.TotalSeconds) sec)" -ForegroundColor Green
     }
 }
 

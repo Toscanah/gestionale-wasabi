@@ -29,6 +29,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   TableColumn({
     accessorKey: "addresses",
     header: "Campanelli",
+    accessorFn: (original) => joinItemsWithComma(original, "doorbells"),
     cellContent: (row) => (
       <div className="max-w-36">{joinItemsWithComma(row.original, "doorbells")}</div>
     ),
