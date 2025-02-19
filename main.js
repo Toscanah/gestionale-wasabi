@@ -21,6 +21,13 @@ const createWindows = () => {
     },
   });
 
+  mainWindow.webContents.session.setDevicePermissionHandler((details) => {
+    if (details.deviceType === "serial") {
+      return true;
+    }
+    return false;
+  });
+
   mainWindow.loadURL("http://localhost:3000");
   mainWindow.maximize();
 
@@ -46,7 +53,10 @@ const runBackup = () => {
   const isPackaged = app.isPackaged;
   let fullPath = isPackaged ? path.dirname(app.getPath("exe")) : __dirname;
 
-  const projectRoot = fullPath.split(path.sep).slice(0, fullPath.split(path.sep).indexOf("gestionale-wasabi") + 1).join(path.sep);
+  const projectRoot = fullPath
+    .split(path.sep)
+    .slice(0, fullPath.split(path.sep).indexOf("gestionale-wasabi") + 1)
+    .join(path.sep);
   const backupScript = path.join(projectRoot, "scripts", "Backup-Database.ps1");
   const backupDir = path.dirname(backupScript);
 
