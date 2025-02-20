@@ -28,11 +28,16 @@ export default function aggregateProducts(
     );
 
     if (existingProductIndex !== -1) {
-      // Aggregate quantities if both products have no notes
-      groupedProducts[optionsKey][existingProductIndex].quantity += product.quantity;
-      groupedProducts[optionsKey][existingProductIndex].total =
-        groupedProducts[optionsKey][existingProductIndex].quantity *
-        getProductPrice(groupedProducts[optionsKey][existingProductIndex], orderType);
+      const existingProduct = groupedProducts[optionsKey][existingProductIndex];
+
+      // Aggregate quantities
+      existingProduct.quantity += product.quantity;
+      existingProduct.printed_amount =
+        (existingProduct.printed_amount || 0) + product.printed_amount;
+
+      // Recalculate total price
+      existingProduct.total =
+        existingProduct.quantity * getProductPrice(existingProduct, orderType);
     } else {
       // Add the product to the group as-is
       groupedProducts[optionsKey].push({ ...product });

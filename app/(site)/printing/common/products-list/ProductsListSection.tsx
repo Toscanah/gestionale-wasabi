@@ -1,10 +1,8 @@
 import { ProductInOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";
 import aggregateProducts from "../../../functions/product-management/aggregateProducts";
-import React from "react";
 import CustomerProducts from "./CustomerProducts";
 import KitchenProducts from "./KitchenProducts";
-import joinItemsWithComma from "@/app/(site)/functions/formatting-parsing/joinItemsWithComma";
 
 export type GroupedProductsByOptions = Record<string, ProductInOrder[]>;
 
