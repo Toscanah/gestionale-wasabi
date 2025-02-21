@@ -33,10 +33,13 @@ export const CreateCustomerSchema = CustomerSchema.omit({
   surname: true,
   active: true,
   score: true,
-  print_review_qr: true
+  print_review_qr: true,
 }).extend({ phone: z.string() });
 
-export const UpdateCustomerSchema = CustomerSchema.extend({ phone: z.string() });
+export const UpdateCustomerSchema = CustomerSchema.omit({
+  score: true,
+  print_review_qr: true,
+}).extend({ phone: z.string() });
 
 export const NoContentSchema = z.object({});
 
