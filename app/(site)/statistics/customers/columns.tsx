@@ -9,7 +9,6 @@ import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWith
 import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 import { CustomerWithStats } from "../../types/CustomerWithStats";
 import OrderHistory from "../../components/order-history/OrderHistory";
-import MarketingActions from "./marketing/MarketingActions";
 
 const columns: ColumnDef<CustomerWithStats>[] = [
   TableColumn({
@@ -98,12 +97,6 @@ const columns: ColumnDef<CustomerWithStats>[] = [
         </DialogWrapper>
       );
     },
-  }),
-
-  TableColumn({
-    accessorKey: "marketing",
-    header: "Marketing",
-    cellContent: (row) => <MarketingActions customerId={row.original.id} />,
   }),
 ];
 

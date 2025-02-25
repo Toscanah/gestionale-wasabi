@@ -26,6 +26,8 @@ interface SelectWrapperProps {
   onValueChange?: (value: string) => void;
   disabled?: boolean;
   id?: string;
+  itemClassName?: string;
+  labelClassName?: string;
 }
 
 const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
@@ -42,6 +44,8 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
       onKeyDown,
       onValueChange,
       disabled = false,
+      itemClassName,
+      labelClassName,
     },
     ref
   ) => (
@@ -71,7 +75,7 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
           .map((group, groupIndex) => (
             <SelectGroup key={groupIndex}>
               {group.label && (
-                <SelectLabel className="text-xl space-y-2">
+                <SelectLabel className={cn("text-xl space-y-2", labelClassName)}>
                   <Separator orientation="horizontal" />
                   <div>{group.label}</div>
                 </SelectLabel>
@@ -81,7 +85,7 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
                 <SelectItem
                   key={itemIndex}
                   value={typeof item == "string" ? item : item.value}
-                  className="text-xl"
+                  className={cn("text-xl", itemClassName)}
                 >
                   {typeof item == "string" ? item : item.name}
                 </SelectItem>

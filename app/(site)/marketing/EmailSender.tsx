@@ -1,4 +1,3 @@
-import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import DialogWrapper from "../components/dialog/DialogWrapper";
 import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,17 +5,31 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toastError } from "../functions/util/toast";
-export default function EmailSender() {
+
+interface EmailSenderProps {
+  subject: string;
+  body: string | null;
+  isDisabled: boolean;
+}
+
+export default function EmailSender({
+  subject: receivedSubject,
+  body: receivedBody,
+  isDisabled,
+}: EmailSenderProps) {
   const [emails, setEmails] = useState("");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
+  const [subject, setSubject] = useState(receivedSubject || "");
+  const [body, setBody] = useState(receivedBody || "");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setEmails("");
-    setSubject("");
-    setBody("");
   }, [open]);
+
+  useEffect(() => {
+    setSubject(receivedSubject || "");
+    setBody(receivedBody || "");
+  }, [receivedSubject, receivedBody]);
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -63,9 +76,7 @@ export default function EmailSender() {
       putSeparator
       open={open}
       onOpenChange={setOpen}
-      trigger={
-        <SidebarMenuSubButton className="hover:cursor-pointer">Manda email</SidebarMenuSubButton>
-      }
+      trigger={<Button disabled={isDisabled}>Invia</Button>}
     >
       <div className="space-y-2">
         <Label>Lista di email (separate da una virgola)</Label>
@@ -78,7 +89,12 @@ export default function EmailSender() {
 
       <div className="space-y-2">
         <Label>Oggetto dell'email</Label>
-        <Input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full" />
+        <Input
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          className="w-full"
+          disabled
+        />
       </div>
 
       <div className="space-y-2">

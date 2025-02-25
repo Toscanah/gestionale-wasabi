@@ -71,19 +71,3 @@ export const GetProductsWithStatsSchema = z.object({
   from: z.date().optional(),
   to: z.date().optional(),
 });
-
-export const AddPromotionSchema = z.object({
-  customerId: z.number(),
-  discount: z
-    .object({
-      amount: z.number().nullable(),
-      percentage: z.number().nullable(),
-    })
-    .nullable(),
-  extraProduct: z
-    .object({
-      productId: z.number(),
-      productDiscount: z.number().nullable(),
-    })
-    .nullable(),
-});

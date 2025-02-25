@@ -20,6 +20,7 @@ import handleRequest from "../util/handleRequest";
 import deleteCustomeById from "../../sql/customers/deleteCustomerById";
 import deleteCustomerById from "../../sql/customers/deleteCustomerById";
 import getCustomersWithStats from "../../sql/customers/getCustomersWithStats";
+import getCustomersWithMarketing from "../../sql/customers/getCustomersWithMarketing";
 
 export const customerSchemas = {
   getCustomerByPhone: z.object({ phone: z.string() }),
@@ -47,6 +48,7 @@ export const customerSchemas = {
     from: z.coerce.date().optional(),
     to: z.coerce.date().optional(),
   }),
+  getCustomersWithMarketing: NoContentSchema,
 };
 
 const POST_ACTIONS = new Map([
@@ -84,6 +86,10 @@ const GET_ACTIONS = new Map([
   [
     "getCustomersWithStats",
     { func: getCustomersWithStats, schema: customerSchemas.getCustomersWithStats },
+  ],
+  [
+    "getCustomersWithMarketing",
+    { func: getCustomersWithMarketing, schema: customerSchemas.getCustomersWithMarketing },
   ],
 ]);
 
