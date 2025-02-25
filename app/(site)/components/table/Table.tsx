@@ -50,6 +50,22 @@ export default function Table<T>({
     }
   }, [stickyRowIndex]);
 
+  const handleRowClick = (event: React.MouseEvent, original: T) => {
+    const target = event.target as HTMLElement;
+
+    if (target.closest("[data-state='closed']")) {
+      event.stopPropagation();
+      return;
+    }
+
+    if (target.closest("[data-no-row-click]")) {
+      event.stopPropagation();
+      return;
+    }
+    
+    onRowClick && onRowClick(original);
+  };
+
   return (
     <div
       ref={tableRef}
@@ -79,11 +95,9 @@ export default function Table<T>({
 
                 return (
                   <TableRow
-                    onClick={() =>
-                      onRowClick && double == false ? onRowClick(row.original) : undefined
-                    }
-                    onDoubleClick={() =>
-                      onRowClick && double == true ? onRowClick(row.original) : undefined
+                    onClick={(event) => handleRowClick(event, row.original)}
+                    onDoubleClick={(event) =>
+                      double ? handleRowClick(event, row.original) : undefined
                     }
                     key={row.id}
                     className={cn(

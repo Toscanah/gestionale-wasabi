@@ -71,3 +71,8 @@ export const GetProductsWithStatsSchema = z.object({
   from: z.date().optional(),
   to: z.date().optional(),
 });
+
+export const SendMarketingToCustomersSchema = z.object({
+  customerIds: z.array(z.number()),
+  marketingId: z.number(),
+});

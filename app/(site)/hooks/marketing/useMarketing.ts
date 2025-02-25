@@ -21,10 +21,12 @@ export default function useMarketing() {
     activeTemplates,
     toggleTemplate,
     filteredRightCustomers,
-    setFilteredLeftCustomers,
     setFilteredRightCustomers,
     setActiveTemplates,
-  } = useMarketingFilters({ allCustomers, marketingTemplates, selectedCustomers });
+  } = useMarketingFilters({
+    marketingTemplates,
+    selectedCustomers,
+  });
 
   const fetchInitialCustomers = () => {
     fetchRequest<CustomerWithMarketing[]>(
@@ -33,7 +35,7 @@ export default function useMarketing() {
       "getCustomersWithMarketing"
     ).then((customers) => {
       setAllCustomers(customers);
-      applyWeekFilter(customers, WeekFilterEnum.LAST_WEEK);
+      applyWeekFilter(customers, WeekFilterEnum.THIS_WEEK);
     });
   };
 

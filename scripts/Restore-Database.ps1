@@ -1,9 +1,13 @@
 . "$PSScriptRoot\functions\Initialize-Environment.ps1"
+. "$PSScriptRoot/functions/Get-OS.ps1"
+
+$OS = Get-OS
+Write-Host "[INFO] Rilevato sistema operativo: $OS" -ForegroundColor Magenta
 
 function Restore-Database {
     Write-Host "[INFO] Avvio del ripristino del database" -ForegroundColor Magenta
 
-    $backupFile = "$global:RESTORE_FOLDER\gestionale-wasabi.dump"
+    $backupFile = Join-Path $global:RESTORE_FOLDER "$env:PGDATABASE.dump"
 
     if (!(Test-Path $backupFile)) {
         Write-Host "[ERRORE] Nessun file di backup trovato in $global:RESTORE_FOLDER. Ripristino impossibile!" -ForegroundColor Red
@@ -30,10 +34,19 @@ $env:PGDATABASE = "gestionale-wasabi"
 $env:PGHOST = "localhost"
 $env:PGPORT = "5432"
 $env:PGPASSWORD = ""
-$global:PRIMARY_RESTORE_FOLDER = "F:\backup"
-$global:FALLBACK_RESTORE_FOLDER = (Get-Item $PSScriptRoot).Parent.FullName + "\backup"
 
-if (Test-Path $PRIMARY_RESTORE_FOLDER) {
+$global:RESTORE_FOLDER = $null
+
+if ($OS -eq "Windows") {
+    $PRIMARY_RESTORE_FOLDER = "F:\backup"
+}
+elseif ($OS -eq "MacOS") {
+    $PRIMARY_RESTORE_FOLDER = "/Volumes/USB/backup"
+}
+
+$FALLBACK_RESTORE_FOLDER = Join-Path (Get-Item $PSScriptRoot).Parent.FullName "backup"
+
+if ($PRIMARY_RESTORE_FOLDER -and (Test-Path $PRIMARY_RESTORE_FOLDER)) {
     $global:RESTORE_FOLDER = $PRIMARY_RESTORE_FOLDER
     Write-Host "[INFO] USB Backup rilevato. Ripristino da: $PRIMARY_RESTORE_FOLDER `n" -ForegroundColor Magenta
 }

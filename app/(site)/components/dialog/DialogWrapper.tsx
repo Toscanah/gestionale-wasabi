@@ -27,7 +27,7 @@ type DialogWrapperProps = {
   children?: ReactNode;
   trigger?: ReactNode | undefined;
   showCloseButton?: boolean;
-  variant?: "delete" | "normal";
+  variant?: "delete" | "normal" | "warning";
   contentClassName?: string;
   triggerClassName?: string;
   putSeparator?: boolean;
@@ -70,6 +70,7 @@ export default function DialogWrapper({
   tooltip,
 }: DialogWrapperProps) {
   const isDeleteVariant = variant === "delete";
+  const isWarningVariant = variant === "warning";
 
   const thisOnOpenChange = (open: boolean) => onOpenChange?.(open);
 
@@ -100,14 +101,15 @@ export default function DialogWrapper({
           "w-auto max-h-screen",
           sizes[size],
           isDeleteVariant && "border-t-4 border-t-red-600",
+          isWarningVariant && "border-t-4 border-t-orange-500",
           contentClassName
         )}
         showCloseButton={showCloseButton}
       >
-        {(title || isDeleteVariant) && (
+        {(title || isDeleteVariant || isWarningVariant) && (
           <DialogHeader>
             <DialogTitle className="text-2xl">
-              {isDeleteVariant ? (
+              {isDeleteVariant || isWarningVariant ? (
                 <span className="flex gap-2 items-center">
                   <Warning size={32} />
                   Attenzione!

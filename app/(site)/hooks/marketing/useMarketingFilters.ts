@@ -3,6 +3,7 @@ import { MarketingTemplate } from "@/prisma/generated/zod";
 import { CustomerWithMarketing } from "../../models";
 
 export enum WeekFilterEnum {
+  THIS_WEEK = "THIS_WEEK",
   LAST_WEEK = "LAST_WEEK",
   TWO_WEEKS_AGO = "TWO_WEEKS_AGO",
   THREE_WEEKS_AGO = "THREE_WEEKS_AGO",
@@ -10,17 +11,15 @@ export enum WeekFilterEnum {
 }
 
 interface MarketingFiltersParams {
-  allCustomers: CustomerWithMarketing[];
   marketingTemplates: MarketingTemplate[];
   selectedCustomers: CustomerWithMarketing[];
 }
 
 export function useMarketingFilters({
-  allCustomers,
   marketingTemplates,
   selectedCustomers,
 }: MarketingFiltersParams) {
-  const [weekFilter, setWeekFilter] = useState<WeekFilterEnum>(WeekFilterEnum.LAST_WEEK);
+  const [weekFilter, setWeekFilter] = useState<WeekFilterEnum>(WeekFilterEnum.THIS_WEEK);
   const [filteredLeftCustomers, setFilteredLeftCustomers] = useState<CustomerWithMarketing[]>([]);
 
   const [activeTemplates, setActiveTemplates] = useState<MarketingTemplate[]>(marketingTemplates);
@@ -33,25 +32,29 @@ export function useMarketingFilters({
         : [...prev, template]
     );
 
-  const calculateStartAndEndOfWeek = (filter: WeekFilterEnum) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const calculateStartAndEndOfWeek = (filter: WeekFilterEnum) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+    
+      const currentMonday = new Date(today);
+      currentMonday.setDate(today.getDate() - today.getDay() + 1);
+    
+      let startOfWeek = new Date(currentMonday);
+      let endOfWeek = new Date(currentMonday);
+      endOfWeek.setDate(currentMonday.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+    
+      if (filter !== WeekFilterEnum.THIS_WEEK) {
+        const weeksAgo = Object.values(WeekFilterEnum).indexOf(filter);
+        startOfWeek.setDate(currentMonday.getDate() - 7 * weeksAgo);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+      }
 
-    const currentMonday = new Date(today);
-    currentMonday.setDate(today.getDate() - today.getDay() + 1);
-
-    const weeksAgo = Object.values(WeekFilterEnum).indexOf(filter) + 2;
-
-    const startOfWeek = new Date(currentMonday);
-    startOfWeek.setDate(currentMonday.getDate() - 7 * weeksAgo);
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    return { startOfWeek, endOfWeek };
-  };
+      console.log(startOfWeek, endOfWeek);
+    
+      return { startOfWeek, endOfWeek };
+    };
+    
 
   const applyWeekFilter = (allCustomers: CustomerWithMarketing[], newFilter: WeekFilterEnum) => {
     setWeekFilter(newFilter);

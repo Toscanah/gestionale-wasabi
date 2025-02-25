@@ -5,31 +5,31 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toastError } from "../functions/util/toast";
+import { MarketingTemplate } from "@prisma/client";
+import { CustomerWithMarketing } from "../models";
+import fetchRequest from "../functions/api/fetchRequest";
+import { DialogClose } from "@/components/ui/dialog";
 
 interface EmailSenderProps {
-  subject: string;
-  body: string | null;
+  selectedTemplate: MarketingTemplate | undefined;
   isDisabled: boolean;
+  customers: CustomerWithMarketing[];
 }
 
-export default function EmailSender({
-  subject: receivedSubject,
-  body: receivedBody,
-  isDisabled,
-}: EmailSenderProps) {
-  const [emails, setEmails] = useState("");
-  const [subject, setSubject] = useState(receivedSubject || "");
-  const [body, setBody] = useState(receivedBody || "");
+export default function EmailSender({ selectedTemplate, isDisabled, customers }: EmailSenderProps) {
+  const [emails, setEmails] = useState(customers.map((customer) => customer.email).join(", "));
+  const [subject, setSubject] = useState(selectedTemplate?.subject || "");
+  const [body, setBody] = useState(selectedTemplate?.body || "");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setEmails("");
-  }, [open]);
+    setEmails(customers.map((customer) => customer.email).join(", "));
+  }, [customers]);
 
   useEffect(() => {
-    setSubject(receivedSubject || "");
-    setBody(receivedBody || "");
-  }, [receivedSubject, receivedBody]);
+    setSubject(selectedTemplate?.subject || "");
+    setBody(selectedTemplate?.body || "");
+  }, [selectedTemplate]);
 
   const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -67,7 +67,14 @@ export default function EmailSender({
     )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     window.open(mailtoLink, "_blank");
+    sendMarketingToCustomers(customers).then(() => setOpen(false));
   };
+
+  const sendMarketingToCustomers = (customers: CustomerWithMarketing[]) =>
+    fetchRequest("POST", "/api/marketing-templates", "sendMarketingToCustomers", {
+      customerIds: customers.map((c) => c.id),
+      marketingId: selectedTemplate?.id || -1,
+    });
 
   return (
     <DialogWrapper
@@ -102,9 +109,29 @@ export default function EmailSender({
         <Textarea value={body} onChange={(e) => setBody(e.target.value)} className="w-full h-40" />
       </div>
 
-      <Button onClick={sendEmails} className="w-full">
-        Manda email
-      </Button>
+      <DialogWrapper
+        title="Conferma"
+        putSeparator
+        variant="warning"
+        size="medium"
+        footer={
+          <DialogClose className="w-full flex gap-2">
+            <Button className="w-full" variant={"outline"}>
+              Indietro
+            </Button>
+            <Button className="w-full" onClick={sendEmails}>
+              Confermo
+            </Button>
+          </DialogClose>
+        }
+        trigger={<Button className="w-full">Manda email</Button>}
+      >
+        <span>
+          Dopo aver premuto "Confermo" verrai reindirizzato a Gmail per inviare le email di
+          marketing agli indirizzi indicati. Nel frattempo, registreremo queste comunicazioni nel
+          sistema, così potrai sempre tenerne traccia. Sei pronto a procedere?
+        </span>
+      </DialogWrapper>
     </DialogWrapper>
   );
 }

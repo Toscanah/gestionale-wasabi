@@ -56,7 +56,7 @@ export default function Marketing() {
           tableClassName="max-h-[70vh] h-[70vh]"
           onRowClick={onRightTableRowClick}
         />
-        
+
         <div className="flex gap-4 w-full items-center justify-center">
           <TemplateSelection
             marketingTemplates={marketingTemplates}
@@ -65,8 +65,8 @@ export default function Marketing() {
           />
 
           <EmailSender
-            body={selectedTemplate?.body || ""}
-            subject={selectedTemplate?.subject || ""}
+            customers={filteredRightCustomers}
+            selectedTemplate={selectedTemplate}
             isDisabled={filteredRightCustomers.length == 0}
           />
         </div>
