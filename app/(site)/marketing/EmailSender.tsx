@@ -17,14 +17,26 @@ interface EmailSenderProps {
 }
 
 export default function EmailSender({ selectedTemplate, isDisabled, customers }: EmailSenderProps) {
-  const [emails, setEmails] = useState(customers.map((customer) => customer.email).join(", "));
+  const [emails, setEmails] = useState(
+    customers
+      .map((customer) => customer.email)
+      .filter((email) => email) 
+      .join(", ")
+  );
   const [subject, setSubject] = useState(selectedTemplate?.subject || "");
   const [body, setBody] = useState(selectedTemplate?.body || "");
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    setEmails(customers.map((customer) => customer.email).join(", "));
-  }, [customers]);
+  useEffect(
+    () =>
+      setEmails(
+        customers
+          .map((customer) => customer.email)
+          .filter((email) => email)
+          .join(", ")
+      ),
+    [customers]
+  );
 
   useEffect(() => {
     setSubject(selectedTemplate?.subject || "");
@@ -67,7 +79,7 @@ export default function EmailSender({ selectedTemplate, isDisabled, customers }:
     )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     window.open(mailtoLink, "_blank");
-    sendMarketingToCustomers(customers).then(() => setOpen(false));
+    sendMarketingToCustomers(customers).then(() => window.location.reload());
   };
 
   const sendMarketingToCustomers = (customers: CustomerWithMarketing[]) =>
@@ -128,8 +140,8 @@ export default function EmailSender({ selectedTemplate, isDisabled, customers }:
       >
         <span>
           Dopo aver premuto "Confermo" verrai reindirizzato a Gmail per inviare le email di
-          marketing agli indirizzi indicati. Nel frattempo, registreremo queste comunicazioni nel
-          sistema, così potrai sempre tenerne traccia. Sei pronto a procedere?
+          marketing agli indirizzi indicati. Nel frattempo, registreremo queste azioni nel sistema,
+          così potrai sempre tenerne traccia. Sei pronto a procedere?
         </span>
       </DialogWrapper>
     </DialogWrapper>

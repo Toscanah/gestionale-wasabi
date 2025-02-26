@@ -4,11 +4,11 @@ import getTable from "../functions/util/getTable";
 import Table from "../components/table/Table";
 import { ArrowRight } from "lucide-react";
 import EmailSender from "./EmailSender";
-import columns from "./columns";
 import TemplateFilter from "./filters/TemplateFilter";
 import WeekFilter from "./filters/WeekFilter";
 import useMarketing from "../hooks/marketing/useMarketing";
 import TemplateSelection from "./TemplateSelection";
+import columns from "./columns/columns";
 
 export default function Marketing() {
   const {
@@ -52,6 +52,7 @@ export default function Marketing() {
         />
 
         <Table
+          cellClassName={(index) => (index == 3 ? "max-w-60 w-60 truncate" : "")}
           table={rightTable}
           tableClassName="max-h-[70vh] h-[70vh]"
           onRowClick={onRightTableRowClick}

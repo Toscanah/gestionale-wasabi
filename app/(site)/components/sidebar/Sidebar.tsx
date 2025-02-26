@@ -13,50 +13,50 @@ import RiceSection from "./sections/RiceSection";
 import Footer from "./Footer";
 import SettingsSection from "./sections/SettingsSection";
 import MarketingSection from "./sections/MarketingSection";
+import { Fragment } from "react";
+
+type SidebarSection = {
+  label: string;
+  components: (() => React.ReactNode)[];
+};
+
+const sidebarSections: SidebarSection[] = [
+  {
+    label: "Generale",
+    components: [AdminSection, StatsSection, PaymentSection],
+  },
+  {
+    label: "Marketing",
+    components: [MarketingSection],
+  },
+  {
+    label: "Riso",
+    components: [RiceSection],
+  },
+  {
+    label: "Impostazioni",
+    components: [SettingsSection],
+  },
+];
 
 export default function WasabiSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup key={"group-1"}>
-          <SidebarGroupLabel>Generale</SidebarGroupLabel>
+        {sidebarSections.map((section, index) => (
+          <Fragment key={index}>
+            <SidebarGroup>
+              <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                {section.components.map((Component, idx) => (
+                  <Component key={`${index}-comp-${idx}`} />
+                ))}
+              </SidebarGroupContent>
+            </SidebarGroup>
 
-          <SidebarGroupContent>
-            <AdminSection />
-            <StatsSection />
-            <PaymentSection />
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator key={"sep-1"} />
-
-        <SidebarGroup key={"group-2"}>
-          <SidebarGroupLabel>Marketing</SidebarGroupLabel>
-
-          <SidebarGroupContent>
-            <MarketingSection />
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator key={"sep-2"} />
-
-        <SidebarGroup key={"group-3"}>
-          <SidebarGroupLabel>Riso</SidebarGroupLabel>
-
-          <SidebarGroupContent>
-            <RiceSection />
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator key={"sep-3"} />
-
-        <SidebarGroup key={"group-4"}>
-          <SidebarGroupLabel>Impostazioni</SidebarGroupLabel>
-
-          <SidebarGroupContent>
-            <SettingsSection />
-          </SidebarGroupContent>
-        </SidebarGroup>
+            {index < sidebarSections.length - 1 && <SidebarSeparator key={`sep-${index}`} />}
+          </Fragment>
+        ))}
       </SidebarContent>
 
       <Footer />
