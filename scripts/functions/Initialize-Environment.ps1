@@ -1,6 +1,6 @@
 function Initialize-Environment {
     Write-Host "[INFO] Configurazione dell'ambiente" -ForegroundColor Magenta
-    $envPath = (Get-Item $PSScriptRoot).Parent.Parent.FullName + "\.env"
+    $envPath = Join-Path (Get-Item $PSScriptRoot).Parent.Parent.FullName ".env"
 
     if (Test-Path $envPath) {
         $passwordFound = $false
