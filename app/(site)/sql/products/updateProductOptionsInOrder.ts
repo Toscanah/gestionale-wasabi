@@ -5,53 +5,38 @@ export default async function updateProductOptionsInOrder(
   productInOrderId: number,
   optionId: number
 ): Promise<OptionInProductOrder> {
-  // Check if the option already exists in the product order
-  const optionPresent = await prisma.optionInProductOrder.findFirst({
-    where: {
-      product_in_order_id: productInOrderId,
-      option_id: optionId,
-    },
-  });
+  return await prisma.$transaction(async (tx) => {
+    const deleted = await tx.optionInProductOrder.findFirst({
+      where: { product_in_order_id: productInOrderId, option_id: optionId },
+      include: { option: true },
+    });
 
-  // Perform the add/remove operation and reset the receipt printed flag
-  const result = optionPresent
-    ? await prisma.optionInProductOrder.delete({
-        where: {
-          id: optionPresent.id,
-        },
-        include: {
-          option: true,
-        },
-      })
-    : await prisma.optionInProductOrder.create({
-        data: {
-          product_in_order_id: productInOrderId,
-          option_id: optionId,
-        },
-        include: {
-          option: true,
-        },
+    if (deleted) {
+      await tx.optionInProductOrder.delete({
+        where: { id: deleted.id },
       });
 
-  const productInOrder = await prisma.productInOrder.findUnique({
-    where: {
-      id: productInOrderId,
-    },
-    select: {
-      order_id: true,
-    },
-  });
+      await tx.order.updateMany({
+        where: { products: { some: { id: productInOrderId } } },
+        data: { is_receipt_printed: false },
+      });
 
-  if (productInOrder) {
-    await prisma.order.update({
-      where: {
-        id: productInOrder.order_id,
-      },
+      return deleted;
+    }
+
+    const created = await tx.optionInProductOrder.create({
       data: {
-        is_receipt_printed: false,
+        product_in_order_id: productInOrderId,
+        option_id: optionId,
       },
+      include: { option: true },
     });
-  }
 
-  return result;
+    await tx.order.updateMany({
+      where: { products: { some: { id: productInOrderId } } },
+      data: { is_receipt_printed: false },
+    });
+
+    return created;
+  });
 }

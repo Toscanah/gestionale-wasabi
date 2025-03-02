@@ -8,6 +8,7 @@ import { Table } from "@tanstack/react-table";
 import calculateOrderTotal from "../functions/order-management/calculateOrderTotal";
 import { RecursivePartial } from "./useOrderManager";
 import { getProductPrice } from "../functions/product-management/getProductPrice";
+import { UpdateProductInOrderResponse } from "../sql/products/product-in-order/updateProductInOrder";
 
 export function useProductManager(
   order: AnyOrder,
@@ -43,11 +44,7 @@ export function useProductManager(
       return toastError("La quantità non può essere negativa");
     }
 
-    fetchRequest<{
-      updatedProduct?: ProductInOrder;
-      deletedProduct?: ProductInOrder;
-      error?: string;
-    }>("POST", "/api/products/", "updateProductInOrder", {
+    fetchRequest<UpdateProductInOrderResponse>("POST", "/api/products/", "updateProductInOrder", {
       orderId: order.id,
       key: key,
       value: value,

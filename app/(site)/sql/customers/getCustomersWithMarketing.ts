@@ -1,5 +1,6 @@
 import { CustomerWithMarketing } from "../../models";
 import prisma from "../db";
+import { homeAndPickupOrdersInclude } from "../includes";
 
 export default async function getCustomersWithMarketing(): Promise<CustomerWithMarketing[]> {
   return await prisma.customer.findMany({
@@ -11,66 +12,7 @@ export default async function getCustomersWithMarketing(): Promise<CustomerWithM
           marketing: true,
         },
       },
-      home_orders: {
-        include: {
-          order: {
-            include: {
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      category: {
-                        include: {
-                          options: {
-                            include: {
-                              option: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      pickup_orders: {
-        include: {
-          order: {
-            include: {
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      category: {
-                        include: {
-                          options: {
-                            include: {
-                              option: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      ...homeAndPickupOrdersInclude,
     },
   });
 }

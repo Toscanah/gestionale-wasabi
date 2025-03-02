@@ -1,5 +1,6 @@
 import { ProductWithStats, OptionStats } from "../../types/ProductWithStats";
 import prisma from "../db";
+import { categoryInclude, optionsInclude } from "../includes";
 
 export enum TimeFilter {
   CUSTOM = "custom",
@@ -40,23 +41,11 @@ export default async function getProductsWithStats(
       active: true,
     },
     include: {
-      category: {
-        include: {
-          options: {
-            include: {
-              option: true,
-            },
-          },
-        },
-      },
+      ...categoryInclude,
       orders: {
         include: {
           order: true,
-          options: {
-            include: {
-              option: true,
-            },
-          },
+          ...optionsInclude,
         },
       },
     },

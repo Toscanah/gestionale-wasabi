@@ -1,8 +1,8 @@
+import { Category } from "@prisma/client";
 import prisma from "../db";
 
-export default async function toggleCategory(id: number) {
-  const categoryId = id;
-  const category = await prisma.category.findUnique({ where: { id: categoryId } });
+export default async function toggleCategory(id: number): Promise<Category | null> {
+  const category = await prisma.category.findUnique({ where: { id } });
 
   if (!category) {
     return null;
@@ -10,7 +10,7 @@ export default async function toggleCategory(id: number) {
 
   return prisma.category.update({
     where: {
-      id: categoryId,
+      id,
     },
     data: {
       active: !category.active,

@@ -15,4 +15,6 @@ const formSchema = z.object({
   preferences: getZodField("string", false),
 });
 
-export default formSchema
+export default formSchema;
+
+export type FormValues = z.infer<typeof formSchema>;

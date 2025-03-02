@@ -11,6 +11,7 @@ import Home from "./Home";
 import { toastError } from "@/app/(site)/functions/util/toast";
 import generateEmptyOrder from "@/app/(site)/functions/order-management/generateEmptyOrder";
 import { OrderType } from "@prisma/client";
+import { CreateHomeOrderProvider } from "@/app/(site)/context/CreateHomeOrderContext";
 
 interface SearchHomeProps {
   setOrder: Dispatch<SetStateAction<AnyOrder>>;
@@ -75,7 +76,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
               setPhone(e.target.value);
               setDoorbell("");
             }}
-            onKeyDown={handlePhoneKeyDown} // Use phone-specific key handler
+            onKeyDown={handlePhoneKeyDown}
           />
         </div>
 
@@ -90,7 +91,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
               setDoorbell(e.target.value);
               setPhone("");
             }}
-            onKeyDown={handleDoorbellKeyDown} // Use doorbell-specific key handler
+            onKeyDown={handleDoorbellKeyDown}
           />
         </div>
       </div>
@@ -114,11 +115,13 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
         contentClassName="flex flex-col gap-6 items-center max-w-screen max-h-screen h-[95vh]"
       >
         {order.id == -1 ? (
-          <Home
+           <CreateHomeOrderProvider
             setOrder={setOrder}
-            initialPhone={homePhone ?? ""}
-            initialDoorbell={homeDoorbell ?? ""}
-          />
+            initialPhone={homePhone}
+            initialDoorbell={homeDoorbell}
+          >
+            <Home />
+          </CreateHomeOrderProvider>
         ) : (
           <OrderProvider order={order} dialogOpen={open} setDialogOpen={setOpen}>
             <OrderTable />

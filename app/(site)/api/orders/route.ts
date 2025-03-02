@@ -18,7 +18,6 @@ import handleRequest from "../util/handleRequest";
 import joinTableOrders from "../../sql/orders/joinTableOrders";
 import updateTable from "../../sql/orders/updateTable";
 import getOrderById from "../../sql/orders/getOrderById";
-import dummy from "../../sql/dummy";
 import updateOrderPayment from "../../sql/orders/updateOrderPayment";
 import updateOrderExtraItems from "../../sql/orders/updateOrderExtraItems";
 
@@ -87,7 +86,6 @@ export const orderSchemas = {
     items: z.enum(["salads" , "soups" , "rices"]),
     value: z.number().nullable(),
   }),
-  dummy: NoContentSchema,
 };
 
 const GET_ACTIONS = new Map([
@@ -96,7 +94,6 @@ const GET_ACTIONS = new Map([
 ]);
 
 const POST_ACTIONS = new Map([
-  ["dummy", { func: dummy, schema: orderSchemas.dummy }],
   ["updateDiscount", { func: updateDiscount, schema: orderSchemas.updateDiscount }],
   ["updateOrderNotes", { func: updateOrderNotes, schema: orderSchemas.updateOrderNotes }],
   ["createTableOrder", { func: createTableOrder, schema: orderSchemas.createTableOrder }],

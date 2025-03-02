@@ -1,5 +1,6 @@
 import { Option } from "@prisma/client";
 import prisma from "../db";
+import { categoriesInclude } from "../includes";
 
 export default async function updateOption(option: Option) {
   return await prisma.option.update({
@@ -9,12 +10,6 @@ export default async function updateOption(option: Option) {
     data: {
       option_name: option.option_name,
     },
-    include: {
-      categories: {
-        select: {
-          category: true,
-        },
-      },
-    },
+    include: categoriesInclude
   });
 }

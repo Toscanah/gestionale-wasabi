@@ -1,6 +1,5 @@
 import { Order } from "@prisma/client";
 import { CustomerWithStats } from "../../types/CustomerWithStats";
-import prisma from "../db";
 import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 import getCustomersWithDetails from "./getCustomersWithDetails";
 

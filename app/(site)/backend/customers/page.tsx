@@ -8,7 +8,7 @@ import Image from "next/image";
 import logo from "../../../../public/logo.png";
 import Manager from "../Manager";
 import columns from "./columns";
-import GoBack from "../../components/GoBack";
+import GoBack from "../../components/ui/GoBack";
 import { CustomerWithDetails } from "@/app/(site)/models";
 import { Input } from "@/components/ui/input";
 
@@ -45,8 +45,6 @@ export default function CustomersDashboard() {
         phone: (object?.phone?.phone ?? "") as any,
         email: object?.email ?? "",
         preferences: object?.preferences ?? "",
-        score: object?.score ?? 0,
-        print_review_qr: object?.print_review_qr ?? true,
       }}
       layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 2 }, { fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
       formFields={getCustomerFields()}
@@ -69,10 +67,12 @@ export default function CustomersDashboard() {
             FormFields={Fields}
             path="/api/customers/"
             pagination
+            deleteAction
             fetchActions={{
               add: "createCustomer",
               toggle: "toggleCustomer",
               update: "updateCustomerFromAdmin",
+              delete: "deleteCustomerById"
             }}
           />
         )}

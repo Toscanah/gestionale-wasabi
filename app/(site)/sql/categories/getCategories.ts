@@ -1,16 +1,9 @@
 import { CategoryWithOptions } from "../../models";
 import prisma from "../db";
+import { optionsInclude } from "../includes";
 
 export default async function getCategories(): Promise<CategoryWithOptions[]> {
-  const cat = await prisma.category.findMany({
-    include: {
-      options: {
-        select: {
-          option: true,
-        },
-      },
-    },
+  return await prisma.category.findMany({
+    include: optionsInclude,
   });
-
-  return cat;
 }

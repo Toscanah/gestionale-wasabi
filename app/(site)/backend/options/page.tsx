@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import fetchRequest from "../../functions/api/fetchRequest";
 import Manager from "../Manager";
-import GoBack from "../../components/GoBack";
+import GoBack from "../../components/ui/GoBack";
 import { OptionWithCategories } from "@/app/(site)/models";
 import columns from "./columns";
 import FormFields from "../FormFields";

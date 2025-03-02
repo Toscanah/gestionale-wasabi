@@ -1,8 +1,21 @@
-import { Customer } from "@prisma/client";
 import prisma from "../db";
+import { CreateCustomerInput, CustomerWithDetails } from "../../models";
+import { homeAndPickupOrdersInclude } from "../includes";
 
-export default async function createCustomer(customer: Customer & { phone: string }) {
+export default async function createCustomer(
+  customer: CreateCustomerInput
+): Promise<CustomerWithDetails | null> {
   const { phone, ...customerData } = customer;
+
+  const phoneExists = await prisma.phone.findUnique({
+    where: {
+      phone,
+    },
+  });
+
+  if (phoneExists) {
+    return null;
+  }
 
   const newPhone = await prisma.phone.create({
     data: { phone },
@@ -14,72 +27,9 @@ export default async function createCustomer(customer: Customer & { phone: strin
       phone_id: newPhone.id,
     },
     include: {
-      phone: {
-        select: {
-          phone: true,
-        },
-      },
+      phone: true,
       addresses: true,
-      home_orders: {
-        include: {
-          order: {
-            include: {
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      category: {
-                        include: {
-                          options: {
-                            select: {
-                              option: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      pickup_orders: {
-        include: {
-          order: {
-            include: {
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      category: {
-                        include: {
-                          options: {
-                            select: {
-                              option: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      ...homeAndPickupOrdersInclude,
     },
   });
 }

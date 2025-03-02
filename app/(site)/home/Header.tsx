@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import RiceSummary from "../rice/RiceSummary";
 import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
-import DeleteOrdersBulk from "../components/DeleteOrdersBulk";
+import DeleteOrdersBulk from "../orders/components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";
 
 interface HeaderProps {

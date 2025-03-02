@@ -1,5 +1,6 @@
 import { OrderWithPayments } from "../../models";
 import prisma from "../db";
+import { homeOrderInclude, pickupOrderInclude, productsInOrderInclude } from "../includes";
 
 export default async function getOrdersWithPayments(): Promise<OrderWithPayments[]> {
   const orders = await prisma.order.findMany({
@@ -10,33 +11,10 @@ export default async function getOrdersWithPayments(): Promise<OrderWithPayments
     },
     include: {
       payments: true,
-      home_order: {
-        include: { address: true, customer: { include: { phone: true } } },
-      },
-      pickup_order: {
-        include: {
-          customer: { include: { phone: true } },
-        },
-      },
+      ...homeOrderInclude,
+      ...pickupOrderInclude,
       table_order: true,
-      products: {
-        include: {
-          product: {
-            include: {
-              category: {
-                include: {
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          options: { include: { option: true } },
-        },
-      },
+      ...productsInOrderInclude,
     },
   });
 

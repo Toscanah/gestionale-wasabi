@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { GlobalSettings } from "../types/Settings";
-import { PREDEFINED_PRINTERS } from "../components/settings/application/PrinterChoice";
+import { PREDEFINED_PRINTERS } from "../settings/application/PrinterChoice";
 
 export const DEFAULT_SETTINGS: GlobalSettings = {
   address: { cap: "34135", city: "Trieste", civic: "2/b", street: "Scala al Belvedere" },

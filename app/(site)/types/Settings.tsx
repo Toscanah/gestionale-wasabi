@@ -1,4 +1,4 @@
-import { Printer } from "../components/settings/application/PrinterChoice";
+import { Printer } from "../settings/application/PrinterChoice";
 
 export type RestaurantSettings = {
   name: string;

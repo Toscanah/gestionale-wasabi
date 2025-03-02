@@ -19,6 +19,7 @@ const sizes = {
   small: "max-w-[25vw] w-[25vw]",
   medium: "max-w-[40vw] w-[40vw]",
   large: "max-w-[97.5vw] w-[97.5vw]",
+  // mediumLarge: "max-w-[70vw] w-[70vw]",
 };
 
 type DialogWrapperProps = {

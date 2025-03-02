@@ -6,32 +6,10 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
-const parseAddress = (input: string) => {
-  const regex = /^(.+?)\s(\d[\S]*)\s(\d+)\s(.+)$/;
-  const match = input.match(regex);
-
-  if (match) {
-    return {
-      street: match[1],
-      civic: match[2],
-      cap: match[3],
-      city: match[4],
-    };
-  } else {
-    return {
-      street: input,
-      civic: "",
-      cap: "",
-      city: "",
-    };
-  }
-};
-
 export default function RestaurantSettings() {
   const { settings, updateSettings } = useWasabiContext();
-  useFocusOnClick(["address", "name", "slogan", "tel", "cell"]);
-
   const [logoPath, setLogoPath] = useState<string | null>("/receipt-logo.png");
+  useFocusOnClick(["street", "civic", "cap", "city", "name", "slogan", "tel", "cell"]);
 
   useEffect(() => {
     fetch("/api/settings", { method: "GET" })
@@ -92,32 +70,63 @@ export default function RestaurantSettings() {
             type="text"
             id="name"
             value={settings.name}
-            onChange={(name) => updateSettings("name", name.target.value)}
+            onChange={(e) => updateSettings("name", e.target.value)}
           />
         </div>
-
         <div className="space-y-2 w-full">
           <Label htmlFor="slogan">Slogan</Label>
           <Input
             type="text"
             id="slogan"
             value={settings.slogan}
-            onChange={(slogan) => updateSettings("slogan", slogan.target.value)}
+            onChange={(e) => updateSettings("slogan", e.target.value)}
           />
         </div>
       </div>
 
       <div className="flex gap-6">
         <div className="space-y-2 w-full">
-          <Label htmlFor="address">Indirizzo</Label>
+          <Label htmlFor="street">Via</Label>
           <Input
             type="text"
-            id="address"
-            defaultValue={`${settings.address.street} ${settings.address.civic} ${settings.address.cap} ${settings.address.city}`}
-            onChange={(e) => {
-              const parsedAddress = parseAddress(e.target.value);
-              updateSettings("address", { ...settings.address, ...parsedAddress });
-            }}
+            id="street"
+            value={settings.address.street}
+            onChange={(e) =>
+              updateSettings("address", { ...settings.address, street: e.target.value })
+            }
+          />
+        </div>
+        <div className="space-y-2 w-full">
+          <Label htmlFor="civic">Civico</Label>
+          <Input
+            type="text"
+            id="civic"
+            value={settings.address.civic}
+            onChange={(e) =>
+              updateSettings("address", { ...settings.address, civic: e.target.value })
+            }
+          />
+        </div>
+        <div className="space-y-2 w-full">
+          <Label htmlFor="cap">CAP</Label>
+          <Input
+            type="text"
+            id="cap"
+            value={settings.address.cap}
+            onChange={(e) =>
+              updateSettings("address", { ...settings.address, cap: e.target.value })
+            }
+          />
+        </div>
+        <div className="space-y-2 w-full">
+          <Label htmlFor="city">Città</Label>
+          <Input
+            type="text"
+            id="city"
+            value={settings.address.city}
+            onChange={(e) =>
+              updateSettings("address", { ...settings.address, city: e.target.value })
+            }
           />
         </div>
       </div>
@@ -129,22 +138,20 @@ export default function RestaurantSettings() {
             type="text"
             id="tel"
             value={settings.telNumber}
-            onChange={(telNumber) => updateSettings("telNumber", telNumber.target.value)}
+            onChange={(e) => updateSettings("telNumber", e.target.value)}
           />
         </div>
-
         <div className="space-y-2 w-full">
           <Label htmlFor="cell">Cellulare</Label>
           <Input
             type="text"
-            id="cellNumber"
+            id="cell"
             value={settings.cellNumber}
-            onChange={(cellNumber) => updateSettings("cellNumber", cellNumber.target.value)}
+            onChange={(e) => updateSettings("cellNumber", e.target.value)}
           />
         </div>
       </div>
 
-      {/* Logo Upload Section */}
       <div className="flex gap-6">
         <div className="space-y-2 w-full">
           <Label htmlFor="logo">
@@ -153,7 +160,6 @@ export default function RestaurantSettings() {
               (Seleziona nuovo logo)
             </Button>
           </Label>
-
           <div>
             {logoPath ? (
               <Image src={logoPath} alt="Logo" width="200" height="200" className="object-cover" />

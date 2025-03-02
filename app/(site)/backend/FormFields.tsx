@@ -7,7 +7,7 @@ import { Form } from "@/components/ui/form";
 import React, { ComponentType, HTMLInputTypeAttribute, ReactElement } from "react";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import FormField from "../components/FormField";
+import FormField from "../components/ui/FormField";
 
 export type FormFieldType = {
   name: string;

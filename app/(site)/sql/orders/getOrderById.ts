@@ -1,11 +1,16 @@
 import { AnyOrder } from "../../models";
 import prisma from "../db";
+import {
+  homeOrderInclude,
+  pickupOrderInclude,
+  productInOrderInclude,
+} from "../includes";
 
 export default async function getOrderById(
   orderId: number,
   variant = "onlyPaid"
 ): Promise<AnyOrder> {
-  return (await prisma.order.findUnique({
+  const existingOrder = await prisma.order.findUnique({
     where: {
       id: orderId,
     },
@@ -19,30 +24,19 @@ export default async function getOrderById(
               },
             }),
         include: {
-          product: {
-            include: {
-              category: {
-                include: {
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          options: { include: { option: true } },
+          ...productInOrderInclude,
         },
       },
       payments: true,
-      home_order: {
-        include: { address: true, customer: { include: { phone: true } } },
-      },
-      pickup_order: {
-        include: { customer: { include: { phone: true } } },
-      },
+      ...homeOrderInclude,
+      ...pickupOrderInclude,
       table_order: true,
     },
-  })) as AnyOrder;
+  });
+
+  if (!existingOrder) {
+    throw new Error(`Order with id ${orderId} not found`);
+  }
+
+  return existingOrder;
 }

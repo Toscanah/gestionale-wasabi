@@ -101,7 +101,7 @@ model PickupOrder {
     id          Int       @id @default(autoincrement())
     order_id    Int       @unique
     customer_id Int?
-    when        String?   @default("immediate")
+    when        String    @default("immediate")
     name        String
     customer    Customer? @relation(fields: [customer_id], references: [id])
     order       Order     @relation(fields: [order_id], references: [id], onDelete: Cascade)
@@ -140,25 +140,23 @@ model MarketingTemplate {
 }
 
 model Customer {
-    id              Int                   @id @default(autoincrement())
-    name            String?
-    surname         String?
-    email           String?
-    preferences     String?
-    score           Float?                @default(0)
-    print_review_qr Boolean               @default(true)
-    active          Boolean               @default(true)
-    phone_id        Int?                  @unique
-    phone           Phone?                @relation(fields: [phone_id], references: [id], onDelete: SetNull)
-    addresses       Address[]
-    home_orders     HomeOrder[]
-    pickup_orders   PickupOrder[]
-    marketings      MarketingOnCustomer[]
+    id            Int                   @id @default(autoincrement())
+    name          String?
+    surname       String?
+    email         String?
+    preferences   String?
+    active        Boolean               @default(true)
+    phone_id      Int                   @unique
+    phone         Phone                 @relation(fields: [phone_id], references: [id], onDelete: Cascade)
+    addresses     Address[]
+    home_orders   HomeOrder[]
+    pickup_orders PickupOrder[]
+    marketings    MarketingOnCustomer[]
 }
 
 model Phone {
     id       Int       @id @default(autoincrement())
-    phone    String
+    phone    String    @unique
     customer Customer?
 }
 
@@ -176,7 +174,7 @@ model RiceBatchLog {
     created_at    DateTime   @default(now())
     rice_batch_id Int?
     rice_batch    RiceBatch? @relation(fields: [rice_batch_id], references: [id])
-    value         Float?
+    manual_value  Float?
 }
 
 model RiceBatch {
@@ -191,12 +189,12 @@ model Product {
     category_id Int?
     code        String
     desc        String
-    site_price  Float?           @default(0)
-    home_price  Float?           @default(0)
+    site_price  Float            @default(0)
+    home_price  Float            @default(0)
     rice        Float            @default(0)
-    salads      Int?             @default(0)
-    soups       Int?             @default(0)
-    rices       Int?             @default(0)
+    salads      Int              @default(0)
+    soups       Int              @default(0)
+    rices       Int              @default(0)
     active      Boolean          @default(true)
     kitchen     KitchenType      @default(NONE)
     orders      ProductInOrder[]
@@ -214,7 +212,7 @@ model ProductInOrder {
     rice_quantity   Float                  @default(0)
     printed_amount  Int                    @default(0)
     state           ProductInOrderState    @default(IN_ORDER)
-    additional_note String?                @default("")
+    additional_note String?
     created_at      DateTime               @default(now())
     options         OptionInProductOrder[]
     product         Product                @relation(fields: [product_id], references: [id])

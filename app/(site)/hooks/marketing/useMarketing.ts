@@ -52,7 +52,7 @@ export default function useMarketing() {
   const fetchMarketingTemplates = () => {
     fetchRequest<MarketingTemplate[]>(
       "GET",
-      "/api/marketing-templates",
+      "/api/marketing",
       "getMarketingTemplates"
     ).then((templates) => {
       setMarketingTemplates(templates);

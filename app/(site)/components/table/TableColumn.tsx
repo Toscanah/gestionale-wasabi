@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
-import { ColumnDef, FilterFnOption, filterFns, Row } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import getNestedValue from "../../functions/util/getNestedValue";
 
@@ -10,6 +10,11 @@ type TableColumnProps<T> = {
   header: ReactNode;
   cellContent?: (row: Row<T>) => ReactNode;
   accessorFn?: (row: T) => unknown;
+  /**
+   * When true, the cell will display the 1-indexed row position based on the
+   * current sorted model.
+   */
+  isRowIndex?: boolean;
 };
 
 export default function TableColumn<T>({
@@ -18,6 +23,7 @@ export default function TableColumn<T>({
   header,
   cellContent,
   accessorFn,
+  isRowIndex = false,
 }: TableColumnProps<T>): ColumnDef<T> {
   return {
     accessorKey,
@@ -34,8 +40,19 @@ export default function TableColumn<T>({
       ) : (
         header
       ),
-    cell: ({ row }) =>
-      cellContent ? cellContent(row) : String(getNestedValue<T>(row.original, accessorKey)),
+    cell: (cellContext) => {
+      if (isRowIndex) {
+        const { row, table } = cellContext;
+
+        return (
+          (table.getSortedRowModel()?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) ||
+            0) + 1
+        );
+      }
+      return cellContent
+        ? cellContent(cellContext.row)
+        : String(getNestedValue<T>(cellContext.row.original, accessorKey));
+    },
     filterFn: "includesString",
   };
 }

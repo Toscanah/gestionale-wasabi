@@ -1,7 +1,8 @@
+import { TableOrder } from "../../models";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 
-export default async function updateTable(table: string, orderId: number) {
+export default async function updateTable(table: string, orderId: number): Promise<TableOrder> {
   const orderToUpdate = await getOrderById(orderId);
 
   if (!orderToUpdate) {
@@ -13,5 +14,5 @@ export default async function updateTable(table: string, orderId: number) {
     data: { table },
   });
 
-  return await getOrderById(orderId);
+  return (await getOrderById(orderId)) as TableOrder;
 }

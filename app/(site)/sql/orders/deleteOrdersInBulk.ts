@@ -1,33 +1,25 @@
 import prisma from "../db";
+import { AnyOrder } from "../../models";
 
-export default async function deleteOrdersInBulk(ordersId: number[]) {
-  await prisma.productInOrder.updateMany({
-    where: {
-      order_id: {
-        in: ordersId,
-      },
-    },
-    data: {
-      state: "DELETED_UNCOOKED",
-    },
-  });
+export default async function deleteOrdersInBulk(
+  ordersId: number[]
+): Promise<Pick<AnyOrder, "id" | "type">[]> {
+  return await prisma.$transaction(async (tx) => {
+    await Promise.all([
+      tx.productInOrder.updateMany({
+        where: { order_id: { in: ordersId } },
+        data: { state: "DELETED_UNCOOKED" },
+      }),
 
-  await prisma.order.updateMany({
-    where: {
-      id: {
-        in: ordersId,
-      },
-    },
-    data: {
-      state: "CANCELLED",
-    },
-  });
+      tx.order.updateMany({
+        where: { id: { in: ordersId } },
+        data: { state: "CANCELLED" },
+      }),
+    ]);
 
-  return await prisma.order.findMany({
-    where: {
-      id: {
-        in: ordersId,
-      },
-    },
+    return tx.order.findMany({
+      where: { id: { in: ordersId } },
+      select: { id: true, type: true },
+    });
   });
 }

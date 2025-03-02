@@ -14,8 +14,8 @@ export default function joinItemsWithComma<T>(
   options: { sort?: boolean; maxChar?: number } = { sort: false, maxChar: Infinity }
 ): string {
   const { sort = false, maxChar = Infinity } = options;
-
   const truncate = (str: string) => str.slice(0, Math.min(str.length, maxChar));
+  
   switch (type) {
     case "doorbells":
       return formatItems(

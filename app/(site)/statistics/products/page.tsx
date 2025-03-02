@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import Table from "../../components/table/Table";
 import SelectWrapper from "../../components/select/SelectWrapper";
-import GoBack from "../../components/GoBack";
+import GoBack from "../../components/ui/GoBack";
 import getTable from "../../functions/util/getTable";
 import columns from "./columns";
 import useProductsStats, {

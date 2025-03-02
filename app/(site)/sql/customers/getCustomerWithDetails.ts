@@ -1,6 +1,8 @@
 import { CustomerWithDetails } from "@/app/(site)/models";
 import { HomeOrder } from "@/app/(site)/models";
 import prisma from "../db";
+import { homeAndPickupOrdersInclude } from "../includes";
+import filterInactiveProducts from "../../functions/product-management/filterInactiveProducts";
 
 export default async function getCustomerWithDetails(
   customerId: number
@@ -12,83 +14,11 @@ export default async function getCustomerWithDetails(
     include: {
       addresses: true,
       phone: true,
-      home_orders: {
-        include: {
-          order: {
-            include: {
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      category: {
-                        include: {
-                          options: {
-                            include: {
-                              option: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      pickup_orders: {
-        include: {
-          order: {
-            include: {
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      category: {
-                        include: {
-                          options: {
-                            include: {
-                              option: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      ...homeAndPickupOrdersInclude,
     },
   });
 
   if (!customer) return null;
 
-  // Filter out inactive products
-  customer.home_orders.forEach((homeOrder) => {
-    homeOrder.order.products = homeOrder.order.products.filter(
-      (productInOrder) => productInOrder.product.active
-    );
-  });
-
-  customer.pickup_orders.forEach((pickupOrder) => {
-    pickupOrder.order.products = pickupOrder.order.products.filter(
-      (productInOrder) => productInOrder.product.active
-    );
-  });
-
-  return customer;
+  return filterInactiveProducts(customer);
 }

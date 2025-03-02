@@ -1,7 +1,8 @@
+import { AnyOrder } from "../../models";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 
-export default async function updateOrderNotes(orderId: number, notes: string) {
+export default async function updateOrderNotes(orderId: number, notes: string): Promise<AnyOrder> {
   await prisma.order.update({
     where: { id: orderId },
     data: { is_receipt_printed: false },

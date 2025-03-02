@@ -15,7 +15,6 @@ interface OrderProviderProps {
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
-// il tipo di quello che torno alla gente
 type OrderContextType = {
   setOrder: Dispatch<SetStateAction<AnyOrder>>;
   order: AnyOrder;

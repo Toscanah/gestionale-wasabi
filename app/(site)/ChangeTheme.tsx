@@ -32,6 +32,7 @@ export function ChangeTheme() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
+      
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")} className="hover:cursor-pointer">
           Chiaro

@@ -1,9 +1,7 @@
 import prisma from "../db";
 
 export default async function toggleCustomer(id: number) {
-  
-  const customerId = id;
-  const customer = await prisma.customer.findUnique({ where: { id: customerId } });
+  const customer = await prisma.customer.findUnique({ where: { id } });
 
   if (!customer) {
     return null;
@@ -11,7 +9,7 @@ export default async function toggleCustomer(id: number) {
 
   return prisma.customer.update({
     where: {
-      id: customerId,
+      id,
     },
     data: {
       active: !customer.active,

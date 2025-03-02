@@ -1,9 +1,12 @@
 import { Address } from "@/prisma/generated/zod";
 import prisma from "../db";
-import getCustomersWithDetails from "./getCustomersWithDetails";
 import getCustomerWithDetails from "./getCustomerWithDetails";
+import { CustomerWithDetails } from "../../models";
 
-export default async function updateAddressesOfCustomer(addresses: Address[], customerId: number) {
+export default async function updateAddressesOfCustomer(
+  addresses: Address[],
+  customerId: number
+): Promise<CustomerWithDetails | null> {
   for (const address of addresses) {
     if (address.id > 0) {
       await prisma.address.update({

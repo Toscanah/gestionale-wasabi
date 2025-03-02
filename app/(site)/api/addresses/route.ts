@@ -5,15 +5,14 @@ import getAddressesByCustomer from "../../sql/addresses/getAddressesByCustomer";
 import getLastAddressOfCustomer from "../../sql/addresses/getLastAddressOfCustomer";
 import { z } from "zod";
 import handleRequest from "../util/handleRequest";
-import { AddressSchema } from "@/prisma/generated/zod";
-import { CreateAddressSchema, UpdateAddressSchema } from "../../models";
+import { CreateAddressInputSchema, UpdateAddressInputSchema } from "../../models";
 
 export const addressSchemas = {
   createAddress: z.object({
-    address: CreateAddressSchema,
+    address: CreateAddressInputSchema,
   }),
   updateAddress: z.object({
-    address: UpdateAddressSchema,
+    address: UpdateAddressInputSchema,
   }),
   getAddressesByCustomer: z.object({
     customerId: z.number(),

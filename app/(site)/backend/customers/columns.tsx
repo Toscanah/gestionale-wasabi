@@ -1,4 +1,4 @@
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";

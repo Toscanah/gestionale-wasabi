@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { CharacterSet, Printer, PrinterType, render } from "react-thermal-printer";
-import { Printer as SelectedPrinter } from "../components/settings/application/PrinterChoice";
+import { Printer as SelectedPrinter } from "../settings/application/PrinterChoice";
 import { DEFAULT_SETTINGS } from "../hooks/useSettings";
 import { GlobalSettings } from "../types/Settings";
 

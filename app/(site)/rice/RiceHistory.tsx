@@ -39,7 +39,7 @@ export default function RiceHistory() {
                 </span>
               ) : (
                 <span>
-                  <strong>Manuale</strong>: {formatRice(log.value ?? 0)}
+                  <strong>Manuale</strong>: {formatRice(log.manual_value ?? 0)}
                 </span>
               )}
               <span className="ml-2 text-gray-500">

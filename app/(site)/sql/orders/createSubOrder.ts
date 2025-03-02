@@ -6,7 +6,6 @@ import prisma from "../db";
 import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import getOrderById from "./getOrderById";
 import { AnyOrder, PickupOrder, ProductInOrder, TableOrder } from "../../models";
-import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 
 export default async function createSubOrder(
   parentOrder: AnyOrder,
@@ -119,6 +118,7 @@ export default async function createSubOrder(
   });
 
   await addProductsToOrder(newSubOrder.id, products);
+  
   await prisma.order.update({
     where: { id: newSubOrder.id },
     data: {

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import DialogWrapper from "./DialogWrapper";
+import DialogWrapper from "../../../components/dialog/DialogWrapper";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ReactNode, useState } from "react";

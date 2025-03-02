@@ -1,9 +1,13 @@
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
-import { ProductInOrder } from "../../models";
+import { AnyOrder, ProductInOrder } from "../../models";
 import { Payment } from "@/prisma/generated/zod";
 
-export default async function payOrder(payments: Payment[], productsToPay: ProductInOrder[]) {
+export default async function payOrder(payments: Payment[], productsToPay: ProductInOrder[]): Promise<AnyOrder> {
+  if (payments.length == 0) {
+    throw new Error("No payments passed");
+  }
+
   const orderId = payments[0].order_id;
 
   // Prepare payment data for insertion
@@ -21,7 +25,9 @@ export default async function payOrder(payments: Payment[], productsToPay: Produ
   // Retrieve the order along with associated products
   const order = await getOrderById(orderId);
 
-  if (!order) throw new Error(`Order with id ${orderId} not found`);
+  if (!order) {
+    throw new Error(`Order with id ${orderId} not found`);
+  }
 
   // Update paid quantity and is_paid_fully for each product
   const productUpdates = productsToPay

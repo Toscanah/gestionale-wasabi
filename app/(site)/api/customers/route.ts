@@ -10,14 +10,11 @@ import updateCustomerFromAdmin from "../../sql/customers/updateCustomerFromAdmin
 import getCustomersByDoorbell from "../../sql/customers/getCustomersByDoorbell";
 import { z } from "zod";
 import {
-  CustomerWithAddressesAndOrdersSchema,
-  CreateCustomerSchema,
+  CreateCustomerInputSchema,
   NoContentSchema,
-  UpdateCustomerSchema,
 } from "../../models";
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import handleRequest from "../util/handleRequest";
-import deleteCustomeById from "../../sql/customers/deleteCustomerById";
 import deleteCustomerById from "../../sql/customers/deleteCustomerById";
 import getCustomersWithStats from "../../sql/customers/getCustomersWithStats";
 import getCustomersWithMarketing from "../../sql/customers/getCustomersWithMarketing";
@@ -28,13 +25,13 @@ export const customerSchemas = {
   getCustomersWithDetails: NoContentSchema,
   getCustomersByDoorbell: z.object({ doorbell: z.string() }),
   updateCustomerFromAdmin: z.object({
-    customer: UpdateCustomerSchema,
+    customer: CustomerSchema.extend({ phone: z.string() }),
   }),
   updateCustomerFromOrder: z.object({
     customer: CustomerSchema,
   }),
   createCustomer: z.object({
-    customer: CreateCustomerSchema,
+    customer: CreateCustomerInputSchema,
   }),
   toggleCustomer: z.object({ id: z.number() }),
   updateAddressesOfCustomer: z.object({

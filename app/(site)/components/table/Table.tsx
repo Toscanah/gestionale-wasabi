@@ -22,6 +22,7 @@ interface TableProps<T> {
   headerClassName?: string;
   rowClassName?: string;
   cellClassName?: (index: number) => string;
+  forceRowClick?: boolean;
   CustomCell?: ({ cell, className }: CustomeCellProps<T>) => JSX.Element;
   onRowClick?: (original: T) => void;
   double?: boolean;
@@ -38,6 +39,7 @@ export default function Table<T>({
   onRowClick,
   stickyRowIndex,
   double = false,
+  forceRowClick = false,
 }: TableProps<T>) {
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -53,16 +55,18 @@ export default function Table<T>({
   const handleRowClick = (event: React.MouseEvent, original: T) => {
     const target = event.target as HTMLElement;
 
-    if (target.closest("[data-state='closed']")) {
-      event.stopPropagation();
-      return;
+    if (!forceRowClick) {
+      if (target.closest('[data-state="open"]')) {
+        event.stopPropagation();
+        return;
+      }
+
+      if (target.closest("[data-state='closed']") || target.closest("[data-no-row-click]")) {
+        event.stopPropagation();
+        return;
+      }
     }
 
-    if (target.closest("[data-no-row-click]")) {
-      event.stopPropagation();
-      return;
-    }
-    
     onRowClick && onRowClick(original);
   };
 

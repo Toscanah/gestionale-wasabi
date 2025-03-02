@@ -25,10 +25,11 @@ enum Actions {
   UPDATE = "update",
   ADD = "add",
   TOGGLE = "toggle",
+  DELETE = "delete",
 }
 
-export type ActionsType = {
-  [key in Actions]: ValidActionKeys;
+export type ActionsType = Omit<{ [key in Actions]: ValidActionKeys }, Actions.DELETE> & {
+  [Actions.DELETE]?: ValidActionKeys;
 };
 
 interface ManagerProps<T extends { id: number; active: boolean }> {
@@ -40,6 +41,7 @@ interface ManagerProps<T extends { id: number; active: boolean }> {
   type: "product" | "category" | "option" | "customer";
   addionalFilters?: ReactNode[];
   pagination?: boolean;
+  deleteAction?: boolean;
 }
 
 interface FormFieldsProps<T extends { id: number; active: boolean }> {
@@ -57,6 +59,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
   type,
   addionalFilters,
   pagination = false,
+  deleteAction = false,
 }: ManagerProps<T>) {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
   const [data, setData] = useState<T[]>(receivedData);
@@ -67,9 +70,10 @@ export default function Manager<T extends { id: number; active: boolean }>({
   }, [receivedData]);
 
   const triggerIcons = (disabled: boolean) => ({
-    delete: disabled ? "Attiva" : "Disattiva",
+    toggle: disabled ? "Attiva" : "Disattiva",
     update: <Pencil size={24} className="hover:cursor-pointer" />,
     add: <Plus size={24} className="hover:cursor-pointer" />,
+    delete: <Trash size={24} className="hover:cursor-pointer" />,
   });
 
   const handleToggle = (objectToToggle: T) =>
@@ -117,8 +121,28 @@ export default function Manager<T extends { id: number; active: boolean }>({
     );
   };
 
-  const getTrigger = (action: "delete" | "update" | "add", disabled: boolean = false) => (
-    <Button type="button">{triggerIcons(disabled)[action]}</Button>
+  const handleDelete = (objectToDelete: T) => {
+    if (!deleteAction || !fetchActions.delete) return;
+
+    fetchRequest<T>("POST", path, fetchActions.delete, {
+      id: objectToDelete.id,
+    }).then((response) => {
+      if (!response) {
+        return toastError("Impossibile eliminare l'elemento");
+      }
+
+      setData((prevData) => prevData.filter((item) => item.id !== objectToDelete.id));
+      toastSuccess("Elemento eliminato correttamente");
+    });
+  };
+
+  const getTrigger = (
+    action: "toggle" | "update" | "add" | "delete",
+    disabled: boolean = false
+  ) => (
+    <Button type="button" variant={action == "delete" ? "destructive" : "default"}>
+      {triggerIcons(disabled)[action]}
+    </Button>
   );
 
   const actions = {
@@ -131,11 +155,11 @@ export default function Manager<T extends { id: number; active: boolean }>({
         />
       </DialogWrapper>
     ),
-    delete: ({ object }: { object: T }) => (
+    toggle: ({ object }: { object: T }) => (
       <DialogWrapper
         size="small"
         title="Attenzione!"
-        trigger={getTrigger("delete", !object.active)}
+        trigger={getTrigger("toggle", !object.active)}
         variant="delete"
         onDelete={() => handleToggle(object)}
       >
@@ -149,9 +173,24 @@ export default function Manager<T extends { id: number; active: boolean }>({
         <FormFields handleSubmit={handleAdd} footerName="Aggiungi" />
       </DialogWrapper>
     ),
+    delete: ({ object }: { object: T }) => (
+      <DialogWrapper
+        variant="delete"
+        title="Elimina elemento"
+        trigger={getTrigger("delete")}
+        onDelete={() => handleDelete(object)}
+      >
+        Stai per eliminare questo elemento permanentemente. Sei sicuro?
+      </DialogWrapper>
+    ),
   };
 
-  const tableColumns = getColumns<T>(columns, actions.edit, actions.delete);
+  const tableColumns = getColumns<T>(
+    columns,
+    actions.edit,
+    actions.toggle,
+    deleteAction ? actions.delete : undefined
+  );
   const table = getTable({
     data: onlyActive ? data.filter((item) => item.active) : data,
     columns: tableColumns,

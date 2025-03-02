@@ -1,12 +1,13 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
-import { AnyOrder } from "../../models";
+import { AnyOrder, TableOrder } from "../../models";
+import { productsInOrderInclude } from "../includes";
 
 export default async function createTableOrder(
   table: string,
   people: number,
   resName?: string
-): Promise<{ order: AnyOrder; isNewOrder: boolean }> {
+): Promise<{ order: TableOrder; isNewOrder: boolean }> {
   const existingOrder = await prisma.order.findFirst({
     where: {
       type: OrderType.TABLE,
@@ -18,28 +19,7 @@ export default async function createTableOrder(
     include: {
       payments: true,
       table_order: true,
-      products: {
-        include: {
-          product: {
-            include: {
-              category: {
-                include: {
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          options: {
-            include: {
-              option: true,
-            },
-          },
-        },
-      },
+      ...productsInOrderInclude,
     },
   });
 
@@ -62,28 +42,7 @@ export default async function createTableOrder(
     include: {
       payments: true,
       table_order: true,
-      products: {
-        include: {
-          product: {
-            include: {
-              category: {
-                include: {
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          options: {
-            include: {
-              option: true,
-            },
-          },
-        },
-      },
+      ...productsInOrderInclude,
     },
   });
 

@@ -4,7 +4,7 @@ export default async function addRiceLog(riceBatchId: number | null, manualValue
   return await prisma.riceBatchLog.create({
     data: {
       rice_batch_id: riceBatchId,
-      value: manualValue,
+      manual_value: manualValue,
     },
   });
 }

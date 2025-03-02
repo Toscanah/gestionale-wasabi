@@ -1,14 +1,17 @@
 import { Product } from "../../models";
 import prisma from "../db";
+import { categoryInclude } from "../includes";
 
-export default async function createNewProduct(product: Product) {
+export default async function createNewProduct(product: Product): Promise<Product | null> {
   const existingProduct = await prisma.product.findFirst({
     where: {
       code: product.code,
     },
   });
 
-  if (existingProduct) return null;
+  if (existingProduct) {
+    return null
+  }
 
   const newProduct = await prisma.product.create({
     data: {
@@ -25,7 +28,7 @@ export default async function createNewProduct(product: Product) {
       category_id: product.category_id ? Number(product.category_id) || null : null,
     },
     include: {
-      category: true,
+      ...categoryInclude,
     },
   });
 

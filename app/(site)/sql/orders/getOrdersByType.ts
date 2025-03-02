@@ -2,37 +2,23 @@ import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import prisma from "../db";
 import { AnyOrder } from "../../models";
+import { homeOrderInclude, pickupOrderInclude, productInOrderInclude } from "../includes";
+import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 export default async function getOrdersByType(type: OrderType): Promise<AnyOrder[]> {
   const orders = await prisma.order.findMany({
     include: {
       products: {
         where: {
           is_paid_fully: false,
+          state: "IN_ORDER",
         },
         include: {
-          product: {
-            include: {
-              category: {
-                include: {
-                  options: {
-                    include: {
-                      option: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          options: { include: { option: true } },
+          ...productInOrderInclude,
         },
       },
       payments: true,
-      home_order: {
-        include: { address: true, customer: { include: { phone: true } } },
-      },
-      pickup_order: {
-        include: { customer: { include: { phone: true } } },
-      },
+      ...homeOrderInclude,
+      ...pickupOrderInclude,
       table_order: true,
     },
     where: {
@@ -45,20 +31,15 @@ export default async function getOrdersByType(type: OrderType): Promise<AnyOrder
   });
 
   const adjustedOrders = orders.map((order) => {
-    const unpaidProducts = order.products
-      .filter((prod) => prod.state == "IN_ORDER")
-      .map((product) => ({
-        ...product,
-        quantity: product.quantity - product.paid_quantity,
-        total:
-          (product.quantity - product.paid_quantity) *
-          getProductPrice(product, order.type as OrderType),
-      }));
+    const unpaidProducts = order.products.map((product) => ({
+      ...product,
+      quantity: product.quantity - product.paid_quantity,
+      total:
+        (product.quantity - product.paid_quantity) *
+        getProductPrice(product, order.type as OrderType),
+    }));
 
-    const unpaidOrderTotal = unpaidProducts.reduce(
-      (sum, product) => sum + product.quantity * getProductPrice(product, order.type as OrderType),
-      0
-    );
+    const unpaidOrderTotal = calculateOrderTotal({ products: unpaidProducts, type: order.type });
 
     return {
       ...order,

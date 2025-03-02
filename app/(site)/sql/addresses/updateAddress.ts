@@ -1,7 +1,7 @@
-import { Address } from "@prisma/client";
 import prisma from "../db";
+import { UpdateAddressInput } from "../../models";
 
-export default async function updateAddress(address: Address) {
+export default async function updateAddress(address: UpdateAddressInput) {
   return await prisma.address.update({
     data: {
       civic: address.civic,

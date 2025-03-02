@@ -83,7 +83,7 @@ export default function EmailSender({ selectedTemplate, isDisabled, customers }:
   };
 
   const sendMarketingToCustomers = (customers: CustomerWithMarketing[]) =>
-    fetchRequest("POST", "/api/marketing-templates", "sendMarketingToCustomers", {
+    fetchRequest("POST", "/api/marketing", "sendMarketingToCustomers", {
       customerIds: customers.map((c) => c.id),
       marketingId: selectedTemplate?.id || -1,
     });

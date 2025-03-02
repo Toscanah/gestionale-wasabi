@@ -7,7 +7,7 @@ import { orderSchemas } from "../../api/orders/route";
 import { paymentSchemas } from "../../api/payments/route";
 import { productSchemas } from "../../api/products/route";
 import { riceSchemas } from "../../api/rice/route";
-import { marketingSchemas } from "../../api/marketing-templates/route";
+import { marketingSchemas } from "../../api/marketing/route";
 
 export type HTTPMethod = "POST" | "GET" | "DELETE" | "PUT" | "PATCH";
 
@@ -20,7 +20,7 @@ export type APIEndpoint =
   | "payments"
   | "products"
   | "rice"
-  | "marketing-templates";
+  | "marketing";
 
 const schemas = {
   ...addressSchemas,

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import addProductToOrder from "../../sql/products/addProductToOrder";
 import addProductsToOrder from "../../sql/products/addProductsToOrder";
-import updateProductInOrder from "../../sql/products/updateProductInOrder";
+import updateProductInOrder from "../../sql/products/product-in-order/updateProductInOrder";
 import deleteProductsFromOrder from "../../sql/products/deleteProductsFromOrder";
 import getProducts from "../../sql/products/getProducts";
 import updateProduct from "../../sql/products/updateProduct";
@@ -88,10 +88,6 @@ const POST_ACTIONS = new Map([
   [
     "updatePrintedAmounts",
     { func: updatePrintedAmounts, schema: productSchemas.updatePrintedAmounts },
-  ],
-  [
-    "deleteProductsFromOrder",
-    { func: deleteProductsFromOrder, schema: productSchemas.deleteProductsFromOrder },
   ],
 ]);
 

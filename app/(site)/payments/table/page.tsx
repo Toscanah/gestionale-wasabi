@@ -6,7 +6,7 @@ import Table from "../../components/table/Table";
 import getTable from "../../functions/util/getTable";
 import columns from "./columns";
 import useGlobalFilter from "../../hooks/useGlobalFilter";
-import GoBack from "../../components/GoBack";
+import GoBack from "../../components/ui/GoBack";
 import TableControls from "../../components/table/TableControls";
 import { OrderWithPayments } from "@/app/(site)/models";
 import SelectWrapper from "../../components/select/SelectWrapper";

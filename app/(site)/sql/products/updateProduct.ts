@@ -1,10 +1,8 @@
 import { Product } from "../../models";
 import prisma from "../db";
+import { categoryInclude } from "../includes";
 
-export default async function updateProduct(product: Product) {
-  console.log(product)
-
-  
+export default async function updateProduct(product: Product): Promise<Product | null> {
   const existingProduct = await prisma.product.findFirst({
     where: {
       code: product.code,
@@ -38,19 +36,11 @@ export default async function updateProduct(product: Product) {
               },
             }
           : {
-              disconnect: true, // Explicitly disconnect category if `category_id` is null
+              disconnect: true,
             },
     },
     include: {
-      category: {
-        include: {
-          options: {
-            include: {
-              option: true,
-            },
-          },
-        },
-      },
+      ...categoryInclude,
     },
   });
 }

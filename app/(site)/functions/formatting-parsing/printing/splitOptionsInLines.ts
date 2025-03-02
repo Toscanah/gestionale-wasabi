@@ -7,7 +7,7 @@ export default function splitOptionsInLines(
   const lines: string[] = [];
   let currentLine = "";
 
-  items.forEach((item, index) => {
+  items.forEach((item) => {
     const itemLength = currentLine.length > 0 ? currentLine.length + item.length + 2 : item.length;
 
     if (itemLength > maxChars - (padding + 3)) {

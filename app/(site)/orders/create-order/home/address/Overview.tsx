@@ -10,104 +10,51 @@ import { useEffect } from "react";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { HomeOrder } from "@/app/(site)/models";
 import { Badge } from "@/components/ui/badge";
+import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
 
 interface OverviewProps {
-  selectedAddress: Address | undefined;
-  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>;
-  addresses: Address[];
-  setPhone: Dispatch<SetStateAction<string>>;
-  phone: string;
-  selectedOption: string;
-  doorbellSearch: string;
-  setDoorbellSearch: Dispatch<SetStateAction<string>>;
-  setSelectedOption: Dispatch<SetStateAction<string>>;
+  phoneRef: RefObject<HTMLInputElement>;
+  doorbellRef: RefObject<HTMLInputElement>;
   formRef: any;
-  phoneRef: RefObject<any>;
-  doorbellSearchRef: RefObject<any>;
   handleKeyDown: (e: KeyboardEvent) => void;
-  createHomeOrder: () => void;
   createOrderRef: RefObject<HTMLButtonElement>;
 }
 
 export default function Overview({
-  selectedAddress,
-  setSelectedAddress,
-  addresses,
-  setPhone,
   createOrderRef,
-  phone,
-  selectedOption,
-  setSelectedOption,
-  formRef,
   phoneRef,
-  doorbellSearchRef,
+  formRef,
   handleKeyDown,
-  createHomeOrder,
-  setDoorbellSearch,
-  doorbellSearch,
+  doorbellRef,
 }: OverviewProps) {
-  const [permAddresses, setPermAddresses] = useState<Address[]>([]);
-  const [tempAddress, setTempAddress] = useState<Address | undefined>();
-  const [lastAddressId, setLastAddressId] = useState<string>("");
   const [orderDisabled, setOrderDisabled] = useState<boolean>(true);
+  const {
+    selectedOption,
+    selectedAddress,
+    setPhone,
+    phone,
+    createHomeOrder,
+    setDoorbell,
+    doorbell,
+    permAddresses,
+    setSelectedOption,
+    tempAddress,
+  } = useCreateHomeOrder();
 
-  useEffect(() => {
-    setOrderDisabled(
-      (selectedOption == "new" && selectedAddress == undefined) ||
-        (selectedOption == "temp" && selectedAddress == undefined)
-    );
-  }, [selectedOption, selectedAddress]);
+  useEffect(
+    () =>
+      setOrderDisabled(
+        (selectedOption == "new" && selectedAddress == undefined) ||
+          (selectedOption == "temp" && selectedAddress == undefined)
+      ),
+    [selectedOption, selectedAddress]
+  );
 
   useEffect(() => {
     if (!orderDisabled) {
       createOrderRef.current?.focus();
     }
   }, [orderDisabled]);
-
-  useEffect(() => {
-    setLastAddressId("");
-    setPermAddresses(addresses.filter((address) => !address.temporary));
-    setTempAddress(addresses.find((address) => address.temporary));
-  }, [addresses]);
-
-  useEffect(() => {
-    if (phone && !selectedAddress) {
-      fetchRequest<HomeOrder>("GET", "/api/addresses/", "getLastAddressOfCustomer", { phone }).then(
-        (lastAddress) => {
-          if (lastAddress?.home_order) {
-            const address = addresses.some(
-              (addr) => addr.id === lastAddress.home_order?.address_id && addr.active
-            )
-              ? lastAddress.home_order.address_id.toString()
-              : "";
-            setLastAddressId(address);
-            setSelectedOption(address);
-          }
-        }
-      );
-    }
-  }, [permAddresses]);
-
-  useEffect(() => {
-    if (selectedAddress) {
-      setSelectedOption(selectedAddress.temporary ? "temp" : selectedAddress.id.toString());
-    } else {
-      setSelectedOption(
-        lastAddressId || permAddresses.find((addr) => addr.active)?.id.toString() || "new"
-      );
-    }
-  }, [permAddresses]);
-
-  useEffect(() => {
-    const address =
-      selectedOption === "temp"
-        ? tempAddress
-        : selectedOption === "new"
-        ? undefined
-        : addresses.find((addr) => selectedOption === addr.id.toString());
-
-    setSelectedAddress(address);
-  }, [selectedOption]);
 
   return (
     <div className="h-full flex flex-col w-[30%] max-w-[30%]  min-w-[30%] justify-between">
@@ -133,14 +80,14 @@ export default function Overview({
 
         <Input
           id="customer-name"
-          ref={doorbellSearchRef}
+          ref={doorbellRef}
           className="w-full text-center text-3xl h-16"
-          defaultValue={doorbellSearch}
-          value={doorbellSearch}
+          defaultValue={doorbell}
+          value={doorbell}
           type="text"
           disabled
           onKeyDown={handleKeyDown}
-          onChange={(e: any) => setDoorbellSearch(e.target.value)}
+          onChange={(e: any) => setDoorbell(e.target.value)}
         />
       </div>
 
@@ -149,7 +96,7 @@ export default function Overview({
           className="flex flex-col gap-2 w-full max-h-[25rem] overflow-y-auto p-2"
           defaultValue={selectedOption}
           value={selectedOption}
-          onValueChange={(value) => setSelectedOption(value)}
+          onValueChange={setSelectedOption}
         >
           <span className="text-xl font-medium">Domicili:</span>
 

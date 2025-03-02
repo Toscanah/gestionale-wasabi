@@ -1,16 +1,22 @@
 import { RiceBatch } from "@prisma/client";
 import prisma from "../db";
 
+type ValidFields = Omit<RiceBatch, "id">;
+
 export default async function updateRiceBatch(
   batchId: number,
-  field: keyof Omit<RiceBatch, "id">,
+  field: keyof ValidFields,
   value: any
 ) {
   if (!batchId) {
     throw new Error("Batch ID is required");
   }
 
-  if (!["amount", "label"].includes(field)) {
+  const validFields: (keyof ValidFields)[] = Object.keys(
+    {} as ValidFields
+  ) as (keyof ValidFields)[];
+
+  if (!validFields.includes(field)) {
     throw new Error("Invalid field");
   }
 

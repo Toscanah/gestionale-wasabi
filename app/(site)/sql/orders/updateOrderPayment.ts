@@ -1,8 +1,12 @@
 import { QuickPaymentOption } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
+import { AnyOrder } from "../../models";
 
-export default async function updateOrderPayment(orderId: number, payment: QuickPaymentOption) {
+export default async function updateOrderPayment(
+  orderId: number,
+  payment: QuickPaymentOption
+): Promise<AnyOrder> {
   await prisma.order.update({
     where: { id: orderId },
     data: { is_receipt_printed: false },

@@ -6,7 +6,6 @@ import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import { useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import TooltipWrapper from "@/app/(site)/components/TooltipWrapper";
 
 export default function Time() {
   const { order, updateOrder } = useOrderContext();

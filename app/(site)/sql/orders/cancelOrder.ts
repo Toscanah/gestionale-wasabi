@@ -1,6 +1,11 @@
+import { AnyOrder } from "../../models";
 import prisma from "../db";
+import getOrderById from "./getOrderById";
 
-export default async function cancelOrder(orderId: number, cooked: boolean = false) {
+export default async function cancelOrder(
+  orderId: number,
+  cooked: boolean = false
+): Promise<AnyOrder> {
   await prisma.productInOrder.updateMany({
     where: {
       order_id: orderId,
@@ -10,8 +15,10 @@ export default async function cancelOrder(orderId: number, cooked: boolean = fal
     },
   });
 
-  return await prisma.order.update({
+  await prisma.order.update({
     where: { id: orderId },
     data: { state: "CANCELLED" },
   });
+
+  return getOrderById(orderId);
 }

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import fetchRequest from "../../functions/api/fetchRequest";
 import columns from "./columns";
 import Manager from "../Manager";
-import GoBack from "../../components/GoBack";
+import GoBack from "../../components/ui/GoBack";
 import FormFields from "../FormFields";
 import { formSchema, getCategoryFields } from "./form";
 import logo from "../../../../public/logo.png";
@@ -17,7 +17,7 @@ type FormValues = Partial<CategoryWithOptions>;
 
 export default function CategoryDashboard() {
   const [categories, setCategories] = useState<CategoryWithOptions[]>([]);
-  const [options, setOptions] = useState<OptionOption[]>([]);
+  const [options, setOptions] = useState<Option[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -30,8 +30,8 @@ export default function CategoryDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchRequest<OptionOption[]>("GET", "/api/options/", "getAllOptions").then((options) =>
-      setOptions(options.filter((p) => p.option.active))
+    fetchRequest<Option[]>("GET", "/api/options/", "getAllOptions").then((options) =>
+      setOptions(options.filter((o) => o.active))
     );
   }, []);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import GoBack from "../../components/GoBack";
+import GoBack from "../../components/ui/GoBack";
 import { Product } from "@/app/(site)/models";
 import fetchRequest from "../../functions/api/fetchRequest";
 import Manager from "../Manager";

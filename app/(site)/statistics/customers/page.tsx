@@ -6,7 +6,7 @@ import columns from "./columns";
 import TableControls from "../../components/table/TableControls";
 import useGlobalFilter from "../../hooks/useGlobalFilter";
 import SelectWrapper from "../../components/select/SelectWrapper";
-import GoBack from "../../components/GoBack";
+import GoBack from "../../components/ui/GoBack";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";

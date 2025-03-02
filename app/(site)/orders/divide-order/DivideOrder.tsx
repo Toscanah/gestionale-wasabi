@@ -26,9 +26,9 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
   const [productsToPay, setProductsToPay] = useState<ProductInOrder[]>([]);
 
   const updatePrintedFlag = async () =>
-    fetchRequest<AnyOrder>("POST", "/api/orders", "updatePrintedFlag", {
+    fetchRequest<boolean>("POST", "/api/orders", "updatePrintedFlag", {
       orderId: order.id,
-    }).then((updatedOrder) => updateOrder({ is_receipt_printed: updatedOrder.is_receipt_printed }));
+    }).then((is_receipt_printed) => updateOrder({ is_receipt_printed }));
 
   useEffect(() => {
     setLeftProducts(products);

@@ -1,7 +1,7 @@
 import getCustomerByPhone from "../customers/getCustomerByPhone";
 import prisma from "../db";
 
-export default async function getLastAddressOfCustomer(phone: string) {
+export default async function getLastAddressOfCustomer(phone: string): Promise<number | null> {
   const customer = await getCustomerByPhone(phone);
 
   if (!customer) {
@@ -20,13 +20,14 @@ export default async function getLastAddressOfCustomer(phone: string) {
     orderBy: {
       created_at: "desc",
     },
-    include: {
-      home_order: true
+    select: {
+      home_order: true,
+      id: true,
     },
   });
 
   if (lastOrderWithAddress && lastOrderWithAddress.home_order) {
-    return lastOrderWithAddress;
+    return lastOrderWithAddress.id;
   }
 
   return null;

@@ -1,13 +1,13 @@
 import prisma from "../db";
 
 export default async function deleteCustomerById(id: number) {
-  await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx) => {
     const customer = await tx.customer.findUnique({
       where: { id },
-      select: { phone_id: true },
+      select: { phone_id: true, id: true },
     });
 
-    if (!customer || !customer.phone_id) {
+    if (!customer) {
       throw new Error("Customer not found");
     }
 
@@ -17,61 +17,37 @@ export default async function deleteCustomerById(id: number) {
       },
       select: { id: true },
     });
-    const orderIds = orders.map((order) => order.id);
 
-    await tx.optionInProductOrder.deleteMany({
-      where: {
-        product_in_order: { order_id: { in: orderIds } },
-      },
+    if (orders.length > 0) {
+      const orderIds = orders.map((order) => order.id);
+
+      await tx.optionInProductOrder.deleteMany({
+        where: { product_in_order: { order_id: { in: orderIds } } },
+      });
+
+      await tx.productInOrder.deleteMany({
+        where: { order_id: { in: orderIds } },
+      });
+
+      await tx.payment.deleteMany({
+        where: { order_id: { in: orderIds } },
+      });
+
+      await tx.order.deleteMany({
+        where: { id: { in: orderIds } },
+      });
+    }
+
+    await tx.homeOrder.deleteMany({ where: { customer_id: id } });
+    await tx.pickupOrder.deleteMany({ where: { customer_id: id } });
+    await tx.address.deleteMany({ where: { customer_id: id } });
+
+    const deletedCustomer = await tx.customer.delete({
+      where: { id: customer.id },
     });
 
-    await tx.productInOrder.deleteMany({
-      where: {
-        order_id: { in: orderIds },
-      },
-    });
+    await tx.phone.delete({ where: { id: customer.phone_id } });
 
-    await tx.homeOrder.deleteMany({
-      where: { customer_id: id },
-    });
-
-    await tx.pickupOrder.deleteMany({
-      where: { customer_id: id },
-    });
-
-    await tx.payment.deleteMany({
-      where: {
-        order_id: {
-          in: orderIds,
-        },
-      },
-    });
-
-    await tx.order.deleteMany({
-      where: {
-        id: { in: orderIds },
-      },
-    });
-
-    await tx.address.deleteMany({
-      where: { customer_id: id },
-    });
-
-    await tx.customer.updateMany({
-      where: { id },
-      data: { phone_id: null },
-    });
-
-    await tx.phone.deleteMany({
-      where: {
-        id: customer.phone_id,
-      },
-    });
-
-    await tx.customer.delete({
-      where: { id },
-    });
+    return deletedCustomer ? true : false;
   });
-  
-  return true;
 }

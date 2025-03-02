@@ -1,14 +1,20 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
+import { AnyOrder } from "../../models";
 
-export default async function updateOrderTime(time: string, orderId: number) {
+export default async function updateOrderTime(
+  time: string,
+  orderId: number
+): Promise<AnyOrder> {
   const baseOrder = await prisma.order.findUnique({
     where: { id: orderId },
     select: { type: true },
   });
 
-  if (!baseOrder) return;
+  if (!baseOrder) {
+    throw new Error(`Order with id ${orderId} not found`);
+  }
 
   const when = time?.toLowerCase() === "Prima possibile" ? "immediate" : time;
   const updateData = { data: { when }, where: { order_id: orderId } };

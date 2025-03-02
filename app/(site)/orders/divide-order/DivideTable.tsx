@@ -32,6 +32,7 @@ export default function DivideTable({
         tableClassName="max-w-full overflow-x-scroll select-none max-h-full h-full"
         table={table}
         onRowClick={onRowClick}
+        forceRowClick
       />
       <div className="flex gap-8">
         <Button

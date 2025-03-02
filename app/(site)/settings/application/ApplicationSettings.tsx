@@ -2,7 +2,7 @@ import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import PrinterChoice from "../../../settings/application/PrinterChoice";
+import PrinterChoice from "./PrinterChoice";
 
 export default function ApplicationSettings() {
   const { settings, updateSettings } = useWasabiContext();
@@ -29,7 +29,7 @@ export default function ApplicationSettings() {
           />
         </div>
       </div>
-      
+
       <div className="flex gap-6">
         <div className="space-y-2 w-full">
           <Label htmlFor="when-selector-gap">Intervallo orario (minuti)</Label>
