@@ -28,8 +28,6 @@ export default async function handleProductDeletion(
     return { deletedProduct };
   }
 
-  console.log(productInOrder.quantity, productInOrder.paid_quantity);
-
   const updatedProduct = await tx.productInOrder.update({
     where: { id: productInOrder.id },
     data: {

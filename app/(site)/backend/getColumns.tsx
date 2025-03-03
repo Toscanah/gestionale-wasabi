@@ -14,7 +14,6 @@ export default function getColumns<T extends { id: number; active: boolean }>(
     ...columns,
 
     TableColumn<T>({
-      accessorKey: "active",
       header: "Attivo?",
       cellContent: (row) => (
         <Badge
@@ -27,7 +26,6 @@ export default function getColumns<T extends { id: number; active: boolean }>(
     }),
 
     TableColumn<T>({
-      accessorKey: "actions",
       header: "Azioni",
       sortable: false,
       cellContent: (row) => (

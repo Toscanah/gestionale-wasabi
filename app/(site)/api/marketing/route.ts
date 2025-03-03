@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import {
   MarketingOnCustomerWithMarketingSchema,
+  MarketingTemplateInputSchema,
   NoContentSchema,
   SendMarketingToCustomersSchema,
 } from "../../models";
@@ -9,12 +10,21 @@ import handleRequest from "../util/handleRequest";
 import sendMarketingToCustomers from "../../sql/marketing/sendMarketingToCustomers";
 import z from "zod";
 import deleteMarketing from "../../sql/marketing/deleteMarketing";
+import { MarketingTemplateSchema } from "@/prisma/generated/zod";
+import addMarketingTemplate from "../../sql/marketing/addMarketingTemplate";
+import updateMarketingTemplate from "../../sql/marketing/updateMarketingTemplate";
 
 export const marketingSchemas = {
   getMarketingTemplates: NoContentSchema,
   sendMarketingToCustomers: SendMarketingToCustomersSchema,
   deleteMarketing: z.object({
     marketing: MarketingOnCustomerWithMarketingSchema,
+  }),
+  addMarketingTemplate: z.object({
+    marketing: MarketingTemplateInputSchema,
+  }),
+  updateMarketingTemplate: z.object({
+    marketing: MarketingTemplateSchema,
   }),
 };
 
@@ -29,6 +39,14 @@ const POST_ACTIONS = new Map([
   [
     "sendMarketingToCustomers",
     { func: sendMarketingToCustomers, schema: marketingSchemas.sendMarketingToCustomers },
+  ],
+  [
+    "addMarketingTemplate",
+    { func: addMarketingTemplate, schema: marketingSchemas.addMarketingTemplate },
+  ],
+  [
+    "updateMarketingTemplate",
+    { func: updateMarketingTemplate, schema: marketingSchemas.updateMarketingTemplate },
   ],
 ]);
 

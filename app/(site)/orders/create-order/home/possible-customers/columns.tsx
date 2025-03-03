@@ -15,18 +15,13 @@ const columns = (
     header: "Num. di telefono",
   }),
 
-  TableColumn({
-    accessorKey: "addresses",
-    header: "Campanelli",
-    cellContent: (row) => joinItemsWithComma(row.original, "doorbells"),
-  }),
+  TableColumn({ joinOptions: { key: "doorbells" } }),
 
   TableColumn({
-    accessorKey: "addresses",
-    header: "Indirizzi",
-    cellContent: (row) => (
-      <div className="max-w-64">{joinItemsWithComma(row.original, "addresses")}</div>
-    ),
+    joinOptions: {
+      key: "addresses",
+      wrapper: ({ children }) => <div className="max-w-64">{children}</div>,
+    },
   }),
 
   // TableColumn({
@@ -50,7 +45,6 @@ const columns = (
   }),
 
   TableColumn({
-    accessorKey: "delete",
     header: "Azioni",
     cellContent: (row) => (
       <DialogWrapper
@@ -67,8 +61,8 @@ const columns = (
           )
         }
       >
-        Stai per eliminare il seguente cliente con tutti i suoi dati correlati. Questa azione è definitiva e
-        irriversibile
+        Stai per eliminare il seguente cliente con tutti i suoi dati correlati. Questa azione è
+        definitiva e irriversibile
       </DialogWrapper>
     ),
   }),

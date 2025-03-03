@@ -1,11 +1,11 @@
 import { Megaphone } from "@phosphor-icons/react";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
-import MarketingActionsDialog from "@/app/(site)/marketing/actions/MarketingActionsDialog";
+import MarketingTemplatesDialog from "@/app/(site)/marketing/templates/MarketingTemplatesDialog";
 
 export default function MarketingSection() {
   const marketingItems: SidebarMenuGroupItem[] = [
     { type: "link", label: "Marketing ai clienti", path: "/marketing" },
-    { type: "component", element: <MarketingActionsDialog /> },
+    { type: "component", element: <MarketingTemplatesDialog /> },
   ];
 
   return (

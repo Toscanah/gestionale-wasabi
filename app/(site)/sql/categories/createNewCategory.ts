@@ -5,36 +5,30 @@ import { optionsInclude } from "../includes";
 export default async function createNewCategory(
   category: CategoryWithOptions
 ): Promise<CategoryWithOptions | null> {
-  const existingCategory = await prisma.category.findFirst({
-    where: {
-      category: category.category,
-    },
-  });
+  return await prisma.$transaction(async (tx) => {
+    const existingCategory = await tx.category.findFirst({
+      where: { category: category.category },
+    });
 
-  if (existingCategory) {
-    return null;
-  }
+    if (existingCategory) {
+      return null;
+    }
 
-  if (category.options && category.options.length > 0) {
-    return prisma.category.create({
-      data: {
-        category: category.category,
-        options: {
-          createMany: {
-            data: category.options.map((option) => ({
-              option_id: option.option.id,
-            })),
-          },
+    const categoryData: any = { category: category.category };
+
+    if (category.options?.length) {
+      categoryData.options = {
+        createMany: {
+          data: category.options.map((option) => ({
+            option_id: option.option.id,
+          })),
         },
-      },
+      };
+    }
+
+    return await tx.category.create({
+      data: categoryData,
       include: optionsInclude,
     });
-  } else {
-    return prisma.category.create({
-      data: {
-        category: category.category,
-      },
-      include: optionsInclude,
-    });
-  }
+  });
 }

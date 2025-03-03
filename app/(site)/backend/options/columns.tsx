@@ -9,11 +9,7 @@ const columns: ColumnDef<OptionWithCategories>[] = [
     header: "Opzione",
   }),
 
-  TableColumn({
-    accessorKey: "categories",
-    header: "Usata in",
-    cellContent: (row) => joinItemsWithComma(row.original, "categories"),
-  }),
+  TableColumn({ joinOptions: { key: "categories" }, header: "Usata in" }),
 ];
 
 export default columns;

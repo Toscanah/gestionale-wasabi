@@ -1,51 +1,60 @@
 import { CategoryWithOptions, CustomerWithDetails, OptionWithCategories } from "../../models";
 import capitalizeFirstLetter from "./capitalizeFirstLetter";
 
-type ItemType = "addresses" | "customers" | "options" | "categories" | "doorbells";
+export type JoinItemType = "addresses" | "options" | "categories" | "doorbells";
 
-function formatItems<T>(items: T[], formatFn: (item: T) => string, sort: boolean): string {
+type JoinOptions = {
+  sort?: boolean;
+  maxChar?: number;
+};
+
+function formatItems(items: any[], formatFn: (item: any) => string, sort: boolean): string {
   const formattedItems = items.map(formatFn);
   return sort ? formattedItems.sort().join(", ") : formattedItems.join(", ");
 }
 
-export default function joinItemsWithComma<T>(
-  item: T,
-  type: ItemType,
-  options: { sort?: boolean; maxChar?: number } = { sort: false, maxChar: Infinity }
+export default function joinItemsWithComma(
+  item: any,
+  type: JoinItemType,
+  options: JoinOptions = {}
 ): string {
-  const { sort = false, maxChar = Infinity } = options;
+  const { sort = false, maxChar = Infinity }: JoinOptions = options;
   const truncate = (str: string) => str.slice(0, Math.min(str.length, maxChar));
-  
-  switch (type) {
-    case "doorbells":
-      return formatItems(
-        (item as CustomerWithDetails).addresses,
-        (address) => capitalizeFirstLetter(truncate(address.doorbell)),
-        sort
-      );
 
-    case "categories":
-      return formatItems(
-        (item as OptionWithCategories).categories,
-        (cat) => capitalizeFirstLetter(truncate(cat.category.category)),
-        sort
-      );
+  const formatFns = new Map<JoinItemType, (item: any) => any[]>([
+    [
+      "doorbells",
+      (item) =>
+        (item as CustomerWithDetails).addresses.map((address) =>
+          capitalizeFirstLetter(truncate(address.doorbell))
+        ),
+    ],
+    [
+      "categories",
+      (item) =>
+        (item as OptionWithCategories).categories.map((cat) =>
+          capitalizeFirstLetter(truncate(cat.category.category))
+        ),
+    ],
+    [
+      "addresses",
+      (item) =>
+        (item as CustomerWithDetails).addresses.map(
+          (address) => capitalizeFirstLetter(truncate(address.street)) + " " + address.civic
+        ),
+    ],
+    [
+      "options",
+      (item) =>
+        (item as CategoryWithOptions).options.map((option) =>
+          capitalizeFirstLetter(truncate(option.option.option_name))
+        ),
+    ],
+  ]);
 
-    case "addresses":
-      return formatItems(
-        (item as CustomerWithDetails).addresses,
-        (address) => capitalizeFirstLetter(truncate(address.street)) + " " + address.civic,
-        sort
-      );
-
-    case "options":
-      return formatItems(
-        (item as CategoryWithOptions).options,
-        (option) => capitalizeFirstLetter(truncate(option.option.option_name)),
-        sort
-      );
-
-    default:
-      throw new Error(`Unknown data type: ${type}`);
+  if (!formatFns.has(type)) {
+    throw new Error(`Unknown data type: ${type}`);
   }
+
+  return formatItems(formatFns.get(type)!(item), (item) => item, sort);
 }

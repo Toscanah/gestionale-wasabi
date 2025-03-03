@@ -14,8 +14,6 @@ export default function shiftProductsInDivideOrder(
   const sourceCopy = source.map((p) => ({ ...p }));
   const targetCopy = target.map((p) => ({ ...p }));
 
-  console.log(sourceCopy, targetCopy);
-
   const sourceProduct = sourceCopy.find((p) => p.id === product.id);
   if (sourceProduct) {
     if (sourceProduct.quantity > 1) {

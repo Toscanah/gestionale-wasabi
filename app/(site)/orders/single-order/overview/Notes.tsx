@@ -3,26 +3,52 @@ import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
-import { HomeOrder } from "@/app/(site)/models";
+import { HomeOrder, PickupOrder } from "@/app/(site)/models";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
+import { OrderType } from "@prisma/client";
+
+type PossibleOrdersType = HomeOrder | PickupOrder;
 
 export default function Notes() {
   const { order, updateOrder } = useOrderContext();
-  useFocusOnClick(["notes-field"])
+  useFocusOnClick(["notes-field"]);
 
-  const [additionalNotes, setAdditionalNotes] = useState<string>(
-    (order as HomeOrder).home_order?.notes ?? ""
-  );
+  const initialNotes =
+    order.type === OrderType.HOME
+      ? (order as HomeOrder).home_order?.notes ?? ""
+      : (order as PickupOrder).pickup_order?.notes ?? "";
+
+  const [additionalNotes, setAdditionalNotes] = useState<string>(initialNotes);
 
   const updateOrderNotes = (notes: string) => {
-    fetchRequest<HomeOrder>("POST", "/api/orders/", "updateOrderNotes", {
+    fetchRequest<PossibleOrdersType>("POST", "/api/orders/", "updateOrderNotes", {
       orderId: order.id,
       notes,
     }).then((updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
+      let parsedOrder;
+
+      if (order.type === OrderType.HOME) {
+        parsedOrder = (updatedOrder as HomeOrder).home_order;
+      } else {
+        parsedOrder = (updatedOrder as PickupOrder).pickup_order;
+      }
+
       updateOrder({
-        home_order: { ...updatedOrder.home_order, notes: updatedOrder.home_order?.notes },
+        ...(order.type == OrderType.HOME
+          ? {
+              home_order: { ...parsedOrder, notes: parsedOrder?.notes },
+            }
+          : order.type == OrderType.PICKUP
+          ? {
+              pickup_order: {
+                ...parsedOrder,
+                notes: parsedOrder?.notes,
+              },
+            }
+          : {}),
+
         is_receipt_printed: false,
       });
     });

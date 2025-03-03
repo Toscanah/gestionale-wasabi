@@ -15,7 +15,6 @@ const columns: ColumnDef<Product>[] = [
   }),
 
   TableColumn({
-    accessorKey: "kitchen",
     header: "Tipo di cucina",
     cellContent: (row) => {
       let kitchen = "Nessuna";
@@ -35,7 +34,6 @@ const columns: ColumnDef<Product>[] = [
   }),
 
   TableColumn({
-    accessorKey: "site_price",
     header: "In loco",
     cellContent: (row) => {
       return "€ " + row.original.site_price;
@@ -43,7 +41,6 @@ const columns: ColumnDef<Product>[] = [
   }),
 
   TableColumn({
-    accessorKey: "home_price",
     header: "Asporto",
     cellContent: (row) => {
       return "€ " + row.original.home_price;
@@ -56,7 +53,6 @@ const columns: ColumnDef<Product>[] = [
   }),
 
   TableColumn({
-    accessorKey: "category.category",
     header: "Categoria",
     cellContent: (row) =>
       row.original.category == null ? "Nessuna" : row.original.category?.category,

@@ -23,19 +23,16 @@ const columns: ColumnDef<ProductWithStats>[] = [
   }),
 
   TableColumn({
-    accessorKey: "total",
     header: "Totale",
     cellContent: (row) => "€ " + roundToTwo(row.original.total),
   }),
 
   TableColumn({
-    accessorKey: "rice",
     header: "Totale riso",
     cellContent: (row) => formatRice(row.original.quantity * row.original.rice),
   }),
 
   TableColumn({
-    accessorKey: "other",
     header: "Altro",
     cellContent: (row) =>
       (row.original.category?.options || []).length > 0 && (

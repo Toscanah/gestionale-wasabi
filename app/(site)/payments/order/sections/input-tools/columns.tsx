@@ -18,7 +18,6 @@ export default function getColumns(
 
   return [
     TableColumn({
-      accessorKey: "quantity",
       header: "Quantità",
       cellContent: (row) => {
         const focussableInput = { rowIndex: row.index, colIndex: 0 };
@@ -42,7 +41,6 @@ export default function getColumns(
     }),
 
     TableColumn({
-      accessorKey: "amount",
       header: "Ammontare",
       cellContent: (row) => {
         const focussableInput = { rowIndex: row.index, colIndex: 1 };
@@ -65,13 +63,11 @@ export default function getColumns(
     }),
 
     TableColumn({
-      accessorKey: "total",
       header: "Totale",
       cellContent: (row) => <span>{roundToTwo(row.original.total)}</span>,
     }),
 
     TableColumn({
-      accessorKey: "remove",
       header: "",
       sortable: false,
       cellContent: (row) =>

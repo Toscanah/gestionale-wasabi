@@ -7,7 +7,6 @@ import PrevMarketings from "./PrevMarketings";
 export default function columns(isRightTable: boolean): ColumnDef<CustomerWithMarketing>[] {
   const columns: ColumnDef<CustomerWithMarketing>[] = [
     TableColumn({
-      accessorKey: "who",
       header: "Chi",
       cellContent: (row) => {
         const name = row.original.name?.trim();
@@ -27,7 +26,6 @@ export default function columns(isRightTable: boolean): ColumnDef<CustomerWithMa
     }),
 
     TableColumn({
-      accessorKey: "phone",
       header: "Telefono",
       cellContent: (row) => row.original.phone?.phone || "",
       sortable: false,
@@ -40,9 +38,7 @@ export default function columns(isRightTable: boolean): ColumnDef<CustomerWithMa
     }),
 
     TableColumn({
-      accessorKey: "addresses",
-      header: "Indirizzi",
-      cellContent: (row) => joinItemsWithComma(row.original, "addresses"),
+      joinOptions: { key: "addresses" },
       sortable: false,
     }),
   ];
@@ -50,14 +46,12 @@ export default function columns(isRightTable: boolean): ColumnDef<CustomerWithMa
   if (isRightTable) {
     columns.push(
       TableColumn({
-        accessorKey: "marketing",
         header: "Conteggio",
         cellContent: (row) => row.original.marketings.length,
         sortable: false,
       }),
 
       TableColumn({
-        accessorKey: "marketing",
         header: "Vecchie azioni",
         cellContent: (row) => <PrevMarketings marketings={row.original.marketings} />,
         sortable: false,

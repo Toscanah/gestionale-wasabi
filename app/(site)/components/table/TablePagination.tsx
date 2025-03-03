@@ -64,6 +64,7 @@ export function TablePagination<TData>({ table, totalCount }: TablePaginationPro
           <span className="sr-only">Go to first page</span>
           <ChevronsLeft />
         </Button>
+        
         <Button
           variant="outline"
           className="h-8 w-8 p-0"
@@ -73,6 +74,7 @@ export function TablePagination<TData>({ table, totalCount }: TablePaginationPro
           <span className="sr-only">Go to previous page</span>
           <ChevronLeft />
         </Button>
+
         <Button
           variant="outline"
           className="h-8 w-8 p-0"
@@ -82,6 +84,7 @@ export function TablePagination<TData>({ table, totalCount }: TablePaginationPro
           <span className="sr-only">Go to next page</span>
           <ChevronRight />
         </Button>
+
         <Button
           variant="outline"
           className="hidden h-8 w-8 p-0 lg:flex"

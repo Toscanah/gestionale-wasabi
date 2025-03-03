@@ -2,32 +2,39 @@ import { Category, Option } from "@/prisma/generated/zod";
 import prisma from "../db";
 
 export default async function updateOptionsOfCategory(category: Category, options: Option[]) {
-  const currentOptions = await prisma.categoryOnOption.findMany({
-    where: { category_id: category.id },
-    select: { option_id: true },
+  return await prisma.$transaction(async (tx) => {
+    // Fetch current options linked to the category
+    const currentOptions = await tx.categoryOnOption.findMany({
+      where: { category_id: category.id },
+      select: { option_id: true },
+    });
+
+    const currentOptionIds = currentOptions.map((opt) => opt.option_id);
+    const newOptionIds = options.map((opt) => opt.id);
+
+    const optionsToRemove = currentOptionIds.filter((id) => !newOptionIds.includes(id));
+    const optionsToAdd = newOptionIds.filter((id) => !currentOptionIds.includes(id));
+
+    // Delete only if there are options to remove
+    if (optionsToRemove.length > 0) {
+      await tx.categoryOnOption.deleteMany({
+        where: {
+          category_id: category.id,
+          option_id: { in: optionsToRemove },
+        },
+      });
+    }
+
+    // Insert only if there are new options to add
+    if (optionsToAdd.length > 0) {
+      await tx.categoryOnOption.createMany({
+        data: optionsToAdd.map((optionId) => ({
+          category_id: category.id,
+          option_id: optionId,
+        })),
+      });
+    }
+
+    return { added: optionsToAdd, removed: optionsToRemove };
   });
-
-  const currentOptionIds = currentOptions.map((opt) => opt.option_id);
-  const newOptionIds = options.map((opt) => opt.id);
-
-  const optionsToRemove = currentOptionIds.filter((id) => !newOptionIds.includes(id));
-  const optionsToAdd = newOptionIds.filter((id) => !currentOptionIds.includes(id));
-
-  await prisma.categoryOnOption.deleteMany({
-    where: {
-      category_id: category.id,
-      option_id: {
-        in: optionsToRemove,
-      },
-    },
-  });
-
-  await prisma.categoryOnOption.createMany({
-    data: optionsToAdd.map((optionId) => ({
-      category_id: category.id,
-      option_id: optionId,
-    })),
-  });
-
-  return { added: optionsToAdd, removed: optionsToRemove };
 }

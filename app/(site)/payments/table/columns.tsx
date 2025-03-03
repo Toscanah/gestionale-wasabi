@@ -14,7 +14,6 @@ import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({
-    accessorKey: "order.type",
     header: "Tipo di ordine",
     cellContent: (row) => {
       return (
@@ -30,7 +29,6 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   }),
 
   TableColumn({
-    accessorKey: "who",
     header: "Chi",
     cellContent: (row) => {
       const order = row.original;
@@ -46,7 +44,6 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   }),
 
   TableColumn({
-    accessorKey: "quando",
     header: "Quando",
     cellContent: (row) => {
       const order = row.original;
@@ -70,19 +67,16 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   }),
 
   TableColumn({
-    accessorKey: "totalCash",
     header: "Totale contanti",
     cellContent: (row) => roundToTwo(row.original.totalCash),
   }),
 
   TableColumn({
-    accessorKey: "totalCard",
     header: "Totale carta",
     cellContent: (row) => roundToTwo(row.original.totalCard),
   }),
 
   TableColumn({
-    accessorKey: "totalVouch",
     header: "Totale buoni",
     cellContent: (row) => roundToTwo(row.original.totalVouch),
   }),
@@ -94,13 +88,11 @@ const columns: ColumnDef<OrderWithPayments>[] = [
   // }),
 
   TableColumn({
-    accessorKey: "order.total",
     header: "Totale ordine",
     cellContent: (row) => applyDiscount(row.original.total, row.original.discount),
   }),
 
   TableColumn({
-    accessorKey: "print",
     header: "Ristampa",
     cellContent: (row) => (
       <Button

@@ -7,3 +7,4 @@ export * from "./base/Customer";
 export * from "./api/Schemas";
 export * from "./api/Address";
 export * from "./api/Customer";
+export * from "./api/Marketing";

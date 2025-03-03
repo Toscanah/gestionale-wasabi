@@ -38,13 +38,11 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     }),
 
     TableColumn<AnyOrder>({
-      accessorKey: "created_at",
       header: "Ora",
       cellContent: (row) => format(new Date(row.original.created_at), "HH:mm", { locale: it }),
     }),
 
     TableColumn<AnyOrder>({
-      accessorKey: "who",
       header:
         type === OrderType.TABLE ? "Tavolo" : type === OrderType.PICKUP ? "Cliente" : "Campanello",
       cellContent: (row) => {
@@ -81,7 +79,6 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
         }),
 
         TableColumn<HomeOrder>({
-          accessorKey: "address.street",
           header: "Indirizzo",
           cellContent: (row) => (
             <div className="w-52 max-w-52">{`${(
@@ -93,7 +90,6 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
         }),
 
         TableColumn<HomeOrder>({
-          accessorKey: "home_order.when",
           header: "Quando",
           cellContent: (row) =>
             row.original.home_order?.when == "immediate" ? "Subito" : row.original.home_order?.when,
@@ -103,7 +99,6 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     case OrderType.PICKUP:
       columns.push(
         TableColumn<PickupOrder>({
-          accessorKey: "pickup_order.when",
           header: "Quando",
           cellContent: (row) =>
             row.original.pickup_order?.when == "immediate"
@@ -127,7 +122,6 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
 
   columns.push(
     TableColumn<AnyOrder>({
-      accessorKey: "total",
       header: "Totale",
       cellContent: (row) =>
         `€ ${roundToTwo(applyDiscount(row.original.total, row.original.discount))}`,

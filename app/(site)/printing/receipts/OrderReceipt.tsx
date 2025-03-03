@@ -8,6 +8,7 @@ import { OrderType, QuickPaymentOption } from "@prisma/client";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 import ExtraItems from "../common/ExtraItems";
+import padReceiptText from "../../functions/formatting-parsing/printing/padReceiptText";
 
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,
@@ -20,6 +21,7 @@ export default function OrderReceipt<T extends AnyOrder>(
   const pickupOrder = (order as PickupOrder).pickup_order;
 
   const bigSize = getReceiptSize(2, 2);
+  const smallSize = getReceiptSize(1, 1);
 
   return (
     <>
@@ -39,23 +41,19 @@ export default function OrderReceipt<T extends AnyOrder>(
       {pickupOrder && (
         <>
           <Br />
-          {/* <Row
-            left={
-              <Text align="center" size={bigSize}>
-                {sanitazeReceiptText(pickupOrder.name)}
-              </Text>
-            }
-            right={
-              <Text align="center" size={bigSize}>
-                {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
-              </Text>
-            }
-          /> */}
 
           <Text align="right">{sanitazeReceiptText(pickupOrder.name)}</Text>
           <Text align="right" size={bigSize}>
             {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
           </Text>
+          {pickupOrder.notes && (
+            <>
+              <Text align="right" size={smallSize}>
+                {padReceiptText(sanitazeReceiptText(pickupOrder.notes), 40)}
+              </Text>
+            </>
+          )}
+          
           <Br />
         </>
       )}

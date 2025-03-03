@@ -102,6 +102,7 @@ model PickupOrder {
     order_id    Int       @unique
     customer_id Int?
     when        String    @default("immediate")
+    notes       String?
     name        String
     customer    Customer? @relation(fields: [customer_id], references: [id])
     order       Order     @relation(fields: [order_id], references: [id], onDelete: Cascade)
@@ -133,7 +134,7 @@ model MarketingOnCustomer {
 
 model MarketingTemplate {
     id        Int                   @id @default(autoincrement())
-    label     String
+    label     String                @unique
     subject   String
     body      String?
     customers MarketingOnCustomer[]

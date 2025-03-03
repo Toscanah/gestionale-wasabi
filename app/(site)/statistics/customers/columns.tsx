@@ -17,7 +17,6 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   TableColumn({
-    accessorKey: "name_surname",
     header: "Chi",
     cellContent: (row) => {
       const { name, surname } = row.original;
@@ -26,12 +25,11 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   TableColumn({
-    accessorKey: "addresses",
     header: "Campanelli",
-    accessorFn: (original) => joinItemsWithComma(original, "doorbells"),
-    cellContent: (row) => (
-      <div className="max-w-36">{joinItemsWithComma(row.original, "doorbells")}</div>
-    ),
+    joinOptions: {
+      key: "doorbells",
+      wrapper: ({ children }) => <div className="max-w-36">{children}</div>,
+    },
   }),
 
   TableColumn({
@@ -55,7 +53,6 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   TableColumn({
-    accessorKey: "lastOrder",
     header: "Ultimo ordine",
     cellContent: (row) =>
       row.original.lastOrder ? format(row.original.lastOrder, "dd-MM-yyyy") : "",
@@ -78,7 +75,6 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   // }),
 
   TableColumn({
-    accessorKey: "orderHistory",
     header: "Storico ordini",
     cellContent: (row) => {
       const customer = row.original;

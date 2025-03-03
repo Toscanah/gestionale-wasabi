@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { MarketingTemplate } from "@prisma/client";
 import fetchRequest from "../../functions/api/fetchRequest";
 import getTable from "../../functions/util/getTable";
-import columns from "./columns";
 import Table from "../../components/table/Table";
-import { Button } from "@/components/ui/button";
+import columns from "./columns";
+import AddMarketingTemplate from "./AddMarketingTemplate";
+import { toastError, toastSuccess } from "../../functions/util/toast";
 
-export default function MarketingActionsDialog() {
+export default function MarketingTemplatesDialog() {
   const [marketingTemplates, setMarketingTemplates] = useState<MarketingTemplate[]>([]);
 
   const fetchMarketingTemplates = () =>
@@ -16,24 +17,34 @@ export default function MarketingActionsDialog() {
       setMarketingTemplates
     );
 
-  const addMarketigTemplate = (marketing: MarketingTemplate) => {
-    // fetchRequest<MarketingTemplate[]>("POST", "/api/marketing", "addMarketingTemplate", {
-    //   marketing,
-    // });
+  const onUpdatedMarketing = (updatedMarketing: MarketingTemplate | null) => {
+    if (!updatedMarketing) {
+      toastError("Azione di marketing non trovata");
+    } else {
+      toastSuccess("Azione di marketing aggiornata con successo");
+      setMarketingTemplates((prev) =>
+        prev.map((template) => (template.id === updatedMarketing.id ? updatedMarketing : template))
+      );
+    }
+  };
+
+  const onAddedMarketing = (newMarketing: MarketingTemplate | null) => {
+    if (!newMarketing) {
+      toastError("Azione di marketing già presente");
+    } else {
+      toastSuccess("Azione di marketing aggiunta con successo");
+      setMarketingTemplates((prev) => [...prev, newMarketing]);
+    }
   };
 
   useEffect(() => {
     fetchMarketingTemplates();
   }, []);
 
-  const table = getTable({
+  const table = getTable<MarketingTemplate>({
     data: marketingTemplates,
-    columns,
+    columns: columns(onUpdatedMarketing),
   });
-
-  const AddMarketing = () => (
-    <DialogWrapper trigger={<Button>Aggiungi nuova azione</Button>}></DialogWrapper>
-  );
 
   return (
     <>
@@ -42,7 +53,7 @@ export default function MarketingActionsDialog() {
         trigger={<SidebarMenuButton>Azioni marketing</SidebarMenuButton>}
         title={
           <div className="w-full flex justify-between">
-            Azioni marketing <AddMarketing />
+            Azioni marketing <AddMarketingTemplate onAddedMarketing={onAddedMarketing} />
           </div>
         }
         putSeparator

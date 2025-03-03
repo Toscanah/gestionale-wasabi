@@ -49,7 +49,6 @@ export default function getColumns(
 
   return [
     TableColumn<ProductInOrder>({
-      accessorKey: "select",
       header: "",
       sortable: false,
       cellContent: (row) =>
@@ -66,7 +65,6 @@ export default function getColumns(
     }),
 
     TableColumn<ProductInOrder>({
-      accessorKey: "code",
       header: "Codice",
       sortable: false,
       cellContent: (row) => (
@@ -101,7 +99,6 @@ export default function getColumns(
     }),
 
     TableColumn<ProductInOrder>({
-      accessorKey: "quantity",
       header: "Quantità",
       sortable: false,
       cellContent: (row) => (
@@ -147,7 +144,6 @@ export default function getColumns(
     }),
 
     TableColumn<ProductInOrder>({
-      accessorKey: "desc",
       header: "Descrizione",
       sortable: false,
       cellContent: (row) => (
@@ -158,7 +154,6 @@ export default function getColumns(
     }),
 
     TableColumn<ProductInOrder>({
-      accessorKey: "options",
       header: "Opzioni",
       sortable: false,
       cellContent: (row) => {
@@ -203,7 +198,6 @@ export default function getColumns(
     }),
 
     TableColumn<ProductInOrder>({
-      accessorKey: "price",
       header: "Unità",
       sortable: false,
       cellContent: (row) => (
@@ -216,7 +210,6 @@ export default function getColumns(
     }),
 
     TableColumn<ProductInOrder>({
-      accessorKey: "total",
       header: "Totale",
       sortable: false,
       cellContent: (row) => (

@@ -50,8 +50,6 @@ export function useMarketingFilters({
         endOfWeek.setDate(startOfWeek.getDate() + 6);
       }
 
-      console.log(startOfWeek, endOfWeek);
-    
       return { startOfWeek, endOfWeek };
     };
     

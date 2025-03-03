@@ -17,12 +17,7 @@ const columns = (
     header: "Num. di telefono",
   }),
 
-  TableColumn({
-    accessorKey: "boordbells",
-    header: "Campanelli",
-    accessorFn: (original) => joinItemsWithComma(original, "doorbells"),
-    cellContent: (row) => joinItemsWithComma(row.original, "doorbells"),
-  }),
+  TableColumn({ joinOptions: { key: "doorbells" } }),
 
   TableColumn({
     accessorKey: "name",
@@ -45,7 +40,6 @@ const columns = (
   }),
 
   TableColumn({
-    accessorKey: "orderHistory",
     header: "Storico ordini",
     cellContent: (row) => {
       const customer = row.original;
@@ -67,7 +61,6 @@ const columns = (
   }),
 
   TableColumn({
-    accessorKey: "addresses",
     header: "Indirizzi",
     cellContent: (row) => {
       const customerId = row.original.id;

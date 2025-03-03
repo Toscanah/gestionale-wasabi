@@ -26,7 +26,6 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[]
     }),
 
     TableColumn<ProductInOrder>({
-      accessorKey: "desc",
       header: "Descrizione",
       cellContent: (row) => (
         <div className="flex items-center justify-start overflow-hidden text-ellipsis w-full text-2xl">
@@ -35,43 +34,16 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[]
       ),
     }),
 
-    TableColumn<ProductInOrder>({
-      accessorKey: "options",
-      header: "Opzioni",
-      cellContent: (row) => {
-        if (row.original.product_id == -1) {
-          return <></>;
-        }
-
-        const avalOptions = row.original.product?.category?.options ?? [];
-        const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
-
-        return (
-          <div className="space-y-2 max-h-20 overflow-auto">
-            {joinItemsWithComma(row.original, "options")}
-            {/* {avalOptions &&
-              avalOptions.map((option) => (
-                <div key={option.option.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    disabled
-                    defaultChecked={selectedOptions.includes(option.option.id)}
-                    id={`option-${option.option.id}`}
-                  />
-                  <Label
-                    htmlFor={`option-${option.option.id}`}
-                    className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {option.option.option_name}
-                  </Label>
-                </div>
-              ))} */}
-          </div>
-        );
+    TableColumn({
+      joinOptions: {
+        key: "options",
+        wrapper: ({ children }) => (
+          <div className="space-y-2 max-h-20 overflow-auto">{children}</div>
+        ),
       },
     }),
 
     TableColumn<ProductInOrder>({
-      accessorKey: "price",
       header: "Unità",
       cellContent: (row) => (
         <>

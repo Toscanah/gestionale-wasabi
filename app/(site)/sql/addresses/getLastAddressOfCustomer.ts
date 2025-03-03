@@ -21,13 +21,16 @@ export default async function getLastAddressOfCustomer(phone: string): Promise<n
       created_at: "desc",
     },
     select: {
-      home_order: true,
-      id: true,
+      home_order: {
+        select: {
+          address_id: true,
+        },
+      },
     },
   });
 
   if (lastOrderWithAddress && lastOrderWithAddress.home_order) {
-    return lastOrderWithAddress.id;
+    return lastOrderWithAddress.home_order.address_id;
   }
 
   return null;

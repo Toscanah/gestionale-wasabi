@@ -1,4 +1,3 @@
-import { AnyOrder } from "../../models";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 

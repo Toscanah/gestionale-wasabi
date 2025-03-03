@@ -19,7 +19,6 @@ const sizes = {
   small: "max-w-[25vw] w-[25vw]",
   medium: "max-w-[40vw] w-[40vw]",
   large: "max-w-[97.5vw] w-[97.5vw]",
-  // mediumLarge: "max-w-[70vw] w-[70vw]",
 };
 
 type DialogWrapperProps = {
@@ -37,19 +36,11 @@ type DialogWrapperProps = {
   onDelete?: () => void;
   onOpenChange?: (open: boolean) => void;
   size?: keyof typeof sizes;
-  tooltip?: ReactNode;
 } & (
   | { title: ReactNode; desc?: ReactNode }
   | { title: ReactNode; desc: ReactNode }
   | { title?: never; desc?: never }
 );
-
-interface DialogTriggerWrapperProps {
-  trigger: React.ReactNode;
-  triggerClassName?: string;
-  double?: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-}
 
 export default function DialogWrapper({
   double = false,
@@ -68,7 +59,6 @@ export default function DialogWrapper({
   onDelete,
   onOpenChange,
   size = "medium",
-  tooltip,
 }: DialogWrapperProps) {
   const isDeleteVariant = variant === "delete";
   const isWarningVariant = variant === "warning";
