@@ -69,6 +69,9 @@ export default function OrderReceipt<T extends AnyOrder>(
           <Br />
           {pickupOrder.notes && (
             <>
+              <Text size={smallSize} bold inline>
+                Note ordine:{" "}
+              </Text>
               <Text size={smallSize}>
                 {padReceiptText(sanitazeReceiptText(pickupOrder.notes), 40)}
               </Text>
