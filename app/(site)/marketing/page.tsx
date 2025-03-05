@@ -9,6 +9,7 @@ import WeekFilter from "./filters/WeekFilter";
 import useMarketing from "../hooks/marketing/useMarketing";
 import TemplateSelection from "./TemplateSelection";
 import columns from "./columns/columns";
+import GoBack from "../components/ui/GoBack";
 
 export default function Marketing() {
   const {
@@ -29,7 +30,7 @@ export default function Marketing() {
   const rightTable = getTable({ data: filteredRightCustomers, columns: columns(true) });
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
+    <div className="h-screen w-screen flex justify-center items-center p-16">
       <div className="w-full h-full p-4 flex flex-col gap-4">
         <WeekFilter onWeekFilterChange={onWeekFilterChange} weekFilter={weekFilter} />
 
@@ -72,6 +73,8 @@ export default function Marketing() {
           />
         </div>
       </div>
+
+      <GoBack path="../../home" />
     </div>
   );
 }

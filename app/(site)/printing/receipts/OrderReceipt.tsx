@@ -46,14 +46,7 @@ export default function OrderReceipt<T extends AnyOrder>(
           <Text align="right" size={bigSize}>
             {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
           </Text>
-          {pickupOrder.notes && (
-            <>
-              <Text align="right" size={smallSize}>
-                {padReceiptText(sanitazeReceiptText(pickupOrder.notes), 40)}
-              </Text>
-            </>
-          )}
-          
+
           <Br />
         </>
       )}
@@ -74,6 +67,13 @@ export default function OrderReceipt<T extends AnyOrder>(
       {pickupOrder && (
         <>
           <Br />
+          {pickupOrder.notes && (
+            <>
+              <Text size={smallSize}>
+                {padReceiptText(sanitazeReceiptText(pickupOrder.notes), 40)}
+              </Text>
+            </>
+          )}
           {ExtraItems({ order })}
           <Br />
         </>
