@@ -11,6 +11,7 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableChange from "./TableChange";
 import Notes from "./Notes";
 import QuickPaymentOptions from "./QuickPaymentOptions";
+import { HomeOrder } from "@/app/(site)/models";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
@@ -19,7 +20,9 @@ interface OrderOverviewProps {
 export default function OrderOverview({ setAction }: OrderOverviewProps) {
   const { order } = useOrderContext();
   const [quickPaymentOption, setQuickPaymentOption] = useState<QuickPaymentOption>(
-    QuickPaymentOption.UNKNOWN
+    order.type === OrderType.HOME
+      ? (order as HomeOrder).home_order?.payment || QuickPaymentOption.UNKNOWN
+      : QuickPaymentOption.UNKNOWN
   );
 
   return (

@@ -30,7 +30,7 @@ export default async function joinTableOrders(
     orderToJoin.products.map((product) =>
       prisma.productInOrder.update({
         where: { id: product.id },
-        data: { state: "DELETED_COOKED" },
+        data: { state: "DELETED_COOKED" }, // TODO: sarebbe da specificare se erano stati cucinati o meno
       })
     )
   );

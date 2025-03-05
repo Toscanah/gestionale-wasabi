@@ -144,6 +144,7 @@ export function useProductManager(
           quantity: remainingQuantity,
           total: remainingQuantity * getProductPrice(unprintedProduct, order.type),
           rice_quantity: remainingQuantity * unprintedProduct.product.rice,
+          printed_amount: unprintedProduct.quantity,
         };
       });
 

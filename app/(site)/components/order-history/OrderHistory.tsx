@@ -186,6 +186,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
                       <Badge className="text-base">{type}</Badge>
                       {formatDateWithDay(order.created_at)} -{" "}
                       {"€ " + applyDiscount(order.total, order.discount)}
+                      {order.discount !== 0 ? <> (sconto {order.discount}%)</> : <></>}
                     </span>
                   </div>
                 </AccordionTrigger>

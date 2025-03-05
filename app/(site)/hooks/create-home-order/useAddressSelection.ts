@@ -36,7 +36,6 @@ export default function useAddressSelection({
       fetchRequest<number | null>("GET", "/api/addresses/", "getLastAddressOfCustomer", {
         phone,
       }).then((lastAddressId) => {
-        console.log(addresses, permAddresses, lastAddressId);
         if (lastAddressId) {
           const address = addresses.some((addr) => addr.id === lastAddressId && addr.active)
             ? lastAddressId.toString()

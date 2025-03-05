@@ -1,3 +1,4 @@
+import { getProductPrice } from "../../functions/product-management/getProductPrice";
 import { ProductInOrder } from "../../models";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
@@ -6,7 +7,19 @@ export default async function addProductsToOrder(
   targetOrderId: number,
   products: ProductInOrder[]
 ): Promise<ProductInOrder[]> {
-  const productTotalPrice = products.reduce((sum, product) => sum + product.total, 0);
+  const targetOrder = await prisma.order.findUnique({
+    where: { id: targetOrderId },
+    select: { type: true },
+  });
+
+  if (!targetOrder) {
+    throw new Error("Target order not found");
+  }
+
+  const productTotalPrice = products.reduce(
+    (sum, product) => sum + getProductPrice(product, targetOrder.type) * product.quantity,
+    0
+  );
 
   const newProducts = await Promise.all(
     products.map(

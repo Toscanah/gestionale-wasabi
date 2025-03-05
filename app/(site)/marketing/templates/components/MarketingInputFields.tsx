@@ -38,7 +38,7 @@ export default function MarketingInputFields({
       </div>
 
       <div className="w-full space-y-2">
-        <Label htmlFor="body">Corpo</Label>
+        <Label htmlFor="body">Corpo (opzionale)</Label>
         <Textarea
           id="body"
           value={marketingTemplate?.body || ""}

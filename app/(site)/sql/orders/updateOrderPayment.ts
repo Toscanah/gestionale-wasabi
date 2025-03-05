@@ -1,12 +1,12 @@
 import { QuickPaymentOption } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
-import { AnyOrder } from "../../models";
+import { HomeOrder } from "../../models";
 
 export default async function updateOrderPayment(
   orderId: number,
   payment: QuickPaymentOption
-): Promise<AnyOrder> {
+): Promise<HomeOrder> {
   await prisma.order.update({
     where: { id: orderId },
     data: { is_receipt_printed: false },
@@ -14,7 +14,7 @@ export default async function updateOrderPayment(
 
   const homeOrder = await prisma.homeOrder.findUnique({
     where: { order_id: orderId },
-    select: { notes: true },
+    select: { id: true },
   });
 
   if (!homeOrder) {
@@ -26,5 +26,5 @@ export default async function updateOrderPayment(
     data: { payment },
   });
 
-  return await getOrderById(orderId);
+  return (await getOrderById(orderId)) as HomeOrder;
 }

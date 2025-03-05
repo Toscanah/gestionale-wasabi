@@ -12,14 +12,15 @@ export default async function addProductToOrder(
   return await prisma.$transaction(async (tx) => {
     const product = await tx.product.findFirst({
       where: { code: { equals: productCode, mode: "insensitive" }, active: true },
-      select: { id: true, rice: true, ...categoryInclude },
+      select: { id: true, rice: true, ...categoryInclude, home_price: true, site_price: true },
     });
 
     if (!product) {
       return null;
     }
 
-    const productTotalPrice = getProductPrice({ product } as any, order.type) * quantity;
+    const productTotalPrice =
+      getProductPrice({ product: { ...product } } as any, order.type) * quantity;
 
     const [productInOrder] = await Promise.all([
       tx.productInOrder.create({
@@ -30,7 +31,7 @@ export default async function addProductToOrder(
           total: productTotalPrice,
           rice_quantity: product.rice * Number(quantity) || 0,
         },
-        include: { ...productInOrderInclude }, 
+        include: { ...productInOrderInclude },
       }),
 
       tx.order.update({

@@ -13,29 +13,32 @@ export default async function updatePrintedAmounts(orderId: number): Promise<Pro
       return [];
     }
 
-    const products = await prisma.productInOrder.findMany({
+    const products = await tx.productInOrder.findMany({
       where: { order_id: orderId, state: "IN_ORDER", quantity: { gt: 0 } },
       include: { ...productInOrderInclude },
     });
 
-    if (products.length == 0) return [];
+    if (products.length === 0) return [];
 
-    const updatePromises = products
-      .filter((product) => product.quantity > product.printed_amount)
-      .map((product) =>
-        tx.productInOrder.update({
-          where: { id: product.id },
-          data: {
-            printed_amount: { increment: product.quantity - product.printed_amount },
-          },
-        })
-      );
+    const productsToUpdate = products.filter(
+      (product) => product.quantity > product.printed_amount
+    );
+
+    if (productsToUpdate.length === 0) return [];
+
+    const updatePromises = productsToUpdate.map((product) =>
+      tx.productInOrder.update({
+        where: { id: product.id },
+        data: { printed_amount: product.quantity },
+      })
+    );
 
     await Promise.all(updatePromises);
 
-    return products.map((product) => ({
+    // used for printing later
+    return productsToUpdate.map((product) => ({
       ...product,
-      printed_amount: product.quantity,
+      printed_amount: product.quantity - product.printed_amount,
     }));
   });
 }

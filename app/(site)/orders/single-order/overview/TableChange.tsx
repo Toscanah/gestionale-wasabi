@@ -51,15 +51,15 @@ export default function TableChange() {
 
   return (
     <div className="w-full flex gap-6 items-center">
-      <div className="w-1/2 flex flex-col space-y-2">
+      <div className="w-full flex flex-col space-y-2">
         <span>Tavolo</span>
         <Input className="text-xl h-12" value={table} onChange={handleTableInputChange} />
       </div>
 
-      <div className="w-1/2 flex flex-col space-y-2">
+      {/* <div className="w-full flex flex-col space-y-2">
         <span>Unisci tavolo</span>
         <Input value={join} onChange={handleTableJoinInputChange} className="h-12 text-xl" />
-      </div>
+      </div> */}
     </div>
   );
 }
