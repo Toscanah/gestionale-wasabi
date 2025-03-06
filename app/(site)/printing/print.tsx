@@ -68,6 +68,7 @@ export default async function print(...content: PrintContent[]) {
   );
 
   const data: Uint8Array = await render(receipt);
+  console.clear()
   console.log(new TextDecoder().decode(data));
 
   if (!selectedPort) {

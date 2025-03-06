@@ -11,15 +11,30 @@ export default async function updateProductOptionsInOrder(
       include: { option: true },
     });
 
+    const productInOrder = await prisma.productInOrder.findUnique({
+      where: {
+        id: productInOrderId,
+      },
+      select: {
+        order_id: true,
+      },
+    });
+
     if (deleted) {
       await tx.optionInProductOrder.delete({
         where: { id: deleted.id },
       });
 
-      await tx.order.updateMany({
-        where: { products: { some: { id: productInOrderId } } },
-        data: { is_receipt_printed: false },
-      });
+      if (productInOrder) {
+        await prisma.order.update({
+          where: {
+            id: productInOrder.order_id,
+          },
+          data: {
+            is_receipt_printed: false,
+          },
+        });
+      }
 
       return deleted;
     }
@@ -32,10 +47,16 @@ export default async function updateProductOptionsInOrder(
       include: { option: true },
     });
 
-    await tx.order.updateMany({
-      where: { products: { some: { id: productInOrderId } } },
-      data: { is_receipt_printed: false },
-    });
+    if (productInOrder) {
+      await prisma.order.update({
+        where: {
+          id: productInOrder.order_id,
+        },
+        data: {
+          is_receipt_printed: false,
+        },
+      });
+    }
 
     return created;
   });
