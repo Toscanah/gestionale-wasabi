@@ -14,6 +14,7 @@ export default function PossibleCustomers() {
 
   return (
     <Table
+      forceRowClick
       table={table}
       tableClassName="max-w-full "
       headerClassName="" // *:text-2xl
