@@ -32,7 +32,7 @@ export default function useRice() {
   };
 
   const updateRemainingRice = () =>
-    fetchRequest<number>("GET", "/api/rice", "getDailyRiceUsage").then((dailyUsage) =>
+    fetchDailyRiceUsage().then((dailyUsage) =>
       saveRiceToLocalStorage((prevRice) => ({
         ...prevRice,
         remaining: prevRice.total - dailyUsage,
