@@ -5,7 +5,7 @@ import { GlobalSettings } from "../../types/Settings";
 import { DEFAULT_SETTINGS } from "../../hooks/useSettings";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
 
-import logo from "../../../../public/logo.png";
+// import logo from "../../../../public/logo.png";
 
 export default function HeaderSection() {
   const bigSize = getReceiptSize(2, 2);
@@ -19,7 +19,7 @@ export default function HeaderSection() {
 
   return (
     <>
-      <Image src={logo.src} width={200} height={200} align="center" />
+      {/* <Image src={logo.src} width={200} height={200} align="center" /> */}
 
       <Text size={bigSize} bold align="center">
         {truncate(sanitazeReceiptText(settings.name), 20)}
