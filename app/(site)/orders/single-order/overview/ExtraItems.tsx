@@ -113,7 +113,7 @@ export default function ExtraItems() {
 
     const newValue = value === computedValue ? null : value;
 
-    fetchRequest("POST", "/api/orders/", "updateOrderExtraItems", {
+    fetchRequest("PATCH", "/api/orders/", "updateOrderExtraItems", {
       orderId: order.id,
       items,
       value: newValue,

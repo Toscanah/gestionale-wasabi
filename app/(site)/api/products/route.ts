@@ -69,8 +69,12 @@ export const productSchemas = {
 
 const POST_ACTIONS = new Map([
   ["createNewProduct", { func: createNewProduct, schema: productSchemas.createNewProduct }],
-  ["updateProduct", { func: updateProduct, schema: productSchemas.updateProduct }],
   ["addProductToOrder", { func: addProductToOrder, schema: productSchemas.addProductToOrder }],
+  ["addProductsToOrder", { func: addProductsToOrder, schema: productSchemas.addProductsToOrder }],
+]);
+
+const PATCH_ACTIONS = new Map([
+  ["updateProduct", { func: updateProduct, schema: productSchemas.updateProduct }],
   [
     "updateAdditionalNote",
     { func: updateAdditionalNote, schema: productSchemas.updateAdditionalNote },
@@ -79,7 +83,6 @@ const POST_ACTIONS = new Map([
     "updateProductInOrder",
     { func: updateProductInOrder, schema: productSchemas.updateProductInOrder },
   ],
-  ["addProductsToOrder", { func: addProductsToOrder, schema: productSchemas.addProductsToOrder }],
   [
     "updateProductOptionsInOrder",
     { func: updateProductOptionsInOrder, schema: productSchemas.updateProductOptionsInOrder },
@@ -105,6 +108,10 @@ const DELETE_ACTIONS = new Map([
 
 export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);
+}
+
+export async function PATCH(request: NextRequest) {
+  return await handleRequest(request, "PATCH", PATCH_ACTIONS);
 }
 
 export async function GET(request: NextRequest) {

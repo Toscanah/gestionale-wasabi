@@ -18,7 +18,7 @@ const formatDate = (date: Date) =>
 
 export default function PrevMarketings({ marketings }: { marketings: MarketingOnCustomer[] }) {
   const deleteMarketing = (marketing: MarketingOnCustomer) =>
-    fetchRequest("POST", "/api/marketing", "deleteMarketing", {
+    fetchRequest("DELETE", "/api/marketing", "deleteMarketing", {
       marketing,
     });
 

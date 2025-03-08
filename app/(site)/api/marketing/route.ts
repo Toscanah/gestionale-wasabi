@@ -44,6 +44,9 @@ const POST_ACTIONS = new Map([
     "addMarketingTemplate",
     { func: addMarketingTemplate, schema: marketingSchemas.addMarketingTemplate },
   ],
+]);
+
+const PATCH_ACTIONS = new Map([
   [
     "updateMarketingTemplate",
     { func: updateMarketingTemplate, schema: marketingSchemas.updateMarketingTemplate },
@@ -56,6 +59,10 @@ const DELETE_ACTIONS = new Map([
 
 export async function GET(request: NextRequest) {
   return await handleRequest(request, "GET", GET_ACTIONS);
+}
+
+export async function PATCH(request: NextRequest) {
+  return await handleRequest(request, "PATCH", PATCH_ACTIONS);
 }
 
 export async function POST(request: NextRequest) {

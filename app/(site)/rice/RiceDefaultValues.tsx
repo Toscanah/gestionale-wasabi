@@ -53,7 +53,7 @@ export default function RiceDefaultValues() {
   const debouncedUpdateBatch = useCallback(
     debounce(
       (batchId: number, field: keyof Omit<RiceBatch, "id">, value: any) =>
-        fetchRequest("POST", `/api/rice/`, "updateRiceBatch", { batchId, field, value }).then(() =>
+        fetchRequest("PATCH", `/api/rice/`, "updateRiceBatch", { batchId, field, value }).then(() =>
           toastSuccess("Valore aggiornato con successo")
         ),
       2000

@@ -16,7 +16,7 @@ export default function TableChange() {
   const debouncedHandleTableChange = useCallback(
     debounce((newTable: string) => {
       if (newTable !== "") {
-        fetchRequest<TableOrder>("POST", "/api/orders", "updateTable", {
+        fetchRequest<TableOrder>("PATCH", "/api/orders", "updateTable", {
           table: newTable,
           orderId: order.id,
         }).then(() => {

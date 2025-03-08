@@ -21,7 +21,7 @@ export default function Time() {
   const updateOrderTime = async (value: string) => {
     setOrderTime(value);
 
-    fetchRequest<AnyOrder>("POST", "/api/orders/", "updateOrderTime", {
+    fetchRequest<AnyOrder>("PATCH", "/api/orders/", "updateOrderTime", {
       time: value,
       orderId: order.id,
     }).then((updatedOrder) => {

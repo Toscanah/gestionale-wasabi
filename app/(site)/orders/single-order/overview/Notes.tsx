@@ -22,7 +22,7 @@ export default function Notes() {
   const [additionalNotes, setAdditionalNotes] = useState<string>(initialNotes);
 
   const updateOrderNotes = (notes: string) => {
-    fetchRequest<PossibleOrdersType>("POST", "/api/orders/", "updateOrderNotes", {
+    fetchRequest<PossibleOrdersType>("PATCH", "/api/orders/", "updateOrderNotes", {
       orderId: order.id,
       notes,
     }).then((updatedOrder) => {

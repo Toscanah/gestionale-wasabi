@@ -48,7 +48,7 @@ export default function useCustomerManager({
 
   const handleUpdateCustomer = async (customer: Customer) => {
     const updatedCustomer = await fetchRequest<Customer>(
-      "POST",
+      "PATCH",
       "/api/customers/",
       "updateCustomerFromOrder",
       { customer }
@@ -64,7 +64,7 @@ export default function useCustomerManager({
     });
 
   const handleUpdateAddress = async (address: UpdateAddressInput) =>
-    await fetchRequest<Address>("POST", "/api/addresses/", "updateAddress", {
+    await fetchRequest<Address>("PATCH", "/api/addresses/", "updateAddress", {
       address: { ...address },
     });
 

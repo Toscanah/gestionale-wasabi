@@ -24,6 +24,9 @@ export const addressSchemas = {
 
 const POST_ACTIONS = new Map([
   ["createAddress", { func: createAddress, schema: addressSchemas.createAddress }],
+]);
+
+const PATCH_ACTIONS = new Map([
   ["updateAddress", { func: updateAddress, schema: addressSchemas.updateAddress }],
 ]);
 
@@ -40,6 +43,10 @@ const GET_ACTIONS = new Map([
 
 export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);
+}
+
+export async function PATCH(request: NextRequest) {
+  return await handleRequest(request, "PATCH", PATCH_ACTIONS);
 }
 
 export async function GET(request: NextRequest) {

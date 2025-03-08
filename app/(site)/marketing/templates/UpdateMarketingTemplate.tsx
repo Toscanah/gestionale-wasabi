@@ -23,11 +23,10 @@ export default function UpdateMarketingTemplate({
   const [updatedMarketingTemplate, setUpdatedMarketingTemplate] =
     useState<MarketingTemplate>(marketingTemplate);
 
-  const updateMarketingTemplate = (marketing: MarketingTemplate) => {
-    fetchRequest<MarketingTemplate | null>("POST", "/api/marketing", "updateMarketingTemplate", {
+  const updateMarketingTemplate = (marketing: MarketingTemplate) =>
+    fetchRequest<MarketingTemplate | null>("PATCH", "/api/marketing", "updateMarketingTemplate", {
       marketing,
     }).then(onUpdatedMarketing);
-  };
 
   return (
     <DialogWrapper

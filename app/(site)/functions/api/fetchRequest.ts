@@ -9,7 +9,7 @@ import { productSchemas } from "../../api/products/route";
 import { riceSchemas } from "../../api/rice/route";
 import { marketingSchemas } from "../../api/marketing/route";
 
-export type HTTPMethod = "POST" | "GET" | "DELETE" | "PUT" | "PATCH";
+export type HTTPMethod = "POST" | "GET" | "DELETE" | "PATCH";
 
 export type APIEndpoint =
   | "addresses"
@@ -68,6 +68,7 @@ export default async function fetchRequest<ReturnType>(
         }
         break;
 
+      case "PATCH":
       case "POST":
       case "DELETE":
         url = new URL(path, window.location.origin);

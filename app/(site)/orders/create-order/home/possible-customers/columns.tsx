@@ -52,7 +52,7 @@ const columns = (
         size="small"
         trigger={<Button variant={"destructive"}>Elimina</Button>}
         onDelete={() =>
-          fetchRequest<boolean>("POST", "/api/customers", "deleteCustomerById", {
+          fetchRequest<boolean>("DELETE", "/api/customers", "deleteCustomerById", {
             id: row.original.id,
           }).then((success) =>
             setPossibleCustomers((prev) =>

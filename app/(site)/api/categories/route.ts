@@ -7,7 +7,6 @@ import toggleCategory from "../../sql/categories/toggleCategory";
 import handleRequest from "../util/handleRequest";
 import { CategoryWithOptionsSchema, CreateCategorySchema, NoContentSchema, UpdateCategorySchema } from "../../models";
 
-// Define categorySchemas for validation
 export const categorySchemas = {
   getCategories: NoContentSchema,
   updateCategory: z.object({
@@ -22,9 +21,12 @@ export const categorySchemas = {
 };
 
 const POST_ACTIONS = new Map([
-  ["updateCategory", { func: updateCategory, schema: categorySchemas.updateCategory }],
   ["createNewCategory", { func: createNewCategory, schema: categorySchemas.createNewCategory }],
   ["toggleCategory", { func: toggleCategory, schema: categorySchemas.toggleCategory }],
+]);
+
+const PATCH_ACTIONS = new Map([
+  ["updateCategory", { func: updateCategory, schema: categorySchemas.updateCategory }],
 ]);
 
 const GET_ACTIONS = new Map([
@@ -33,6 +35,10 @@ const GET_ACTIONS = new Map([
 
 export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);
+}
+
+export async function PATCH(request: NextRequest) {
+  return await handleRequest(request, "PATCH", PATCH_ACTIONS);
 }
 
 export async function GET(request: NextRequest) {

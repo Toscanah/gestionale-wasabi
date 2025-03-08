@@ -27,7 +27,7 @@ export default function QuickPaymentOptions({
     const newNote = quickPaymentOption === value ? QuickPaymentOption.UNKNOWN : value;
     setQuickPaymentOption(newNote);
 
-    fetchRequest<HomeOrder>("POST", "/api/orders/", "updateOrderPayment", {
+    fetchRequest<HomeOrder>("PATCH", "/api/orders/", "updateOrderPayment", {
       orderId: order.id,
       payment:
         quickPaymentOptions.find((option) => option.value === newNote)?.value ||

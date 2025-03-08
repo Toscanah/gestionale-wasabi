@@ -39,7 +39,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.HOME);
 
   const updatePrintedFlag = async () =>
-    fetchRequest<boolean>("POST", "/api/orders", "updatePrintedFlag", {
+    fetchRequest<boolean>("PATCH", "/api/orders", "updatePrintedFlag", {
       orderId: order.id,
     }).then((is_receipt_printed) => updateOrder({ is_receipt_printed }));
 

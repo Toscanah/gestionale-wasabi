@@ -77,7 +77,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
   });
 
   const handleToggle = (objectToToggle: T) =>
-    fetchRequest<T>("POST", path, fetchActions.toggle, {
+    fetchRequest<T>("PATCH", path, fetchActions.toggle, {
       id: objectToToggle.id,
     }).then(() => {
       setData((prevData) =>
@@ -94,7 +94,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
     });
 
   const handleUpdate = (newValues: Partial<T>, objectToUpdate: T) =>
-    fetchRequest<T>("POST", path, fetchActions.update, {
+    fetchRequest<T>("PATCH", path, fetchActions.update, {
       [type]: {
         id: objectToUpdate.id,
         ...newValues,
@@ -124,7 +124,7 @@ export default function Manager<T extends { id: number; active: boolean }>({
   const handleDelete = (objectToDelete: T) => {
     if (!deleteAction || !fetchActions.delete) return;
 
-    fetchRequest<T>("POST", path, fetchActions.delete, {
+    fetchRequest<T>("DELETE", path, fetchActions.delete, {
       id: objectToDelete.id,
     }).then((response) => {
       if (!response) {

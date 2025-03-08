@@ -8,7 +8,12 @@ import toggleOption from "../../sql/options/toggleOption";
 import handleRequest from "../util/handleRequest";
 import { z } from "zod";
 import { OptionSchema } from "@/prisma/generated/zod";
-import { CreateOptionSchema, NoContentSchema, UpdateOptionSChema, UpdateOptionsOfCategorySchema } from "../../models";
+import {
+  CreateOptionSchema,
+  NoContentSchema,
+  UpdateOptionSChema,
+  UpdateOptionsOfCategorySchema,
+} from "../../models";
 
 export const optionSchemas = {
   getAllOptions: NoContentSchema,
@@ -26,12 +31,15 @@ export const optionSchemas = {
 };
 
 const POST_ACTIONS = new Map([
-  [
-    "updateOptionsOfCategory",
-    { func: updateOptionsOfCategory, schema: optionSchemas.updateOptionsOfCategory },
-  ],
-  ["updateOption", { func: updateOption, schema: optionSchemas.updateOption }],
   ["createNewOption", { func: createNewOption, schema: optionSchemas.createNewOption }],
+]);
+
+const PATCH_ACTIONS = new Map([
+  // [
+  //   "updateOptionsOfCategory",
+  //   { func: updateOptionsOfCategory, schema: optionSchemas.updateOptionsOfCategory },
+  // ],
+  ["updateOption", { func: updateOption, schema: optionSchemas.updateOption }],
   ["toggleOption", { func: toggleOption, schema: optionSchemas.toggleOption }],
 ]);
 
@@ -45,6 +53,10 @@ const GET_ACTIONS = new Map([
 
 export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);
+}
+
+export async function PATCH(request: NextRequest) {
+  return await handleRequest(request, "PATCH", PATCH_ACTIONS);
 }
 
 export async function GET(request: NextRequest) {

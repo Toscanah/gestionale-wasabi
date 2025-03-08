@@ -83,7 +83,7 @@ export const orderSchemas = {
   }),
   updateOrderExtraItems: z.object({
     orderId: z.number(),
-    items: z.enum(["salads" , "soups" , "rices"]),
+    items: z.enum(["salads", "soups", "rices"]),
     value: z.number().nullable(),
   }),
 };
@@ -94,14 +94,17 @@ const GET_ACTIONS = new Map([
 ]);
 
 const POST_ACTIONS = new Map([
-  ["updateDiscount", { func: updateDiscount, schema: orderSchemas.updateDiscount }],
-  ["updateOrderNotes", { func: updateOrderNotes, schema: orderSchemas.updateOrderNotes }],
   ["createTableOrder", { func: createTableOrder, schema: orderSchemas.createTableOrder }],
   ["createPickupOrder", { func: createPickupOrder, schema: orderSchemas.createPickupOrder }],
   ["createHomeOrder", { func: createHomeOrder, schema: orderSchemas.createHomeOrder }],
+  ["createSubOrder", { func: createSubOrder, schema: orderSchemas.createSubOrder }],
+]);
+
+const PATCH_ACTIONS = new Map([
+  ["updateDiscount", { func: updateDiscount, schema: orderSchemas.updateDiscount }],
+  ["updateOrderNotes", { func: updateOrderNotes, schema: orderSchemas.updateOrderNotes }],
   ["updateOrderTime", { func: updateOrderTime, schema: orderSchemas.updateOrderTime }],
   ["cancelOrder", { func: cancelOrder, schema: orderSchemas.cancelOrder }],
-  ["createSubOrder", { func: createSubOrder, schema: orderSchemas.createSubOrder }],
   ["updatePrintedFlag", { func: updatePrintedFlag, schema: orderSchemas.updatePrintedFlag }],
   ["joinTableOrders", { func: joinTableOrders, schema: orderSchemas.joinTableOrders }],
   ["updateTable", { func: updateTable, schema: orderSchemas.updateTable }],
@@ -119,6 +122,10 @@ const DELETE_ACTIONS = new Map([
 
 export async function GET(request: NextRequest) {
   return await handleRequest(request, "GET", GET_ACTIONS);
+}
+
+export async function PATCH(request: NextRequest) {
+  return await handleRequest(request, "PATCH", PATCH_ACTIONS);
 }
 
 export async function POST(request: NextRequest) {

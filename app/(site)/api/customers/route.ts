@@ -9,10 +9,7 @@ import getCustomerWithDetails from "../../sql/customers/getCustomerWithDetails";
 import updateCustomerFromAdmin from "../../sql/customers/updateCustomerFromAdmin";
 import getCustomersByDoorbell from "../../sql/customers/getCustomersByDoorbell";
 import { z } from "zod";
-import {
-  CreateCustomerInputSchema,
-  NoContentSchema,
-} from "../../models";
+import { CreateCustomerInputSchema, NoContentSchema } from "../../models";
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import handleRequest from "../util/handleRequest";
 import deleteCustomerById from "../../sql/customers/deleteCustomerById";
@@ -49,6 +46,10 @@ export const customerSchemas = {
 };
 
 const POST_ACTIONS = new Map([
+  ["createCustomer", { func: createCustomer, schema: customerSchemas.createCustomer }],
+]);
+
+const PATCH_ACTIONS = new Map([
   [
     "updateCustomerFromAdmin",
     { func: updateCustomerFromAdmin, schema: customerSchemas.updateCustomerFromAdmin },
@@ -57,12 +58,14 @@ const POST_ACTIONS = new Map([
     "updateCustomerFromOrder",
     { func: updateCustomerFromOrder, schema: customerSchemas.updateCustomerFromOrder },
   ],
-  ["createCustomer", { func: createCustomer, schema: customerSchemas.createCustomer }],
   ["toggleCustomer", { func: toggleCustomer, schema: customerSchemas.toggleCustomer }],
   [
     "updateAddressesOfCustomer",
     { func: updateAddressesOfCustomer, schema: customerSchemas.updateAddressesOfCustomer },
   ],
+]);
+
+const DELETE_ACTIONS = new Map([
   ["deleteCustomerById", { func: deleteCustomerById, schema: customerSchemas.deleteCustomerById }],
 ]);
 
@@ -92,6 +95,14 @@ const GET_ACTIONS = new Map([
 
 export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);
+}
+
+export async function PATCH(request: NextRequest) {
+  return await handleRequest(request, "PATCH", PATCH_ACTIONS);
+}
+
+export async function DELETE(request: NextRequest) {
+  return await handleRequest(request, "DELETE", DELETE_ACTIONS);
 }
 
 export async function GET(request: NextRequest) {

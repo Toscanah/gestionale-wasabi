@@ -44,7 +44,7 @@ export function useProductManager(
       return toastError("La quantità non può essere negativa");
     }
 
-    fetchRequest<UpdateProductInOrderResponse>("POST", "/api/products/", "updateProductInOrder", {
+    fetchRequest<UpdateProductInOrderResponse>("PATCH", "/api/products/", "updateProductInOrder", {
       orderId: order.id,
       key: key,
       value: value,
@@ -99,7 +99,7 @@ export function useProductManager(
   };
 
   const updateProductOption = (productInOrderId: number, optionId: number) =>
-    fetchRequest<OptionInProductOrder>("POST", "/api/products/", "updateProductOptionsInOrder", {
+    fetchRequest<OptionInProductOrder>("PATCH", "/api/products/", "updateProductOptionsInOrder", {
       productInOrderId,
       optionId,
     }).then((newOption) =>
@@ -127,7 +127,7 @@ export function useProductManager(
 
   const updateUnprintedProducts = async () => {
     const unprintedProducts = await fetchRequest<ProductInOrder[]>(
-      "POST",
+      "PATCH",
       "/api/products/",
       "updatePrintedAmounts",
       {
@@ -159,7 +159,7 @@ export function useProductManager(
   };
 
   const updateAddionalNote = (note: string, productInOrderId: number) =>
-    fetchRequest<ProductInOrder>("POST", "/api/products/", "updateAdditionalNote", {
+    fetchRequest<ProductInOrder>("PATCH", "/api/products/", "updateAdditionalNote", {
       note,
       productInOrderId,
     }).then((updatedProduct) => {
