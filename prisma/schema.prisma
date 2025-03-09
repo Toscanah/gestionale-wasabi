@@ -88,10 +88,10 @@ model Order {
     type               OrderType
     products           ProductInOrder[]
     payments           Payment[]
+    engagement         CustomerEngagement[]
     table_order        TableOrder?
     home_order         HomeOrder?
     pickup_order       PickupOrder?
-    engagement         CustomerEngagement[]
 
     @@index([created_at, type, state])
 }

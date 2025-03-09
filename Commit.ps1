@@ -60,7 +60,7 @@ $response = Invoke-RestMethod -Uri "https://api.openai.com/v1/chat/completions" 
 
 if ($response -and $response.choices) {
     $commitMessage = $response.choices[0].message.content
-    Write-Host "[SUCCESS] Generated Commit Message: $commitMessage" -ForegroundColor Green
+    Write-Host "[SUCCESS] Generated commit message: $commitMessage" -ForegroundColor Green
     
     # Commit with the AI-generated message
     git commit -m "$commitMessage"
