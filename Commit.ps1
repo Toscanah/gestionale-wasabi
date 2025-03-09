@@ -1,0 +1,75 @@
+function Initialize-Environment {
+    Write-Host "[INFO] API KEY configuration" -ForegroundColor Magenta
+    $envPath = Join-Path (Get-Item $PSScriptRoot).Parent.FullName "gestionale-wasabi\.env"
+    Write-Host "Looking for .env at: $envPath"
+
+    if (Test-Path $envPath) {
+        $keyFound = $false
+        $envLines = Get-Content $envPath
+
+        foreach ($line in $envLines) {
+            if ($line -match "^\s*OPENAI_API\s*=\s*(.+)") {
+                $env:API_KEY = $matches[1].Trim()
+                $keyFound = $true
+                break
+            }
+        }
+
+        if ($keyFound) {
+            Write-Host "[SUCCESS] API KEY loaded from .env`n" -ForegroundColor Green
+        }
+        else {
+            Write-Host "[ERROR] No API KEY was found in .env`n" -ForegroundColor Red
+            exit 1
+        }
+    }
+    else {
+        Write-Host "[ERROR] No .env found`n" -ForegroundColor Red
+        exit 1
+    }
+}
+
+Initialize-Environment
+
+# Automatically add all changes
+Write-Host "[INFO] Adding all changed files to Git" -ForegroundColor Magenta
+git add .
+
+# Get the Git diff of the staged changes
+$diff = git diff --cached
+
+if ([string]::IsNullOrEmpty($diff)) {
+    Write-Output "[INFO] No staged changes. Exiting." -ForegroundColor Magenta
+    exit
+}
+
+# OpenAI API request
+$body = @{
+    "model"       = "gpt-4o-mini"
+    "messages"    = @(
+        @{ "role" = "system"; "content" = "Generate a concise and meaningful Git commit message from the provided code diff. Keep it under 15 words." },
+        @{ "role" = "user"; "content" = ($diff -join "`n") }
+    )
+    "temperature" = 0.2
+} | ConvertTo-Json -Depth 10 -Compress  # Ensure proper JSON format
+
+$response = Invoke-RestMethod -Uri "https://api.openai.com/v1/chat/completions" `
+    -Method Post `
+    -Headers @{ "Authorization" = "Bearer $env:API_KEY"; "Content-Type" = "application/json" } `
+    -Body $body
+
+if ($response -and $response.choices) {
+    $commitMessage = $response.choices[0].message.content
+    Write-Host "[SUCCESS] Generated Commit Message: $commitMessage" -ForegroundColor Green
+    
+    # Commit with the AI-generated message
+    git commit -m "$commitMessage"
+
+    # Push to the repository
+    Write-Host "[INFO] Pushing to remote repository" -ForegroundColor Magenta
+    git push  # Change 'main' if your branch name is different
+    Write-Host "[SUCCESS] Commit pushed to remote repository" -ForegroundColor Green
+}
+else {
+    Write-Host "[ERROR] No response from OpenAI API." -ForegroundColor Red
+}

@@ -4,8 +4,8 @@ param (
 
 . "$PSScriptRoot/functions/Get-OS.ps1"
 
-$host.UI.RawUI.BackgroundColor = 'Black'
-Clear-Host
+# $host.UI.RawUI.BackgroundColor = 'Black'
+# Clear-Host
 
 $OS = Get-OS
 Write-Host "[INFO] Rilevato sistema operativo: $OS" -ForegroundColor Magenta
