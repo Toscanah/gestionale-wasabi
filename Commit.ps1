@@ -39,7 +39,7 @@ git add .
 $diff = git diff --cached
 
 if ([string]::IsNullOrEmpty($diff)) {
-    Write-Output "[INFO] No staged changes. Exiting." -ForegroundColor Magenta
+    Write-Host "[INFO] No staged changes. Exiting." -ForegroundColor Magenta
     exit
 }
 
