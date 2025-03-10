@@ -52,21 +52,43 @@ enum KitchenType {
     NONE
 }
 
+enum EngagementType {
+    EMAIL
+    QR_CODE
+    PROMOTION
+    MESSAGE
+}
+
+enum EngagementState {
+    PENDING
+    APPLIED
+    USED
+}
+
+model Rider {
+    id       Int     @id @default(autoincrement())
+    name     String
+    surname  String
+    nickname String?
+    active   Boolean @default(true)
+}
+
 model Order {
-    id                 Int              @id @default(autoincrement())
-    created_at         DateTime         @default(now())
-    updated_at         DateTime         @default(now()) @updatedAt
-    total              Float            @default(0)
-    discount           Float            @default(0)
-    is_receipt_printed Boolean          @default(false)
+    id                 Int                  @id @default(autoincrement())
+    created_at         DateTime             @default(now())
+    updated_at         DateTime             @default(now()) @updatedAt
+    total              Float                @default(0)
+    discount           Float                @default(0)
+    is_receipt_printed Boolean              @default(false)
     soups              Int?
     salads             Int?
     rices              Int?
     suborder_of        Int?
-    state              OrderState       @default(ACTIVE)
+    state              OrderState           @default(ACTIVE)
     type               OrderType
     products           ProductInOrder[]
     payments           Payment[]
+    engagement         CustomerEngagement[]
     table_order        TableOrder?
     home_order         HomeOrder?
     pickup_order       PickupOrder?
@@ -123,36 +145,47 @@ model Address {
     home_orders HomeOrder[]
 }
 
-model MarketingOnCustomer {
-    id           Int               @id @default(autoincrement())
-    customer_id  Int
-    marketing_id Int
-    created_at   DateTime          @default(now())
-    marketing    MarketingTemplate @relation(fields: [marketing_id], references: [id])
-    customer     Customer          @relation(fields: [customer_id], references: [id])
+model EmailTemplate {
+    id       Int     @id @default(autoincrement())
+    template String  @unique
+    subject  String
+    body     String?
 }
 
-model MarketingTemplate {
-    id        Int                   @id @default(autoincrement())
-    label     String                @unique
-    subject   String
-    body      String?
-    customers MarketingOnCustomer[]
+model CustomerEngagement {
+    id          Int             @id @default(autoincrement())
+    customer_id Int
+    payload     Json
+    type        EngagementType
+    state       EngagementState
+    created_at  DateTime        @default(now())
+
+    // Order association - QR Codes, Messages & Promotions are linked to the NEXT order
+    order_id Int? // Nullable, assigned when the action is applied
+    order    Order? @relation(fields: [order_id], references: [id], onDelete: SetNull)
+
+    // Expiration Date for Promotions
+    expiresAt DateTime? // Only for promotions, null for QR Codes & Messages
+
+    // Used when the order is marked as PAID
+    usedAt DateTime? // When the action was actually used
+
+    customer Customer @relation(fields: [customer_id], references: [id])
 }
 
 model Customer {
-    id            Int                   @id @default(autoincrement())
+    id            Int                  @id @default(autoincrement())
     name          String?
     surname       String?
     email         String?
     preferences   String?
-    active        Boolean               @default(true)
-    phone_id      Int                   @unique
-    phone         Phone                 @relation(fields: [phone_id], references: [id], onDelete: Cascade)
+    active        Boolean              @default(true)
+    phone_id      Int                  @unique
+    phone         Phone                @relation(fields: [phone_id], references: [id], onDelete: Cascade)
     addresses     Address[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
-    marketings    MarketingOnCustomer[]
+    engagement    CustomerEngagement[]
 }
 
 model Phone {
