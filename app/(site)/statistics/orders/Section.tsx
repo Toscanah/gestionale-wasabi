@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { AnyOrder } from "../../models";
-import { DAYS_OF_WEEK } from "./page";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { RadioGroup } from "@/components/ui/radio-group";
-import RangeFilter from "./filters/RangeFilter";
-import YearFilter from "./filters/YearFilter";
 import { DateRange } from "../../components/ui/CalendarRange";
-import HoursIntervalFilter from "./filters/HoursIntervalFilter";
+import WeekdaysOrDateToggle from "./weekdays-or-date/WeekdaysOrDateToggle";
+import WeekdaysSelectionToggle from "./weekdays-or-date/WeekdaysSelectionToggle";
+import WeekdaysFilterTypeSelection from "./weekdays-or-date/WeekdaysFilterTypeSelection";
 
 interface SectionProps {
   orders: AnyOrder[];
@@ -14,76 +11,108 @@ interface SectionProps {
   removeSection: (id: string) => void;
 }
 
-type TimePriod = "year" | "range";
+export enum DAYS_OF_WEEK {
+  TUESDAY = "Martedì",
+  WEDNESDAY = "Mercoledì",
+  THURSDAY = "Giovedì",
+  FRIDAY = "Venerdì",
+  SATURDAY = "Sabato",
+  SUNDAY = "Domenica",
+}
 
-export type Year = `${19 | 20}${number}${number}`;
+export type WeekdaysOrDateChoice = "weekdays" | "date";
 
-export type HoursInterval = { from: string | undefined; to: string | undefined };
+type WeekdaysSelection = { type: "year"; year: "string" } | { type: "range"; range: DateRange };
 
-const getFirstOrderYear = (orders: AnyOrder[]): number | null => {
-  if (orders.length === 0) return null;
+type Shift = "lunch" | "dinner" | "all";
 
-  const firstOrder = orders.reduce((earliest, order) =>
-    new Date(order.created_at) < new Date(earliest.created_at) ? order : earliest
-  );
+type Time = { type: "shift"; shift: Shift } | { type: "range"; from: string; to: string };
 
-  return new Date(firstOrder.created_at).getFullYear();
+type SectionState = {
+  /** Determines whether selection is based on weekdays or a specific date */
+  mainChoice: WeekdaysOrDateChoice;
+
+  /** If `mainChoice === "weekdays"` → these are required, otherwise `undefined` */
+  weekdays?: DAYS_OF_WEEK[];
+  weekdaysSelection?: WeekdaysSelection;
+
+  /** If `mainChoice === "date"` → this is required, otherwise `undefined` */
+  specificDate?: Date;
+
+  /** Defines the selected time range */
+  time: Time;
+};
+
+const initialState: SectionState = {
+  mainChoice: "weekdays",
+  time: { type: "shift", shift: "all" },
+};
+
+function sectionReducer(state: SectionState, action: any): SectionState {
+  switch (action.type) {
+    case "SET_MAIN_CHOICE":
+      return { ...state, mainChoice: action.payload, weekdays: [], specificDate: undefined };
+    case "SET_WEEKDAYS":
+      return { ...state, weekdays: action.payload };
+    case "SET_WEEKDAYS_SELECTION":
+      return { ...state, weekdaysSelection: action.payload };
+    case "SET_SPECIFIC_DATE":
+      return { ...state, specificDate: action.payload };
+    case "SET_TIME":
+      return { ...state, time: action.payload };
+    default:
+      return state;
+  }
+}
+
+type SectionDispatch = React.Dispatch<{ type: string; payload: any }>;
+
+export type SelectionProps<T> = {
+  selection: T;
+  dispatch: SectionDispatch;
 };
 
 export default function Section({ orders }: SectionProps) {
-  const [daysOfWeek, setDaysOfWeek] = useState<DAYS_OF_WEEK[]>([]);
-  const [timePeriod, setTimePeriod] = useState<TimePriod>("range");
+  const [state, dispatch] = useReducer(sectionReducer, initialState);
 
-  const [dateFilter, setDateFilter] = useState<DateRange | undefined>(undefined);
-  const [yearFilter, setYearFilter] = useState<Year | undefined>(undefined);
-  const [hoursInterval, setHoursInterval] = useState<HoursInterval | undefined>(undefined);
-
-  const handleValueChange = (newDays: string[]) => setDaysOfWeek(newDays as DAYS_OF_WEEK[]);
-
-  const applyFilters = () => {
-    
-  };
+  const applyFilters = () => {};
 
   useEffect(() => {
     applyFilters();
-  }, [daysOfWeek, timePeriod, dateFilter, yearFilter, hoursInterval]);
+  }, []);
 
   return (
-    <div className="flex flex-col space-y-8 w-full h-full p-4 items-center">
-      <ToggleGroup
-        type="multiple"
-        variant="outline"
-        className="w-1/2 flex gap-4"
-        value={daysOfWeek}
-        onValueChange={handleValueChange}
-      >
-        {Object.values(DAYS_OF_WEEK).map((day) => (
-          <ToggleGroupItem value={day} key={day} className="flex-1">
-            {day}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
+    <div className="flex flex-col space-y-16 w-full h-full p-4 items-center">
+      {/* Selection between Weekdays or Specific Date */}
+      <WeekdaysOrDateToggle<WeekdaysOrDateChoice>
+        selection={state.mainChoice}
+        dispatch={dispatch}
+      />
 
-      <RadioGroup
-        value={timePeriod}
-        onValueChange={(newPeriod) => setTimePeriod(newPeriod as TimePriod)}
-        className="w-1/2 flex gap-4 items-center"
-      >
-        <RangeFilter
-          disabled={timePeriod == "year"}
-          dateFilter={dateFilter}
-          setDateFilter={setDateFilter}
-        />
+      {/* If Weekdays is selected */}
+      {state.mainChoice === "weekdays" && (
+        <>
+          <WeekdaysSelectionToggle<DAYS_OF_WEEK[] | undefined>
+            selection={state.weekdays}
+            dispatch={dispatch}
+          />
+          <WeekdaysFilterTypeSelection<WeekdaysSelection | undefined>
+            selection={state.weekdaysSelection}
+            dispatch={dispatch}
+          />
+        </>
+      )}
 
-        <YearFilter
-          firstEverYear={getFirstOrderYear(orders) || 2024}
-          setYearFilter={setYearFilter}
-          yearFilter={yearFilter}
-          disabled={timePeriod == "range"}
-        />
-      </RadioGroup>
+      {/* If Specific Date is selected */}
+      {/* {state.mainChoice === "date" && (
+        <SpecificDatePicker state={state.specificDate} dispatch={dispatch} />
+      )} */}
 
-      <HoursIntervalFilter setHoursInterval={setHoursInterval} hoursInterval={hoursInterval} />
+      {/* Time Selection */}
+      {/* <TimeSelectionToggle state={state.time} dispatch={dispatch} />
+      {state.time.type === "range" && (
+        <HoursIntervalFilter state={state.time} dispatch={dispatch} />
+      )} */}
     </div>
   );
 }

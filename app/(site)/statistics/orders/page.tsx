@@ -9,15 +9,6 @@ import { Button } from "@/components/ui/button";
 import { uniqueId } from "lodash";
 import Section from "./Section";
 
-export enum DAYS_OF_WEEK {
-  TUESDAY = "Martedì",
-  WEDNESDAY = "Mercoledì",
-  THURSDAY = "Giovedì",
-  FRIDAY = "Venerdì",
-  SATURDAY = "Sabato",
-  SUNDAY = "Domenica",
-}
-
 export default function OrdersStats() {
   const [orders, setOrders] = useState<AnyOrder[]>([]);
   const [sections, setSections] = useState<{ id: string }[]>([{ id: uniqueId() }]);
