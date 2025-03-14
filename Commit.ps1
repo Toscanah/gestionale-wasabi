@@ -48,12 +48,15 @@ $body = @{
         @{ "role" = "user"; "content" = ($diff -join "`n") }
     )
     "temperature" = 0.2
-} | ConvertTo-Json -Depth 10 -Compress 
+}
+
+$bodyJson = $body | ConvertTo-Json -Depth 10 -Compress
+$bodyJson = [System.Text.Encoding]::UTF8.GetBytes($bodyJson)
 
 $response = Invoke-RestMethod -Uri "https://api.openai.com/v1/chat/completions" `
     -Method Post `
     -Headers @{ "Authorization" = "Bearer $env:API_KEY"; "Content-Type" = "application/json" } `
-    -Body $body
+    -Body $bodyJson
 
 if ($response -and $response.choices) {
     $commitMessage = $response.choices[0].message.content

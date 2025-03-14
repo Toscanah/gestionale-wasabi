@@ -1,8 +1,8 @@
-import { MarketingOnCustomerSchema, MarketingTemplateSchema } from "@/prisma/generated/zod";
-import { z } from "zod";
+// import { MarketingOnCustomerSchema, MarketingTemplateSchema } from "@/prisma/generated/zod";
+// import { z } from "zod";
 
-export const MarketingOnCustomerWithMarketingSchema = MarketingOnCustomerSchema.extend({
-  marketing: MarketingTemplateSchema,
-});
+// export const MarketingOnCustomerWithMarketingSchema = MarketingOnCustomerSchema.extend({
+//   marketing: MarketingTemplateSchema,
+// });
 
-export type MarketingOnCustomer = z.infer<typeof MarketingOnCustomerWithMarketingSchema>;
+// export type MarketingOnCustomer = z.infer<typeof MarketingOnCustomerWithMarketingSchema>;

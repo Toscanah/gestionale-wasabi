@@ -50,9 +50,14 @@ export default function TableColumn<T>({
     ),
 
     ...(joinOptions
-      ? { accessorFn: (original) => joinItemsWithComma(original, joinOptions.key) }
+      ? {
+          accessorFn: (original) => joinItemsWithComma(original, joinOptions.key),
+        }
       : accessorKey
-      ? { accessorFn: (original) => getNestedValue<T>(original, accessorKey) }
+      ? {
+          accessorFn: (original) => getNestedValue<T>(original, accessorKey) ,
+          sortingFn: "text"
+        }
       : {}),
 
     header: ({ column }) =>

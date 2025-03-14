@@ -12,12 +12,11 @@ import SelectWrapper from "../../components/select/SelectWrapper";
 import GoBack from "../../components/ui/GoBack";
 import getTable from "../../functions/util/getTable";
 import columns from "./columns";
-import useProductsStats, {
-  allCategories,
-} from "../../hooks/statistics/useProductsStats";
+import useProductsStats, { allCategories } from "../../hooks/statistics/useProductsStats";
 import TableControls from "../../components/table/TableControls";
 import useGlobalFilter from "../../hooks/useGlobalFilter";
 import { TimeFilter } from "../../sql/products/getProductsWithStats";
+import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 
 export default function ProductsStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
@@ -125,6 +124,11 @@ export default function ProductsStats() {
         </TableControls>
 
         <Table table={table} tableClassName="max-h-max" />
+
+        <span>
+          Totale: {roundToTwo(filteredProducts.reduce((sum, product) => sum + product.total, 0))} €
+        </span>
+
         <GoBack path="/home" />
       </div>
     </div>

@@ -5,6 +5,7 @@ export default function StatsSection() {
   const statsItems: SidebarMenuGroupItem[] = [
     { type: "link", label: "Clienti", path: "/statistics/customers/" },
     { type: "link", label: "Prodotti", path: "/statistics/products/" },
+    { type: "link", label: "Ordini", path: "/statistics/orders" },
   ];
 
   return (
