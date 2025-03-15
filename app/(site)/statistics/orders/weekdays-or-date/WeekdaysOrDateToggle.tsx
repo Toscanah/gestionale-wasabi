@@ -10,14 +10,14 @@ export default function WeekdaysOrDateToggle({
     <RadioGroup
       value={choice}
       onValueChange={(newChoice) => dispatch({ type: "SET_MAIN_CHOICE", payload: newChoice })}
-      className="w-1/2 flex gap-4 items-center"
+      className="flex gap-4 items-center justify-center"
     >
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center w-auto">
         <RadioGroupItem value="weekdays" id="weekdays" />
         <Label htmlFor="weekdays">Giorni della settimana</Label>
       </div>
 
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center w-auto">
         <RadioGroupItem value="date" id="date" />
         <Label htmlFor="date">Data specifica</Label>
       </div>

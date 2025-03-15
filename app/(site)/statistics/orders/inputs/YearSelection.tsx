@@ -13,6 +13,7 @@ export default function YearSelection({ selection: year, dispatch }: SelectionPr
       className="h-10"
       groups={[{ items: years }]}
       value={year}
+      placeholder="Seleziona un'anno"
       onValueChange={(newYear) =>
         dispatch({
           type: "SET_WEEKDAYS_SELECTION",

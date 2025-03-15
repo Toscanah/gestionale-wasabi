@@ -1,13 +1,14 @@
 "use client";
 
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import SelectWrapper from "../../components/select/SelectWrapper";
 import { useEffect, useState } from "react";
 import fetchRequest from "../../functions/api/fetchRequest";
 import { AnyOrder } from "../../models";
 import { Button } from "@/components/ui/button";
 import { uniqueId } from "lodash";
 import Section from "./Section";
+import { Flipper, Flipped, spring } from "react-flip-toolkit";
+import { Plus, X } from "@phosphor-icons/react";
+import { cn } from "@/lib/utils";
 
 export default function OrdersStats() {
   const [orders, setOrders] = useState<AnyOrder[]>([]);
@@ -15,8 +16,17 @@ export default function OrdersStats() {
 
   const addSection = () => setSections((prev) => [...prev, { id: uniqueId() }]); // Generate unique ID for each section
 
-  const removeSection = (id: string) =>
+  const removeSection = (id: string) => {
     setSections((prev) => prev.filter((section) => section.id !== id));
+  };
+
+  const clearSections = () => {
+    sections.forEach((_, i) => {
+      setTimeout(() => {
+        setSections((prev) => prev.filter((_, index) => index !== 0));
+      }, i * 500);
+    });
+  };
 
   const fetchOrders = () =>
     fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments").then(setOrders);
@@ -25,16 +35,57 @@ export default function OrdersStats() {
     fetchOrders();
   }, []);
 
+  const onElementAppear = (el: any, index: number) => {
+    spring({
+      onUpdate: (val) => {
+        el.style.opacity = val;
+      },
+      delay: index * 50,
+    });
+  };
+
   return (
     <div className="flex flex-col w-screen h-screen gap-4 items-center">
-      <Button onClick={addSection}>Aggiungi sezione</Button>
+      <h1 className="text-3xl mt-4">Statistiche Ordini</h1>
 
-      {/* Render dynamic sections */}
-      <div className="w-full flex gap-2 h-full  ">
-        {sections.map((section, index) => (
-          <Section key={section.id} id={section.id} orders={orders} removeSection={removeSection} />
-        ))}
+      <div className="flex flex-col gap-4">
+        <Button onClick={addSection}>
+          <Plus className="mr-2 h-4 w-4" />
+          Aggiungi sezione
+        </Button>
+
+        {sections.length > 1 && (
+          <Button onClick={clearSections} variant={"link"}>
+            Cancella tutte
+          </Button>
+        )}
       </div>
+
+      {/* Dynamic Horizontal Layout for Sections */}
+      <Flipper
+        flipKey={sections.map((section) => section.id).join("")}
+        spring={"noWobble"}
+        className="w-full flex gap-4 pt-4 px-8 pb-8 overflow-x-auto justify-start"
+      >
+        {sections.map((section) => (
+          <Flipped key={section.id} flipId={section.id} onAppear={onElementAppear}>
+            <div
+              className={cn(
+                "relative group select-none border p-4 rounded-lg shadow-md h-full",
+                sections.length === 1 ? "w-full" : sections.length === 2 ? "w-1/2" : "w-1/3"
+              )}
+            >
+              <Section id={section.id} orders={orders} />
+              <X
+                onClick={() => removeSection(section.id)}
+                size={32}
+                className="absolute top-[-1rem] right-[-1rem] invisible group-hover:visible hover:cursor-pointer 
+                                hover:bg-opacity-50 hover:bg-muted-foreground/20 rounded-full p-1"
+              />
+            </div>
+          </Flipped>
+        ))}
+      </Flipper>
     </div>
   );
 }

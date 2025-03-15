@@ -29,7 +29,7 @@ export default function TimePicker({ value, onValueChange }: TimePickerProps) {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="w-full flex justify-between">
+        <Button variant="outline" className="w-full flex justify-between" >
           <ClockIcon className="mr-2 h-4 w-4" />
           {value || "Seleziona orario"}
         </Button>

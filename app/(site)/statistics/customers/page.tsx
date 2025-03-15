@@ -14,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { useCustomerStats } from "../../hooks/statistics/useCustomerStats";
+import { useCustomersStats } from "../../hooks/statistics/useCustomersStats";
 import { TablePagination } from "../../components/table/TablePagination";
 import { DATE_PRESETS, DatePreset } from "../../enums/DatePreset";
 
@@ -29,7 +29,7 @@ export default function CustomersStats() {
     handlePresetSelect,
     handleReset,
     applyFilter,
-  } = useCustomerStats();
+  } = useCustomersStats();
 
   const table = getTable({
     data: filteredCustomers,

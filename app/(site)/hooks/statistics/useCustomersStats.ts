@@ -11,7 +11,7 @@ const defaultDate: DateRange = {
   to: endOfYear(today),
 };
 
-export function useCustomerStats() {
+export function useCustomersStats() {
   const [customers, setCustomers] = useState<CustomerWithStats[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<CustomerWithStats[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
