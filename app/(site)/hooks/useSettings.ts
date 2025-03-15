@@ -12,6 +12,10 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
   kitchenOffset: 20,
   whenSelectorGap: 5,
   selectedPrinter: PREDEFINED_PRINTERS[0],
+  orderProcessingHours: {
+    lunch: { open: "11:00", close: "14:30" },
+    dinner: { open: "17:30", close: "22:30" },
+  },
 };
 
 export default function useSettings() {
@@ -45,7 +49,7 @@ export default function useSettings() {
     saveSettingsToLocalStorage({ ...settings, [key]: newValue });
   };
 
-  useEffect(() => getSettings(), []);
+  useEffect(getSettings, []);
 
   return { settings, updateSettings };
 }

@@ -3,6 +3,7 @@ import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import PrinterChoice from "./PrinterChoice";
+import TimePicker from "../../components/ui/TimePicker";
 
 export default function ApplicationSettings() {
   const { settings, updateSettings } = useWasabiContext();
@@ -39,6 +40,60 @@ export default function ApplicationSettings() {
             value={settings.whenSelectorGap}
             onChange={(whenSelectorGap) =>
               updateSettings("whenSelectorGap", whenSelectorGap.target.valueAsNumber)
+            }
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-6">
+        <div className="space-y-2 w-full">
+          <Label htmlFor="">Primo ordine pranzo</Label>
+          <TimePicker
+            value={settings.orderProcessingHours.lunch.open}
+            onValueChange={(value) =>
+              updateSettings("orderProcessingHours", {
+                ...settings.orderProcessingHours,
+                lunch: { ...settings.orderProcessingHours.lunch, open: value },
+              })
+            }
+          />
+        </div>
+
+        <div className="space-y-2 w-full">
+          <Label htmlFor="">Ultimo ordine pranzo</Label>
+          <TimePicker
+            value={settings.orderProcessingHours.lunch.close}
+            onValueChange={(value) =>
+              updateSettings("orderProcessingHours", {
+                ...settings.orderProcessingHours,
+                lunch: { ...settings.orderProcessingHours.lunch, close: value },
+              })
+            }
+          />
+        </div>
+
+        <div className="space-y-2 w-full">
+          <Label htmlFor="">Primo ordine cena</Label>
+          <TimePicker
+            value={settings.orderProcessingHours.dinner.open}
+            onValueChange={(value) =>
+              updateSettings("orderProcessingHours", {
+                ...settings.orderProcessingHours,
+                dinner: { ...settings.orderProcessingHours.dinner, open: value },
+              })
+            }
+          />
+        </div>
+
+        <div className="space-y-2 w-full">
+          <Label htmlFor="">Ultimo ordine cena</Label>
+          <TimePicker
+            value={settings.orderProcessingHours.dinner.close}
+            onValueChange={(value) =>
+              updateSettings("orderProcessingHours", {
+                ...settings.orderProcessingHours,
+                dinner: { ...settings.orderProcessingHours.dinner, close: value },
+              })
             }
           />
         </div>

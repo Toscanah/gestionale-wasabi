@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import TimePicker from "../../components/ui/TimePicker";
 
 export default function RestaurantSettings() {
   const { settings, updateSettings } = useWasabiContext();
@@ -152,7 +153,9 @@ export default function RestaurantSettings() {
         </div>
       </div>
 
-      <div className="flex gap-6">
+      
+
+      {/* <div className="flex gap-6">
         <div className="space-y-2 w-full">
           <Label htmlFor="logo">
             Logo{" "}
@@ -169,7 +172,7 @@ export default function RestaurantSettings() {
             <br />
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

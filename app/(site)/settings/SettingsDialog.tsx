@@ -31,7 +31,7 @@ export default function SettingsDialog() {
       }
       contentClassName="h-[45rem] max-h-[45rem] flex flex-col gap-6"
     >
-      <Tabs defaultValue="application" className="w-full">
+      <Tabs defaultValue="application" className="w-full h-full">
         <TabsList className="w-full mb-6">
           {tabs.map((tab) => (
             <TabsTrigger

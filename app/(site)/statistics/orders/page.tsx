@@ -54,18 +54,19 @@ export default function OrdersStats() {
           Aggiungi sezione
         </Button>
 
-        {sections.length > 1 && (
-          <Button onClick={clearSections} variant={"link"}>
-            Cancella tutte
-          </Button>
-        )}
+        <Button
+          onClick={clearSections}
+          variant={"link"}
+          className={sections.length > 1 ? "block" : "invisible"}
+        >
+          Cancella tutte
+        </Button>
       </div>
 
-      {/* Dynamic Horizontal Layout for Sections */}
       <Flipper
         flipKey={sections.map((section) => section.id).join("")}
-        spring={"noWobble"}
-        className="w-full flex gap-4 pt-4 px-8 pb-8 overflow-x-auto justify-start"
+        spring={"stiff"}
+        className="w-screen flex gap-4 pt-4 px-8 pb-8 overflow-x-auto justify-start"
       >
         {sections.map((section) => (
           <Flipped key={section.id} flipId={section.id} onAppear={onElementAppear}>
