@@ -12,7 +12,7 @@ export default function WeekdaysFilterTypeSelection({
     <div className="flex flex-col gap-4">
       <RadioGroup
         value={selection?.type}
-        onValueChange={(value) =>
+        onValueChange={(value: "year" | "range") =>
           dispatch({ type: "SET_WEEKDAYS_SELECTION", payload: { type: value } })
         }
         className="flex gap-4"
@@ -28,12 +28,8 @@ export default function WeekdaysFilterTypeSelection({
         </div>
       </RadioGroup>
 
-      {selection?.type === "range" && (
-        <RangeSelection selection={selection.range} dispatch={dispatch} />
-      )}
-      {selection?.type === "year" && (
-        <YearSelection selection={selection.year} dispatch={dispatch} />
-      )}
+      {selection?.type === "range" && <RangeSelection selection={selection} dispatch={dispatch} />}
+      {selection?.type === "year" && <YearSelection selection={selection} dispatch={dispatch} />}
     </div>
   );
 }

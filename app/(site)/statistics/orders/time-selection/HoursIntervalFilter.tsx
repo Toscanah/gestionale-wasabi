@@ -9,7 +9,7 @@ export default function HoursIntervalFilter({
   const handleTimeChange = (field: "from" | "to") => (newTime: string) =>
     dispatch({
       type: "SET_TIME",
-      payload: { ...hours, type: "range", [field]: newTime },
+      payload: { [field]: newTime },
     });
 
   return (

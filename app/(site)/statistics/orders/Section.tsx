@@ -35,11 +35,9 @@ export type Shift = "lunch" | "dinner" | "all";
 
 export type Time = { type: "shift"; shift: Shift } | { type: "range"; from: string; to: string };
 
-type SectionDispatch = React.Dispatch<{ type: ReducerActions; payload: any }>;
-
 export type SelectionProps<T> = {
   selection: T;
-  dispatch: SectionDispatch;
+  dispatch: React.Dispatch<ReducerActions>;
 };
 
 export default function Section({ orders }: SectionProps) {
@@ -56,7 +54,7 @@ export default function Section({ orders }: SectionProps) {
   const shouldShowTimeSelection = hasValidWeekdaysSelection || hasValidSpecificDate;
 
   return (
-    <div className="flex flex-col gap-8 w-full p-4 items-center max-h-full h-screen">
+    <div className="flex flex-col gap-12 w-full p-4 items-center max-h-full h-screen">
       <div className="flex flex-col gap-4 items-center">
         <WeekdaysOrDateToggle selection={state.mainChoice} dispatch={dispatch} />
         {isWeekdaysSelected && <WeekdaysSelection selection={state.weekdays} dispatch={dispatch} />}
@@ -78,7 +76,7 @@ export default function Section({ orders }: SectionProps) {
               <HoursIntervalFilter selection={state.time} dispatch={dispatch} />
             )}
             {state.time.type === "shift" && (
-              <ShiftSelection selection={state.time.shift} dispatch={dispatch} />
+              <ShiftSelection selection={state.time} dispatch={dispatch} />
             )}
           </>
         )}

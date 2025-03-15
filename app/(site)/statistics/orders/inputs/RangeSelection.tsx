@@ -5,9 +5,9 @@ import { DATE_PRESETS, DatePreset } from "@/app/(site)/enums/DatePreset";
 import { endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, subDays } from "date-fns";
 
 export default function RangeSelection({
-  selection: range,
+  selection,
   dispatch,
-}: SelectionProps<DateRange | undefined>) {
+}: SelectionProps<WeekdaysSelection>) {
   const handlePresetSelect = (value: DatePreset) => {
     const today = new Date();
     let newRange: DateRange;
@@ -38,19 +38,19 @@ export default function RangeSelection({
 
     dispatch({
       type: "SET_WEEKDAYS_SELECTION",
-      payload: { type: "range", range: newRange } as WeekdaysSelection,
+      payload: { range: newRange },
     });
   };
 
   return (
     <CalendarRange
-      dateFilter={range}
+      dateFilter={selection.type == "range" ? selection.range : undefined}
       presets={DATE_PRESETS}
       handlePresetSelection={(newRange) => handlePresetSelect(newRange as DatePreset)}
       handleDateFilter={(newRange) =>
         dispatch({
           type: "SET_WEEKDAYS_SELECTION",
-          payload: { type: "range", range: newRange } as WeekdaysSelection,
+          payload: { range: newRange },
         })
       }
     />

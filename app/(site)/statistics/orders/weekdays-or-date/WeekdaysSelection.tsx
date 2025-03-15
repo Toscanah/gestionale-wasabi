@@ -11,10 +11,12 @@ export default function WeekdaysSelection({
       variant="outline"
       className="flex gap-4"
       value={weekdays}
-      onValueChange={(newWeekdays) => dispatch({ type: "SET_WEEKDAYS", payload: newWeekdays })}
+      onValueChange={(newWeekdays: DAYS_OF_WEEK[]) =>
+        dispatch({ type: "SET_WEEKDAYS", payload: newWeekdays })
+      }
     >
       {Object.values(DAYS_OF_WEEK).map((day) => (
-        <ToggleGroupItem value={day} key={day} className="">
+        <ToggleGroupItem value={day} key={day}>
           {day}
         </ToggleGroupItem>
       ))}

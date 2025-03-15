@@ -1,7 +1,7 @@
 import SelectWrapper from "@/app/(site)/components/select/SelectWrapper";
 import { SelectionProps, WeekdaysSelection } from "../Section";
 
-export default function YearSelection({ selection: year, dispatch }: SelectionProps<string>) {
+export default function YearSelection({ selection, dispatch }: SelectionProps<WeekdaysSelection>) {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 2025 - currentYear + 1 }, (_, i) => ({
     value: (2025 - i).toString(),
@@ -12,12 +12,12 @@ export default function YearSelection({ selection: year, dispatch }: SelectionPr
     <SelectWrapper
       className="h-10"
       groups={[{ items: years }]}
-      value={year}
+      value={selection.type == "year" ? selection.year : undefined}
       placeholder="Seleziona un'anno"
       onValueChange={(newYear) =>
         dispatch({
           type: "SET_WEEKDAYS_SELECTION",
-          payload: { type: "year", year: newYear } as WeekdaysSelection,
+          payload: { year: newYear },
         })
       }
     />

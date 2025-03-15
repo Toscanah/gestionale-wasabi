@@ -22,19 +22,19 @@ export default function SectionResults({
       <table className="w-[20rem]">
         <tbody>
           <tr>
-            <td className="py-2">Ordini a Casa</td>
+            <td className="py-2">Ordini domicilio</td>
             <td className="py-2 text-right">{homeOrders}</td>
           </tr>
           <tr>
-            <td className="py-2">Ordini Ritiro</td>
+            <td className="py-2">Ordini asporto</td>
             <td className="py-2 text-right">{pickupOrders}</td>
           </tr>
           <tr>
-            <td className="py-2">Ordini al Tavolo</td>
+            <td className="py-2">Ordini tavolo</td>
             <td className="py-2 text-right">{tableOrders}</td>
           </tr>
           <tr>
-            <td className="py-2">Riso Consumato</td>
+            <td className="py-2">Riso consumato</td>
             <td className="py-2 text-right">{formatRice(totalRiceConsumed)}</td>
           </tr>
         </tbody>

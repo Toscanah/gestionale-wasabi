@@ -1,13 +1,13 @@
 import SelectWrapper from "@/app/(site)/components/select/SelectWrapper";
-import { SelectionProps, Shift } from "../Section";
+import { SelectionProps, Time, Shift } from "../Section";
 
-export default function ShiftSelection({ selection: shift, dispatch }: SelectionProps<Shift>) {
+export default function ShiftSelection({ selection, dispatch }: SelectionProps<Time>) {
   return (
     <SelectWrapper
       className="h-10 w-40"
-      value={shift}
+      value={selection.type == "shift" ? selection.shift : undefined}
       onValueChange={(newShift) =>
-        dispatch({ type: "SET_TIME", payload: { type: "shift", shift: newShift } })
+        dispatch({ type: "SET_TIME", payload: { shift: newShift as Shift } })
       }
       groups={[
         {

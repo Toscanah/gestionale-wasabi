@@ -2,7 +2,7 @@ import { useEffect, useReducer, useState } from "react";
 import { AnyOrder } from "../../models";
 import { OrderType } from "@prisma/client";
 import { DateRange } from "react-day-picker";
-import { initialState, sectionReducer } from "./sectionReducer";
+import sectionReducer, { initialState } from "./sectionReducer";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",

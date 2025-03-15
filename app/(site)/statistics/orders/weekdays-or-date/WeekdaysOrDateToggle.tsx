@@ -9,7 +9,9 @@ export default function WeekdaysOrDateToggle({
   return (
     <RadioGroup
       value={choice}
-      onValueChange={(newChoice) => dispatch({ type: "SET_MAIN_CHOICE", payload: newChoice })}
+      onValueChange={(newChoice: WeekdaysOrDateChoice) =>
+        dispatch({ type: "SET_MAIN_CHOICE", payload: newChoice })
+      }
       className="flex gap-4 items-center justify-center"
     >
       <div className="flex gap-2 items-center w-auto">

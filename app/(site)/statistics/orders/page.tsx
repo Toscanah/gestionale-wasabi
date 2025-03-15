@@ -9,24 +9,21 @@ import Section from "./Section";
 import { Flipper, Flipped, spring } from "react-flip-toolkit";
 import { Plus, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
+import GoBack from "../../components/ui/GoBack";
 
 export default function OrdersStats() {
   const [orders, setOrders] = useState<AnyOrder[]>([]);
   const [sections, setSections] = useState<{ id: string }[]>([{ id: uniqueId() }]);
 
-  const addSection = () => setSections((prev) => [...prev, { id: uniqueId() }]); // Generate unique ID for each section
+  const addSection = () => setSections((prev) => [...prev, { id: uniqueId() }]);
 
-  const removeSection = (id: string) => {
+  const removeSection = (id: string) =>
     setSections((prev) => prev.filter((section) => section.id !== id));
-  };
 
-  const clearSections = () => {
-    sections.forEach((_, i) => {
-      setTimeout(() => {
-        setSections((prev) => prev.filter((_, index) => index !== 0));
-      }, i * 500);
-    });
-  };
+  const clearSections = () =>
+    sections.forEach((_, i) =>
+      setTimeout(() => setSections((prev) => prev.filter((_, index) => index !== 0)), i * 500)
+    );
 
   const fetchOrders = () =>
     fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments").then(setOrders);
@@ -35,18 +32,15 @@ export default function OrdersStats() {
     fetchOrders();
   }, []);
 
-  const onElementAppear = (el: any, index: number) => {
+  const onElementAppear = (el: any, index: number) =>
     spring({
-      onUpdate: (val) => {
-        el.style.opacity = val;
-      },
+      onUpdate: (val) => (el.style.opacity = val),
       delay: index * 50,
     });
-  };
 
   return (
     <div className="flex flex-col w-screen h-screen gap-4 items-center">
-      <h1 className="text-3xl mt-4">Statistiche Ordini</h1>
+      <h1 className="text-3xl mt-4">Statistiche ordini</h1>
 
       <div className="flex flex-col gap-4">
         <Button onClick={addSection}>
@@ -87,6 +81,8 @@ export default function OrdersStats() {
           </Flipped>
         ))}
       </Flipper>
+
+      <GoBack path="/home" />
     </div>
   );
 }

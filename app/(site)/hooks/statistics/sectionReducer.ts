@@ -16,11 +16,11 @@ type SectionState = {
 };
 
 export type ReducerActions =
-  | "SET_MAIN_CHOICE"
-  | "SET_WEEKDAYS"
-  | "SET_WEEKDAYS_SELECTION"
-  | "SET_SPECIFIC_DATE"
-  | "SET_TIME";
+  | { type: "SET_MAIN_CHOICE"; payload: Partial<WeekdaysOrDateChoice> }
+  | { type: "SET_WEEKDAYS"; payload: Partial<DAYS_OF_WEEK[]> }
+  | { type: "SET_WEEKDAYS_SELECTION"; payload: Partial<WeekdaysSelection> }
+  | { type: "SET_SPECIFIC_DATE"; payload: Partial<Date | undefined> }
+  | { type: "SET_TIME"; payload: Partial<Time> };
 
 export const initialState: SectionState = {
   mainChoice: "weekdays",
@@ -28,22 +28,45 @@ export const initialState: SectionState = {
   time: { type: "shift", shift: "all" },
 };
 
-export function sectionReducer(
-  state: SectionState,
-  action: { type: ReducerActions; payload: any }
-): SectionState {
-  switch (action.type) {
-    case "SET_MAIN_CHOICE":
-      return { ...state, mainChoice: action.payload, weekdays: [], specificDate: undefined };
-    case "SET_WEEKDAYS":
-      return { ...state, weekdays: action.payload };
-    case "SET_WEEKDAYS_SELECTION":
-      return { ...state, weekdaysSelection: action.payload };
-    case "SET_SPECIFIC_DATE":
-      return { ...state, specificDate: action.payload };
-    case "SET_TIME":
-      return { ...state, time: action.payload };
-    default:
-      return state;
-  }
-}
+type UpdateFunction = (state: SectionState, payload: any) => SectionState;
+type UpdateFunctions = {
+  [key in ReducerActions["type"]]: UpdateFunction;
+};
+
+const updateFunctions: UpdateFunctions = {
+  SET_MAIN_CHOICE: (state, payload) => ({
+    ...state,
+    mainChoice: payload,
+  }),
+
+  SET_WEEKDAYS: (state, payload) => ({
+    ...state,
+    weekdays: [...(state.weekdays || []), ...payload],
+  }),
+
+  SET_WEEKDAYS_SELECTION: (state, payload) => ({
+    ...state,
+    weekdaysSelection: {
+      ...state.weekdaysSelection,
+      ...payload,
+    },
+  }),
+
+  SET_SPECIFIC_DATE: (state, payload) => ({
+    ...state,
+    specificDate: payload,
+  }),
+
+  SET_TIME: (state, payload) => ({
+    ...state,
+    time: {
+      ...state.time,
+      ...payload,
+    },
+  }),
+};
+
+const sectionReducer = (state: SectionState, action: ReducerActions) =>
+  updateFunctions[action.type]?.(state, action.payload) ?? state;
+
+export default sectionReducer;
