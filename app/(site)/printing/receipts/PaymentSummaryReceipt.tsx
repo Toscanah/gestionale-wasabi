@@ -6,10 +6,10 @@ import sanitazeReceiptText from "../../functions/formatting-parsing/printing/san
 
 interface PaymentSummaryReceiptProps {
   summaryData: SummaryData;
+  date: Date;
 }
 
-export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryReceiptProps) {
-  const date = new Date();
+export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSummaryReceiptProps) {
   const formattedDate = sanitazeReceiptText(
     new Intl.DateTimeFormat("it-IT", {
       weekday: "long",
@@ -24,7 +24,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
   return (
     <>
       <Text inline>Recapito del giorno</Text>
-      <Text bold>{" "}{formattedDate}</Text>
+      <Text bold> {formattedDate}</Text>
 
       <Br />
       <Line />
@@ -144,7 +144,7 @@ export default function PaymentSummaryReceipt({ summaryData }: PaymentSummaryRec
       <Br />
       <Line />
       <Br />
-      
+
       <Row
         left={
           <Text bold size={bigSize}>

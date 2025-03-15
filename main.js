@@ -30,23 +30,6 @@ const createWindows = () => {
 
   mainWindow.loadURL("http://localhost:3000");
   mainWindow.maximize();
-
-  // if (secondaryDisplay) {
-  //   secondWindow = new BrowserWindow({
-  //     width: 1920,
-  //     height: 1080,
-  //     x: secondaryDisplay.bounds.x,
-  //     y: secondaryDisplay.bounds.y,
-  //     webPreferences: {
-  //       preload: path.join(__dirname, "preload.js"),
-  //       contextIsolation: true,
-  //       nodeIntegration: false,
-  //     },
-  //   });
-
-  //   secondWindow.loadURL("http://youtube.com");
-  //   secondWindow.maximize();
-  // }
 };
 
 const runBackup = () => {
@@ -70,9 +53,31 @@ const runBackup = () => {
   );
 };
 
+const closeCmdProcesses = () => {
+  // Run taskkill to close all CMD/PowerShell windows
+  exec("taskkill /F /IM cmd.exe /T", (err, stdout, stderr) => {
+    if (err) {
+      console.error(`Error killing CMD processes: ${stderr}`);
+    } else {
+      console.log(`Successfully killed CMD processes: ${stdout}`);
+    }
+  });
+
+  exec("taskkill /F /IM powershell.exe /T", (err, stdout, stderr) => {
+    if (err) {
+      console.error(`Error killing PowerShell processes: ${stderr}`);
+    } else {
+      console.log(`Successfully killed PowerShell processes: ${stdout}`);
+    }
+  });
+};
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     runBackup();
+    setTimeout(() => {
+      closeCmdProcesses();
+    }, 10 * 1000);
     app.quit();
   }
 });

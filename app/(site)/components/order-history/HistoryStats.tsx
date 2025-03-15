@@ -27,7 +27,7 @@ export default function HistoryStats({ stats }: HistoryStatsProps) {
                 : "Nessun prodotto"}
             </td>
           </tr>
-          <tr>
+          {/* <tr>
             <td className="text-lg ">Frequenza ordini alla settimana</td>
             <td className="text-lg ">{roundToTwo(stats.avgOrdersPerWeek)}</td>
           </tr>
@@ -42,7 +42,7 @@ export default function HistoryStats({ stats }: HistoryStatsProps) {
           <tr>
             <td className="text-lg ">Costo medio ordine</td>
             <td className="text-lg ">€ {roundToTwo(stats.avgOrderCost)}</td>
-          </tr>
+          </tr> */}
         </tbody>
       </table>
     </AccordionContent>

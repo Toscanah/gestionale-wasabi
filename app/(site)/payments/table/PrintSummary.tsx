@@ -114,7 +114,14 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
   return (
     <Button
       className="mt-auto"
-      onClick={async () => await print(() => PaymentSummaryReceipt({ summaryData }))}
+      onClick={async () =>
+        await print(() =>
+          PaymentSummaryReceipt({
+            summaryData,
+            date: new Date(orders[0].created_at || new Date()) || new Date(),
+          })
+        )
+      }
       disabled={isButtonDisabled}
     >
       Stampa riassunto

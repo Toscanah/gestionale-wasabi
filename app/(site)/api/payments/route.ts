@@ -5,10 +5,12 @@ import payOrder from "../../sql/payments/payOrder";
 import getOrdersWithPayments from "../../sql/payments/getOrdersWithPayments";
 import { NoContentSchema, PayOrderSchema } from "../../models";
 import getRomanPaymentsByOrder from "../../sql/payments/getRomanPaymentsByOrder";
+import { getOrdersWithPaymentsSplitted } from "../../sql/payments/getOrdersWithPaymentsSplitted";
 
 export const paymentSchemas = {
   payOrder: PayOrderSchema,
   getOrdersWithPayments: NoContentSchema,
+  getOrdersWithPaymentsSplitted: NoContentSchema,
   getRomanPaymentsByOrder: z.object({
     orderId: z.number(),
     amount: z.string(),
@@ -21,6 +23,10 @@ const GET_ACTIONS = new Map([
   [
     "getOrdersWithPayments",
     { func: getOrdersWithPayments, schema: paymentSchemas.getOrdersWithPayments },
+  ],
+  [
+    "getOrdersWithPaymentsSplitted",
+    { func: getOrdersWithPaymentsSplitted, schema: paymentSchemas.getOrdersWithPaymentsSplitted },
   ],
   [
     "getRomanPaymentsByOrder",

@@ -22,10 +22,10 @@ type ProductStats = {
 export type OrderStats = {
   mostBoughtProduct: ProductStats | undefined;
   leastBoughtProduct: ProductStats | undefined;
-  avgOrdersPerWeek: number;
-  avgOrdersPerMonth: number;
-  avgOrdersPerYear: number;
-  avgOrderCost: number;
+  // avgOrdersPerWeek: number;
+  // avgOrdersPerMonth: number;
+  // avgOrdersPerYear: number;
+  // avgOrderCost: number;
 };
 
 interface OrderHistoryProps {
@@ -47,10 +47,6 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
   const [stats, setStats] = useState<OrderStats>({
     mostBoughtProduct: undefined,
     leastBoughtProduct: undefined,
-    avgOrdersPerWeek: 0,
-    avgOrdersPerMonth: 0,
-    avgOrdersPerYear: 0,
-    avgOrderCost: 0,
   });
 
   const allOrders = useMemo(
@@ -70,56 +66,23 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
     );
 
     const productStats: Record<string, ProductStats> = productQuantities.reduce(
-      (acc: any, product) => {
-        acc[product.id] = acc[product.id] || { desc: product.desc, quantity: 0 };
-        acc[product.id].quantity += product.quantity;
+      (acc, { id, desc, quantity }) => {
+        if (!acc[id]) {
+          acc[id] = { desc, quantity: 0 };
+        }
+        acc[id].quantity += quantity;
         return acc;
       },
-      {}
+      {} as Record<string, ProductStats>
     );
 
     const sortedProducts = Object.values(productStats).sort((a, b) => b.quantity - a.quantity);
     const mostBoughtProduct = sortedProducts[0];
     const leastBoughtProduct = sortedProducts[sortedProducts.length - 1];
 
-    const ordersByDate = allOrders.map((order) => new Date(order.order.created_at));
-    const ordersPerWeek: Record<string, number> = {};
-    const ordersPerMonth: Record<string, number> = {};
-    const ordersPerYear: Record<string, number> = {};
-
-    ordersByDate.forEach((date) => {
-      const week = `${date.getFullYear()}-${Math.ceil((date.getMonth() + 1) / 4)}`;
-      const month = `${date.getFullYear()}-${date.getMonth() + 1}`;
-      const year = `${date.getFullYear()}`;
-
-      ordersPerWeek[week] = (ordersPerWeek[week] || 0) + 1;
-      ordersPerMonth[month] = (ordersPerMonth[month] || 0) + 1;
-      ordersPerYear[year] = (ordersPerYear[year] || 0) + 1;
-    });
-
-    const avgOrdersPerWeek =
-      Object.values(ordersPerWeek).reduce((sum, count) => sum + count, 0) /
-      Object.keys(ordersPerWeek).length;
-    const avgOrdersPerMonth =
-      Object.values(ordersPerMonth).reduce((sum, count) => sum + count, 0) /
-      Object.keys(ordersPerMonth).length;
-    const avgOrdersPerYear =
-      Object.values(ordersPerYear).reduce((sum, count) => sum + count, 0) /
-      Object.keys(ordersPerYear).length;
-
-    const totalOrderCost = allOrders.reduce(
-      (sum, order) => sum + applyDiscount(order.order.total, order.order.discount),
-      0
-    );
-    const avgOrderCost = totalOrderCost / allOrders.length;
-
     setStats({
       mostBoughtProduct,
       leastBoughtProduct,
-      avgOrdersPerWeek,
-      avgOrdersPerMonth,
-      avgOrdersPerYear,
-      avgOrderCost,
     });
   }, [allOrders]);
 

@@ -25,10 +25,10 @@ const sidebarSections: SidebarSection[] = [
     label: "Generale",
     components: [AdminSection, StatsSection, PaymentSection],
   },
-  {
-    label: "Marketing",
-    components: [MarketingSection],
-  },
+  // {
+  //   label: "Marketing",
+  //   components: [MarketingSection],
+  // },
   {
     label: "Riso",
     components: [RiceSection],

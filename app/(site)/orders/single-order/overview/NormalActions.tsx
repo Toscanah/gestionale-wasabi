@@ -24,7 +24,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
   useEffect(() => {
     const handlePrintShortcut = async (event: KeyboardEvent) => {
       if (event.altKey && event.key === "p") {
-        await handlePrint(); // Now this has access to the latest `order`
+        await handlePrint(); 
       }
     };
 
@@ -32,7 +32,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     return () => {
       document.removeEventListener("keydown", handlePrintShortcut);
     };
-  }, [order]);
+  }, [order, order.products]);
 
   const canSplit = (products: ProductInOrder[]) =>
     products.length > 1 ||
