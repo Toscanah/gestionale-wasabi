@@ -3,15 +3,7 @@ import { DateRange } from "react-day-picker";
 import { endOfYear, startOfYear, subDays, startOfDay, endOfMonth, startOfMonth } from "date-fns";
 import { CustomerWithStats } from "@/app/(site)/types/CustomerWithStats";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
-
-export enum DateFilters {
-  TODAY = "today",
-  YESTERDAY = "yesterday",
-  LAST7 = "last7",
-  LAST30 = "last30",
-  THIS_MONTH = "thisMonth",
-  THIS_YEAR = "thisYear",
-}
+import { DatePreset } from "../../enums/DatePreset";
 
 const today = new Date();
 const defaultDate: DateRange = {
@@ -132,33 +124,33 @@ export function useCustomerStats() {
     setFilteredCustomers(filtered);
   };
 
-  const handlePresetSelect = (value: DateFilters) => {
+  const handlePresetSelect = (value: DatePreset) => {
     switch (value) {
-      case DateFilters.TODAY:
+      case DatePreset.TODAY:
         setDateFilter({ from: startOfDay(today), to: startOfDay(today) });
         break;
-      case DateFilters.YESTERDAY:
+      case DatePreset.YESTERDAY:
         const yesterday = subDays(today, 1);
         setDateFilter({
           from: startOfDay(yesterday),
           to: startOfDay(yesterday),
         });
         break;
-      case DateFilters.LAST7:
+      case DatePreset.LAST7:
         const last7 = subDays(today, 6);
         setDateFilter({ from: startOfDay(last7), to: startOfDay(today) });
         break;
-      case DateFilters.LAST30:
+      case DatePreset.LAST30:
         const last30 = subDays(today, 29);
         setDateFilter({ from: startOfDay(last30), to: startOfDay(today) });
         break;
-      case DateFilters.THIS_MONTH:
+      case DatePreset.THIS_MONTH:
         setDateFilter({
           from: startOfMonth(today),
           to: endOfMonth(today),
         });
         break;
-      case DateFilters.THIS_YEAR:
+      case DatePreset.THIS_YEAR:
         setDateFilter({
           from: startOfYear(today),
           to: endOfYear(today),

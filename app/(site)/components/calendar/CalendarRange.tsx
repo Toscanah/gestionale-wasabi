@@ -8,11 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import SelectWrapper from "../select/SelectWrapper";
-
-export type DateRange = {
-  from: Date;
-  to?: Date;
-};
+import { DateRange } from "react-day-picker";
 
 export type CalendarRangePreset = {
   name: string;
@@ -31,13 +27,13 @@ type WithPresets = {
 
 type CalendarRangeProps = {
   dateFilter: DateRange | undefined;
-  setDateFilter: (range: DateRange | undefined) => void;
+  handleDateFilter: (range: DateRange | undefined) => void;
   disabled?: boolean;
 } & (NoPresets | WithPresets);
 
 export default function CalendarRange({
   dateFilter,
-  setDateFilter,
+  handleDateFilter,
   presets,
   handlePresetSelection,
   disabled = false,
@@ -70,7 +66,7 @@ export default function CalendarRange({
       <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
         {presets && handlePresetSelection && (
           <SelectWrapper
-            onValueChange={(value) => handlePresetSelection(value)}
+            onValueChange={handlePresetSelection}
             className="h-8"
             groups={[{ items: presets }]}
           />
@@ -83,7 +79,7 @@ export default function CalendarRange({
             defaultMonth={dateFilter?.from}
             selected={dateFilter}
             onSelect={(range) =>
-              setDateFilter(range && range.from ? { from: range.from, to: range.to } : undefined)
+              handleDateFilter(range && range.from ? { from: range.from, to: range.to } : undefined)
             }
             numberOfMonths={2}
           />

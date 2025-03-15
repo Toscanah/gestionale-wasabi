@@ -2,7 +2,7 @@
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import SelectWrapper from "../../components/select/SelectWrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import fetchRequest from "../../functions/api/fetchRequest";
 import { AnyOrder } from "../../models";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,11 @@ export default function OrdersStats() {
     setSections((prev) => prev.filter((section) => section.id !== id));
 
   const fetchOrders = () =>
-    fetchRequest<AnyOrder[]>("GET", "/api/orders/", "getOrdersWithPayments").then(setOrders);
+    fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments").then(setOrders);
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   return (
     <div className="flex flex-col w-screen h-screen gap-4 items-center">

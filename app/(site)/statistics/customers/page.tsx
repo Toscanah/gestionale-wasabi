@@ -14,8 +14,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { DateFilters, useCustomerStats } from "../../hooks/statistics/useCustomerStats";
+import { useCustomerStats } from "../../hooks/statistics/useCustomerStats";
 import { TablePagination } from "../../components/table/TablePagination";
+import { DATE_PRESETS, DatePreset } from "../../enums/DatePreset";
 
 export default function CustomersStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
@@ -92,36 +93,11 @@ export default function CustomersStats() {
             </PopoverTrigger>
             <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
               <SelectWrapper
-                onValueChange={(value) => handlePresetSelect(value as DateFilters)}
+                onValueChange={(value) => handlePresetSelect(value as DatePreset)}
                 className="h-8"
                 groups={[
                   {
-                    items: [
-                      {
-                        name: "Oggi",
-                        value: "today",
-                      },
-                      {
-                        name: "Ieri",
-                        value: "yesterday",
-                      },
-                      {
-                        name: "Ultimi 7 giorni",
-                        value: "last7",
-                      },
-                      {
-                        name: "Ultimi 30 giorni",
-                        value: "last30",
-                      },
-                      {
-                        name: "Questo mese",
-                        value: "thisMonth",
-                      },
-                      {
-                        name: "Questo'anno",
-                        value: "thisYear",
-                      },
-                    ],
+                    items: DATE_PRESETS,
                   },
                 ]}
               />
@@ -146,7 +122,7 @@ export default function CustomersStats() {
           table={table}
           totalCount={table.getFilteredRowModel().rows.length + " clienti totali"}
         />
-        
+
         <GoBack path="/home" />
       </div>
     </div>

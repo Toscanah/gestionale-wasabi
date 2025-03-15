@@ -1,15 +1,15 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { SelectionProps } from "../Section";
+import { SelectionProps, WeekdaysOrDateChoice } from "../Section";
 import { Label } from "@/components/ui/label";
 
-export default function WeekdaysOrDateToggle<T extends string | undefined>({
+export default function WeekdaysOrDateToggle({
   selection: choice,
   dispatch,
-}: SelectionProps<T>) {
+}: SelectionProps<WeekdaysOrDateChoice>) {
   return (
     <RadioGroup
       value={choice}
-      onValueChange={(newChoice) => dispatch({ type: "SET_MAIN_CHOICE", payload: newChoice as T })}
+      onValueChange={(newChoice) => dispatch({ type: "SET_MAIN_CHOICE", payload: newChoice })}
       className="w-1/2 flex gap-4 items-center"
     >
       <div className="flex gap-2 items-center">
