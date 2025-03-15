@@ -3,6 +3,7 @@ import { AnyOrder } from "../../models";
 import { OrderType } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import sectionReducer, { initialState } from "./sectionReducer";
+import { isSameDay } from "date-fns";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -81,11 +82,7 @@ export default function useOrdersStats(orders: AnyOrder[]) {
       const specificDate = new Date(state.specificDate);
       return orders.filter((order) => {
         const orderDate = new Date(order.created_at);
-        return (
-          orderDate.getFullYear() === specificDate.getFullYear() &&
-          orderDate.getMonth() === specificDate.getMonth() &&
-          orderDate.getDate() === specificDate.getDate()
-        );
+        return isSameDay(orderDate, specificDate);
       });
     }
 

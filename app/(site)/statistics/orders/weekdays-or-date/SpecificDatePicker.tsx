@@ -7,8 +7,11 @@ export default function SpecificDatePicker({
 }: SelectionProps<Date | undefined>) {
   return (
     <Calendar
-      date={specificDate}
-      handleDateSelect={(newDate) => dispatch({ type: "SET_SPECIFIC_DATE", payload: newDate })}
+      mode="single"
+      dateFilter={specificDate}
+      handleDateFilter={(newDate) =>
+        dispatch({ type: "SET_SPECIFIC_DATE", payload: newDate as Date })
+      }
     />
   );
 }

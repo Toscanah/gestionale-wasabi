@@ -1,13 +1,10 @@
 import { DateRange } from "react-day-picker";
 import { SelectionProps, WeekdaysSelection } from "../Section";
-import CalendarRange from "@/app/(site)/components/calendar/CalendarRange";
+import Calendar from "@/app/(site)/components/calendar/Calendar";
 import { DATE_PRESETS, DatePreset } from "@/app/(site)/enums/DatePreset";
 import { endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, subDays } from "date-fns";
 
-export default function RangeSelection({
-  selection,
-  dispatch,
-}: SelectionProps<WeekdaysSelection>) {
+export default function RangeSelection({ selection, dispatch }: SelectionProps<WeekdaysSelection>) {
   const handlePresetSelect = (value: DatePreset) => {
     const today = new Date();
     let newRange: DateRange;
@@ -43,14 +40,15 @@ export default function RangeSelection({
   };
 
   return (
-    <CalendarRange
+    <Calendar
+      mode="range"
       dateFilter={selection.type == "range" ? selection.range : undefined}
       presets={DATE_PRESETS}
       handlePresetSelection={(newRange) => handlePresetSelect(newRange as DatePreset)}
       handleDateFilter={(newRange) =>
         dispatch({
           type: "SET_WEEKDAYS_SELECTION",
-          payload: { range: newRange },
+          payload: { range: newRange as DateRange },
         })
       }
     />

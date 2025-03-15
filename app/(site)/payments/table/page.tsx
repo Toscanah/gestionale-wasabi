@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
 import getTable from "../../functions/util/getTable";
@@ -41,12 +41,7 @@ export default function PaymentsTable() {
     if (date) {
       const filtered = allOrders.filter((order) => {
         const orderDate = new Date(order.created_at);
-
-        return (
-          orderDate.getFullYear() === date.getFullYear() &&
-          orderDate.getMonth() === date.getMonth() &&
-          orderDate.getDate() === date.getDate()
-        );
+        return isSameDay(orderDate, date);
       });
       setFilteredOrders(filtered);
     }
