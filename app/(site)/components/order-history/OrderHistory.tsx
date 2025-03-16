@@ -22,10 +22,8 @@ type ProductStats = {
 export type OrderStats = {
   mostBoughtProduct: ProductStats | undefined;
   leastBoughtProduct: ProductStats | undefined;
-  // avgOrdersPerWeek: number;
-  // avgOrdersPerMonth: number;
-  // avgOrdersPerYear: number;
-  // avgOrderCost: number;
+  totalSpent: number;
+  avgOrderCost: number;
 };
 
 interface OrderHistoryProps {
@@ -47,6 +45,8 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
   const [stats, setStats] = useState<OrderStats>({
     mostBoughtProduct: undefined,
     leastBoughtProduct: undefined,
+    totalSpent: 0,
+    avgOrderCost: 0,
   });
 
   const allOrders = useMemo(
@@ -80,9 +80,17 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
     const mostBoughtProduct = sortedProducts[0];
     const leastBoughtProduct = sortedProducts[sortedProducts.length - 1];
 
+    const totalSpent = allOrders.reduce(
+      (sum, order) => sum + applyDiscount(order.order.total, order.order.discount),
+      0
+    );
+    const avgOrderCost = totalSpent / allOrders.length;
+
     setStats({
       mostBoughtProduct,
       leastBoughtProduct,
+      totalSpent,
+      avgOrderCost,
     });
   }, [allOrders]);
 

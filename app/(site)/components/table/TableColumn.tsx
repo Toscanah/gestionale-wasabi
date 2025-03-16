@@ -52,11 +52,25 @@ export default function TableColumn<T>({
     ...(joinOptions
       ? {
           accessorFn: (original) => joinItemsWithComma(original, joinOptions.key),
+          sortingFn: "alphanumeric",
         }
       : accessorKey
       ? {
-          accessorFn: (original) => getNestedValue<T>(original, accessorKey) ,
-          sortingFn: "text"
+          accessorFn: (original) => getNestedValue<T>(original, accessorKey),
+          sortingFn: "alphanumeric",
+        }
+      : cellContent
+      ? {
+          accessorFn: (original) => {
+            try {
+              // Extracting the raw value from the row
+              const content = cellContent({ original } as Row<T>);
+              return typeof content === "string" ? content : String(content);
+            } catch {
+              return "";
+            }
+          },
+          sortingFn: "alphanumeric",
         }
       : {}),
 
@@ -97,5 +111,6 @@ export default function TableColumn<T>({
     },
 
     filterFn: "includesString",
+    enableSorting: sortable,
   };
 }

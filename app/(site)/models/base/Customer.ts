@@ -2,7 +2,6 @@ import { AddressSchema, CustomerSchema, PhoneSchema } from "@/prisma/generated/z
 import { z } from "zod";
 import {
   HomeOrderWithOrderSchema,
-  MarketingOnCustomerWithMarketingSchema,
   PickupOrderWithOrderSchema,
 } from "./..";
 
@@ -14,7 +13,7 @@ export const CustomerWithAddressesAndOrdersSchema = CustomerSchema.extend({
 });
 
 export const CustomerWithMarketing = CustomerWithAddressesAndOrdersSchema.extend({
-  marketings: z.array(MarketingOnCustomerWithMarketingSchema),
+  // marketings: z.array(MarketingOnCustomerWithMarketingSchema),
 });
 
 export const CustomerWithPhoneSchema = CustomerSchema.extend({

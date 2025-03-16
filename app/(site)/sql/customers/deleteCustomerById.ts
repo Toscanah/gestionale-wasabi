@@ -42,15 +42,15 @@ export default async function deleteCustomerById(id: number) {
     await tx.pickupOrder.deleteMany({ where: { customer_id: id } });
     await tx.address.deleteMany({ where: { customer_id: id } });
 
-    const marketings = await tx.marketingOnCustomer.findMany({
-      where: { customer_id: id },
-    });
+    // const marketings = await tx.marketingOnCustomer.findMany({
+    //   where: { customer_id: id },
+    // });
 
-    if (marketings.length > 0) {
-      await tx.marketingOnCustomer.deleteMany({
-        where: { customer_id: id },
-      });
-    }
+    // if (marketings.length > 0) {
+    //   await tx.marketingOnCustomer.deleteMany({
+    //     where: { customer_id: id },
+    //   });
+    // }
 
     const deletedCustomer = await tx.customer.delete({
       where: { id: customer.id },

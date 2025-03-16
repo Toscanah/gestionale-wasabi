@@ -12,7 +12,7 @@ import PaymentSection from "./sections/PaymentSection";
 import RiceSection from "./sections/RiceSection";
 import Footer from "./Footer";
 import SettingsSection from "./sections/SettingsSection";
-import MarketingSection from "./sections/MarketingSection";
+// import MarketingSection from "./sections/MarketingSection.tsx.disabled";
 import { Fragment } from "react";
 
 type SidebarSection = {

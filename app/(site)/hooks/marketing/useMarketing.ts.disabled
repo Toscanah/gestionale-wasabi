@@ -50,15 +50,15 @@ export default function useMarketing() {
   };
 
   const fetchMarketingTemplates = () => {
-    fetchRequest<MarketingTemplate[]>(
-      "GET",
-      "/api/marketing",
-      "getMarketingTemplates"
-    ).then((templates) => {
-      setMarketingTemplates(templates);
-      setActiveTemplates(templates);
-      setSelectedTemplate(templates[0]);
-    });
+    // fetchRequest<MarketingTemplate[]>(
+    //   "GET",
+    //   "/api/marketing",
+    //   "getMarketingTemplates"
+    // ).then((templates) => {
+    //   setMarketingTemplates(templates);
+    //   setActiveTemplates(templates);
+    //   setSelectedTemplate(templates[0]);
+    // });
   };
 
   const onLeftTableRowClick = (customer: CustomerWithMarketing) => {

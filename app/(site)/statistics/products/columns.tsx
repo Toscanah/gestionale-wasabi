@@ -34,6 +34,7 @@ const columns: ColumnDef<ProductWithStats>[] = [
 
   TableColumn({
     header: "Altro",
+    sortable: false,
     cellContent: (row) =>
       (row.original.category?.options || []).length > 0 && (
         <DialogWrapper

@@ -12,8 +12,8 @@ export default function HistoryStats({ stats }: HistoryStatsProps) {
       <table className="table-auto w-full text-left">
         <tbody>
           <tr>
-            <td className="text-lg ">Prodotto più acquistato</td>
-            <td className="text-lg ">
+            <td className="text-lg">Prodotto più acquistato</td>
+            <td className="text-lg">
               {stats.mostBoughtProduct
                 ? `${stats.mostBoughtProduct.desc} (${stats.mostBoughtProduct.quantity} volte)`
                 : "Nessun prodotto"}
@@ -21,28 +21,20 @@ export default function HistoryStats({ stats }: HistoryStatsProps) {
           </tr>
           <tr>
             <td className="text-lg">Prodotto meno acquistato</td>
-            <td className="text-lg ">
+            <td className="text-lg">
               {stats.leastBoughtProduct
                 ? `${stats.leastBoughtProduct.desc} (${stats.leastBoughtProduct.quantity} volte)`
                 : "Nessun prodotto"}
             </td>
           </tr>
-          {/* <tr>
-            <td className="text-lg ">Frequenza ordini alla settimana</td>
-            <td className="text-lg ">{roundToTwo(stats.avgOrdersPerWeek)}</td>
+          <tr>
+            <td className="text-lg">Costo medio ordine</td>
+            <td className="text-lg">€ {roundToTwo(stats.avgOrderCost)}</td>
           </tr>
           <tr>
-            <td className="text-lg ">Frequenza ordini al mese</td>
-            <td className="text-lg ">{roundToTwo(stats.avgOrdersPerMonth)}</td>
+            <td className="text-lg">Spesa totale</td>
+            <td className="text-lg">€ {roundToTwo(stats.totalSpent)}</td>
           </tr>
-          <tr>
-            <td className="text-lg">Frequenza ordini all'anno</td>
-            <td className="text-lg">{roundToTwo(stats.avgOrdersPerYear)}</td>
-          </tr>
-          <tr>
-            <td className="text-lg ">Costo medio ordine</td>
-            <td className="text-lg ">€ {roundToTwo(stats.avgOrderCost)}</td>
-          </tr> */}
         </tbody>
       </table>
     </AccordionContent>

@@ -14,7 +14,7 @@ import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import handleRequest from "../util/handleRequest";
 import deleteCustomerById from "../../sql/customers/deleteCustomerById";
 import getCustomersWithStats from "../../sql/customers/getCustomersWithStats";
-import getCustomersWithMarketing from "../../sql/customers/getCustomersWithMarketing";
+// import getCustomersWithMarketing from "../../sql/customers/getCustomersWithMarketing.ts.disabled";
 
 export const customerSchemas = {
   getCustomerByPhone: z.object({ phone: z.string() }),
@@ -87,10 +87,10 @@ const GET_ACTIONS = new Map([
     "getCustomersWithStats",
     { func: getCustomersWithStats, schema: customerSchemas.getCustomersWithStats },
   ],
-  [
-    "getCustomersWithMarketing",
-    { func: getCustomersWithMarketing, schema: customerSchemas.getCustomersWithMarketing },
-  ],
+  // [
+  //   "getCustomersWithMarketing",
+  //   { func: getCustomersWithMarketing, schema: customerSchemas.getCustomersWithMarketing },
+  // ],
 ]);
 
 export async function POST(request: NextRequest) {

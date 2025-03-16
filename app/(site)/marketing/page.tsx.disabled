@@ -6,8 +6,8 @@ import { ArrowRight } from "lucide-react";
 import EmailSender from "./EmailSender";
 import TemplateFilter from "./filters/TemplateFilter";
 import WeekFilter from "./filters/WeekFilter";
-import useMarketing from "../hooks/marketing/useMarketing";
-import TemplateSelection from "./TemplateSelection";
+import useMarketing from "../hooks/marketing/useMarketing.ts..disabled";
+import TemplateSelection from "./TemplateSelection.tsx.disabled";
 import columns from "./columns/columns";
 import GoBack from "../components/ui/GoBack";
 
