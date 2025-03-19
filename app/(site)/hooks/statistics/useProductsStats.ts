@@ -46,11 +46,15 @@ export default function useProductsStats() {
   }, [timeFilter, dateFilter]);
 
   useEffect(() => {
-    setFilteredProducts(() =>
-      selectedCategory.id === -1
-        ? products
-        : products.filter((product) => product.category_id === selectedCategory.id)
-    );
+    if (timeFilter === TimeFilter.CUSTOM && dateFilter?.from && dateFilter?.to) {
+      fetchProductsWithFilter(timeFilter, { ...dateFilter });
+    } else {
+      setFilteredProducts(
+        selectedCategory.id === -1
+          ? products
+          : products.filter((product) => product.category_id === selectedCategory.id)
+      );
+    }
   }, [selectedCategory]);
 
   const fetchCategories = () =>
@@ -89,7 +93,7 @@ export default function useProductsStats() {
   const handleReset = () => {
     setTimeFilter(TimeFilter.ALL);
     setDateFilter(defaultDate);
-    setSelectedCategory(allCategories)
+    setSelectedCategory(allCategories);
     fetchInitialProducts();
   };
 

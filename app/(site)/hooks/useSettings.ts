@@ -12,9 +12,9 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
   kitchenOffset: 20,
   whenSelectorGap: 5,
   selectedPrinter: PREDEFINED_PRINTERS[0],
-  orderProcessingHours: {
-    lunch: { open: "11:00", close: "14:30" },
-    dinner: { open: "17:30", close: "22:30" },
+  businessHours: {
+    lunch: { opening: "11:00", closing: "14:30" },
+    dinner: { opening: "17:30", closing: "22:30" },
   },
 };
 

@@ -1,16 +1,14 @@
 const { app, BrowserWindow, screen } = require("electron");
 const path = require("path");
 const { exec } = require("child_process");
+const fs = require("fs");
 
 let mainWindow;
-let secondWindow;
 
-const createWindows = () => {
+function createWindows() {
   const displays = screen.getAllDisplays();
   const primaryDisplay = screen.getPrimaryDisplay();
-  const secondaryDisplay = displays.find((d) => d.id !== primaryDisplay.id);
 
-  // Create the main window on the primary monitor
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
@@ -22,19 +20,41 @@ const createWindows = () => {
   });
 
   mainWindow.webContents.session.setDevicePermissionHandler((details) => {
-    if (details.deviceType === "serial") {
-      return true;
-    }
-    return false;
+    return details.deviceType === "serial";
   });
 
   mainWindow.loadURL("http://localhost:3000");
   mainWindow.maximize();
-};
+}
 
-const runBackup = () => {
+/**
+ * Executes a command in a Promise-based way
+ * @param {string} command - The command to execute
+ * @returns {Promise<string>}
+ */
+function executeCommand(command, options = {}) {
+  return new Promise((resolve, reject) => {
+    exec(command, options, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`[ERRORE] ${stderr}`);
+        reject(stderr);
+      } else {
+        console.log(`[SUCCESSO] ${stdout}`);
+        resolve(stdout);
+      }
+    });
+  });
+}
+
+/**
+ * Runs the backup script asynchronously.
+ * @returns {Promise<void>}
+ */
+async function runBackup() {
+  console.log("[INFO] Avvio del backup del database.");
+
   const isPackaged = app.isPackaged;
-  let fullPath = isPackaged ? path.dirname(app.getPath("exe")) : __dirname;
+  const fullPath = isPackaged ? path.dirname(app.getPath("exe")) : __dirname;
 
   const projectRoot = fullPath
     .split(path.sep)
@@ -43,41 +63,64 @@ const runBackup = () => {
   const backupScript = path.join(projectRoot, "scripts", "Backup-Database.ps1");
   const backupDir = path.dirname(backupScript);
 
-  exec(
-    `start powershell -ExecutionPolicy Bypass -Command "& { $host.UI.RawUI.BackgroundColor = 'Black'; Clear-Host; & '${backupScript}' }"`,
-    {
+  try {
+    await executeCommand(`powershell -ExecutionPolicy Bypass -File "${backupScript}"`, {
       cwd: backupDir,
-      detached: true,
-      stdio: "ignore",
-    }
-  );
-};
+    });
+    console.log("[SUCCESSO] Backup completato con successo.");
+  } catch {
+    console.warn("[WARN] Il backup del database potrebbe non essere stato completato.");
+  }
+}
 
-const closeCmdProcesses = () => {
-  // Run taskkill to close all CMD/PowerShell windows
-  exec("taskkill /F /IM cmd.exe /T", (err, stdout, stderr) => {
-    if (err) {
-      console.error(`Error killing CMD processes: ${stderr}`);
-    } else {
-      console.log(`Successfully killed CMD processes: ${stdout}`);
-    }
-  });
+/**
+ * Stops the server gracefully by freeing port 3000 and killing the process
+ * @returns {Promise<void>}
+ */
+async function killServer() {
+  console.log("[INFO] Arresto del server Next.js");
 
-  exec("taskkill /F /IM powershell.exe /T", (err, stdout, stderr) => {
-    if (err) {
-      console.error(`Error killing PowerShell processes: ${stderr}`);
-    } else {
-      console.log(`Successfully killed PowerShell processes: ${stdout}`);
-    }
-  });
-};
+  const projectRoot = path.join(__dirname, "..");
+  const pidFile = path.join(projectRoot, "gestionale-wasabi", "scripts", "server.pid");
 
-app.on("window-all-closed", () => {
+  if (!fs.existsSync(pidFile)) {
+    console.log("[ERRORE] Il file PID non esiste:", pidFile);
+    return;
+  }
+
+  const pid = fs.readFileSync(pidFile, "utf8").trim();
+
+  if (!pid || isNaN(pid)) {
+    console.log("[ERRORE] PID non valido:", pid);
+    return;
+  }
+
+  console.log(`[INFO] Arresto del server sulla porta 3000 e con PID: ${pid}`);
+
+  try {
+    await executeCommand("npx kill-port 3000");
+    console.log("[SUCCESSO] Porta 3000 liberata.");
+  } catch {
+    console.warn("[WARN] Impossibile liberare la porta 3000. Potrebbe non essere in uso.");
+  }
+
+  try {
+    await executeCommand(`taskkill /F /PID ${pid}`);
+    console.log("[SUCCESSO] Server terminato correttamente.");
+    fs.unlinkSync(pidFile); // Remove PID file after termination
+  } catch {
+    console.warn("[WARN] Impossibile terminare il server. Potrebbe essere già chiuso.");
+  }
+}
+
+app.on("window-all-closed", async () => {
   if (process.platform !== "darwin") {
-    runBackup();
-    setTimeout(() => {
-      closeCmdProcesses();
-    }, 10 * 1000);
+    console.log("[INFO] Chiusura dell'applicazione in corso...");
+
+    await runBackup(); // Ensure backup completes before killing server
+    await killServer(); // Ensure server is killed before quitting
+
+    console.log("[INFO] Chiusura dell'applicazione dopo il completamento dei processi.");
     app.quit();
   }
 });

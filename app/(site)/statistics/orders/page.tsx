@@ -48,13 +48,13 @@ export default function OrdersStats() {
           Aggiungi sezione
         </Button>
 
-        <Button
+        {/* <Button
           onClick={clearSections}
           variant={"link"}
           className={sections.length > 1 ? "block" : "invisible"}
         >
           Cancella tutte
-        </Button>
+        </Button> */}
       </div>
 
       <Flipper

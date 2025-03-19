@@ -28,7 +28,8 @@
     "lint": "next lint",
     "build": "next build && electron-builder build --win --x64 --dir --publish never",
     "start": "next start",
-    "electron": "electron .",
+    "stop": "pkill --signal SIGINT myApp",
+    "electron": "set ELECTRON_ENABLE_LOGGING=true && set ELECTRON_DEBUG=1 && electron .",
     "dist": "electron-builder"
   },
   "dependencies": {

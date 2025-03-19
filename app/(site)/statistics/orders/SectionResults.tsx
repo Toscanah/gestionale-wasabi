@@ -7,6 +7,7 @@ interface SectionResultsProps {
   pickupOrders: number;
   tableOrders: number;
   totalRiceConsumed: number;
+  // avgPerHour: number;
 }
 
 export default function SectionResults({
@@ -14,12 +15,13 @@ export default function SectionResults({
   pickupOrders,
   tableOrders,
   totalRiceConsumed,
+  // avgPerHour,
 }: SectionResultsProps) {
   return (
     <>
       <Separator orientation="horizontal" />
 
-      <table className="w-[20rem]">
+      <table className="w-[20rem] text-lg">
         <tbody>
           <tr>
             <td className="py-2">Ordini domicilio</td>

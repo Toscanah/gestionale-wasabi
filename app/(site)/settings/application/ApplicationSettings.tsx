@@ -45,7 +45,7 @@ export default function ApplicationSettings() {
         </div>
       </div>
 
-      <div className="flex gap-6">
+      {/* <div className="flex gap-6">
         <div className="space-y-2 w-full">
           <Label htmlFor="">Primo ordine pranzo</Label>
           <TimePicker
@@ -97,7 +97,7 @@ export default function ApplicationSettings() {
             }
           />
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

@@ -29,18 +29,33 @@ function Update-Dependencies {
     & npm run build
 }
 
+function Test-Server-Running {
+    try {
+        $response = Invoke-WebRequest -Uri "http://localhost:3000" -UseBasicParsing -ErrorAction Stop
+        return $response.StatusCode -eq 200
+    }
+    catch {
+        return $false
+    }
+}
+
 function Start-Server {
+    if (Test-Server-Running) {
+        Write-Host "[INFO] Il server e' gia' avviato" -ForegroundColor Magenta
+        return
+    }
+
     Write-Host "`n[INFO] Avvio il server locale" -ForegroundColor Magenta
 
     if ($OS -eq "Windows") {
-        Start-Process -WindowStyle Minimized -FilePath "cmd.exe" -ArgumentList "/k npm run start"
+        $serverProcess = Start-Process -WindowStyle Minimized -FilePath "cmd.exe" -ArgumentList "/k npm run start" -PassThru
+        $serverProcess.Id | Set-Content "$PSScriptRoot\server.pid"
     }
     else {
-        osascript -e "tell application \"Terminal\" to do script \"cd '$(Get-Location)'; npm run start\""
+        Write-Host "TODO: MacOS later"
     }
-    # else {
-    #     osascript -e 'tell application "Terminal" to do script "cd $(pwd) && npm run start"'
-    # }
+
+    Wait-Server
 }
 
 function Wait-Server {
@@ -71,20 +86,10 @@ function Wait-Server {
 }
 
 function Start-App {
-    Write-Host "[INFO] Apro l'app desktop" -ForegroundColor Magenta
+    Write-Host "[INFO] Avvio App Desktop" -ForegroundColor Magenta
 
     Push-Location ..
-    $appPath = Join-Path "dist" "win-unpacked"
-    Set-Location $appPath
-
-    if (Test-Path "gestionale-wasabi.exe") {
-        Start-Process "gestionale-wasabi.exe"
-        Write-Host "[SUCCESSO] Applicazione avviata con successo" -ForegroundColor Green
-    }
-    else {
-        Write-Host "[ERRORE] File gestionale-wasabi.exe non trovato" -ForegroundColor Red
-    }
-
+    & npm run electron
     Pop-Location
 }
 
@@ -93,7 +98,6 @@ if ($Mode -eq "b") {
 }
 
 Start-Server
-Wait-Server
 Start-App
 
 Write-Host "`n[SUCCESSO] Processo completato." -ForegroundColor Green

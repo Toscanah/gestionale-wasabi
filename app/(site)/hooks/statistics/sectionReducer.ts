@@ -41,7 +41,7 @@ const updateFunctions: UpdateFunctions = {
 
   SET_WEEKDAYS: (state, payload) => ({
     ...state,
-    weekdays: [...(state.weekdays || []), ...payload],
+    weekdays: payload,
   }),
 
   SET_WEEKDAYS_SELECTION: (state, payload) => ({

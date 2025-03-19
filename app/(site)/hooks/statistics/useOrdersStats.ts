@@ -4,6 +4,7 @@ import { OrderType } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import sectionReducer, { initialState } from "./sectionReducer";
 import { isSameDay } from "date-fns";
+import useSettings from "../useSettings";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -29,15 +30,18 @@ type Results = {
   pickupOrders: number;
   tableOrders: number;
   totalRiceConsumed: number;
+  // avgPerHour: number;
 };
 
 export default function useOrdersStats(orders: AnyOrder[]) {
+  const { settings } = useSettings();
   const [state, dispatch] = useReducer(sectionReducer, initialState);
   const [filteredResults, setFilteredResults] = useState<Results>({
     homeOrders: 0,
     pickupOrders: 0,
     tableOrders: 0,
     totalRiceConsumed: 0,
+    // avgPerHour: 0,
   });
 
   const weekdayMap = {
@@ -93,10 +97,15 @@ export default function useOrdersStats(orders: AnyOrder[]) {
     if (!state.time) return orders;
 
     if (state.time.type === "shift") {
-      const lunchStart = 10.5,
-        lunchEnd = 14.5;
-      const dinnerStart = 17.5,
-        dinnerEnd = 22.5;
+      const timeToDecimal = (time: string): number => {
+        const [hours, minutes] = time.split(":").map(Number); // Split the time into hours and minutes and convert to numbers
+        return hours + minutes / 60; // Convert to decimal (e.g., 12:30 becomes 12.5)
+      };
+
+      const lunchStart = timeToDecimal(settings.businessHours.lunch.opening);
+      const lunchEnd = timeToDecimal(settings.businessHours.lunch.closing);
+      const dinnerStart = timeToDecimal(settings.businessHours.dinner.opening);
+      const dinnerEnd = timeToDecimal(settings.businessHours.dinner.closing);
 
       return orders.filter((order) => {
         const orderHour = new Date(order.created_at).getHours();
@@ -130,17 +139,25 @@ export default function useOrdersStats(orders: AnyOrder[]) {
     return orders;
   };
 
-  const calculateResults = (orders: AnyOrder[]) => ({
-    homeOrders: orders.filter((order) => order.type === OrderType.HOME).length,
-    pickupOrders: orders.filter((order) => order.type === OrderType.PICKUP).length,
-    tableOrders: orders.filter((order) => order.type === OrderType.TABLE).length,
-    totalRiceConsumed: orders.reduce(
+  const calculateResults = (orders: AnyOrder[]) => {
+    const homeOrders = orders.filter((order) => order.type === OrderType.HOME).length;
+    const pickupOrders = orders.filter((order) => order.type === OrderType.PICKUP).length;
+    const tableOrders = orders.filter((order) => order.type === OrderType.TABLE).length;
+    const totalRiceConsumed = orders.reduce(
       (sum, order) =>
         sum +
         order.products.reduce((prodSum, product) => prodSum + (product.rice_quantity || 0), 0),
       0
-    ),
-  });
+    );
+
+    return {
+      homeOrders,
+      pickupOrders,
+      tableOrders,
+      totalRiceConsumed,
+      // avgPerHour: 0, // Uncomment if avgPerHour is needed
+    };
+  };
 
   const applyFilters = () => {
     let filteredOrders = [...orders];

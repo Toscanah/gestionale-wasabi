@@ -1,5 +1,5 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
-import { SummaryData } from "../../payments/table/PrintSummary";
+import { SummaryData } from "../../payments/history/PrintSummary";
 import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";

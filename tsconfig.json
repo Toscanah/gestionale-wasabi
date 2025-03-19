@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "checkJs": true,
@@ -25,9 +21,7 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
@@ -37,8 +31,6 @@
     ".next/types/**/*.ts",
     "app/(site)/backend/categories/.CategoryDialog.tsx",
     "build/types/**/*.ts"
-, "app/(site)/api/extra-items-socket.js", "app/(site)/hooks/marketing/useMarketing.ts..disabled", "app/(site)/marketing/TemplateSelection.tsx.disabled", "app/(site)/marketing/EmailSender.tsx.di, "app/(site)/marketing/templates/components/MarketingInputFields.tsx.disabled", "app/(site)/marketing/templates/AddMarketingTemplate.tsx.disabled", "app/(site)/marketing/templates/columns.tsx.disabled", "app/(site)/marketing/templates/Marketin, "app/(site)/marketing/columns/PrevMarketings.tsx.disabled", "app/(site)/marketing/columns/columns.tsx.disabled", "app/(site)/marketing/filters/WeekFilter.tsx.disabled", "app/(site)/marketing/filters/TemplateFilter.tsx.disabled"gTemplatesDialog.tsx.disabled"sabled", "app/(site)/marketing/page.tsx.disabled", "app/(site)/components/sidebar/sections/MarketingSection.tsx.disabled", "app/(site)/sql/customers/getCustomersWithMarketing.ts.disabled"  ],
-  "exclude": [
-    "node_modules"
-  ]
+  ],
+  "exclude": ["node_modules"]
 }

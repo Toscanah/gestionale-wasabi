@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { AnyOrder, OrderWithPayments } from "@/app/(site)/models";
+import { AnyOrder, HomeOrder, OrderWithPayments } from "@/app/(site)/models";
 import { Badge } from "@/components/ui/badge";
-import { OrderType } from "@prisma/client";
+import { OrderType, QuickPaymentOption } from "@prisma/client";
 import applyDiscount from "../../functions/order-management/applyDiscount";
 import DialogWrapper from "../../components/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
@@ -102,7 +102,14 @@ const columns: ColumnDef<OrderWithPayments>[] = [
             variant: "allProducts",
           });
 
-          await print(() => OrderReceipt<typeof order>(order, "UNKNOWN", false, true));
+          let quickPayment: QuickPaymentOption = QuickPaymentOption.UNKNOWN;
+
+          if (order.type == OrderType.HOME) {
+            const parsedOrder = order as HomeOrder;
+            quickPayment = parsedOrder.home_order?.payment || QuickPaymentOption.UNKNOWN;
+          }
+
+          await print(() => OrderReceipt<typeof order>(order, quickPayment, true, true));
         }}
       >
         Stampa

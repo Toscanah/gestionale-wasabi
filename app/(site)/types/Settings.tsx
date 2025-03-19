@@ -1,6 +1,16 @@
 import { Printer } from "../settings/application/PrinterChoice";
 
-export type BusinessTime  = `${string}:${string}`;
+type BusinessTime = `${string}:${string}`;
+
+type BusinessShift = {
+  opening: BusinessTime;
+  closing: BusinessTime;
+};
+
+export type BusinessHours = {
+  lunch: BusinessShift;
+  dinner: BusinessShift;
+};
 
 export type RestaurantSettings = {
   name: string;
@@ -9,16 +19,13 @@ export type RestaurantSettings = {
   telNumber: string;
   cellNumber: string;
   pIva: string;
+  businessHours: BusinessHours;
 };
 
 export type ApplicationSettings = {
   whenSelectorGap: number;
   selectedPrinter: Printer;
   kitchenOffset: number;
-  orderProcessingHours: {
-    lunch: { open: BusinessTime ; close: BusinessTime  };
-    dinner: { open: BusinessTime ; close: BusinessTime  };
-  };
 };
 
 export type GlobalSettings = RestaurantSettings & ApplicationSettings;
