@@ -13,8 +13,8 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
   whenSelectorGap: 5,
   selectedPrinter: PREDEFINED_PRINTERS[0],
   businessHours: {
-    lunch: { opening: "11:00", closing: "14:30" },
-    dinner: { opening: "17:30", closing: "22:30" },
+    lunch: { opening: "12:00", closing: "14:30" },
+    dinner: { opening: "18:30", closing: "22:30" },
   },
 };
 
@@ -51,5 +51,5 @@ export default function useSettings() {
 
   useEffect(getSettings, []);
 
-  return { settings, updateSettings };
+  return { settings, updateSettings, getSettings };
 }

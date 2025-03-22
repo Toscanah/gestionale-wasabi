@@ -10,9 +10,10 @@ import { ClockIcon } from "lucide-react";
 interface TimePickerProps {
   value: string | undefined;
   onValueChange: (newTime: string) => void;
+  disabled?: boolean;
 }
 
-export default function TimePicker({ value, onValueChange }: TimePickerProps) {
+export default function TimePicker({ value, onValueChange, disabled = false }: TimePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const hoursArray = Array.from({ length: 24 }, (_, i) => i);
@@ -29,9 +30,9 @@ export default function TimePicker({ value, onValueChange }: TimePickerProps) {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="w-full flex justify-between">
+        <Button variant="outline" className="w-full flex justify-between" disabled={disabled}>
           <ClockIcon className="mr-2 h-4 w-4" />
-          {value || "Seleziona orario"}
+          {value || "seleziona orario"}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
