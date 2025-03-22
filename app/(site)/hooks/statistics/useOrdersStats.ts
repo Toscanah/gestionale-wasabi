@@ -102,10 +102,15 @@ export default function useOrdersStats(orders: AnyOrder[]) {
         return hours + minutes / 60; // Convert to decimal (e.g., 12:30 becomes 12.5)
       };
 
-      const lunchStart = timeToDecimal(settings.businessHours.lunch.opening);
-      const lunchEnd = timeToDecimal(settings.businessHours.lunch.closing);
-      const dinnerStart = timeToDecimal(settings.businessHours.dinner.opening);
-      const dinnerEnd = timeToDecimal(settings.businessHours.dinner.closing);
+      // const lunchStart = timeToDecimal(settings.businessHours.lunch.opening);
+      // const lunchEnd = timeToDecimal(settings.businessHours.lunch.closing);
+      // const dinnerStart = timeToDecimal(settings.businessHours.dinner.opening);
+      // const dinnerEnd = timeToDecimal(settings.businessHours.dinner.closing);
+
+      const lunchStart = 0;
+      const lunchEnd = 24;
+      const dinnerStart = 0;
+      const dinnerEnd = 24;
 
       return orders.filter((order) => {
         const orderHour = new Date(order.created_at).getHours();
