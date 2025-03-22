@@ -12,6 +12,12 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Shift {
+    UNSPECIFIED
+    LUNCH
+    DINNER
+}
+
 enum OrderType {
     TABLE
     HOME
@@ -80,6 +86,7 @@ model Order {
     total              Float                @default(0)
     discount           Float                @default(0)
     is_receipt_printed Boolean              @default(false)
+    shift              Shift                @default(UNSPECIFIED)
     soups              Int?
     salads             Int?
     rices              Int?
