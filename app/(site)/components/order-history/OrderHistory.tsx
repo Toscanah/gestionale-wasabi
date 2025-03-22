@@ -36,8 +36,18 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
   const [selectedProducts, setSelectedProducts] = useState<ProductInOrder[]>([]);
   const orderTypes = useMemo(
     () => [
-      { type: "Domicilio", orders: customer.home_orders },
-      { type: "Asporto", orders: customer.pickup_orders },
+      {
+        type: "Domicilio",
+        orders: customer.home_orders.filter(
+          (order) => order.order.total > 0 && order.order.state === "PAID"
+        ),
+      },
+      {
+        type: "Asporto",
+        orders: customer.pickup_orders.filter(
+          (order) => order.order.total > 0 && order.order.state === "PAID"
+        ),
+      },
     ],
     [customer]
   );
@@ -50,7 +60,10 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
   });
 
   const allOrders = useMemo(
-    () => [...customer.home_orders, ...customer.pickup_orders],
+    () =>
+      [...customer.home_orders, ...customer.pickup_orders].filter(
+        (order) => order.order.total > 0 && order.order.state === "PAID"
+      ),
     [customer.home_orders, customer.pickup_orders]
   );
 
