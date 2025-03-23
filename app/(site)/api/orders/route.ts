@@ -7,7 +7,7 @@ import updateOrderTime from "../../sql/orders/updateOrderTime";
 import cancelOrder from "../../sql/orders/cancelOrder";
 import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 import updateDiscount from "../../sql/orders/updateDiscount";
-import { OrderType, QuickPaymentOption, Shift } from "@prisma/client";
+import { OrderType, QuickPaymentOption, WorkingShift } from "@prisma/client";
 import createSubOrder from "../../sql/orders/createSubOrder";
 import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 import deleteOrdersInBulk from "../../sql/orders/deleteOrdersInBulk";
@@ -90,7 +90,7 @@ export const orderSchemas = {
   }),
   updateOrderShift: z.object({
     orderId: z.number(),
-    shift: z.nativeEnum(Shift),
+    shift: z.nativeEnum(WorkingShift),
   }),
   fixOrdersShift: NoContentSchema,
 };

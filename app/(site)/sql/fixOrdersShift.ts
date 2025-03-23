@@ -1,4 +1,4 @@
-import { PrismaClient, Shift } from "@prisma/client";
+import { PrismaClient, WorkingShift } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -12,23 +12,23 @@ const timeToDecimal = (time: string): number => {
   return hours + minutes / 60;
 };
 
-const inferShiftFromWhen = (when: string | null | undefined): Shift => {
-  if (!when || when.toLowerCase() === "immediate") return Shift.UNSPECIFIED;
+const inferShiftFromWhen = (when: string | null | undefined): WorkingShift => {
+  if (!when || when.toLowerCase() === "immediate") return WorkingShift.UNSPECIFIED;
 
   try {
     const time = timeToDecimal(when);
-    if (time >= LUNCH_START && time < LUNCH_END) return Shift.LUNCH;
-    if (time >= DINNER_START && time < DINNER_END) return Shift.DINNER;
-    return Shift.UNSPECIFIED;
+    if (time >= LUNCH_START && time < LUNCH_END) return WorkingShift.LUNCH;
+    if (time >= DINNER_START && time < DINNER_END) return WorkingShift.DINNER;
+    return WorkingShift.UNSPECIFIED;
   } catch {
-    return Shift.UNSPECIFIED;
+    return WorkingShift.UNSPECIFIED;
   }
 };
 
 export async function fixOrdersShift() {
   const orders = await prisma.order.findMany({
     where: {
-      shift: Shift.UNSPECIFIED,
+      shift: WorkingShift.UNSPECIFIED,
       OR: [{ home_order: { isNot: null } }, { pickup_order: { isNot: null } }],
     },
     include: {

@@ -3,13 +3,13 @@ import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/functions/util/toast";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Shift } from "@prisma/client";
+import { WorkingShift } from "@prisma/client";
 
 export default function ShiftSelection() {
   const { order, updateOrder } = useOrderContext();
 
-  const handleShiftChange = (shift: Shift) => {
-    const newShift = shift === order.shift ? Shift.UNSPECIFIED : shift;
+  const handleShiftChange = (shift: WorkingShift) => {
+    const newShift = shift === order.shift ? WorkingShift.UNSPECIFIED : shift;
 
     fetchRequest("PATCH", "/api/orders/", "updateOrderShift", {
       orderId: order.id,
@@ -24,20 +24,26 @@ export default function ShiftSelection() {
     <RadioGroup
       className="w-full flex items-center justify-between"
       value={
-        order.shift == Shift.UNSPECIFIED
+        order.shift == WorkingShift.UNSPECIFIED
           ? undefined
-          : order.shift == Shift.LUNCH
-          ? Shift.LUNCH
-          : Shift.DINNER
+          : order.shift == WorkingShift.LUNCH
+          ? WorkingShift.LUNCH
+          : WorkingShift.DINNER
       }
     >
       <div className="flex gap-2 items-center">
-        <RadioGroupItem value={Shift.LUNCH} onClick={() => handleShiftChange(Shift.LUNCH)} />
+        <RadioGroupItem
+          value={WorkingShift.LUNCH}
+          onClick={() => handleShiftChange(WorkingShift.LUNCH)}
+        />
         <Label>Pranzo</Label>
       </div>
 
       <div className="flex gap-2 items-center">
-        <RadioGroupItem value={Shift.DINNER} onClick={() => handleShiftChange(Shift.DINNER)} />
+        <RadioGroupItem
+          value={WorkingShift.DINNER}
+          onClick={() => handleShiftChange(WorkingShift.DINNER)}
+        />
         <Label>Cena</Label>
       </div>
     </RadioGroup>

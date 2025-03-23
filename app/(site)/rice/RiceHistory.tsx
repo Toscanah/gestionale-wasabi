@@ -22,32 +22,58 @@ export default function RiceHistory() {
     fetchLogs();
   }, []);
 
+  const getAmount = (log: RiceBatchLog) =>
+    log.rice_batch_id ? log.rice_batch.amount : log.manual_value ?? 0;
+
+  const positiveLogs = logs.filter((log) => getAmount(log) > 0);
+  const negativeLogs = logs.filter((log) => getAmount(log) < 0);
+
+  const renderLog = (log: RiceBatchLog) => (
+    <li key={log.id}>
+      {log.rice_batch_id ? (
+        <span>
+          <strong>{log.rice_batch.label}</strong>: {formatRice(log.rice_batch.amount)}
+        </span>
+      ) : (
+        <span>
+          <strong>Manuale</strong>: {formatRice(log.manual_value ?? 0)}
+        </span>
+      )}
+      <span className="ml-2 text-gray-500">({format(new Date(log.created_at), "HH:mm:ss")})</span>
+    </li>
+  );
+
   return (
     <DialogWrapper
       trigger={<Button variant={"outline"}>Storico</Button>}
       title="Storico di oggi"
-      size="small"
+      size="medium"
       onOpenChange={fetchLogs}
     >
       {logs.length > 0 ? (
-        <ul className="text-xl space-y-2 max-h-96 overflow-y-auto">
-          {logs.map((log) => (
-            <li key={log.id}>
-              {log.rice_batch_id ? (
-                <span>
-                  <strong>{log.rice_batch.label}</strong>: {formatRice(log.rice_batch.amount)}
-                </span>
+        <div className="flex gap-4 max-h-80 overflow-y-auto">
+          {/* Positive Logs */}
+          <div className="flex-1">
+            <ul className="space-y-2 text-xl">
+              {positiveLogs.length > 0 ? (
+                positiveLogs.map(renderLog)
               ) : (
-                <span>
-                  <strong>Manuale</strong>: {formatRice(log.manual_value ?? 0)}
-                </span>
+                <li className="text-gray-500">Nessuna aggiunta</li>
               )}
-              <span className="ml-2 text-gray-500">
-                ({format(new Date(log.created_at), "HH:mm:ss")})
-              </span>
-            </li>
-          ))}
-        </ul>
+            </ul>
+          </div>
+
+          {/* Negative Logs */}
+          <div className="flex-1">
+            <ul className="space-y-2 text-xl">
+              {negativeLogs.length > 0 ? (
+                negativeLogs.map(renderLog)
+              ) : (
+                <li className="text-gray-500">Nessuna rimozione</li>
+              )}
+            </ul>
+          </div>
+        </div>
       ) : (
         <div className="w-full text-center text-xl">Nessuno storico presente per oggi</div>
       )}
