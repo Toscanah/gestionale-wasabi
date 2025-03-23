@@ -12,6 +12,7 @@ import TableChange from "./TableChange";
 import Notes from "./Notes";
 import QuickPaymentOptions from "./QuickPaymentOptions";
 import { HomeOrder } from "@/app/(site)/models";
+import ShiftSelection from "./ShiftSelection";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
@@ -37,7 +38,12 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
       {order.type !== OrderType.TABLE && <OldOrders />}
 
       <div className="flex gap-6 items-center">
-        {order.type !== OrderType.TABLE && <Time />}
+        {order.type !== OrderType.TABLE && (
+          <>
+            <Time />
+            <ShiftSelection />
+          </>
+        )}
         <Discount />
       </div>
 

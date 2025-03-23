@@ -8,6 +8,8 @@ import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
 import DeleteOrdersBulk from "../orders/components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";
+import { Button } from "@/components/ui/button";
+import fetchRequest from "../functions/api/fetchRequest";
 
 interface HeaderProps {
   toggleOrdersByType: (type: OrderType) => void;
@@ -29,6 +31,8 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
         <div className="flex items-center w-full">
           {selectedOrders.length > 0 ? <DeleteOrdersBulk /> : <RiceDialog variant="header" />}
         </div>
+
+        <Button onClick={() => fetchRequest("PATCH", "/api/orders", "fixOrdersShift")}>fix</Button>
 
         <div className="flex justify-evenly w-80">
           {orderLabels.map(({ type, label }) => (

@@ -7,7 +7,7 @@ import updateOrderTime from "../../sql/orders/updateOrderTime";
 import cancelOrder from "../../sql/orders/cancelOrder";
 import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 import updateDiscount from "../../sql/orders/updateDiscount";
-import { OrderType, QuickPaymentOption } from "@prisma/client";
+import { OrderType, QuickPaymentOption, Shift } from "@prisma/client";
 import createSubOrder from "../../sql/orders/createSubOrder";
 import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 import deleteOrdersInBulk from "../../sql/orders/deleteOrdersInBulk";
@@ -20,6 +20,8 @@ import updateTable from "../../sql/orders/updateTable";
 import getOrderById from "../../sql/orders/getOrderById";
 import updateOrderPayment from "../../sql/orders/updateOrderPayment";
 import updateOrderExtraItems from "../../sql/orders/updateOrderExtraItems";
+import { updateOrderShift } from "../../sql/orders/updateOrderShift";
+import { fixOrdersShift } from "../../sql/fixOrdersShift";
 
 export const orderSchemas = {
   getOrderById: z.object({
@@ -86,6 +88,11 @@ export const orderSchemas = {
     items: z.enum(["salads", "soups", "rices"]),
     value: z.number().nullable(),
   }),
+  updateOrderShift: z.object({
+    orderId: z.number(),
+    shift: z.nativeEnum(Shift),
+  }),
+  fixOrdersShift: NoContentSchema,
 };
 
 const GET_ACTIONS = new Map([
@@ -109,10 +116,12 @@ const PATCH_ACTIONS = new Map([
   ["joinTableOrders", { func: joinTableOrders, schema: orderSchemas.joinTableOrders }],
   ["updateTable", { func: updateTable, schema: orderSchemas.updateTable }],
   ["updateOrderPayment", { func: updateOrderPayment, schema: orderSchemas.updateOrderPayment }],
+  ["updateOrderShift", { func: updateOrderShift, schema: orderSchemas.updateOrderShift }],
   [
     "updateOrderExtraItems",
     { func: updateOrderExtraItems, schema: orderSchemas.updateOrderExtraItems },
   ],
+  ["fixOrdersShift", { func: fixOrdersShift, schema: orderSchemas.fixOrdersShift }],
 ]);
 
 const DELETE_ACTIONS = new Map([

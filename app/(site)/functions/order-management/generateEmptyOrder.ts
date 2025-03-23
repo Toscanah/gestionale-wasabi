@@ -1,9 +1,10 @@
-import { OrderType } from "@prisma/client";
+import { OrderType, Shift } from "@prisma/client";
 import { AnyOrder } from "@/app/(site)/models";
 
 export default function generateEmptyOrder(orderType: OrderType): AnyOrder {
   return {
     discount: 0,
+    shift: Shift.UNSPECIFIED,
     is_receipt_printed: false,
     state: "ACTIVE",
     suborder_of: null,

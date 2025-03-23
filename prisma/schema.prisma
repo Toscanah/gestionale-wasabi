@@ -10,9 +10,10 @@ generator zod {
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
+    // directUrl = env("DIRECT_URL")
 }
 
-enum Shift {
+enum WorkingShift {
     UNSPECIFIED
     LUNCH
     DINNER
@@ -86,7 +87,7 @@ model Order {
     total              Float                @default(0)
     discount           Float                @default(0)
     is_receipt_printed Boolean              @default(false)
-    shift              Shift                @default(UNSPECIFIED)
+    shift              WorkingShift         @default(UNSPECIFIED)
     soups              Int?
     salads             Int?
     rices              Int?

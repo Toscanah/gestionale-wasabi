@@ -51,32 +51,28 @@ export default function Home() {
     setOrders((prevOrders) => {
       const existingOrders = prevOrders[order.type] || [];
 
-      switch (action) {
-        case "update":
-          return {
-            ...prevOrders,
-            [order.type]: existingOrders.map((existingOrder) =>
-              existingOrder.id === order.id ? order : existingOrder
-            ),
-          };
+      const actions: Record<UpdateStateAction, () => typeof prevOrders> = {
+        update: () => ({
+          ...prevOrders,
+          [order.type]: existingOrders.map((existingOrder) =>
+            existingOrder.id === order.id ? order : existingOrder
+          ),
+        }),
 
-        case "delete":
-          return {
-            ...prevOrders,
-            [order.type]: existingOrders.filter((existingOrder) => existingOrder.id !== order.id),
-          };
+        delete: () => ({
+          ...prevOrders,
+          [order.type]: existingOrders.filter((existingOrder) => existingOrder.id !== order.id),
+        }),
 
-        case "add":
-          return {
-            ...prevOrders,
-            [order.type]: [...existingOrders, order],
-          };
+        add: () => ({
+          ...prevOrders,
+          [order.type]: [...existingOrders, order],
+        }),
+      };
 
-        default:
-          return prevOrders;
-      }
+      return actions[action]?.() ?? prevOrders;
     });
-
+-
   useEffect(() => {
     const fetchInitialOrders = async () =>
       setOrders({
@@ -150,7 +146,7 @@ export default function Home() {
                 {index < totalTypes - 1 && <ResizableHandle />}
               </Fragment>
             );
-          })} 
+          })}
           {/* mia miao mia miaaaaaaaaao, mia mia miaoo miaoooo miaoooo, mia mia mia miaaaao miao */}
         </ResizablePanelGroup>
       </div>
