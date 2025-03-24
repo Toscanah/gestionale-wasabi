@@ -26,7 +26,9 @@ export default function OrdersStats() {
     );
 
   const fetchOrders = () =>
-    fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments").then(setOrders);
+    fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments").then((orders) =>
+      setOrders(orders.filter((order) => order.state === "PAID"))
+    );
 
   useEffect(() => {
     fetchOrders();

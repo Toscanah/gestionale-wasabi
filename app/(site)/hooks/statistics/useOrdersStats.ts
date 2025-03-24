@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from "react";
-import { AnyOrder } from "../../models";
+import { AnyOrder, HomeOrder, PickupOrder } from "../../models";
 import { OrderType } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import sectionReducer, { initialState } from "./sectionReducer";
@@ -92,52 +92,68 @@ export default function useOrdersStats(orders: AnyOrder[]) {
 
     return orders;
   };
-
   const filterByTime = (orders: AnyOrder[]): AnyOrder[] => {
     if (!state.time) return orders;
 
+    const timeToDecimal = (date: Date): number => {
+      return date.getHours() + date.getMinutes() / 60;
+    };
+
+    // These are the default shift hour ranges for fallback inference
+    const LUNCH_START = 10.5;  // 10:30
+    const LUNCH_END = 14.5;    // 14:30
+    const DINNER_START = 14.5; // 14:30
+    const DINNER_END = 22.5;   // 22:30
+    
+    const inferShiftFromTime = (createdAt: Date): "LUNCH" | "DINNER" | "OTHER" => {
+      const hour = timeToDecimal(createdAt);
+      if (hour >= LUNCH_START && hour < LUNCH_END) return "LUNCH";
+      if (hour >= DINNER_START && hour < DINNER_END) return "DINNER";
+      return "OTHER"; // falls outside both ranges
+    };
+
+    // Shift-based filtering (e.g., LUNCH / DINNER / ALL)
     if (state.time.type === "shift") {
-      const timeToDecimal = (time: string): number => {
-        const [hours, minutes] = time.split(":").map(Number); // Split the time into hours and minutes and convert to numbers
-        return hours + minutes / 60; // Convert to decimal (e.g., 12:30 becomes 12.5)
-      };
-
-      // const lunchStart = timeToDecimal(settings.businessHours.lunch.opening);
-      // const lunchEnd = timeToDecimal(settings.businessHours.lunch.closing);
-      // const dinnerStart = timeToDecimal(settings.businessHours.dinner.opening);
-      // const dinnerEnd = timeToDecimal(settings.businessHours.dinner.closing);
-
-      const lunchStart = 0;
-      const lunchEnd = 24;
-      const dinnerStart = 0;
-      const dinnerEnd = 24;
-
       return orders.filter((order) => {
-        const orderHour = new Date(order.created_at).getHours();
+        const effectiveShift =
+          order.shift === "UNSPECIFIED"
+            ? inferShiftFromTime(new Date(order.created_at))
+            : order.shift;
+
         return (
           (state.time.type === "shift" &&
             state.time.shift === "lunch" &&
-            orderHour >= lunchStart &&
-            orderHour < lunchEnd) ||
+            effectiveShift === "LUNCH") ||
           (state.time.type === "shift" &&
             state.time.shift === "dinner" &&
-            orderHour >= dinnerStart &&
-            orderHour < dinnerEnd) ||
+            effectiveShift === "DINNER") ||
           (state.time.type === "shift" &&
             state.time.shift === "all" &&
-            ((orderHour >= lunchStart && orderHour < lunchEnd) ||
-              (orderHour >= dinnerStart && orderHour < dinnerEnd)))
+            (effectiveShift === "LUNCH" || effectiveShift === "DINNER"))
         );
       });
     }
 
+    // Range-based filtering (by hours)
     if (state.time.type === "range" && state.time.from && state.time.to) {
-      const timeStart = new Date(`1970-01-01T${state.time.from}`).getHours();
-      const timeEnd = new Date(`1970-01-01T${state.time.to}`).getHours();
+      const fromHour = timeToDecimal(new Date(`1970-01-01T${state.time.from}`));
+      const toHour = timeToDecimal(new Date(`1970-01-01T${state.time.to}`));
 
       return orders.filter((order) => {
-        const orderHour = new Date(order.created_at).getHours();
-        return orderHour >= timeStart && orderHour <= timeEnd;
+        let when = "immediate";
+
+        if (order.type == OrderType.HOME) {
+          when = (order as HomeOrder).home_order?.when ?? "immediate";
+        } else {
+          when = (order as PickupOrder).pickup_order?.when ?? "immediate";
+        }
+
+        const orderTime =
+          when.toLowerCase() !== "immediate"
+            ? timeToDecimal(new Date(`1970-01-01T${when}`))
+            : timeToDecimal(new Date(order.created_at));
+
+        return orderTime >= fromHour && orderTime <= toHour;
       });
     }
 

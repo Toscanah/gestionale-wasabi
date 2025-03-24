@@ -3,9 +3,9 @@ import { ChartBar } from "@phosphor-icons/react/dist/ssr";
 
 export default function StatsSection() {
   const statsItems: SidebarMenuGroupItem[] = [
+    { type: "link", label: "Ordini", path: "/statistics/orders" },
     { type: "link", label: "Clienti", path: "/statistics/customers/" },
     { type: "link", label: "Prodotti", path: "/statistics/products/" },
-    { type: "link", label: "Ordini", path: "/statistics/orders" },
   ];
 
   return (

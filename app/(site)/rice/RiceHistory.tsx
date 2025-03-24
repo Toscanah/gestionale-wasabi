@@ -52,7 +52,6 @@ export default function RiceHistory() {
     >
       {logs.length > 0 ? (
         <div className="flex gap-4 max-h-80 overflow-y-auto">
-          {/* Positive Logs */}
           <div className="flex-1">
             <ul className="space-y-2 text-xl">
               {positiveLogs.length > 0 ? (
@@ -63,7 +62,6 @@ export default function RiceHistory() {
             </ul>
           </div>
 
-          {/* Negative Logs */}
           <div className="flex-1">
             <ul className="space-y-2 text-xl">
               {negativeLogs.length > 0 ? (
