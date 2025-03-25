@@ -25,7 +25,7 @@ export default function OrderReceipt<T extends AnyOrder>(
 
   return (
     <>
-      {HeaderSection()}
+      {HeaderSection({ orderDate: new Date(order.created_at) })}
 
       {tableOrder && (
         <>

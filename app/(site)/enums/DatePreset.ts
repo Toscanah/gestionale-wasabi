@@ -7,11 +7,17 @@ export enum DatePreset {
   THIS_YEAR = "thisYear",
 }
 
-export const DATE_PRESETS = [
-  { name: "Oggi", value: DatePreset.TODAY },
-  { name: "Ieri", value: DatePreset.YESTERDAY },
-  { name: "Ultimi 7 giorni", value: DatePreset.LAST7 },
-  { name: "Ultimi 30 giorni", value: DatePreset.LAST30 },
-  { name: "Questo mese", value: DatePreset.THIS_MONTH },
-  { name: "Questo anno", value: DatePreset.THIS_YEAR },
-];
+const presetsName = [
+  "Oggi",
+  "Ieri",
+  "Ultimi 7 giorni",
+  "Ultimi 30 giorni",
+  "Questo mese",
+  "Questo anno",
+] as const;
+
+export const DATE_PRESETS: { name: (typeof presetsName)[number]; value: DatePreset }[] =
+  presetsName.map((name, index) => ({
+    name,
+    value: Object.values(DatePreset)[index] as DatePreset,
+  }));

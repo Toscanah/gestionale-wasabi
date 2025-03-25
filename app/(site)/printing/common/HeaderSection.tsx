@@ -7,7 +7,11 @@ import sanitazeReceiptText from "../../functions/formatting-parsing/printing/san
 
 // import logo from "../../../../public/logo.png";
 
-export default function HeaderSection() {
+interface HeaderSectionProps {
+  orderDate: Date;
+}
+
+export default function HeaderSection({ orderDate }: HeaderSectionProps) {
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
@@ -55,7 +59,7 @@ export default function HeaderSection() {
 
       <Br />
 
-      {TimeSection()}
+      {TimeSection({ orderDate })}
     </>
   );
 }
