@@ -54,7 +54,7 @@ export default function Section({ orders }: SectionProps) {
   const shouldShowTimeSelection = hasValidWeekdaysSelection || hasValidSpecificDate;
 
   return (
-    <div className="flex flex-col gap-12 w-full p-4 items-center max-h-full h-screen">
+    <div className="flex flex-col gap-12 w-full p-4 items-center h-full">
       <div className="flex flex-col gap-4 items-center">
         <WeekdaysOrDateToggle selection={state.mainChoice} dispatch={dispatch} />
         {isWeekdaysSelected && <WeekdaysSelection selection={state.weekdays} dispatch={dispatch} />}

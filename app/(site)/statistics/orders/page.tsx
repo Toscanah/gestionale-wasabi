@@ -73,26 +73,33 @@ export default function OrdersStats() {
       <Flipper
         flipKey={sections.map((section) => section.id).join("")}
         spring={"stiff"}
-        className="w-screen flex gap-4 pt-4 px-8 pb-8 overflow-x-auto justify-start"
+        className="w-full flex flex-wrap gap-2 px-8 pt-4 pb-8 justify-center"
       >
-        {sections.map((section) => (
-          <Flipped key={section.id} flipId={section.id} onAppear={onElementAppear}>
-            <div
-              className={cn(
-                "relative group select-none border p-4 rounded-lg shadow-md h-full",
-                sections.length === 1 ? "w-full" : sections.length === 2 ? "w-1/2" : "w-1/3"
-              )}
-            >
-              <Section id={section.id} orders={orders} />
-              <X
-                onClick={() => removeSection(section.id)}
-                size={32}
-                className="absolute top-[-1rem] right-[-1rem] invisible group-hover:visible hover:cursor-pointer 
-                                hover:bg-opacity-50 hover:bg-muted-foreground/20 rounded-full p-1"
-              />
-            </div>
-          </Flipped>
-        ))}
+        {sections.map((section, index) => {
+          const isLast = index === sections.length - 1;
+          const isOdd = index % 2 === 0;
+          const shouldStretch = isLast && sections.length % 2 !== 0;
+
+          return (
+            <Flipped key={section.id} flipId={section.id} onAppear={onElementAppear}>
+              <div
+                className={cn("relative group select-none border p-4 rounded-lg shadow-md h-[45rem]")}
+                style={{
+                  flexBasis: shouldStretch ? "100%" : "calc(50% - 0.25rem)",
+                  maxWidth: shouldStretch ? "100%" : "calc(50% - 0.25rem)",
+                }}
+              >
+                <Section id={section.id} orders={orders} />
+                <X
+                  onClick={() => removeSection(section.id)}
+                  size={32}
+                  className="absolute top-[-1rem] right-[-1rem] invisible group-hover:visible hover:cursor-pointer 
+            hover:bg-opacity-50 hover:bg-muted-foreground/20 rounded-full p-1"
+                />
+              </div>
+            </Flipped>
+          );
+        })}
       </Flipper>
 
       <GoBack path="/home" />
