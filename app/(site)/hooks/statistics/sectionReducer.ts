@@ -23,9 +23,9 @@ export type ReducerActions =
   | { type: "SET_TIME"; payload: Partial<Time> };
 
 export const initialState: SectionState = {
-  mainChoice: "weekdays",
-  weekdaysSelection: { type: "range", range: undefined },
-  time: { type: "shift", shift: "all" },
+  mainChoice: "date",
+  specificDate: undefined,
+  time: { type: "range", from: "", to: "" },
 };
 
 type UpdateFunction = (state: SectionState, payload: any) => SectionState;
