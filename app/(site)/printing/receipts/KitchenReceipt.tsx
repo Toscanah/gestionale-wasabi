@@ -35,7 +35,7 @@ const calculateAdjustedTime = (originalTime: string) => {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
-const MAX_LABEL = 17;
+const MAX_LABEL = 16;
 
 type ReceiptTitle = "SUSHI" | "CUCINA" | "ALTRO";
 
@@ -71,7 +71,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {tableOrder && (
         <Row
           left={
-            <Text bold size={smallSize}>
+            <Text bold size={bigSize}>
               TAVOLO
             </Text>
           }
@@ -84,40 +84,22 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       )}
 
       {pickupOrder && (
-        <Row
-          left={
-            <Text bold size={smallSize}>
-              ASPORTO
-            </Text>
-          }
-          right={
-            <Text bold size={bigSize}>
-              {sanitazeReceiptText(pickupOrder.name.slice(0, MAX_LABEL))}
-            </Text>
-          }
-        />
+        <Text bold size={bigSize}>
+          {sanitazeReceiptText(pickupOrder.name.slice(0, MAX_LABEL))}
+        </Text>
       )}
 
       {homeOrder && (
-        <Row
-          left={
-            <Text bold size={smallSize}>
-              DELIVERY
-            </Text>
-          }
-          right={
-            <Text bold size={bigSize}>
-              {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, MAX_LABEL))}
-            </Text>
-          }
-        />
+        <Text bold size={bigSize}>
+          {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, MAX_LABEL))}
+        </Text>
       )}
 
       {pickupOrder && (
         <Row
           left={
-            <Text bold size={smallSize}>
-              Orario
+            <Text bold size={bigSize}>
+              ASPORTO
             </Text>
           }
           right={
@@ -132,7 +114,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
         <Row
           left={
             <Text bold size={smallSize}>
-              Orario
+              DELIVERY
             </Text>
           }
           right={
