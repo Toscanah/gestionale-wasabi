@@ -84,15 +84,25 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       )}
 
       {pickupOrder && (
-        <Text bold size={bigSize}>
-          {sanitazeReceiptText(pickupOrder.name.slice(0, MAX_LABEL))}
-        </Text>
+        <Row
+          left={""}
+          right={
+            <Text bold size={bigSize}>
+              {sanitazeReceiptText(pickupOrder.name.slice(0, MAX_LABEL))}
+            </Text>
+          }
+        />
       )}
 
       {homeOrder && (
-        <Text bold size={bigSize}>
-          {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, MAX_LABEL))}
-        </Text>
+        <Row
+          left={""}
+          right={
+            <Text bold size={bigSize}>
+              {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, MAX_LABEL))}
+            </Text>
+          }
+        />
       )}
 
       {pickupOrder && (
@@ -113,7 +123,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {homeOrder && (
         <Row
           left={
-            <Text bold size={smallSize}>
+            <Text bold size={bigSize}>
               DELIVERY
             </Text>
           }
