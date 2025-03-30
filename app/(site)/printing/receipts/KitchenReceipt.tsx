@@ -65,7 +65,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
   const renderReceiptSection = (title: ReceiptTitle, products: typeof order.products) => (
     <>
-      {TimeSection()}
+      {TimeSection({})}
 
       <Line />
       {tableOrder && (

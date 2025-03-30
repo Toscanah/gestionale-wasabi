@@ -27,7 +27,7 @@ export default function OrdersStats() {
 
   const fetchOrders = () =>
     fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments").then((orders) =>
-      setOrders(orders.filter((order) => order.state === "PAID"))
+      setOrders(orders.filter((order) => order.state !== "CANCELLED"))
     );
 
   useEffect(() => {
@@ -45,10 +45,21 @@ export default function OrdersStats() {
       <h1 className="text-3xl mt-4">Statistiche ordini</h1>
 
       <div className="flex flex-col gap-4">
-        <Button onClick={addSection}>
-          <Plus className="mr-2 h-4 w-4" />
-          Aggiungi sezione
-        </Button>
+        <div className="flex gap-2 items-center">
+          <Button onClick={addSection}>
+            <Plus className="mr-2 h-4 w-4" />
+            Aggiungi sezione
+          </Button>
+
+          <Button
+            onClick={() =>
+              fetchRequest("PATCH", "/api/orders", "fixOrdersShift").then(() => location.reload())
+            }
+            variant="outline"
+          >
+            Aggiusta turni degli ordini
+          </Button>
+        </div>
 
         {/* <Button
           onClick={clearSections}

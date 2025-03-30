@@ -34,7 +34,7 @@ export default function SectionResults({
       tableOrders !== prevValues.tableOrders ||
       totalRiceConsumed !== prevValues.totalRiceConsumed;
 
-      console.log(hasChanged)
+    console.log(hasChanged);
 
     if (hasChanged) {
       setIsLoading(true);
@@ -60,6 +60,10 @@ export default function SectionResults({
       ) : (
         <table className="w-[20rem] text-lg">
           <tbody>
+            <tr>
+              <td className="py-2">Ordini totali</td>
+              <td className="py-2 text-right">{homeOrders + pickupOrders + tableOrders}</td>
+            </tr>
             <tr>
               <td className="py-2">Ordini domicilio</td>
               <td className="py-2 text-right">{homeOrders}</td>

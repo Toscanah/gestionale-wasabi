@@ -32,8 +32,6 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
           {selectedOrders.length > 0 ? <DeleteOrdersBulk /> : <RiceDialog variant="header" />}
         </div>
 
-        <Button onClick={() => fetchRequest("PATCH", "/api/orders", "fixOrdersShift")}>fix</Button>
-
         <div className="flex justify-evenly w-80">
           {orderLabels.map(({ type, label }) => (
             <div key={label} className="flex items-center space-x-2">

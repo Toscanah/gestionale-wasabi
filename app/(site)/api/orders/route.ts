@@ -21,7 +21,7 @@ import getOrderById from "../../sql/orders/getOrderById";
 import updateOrderPayment from "../../sql/orders/updateOrderPayment";
 import updateOrderExtraItems from "../../sql/orders/updateOrderExtraItems";
 import { updateOrderShift } from "../../sql/orders/updateOrderShift";
-import { fixOrdersShift } from "../../sql/fixOrdersShift";
+import { fixOrdersShift } from "../../sql/orders/fixOrdersShift";
 
 export const orderSchemas = {
   getOrderById: z.object({

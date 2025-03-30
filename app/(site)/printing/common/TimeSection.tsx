@@ -2,10 +2,11 @@ import { Row, Text } from "react-thermal-printer";
 import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
 
 interface TimeSectionProps {
-  orderDate: Date;
+  orderDate?: Date;
 }
 
 export default function TimeSection({ orderDate }: TimeSectionProps) {
+  const date = orderDate ?? new Date();
   const options: Intl.DateTimeFormatOptions = {
     weekday: "short",
     year: "numeric",
@@ -13,12 +14,12 @@ export default function TimeSection({ orderDate }: TimeSectionProps) {
     day: "numeric",
   };
 
-  const formattedDate = orderDate.toLocaleDateString("it-IT", options);
+  const formattedDate = date.toLocaleDateString("it-IT", options);
 
   return (
     <Row
       left={<Text>{capitalizeFirstLetter(formattedDate)}</Text>}
-      right={<Text>{orderDate.toLocaleTimeString("it-IT")}</Text>}
+      right={<Text>{date.toLocaleTimeString("it-IT")}</Text>}
     />
   );
 }
