@@ -55,15 +55,19 @@ export default function useRice() {
   const initializeRice = async () => {
     const storedRice = localStorage.getItem("rice");
     const dailyUsage = await fetchDailyRiceUsage();
-    let rice;
+    console.log(dailyUsage)
+    let rice: Rice;
 
     if (storedRice) {
       const parsedRice: Rice = JSON.parse(storedRice);
 
       rice = {
         ...parsedRice,
+        total: 
         remaining: parsedRice.total - dailyUsage,
       };
+
+      console.log("Rice from localStorage:", rice);
     } else {
       rice = { ...defaultRice, remaining: -dailyUsage };
     }
