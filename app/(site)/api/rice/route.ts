@@ -10,6 +10,7 @@ import updateRiceBatch from "../../sql/rice/updateRiceBatch";
 import deleteRiceBatch from "../../sql/rice/deleteRiceBatch";
 import getRiceLogs from "../../sql/rice/getRiceLogs";
 import addRiceLog from "../../sql/rice/addRiceLog";
+import { RiceLogType } from "@prisma/client";
 
 export const riceSchemas = {
   getDailyRiceUsage: NoContentSchema,
@@ -29,6 +30,7 @@ export const riceSchemas = {
   addRiceLog: z.object({
     riceBatchId: z.number().nullable(),
     manualValue: z.number().nullable(),
+    type: z.nativeEnum(RiceLogType).nullable(),
   }),
 };
 

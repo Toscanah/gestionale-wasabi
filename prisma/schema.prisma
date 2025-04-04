@@ -72,6 +72,12 @@ enum EngagementState {
     USED
 }
 
+enum RiceLogType {
+    MANUAL
+    BATCH
+    RESET
+}
+
 model Rider {
     id       Int     @id @default(autoincrement())
     name     String
@@ -211,19 +217,20 @@ model Payment {
     order      Order       @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }
 
-model RiceBatchLog {
-    id            Int        @id @default(autoincrement())
-    created_at    DateTime   @default(now())
+model RiceLog {
+    id            Int         @id @default(autoincrement())
+    created_at    DateTime    @default(now())
     rice_batch_id Int?
-    rice_batch    RiceBatch? @relation(fields: [rice_batch_id], references: [id])
+    rice_batch    RiceBatch?  @relation(fields: [rice_batch_id], references: [id])
     manual_value  Float?
+    type          RiceLogType
 }
 
 model RiceBatch {
-    id             Int            @id @default(autoincrement())
-    amount         Float          @default(0)
-    label          String?
-    rice_batch_log RiceBatchLog[]
+    id       Int       @id @default(autoincrement())
+    amount   Float     @default(0)
+    label    String?
+    rice_log RiceLog[]
 }
 
 model Product {

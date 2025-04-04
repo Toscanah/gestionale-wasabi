@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
-import { RiceBatch } from "@prisma/client";
+import { RiceBatch, RiceLogType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
 import { useEffect, useState } from "react";
 import DialogWrapper from "../components/dialog/DialogWrapper";
@@ -77,12 +77,14 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
       fetchRequest("POST", "/api/rice/", "addRiceLog", {
         riceBatchId: selectedRiceBatchId,
         manualValue: null,
+        type: RiceLogType.BATCH,
       });
     } else if (riceToAdd || riceToRemove) {
       const manualValue = riceToAdd - riceToRemove;
       fetchRequest("POST", "/api/rice/", "addRiceLog", {
         riceBatchId: null,
         manualValue: manualValue,
+        type: RiceLogType.MANUAL,
       });
     }
   };

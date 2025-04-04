@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { toastSuccess } from "../functions/util/toast";
 import fetchRequest from "../functions/api/fetchRequest";
+import { RiceLog } from "../models/base/Rice";
+import { isToday } from "date-fns";
+import { RiceLogType } from "@prisma/client";
 
 export type Rice = { total: number; remaining: number; threshold: number };
 
@@ -31,31 +34,45 @@ export default function useRice() {
     toastSuccess("Riso aggiornato correttamente", "Riso aggiornato");
   };
 
-  const updateRemainingRice = () =>
-    fetchDailyRiceUsage().then((dailyUsage) =>
-      saveRiceToLocalStorage((prevRice) => ({
-        ...prevRice,
-        remaining: prevRice.total - dailyUsage,
-      }))
-    );
+  const updateRemainingRice = async () => {
+    const dailyUsage = await fetchDailyRiceUsage();
+    const { totalRice } = await getTotalRice();
+    saveRiceToLocalStorage((prevRice) => ({
+      ...prevRice,
+      remaining: totalRice - dailyUsage,
+    }));
+  };
 
   const fetchDailyRiceUsage = async (): Promise<number> =>
     await fetchRequest<number>("GET", "/api/rice", "getDailyRiceUsage");
 
-  const resetRice = async () => {
-    const dailyUsage = await fetchDailyRiceUsage();
+  const getTotalRice = async (): Promise<{ totalRice: number }> => {
+    const logs = await fetchRequest<RiceLog[]>("GET", "/api/rice", "getRiceLogs");
+    const todayLogs = logs.filter((log) => isToday(new Date(log.created_at)));
+    return {
+      totalRice: todayLogs.reduce(
+        (acc, log) => acc + (log.rice_batch_id ? log.rice_batch.amount : log.manual_value ?? 0),
+        0
+      ),
+    };
+  };
 
-    saveRiceToLocalStorage(() => ({
-      threshold: 0,
-      total: 0,
-      remaining: -dailyUsage,
-    }));
+  const resetRice = async () => {
+    if (!rice.total) return;
+
+    await fetchRequest("POST", "/api/rice", "addRiceLog", {
+      riceBatchId: null,
+      manualValue: -rice.total,
+      type: RiceLogType.RESET,
+    }).then(initializeRice);
   };
 
   const initializeRice = async () => {
     const storedRice = localStorage.getItem("rice");
+
     const dailyUsage = await fetchDailyRiceUsage();
-    console.log(dailyUsage)
+    const { totalRice } = await getTotalRice();
+
     let rice: Rice;
 
     if (storedRice) {
@@ -63,13 +80,15 @@ export default function useRice() {
 
       rice = {
         ...parsedRice,
-        total: 
-        remaining: parsedRice.total - dailyUsage,
+        total: totalRice,
+        remaining: totalRice - dailyUsage,
       };
-
-      console.log("Rice from localStorage:", rice);
     } else {
-      rice = { ...defaultRice, remaining: -dailyUsage };
+      rice = {
+        ...defaultRice,
+        total: totalRice,
+        remaining: totalRice - dailyUsage,
+      };
     }
 
     saveRiceToLocalStorage(() => rice);
