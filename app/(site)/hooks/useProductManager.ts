@@ -35,7 +35,7 @@ export function useProductManager(
     fetchRequest<ProductInOrder[]>("POST", "/api/products", "addProductsToOrder", {
       targetOrderId: order.id,
       products,
-    }).then(() => updateProductsList({ newProducts: products }));
+    }).then((newProducts) => updateProductsList({ newProducts }));
 
   const updateProduct = (key: string, value: any, index: number) => {
     let productToUpdate = order.products[index];
@@ -69,6 +69,8 @@ export function useProductManager(
   const deleteProducts = (table: Table<any>, cooked: boolean) => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     const selectedProductIds = selectedRows.map((row) => row.original.id);
+
+    console.log(selectedProductIds);
 
     if (selectedProductIds.length > 0) {
       fetchRequest("DELETE", "/api/products/", "deleteProductsFromOrder", {

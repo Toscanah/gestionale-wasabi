@@ -76,7 +76,7 @@ export default function OrderTable() {
   useEffect(() => {
     const printKitchenRec = async () => {
       const unprintedProducts = await updateUnprintedProducts();
-      
+
       if (unprintedProducts.length > 0) {
         await print(() => KitchenReceipt({ ...order, products: unprintedProducts }));
       }
