@@ -25,12 +25,23 @@ type WithPresets = {
   handlePresetSelection: (value: string) => void;
 };
 
-type CalendarProps = {
-  dateFilter: Date | DateRange | undefined;
-  handleDateFilter: (range: Date | DateRange | undefined) => void;
-  mode: "single" | "range";
+type CalendarBaseProps = {
   disabled?: boolean;
 } & (NoPresets | WithPresets);
+
+type SingleModeProps = {
+  mode: "single";
+  dateFilter: Date | undefined;
+  handleDateFilter: (range: Date | undefined) => void;
+};
+
+type RangeModeProps = {
+  mode: "range";
+  dateFilter: DateRange | undefined;
+  handleDateFilter: (range: DateRange | undefined) => void;
+};
+
+type CalendarProps = CalendarBaseProps & (SingleModeProps | RangeModeProps);
 
 export default function Calendar({
   dateFilter,
@@ -85,17 +96,23 @@ export default function Calendar({
             locale={it}
             mode={mode as any}
             initialFocus
-            defaultMonth={mode === "range" ? (dateFilter as DateRange)?.from : (dateFilter as Date)}
-            selected={dateFilter}
-            onSelect={(range: any) =>
-              handleDateFilter(
-                mode === "range"
-                  ? range && (range as DateRange).from
-                    ? { from: (range as DateRange).from, to: (range as DateRange).to }
-                    : undefined
-                  : (range as Date)
-              )
+            defaultMonth={
+              mode === "range"
+                ? (dateFilter as DateRange)?.from ?? new Date()
+                : (dateFilter as Date) ?? new Date()
             }
+            selected={dateFilter}
+            onSelect={(range: any) => {
+              if (mode === "range") {
+                if (range && "from" in range && "to" in range) {
+                  handleDateFilter(range as DateRange);
+                } else {
+                  handleDateFilter(undefined);
+                }
+              } else {
+                handleDateFilter(range as Date);
+              }
+            }}
             numberOfMonths={mode === "range" ? 2 : 1}
           />
         </div>

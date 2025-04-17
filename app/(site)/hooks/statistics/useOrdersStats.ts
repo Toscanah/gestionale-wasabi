@@ -8,6 +8,7 @@ import useSettings from "../useSettings";
 import getWhenOfOrder from "../../functions/order-management/getWhenOfOrder";
 import timeToDecimal from "../../functions/util/timeToDecimal";
 import getEffectiveOrderTime from "../../functions/order-management/getEffectiveOrderTime";
+import Timestamps from "../../enums/Timestamps";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -98,17 +99,11 @@ export default function useOrdersStats(orders: AnyOrder[]) {
   const filterByTime = (orders: AnyOrder[]): AnyOrder[] => {
     if (!state.time) return orders;
 
-    // These are the default shift hour ranges for fallback inference
-    const LUNCH_START = 10.0; // 10:00
-    const LUNCH_END = 14.5; // 14:30
-    const DINNER_START = 14.5; // 14:30
-    const DINNER_END = 22.5; // 22:30
-
     const inferShiftFromTime = (order: AnyOrder): WorkingShift => {
       const { time } = getEffectiveOrderTime(order);
 
-      if (time >= LUNCH_START && time <= LUNCH_END) return WorkingShift.LUNCH;
-      if (time > LUNCH_END && time <= DINNER_END) return WorkingShift.DINNER;
+      if (time >= Timestamps.LUNCH_START && time <= Timestamps.LUNCH_END) return WorkingShift.LUNCH;
+      if (time > Timestamps.LUNCH_END && time <= Timestamps.DINNER_END) return WorkingShift.DINNER;
 
       return WorkingShift.UNSPECIFIED;
     };

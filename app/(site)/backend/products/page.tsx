@@ -14,7 +14,7 @@ import logo from "../../../../public/logo.png";
 import Image from "next/image";
 import SelectWrapper from "../../components/select/SelectWrapper";
 import { Category } from "@prisma/client";
-import { allCategories } from "../../hooks/statistics/useProductsStats";
+import { ALL_CATEGORIES } from "../../hooks/statistics/useProductsStats";
 
 type FormValues = Partial<Product>;
 
@@ -29,7 +29,7 @@ export default function ProductDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<CategoryWithOptions[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Category>(allCategories);
+  const [selectedCategory, setSelectedCategory] = useState<Category>(ALL_CATEGORIES);
 
   useEffect(() => {
     setFilteredProducts(() =>
@@ -102,7 +102,7 @@ export default function ProductDashboard() {
                 className="h-10 w-64"
                 onValueChange={(value) =>
                   setSelectedCategory(
-                    categories.find((c) => c.id.toString() === value) || allCategories
+                    categories.find((c) => c.id.toString() === value) || ALL_CATEGORIES
                   )
                 }
                 groups={[

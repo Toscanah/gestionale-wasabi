@@ -5,14 +5,14 @@ import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
 import { TimeFilter } from "@/app/(site)/sql/products/getProductsWithStats";
 import { ProductWithStats } from "@/app/(site)/types/ProductWithStats";
 
-const defaultStartDate = new Date(new Date().setHours(0, 0, 0, 0));
-const defaultEndDate = new Date(new Date().setHours(23, 59, 59, 999));
-const defaultDate: DateRange = {
-  from: defaultStartDate,
-  to: defaultEndDate,
+const DEFAULT_START_DATE = new Date(new Date().setHours(0, 0, 0, 0));
+const DEFAULT_END_DATE = new Date(new Date().setHours(23, 59, 59, 999));
+const DEFAULT_DATE: DateRange = {
+  from: DEFAULT_START_DATE,
+  to: DEFAULT_END_DATE,
 };
 
-export const allCategories = {
+export const ALL_CATEGORIES = {
   id: -1,
   category: "all",
   active: true,
@@ -23,10 +23,11 @@ export default function useProductsStats() {
   const [filteredProducts, setFilteredProducts] = useState<ProductWithStats[]>([]);
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Category>(allCategories);
+  const [selectedCategory, setSelectedCategory] = useState<Category>(ALL_CATEGORIES);
 
   const [timeFilter, setTimeFilter] = useState<TimeFilter>(TimeFilter.ALL);
-  const [dateFilter, setDateFilter] = useState<DateRange | undefined>(defaultDate);
+  const [dateFilter, setDateFilter] = useState<DateRange | undefined>(DEFAULT_DATE);
+  // const [shiftFilter, setShiftFilter] = useState
 
   useEffect(() => {
     fetchInitialProducts();
@@ -92,8 +93,8 @@ export default function useProductsStats() {
 
   const handleReset = () => {
     setTimeFilter(TimeFilter.ALL);
-    setDateFilter(defaultDate);
-    setSelectedCategory(allCategories);
+    setDateFilter(DEFAULT_DATE);
+    setSelectedCategory(ALL_CATEGORIES);
     fetchInitialProducts();
   };
 
