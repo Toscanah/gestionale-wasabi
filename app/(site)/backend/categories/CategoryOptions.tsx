@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
-import SelectWrapper from "../../components/select/SelectWrapper";
+import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import { Button } from "@/components/ui/button";
 import { X } from "@phosphor-icons/react";
 import { Option } from "@prisma/client";

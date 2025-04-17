@@ -1,14 +1,14 @@
 import { useEffect, useReducer, useState } from "react";
-import { AnyOrder, HomeOrder, PickupOrder } from "../../models";
+import { AnyOrder } from "../../models";
 import { OrderType, ProductInOrderState, WorkingShift } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import sectionReducer, { initialState } from "./sectionReducer";
 import { isSameDay } from "date-fns";
-import useSettings from "../useSettings";
-import getWhenOfOrder from "../../functions/order-management/getWhenOfOrder";
 import timeToDecimal from "../../functions/util/timeToDecimal";
-import getEffectiveOrderTime from "../../functions/order-management/getEffectiveOrderTime";
-import Timestamps from "../../enums/Timestamps";
+import {
+  getEffectiveOrderShift,
+  parseOrderTime,
+} from "../../functions/order-management/getOrderShift";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -99,20 +99,10 @@ export default function useOrdersStats(orders: AnyOrder[]) {
   const filterByTime = (orders: AnyOrder[]): AnyOrder[] => {
     if (!state.time) return orders;
 
-    const inferShiftFromTime = (order: AnyOrder): WorkingShift => {
-      const { time } = getEffectiveOrderTime(order);
-
-      if (time >= Timestamps.LUNCH_START && time <= Timestamps.LUNCH_END) return WorkingShift.LUNCH;
-      if (time > Timestamps.LUNCH_END && time <= Timestamps.DINNER_END) return WorkingShift.DINNER;
-
-      return WorkingShift.UNSPECIFIED;
-    };
-
     // Shift-based filtering (e.g., LUNCH / DINNER / ALL)
     if (state.time.type === "shift") {
       return orders.filter((order) => {
-        const effectiveShift =
-          order.shift === WorkingShift.UNSPECIFIED ? inferShiftFromTime(order) : order.shift;
+        const { effectiveShift } = getEffectiveOrderShift(order);
 
         if (state.time.type === "shift" && state.time.shift === "lunch")
           return effectiveShift === WorkingShift.LUNCH;
@@ -130,7 +120,7 @@ export default function useOrdersStats(orders: AnyOrder[]) {
       const toHour = timeToDecimal(new Date(`1970-01-01T${state.time.to}`));
 
       return orders.filter((order) => {
-        const { time } = getEffectiveOrderTime(order);
+        const time = parseOrderTime(order);
         return time >= fromHour && time <= toHour;
       });
     }
@@ -164,6 +154,7 @@ export default function useOrdersStats(orders: AnyOrder[]) {
   };
 
   const applyFilters = () => {
+    // console.log(state)
     let filteredOrders = [...orders];
     filteredOrders = filterByDate(filteredOrders);
     filteredOrders = filterByTime(filteredOrders);

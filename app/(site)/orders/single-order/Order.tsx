@@ -1,7 +1,7 @@
 import { TableCell } from "@/components/ui/table";
 import { Cell, flexRender } from "@tanstack/react-table";
 import OrderTable from "./OrderTable";
-import DialogWrapper from "../../components/dialog/DialogWrapper";
+import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { AnyOrder } from "@/app/(site)/models";
 import { FormEvent, useState } from "react";
 import { OrderProvider } from "../../context/OrderContext";

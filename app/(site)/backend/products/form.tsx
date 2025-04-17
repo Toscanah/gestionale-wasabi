@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormFieldType } from "../FormFields";
 import { ControllerRenderProps } from "react-hook-form";
 import { CategoryWithOptions } from "@/app/(site)/models";
-import SelectWrapper from "../../components/select/SelectWrapper";
+import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import KitchenType from "./KitchenType";
 
 export const formSchema = z.object({

@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
+import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
 import { CustomerWithDetails } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";

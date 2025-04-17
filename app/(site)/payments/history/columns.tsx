@@ -4,7 +4,7 @@ import { AnyOrder, HomeOrder, OrderWithPayments } from "@/app/(site)/models";
 import { Badge } from "@/components/ui/badge";
 import { OrderType, QuickPaymentOption } from "@prisma/client";
 import applyDiscount from "../../functions/order-management/applyDiscount";
-import DialogWrapper from "../../components/dialog/DialogWrapper";
+import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import OrderSummary from "./OrderSummary";
 import print from "../../printing/print";

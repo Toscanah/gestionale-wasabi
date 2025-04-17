@@ -51,14 +51,14 @@ export default function OrdersStats() {
             Aggiungi sezione
           </Button>
 
-          <Button
+          {/* <Button
             onClick={() =>
               fetchRequest("PATCH", "/api/orders", "fixOrdersShift").then(() => location.reload())
             }
             variant="outline"
           >
             Aggiusta turni degli ordini
-          </Button>
+          </Button> */}
         </div>
 
         {/* <Button
@@ -94,7 +94,7 @@ export default function OrdersStats() {
                   onClick={() => removeSection(section.id)}
                   size={32}
                   className="absolute top-[-1rem] right-[-1rem] invisible group-hover:visible hover:cursor-pointer 
-            hover:bg-opacity-50 hover:bg-muted-foreground/20 rounded-full p-1"
+                            hover:bg-opacity-50 hover:bg-muted-foreground/20 rounded-full p-1"
                 />
               </div>
             </Flipped>

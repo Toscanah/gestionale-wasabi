@@ -14,7 +14,9 @@ interface TableControlsProps {
   title?: ReactNode;
   onReset?: () => void;
   resetClassName?: string;
+  resetDisabled?: boolean;
   searchBar?: boolean;
+  searchBarDisabled?: boolean;
 }
 
 export default function TableControls({
@@ -26,7 +28,9 @@ export default function TableControls({
   title,
   onReset,
   resetClassName,
+  resetDisabled = false,
   searchBar = true,
+  searchBarDisabled = false,
 }: TableControlsProps) {
   const handleReset = () => {
     onReset?.();
@@ -42,9 +46,9 @@ export default function TableControls({
       {searchBar && (
         <Input
           placeholder="Cerca"
+          disabled={searchBarDisabled}
           value={globalFilter ?? ""}
           onChange={(e) => {
-            
             setGlobalFilter(e.target.value);
           }}
           className="max-w-sm"
@@ -53,7 +57,12 @@ export default function TableControls({
 
       {children}
 
-      <Button variant={"outline"} onClick={handleReset} className={resetClassName}>
+      <Button
+        variant={"outline"}
+        onClick={handleReset}
+        className={resetClassName}
+        disabled={resetDisabled}
+      >
         Reimposta filtri
       </Button>
     </div>

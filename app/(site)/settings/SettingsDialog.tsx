@@ -1,5 +1,5 @@
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import DialogWrapper from "../components/dialog/DialogWrapper";
+import DialogWrapper from "../components/ui/dialog/DialogWrapper";
 import { Gear } from "@phosphor-icons/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RestaurantSettings from "./restaurant/RestaurantSettings";

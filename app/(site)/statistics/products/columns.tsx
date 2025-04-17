@@ -3,7 +3,7 @@ import TableColumn from "../../components/table/TableColumn";
 import { ProductWithStats } from "../../types/ProductWithStats";
 import formatRice from "../../functions/formatting-parsing/formatRice";
 import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
-import DialogWrapper from "../../components/dialog/DialogWrapper";
+import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 
 const columns: ColumnDef<ProductWithStats>[] = [

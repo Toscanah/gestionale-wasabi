@@ -9,17 +9,13 @@ import useGlobalFilter from "../../hooks/useGlobalFilter";
 import GoBack from "../../components/ui/GoBack";
 import TableControls from "../../components/table/TableControls";
 import { OrderWithPayments } from "@/app/(site)/models";
-import SelectWrapper from "../../components/select/SelectWrapper";
+import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import DailySummary from "./DailySummary";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarIcon } from "lucide-react";
 import { OrderType } from "@prisma/client";
 import fetchRequest from "../../functions/api/fetchRequest";
 import PrintSummary from "./PrintSummary";
 import { it } from "date-fns/locale";
+import Calendar from "../../components/ui/calendar/Calendar";
 
 export default function PaymentsTable() {
   const [allOrders, setAllOrders] = useState<OrderWithPayments[]>([]);
@@ -107,23 +103,7 @@ export default function PaymentsTable() {
             onValueChange={handleTypeFilter}
           />
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "grow justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP", { locale: it }) : <span>Seleziona una data</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-            </PopoverContent>
-          </Popover>
+          <Calendar mode="single" dateFilter={date} handleDateFilter={setDate} />
         </TableControls>
 
         <Table table={table} />

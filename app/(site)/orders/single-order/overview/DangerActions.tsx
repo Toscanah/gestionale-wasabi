@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/dialog/DialogWrapper";
+import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import OrderDeletionDialog from "@/app/(site)/orders/single-order/overview/OrderDeletionDialog";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { Button } from "@/components/ui/button";

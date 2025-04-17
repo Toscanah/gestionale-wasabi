@@ -1,14 +1,8 @@
 import { z } from "zod";
 import { AnyOrderSchema, CategoryWithOptionsSchema, ProductInOrderWithOptionsSchema } from "../.";
-import {
-  AddressSchema,
-  CategorySchema,
-  CustomerSchema,
-  OptionSchema,
-  PaymentSchema,
-  ProductSchema,
-} from "@/prisma/generated/zod";
-import { TimeFilter } from "../../sql/products/getProductsWithStats";
+import { CategorySchema, OptionSchema, PaymentSchema, ProductSchema } from "@/prisma/generated/zod";
+import { ShiftFilter } from "../../components/filters/ShiftFilterSelector";
+import { TimeScopeFilter } from "../../statistics/products/page";
 
 export const CreateSubOrderSchema = z.object({
   parentOrder: AnyOrderSchema,
@@ -26,11 +20,7 @@ export const UpdateOptionsOfCategorySchema = z.object({
   options: z.array(OptionSchema),
 });
 
-
-
-
 export const NoContentSchema = z.object({});
-
 
 export const CreateProductSchema = ProductSchema.omit({ id: true }).partial({
   category_id: true,
@@ -52,9 +42,15 @@ export const CreateOptionSchema = OptionSchema.omit({ id: true });
 export const UpdateOptionSChema = OptionSchema.omit({ active: true });
 
 export const GetProductsWithStatsSchema = z.object({
-  timeFilter: z.nativeEnum(TimeFilter),
-  from: z.date().optional(),
-  to: z.date().optional(),
+  filters: z.object({
+    time: z.object({
+      timeScope: z.nativeEnum(TimeScopeFilter),
+      from: z.date().optional(),
+      to: z.date().optional(),
+    }),
+    shift: z.nativeEnum(ShiftFilter),
+    categoryId: z.number().optional(),
+  }),
 });
 
 export const SendMarketingToCustomersSchema = z.object({

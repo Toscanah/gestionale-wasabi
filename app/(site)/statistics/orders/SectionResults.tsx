@@ -34,8 +34,6 @@ export default function SectionResults({
       tableOrders !== prevValues.tableOrders ||
       totalRiceConsumed !== prevValues.totalRiceConsumed;
 
-    console.log(hasChanged);
-
     if (hasChanged) {
       setIsLoading(true);
       setPrevValues({ homeOrders, pickupOrders, tableOrders, totalRiceConsumed });

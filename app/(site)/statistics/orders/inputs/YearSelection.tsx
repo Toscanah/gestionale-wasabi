@@ -1,4 +1,4 @@
-import SelectWrapper from "@/app/(site)/components/select/SelectWrapper";
+import SelectWrapper from "@/app/(site)/components/ui/select/SelectWrapper";
 import { SelectionProps, WeekdaysSelection } from "../Section";
 
 export default function YearSelection({ selection, dispatch }: SelectionProps<WeekdaysSelection>) {

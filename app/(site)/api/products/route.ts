@@ -71,6 +71,7 @@ const POST_ACTIONS = new Map([
   ["createNewProduct", { func: createNewProduct, schema: productSchemas.createNewProduct }],
   ["addProductToOrder", { func: addProductToOrder, schema: productSchemas.addProductToOrder }],
   ["addProductsToOrder", { func: addProductsToOrder, schema: productSchemas.addProductsToOrder }],
+  ["getProductsWithStats", { func: getProductsWithStats, schema: productSchemas.getProducts }],
 ]);
 
 const PATCH_ACTIONS = new Map([
@@ -96,7 +97,6 @@ const PATCH_ACTIONS = new Map([
 
 const GET_ACTIONS = new Map([
   ["getProducts", { func: getProducts, schema: productSchemas.getProducts }],
-  ["getProductsWithStats", { func: getProductsWithStats, schema: productSchemas.getProducts }],
 ]);
 
 const DELETE_ACTIONS = new Map([

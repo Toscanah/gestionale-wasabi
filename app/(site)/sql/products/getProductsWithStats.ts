@@ -1,31 +1,31 @@
+import { WorkingShift } from "@prisma/client";
 import { ProductWithStats, OptionStats } from "../../types/ProductWithStats";
 import prisma from "../db";
-import { categoryInclude, optionsInclude } from "../includes";
+import { pickupOrderInclude, categoryInclude, homeOrderInclude, optionsInclude } from "../includes";
+import { ShiftFilter } from "../../components/filters/ShiftFilterSelector";
+import { TimeScopeFilter } from "../../statistics/products/page";
+import { getEffectiveOrderShift } from "../../functions/order-management/getOrderShift";
 
-export enum TimeFilter {
-  CUSTOM = "custom",
-  ALL = "all",
-}
+export default async function getProductsWithStats(filters: {
+  time: {
+    timeScope: TimeScopeFilter;
+    from?: Date;
+    to?: Date;
+  };
+  shift: ShiftFilter;
+  categoryId?: number;
+}): Promise<ProductWithStats[]> {
+  const { time, shift, categoryId } = filters;
+  const { timeScope, from, to } = time;
 
-export default async function getProductsWithStats(
-  timeFilter: TimeFilter,
-  from?: Date,
-  to?: Date
-): Promise<ProductWithStats[]> {
   let startDate: Date | undefined;
   let endDate: Date | undefined;
 
-  if (timeFilter === TimeFilter.ALL) {
-    startDate = undefined;
-    endDate = undefined;
-  } else if (from && to) {
+  if (timeScope === TimeScopeFilter.CUSTOM_RANGE && from && to) {
     const parsedStartDate = new Date(from);
     const parsedEndDate = new Date(to);
 
-    if (isNaN(parsedStartDate.getTime()) || isNaN(parsedEndDate.getTime())) {
-      startDate = undefined;
-      endDate = undefined;
-    } else {
+    if (!isNaN(parsedStartDate.getTime()) && !isNaN(parsedEndDate.getTime())) {
       parsedStartDate.setHours(0, 0, 0, 0);
       parsedEndDate.setHours(23, 59, 59, 999);
 
@@ -36,31 +36,43 @@ export default async function getProductsWithStats(
 
   const dateFilter = startDate && endDate ? { gte: startDate, lte: endDate } : undefined;
 
-  const productsWithStats = await prisma.product.findMany({
+  const products = await prisma.product.findMany({
     where: {
       active: true,
+      category_id: categoryId ?? undefined,
     },
     include: {
       ...categoryInclude,
       orders: {
         include: {
-          order: true,
+          order: {
+            include: {
+              ...homeOrderInclude,
+              ...pickupOrderInclude,
+            },
+          },
           ...optionsInclude,
         },
       },
     },
   });
 
-  const filteredProducts = productsWithStats
+  const filteredProducts = products
     .map((product) => {
       const filteredOrders = product.orders.filter((productInOrder) => {
         const order = productInOrder.order;
+        const withinDate =
+          !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
 
-        if (!dateFilter) {
-          return true;
-        }
+        let matchesShift = true;
+        let { effectiveShift } = getEffectiveOrderShift(order as any);
+        if (shift === "lunch") {
+          matchesShift = effectiveShift === WorkingShift.LUNCH;
+        } else if (shift === "dinner") {
+          matchesShift = effectiveShift === WorkingShift.DINNER;
+        } // no need for else = "all", matchesShift is already true = take all orders
 
-        return order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte;
+        return withinDate && matchesShift;
       });
 
       if (filteredOrders.length > 0) {
@@ -69,7 +81,7 @@ export default async function getProductsWithStats(
 
       return null;
     })
-    .filter(Boolean) as typeof productsWithStats;
+    .filter(Boolean) as typeof products;
 
   return filteredProducts.map((product) => {
     const stats = product.orders.reduce(
@@ -87,7 +99,6 @@ export default async function getProductsWithStats(
       { quantity: 0, total: 0, options: {} as Record<string, number> }
     );
 
-    // Convert options object to sorted array
     const optionsRank: OptionStats[] = Object.entries(stats.options)
       .map(([optionName, count], index) => ({
         option: optionName,

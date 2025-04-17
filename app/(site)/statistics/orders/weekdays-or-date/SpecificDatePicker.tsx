@@ -1,4 +1,4 @@
-import Calendar from "@/app/(site)/components/calendar/Calendar";
+import Calendar from "@/app/(site)/components/ui/calendar/Calendar";
 import { SelectionProps } from "../Section";
 
 export default function SpecificDatePicker({

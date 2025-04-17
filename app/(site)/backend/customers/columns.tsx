@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import DialogWrapper from "../../components/dialog/DialogWrapper";
+import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";

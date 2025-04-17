@@ -1,4 +1,4 @@
-import SelectWrapper from "@/app/(site)/components/select/SelectWrapper";
+import SelectWrapper from "@/app/(site)/components/ui/select/SelectWrapper";
 import { SelectionProps, Time, Shift } from "../Section";
 
 export default function ShiftSelection({ selection, dispatch }: SelectionProps<Time>) {

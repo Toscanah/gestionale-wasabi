@@ -1,8 +1,8 @@
 import { DateRange } from "react-day-picker";
 import { SelectionProps, WeekdaysSelection } from "../Section";
-import Calendar from "@/app/(site)/components/calendar/Calendar";
 import { DATE_PRESETS, DatePreset } from "@/app/(site)/enums/DatePreset";
 import { endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, subDays } from "date-fns";
+import Calendar from "@/app/(site)/components/ui/calendar/Calendar";
 
 export default function RangeSelection({ selection, dispatch }: SelectionProps<WeekdaysSelection>) {
   const handlePresetSelect = (value: DatePreset) => {

@@ -5,6 +5,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { WorkingShift } from "@prisma/client";
 
 export default function ShiftSelection() {
+  return <></>
+  
   const { order, updateOrder } = useOrderContext();
 
   const handleShiftChange = (shift: WorkingShift) => {

@@ -12,7 +12,7 @@ import { formSchema } from "./form";
 import { getProductFields } from "./form";
 import logo from "../../../../public/logo.png";
 import Image from "next/image";
-import SelectWrapper from "../../components/select/SelectWrapper";
+import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import { Category } from "@prisma/client";
 import { ALL_CATEGORIES } from "../../hooks/statistics/useProductsStats";
 

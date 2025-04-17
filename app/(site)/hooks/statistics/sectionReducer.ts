@@ -25,6 +25,7 @@ export type ReducerActions =
 export const initialState: SectionState = {
   mainChoice: "date",
   specificDate: undefined,
+  weekdaysSelection: { type: "range", range: undefined },
   time: { type: "range", from: "", to: "" },
 };
 

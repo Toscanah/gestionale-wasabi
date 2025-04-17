@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { SidebarFooter, SidebarMenu } from "@/components/ui/sidebar";
 import fetchRequest from "../../functions/api/fetchRequest";
-import DialogWrapper from "../dialog/DialogWrapper";
+import DialogWrapper from "../ui/dialog/DialogWrapper";
 
 export default function Footer() {
   return (

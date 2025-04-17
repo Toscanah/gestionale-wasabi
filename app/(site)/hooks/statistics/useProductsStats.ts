@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Category } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
-import { TimeFilter } from "@/app/(site)/sql/products/getProductsWithStats";
 import { ProductWithStats } from "@/app/(site)/types/ProductWithStats";
+import { ShiftFilter } from "../../components/filters/ShiftFilterSelector";
+import { TimeScopeFilter } from "../../statistics/products/page";
 
 const DEFAULT_START_DATE = new Date(new Date().setHours(0, 0, 0, 0));
 const DEFAULT_END_DATE = new Date(new Date().setHours(23, 59, 59, 999));
@@ -19,15 +20,17 @@ export const ALL_CATEGORIES = {
 };
 
 export default function useProductsStats() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [products, setProducts] = useState<ProductWithStats[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductWithStats[]>([]);
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category>(ALL_CATEGORIES);
 
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>(TimeFilter.ALL);
+  const [timeScopeFilter, setTimeScopeFilter] = useState<TimeScopeFilter>(TimeScopeFilter.ALL_TIME);
   const [dateFilter, setDateFilter] = useState<DateRange | undefined>(DEFAULT_DATE);
-  // const [shiftFilter, setShiftFilter] = useState
+  const [shiftFilter, setShiftFilter] = useState<ShiftFilter>(ShiftFilter.BOTH);
 
   useEffect(() => {
     fetchInitialProducts();
@@ -35,66 +38,59 @@ export default function useProductsStats() {
   }, []);
 
   useEffect(() => {
-    if (timeFilter === TimeFilter.CUSTOM) {
-      if (dateFilter?.from && dateFilter?.to) {
-        fetchProductsWithFilter(timeFilter, dateFilter);
-      } else {
-        setFilteredProducts([]);
-      }
-    } else {
-      fetchInitialProducts();
-    }
-  }, [timeFilter, dateFilter]);
+    const isCustom = timeScopeFilter === TimeScopeFilter.CUSTOM_RANGE;
+    const hasValidDates = dateFilter?.from && dateFilter?.to;
 
-  useEffect(() => {
-    if (timeFilter === TimeFilter.CUSTOM && dateFilter?.from && dateFilter?.to) {
-      fetchProductsWithFilter(timeFilter, { ...dateFilter });
-    } else {
-      setFilteredProducts(
-        selectedCategory.id === -1
-          ? products
-          : products.filter((product) => product.category_id === selectedCategory.id)
-      );
+    if (isCustom && !hasValidDates) {
+      setFilteredProducts([]);
+      return;
     }
-  }, [selectedCategory]);
+
+    fetchProductsWithFilter();
+  }, [timeScopeFilter, dateFilter, shiftFilter, selectedCategory]);
 
   const fetchCategories = () =>
     fetchRequest<Category[]>("GET", "/api/categories/", "getCategories").then((fetchedCategories) =>
       setCategories(fetchedCategories.filter((c) => c.active))
     );
 
-  const fetchInitialProducts = () =>
-    fetchRequest<ProductWithStats[]>("GET", "/api/products", "getProductsWithStats", {
-      timeFilter: TimeFilter.ALL,
-      from: undefined,
-      to: undefined,
-    }).then((initialProducts) => {
-      const sortedProducts = initialProducts.sort((a, b) => b.quantity - a.quantity);
+  const fetchInitialProducts = () => {
+    setIsLoading(true);
 
-      setProducts(sortedProducts);
-      setFilteredProducts(
-        selectedCategory.id === -1
-          ? sortedProducts
-          : sortedProducts.filter((product) => product.category_id === selectedCategory.id)
-      );
-    });
+    fetchRequest<ProductWithStats[]>("POST", "/api/products", "getProductsWithStats", {
+      filters: {
+        time: {
+          timeScope: TimeScopeFilter.ALL_TIME,
+        },
+        shift: ShiftFilter.BOTH,
+      },
+    })
+      .then(setProducts)
+      .finally(() => setIsLoading(false));
+  };
 
-  const fetchProductsWithFilter = (timeFilter: TimeFilter, value: DateRange) =>
-    fetchRequest<ProductWithStats[]>("GET", "/api/products", "getProductsWithStats", {
-      timeFilter,
-      ...value,
-    }).then((products) =>
-      setFilteredProducts(
-        selectedCategory.id === -1
-          ? products
-          : products.filter((product) => product.category_id === selectedCategory.id)
-      )
-    );
+  const fetchProductsWithFilter = useCallback(() => {
+    setIsLoading(true);
+    fetchRequest<ProductWithStats[]>("POST", "/api/products", "getProductsWithStats", {
+      filters: {
+        time: {
+          timeScope: timeScopeFilter,
+          from: dateFilter?.from,
+          to: dateFilter?.to,
+        },
+        shift: shiftFilter,
+        categoryId: selectedCategory.id === -1 ? undefined : selectedCategory.id,
+      },
+    })
+      .then(setFilteredProducts)
+      .finally(() => setIsLoading(false));
+  }, [timeScopeFilter, dateFilter, shiftFilter, selectedCategory]);
 
   const handleReset = () => {
-    setTimeFilter(TimeFilter.ALL);
+    setTimeScopeFilter(TimeScopeFilter.ALL_TIME);
     setDateFilter(DEFAULT_DATE);
     setSelectedCategory(ALL_CATEGORIES);
+    setShiftFilter(ShiftFilter.BOTH);
     fetchInitialProducts();
   };
 
@@ -103,10 +99,13 @@ export default function useProductsStats() {
     categories,
     selectedCategory,
     setSelectedCategory,
-    timeFilter,
-    setTimeFilter,
+    timeScopeFilter,
+    setTimeScopeFilter,
     dateFilter,
     setDateFilter,
+    shiftFilter,
+    setShiftFilter,
     handleReset,
+    isLoading,
   };
 }

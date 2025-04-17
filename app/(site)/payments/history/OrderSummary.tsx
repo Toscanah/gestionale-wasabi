@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import DialogWrapper from "../../components/dialog/DialogWrapper";
+import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Badge } from "@/components/ui/badge";
 import { AnyOrder } from "@/app/(site)/models";
 import { OrderType } from "@prisma/client";

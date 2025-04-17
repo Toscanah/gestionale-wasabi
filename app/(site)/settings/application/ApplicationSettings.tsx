@@ -3,7 +3,7 @@ import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import PrinterChoice from "./PrinterChoice";
-import TimePicker from "../../components/ui/TimePicker";
+import TimePicker from "../../components/ui/time/TimePicker";
 
 export default function ApplicationSettings() {
   const { settings, updateSettings } = useWasabiContext();

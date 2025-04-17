@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import DialogWrapper from "../components/dialog/DialogWrapper";
+import DialogWrapper from "../components/ui/dialog/DialogWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

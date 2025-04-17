@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import DialogWrapper from "../components/dialog/DialogWrapper";
+import DialogWrapper from "../components/ui/dialog/DialogWrapper";
 import { useEffect, useState } from "react";
 import { format, isToday } from "date-fns";
 import { RiceLog } from "../models/base/Rice";

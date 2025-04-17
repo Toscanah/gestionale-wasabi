@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
 import { CustomerWithDetails } from "../../models";
 import { format } from "date-fns"; // Ensure date-fns is installed
-import DialogWrapper from "../../components/dialog/DialogWrapper";
+import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import ScoreDialog from "./ScoreDialog";
 import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";

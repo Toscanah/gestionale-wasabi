@@ -1,7 +1,7 @@
-import { Shift } from "@prisma/client";
+import { WorkingShift } from "@prisma/client";
 import prisma from "../db";
 
-export async function updateOrderShift(orderId: number, shift: Shift) {
+export async function updateOrderShift(orderId: number, shift: WorkingShift) {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
   });
@@ -14,6 +14,4 @@ export async function updateOrderShift(orderId: number, shift: Shift) {
     where: { id: orderId },
     data: { shift },
   });
-
-  return true;
 }

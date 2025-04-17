@@ -5,18 +5,12 @@ import Table from "../../components/table/Table";
 import columns from "./columns";
 import TableControls from "../../components/table/TableControls";
 import useGlobalFilter from "../../hooks/useGlobalFilter";
-import SelectWrapper from "../../components/select/SelectWrapper";
+import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import GoBack from "../../components/ui/GoBack";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { it } from "date-fns/locale";
 import { useCustomersStats } from "../../hooks/statistics/useCustomersStats";
 import { TablePagination } from "../../components/table/TablePagination";
 import { DATE_PRESETS, DatePreset } from "../../enums/DatePreset";
+import Calendar from "../../components/ui/calendar/Calendar";
 
 export default function CustomersStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
@@ -69,51 +63,13 @@ export default function CustomersStats() {
             ]}
           />
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !dateFilter && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateFilter?.from
-                  ? dateFilter.to
-                    ? `${format(dateFilter.from, "PPP", { locale: it })} - ${format(
-                        dateFilter.to,
-                        "PPP",
-                        { locale: it }
-                      )}`
-                    : format(dateFilter.from, "PPP", { locale: it })
-                  : "Seleziona una data"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
-              <SelectWrapper
-                onValueChange={(value) => handlePresetSelect(value as DatePreset)}
-                className="h-8"
-                groups={[
-                  {
-                    items: DATE_PRESETS,
-                  },
-                ]}
-              />
-              <div className="rounded-md border">
-                <Calendar
-                  locale={it}
-                  mode="range"
-                  initialFocus
-                  defaultMonth={dateFilter?.from}
-                  selected={dateFilter}
-                  onSelect={setDateFilter}
-                  numberOfMonths={2}
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
+          <Calendar
+            dateFilter={dateFilter}
+            presets={DATE_PRESETS}
+            mode="range"
+            handlePresetSelection={(value) => handlePresetSelect(value as DatePreset)}
+            handleDateFilter={setDateFilter}
+          />
         </TableControls>
 
         <Table table={table} tableClassName="max-h-max" />
