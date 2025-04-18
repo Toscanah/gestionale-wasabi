@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { AnyOrderSchema, CategoryWithOptionsSchema, ProductInOrderWithOptionsSchema } from "../.";
 import { CategorySchema, OptionSchema, PaymentSchema, ProductSchema } from "@/prisma/generated/zod";
-import { ShiftFilter } from "../../components/filters/ShiftFilterSelector";
-import { TimeScopeFilter } from "../../statistics/products/page";
+import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
+import TimeScopeFilter from "../../components/filters/shift/TimeScope";
 
 export const CreateSubOrderSchema = z.object({
   parentOrder: AnyOrderSchema,

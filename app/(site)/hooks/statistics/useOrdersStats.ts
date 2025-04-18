@@ -4,11 +4,9 @@ import { OrderType, ProductInOrderState, WorkingShift } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import sectionReducer, { initialState } from "./sectionReducer";
 import { isSameDay } from "date-fns";
-import timeToDecimal from "../../functions/util/timeToDecimal";
-import {
-  getEffectiveOrderShift,
-  parseOrderTime,
-} from "../../functions/order-management/getOrderShift";
+import timeToDecimal from "../../functions/util/time/timeToDecimal";
+import { getEffectiveOrderShift, parseOrderTime } from "../../functions/order-management/shift/getOrderShift";
+
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -154,7 +152,6 @@ export default function useOrdersStats(orders: AnyOrder[]) {
   };
 
   const applyFilters = () => {
-    // console.log(state)
     let filteredOrders = [...orders];
     filteredOrders = filterByDate(filteredOrders);
     filteredOrders = filterByTime(filteredOrders);

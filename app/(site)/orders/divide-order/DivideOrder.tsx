@@ -8,7 +8,7 @@ import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import { useOrderContext } from "../../context/OrderContext";
 import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
 import DivideTable from "./DivideTable";
-import shiftProductsInDivideOrder from "../../functions/order-management/shiftProductsInDivideOrder";
+import moveProductsInDivideOrder from "../../functions/order-management/moveProductsInDivideOrder";
 import fetchRequest from "../../functions/api/fetchRequest";
 
 interface DividerOrderProps {
@@ -101,7 +101,7 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
           products={leftProducts}
           disabled={leftProducts.length === 0 || rightProducts.length > 0}
           onRowClick={(product) =>
-            shiftProductsInDivideOrder(
+            moveProductsInDivideOrder(
               product,
               leftProducts,
               setLeftProducts,
@@ -118,7 +118,7 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
           disabled={rightProducts.length === 0}
           products={rightProducts}
           onRowClick={(product) =>
-            shiftProductsInDivideOrder(
+            moveProductsInDivideOrder(
               product,
               rightProducts,
               setRightProducts,

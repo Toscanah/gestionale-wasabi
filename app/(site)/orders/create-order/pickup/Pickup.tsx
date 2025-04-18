@@ -3,7 +3,7 @@ import { AnyOrder, PickupOrder } from "@/app/(site)/models";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import WhenSelector from "../../../components/shared/WhenSelector";
+import WhenSelector from "../../../components/ui/time/WhenSelector";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import useFocusCycle from "../../../hooks/useFocusCycle";
 import fetchRequest from "../../../functions/api/fetchRequest";

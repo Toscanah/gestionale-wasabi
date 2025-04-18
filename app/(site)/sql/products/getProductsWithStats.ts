@@ -1,10 +1,9 @@
-import { WorkingShift } from "@prisma/client";
 import { ProductWithStats, OptionStats } from "../../types/ProductWithStats";
 import prisma from "../db";
 import { pickupOrderInclude, categoryInclude, homeOrderInclude, optionsInclude } from "../includes";
-import { ShiftFilter } from "../../components/filters/ShiftFilterSelector";
-import { TimeScopeFilter } from "../../statistics/products/page";
-import { getEffectiveOrderShift } from "../../functions/order-management/getOrderShift";
+import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
+import TimeScopeFilter from "../../components/filters/shift/TimeScope";
+import { orderMatchesShift } from "../../functions/order-management/shift/orderMatchesShift";
 
 export default async function getProductsWithStats(filters: {
   time: {
@@ -21,7 +20,7 @@ export default async function getProductsWithStats(filters: {
   let startDate: Date | undefined;
   let endDate: Date | undefined;
 
-  if (timeScope === TimeScopeFilter.CUSTOM_RANGE && from && to) {
+  if (timeScope == TimeScopeFilter.CUSTOM_RANGE && from && to) {
     const parsedStartDate = new Date(from);
     const parsedEndDate = new Date(to);
 
@@ -47,8 +46,16 @@ export default async function getProductsWithStats(filters: {
         include: {
           order: {
             include: {
-              ...homeOrderInclude,
-              ...pickupOrderInclude,
+              home_order: {
+                select: {
+                  when: true
+                }
+              },
+              pickup_order: {
+                select: {
+                  when: true
+                }
+              },
             },
           },
           ...optionsInclude,
@@ -64,15 +71,7 @@ export default async function getProductsWithStats(filters: {
         const withinDate =
           !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
 
-        let matchesShift = true;
-        let { effectiveShift } = getEffectiveOrderShift(order as any);
-        if (shift === "lunch") {
-          matchesShift = effectiveShift === WorkingShift.LUNCH;
-        } else if (shift === "dinner") {
-          matchesShift = effectiveShift === WorkingShift.DINNER;
-        } // no need for else = "all", matchesShift is already true = take all orders
-
-        return withinDate && matchesShift;
+        return withinDate && orderMatchesShift(order, shift);
       });
 
       if (filteredOrders.length > 0) {

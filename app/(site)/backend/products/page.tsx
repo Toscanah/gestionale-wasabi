@@ -1,6 +1,6 @@
 "use client";
 
-import GoBack from "../../components/ui/GoBack";
+import GoBack from "../../components/ui/misc/GoBack";
 import { Product } from "@/app/(site)/models";
 import fetchRequest from "../../functions/api/fetchRequest";
 import Manager from "../Manager";
@@ -10,11 +10,10 @@ import FormFields from "../FormFields";
 import { CategoryWithOptions } from "@/app/(site)/models";
 import { formSchema } from "./form";
 import { getProductFields } from "./form";
-import logo from "../../../../public/logo.png";
-import Image from "next/image";
 import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import { Category } from "@prisma/client";
 import { ALL_CATEGORIES } from "../../hooks/statistics/useProductsStats";
+import RandomSpinner from "../../components/ui/misc/RandomSpinner";
 
 type FormValues = Partial<Product>;
 
@@ -90,9 +89,7 @@ export default function ProductDashboard() {
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
         {loading ? (
-          <div className="w-full h-full flex items-center justify-center">
-            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
-          </div>
+          <RandomSpinner isLoading={loading} />
         ) : (
           <Manager<Product>
             addionalFilters={[

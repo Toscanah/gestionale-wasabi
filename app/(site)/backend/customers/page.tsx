@@ -4,13 +4,11 @@ import { useEffect, useState } from "react";
 import fetchRequest from "../../functions/api/fetchRequest";
 import FormFields from "../FormFields";
 import { formSchema, getCustomerFields } from "./form";
-import Image from "next/image";
-import logo from "../../../../public/logo.png";
 import Manager from "../Manager";
 import columns from "./columns";
-import GoBack from "../../components/ui/GoBack";
+import GoBack from "../../components/ui/misc/GoBack";
 import { CustomerWithDetails } from "@/app/(site)/models";
-import { Input } from "@/components/ui/input";
+import RandomSpinner from "../../components/ui/misc/RandomSpinner";
 
 type FormValues = Partial<CustomerWithDetails>;
 
@@ -56,9 +54,7 @@ export default function CustomersDashboard() {
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
         {loading ? (
-          <div className="w-full h-full flex items-center justify-center ">
-            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
-          </div>
+          <RandomSpinner isLoading={loading} />
         ) : (
           <Manager<CustomerWithDetails>
             type="customer"

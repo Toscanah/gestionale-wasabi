@@ -4,14 +4,12 @@ import { useEffect, useState } from "react";
 import fetchRequest from "../../functions/api/fetchRequest";
 import columns from "./columns";
 import Manager from "../Manager";
-import GoBack from "../../components/ui/GoBack";
+import GoBack from "../../components/ui/misc/GoBack";
 import FormFields from "../FormFields";
 import { formSchema, getCategoryFields } from "./form";
-import logo from "../../../../public/logo.png";
-import Image from "next/image";
 import { CategoryWithOptions } from "../../models";
 import { Option } from "@/prisma/generated/zod";
-import { OptionOption } from "./CategoryOptions";
+import RandomSpinner from "../../components/ui/misc/RandomSpinner";
 
 type FormValues = Partial<CategoryWithOptions>;
 
@@ -58,9 +56,7 @@ export default function CategoryDashboard() {
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
         {loading ? (
-          <div className="w-full h-full flex items-center justify-center">
-            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
-          </div>
+          <RandomSpinner isLoading={loading} />
         ) : (
           <Manager<CategoryWithOptions>
             type="category"

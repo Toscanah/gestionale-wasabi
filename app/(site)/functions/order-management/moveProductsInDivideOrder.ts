@@ -3,7 +3,7 @@ import { ProductInOrder } from "../../models";
 import { getProductPrice } from "../product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 
-export default function shiftProductsInDivideOrder(
+export default function moveProductsInDivideOrder(
   product: ProductInOrder,
   source: ProductInOrder[],
   setSource: Dispatch<SetStateAction<ProductInOrder[]>>,

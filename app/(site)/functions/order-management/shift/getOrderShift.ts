@@ -1,19 +1,19 @@
 import { OrderType, WorkingShift } from "@prisma/client";
-import { AnyOrder, HomeOrder, PickupOrder } from "../../models";
-import timeToDecimal from "../util/timeToDecimal";
-import Timestamps from "../../enums/Timestamps";
+import timeToDecimal from "../../util/time/timeToDecimal";
+import Timestamps from "@/app/(site)/enums/Timestamps";
+import { ShiftEvaluableOrder } from "@/app/(site)/types/ShiftEvaluableOrder";
 
 function normalizeWhen(when?: string): string | "immediate" {
   return when?.toLowerCase() ?? "immediate";
 }
 
-export function parseOrderTime(order: AnyOrder): number {
+export function parseOrderTime(order: ShiftEvaluableOrder): number {
   let when: string | undefined;
 
   if (order.type === OrderType.HOME) {
-    when = (order as HomeOrder).home_order?.when;
+    when = order.home_order?.when;
   } else if (order.type === OrderType.PICKUP) {
-    when = (order as PickupOrder).pickup_order?.when;
+    when = order.pickup_order?.when;
   }
 
   const normalizedWhen = normalizeWhen(when);
@@ -37,8 +37,8 @@ function inferShift(time: number): WorkingShift {
   return WorkingShift.UNSPECIFIED;
 }
 
-export function getEffectiveOrderShift(order: AnyOrder): { effectiveShift: WorkingShift } {
-  if (order.shift !== WorkingShift.UNSPECIFIED) {
+export function getEffectiveOrderShift(order: ShiftEvaluableOrder): { effectiveShift: WorkingShift } {
+  if (order.shift && order.shift !== WorkingShift.UNSPECIFIED) {
     return { effectiveShift: order.shift };
   }
 

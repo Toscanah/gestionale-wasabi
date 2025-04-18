@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Hash, List, Tag, UsersFour } from "@phosphor-icons/react";
 import Link from "next/link";
-import GoBack from "../components/ui/GoBack";
+import GoBack from "../components/ui/misc/GoBack";
 
 export default function Backend() {
   return (

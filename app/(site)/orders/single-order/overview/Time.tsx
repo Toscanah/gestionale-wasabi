@@ -1,4 +1,4 @@
-import WhenSelector from "@/app/(site)/components/shared/WhenSelector";
+import WhenSelector from "@/app/(site)/components/ui/time/WhenSelector";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/models";

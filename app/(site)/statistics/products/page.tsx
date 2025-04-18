@@ -2,7 +2,7 @@
 
 import Table from "../../components/table/Table";
 import SelectWrapper from "../../components/ui/select/SelectWrapper";
-import GoBack from "../../components/ui/GoBack";
+import GoBack from "../../components/ui/misc/GoBack";
 import getTable from "../../functions/util/getTable";
 import columns from "./columns";
 import useProductsStats, { ALL_CATEGORIES } from "../../hooks/statistics/useProductsStats";
@@ -10,14 +10,11 @@ import TableControls from "../../components/table/TableControls";
 import useGlobalFilter from "../../hooks/useGlobalFilter";
 import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
 import Calendar from "../../components/ui/calendar/Calendar";
-import ShiftFilterSelector from "../../components/filters/ShiftFilterSelector";
+import ShiftFilterSelector from "../../components/filters/shift/ShiftFilterSelector";
 import logo from "../../../../public/logo.png";
 import Image from "next/image";
-
-export enum TimeScopeFilter {
-  ALL_TIME = "all_time",
-  CUSTOM_RANGE = "custom_range",
-}
+import TimeScopeFilter from "../../components/filters/shift/TimeScope";
+import RandomSpinner from "../../components/ui/misc/RandomSpinner";
 
 export default function ProductsStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
@@ -116,18 +113,17 @@ export default function ProductsStats() {
         </TableControls>
 
         {isLoading ? (
-          <div className="w-full h-full flex items-center justify-center">
-            <Image src={logo} alt="logo" width={600} height={600} className="animate-spin" />
-          </div>
+          <RandomSpinner isLoading={isLoading} />
         ) : (
           <Table table={table} tableClassName="max-h-max" />
         )}
 
         <span>
           Totale:{" "}
-          {roundToTwo(
-            table.getFilteredRowModel().rows.reduce((sum, row) => sum + row.original.total, 0)
-          )}{" "}
+          {!isLoading &&
+            roundToTwo(
+              table.getFilteredRowModel().rows.reduce((sum, row) => sum + row.original.total, 0)
+            )}{" "}
           €
         </span>
 

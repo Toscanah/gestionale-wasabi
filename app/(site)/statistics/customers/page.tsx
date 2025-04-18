@@ -6,7 +6,7 @@ import columns from "./columns";
 import TableControls from "../../components/table/TableControls";
 import useGlobalFilter from "../../hooks/useGlobalFilter";
 import SelectWrapper from "../../components/ui/select/SelectWrapper";
-import GoBack from "../../components/ui/GoBack";
+import GoBack from "../../components/ui/misc/GoBack";
 import { useCustomersStats } from "../../hooks/statistics/useCustomersStats";
 import { TablePagination } from "../../components/table/TablePagination";
 import { DATE_PRESETS, DatePreset } from "../../enums/DatePreset";

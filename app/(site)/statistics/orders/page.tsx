@@ -9,7 +9,7 @@ import Section from "./Section";
 import { Flipper, Flipped, spring } from "react-flip-toolkit";
 import { Plus, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
-import GoBack from "../../components/ui/GoBack";
+import GoBack from "../../components/ui/misc/GoBack";
 
 export default function OrdersStats() {
   const [orders, setOrders] = useState<AnyOrder[]>([]);
