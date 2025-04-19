@@ -56,7 +56,7 @@ export default function RiceDefaultValues() {
         fetchRequest("PATCH", "/api/rice/", "updateRiceBatch", { batchId, field, value }).then(() =>
           toastSuccess("Valore aggiornato con successo")
         ),
-      2000
+      1000
     ),
     []
   );
@@ -67,6 +67,7 @@ export default function RiceDefaultValues() {
       title="Valori di default del riso"
       desc="I valori si salvano automaticamente"
       contentClassName=""
+      onOpenChange={() => fetchRiceBatches()}
       autoFocus={false}
       trigger={
         <SidebarMenuSubButton className="hover:cursor-pointer ">
