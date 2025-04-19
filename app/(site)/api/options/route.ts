@@ -6,33 +6,10 @@ import updateOption from "../../sql/options/updateOption";
 import createNewOption from "../../sql/options/createNewOption";
 import toggleOption from "../../sql/options/toggleOption";
 import handleRequest from "../util/handleRequest";
-import { z } from "zod";
-import { OptionSchema } from "@/prisma/generated/zod";
-import {
-  CreateOptionSchema,
-  NoContentSchema,
-  UpdateOptionSChema,
-  UpdateOptionsOfCategorySchema,
-} from "@shared"
-;
-
-export const optionSchemas = {
-  getAllOptions: NoContentSchema,
-  getAllOptionsWithCategories: NoContentSchema,
-  updateOptionsOfCategory: UpdateOptionsOfCategorySchema,
-  updateOption: z.object({
-    option: UpdateOptionSChema,
-  }),
-  createNewOption: z.object({
-    option: CreateOptionSchema,
-  }),
-  toggleOption: z.object({
-    id: z.number(),
-  }),
-};
+import { OPTION_SCHEMAS } from "../../shared/schemas/option";
 
 const POST_ACTIONS = new Map([
-  ["createNewOption", { func: createNewOption, schema: optionSchemas.createNewOption }],
+  ["createNewOption", { func: createNewOption, schema: OPTION_SCHEMAS.createNewOption }],
 ]);
 
 const PATCH_ACTIONS = new Map([
@@ -40,15 +17,15 @@ const PATCH_ACTIONS = new Map([
   //   "updateOptionsOfCategory",
   //   { func: updateOptionsOfCategory, schema: optionSchemas.updateOptionsOfCategory },
   // ],
-  ["updateOption", { func: updateOption, schema: optionSchemas.updateOption }],
-  ["toggleOption", { func: toggleOption, schema: optionSchemas.toggleOption }],
+  ["updateOption", { func: updateOption, schema: OPTION_SCHEMAS.updateOption }],
+  ["toggleOption", { func: toggleOption, schema: OPTION_SCHEMAS.toggleOption }],
 ]);
 
 const GET_ACTIONS = new Map([
-  ["getAllOptions", { func: getAllOptions, schema: optionSchemas.getAllOptions }],
+  ["getAllOptions", { func: getAllOptions, schema: OPTION_SCHEMAS.getAllOptions }],
   [
     "getAllOptionsWithCategories",
-    { func: getAllOptionsWithCategories, schema: optionSchemas.getAllOptionsWithCategories },
+    { func: getAllOptionsWithCategories, schema: OPTION_SCHEMAS.getAllOptionsWithCategories },
   ],
 ]);
 

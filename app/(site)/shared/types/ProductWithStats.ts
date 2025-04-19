@@ -1,4 +1,4 @@
-import { Product } from "../models";
+import { Product } from "../models/_index";
 
 export type OptionStats = {
   option: string;

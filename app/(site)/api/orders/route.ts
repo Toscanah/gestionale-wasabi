@@ -7,13 +7,10 @@ import updateOrderTime from "../../sql/orders/updateOrderTime";
 import cancelOrder from "../../sql/orders/cancelOrder";
 import updateOrderNotes from "../../sql/orders/updateOrderNotes";
 import updateDiscount from "../../sql/orders/updateDiscount";
-import { OrderType, QuickPaymentOption, WorkingShift } from "@prisma/client";
 import createSubOrder from "../../sql/orders/createSubOrder";
 import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 import cancelOrdersInBulk from "../../sql/orders/cancelOrdersInBulk";
 import deleteEverything from "../../sql/deleteEverything";
-import { z } from "zod";
-import { CreateSubOrderSchema, NoContentSchema } from "@shared";
 import handleRequest from "../util/handleRequest";
 import joinTableOrders from "../../sql/orders/joinTableOrders";
 import updateTable from "../../sql/orders/updateTable";
@@ -22,112 +19,40 @@ import updateOrderPayment from "../../sql/orders/updateOrderPayment";
 import updateOrderExtraItems from "../../sql/orders/updateOrderExtraItems";
 import { updateOrderShift } from "../../sql/orders/updateOrderShift";
 import { fixOrdersShift } from "../../sql/orders/fixOrdersShift";
-
-export const orderSchemas = {
-  getOrderById: z.object({
-    orderId: z.number(),
-    variant: z.string().default("onlyPaid"),
-  }),
-  getOrdersByType: z.object({
-    type: z.nativeEnum(OrderType),
-  }),
-  updateDiscount: z.object({
-    orderId: z.number(),
-    discount: z.number().optional(),
-  }),
-  updateOrderNotes: z.object({
-    orderId: z.number(),
-    notes: z.string(),
-  }),
-  updateOrderPayment: z.object({
-    orderId: z.number(),
-    payment: z.nativeEnum(QuickPaymentOption),
-  }),
-  createTableOrder: z.object({
-    table: z.string(),
-    people: z.number(),
-    resName: z.string().optional(),
-  }),
-  createPickupOrder: z.object({
-    name: z.string(),
-    when: z.string(),
-    phone: z.string(),
-  }),
-  createHomeOrder: z.object({
-    customerId: z.number(),
-    addressId: z.number(),
-    notes: z.string(),
-    contactPhone: z.string(),
-  }),
-  updateOrderTime: z.object({
-    time: z.string(),
-    orderId: z.number(),
-  }),
-  cancelOrder: z.object({
-    orderId: z.number(),
-    cooked: z.boolean().optional().default(false),
-  }),
-  createSubOrder: CreateSubOrderSchema,
-  updatePrintedFlag: z.object({
-    orderId: z.number(),
-  }),
-  cancelOrdersInBulk: z.object({
-    ordersId: z.array(z.number()),
-    productsCooked: z.boolean(),
-  }),
-  deleteEverything: NoContentSchema,
-  joinTableOrders: z.object({
-    tableToJoin: z.string(),
-    originalOrderId: z.number(),
-  }),
-  updateTable: z.object({
-    table: z.string(),
-    orderId: z.number(),
-  }),
-  updateOrderExtraItems: z.object({
-    orderId: z.number(),
-    items: z.enum(["salads", "soups", "rices"]),
-    value: z.number().nullable(),
-  }),
-  updateOrderShift: z.object({
-    orderId: z.number(),
-    shift: z.nativeEnum(WorkingShift),
-  }),
-  fixOrdersShift: NoContentSchema,
-};
+import { ORDER_SCHEMAS } from "../../shared/schemas/order";
 
 const GET_ACTIONS = new Map([
-  ["getOrdersByType", { func: getOrdersByType, schema: orderSchemas.getOrdersByType }],
-  ["getOrderById", { func: getOrderById, schema: orderSchemas.getOrderById }],
+  ["getOrdersByType", { func: getOrdersByType, schema: ORDER_SCHEMAS.getOrdersByType }],
+  ["getOrderById", { func: getOrderById, schema: ORDER_SCHEMAS.getOrderById }],
 ]);
 
 const POST_ACTIONS = new Map([
-  ["createTableOrder", { func: createTableOrder, schema: orderSchemas.createTableOrder }],
-  ["createPickupOrder", { func: createPickupOrder, schema: orderSchemas.createPickupOrder }],
-  ["createHomeOrder", { func: createHomeOrder, schema: orderSchemas.createHomeOrder }],
-  ["createSubOrder", { func: createSubOrder, schema: orderSchemas.createSubOrder }],
+  ["createTableOrder", { func: createTableOrder, schema: ORDER_SCHEMAS.createTableOrder }],
+  ["createPickupOrder", { func: createPickupOrder, schema: ORDER_SCHEMAS.createPickupOrder }],
+  ["createHomeOrder", { func: createHomeOrder, schema: ORDER_SCHEMAS.createHomeOrder }],
+  ["createSubOrder", { func: createSubOrder, schema: ORDER_SCHEMAS.createSubOrder }],
 ]);
 
 const PATCH_ACTIONS = new Map([
-  ["updateDiscount", { func: updateDiscount, schema: orderSchemas.updateDiscount }],
-  ["updateOrderNotes", { func: updateOrderNotes, schema: orderSchemas.updateOrderNotes }],
-  ["updateOrderTime", { func: updateOrderTime, schema: orderSchemas.updateOrderTime }],
-  ["updatePrintedFlag", { func: updatePrintedFlag, schema: orderSchemas.updatePrintedFlag }],
-  ["joinTableOrders", { func: joinTableOrders, schema: orderSchemas.joinTableOrders }],
-  ["updateTable", { func: updateTable, schema: orderSchemas.updateTable }],
-  ["updateOrderPayment", { func: updateOrderPayment, schema: orderSchemas.updateOrderPayment }],
-  ["updateOrderShift", { func: updateOrderShift, schema: orderSchemas.updateOrderShift }],
+  ["updateDiscount", { func: updateDiscount, schema: ORDER_SCHEMAS.updateDiscount }],
+  ["updateOrderNotes", { func: updateOrderNotes, schema: ORDER_SCHEMAS.updateOrderNotes }],
+  ["updateOrderTime", { func: updateOrderTime, schema: ORDER_SCHEMAS.updateOrderTime }],
+  ["updatePrintedFlag", { func: updatePrintedFlag, schema: ORDER_SCHEMAS.updatePrintedFlag }],
+  ["joinTableOrders", { func: joinTableOrders, schema: ORDER_SCHEMAS.joinTableOrders }],
+  ["updateTable", { func: updateTable, schema: ORDER_SCHEMAS.updateTable }],
+  ["updateOrderPayment", { func: updateOrderPayment, schema: ORDER_SCHEMAS.updateOrderPayment }],
+  ["updateOrderShift", { func: updateOrderShift, schema: ORDER_SCHEMAS.updateOrderShift }],
   [
     "updateOrderExtraItems",
-    { func: updateOrderExtraItems, schema: orderSchemas.updateOrderExtraItems },
+    { func: updateOrderExtraItems, schema: ORDER_SCHEMAS.updateOrderExtraItems },
   ],
-  ["fixOrdersShift", { func: fixOrdersShift, schema: orderSchemas.fixOrdersShift }],
+  ["fixOrdersShift", { func: fixOrdersShift, schema: ORDER_SCHEMAS.fixOrdersShift }],
 ]);
 
 const DELETE_ACTIONS = new Map([
-  ["cancelOrder", { func: cancelOrder, schema: orderSchemas.cancelOrder }],
-  ["cancelOrdersInBulk", { func: cancelOrdersInBulk, schema: orderSchemas.cancelOrdersInBulk }],
-  ["deleteEverything", { func: deleteEverything, schema: orderSchemas.deleteEverything }],
+  ["cancelOrder", { func: cancelOrder, schema: ORDER_SCHEMAS.cancelOrder }],
+  ["cancelOrdersInBulk", { func: cancelOrdersInBulk, schema: ORDER_SCHEMAS.cancelOrdersInBulk }],
+  ["deleteEverything", { func: deleteEverything, schema: ORDER_SCHEMAS.deleteEverything }],
 ]);
 
 export async function GET(request: NextRequest) {

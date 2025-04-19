@@ -1,4 +1,4 @@
-import { CustomerWithDetails } from "../models";
+import { CustomerWithDetails } from "../models/_index";
 
 export type CustomerWithStats = CustomerWithDetails & {
   averageOrdersWeek: number;

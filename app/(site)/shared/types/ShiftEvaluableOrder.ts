@@ -1,5 +1,5 @@
 import { OrderType, WorkingShift } from "@prisma/client";
-import { AnyOrder } from "../models";
+import { AnyOrder } from "../models/_index";
 
 export type ShiftEvaluableOrder = Partial<AnyOrder> & {
   type: OrderType;

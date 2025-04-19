@@ -1,37 +1,25 @@
 import { NextRequest } from "next/server";
-import { number, z } from "zod";
 import handleRequest from "../util/handleRequest";
 import payOrder from "../../sql/payments/payOrder";
 import getOrdersWithPayments from "../../sql/payments/getOrdersWithPayments";
-import { NoContentSchema, PayOrderSchema } from "@shared"
-;
 import getRomanPaymentsByOrder from "../../sql/payments/getRomanPaymentsByOrder";
 import { getOrdersWithPaymentsSplitted } from "../../sql/payments/getOrdersWithPaymentsSplitted";
+import { PAYMENT_SCHEMAS } from "../../shared/schemas/payment";
 
-export const paymentSchemas = {
-  payOrder: PayOrderSchema,
-  getOrdersWithPayments: NoContentSchema,
-  getOrdersWithPaymentsSplitted: NoContentSchema,
-  getRomanPaymentsByOrder: z.object({
-    orderId: z.number(),
-    amount: z.string(),
-  }),
-};
-
-const POST_ACTIONS = new Map([["payOrder", { func: payOrder, schema: paymentSchemas.payOrder }]]);
+const POST_ACTIONS = new Map([["payOrder", { func: payOrder, schema: PAYMENT_SCHEMAS.payOrder }]]);
 
 const GET_ACTIONS = new Map([
   [
     "getOrdersWithPayments",
-    { func: getOrdersWithPayments, schema: paymentSchemas.getOrdersWithPayments },
+    { func: getOrdersWithPayments, schema: PAYMENT_SCHEMAS.getOrdersWithPayments },
   ],
   [
     "getOrdersWithPaymentsSplitted",
-    { func: getOrdersWithPaymentsSplitted, schema: paymentSchemas.getOrdersWithPaymentsSplitted },
+    { func: getOrdersWithPaymentsSplitted, schema: PAYMENT_SCHEMAS.getOrdersWithPaymentsSplitted },
   ],
   [
     "getRomanPaymentsByOrder",
-    { func: getRomanPaymentsByOrder, schema: paymentSchemas.getRomanPaymentsByOrder },
+    { func: getRomanPaymentsByOrder, schema: PAYMENT_SCHEMAS.getRomanPaymentsByOrder },
   ],
 ]);
 

@@ -9,101 +9,47 @@ import updateProductOptionsInOrder from "../../sql/products/updateProductOptions
 import createNewProduct from "../../sql/products/createNewProduct";
 import toggleProduct from "../../sql/products/toggleProduct";
 import updatePrintedAmounts from "../../sql/products/updatePrintedAmounts";
-import { z } from "zod";
 import handleRequest from "../util/handleRequest";
-import { OrderSchema } from "@/prisma/generated/zod";
-import {
-  CreateProductSchema,
-  GetProductsWithStatsSchema,
-  NoContentSchema,
-  ProductInOrderWithOptionsSchema,
-  UpdateProductSchema,
-} from "@shared"
-;
 import updateAdditionalNote from "../../sql/customers/updateAdditionalNote";
 import getProductsWithStats from "../../sql/products/getProductsWithStats";
-
-export const productSchemas = {
-  getProducts: NoContentSchema,
-  updateAdditionalNote: z.object({
-    note: z.string(),
-    productInOrderId: z.number(),
-  }),
-  createNewProduct: z.object({
-    product: CreateProductSchema,
-  }),
-  updateProduct: z.object({
-    product: UpdateProductSchema,
-  }),
-  addProductToOrder: z.object({
-    order: OrderSchema,
-    productCode: z.string(),
-    quantity: z.number(),
-  }),
-  updateProductInOrder: z.object({
-    orderId: z.number(),
-    key: z.string(),
-    value: z.any(),
-    productInOrder: ProductInOrderWithOptionsSchema,
-  }),
-  addProductsToOrder: z.object({
-    targetOrderId: z.number(),
-    products: z.array(ProductInOrderWithOptionsSchema),
-  }),
-  updateProductOptionsInOrder: z.object({
-    productInOrderId: z.number(),
-    optionId: z.number(),
-  }),
-  toggleProduct: z.object({
-    id: z.number(),
-  }),
-  updatePrintedAmounts: z.object({
-    orderId: z.number(),
-  }),
-  deleteProductsFromOrder: z.object({
-    productIds: z.array(z.number()),
-    orderId: z.number(),
-    cooked: z.boolean().default(false),
-  }),
-  getProductsWithStats: GetProductsWithStatsSchema,
-};
+import { PRODUCT_SCHEMAS } from "../../shared/schemas/product";
 
 const POST_ACTIONS = new Map([
-  ["createNewProduct", { func: createNewProduct, schema: productSchemas.createNewProduct }],
-  ["addProductToOrder", { func: addProductToOrder, schema: productSchemas.addProductToOrder }],
-  ["addProductsToOrder", { func: addProductsToOrder, schema: productSchemas.addProductsToOrder }],
-  ["getProductsWithStats", { func: getProductsWithStats, schema: productSchemas.getProducts }],
+  ["createNewProduct", { func: createNewProduct, schema: PRODUCT_SCHEMAS.createNewProduct }],
+  ["addProductToOrder", { func: addProductToOrder, schema: PRODUCT_SCHEMAS.addProductToOrder }],
+  ["addProductsToOrder", { func: addProductsToOrder, schema: PRODUCT_SCHEMAS.addProductsToOrder }],
+  ["getProductsWithStats", { func: getProductsWithStats, schema: PRODUCT_SCHEMAS.getProducts }],
 ]);
 
 const PATCH_ACTIONS = new Map([
-  ["updateProduct", { func: updateProduct, schema: productSchemas.updateProduct }],
+  ["updateProduct", { func: updateProduct, schema: PRODUCT_SCHEMAS.updateProduct }],
   [
     "updateAdditionalNote",
-    { func: updateAdditionalNote, schema: productSchemas.updateAdditionalNote },
+    { func: updateAdditionalNote, schema: PRODUCT_SCHEMAS.updateAdditionalNote },
   ],
   [
     "updateProductInOrder",
-    { func: updateProductInOrder, schema: productSchemas.updateProductInOrder },
+    { func: updateProductInOrder, schema: PRODUCT_SCHEMAS.updateProductInOrder },
   ],
   [
     "updateProductOptionsInOrder",
-    { func: updateProductOptionsInOrder, schema: productSchemas.updateProductOptionsInOrder },
+    { func: updateProductOptionsInOrder, schema: PRODUCT_SCHEMAS.updateProductOptionsInOrder },
   ],
-  ["toggleProduct", { func: toggleProduct, schema: productSchemas.toggleProduct }],
+  ["toggleProduct", { func: toggleProduct, schema: PRODUCT_SCHEMAS.toggleProduct }],
   [
     "updatePrintedAmounts",
-    { func: updatePrintedAmounts, schema: productSchemas.updatePrintedAmounts },
+    { func: updatePrintedAmounts, schema: PRODUCT_SCHEMAS.updatePrintedAmounts },
   ],
 ]);
 
 const GET_ACTIONS = new Map([
-  ["getProducts", { func: getProducts, schema: productSchemas.getProducts }],
+  ["getProducts", { func: getProducts, schema: PRODUCT_SCHEMAS.getProducts }],
 ]);
 
 const DELETE_ACTIONS = new Map([
   [
     "deleteProductsFromOrder",
-    { func: deleteProductsFromOrder, schema: productSchemas.deleteProductsFromOrder },
+    { func: deleteProductsFromOrder, schema: PRODUCT_SCHEMAS.deleteProductsFromOrder },
   ],
 ]);
 

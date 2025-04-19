@@ -1,3 +1,3 @@
-export * from "./models";
-export * from "./schemas";
-export * from "./types";
+export * from "./models/_index";
+export * from "./schemas/_index";
+export * from "./types/_index";

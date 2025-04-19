@@ -1,17 +1,18 @@
-import { z } from "zod";
-import { CategorySchema } from "@/prisma/generated/zod";
-import { NoContentSchema } from "./Schemas";
-import { CategoryWithOptionsSchema } from "../models";
+import { CategoryWithOptionsSchema } from "../models/_index";
+import {
+  createInputSchema,
+  NoContentSchema,
+  ToggleDeleteObjectSchema,
+  updateInputSchema,
+} from "./common";
 
-export const CreateCategorySchema = CategoryWithOptionsSchema.omit({ id: true }).partial({
+export const CreateCategorySchema = createInputSchema(CategoryWithOptionsSchema).partial({
   options: true,
 });
 
-export const UpdateCategorySchema = CategoryWithOptionsSchema.omit({ active: true });
+export const UpdateCategorySchema = updateInputSchema(CategoryWithOptionsSchema);
 
-export const ToggleCategorySchema = z.object({
-  id: z.number(),
-});
+export const ToggleCategorySchema = ToggleDeleteObjectSchema;
 
 export const CATEGORY_SCHEMAS = {
   createNewCategory: CreateCategorySchema,
