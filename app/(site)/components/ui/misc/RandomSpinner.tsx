@@ -34,7 +34,7 @@ const SPINNERS = [
   BeatLoader,
   CircleLoader,
   ClipLoader,
-  ClimbingBoxLoader,
+  // ClimbingBoxLoader,
   DotLoader,
   FadeLoader,
   GridLoader,
@@ -62,7 +62,7 @@ const SUSHI_PHRASES = [
   "Calma, precisione, sushi. 🎯",
 ];
 
-export default function RandomSpinner({ isLoading, size = 150, color = "#ff0000" }: SpinnerProps) {
+export default function RandomSpinner({ isLoading, size = 200, color = "#ff0000" }: SpinnerProps) {
   const [SelectedSpinner, setSelectedSpinner] = useState(
     () => SPINNERS[Math.floor(Math.random() * SPINNERS.length)]
   );
