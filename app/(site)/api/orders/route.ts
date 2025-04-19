@@ -10,11 +10,10 @@ import updateDiscount from "../../sql/orders/updateDiscount";
 import { OrderType, QuickPaymentOption, WorkingShift } from "@prisma/client";
 import createSubOrder from "../../sql/orders/createSubOrder";
 import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
-import deleteOrdersInBulk from "../../sql/orders/deleteOrdersInBulk";
+import cancelOrdersInBulk from "../../sql/orders/cancelOrdersInBulk";
 import deleteEverything from "../../sql/deleteEverything";
 import { z } from "zod";
-import { CreateSubOrderSchema, NoContentSchema } from "@shared"
-;
+import { CreateSubOrderSchema, NoContentSchema } from "@shared";
 import handleRequest from "../util/handleRequest";
 import joinTableOrders from "../../sql/orders/joinTableOrders";
 import updateTable from "../../sql/orders/updateTable";
@@ -72,8 +71,9 @@ export const orderSchemas = {
   updatePrintedFlag: z.object({
     orderId: z.number(),
   }),
-  deleteOrdersInBulk: z.object({
+  cancelOrdersInBulk: z.object({
     ordersId: z.array(z.number()),
+    productsCooked: z.boolean(),
   }),
   deleteEverything: NoContentSchema,
   joinTableOrders: z.object({
@@ -112,7 +112,6 @@ const PATCH_ACTIONS = new Map([
   ["updateDiscount", { func: updateDiscount, schema: orderSchemas.updateDiscount }],
   ["updateOrderNotes", { func: updateOrderNotes, schema: orderSchemas.updateOrderNotes }],
   ["updateOrderTime", { func: updateOrderTime, schema: orderSchemas.updateOrderTime }],
-  ["cancelOrder", { func: cancelOrder, schema: orderSchemas.cancelOrder }],
   ["updatePrintedFlag", { func: updatePrintedFlag, schema: orderSchemas.updatePrintedFlag }],
   ["joinTableOrders", { func: joinTableOrders, schema: orderSchemas.joinTableOrders }],
   ["updateTable", { func: updateTable, schema: orderSchemas.updateTable }],
@@ -126,7 +125,8 @@ const PATCH_ACTIONS = new Map([
 ]);
 
 const DELETE_ACTIONS = new Map([
-  ["deleteOrdersInBulk", { func: deleteOrdersInBulk, schema: orderSchemas.deleteOrdersInBulk }],
+  ["cancelOrder", { func: cancelOrder, schema: orderSchemas.cancelOrder }],
+  ["cancelOrdersInBulk", { func: cancelOrdersInBulk, schema: orderSchemas.cancelOrdersInBulk }],
   ["deleteEverything", { func: deleteEverything, schema: orderSchemas.deleteEverything }],
 ]);
 

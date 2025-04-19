@@ -9,9 +9,10 @@ export default function DeleteOrdersBulk() {
   const { selectedOrders, updateGlobalState, toggleOrderSelection, fetchRemainingRice } =
     useWasabiContext();
 
-  const deleteOrders = () =>
-    fetchRequest<Pick<AnyOrder, "id" | "type">[]>("DELETE", "/api/orders", "deleteOrdersInBulk", {
+  const deleteOrders = (productsCooked: boolean) =>
+    fetchRequest<Pick<AnyOrder, "id" | "type">[]>("DELETE", "/api/orders", "cancelOrdersInBulk", {
       ordersId: selectedOrders,
+      productsCooked,
     }).then((deletedOrders) => {
       deletedOrders.map((o) => {
         toggleOrderSelection(o.id);

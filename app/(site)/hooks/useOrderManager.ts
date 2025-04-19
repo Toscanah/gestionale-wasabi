@@ -49,7 +49,7 @@ export function useOrderManager(
     });
 
   const cancelOrder = async (cooked: boolean = false) =>
-    fetchRequest<AnyOrder>("PATCH", "/api/orders/", "cancelOrder", {
+    fetchRequest<AnyOrder>("DELETE", "/api/orders/", "cancelOrder", {
       orderId,
       cooked,
     }).then((deletedOrder) => {
