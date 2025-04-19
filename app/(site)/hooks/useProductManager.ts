@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { AnyOrder, OptionInProductOrder } from "@shared"
-;
+import { AnyOrder, OptionInProductOrder } from "@shared";
 import generateDummyProduct from "../lib/product-management/generateDummyProduct";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
 import { toastError, toastSuccess } from "../lib/util/toast";
 import { Table } from "@tanstack/react-table";
@@ -188,18 +186,18 @@ export function useProductManager(
     if (isDummyUpdate) return;
 
     const updatedProductsList = order.products
-      .filter((product) => !deletedProducts.some((deleted) => deleted.id === product.id))
-      .filter((product) => product.id !== -1)
+      .filter(
+        (product) =>
+          !deletedProducts.some((deleted) => deleted.id === product.id) &&
+          !["DELETED_COOKED", "DELETED_UNCOOKED"].includes(product.state)
+      ).filter((product) => product.id !== -1)
       .map((product) => {
         const update = updatedProducts.find((p) => p.id === product.id);
         return update ? { ...product, ...update } : product;
       });
 
-    const products = [...updatedProductsList, ...newProducts, generateDummyProduct()];
-    const finalProducts = [
-      ...products.filter((p) => p.id !== -1),
-      ...products.filter((p) => p.id == 1),
-    ];
+    const finalProducts = [...updatedProductsList, ...newProducts, generateDummyProduct()];
+
     const total = calculateOrderTotal({
       ...order,
       products: finalProducts,
