@@ -1,8 +1,9 @@
 import getColumns from "./getColumns";
-import { ProductInOrder } from "@/app/(site)/models";
+import { ProductInOrder } from "@shared"
+;
 import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
-import getTable from "../../functions/util/getTable";
+import getTable from "../../lib/util/getTable";
 import OrderOverview from "./overview/OrderOverview";
 import OrderPayment from "../../payments/order/OrderPayment";
 import DivideOrder from "../divide-order/DivideOrder";

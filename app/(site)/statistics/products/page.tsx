@@ -3,12 +3,12 @@
 import Table from "../../components/table/Table";
 import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import GoBack from "../../components/ui/misc/GoBack";
-import getTable from "../../functions/util/getTable";
+import getTable from "../../lib/util/getTable";
 import columns from "./columns";
 import useProductsStats, { ALL_CATEGORIES } from "../../hooks/statistics/useProductsStats";
 import TableControls from "../../components/table/TableControls";
 import useGlobalFilter from "../../hooks/useGlobalFilter";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import Calendar from "../../components/ui/calendar/Calendar";
 import ShiftFilterSelector from "../../components/filters/shift/ShiftFilterSelector";
 import logo from "../../../../public/logo.png";

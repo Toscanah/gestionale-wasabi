@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import DialogWrapper from "../components/ui/dialog/DialogWrapper";
 import { useEffect, useState } from "react";
 import { format, isToday } from "date-fns";
-import { RiceLog } from "../models/base/Rice";
-import fetchRequest from "../functions/api/fetchRequest";
-import formatRice from "../functions/formatting-parsing/formatRice";
+import { RiceLog } from "../shared/models/Rice";
+import fetchRequest from "../lib/api/fetchRequest";
+import formatRice from "../lib/formatting-parsing/formatRice";
 import { RiceLogType } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 

@@ -1,5 +1,5 @@
 import prisma from "../db";
-import { CreateCustomerInput, CustomerWithDetails } from "../../models";
+import { CreateCustomerInput, CustomerWithDetails } from "@shared";
 import { homeAndPickupOrdersInclude } from "../includes";
 
 export default async function createCustomer(

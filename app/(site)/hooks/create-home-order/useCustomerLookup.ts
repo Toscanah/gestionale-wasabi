@@ -1,7 +1,8 @@
 import { Address, Customer } from "@prisma/client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import fetchRequest from "../../functions/api/fetchRequest";
-import { CustomerWithDetails } from "@/app/(site)/models";
+import fetchRequest from "../../lib/api/fetchRequest";
+import { CustomerWithDetails } from "@shared"
+;
 import { useCreateHomeOrder } from "../../context/CreateHomeOrderContext";
 
 interface UseCustomerLookupParams {

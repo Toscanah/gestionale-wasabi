@@ -1,7 +1,8 @@
 import { Br, Text } from "react-thermal-printer";
-import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
-import calculateExtraItems from "../../functions/order-management/calculateExtraItems";
-import { AnyOrder } from "../../models";
+import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
+import calculateExtraItems from "../../lib/order-management/calculateExtraItems";
+import { AnyOrder } from "@shared"
+;
 
 interface ExtraItemsProps {
   order: AnyOrder;

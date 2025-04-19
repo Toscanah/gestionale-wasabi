@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Product } from "@/app/(site)/models";
+import { Product } from "@shared"
+;
 import TableColumn from "../../components/table/TableColumn";
 import { KitchenType } from "@prisma/client";
 

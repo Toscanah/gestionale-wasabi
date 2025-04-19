@@ -1,6 +1,6 @@
 import { Order } from "@prisma/client";
-import { CustomerWithStats } from "../../types/CustomerWithStats";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import { CustomerWithStats } from "../../shared/types/CustomerWithStats";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import getCustomersWithDetails from "./getCustomersWithDetails";
 
 const calculateAverageOrders = (allOrders: Order[]) => {

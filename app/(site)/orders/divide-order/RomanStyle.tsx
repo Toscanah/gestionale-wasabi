@@ -1,13 +1,14 @@
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
-import { AnyOrder, TableOrder } from "@/app/(site)/models";
+import { AnyOrder, TableOrder } from "@shared"
+;
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { OrderType } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useOrderContext } from "../../context/OrderContext";
-import fetchRequest from "../../functions/api/fetchRequest";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import fetchRequest from "../../lib/api/fetchRequest";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 
 interface RomanStyleProps {
   handleBackButton: () => void;

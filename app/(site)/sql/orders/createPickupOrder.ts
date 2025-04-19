@@ -1,6 +1,7 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
-import { PickupOrder } from "../../models";
+import { PickupOrder } from "@shared"
+;
 import { productsInOrderInclude } from "../includes";
 
 export default async function createPickupOrder(

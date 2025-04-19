@@ -1,4 +1,4 @@
-import getZodField from "@/app/(site)/functions/util/getZodField";
+import getZodField from "@/app/(site)/lib/util/getZodField";
 import { z } from "zod";
 
 const formSchema = z.object({

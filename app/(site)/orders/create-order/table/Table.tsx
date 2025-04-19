@@ -2,16 +2,17 @@ import { useRef, useState, useEffect, Dispatch, SetStateAction, ReactNode } from
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AnyOrder, TableOrder } from "@/app/(site)/models";
+import { AnyOrder, TableOrder } from "@shared"
+;
 import { useWasabiContext } from "../../../context/WasabiContext";
-import fetchRequest from "../../../functions/api/fetchRequest";
-import { toastError, toastSuccess } from "../../../functions/util/toast";
+import fetchRequest from "../../../lib/api/fetchRequest";
+import { toastError, toastSuccess } from "../../../lib/util/toast";
 import useFocusCycle from "@/app/(site)/hooks/useFocusCycle";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import { cn } from "@/lib/utils";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
-import generateEmptyOrder from "@/app/(site)/functions/order-management/generateEmptyOrder";
+import generateEmptyOrder from "@/app/(site)/lib/order-management/generateEmptyOrder";
 import { OrderType } from "@prisma/client";
 import { Plus } from "@phosphor-icons/react";
 

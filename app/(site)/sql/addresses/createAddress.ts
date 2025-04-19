@@ -1,5 +1,6 @@
 import prisma from "../db";
-import { CreateAddressInput } from "../../models";
+import { CreateAddressInput } from "@shared"
+;
 import { Address } from "@prisma/client";
 
 export default async function createAddress(address: CreateAddressInput): Promise<Address> {

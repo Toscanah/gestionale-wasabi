@@ -1,5 +1,5 @@
 import { Br, QRCode, Text } from "react-thermal-printer";
-import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
+import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
 
 export default function FooterSection(orderId: number) {
   const currentDate = new Date();

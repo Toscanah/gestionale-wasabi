@@ -1,6 +1,6 @@
 "use client";
 
-import getTable from "../../functions/util/getTable";
+import getTable from "../../lib/util/getTable";
 import Table from "../../components/table/Table";
 import columns from "./columns";
 import TableControls from "../../components/table/TableControls";

@@ -1,13 +1,15 @@
 "use client";
 
 import GoBack from "../../components/ui/misc/GoBack";
-import { Product } from "@/app/(site)/models";
-import fetchRequest from "../../functions/api/fetchRequest";
+import { Product } from "@shared"
+;
+import fetchRequest from "../../lib/api/fetchRequest";
 import Manager from "../Manager";
 import columns from "./columns";
 import { useEffect, useState } from "react";
 import FormFields from "../FormFields";
-import { CategoryWithOptions } from "@/app/(site)/models";
+import { CategoryWithOptions } from "@shared"
+;
 import { formSchema } from "./form";
 import { getProductFields } from "./form";
 import SelectWrapper from "../../components/ui/select/SelectWrapper";

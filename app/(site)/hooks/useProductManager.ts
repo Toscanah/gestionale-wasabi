@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { AnyOrder, OptionInProductOrder } from "@/app/(site)/models";
-import generateDummyProduct from "../functions/product-management/generateDummyProduct";
-import { ProductInOrder } from "@/app/(site)/models";
-import fetchRequest from "../functions/api/fetchRequest";
-import { toastError, toastSuccess } from "../functions/util/toast";
+import { AnyOrder, OptionInProductOrder } from "@shared"
+;
+import generateDummyProduct from "../lib/product-management/generateDummyProduct";
+import { ProductInOrder } from "@shared"
+;
+import fetchRequest from "../lib/api/fetchRequest";
+import { toastError, toastSuccess } from "../lib/util/toast";
 import { Table } from "@tanstack/react-table";
-import calculateOrderTotal from "../functions/order-management/calculateOrderTotal";
+import calculateOrderTotal from "../lib/order-management/calculateOrderTotal";
 import { RecursivePartial } from "./useOrderManager";
-import { getProductPrice } from "../functions/product-management/getProductPrice";
+import { getProductPrice } from "../lib/product-management/getProductPrice";
 import { UpdateProductInOrderResponse } from "../sql/products/product-in-order/updateProductInOrder";
 
 export function useProductManager(

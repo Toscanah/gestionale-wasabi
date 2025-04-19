@@ -1,16 +1,17 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { AnyOrder, HomeOrder, OrderWithPayments } from "@/app/(site)/models";
+import { AnyOrder, HomeOrder, OrderWithPayments } from "@shared"
+;
 import { Badge } from "@/components/ui/badge";
 import { OrderType, QuickPaymentOption } from "@prisma/client";
-import applyDiscount from "../../functions/order-management/applyDiscount";
+import applyDiscount from "../../lib/order-management/applyDiscount";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import OrderSummary from "./OrderSummary";
 import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
-import fetchRequest from "../../functions/api/fetchRequest";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import fetchRequest from "../../lib/api/fetchRequest";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({

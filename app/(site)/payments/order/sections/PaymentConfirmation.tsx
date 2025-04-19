@@ -1,7 +1,7 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
-import applyDiscount from "@/app/(site)/functions/order-management/applyDiscount";
-import roundToTwo from "@/app/(site)/functions/formatting-parsing/roundToTwo";
+import applyDiscount from "@/app/(site)/lib/order-management/applyDiscount";
+import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { Button } from "@/components/ui/button";
 
 export default function PaymentConfirmation() {

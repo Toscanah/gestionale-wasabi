@@ -1,11 +1,11 @@
-import padReceiptText from "@/app/(site)/functions/formatting-parsing/printing/padReceiptText";
-import getReceiptSize from "@/app/(site)/functions/formatting-parsing/printing/getReceiptSize";
+import padReceiptText from "@/app/(site)/lib/formatting-parsing/printing/padReceiptText";
+import getReceiptSize from "@/app/(site)/lib/formatting-parsing/printing/getReceiptSize";
 import { Fragment } from "react";
 import { Line, Text } from "react-thermal-printer";
 import { uniqueId } from "lodash";
-import splitOptionsInLines from "@/app/(site)/functions/formatting-parsing/printing/splitOptionsInLines";
+import splitOptionsInLines from "@/app/(site)/lib/formatting-parsing/printing/splitOptionsInLines";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
-import sanitazeReceiptText from "@/app/(site)/functions/formatting-parsing/printing/sanitazeReceiptText";
+import sanitazeReceiptText from "@/app/(site)/lib/formatting-parsing/printing/sanitazeReceiptText";
 
 interface KitchenProductsProps {
   groupedProducts: GroupedProductsByOptions;

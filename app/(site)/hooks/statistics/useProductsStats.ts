@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Category } from "@prisma/client";
 import { DateRange } from "react-day-picker";
-import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
-import { ProductWithStats } from "@/app/(site)/types/ProductWithStats";
+import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
+import { ProductWithStats } from "@/app/(site)/shared/types/ProductWithStats";
 import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
 

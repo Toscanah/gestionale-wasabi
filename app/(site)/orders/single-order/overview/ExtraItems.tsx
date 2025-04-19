@@ -1,10 +1,11 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
-import calculateExtraItems from "@/app/(site)/functions/order-management/calculateExtraItems";
-import { toastSuccess } from "@/app/(site)/functions/util/toast";
+import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
+import calculateExtraItems from "@/app/(site)/lib/order-management/calculateExtraItems";
+import { toastSuccess } from "@/app/(site)/lib/util/toast";
 import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 import useLocalExtraItems from "@/app/(site)/hooks/useLocalExtraItems";
-import { AnyOrder } from "@/app/(site)/models";
+import { AnyOrder } from "@shared"
+;
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import getZodField from "../../functions/util/getZodField";
+import getZodField from "../../lib/util/getZodField";
 import { FormFieldType } from "../FormFields";
 import CategoryOptions from "./CategoryOptions";
 import { ControllerRenderProps } from "react-hook-form";

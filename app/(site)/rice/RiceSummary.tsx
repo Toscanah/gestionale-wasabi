@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useWasabiContext } from "../context/WasabiContext";
-import formatRice from "../functions/formatting-parsing/formatRice";
+import formatRice from "../lib/formatting-parsing/formatRice";
 
 export default function RiceSummary() {
   const { rice } = useWasabiContext();

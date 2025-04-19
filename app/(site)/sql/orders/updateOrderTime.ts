@@ -1,7 +1,8 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
-import { AnyOrder } from "../../models";
+import { AnyOrder } from "@shared"
+;
 
 export default async function updateOrderTime(
   time: string,

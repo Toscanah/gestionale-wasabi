@@ -2,10 +2,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
-import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/models";
+import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@shared"
+;
 import TableColumn from "../components/table/TableColumn";
-import applyDiscount from "../functions/order-management/applyDiscount";
-import roundToTwo from "../functions/formatting-parsing/roundToTwo";
+import applyDiscount from "../lib/order-management/applyDiscount";
+import roundToTwo from "../lib/formatting-parsing/roundToTwo";
 import { useWasabiContext } from "../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
 

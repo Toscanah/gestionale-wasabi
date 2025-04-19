@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
-import { CustomerWithDetails } from "@/app/(site)/models";
+import { CustomerWithDetails } from "@shared"
+;
 import {
   Accordion,
   AccordionContent,
@@ -8,11 +9,12 @@ import {
 } from "@/components/ui/accordion";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ProductInOrder } from "@/app/(site)/models";
-import applyDiscount from "../../functions/order-management/applyDiscount";
+import { ProductInOrder } from "@shared"
+;
+import applyDiscount from "../../lib/order-management/applyDiscount";
 import HistoryStats from "./HistoryStats";
 import OrderDetail from "./OrderDetail";
-import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
+import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
 
 type ProductStats = {
   desc: string;

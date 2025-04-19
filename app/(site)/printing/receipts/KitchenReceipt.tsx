@@ -1,11 +1,12 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/models";
+import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@shared"
+;
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType, OrderType } from "@prisma/client";
-import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
-import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
-import { GlobalSettings } from "../../types/Settings";
+import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
+import sanitazeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
+import { GlobalSettings } from "../../shared/types/Settings";
 
 const calculateAdjustedTime = (originalTime: string) => {
   const timeParts = originalTime.split(":");

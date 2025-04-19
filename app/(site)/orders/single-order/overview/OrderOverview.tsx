@@ -11,8 +11,10 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableChange from "./TableChange";
 import Notes from "./Notes";
 import QuickPaymentOptions from "./QuickPaymentOptions";
-import { HomeOrder } from "@/app/(site)/models";
+import { HomeOrder } from "@shared"
+;
 import ShiftSelection from "./ShiftSelection";
+import Engagement from "./Engagement";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
@@ -41,9 +43,10 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
         {order.type !== OrderType.TABLE && (
           <>
             <Time />
-            <ShiftSelection />
+            {/* <ShiftSelection /> */}
           </>
         )}
+        <Engagement />
         <Discount />
       </div>
 

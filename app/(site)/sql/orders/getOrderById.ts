@@ -1,4 +1,4 @@
-import { AnyOrder } from "../../models";
+import { AnyOrder } from "@shared";
 import prisma from "../db";
 import {
   homeOrderInclude,

@@ -15,13 +15,18 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+        "@/*": ["./*"],
+        "@shared": ["app/(site)/shared/index.ts"],
+        "@shared/models": ["app/(site)/shared/models"],
+        "@shared/schemas": ["app/(site)/shared/schemas"],
+        "@shared/types": ["app/(site)/shared/types"]
     }
   },
   "include": [

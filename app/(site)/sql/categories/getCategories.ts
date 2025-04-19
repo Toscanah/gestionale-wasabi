@@ -1,4 +1,5 @@
-import { CategoryWithOptions } from "../../models";
+import { CategoryWithOptions } from "@shared"
+;
 import prisma from "../db";
 import { optionsInclude } from "../includes";
 

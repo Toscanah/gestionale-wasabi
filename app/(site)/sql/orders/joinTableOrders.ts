@@ -1,4 +1,5 @@
-import { TableOrder } from "../../models";
+import { TableOrder } from "@shared"
+;
 import prisma from "../db";
 import addProductsToOrder from "../products/addProductsToOrder";
 import getOrderById from "./getOrderById";

@@ -1,4 +1,5 @@
-import { ProductInOrder } from "@/app/(site)/models";
+import { ProductInOrder } from "@shared"
+;
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 

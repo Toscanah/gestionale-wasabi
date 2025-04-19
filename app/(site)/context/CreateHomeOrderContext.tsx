@@ -7,9 +7,10 @@ import React, {
   SetStateAction,
   useEffect,
 } from "react";
-import { AnyOrder, CustomerWithDetails, HomeOrder } from "../models";
+import { AnyOrder, CustomerWithDetails, HomeOrder } from "@shared"
+;
 import useCustomerLookup from "../hooks/create-home-order/useCustomerLookup";
-import fetchRequest from "../functions/api/fetchRequest";
+import fetchRequest from "../lib/api/fetchRequest";
 import { useWasabiContext } from "./WasabiContext";
 import { Address, Customer } from "@prisma/client";
 import { FormValues } from "../orders/create-order/home/address/form";

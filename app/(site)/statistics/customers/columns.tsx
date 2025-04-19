@@ -1,13 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { CustomerWithDetails } from "../../models";
+import { CustomerWithDetails } from "@shared"
+;
 import { format } from "date-fns"; // Ensure date-fns is installed
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import ScoreDialog from "./ScoreDialog";
-import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
-import { CustomerWithStats } from "../../types/CustomerWithStats";
+import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
+import { CustomerWithStats } from "../../shared/types/CustomerWithStats";
 import OrderHistory from "../../components/order-history/OrderHistory";
 
 const columns: ColumnDef<CustomerWithStats>[] = [

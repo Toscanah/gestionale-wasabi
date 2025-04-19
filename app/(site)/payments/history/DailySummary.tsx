@@ -1,5 +1,6 @@
-import { OrderWithPayments } from "@/app/(site)/models";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import { OrderWithPayments } from "@shared"
+;
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 
 export default function DailySummary({ orders }: { orders: OrderWithPayments[] }) {
   const totalOrders = orders.length;

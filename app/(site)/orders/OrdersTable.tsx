@@ -3,9 +3,10 @@
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
 import { Cell } from "@tanstack/react-table";
-import { AnyOrder } from "@/app/(site)/models";
+import { AnyOrder } from "@shared"
+;
 import Order from "./single-order/Order";
-import getTable from "../functions/util/getTable";
+import getTable from "../lib/util/getTable";
 import Table from "../components/table/Table";
 
 interface OrdersTableProps {

@@ -1,10 +1,12 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
-import { AnyOrder } from "@/app/(site)/models";
+import { AnyOrder } from "@shared"
+;
 import { RecursivePartial, useOrderManager } from "../hooks/useOrderManager";
 import { useProductManager } from "../hooks/useProductManager";
-import { ProductInOrder } from "@/app/(site)/models";
+import { ProductInOrder } from "@shared"
+;
 import { Table } from "@tanstack/react-table";
-import generateDummyProduct from "../functions/product-management/generateDummyProduct";
+import generateDummyProduct from "../lib/product-management/generateDummyProduct";
 
 interface OrderProviderProps {
   order: AnyOrder;

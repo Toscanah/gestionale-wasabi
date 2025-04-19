@@ -9,13 +9,13 @@ import Table from "../components/table/Table";
 import DialogWrapper from "../components/ui/dialog/DialogWrapper";
 import { ColumnDef } from "@tanstack/react-table";
 import getColumns from "./getColumns";
-import getTable from "../functions/util/getTable";
-import { toastError, toastSuccess } from "../functions/util/toast";
+import getTable from "../lib/util/getTable";
+import { toastError, toastSuccess } from "../lib/util/toast";
 import fetchRequest, {
   APIEndpoint,
   PathType,
   ValidActionKeys,
-} from "../functions/api/fetchRequest";
+} from "../lib/api/fetchRequest";
 
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";

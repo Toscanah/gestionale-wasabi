@@ -1,9 +1,10 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { AnyOrder } from "@/app/(site)/models";
+import { AnyOrder } from "@shared"
+;
 import { UpdateStateAction } from "../home/page";
 import useRice, { Rice } from "../hooks/useRice";
 import useSettings from "../hooks/useSettings";
-import { GlobalSettings } from "../types/Settings";
+import { GlobalSettings } from "../shared/types/Settings";
 
 interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: UpdateStateAction) => void;

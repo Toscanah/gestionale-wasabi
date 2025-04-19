@@ -1,9 +1,11 @@
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
-import { CustomerWithDetails } from "@/app/(site)/models";
+import { CustomerWithDetails } from "@shared"
+;
 import { OrderType } from "@prisma/client";
-import { HomeOrder, PickupOrder } from "@/app/(site)/models";
-import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
+import { HomeOrder, PickupOrder } from "@shared"
+;
+import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";

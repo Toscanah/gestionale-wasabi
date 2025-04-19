@@ -5,14 +5,15 @@ import { OrderType } from "@prisma/client";
 import { WasabiProvider } from "../context/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../orders/create-order/CreateOrder";
-import fetchRequest from "../functions/api/fetchRequest";
+import fetchRequest from "../lib/api/fetchRequest";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Header from "./Header";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
-import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "../models";
+import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "@shared"
+;
 
 export type UpdateStateAction = "update" | "delete" | "add";
 

@@ -1,7 +1,8 @@
 import { Order } from "@prisma/client";
 import prisma from "../db";
-import { getProductPrice } from "../../functions/product-management/getProductPrice";
-import { ProductInOrder } from "../../models";
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
+import { ProductInOrder } from "@shared"
+;
 import { categoryInclude, productInOrderInclude } from "../includes";
 
 export default async function addProductToOrder(

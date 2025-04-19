@@ -1,7 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { OptionWithCategories } from "@/app/(site)/models";
-import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
+import { OptionWithCategories } from "@shared"
+;
+import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 
 const columns: ColumnDef<OptionWithCategories>[] = [
   TableColumn({

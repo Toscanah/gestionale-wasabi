@@ -9,13 +9,14 @@ import { useState, Dispatch, SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import parseAddress from "@/app/(site)/functions/formatting-parsing/parseAddress";
+import parseAddress from "@/app/(site)/lib/formatting-parsing/parseAddress";
 import { Button } from "@/components/ui/button";
-import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
+import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { CustomerWithDetails } from "@/app/(site)/models";
-import { toastError } from "@/app/(site)/functions/util/toast";
+import { CustomerWithDetails } from "@shared"
+;
+import { toastError } from "@/app/(site)/lib/util/toast";
 
 interface CustomerAddressesProps {
   addresses: Address[];

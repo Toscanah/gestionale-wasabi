@@ -1,7 +1,8 @@
 import { QuickPaymentOption } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
-import { HomeOrder } from "../../models";
+import { HomeOrder } from "@shared"
+;
 
 export default async function updateOrderPayment(
   orderId: number,

@@ -3,7 +3,8 @@ import getDailyRiceUsage from "../../sql/rice/getDailyRiceUsage";
 import { z } from "zod";
 import handleRequest from "../util/handleRequest";
 import { RiceBatchSchema } from "@/prisma/generated/zod";
-import { NoContentSchema } from "../../models";
+import { NoContentSchema } from "@shared"
+;
 import getRiceBatches from "../../sql/rice/getRiceBatches";
 import addRiceBatch from "../../sql/rice/addRiceBatch";
 import updateRiceBatch from "../../sql/rice/updateRiceBatch";

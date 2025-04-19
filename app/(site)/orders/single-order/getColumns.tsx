@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ProductInOrder } from "@/app/(site)/models";
+import { ProductInOrder } from "@shared"
+;
 import { Input } from "@/components/ui/input";
 import { OrderType } from "@prisma/client";
 import TableColumn from "../../components/table/TableColumn";
@@ -9,11 +10,11 @@ import useGridFocus, { FocussableInput } from "../../hooks/useGridFocus";
 import { Button } from "@/components/ui/button";
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { debounce } from "lodash";
-import { getProductPrice } from "../../functions/product-management/getProductPrice";
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import { useOrderContext } from "../../context/OrderContext";
 import { useCallback, useEffect, useRef } from "react";
-import capitalizeFirstLetter from "../../functions/formatting-parsing/capitalizeFirstLetter";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 
 export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,

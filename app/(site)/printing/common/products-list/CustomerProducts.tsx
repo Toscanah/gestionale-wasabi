@@ -1,16 +1,17 @@
-import { ProductInOrder } from "@/app/(site)/models";
-import applyDiscount from "@/app/(site)/functions/order-management/applyDiscount";
-import roundToTwo from "@/app/(site)/functions/formatting-parsing/roundToTwo";
-import padReceiptText from "@/app/(site)/functions/formatting-parsing/printing/padReceiptText";
+import { ProductInOrder } from "@shared"
+;
+import applyDiscount from "@/app/(site)/lib/order-management/applyDiscount";
+import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
+import padReceiptText from "@/app/(site)/lib/formatting-parsing/printing/padReceiptText";
 import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
 import { Fragment } from "react";
-import { getProductPrice } from "@/app/(site)/functions/product-management/getProductPrice";
+import { getProductPrice } from "@/app/(site)/lib/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 import { uniqueId } from "lodash";
-import splitOptionsInLines from "@/app/(site)/functions/formatting-parsing/printing/splitOptionsInLines";
+import splitOptionsInLines from "@/app/(site)/lib/formatting-parsing/printing/splitOptionsInLines";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
-import sanitazeReceiptText from "@/app/(site)/functions/formatting-parsing/printing/sanitazeReceiptText";
+import sanitazeReceiptText from "@/app/(site)/lib/formatting-parsing/printing/sanitazeReceiptText";
 
 const TOTAL_ROW_WIDTH = 48;
 

@@ -1,5 +1,6 @@
 import { Cut, Line } from "react-thermal-printer";
-import { HomeOrder } from "@/app/(site)/models";
+import { HomeOrder } from "@shared"
+;
 import OrderInfoSection from "../common/OrderInfoSection";
 import TimeSection from "../common/TimeSection";
 import TotalSection from "../common/TotalSection";

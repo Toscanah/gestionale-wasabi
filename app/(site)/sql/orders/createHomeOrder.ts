@@ -1,7 +1,8 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import { productsInOrderInclude } from "../includes";
-import { HomeOrder } from "../../models";
+import { HomeOrder } from "@shared"
+;
 
 export default async function createHomeOrder(
   customerId: number,

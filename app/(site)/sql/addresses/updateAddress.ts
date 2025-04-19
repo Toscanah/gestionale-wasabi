@@ -1,5 +1,6 @@
 import prisma from "../db";
-import { UpdateAddressInput } from "../../models";
+import { UpdateAddressInput } from "@shared"
+;
 
 export default async function updateAddress(address: UpdateAddressInput) {
   return await prisma.address.update({

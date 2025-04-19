@@ -1,6 +1,6 @@
 import { AccordionContent } from "@/components/ui/accordion";
 import { OrderStats } from "./OrderHistory";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 
 interface HistoryStatsProps {
   stats: OrderStats;

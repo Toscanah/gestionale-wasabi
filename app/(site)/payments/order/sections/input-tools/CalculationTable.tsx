@@ -1,4 +1,4 @@
-import getTable from "@/app/(site)/functions/util/getTable";
+import getTable from "@/app/(site)/lib/util/getTable";
 import { useState } from "react";
 import getColumns from "./columns";
 import Table from "@/app/(site)/components/table/Table";

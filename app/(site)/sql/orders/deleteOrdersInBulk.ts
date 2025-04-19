@@ -1,5 +1,6 @@
 import prisma from "../db";
-import { AnyOrder } from "../../models";
+import { AnyOrder } from "@shared"
+;
 
 export default async function deleteOrdersInBulk(
   ordersId: number[]

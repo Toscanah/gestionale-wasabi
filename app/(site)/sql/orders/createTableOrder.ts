@@ -1,6 +1,7 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
-import { AnyOrder, TableOrder } from "../../models";
+import { AnyOrder, TableOrder } from "@shared"
+;
 import { productsInOrderInclude } from "../includes";
 
 export default async function createTableOrder(

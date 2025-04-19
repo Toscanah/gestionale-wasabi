@@ -3,7 +3,8 @@ import { number, z } from "zod";
 import handleRequest from "../util/handleRequest";
 import payOrder from "../../sql/payments/payOrder";
 import getOrdersWithPayments from "../../sql/payments/getOrdersWithPayments";
-import { NoContentSchema, PayOrderSchema } from "../../models";
+import { NoContentSchema, PayOrderSchema } from "@shared"
+;
 import getRomanPaymentsByOrder from "../../sql/payments/getRomanPaymentsByOrder";
 import { getOrdersWithPaymentsSplitted } from "../../sql/payments/getOrdersWithPaymentsSplitted";
 

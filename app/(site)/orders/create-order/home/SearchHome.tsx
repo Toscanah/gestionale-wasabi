@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
 import OrderTable from "../../single-order/OrderTable";
-import { AnyOrder } from "@/app/(site)/models";
+import { AnyOrder } from "@shared"
+;
 import { HandPalm } from "@phosphor-icons/react";
 import Home from "./Home";
-import { toastError } from "@/app/(site)/functions/util/toast";
-import generateEmptyOrder from "@/app/(site)/functions/order-management/generateEmptyOrder";
+import { toastError } from "@/app/(site)/lib/util/toast";
+import generateEmptyOrder from "@/app/(site)/lib/order-management/generateEmptyOrder";
 import { OrderType } from "@prisma/client";
 import { CreateHomeOrderProvider } from "@/app/(site)/context/CreateHomeOrderContext";
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import logo from "../../../../public/logo.png"; // Update with your actual image path
-import formatRice from "../../functions/formatting-parsing/formatRice";
+import formatRice from "../../lib/formatting-parsing/formatRice";
 
 interface SectionResultsProps {
   homeOrders: number;

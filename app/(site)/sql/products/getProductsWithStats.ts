@@ -1,9 +1,9 @@
-import { ProductWithStats, OptionStats } from "../../types/ProductWithStats";
+import { ProductWithStats, OptionStats } from "../../shared/types/ProductWithStats";
 import prisma from "../db";
 import { pickupOrderInclude, categoryInclude, homeOrderInclude, optionsInclude } from "../includes";
 import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
-import { orderMatchesShift } from "../../functions/order-management/shift/orderMatchesShift";
+import { orderMatchesShift } from "../../lib/order-management/shift/orderMatchesShift";
 
 export default async function getProductsWithStats(filters: {
   time: {

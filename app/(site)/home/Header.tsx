@@ -9,7 +9,8 @@ import { useWasabiContext } from "../context/WasabiContext";
 import DeleteOrdersBulk from "../orders/components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";
 import { Button } from "@/components/ui/button";
-import fetchRequest from "../functions/api/fetchRequest";
+import fetchRequest from "../lib/api/fetchRequest";
+import EngagementDialog from "../engagement/EngagementDialog";
 
 interface HeaderProps {
   toggleOrdersByType: (type: OrderType) => void;
@@ -30,6 +31,7 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
       <div className="flex flex-col gap-4 items-center">
         <div className="flex items-center w-full">
           {selectedOrders.length > 0 ? <DeleteOrdersBulk /> : <RiceDialog variant="header" />}
+          {/* <EngagementDialog trigger={<Button>YOOOOOOOOOOO</Button>} /> */}
         </div>
 
         <div className="flex justify-evenly w-80">

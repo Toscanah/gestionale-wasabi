@@ -1,9 +1,10 @@
 import { OrderType } from "@prisma/client";
-import { getProductPrice } from "../../functions/product-management/getProductPrice";
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import prisma from "../db";
-import { AnyOrder } from "../../models";
+import { AnyOrder } from "@shared"
+;
 import { homeOrderInclude, pickupOrderInclude, productInOrderInclude } from "../includes";
-import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
+import calculateOrderTotal from "../../lib/order-management/calculateOrderTotal";
 export default async function getOrdersByType(type: OrderType): Promise<AnyOrder[]> {
   const orders = await prisma.order.findMany({
     include: {

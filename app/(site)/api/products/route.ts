@@ -18,7 +18,8 @@ import {
   NoContentSchema,
   ProductInOrderWithOptionsSchema,
   UpdateProductSchema,
-} from "../../models";
+} from "@shared"
+;
 import updateAdditionalNote from "../../sql/customers/updateAdditionalNote";
 import getProductsWithStats from "../../sql/products/getProductsWithStats";
 

@@ -1,4 +1,5 @@
-import { OptionInProductOrder } from "../../models";
+import { OptionInProductOrder } from "@shared"
+;
 import prisma from "../db";
 
 export default async function updateProductOptionsInOrder(

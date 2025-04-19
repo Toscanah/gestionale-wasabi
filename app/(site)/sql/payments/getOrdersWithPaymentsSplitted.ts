@@ -1,4 +1,5 @@
-import { OrderWithPayments } from "../../models";
+import { OrderWithPayments } from "@shared"
+;
 import prisma from "../db";
 import { homeOrderInclude, pickupOrderInclude, productsInOrderInclude } from "../includes";
 

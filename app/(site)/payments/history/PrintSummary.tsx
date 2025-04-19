@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { PaymentType, OrderType } from "@prisma/client";
-import { OrderWithPayments } from "@/app/(site)/models";
+import { OrderWithPayments } from "@shared"
+;
 import print from "../../printing/print";
 import PaymentSummaryReceipt from "../../printing/receipts/PaymentSummaryReceipt";
 

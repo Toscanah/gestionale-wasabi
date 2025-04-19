@@ -1,6 +1,7 @@
-import { CustomerWithDetails } from "@/app/(site)/models";
+import { CustomerWithDetails } from "@shared"
+;
 import columns from "./columns";
-import getTable from "@/app/(site)/functions/util/getTable";
+import getTable from "@/app/(site)/lib/util/getTable";
 import Table from "@/app/(site)/components/table/Table";
 import { Dispatch, SetStateAction } from "react";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";

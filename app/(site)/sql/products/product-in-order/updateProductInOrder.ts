@@ -1,5 +1,6 @@
 import prisma from "../../db";
-import { ProductInOrder } from "../../../models";
+import { ProductInOrder } from "@shared"
+;
 import handleProductCodeChange from "./handleCodeChange";
 import handleQuantityChange from "./handleQuantityChange";
 

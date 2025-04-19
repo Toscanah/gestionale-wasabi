@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import fetchRequest from "../../functions/api/fetchRequest";
+import fetchRequest from "../../lib/api/fetchRequest";
 import Manager from "../Manager";
 import GoBack from "../../components/ui/misc/GoBack";
-import { OptionWithCategories } from "@/app/(site)/models";
+import { OptionWithCategories } from "@shared"
+;
 import columns from "./columns";
 import FormFields from "../FormFields";
 import { formSchema, getOptionFields } from "./form";

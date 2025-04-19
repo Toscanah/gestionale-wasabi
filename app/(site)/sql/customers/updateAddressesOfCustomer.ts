@@ -1,7 +1,8 @@
 import { Address } from "@/prisma/generated/zod";
 import prisma from "../db";
 import getCustomerWithDetails from "./getCustomerWithDetails";
-import { CustomerWithDetails } from "../../models";
+import { CustomerWithDetails } from "@shared"
+;
 
 export default async function updateAddressesOfCustomer(
   addresses: Address[],

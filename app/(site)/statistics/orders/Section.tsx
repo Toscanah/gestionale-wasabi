@@ -1,4 +1,5 @@
-import { AnyOrder } from "../../models";
+import { AnyOrder } from "@shared"
+;
 import WeekdaysOrDateToggle from "./weekdays-or-date/WeekdaysOrDateToggle";
 import WeekdaysSelection from "./weekdays-or-date/WeekdaysSelection";
 import WeekdaysFilterTypeSelection from "./weekdays-or-date/WeekdaysFilterTypeSelection";

@@ -1,9 +1,10 @@
 import { z } from "zod";
-import getZodField from "../../functions/util/getZodField";
+import getZodField from "../../lib/util/getZodField";
 import { Textarea } from "@/components/ui/textarea";
 import { FormFieldType } from "../FormFields";
 import { ControllerRenderProps } from "react-hook-form";
-import { CategoryWithOptions } from "@/app/(site)/models";
+import { CategoryWithOptions } from "@shared"
+;
 import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import KitchenType from "./KitchenType";
 

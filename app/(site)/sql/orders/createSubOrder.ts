@@ -3,9 +3,10 @@ import addProductsToOrder from "../products/addProductsToOrder";
 import createPickupOrder from "./createPickupOrder";
 import createTableOrder from "./createTableOrder";
 import prisma from "../db";
-import { getProductPrice } from "../../functions/product-management/getProductPrice";
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import getOrderById from "./getOrderById";
-import { AnyOrder, PickupOrder, ProductInOrder, TableOrder } from "../../models";
+import { AnyOrder, PickupOrder, ProductInOrder, TableOrder } from "@shared"
+;
 
 export default async function createSubOrder(
   parentOrder: AnyOrder,

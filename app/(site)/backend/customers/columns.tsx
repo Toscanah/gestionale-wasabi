@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
 import OrderHistory from "../../components/order-history/OrderHistory";
-import { CustomerWithDetails } from "../../models";
-import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
+import { CustomerWithDetails } from "@shared"
+;
+import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 
 const columns = (
   customers: CustomerWithDetails[],

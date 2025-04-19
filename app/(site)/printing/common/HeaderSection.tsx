@@ -1,9 +1,9 @@
 import { Br, Image, Text } from "react-thermal-printer";
 import TimeSection from "./TimeSection";
-import getReceiptSize from "../../functions/formatting-parsing/printing/getReceiptSize";
-import { GlobalSettings } from "../../types/Settings";
+import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
+import { GlobalSettings } from "../../shared/types/Settings";
 import { DEFAULT_SETTINGS } from "../../hooks/useSettings";
-import sanitazeReceiptText from "../../functions/formatting-parsing/printing/sanitazeReceiptText";
+import sanitazeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
 
 // import logo from "../../../../public/logo.png";
 

@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import Table from "../../components/table/Table";
-import getTable from "../../functions/util/getTable";
-import { ProductInOrder } from "../../models";
+import getTable from "../../lib/util/getTable";
+import { ProductInOrder } from "@shared"
+;
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
-import calculateOrderTotal from "../../functions/order-management/calculateOrderTotal";
-import generateEmptyOrder from "../../functions/order-management/generateEmptyOrder";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
+import calculateOrderTotal from "../../lib/order-management/calculateOrderTotal";
+import generateEmptyOrder from "../../lib/order-management/generateEmptyOrder";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 
 interface DivideTableProps {
   products: ProductInOrder[];

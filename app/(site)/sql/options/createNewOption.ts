@@ -1,6 +1,7 @@
 import { Option } from "@/prisma/generated/zod";
 import prisma from "../db";
-import { OptionWithCategories } from "../../models";
+import { OptionWithCategories } from "@shared"
+;
 import { categoriesInclude } from "../includes";
 
 export default async function createNewOption(option: Option): Promise<OptionWithCategories> {

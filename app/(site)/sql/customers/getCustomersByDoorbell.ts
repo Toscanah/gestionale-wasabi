@@ -1,4 +1,5 @@
-import { CustomerWithDetails } from "../../models";
+import { CustomerWithDetails } from "@shared"
+;
 import prisma from "../db";
 import getCustomerWithDetails from "./getCustomerWithDetails";
 

@@ -21,7 +21,7 @@ const sizes = {
   large: "max-w-[97.5vw] w-[97.5vw]",
 };
 
-type DialogWrapperProps = {
+export type DialogWrapperProps = {
   double?: boolean;
   autoFocus?: boolean;
   children?: ReactNode;

@@ -1,4 +1,5 @@
-import { AnyOrder, HomeOrder } from "@/app/(site)/models";
+import { AnyOrder, HomeOrder } from "@shared"
+;
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { PayingAction } from "../OrderTable";
@@ -6,10 +7,11 @@ import print from "@/app/(site)/printing/print";
 import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
 import RiderReceipt from "../../../printing/receipts/RiderReceipt";
 import { OrderType, QuickPaymentOption } from "@prisma/client";
-import { ProductInOrder } from "@/app/(site)/models";
+import { ProductInOrder } from "@shared"
+;
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
+import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 
 interface NormalActionsProps {

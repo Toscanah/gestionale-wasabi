@@ -60,16 +60,14 @@ enum KitchenType {
 }
 
 enum EngagementType {
-    EMAIL
     QR_CODE
-    PROMOTION
-    MESSAGE
+    IMAGE
 }
 
 enum EngagementState {
-    PENDING
-    APPLIED
-    USED
+    PENDING // waiting for the next order to be created and engagement applied
+    APPLIED // engagement applied to the order
+    USED // engagement used (after order is PAID) and not valid anymore
 }
 
 enum RiceLogType {
@@ -87,22 +85,22 @@ model Rider {
 }
 
 model Order {
-    id                 Int                  @id @default(autoincrement())
-    created_at         DateTime             @default(now())
-    updated_at         DateTime             @default(now()) @updatedAt
-    total              Float                @default(0)
-    discount           Float                @default(0)
-    is_receipt_printed Boolean              @default(false)
-    shift              WorkingShift         @default(UNSPECIFIED)
+    id                 Int              @id @default(autoincrement())
+    created_at         DateTime         @default(now())
+    updated_at         DateTime         @default(now()) @updatedAt
+    total              Float            @default(0)
+    discount           Float            @default(0)
+    is_receipt_printed Boolean          @default(false)
+    shift              WorkingShift     @default(UNSPECIFIED)
     soups              Int?
     salads             Int?
     rices              Int?
     suborder_of        Int?
-    state              OrderState           @default(ACTIVE)
+    state              OrderState       @default(ACTIVE)
     type               OrderType
     products           ProductInOrder[]
     payments           Payment[]
-    engagement         CustomerEngagement[]
+    engagement         Engagement[]
     table_order        TableOrder?
     home_order         HomeOrder?
     pickup_order       PickupOrder?
@@ -159,47 +157,32 @@ model Address {
     home_orders HomeOrder[]
 }
 
-model EmailTemplate {
-    id       Int     @id @default(autoincrement())
-    template String  @unique
-    subject  String
-    body     String?
-}
-
-model CustomerEngagement {
+model Engagement {
     id          Int             @id @default(autoincrement())
-    customer_id Int
-    payload     Json
     type        EngagementType
-    state       EngagementState
+    state       EngagementState @default(PENDING)
+    payload     Json
     created_at  DateTime        @default(now())
-
-    // Order association - QR Codes, Messages & Promotions are linked to the NEXT order
-    order_id Int? // Nullable, assigned when the action is applied
-    order    Order? @relation(fields: [order_id], references: [id], onDelete: SetNull)
-
-    // Expiration Date for Promotions
-    expiresAt DateTime? // Only for promotions, null for QR Codes & Messages
-
-    // Used when the order is marked as PAID
-    usedAt DateTime? // When the action was actually used
-
-    customer Customer @relation(fields: [customer_id], references: [id])
+    customer    Customer        @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+    customer_id Int
+    order       Order?          @relation(fields: [order_id], references: [id], onDelete: SetNull)
+    order_id    Int?
+    used_at     DateTime?
 }
 
 model Customer {
-    id            Int                  @id @default(autoincrement())
+    id            Int           @id @default(autoincrement())
     name          String?
     surname       String?
     email         String?
     preferences   String?
-    active        Boolean              @default(true)
-    phone_id      Int                  @unique
-    phone         Phone                @relation(fields: [phone_id], references: [id], onDelete: Cascade)
+    active        Boolean       @default(true)
+    phone_id      Int           @unique
+    phone         Phone         @relation(fields: [phone_id], references: [id], onDelete: Cascade)
     addresses     Address[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
-    engagement    CustomerEngagement[]
+    engagement    Engagement[]
 }
 
 model Phone {

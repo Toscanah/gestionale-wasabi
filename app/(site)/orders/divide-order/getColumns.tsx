@@ -8,10 +8,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { Label } from "@/components/ui/label";
 import TableColumn from "../../components/table/TableColumn";
-import { ProductInOrder } from "@/app/(site)/models";
+import { ProductInOrder } from "@shared"
+;
 import { OrderType } from "@prisma/client";
-import { getProductPrice } from "../../functions/product-management/getProductPrice";
-import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
+import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {
   return [

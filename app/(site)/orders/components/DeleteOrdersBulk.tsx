@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useWasabiContext } from "../../context/WasabiContext";
-import fetchRequest from "../../functions/api/fetchRequest";
+import fetchRequest from "../../lib/api/fetchRequest";
 import OrderDeletionDialog from "../single-order/overview/OrderDeletionDialog";
-import { AnyOrder } from "../../models";
+import { AnyOrder } from "@shared"
+;
 
 export default function DeleteOrdersBulk() {
   const { selectedOrders, updateGlobalState, toggleOrderSelection, fetchRemainingRice } =

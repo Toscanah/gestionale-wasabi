@@ -2,7 +2,7 @@ import { PaymentType } from "@prisma/client";
 import { PaymentMethod } from "../OrderPayment";
 import { Coins, CreditCard, ForkKnife, Money } from "@phosphor-icons/react";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
-import roundToTwo from "@/app/(site)/functions/formatting-parsing/roundToTwo";
+import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 

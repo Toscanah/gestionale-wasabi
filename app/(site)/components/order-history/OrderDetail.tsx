@@ -1,9 +1,10 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { ProductInOrder } from "@/app/(site)/models";
-import { getProductPrice } from "../../functions/product-management/getProductPrice";
+import { ProductInOrder } from "@shared"
+;
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
-import roundToTwo from "../../functions/formatting-parsing/roundToTwo";
-import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
+import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 
 interface OrderDetailProps {
   sortedProducts: ProductInOrder[];

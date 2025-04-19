@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
-import { toastSuccess } from "../functions/util/toast";
-import fetchRequest from "../functions/api/fetchRequest";
+import { toastSuccess } from "../lib/util/toast";
+import fetchRequest from "../lib/api/fetchRequest";
 import { RiceBatch } from "@prisma/client";
 import { debounce } from "lodash";
 

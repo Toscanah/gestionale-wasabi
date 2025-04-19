@@ -27,7 +27,7 @@ export default function ShiftFilterSelector({
       <TooltipProvider delayDuration={0}>
         <Tooltip>
           <TooltipTrigger asChild className={cn(shiftFilter === ShiftFilter.BOTH && "hidden")}>
-            <Warning size={24} color="red" className="hover:cursor-pointer" />
+            <Warning size={24} color="red" />
           </TooltipTrigger>
           <TooltipContent side="bottom" className="w-[250px]">
             <p>

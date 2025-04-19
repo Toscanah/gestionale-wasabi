@@ -13,7 +13,8 @@ import {
   NoContentSchema,
   UpdateOptionSChema,
   UpdateOptionsOfCategorySchema,
-} from "../../models";
+} from "@shared"
+;
 
 export const optionSchemas = {
   getAllOptions: NoContentSchema,

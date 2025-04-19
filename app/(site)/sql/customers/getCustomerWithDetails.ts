@@ -1,8 +1,10 @@
-import { CustomerWithDetails } from "@/app/(site)/models";
-import { HomeOrder } from "@/app/(site)/models";
+import { CustomerWithDetails } from "@shared"
+;
+import { HomeOrder } from "@shared"
+;
 import prisma from "../db";
 import { homeAndPickupOrdersInclude } from "../includes";
-import filterInactiveProducts from "../../functions/product-management/filterInactiveProducts";
+import filterInactiveProducts from "../../lib/product-management/filterInactiveProducts";
 
 export default async function getCustomerWithDetails(
   customerId: number

@@ -1,9 +1,9 @@
 import { Separator } from "@/components/ui/separator";
-import getPaymentName from "../../../functions/order-management/getPaymentName";
-import roundToTwo from "../../../functions/formatting-parsing/roundToTwo";
+import getPaymentName from "../../../lib/order-management/getPaymentName";
+import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import { PaymentType } from "@prisma/client";
-import applyDiscount from "@/app/(site)/functions/order-management/applyDiscount";
+import applyDiscount from "@/app/(site)/lib/order-management/applyDiscount";
 
 export default function PaymentSummary() {
   const { payment, order } = useOrderPaymentContext();

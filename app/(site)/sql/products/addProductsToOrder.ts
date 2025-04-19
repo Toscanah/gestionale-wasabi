@@ -1,5 +1,6 @@
-import { getProductPrice } from "../../functions/product-management/getProductPrice";
-import { ProductInOrder } from "../../models";
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
+import { ProductInOrder } from "@shared"
+;
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 

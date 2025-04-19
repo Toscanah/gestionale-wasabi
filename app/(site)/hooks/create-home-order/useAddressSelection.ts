@@ -1,8 +1,9 @@
 import { Address } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useCreateHomeOrder } from "../../context/CreateHomeOrderContext";
-import fetchRequest from "../../functions/api/fetchRequest";
-import { HomeOrder } from "../../models";
+import fetchRequest from "../../lib/api/fetchRequest";
+import { HomeOrder } from "@shared"
+;
 
 interface UseAddressSelectionParams {
   addresses: Address[];

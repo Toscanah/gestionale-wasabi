@@ -13,7 +13,8 @@ import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 import deleteOrdersInBulk from "../../sql/orders/deleteOrdersInBulk";
 import deleteEverything from "../../sql/deleteEverything";
 import { z } from "zod";
-import { CreateSubOrderSchema, NoContentSchema } from "../../models";
+import { CreateSubOrderSchema, NoContentSchema } from "@shared"
+;
 import handleRequest from "../util/handleRequest";
 import joinTableOrders from "../../sql/orders/joinTableOrders";
 import updateTable from "../../sql/orders/updateTable";

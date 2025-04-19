@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/command";
 import { Check } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
-import generateTimeSlots from "@/app/(site)/functions/util/time/generateTimeSlots";
+import generateTimeSlots from "@/app/(site)/lib/util/time/generateTimeSlots";
 
 interface WhenSelectorProps {
   className?: string;

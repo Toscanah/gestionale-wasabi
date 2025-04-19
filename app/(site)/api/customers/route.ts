@@ -8,88 +8,57 @@ import updateCustomerFromOrder from "../../sql/customers/updateCustomerFromOrder
 import getCustomerWithDetails from "../../sql/customers/getCustomerWithDetails";
 import updateCustomerFromAdmin from "../../sql/customers/updateCustomerFromAdmin";
 import getCustomersByDoorbell from "../../sql/customers/getCustomersByDoorbell";
-import { z } from "zod";
-import { CreateCustomerInputSchema, NoContentSchema } from "../../models";
-import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
+import { CUSTOMER_SCHEMAS } from "@shared";
 import handleRequest from "../util/handleRequest";
 import deleteCustomerById from "../../sql/customers/deleteCustomerById";
 import getCustomersWithStats from "../../sql/customers/getCustomersWithStats";
 // import getCustomersWithMarketing from "../../sql/customers/getCustomersWithMarketing.ts.disabled";
 
-export const customerSchemas = {
-  getCustomerByPhone: z.object({ phone: z.string() }),
-  getCustomerWithDetails: z.object({ customerId: z.number() }),
-  getCustomersWithDetails: NoContentSchema,
-  getCustomersByDoorbell: z.object({ doorbell: z.string() }),
-  updateCustomerFromAdmin: z.object({
-    customer: CustomerSchema.extend({ phone: z.string() }),
-  }),
-  updateCustomerFromOrder: z.object({
-    customer: CustomerSchema,
-  }),
-  createCustomer: z.object({
-    customer: CreateCustomerInputSchema,
-  }),
-  toggleCustomer: z.object({ id: z.number() }),
-  updateAddressesOfCustomer: z.object({
-    addresses: z.array(AddressSchema),
-    customerId: z.number(),
-  }),
-  deleteCustomerById: z.object({
-    id: z.number(),
-  }),
-  getCustomersWithStats: z.object({
-    from: z.coerce.date().optional(),
-    to: z.coerce.date().optional(),
-  }),
-  getCustomersWithMarketing: NoContentSchema,
-};
-
 const POST_ACTIONS = new Map([
-  ["createCustomer", { func: createCustomer, schema: customerSchemas.createCustomer }],
+  ["createCustomer", { func: createCustomer, schema: CUSTOMER_SCHEMAS.createCustomer }],
 ]);
 
 const PATCH_ACTIONS = new Map([
   [
     "updateCustomerFromAdmin",
-    { func: updateCustomerFromAdmin, schema: customerSchemas.updateCustomerFromAdmin },
+    { func: updateCustomerFromAdmin, schema: CUSTOMER_SCHEMAS.updateCustomerFromAdmin },
   ],
   [
     "updateCustomerFromOrder",
-    { func: updateCustomerFromOrder, schema: customerSchemas.updateCustomerFromOrder },
+    { func: updateCustomerFromOrder, schema: CUSTOMER_SCHEMAS.updateCustomerFromOrder },
   ],
-  ["toggleCustomer", { func: toggleCustomer, schema: customerSchemas.toggleCustomer }],
+  ["toggleCustomer", { func: toggleCustomer, schema: CUSTOMER_SCHEMAS.toggleCustomer }],
   [
     "updateAddressesOfCustomer",
-    { func: updateAddressesOfCustomer, schema: customerSchemas.updateAddressesOfCustomer },
+    { func: updateAddressesOfCustomer, schema: CUSTOMER_SCHEMAS.updateAddressesOfCustomer },
   ],
 ]);
 
 const DELETE_ACTIONS = new Map([
-  ["deleteCustomerById", { func: deleteCustomerById, schema: customerSchemas.deleteCustomerById }],
+  ["deleteCustomerById", { func: deleteCustomerById, schema: CUSTOMER_SCHEMAS.deleteCustomerById }],
 ]);
 
 const GET_ACTIONS = new Map([
-  ["getCustomerByPhone", { func: getCustomerByPhone, schema: customerSchemas.getCustomerByPhone }],
+  ["getCustomerByPhone", { func: getCustomerByPhone, schema: CUSTOMER_SCHEMAS.getCustomerByPhone }],
   [
     "getCustomersWithDetails",
-    { func: getCustomersWithDetails, schema: customerSchemas.getCustomersWithDetails },
+    { func: getCustomersWithDetails, schema: CUSTOMER_SCHEMAS.getCustomersWithDetails },
   ],
   [
     "getCustomerWithDetails",
-    { func: getCustomerWithDetails, schema: customerSchemas.getCustomerWithDetails },
+    { func: getCustomerWithDetails, schema: CUSTOMER_SCHEMAS.getCustomerWithDetails },
   ],
   [
     "getCustomersByDoorbell",
-    { func: getCustomersByDoorbell, schema: customerSchemas.getCustomersByDoorbell },
+    { func: getCustomersByDoorbell, schema: CUSTOMER_SCHEMAS.getCustomersByDoorbell },
   ],
   [
     "getCustomersWithStats",
-    { func: getCustomersWithStats, schema: customerSchemas.getCustomersWithStats },
+    { func: getCustomersWithStats, schema: CUSTOMER_SCHEMAS.getCustomersWithStats },
   ],
   // [
   //   "getCustomersWithMarketing",
-  //   { func: getCustomersWithMarketing, schema: customerSchemas.getCustomersWithMarketing },
+  //   { func: getCustomersWithMarketing, schema: CUSTOMER_SCHEMAS.getCustomersWithMarketing },
   // ],
 ]);
 

@@ -1,6 +1,6 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/functions/api/fetchRequest";
-import { toastSuccess } from "@/app/(site)/functions/util/toast";
+import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
+import { toastSuccess } from "@/app/(site)/lib/util/toast";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { WorkingShift } from "@prisma/client";
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { toastSuccess } from "../functions/util/toast";
-import fetchRequest from "../functions/api/fetchRequest";
-import { RiceLog } from "../models/base/Rice";
+import { toastSuccess } from "../lib/util/toast";
+import fetchRequest from "../lib/api/fetchRequest";
+import { RiceLog } from "../shared/models/Rice";
 import { isToday } from "date-fns";
 import { RiceLogType } from "@prisma/client";
 

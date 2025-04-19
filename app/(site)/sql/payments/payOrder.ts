@@ -1,6 +1,7 @@
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
-import { AnyOrder, ProductInOrder } from "../../models";
+import { AnyOrder, ProductInOrder } from "@shared"
+;
 import { Payment } from "@/prisma/generated/zod";
 
 export default async function payOrder(payments: Payment[], productsToPay: ProductInOrder[]): Promise<AnyOrder> {
