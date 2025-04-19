@@ -1,11 +1,16 @@
 import { z } from "zod";
-import { optionSchemas } from "../../api/options/route";
-import { orderSchemas } from "../../api/orders/route";
-import { paymentSchemas } from "../../api/payments/route";
-import { productSchemas } from "../../api/products/route";
-import { riceSchemas } from "../../api/rice/route";
 import { marketingSchemas } from "../../api/marketing/route";
-import { ADDRESS_SCHEMAS, CUSTOMER_SCHEMAS, CATEGORY_SCHEMAS, ENGAGEMENT_SCHEMAS } from "@shared";
+import {
+  ADDRESS_SCHEMAS,
+  CUSTOMER_SCHEMAS,
+  CATEGORY_SCHEMAS,
+  ENGAGEMENT_SCHEMAS,
+  RICE_SCHEMAS,
+  PRODUCT_SCHEMAS,
+  PAYMENT_SCHEMAS,
+  ORDER_SCHEMAS,
+  OPTION_SCHEMAS,
+} from "@shared";
 
 export type HTTPMethod = "POST" | "GET" | "DELETE" | "PATCH";
 
@@ -22,16 +27,16 @@ export type APIEndpoint =
   | "engagements";
 
 const schemas = {
+  ...ORDER_SCHEMAS,
+  ...PRODUCT_SCHEMAS,
+  ...CUSTOMER_SCHEMAS,
   ...ADDRESS_SCHEMAS,
   ...CATEGORY_SCHEMAS,
-  ...CUSTOMER_SCHEMAS,
-  ...optionSchemas,
-  ...orderSchemas,
-  ...paymentSchemas,
-  ...productSchemas,
-  ...riceSchemas,
-  ...marketingSchemas,
+  ...RICE_SCHEMAS,
+  ...PAYMENT_SCHEMAS,
+  ...OPTION_SCHEMAS,
   ...ENGAGEMENT_SCHEMAS,
+  ...marketingSchemas,
 };
 
 export type ValidActionKeys = keyof typeof schemas;
