@@ -12,13 +12,16 @@ export default async function updateRiceBatch(
     throw new Error("Batch ID is required");
   }
 
-  const validFields: (keyof ValidFields)[] = Object.keys(
-    {} as ValidFields
-  ) as (keyof ValidFields)[];
+  // TODO: fix field validation
+  // const validFields: (keyof ValidFields)[] = Object.keys(
+  //   {} as ValidFields
+  // ) as (keyof ValidFields)[];
 
-  if (!validFields.includes(field)) {
-    throw new Error("Invalid field");
-  }
+  // console.log(field, validFields, value);
+
+  // if (!validFields.includes(field)) {
+  //   throw new Error("Invalid field");
+  // }
 
   if (!value) {
     throw new Error("Value is required");

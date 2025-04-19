@@ -45,7 +45,7 @@ export default function RiceDefaultValues() {
   };
 
   const removeRiceBatch = async (batchId: number) =>
-    fetchRequest("DELETE", `/api/rice/`, "deleteRiceBatch", { batchId }).then(() => {
+    fetchRequest("DELETE", "/api/rice/", "deleteRiceBatch", { batchId }).then(() => {
       setRiceBatches((prev) => prev.filter((batch) => batch.id !== batchId));
       toastSuccess("Valore rimosso con successo");
     });
@@ -53,7 +53,7 @@ export default function RiceDefaultValues() {
   const debouncedUpdateBatch = useCallback(
     debounce(
       (batchId: number, field: keyof Omit<RiceBatch, "id">, value: any) =>
-        fetchRequest("PATCH", `/api/rice/`, "updateRiceBatch", { batchId, field, value }).then(() =>
+        fetchRequest("PATCH", "/api/rice/", "updateRiceBatch", { batchId, field, value }).then(() =>
           toastSuccess("Valore aggiornato con successo")
         ),
       2000
