@@ -72,8 +72,6 @@ export function useProductManager(
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     const selectedProductIds = selectedRows.map((row) => row.original.id);
 
-    console.log(selectedProductIds);
-
     if (selectedProductIds.length > 0) {
       fetchRequest("DELETE", "/api/products/", "deleteProductsFromOrder", {
         productIds: selectedProductIds,

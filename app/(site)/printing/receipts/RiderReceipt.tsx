@@ -17,7 +17,7 @@ export default function RiderReceipt(order: HomeOrder, quickPaymentOption: Quick
       {OrderInfoSection({ order, quickPaymentOption, extraItems: false })}
       <Line />
 
-      {TotalSection(order.products, order.discount, true)}
+      {TotalSection(order.products, order.discount, true, order.type)}
       <Cut />
     </>
   );

@@ -1,5 +1,4 @@
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { OrderType } from "@prisma/client";
 import aggregateProducts from "../../../lib/product-management/aggregateProducts";
 import CustomerProducts from "./CustomerProducts";
@@ -17,26 +16,25 @@ export default function ProductsListSection(
   discount: number = 0,
   recipient: "kitchen" | "customer"
 ) {
-  const groupedProducts: GroupedProductsByOptions = aggregateProducts(
-    products
-      .filter(
-        (product) =>
-          product.id !== -1 &&
-          product.state !== "DELETED_COOKED" &&
-          product.state !== "DELETED_UNCOOKED"
-      )
-      .sort((a, b) =>
-        a.product.code.toLocaleUpperCase().localeCompare(b.product.code.toLocaleUpperCase())
-      ),
-    orderType
-  );
+  const filteredProducts = products
+    .filter(
+      (product) =>
+        product.id !== -1 &&
+        product.state !== "DELETED_COOKED" &&
+        product.state !== "DELETED_UNCOOKED"
+    )
+    .sort((a, b) =>
+      a.product.code.toLocaleUpperCase().localeCompare(b.product.code.toLocaleUpperCase())
+    );
+
+  const groupedProducts: GroupedProductsByOptions = aggregateProducts(filteredProducts, orderType);
 
   return recipient == "customer"
     ? CustomerProducts({
         groupedProducts,
         discount,
         orderType,
-        originalProducts: products,
+        originalProducts: filteredProducts,
       })
     : KitchenProducts({ groupedProducts });
 }

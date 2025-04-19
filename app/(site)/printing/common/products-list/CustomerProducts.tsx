@@ -178,7 +178,7 @@ export default function CustomerProducts({
         />
       )}
 
-      {TotalSection(originalProducts, discount, true)}
+      {TotalSection(originalProducts, discount, true, orderType)}
       <Br />
     </>
   );

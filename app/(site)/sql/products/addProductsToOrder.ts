@@ -1,7 +1,7 @@
 import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import { ProductInOrder } from "@shared";
 import prisma from "../db";
-import { optionsInclude, productInOrderInclude } from "../includes";
+import { productInOrderInclude } from "../includes";
 
 export default async function addProductsToOrder(
   targetOrderId: number,
@@ -65,7 +65,6 @@ export default async function addProductsToOrder(
   });
 
   const productIds = newProducts.map((p) => p.id);
-
   const finalProducts = await prisma.productInOrder.findMany({
     where: {
       id: { in: productIds },
