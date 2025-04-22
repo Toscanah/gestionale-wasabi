@@ -20,6 +20,8 @@ export default async function getOrdersWithPayments(): Promise<OrderWithPayments
     },
   });
 
+  
+
   const ordersWithPaymentTotals = orders.map((order) => {
     const paymentTotals = {
       totalCash: 0,

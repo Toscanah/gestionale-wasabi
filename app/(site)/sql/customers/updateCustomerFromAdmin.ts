@@ -1,5 +1,4 @@
-import { CustomerWithDetails, CustomerWithPhone } from "@shared"
-;
+import { CustomerWithDetails, CustomerWithPhone } from "@shared";
 import prisma from "../db";
 import { homeAndPickupOrdersInclude } from "../includes";
 
@@ -28,7 +27,8 @@ export default async function updateCustomerFromAdmin(
     include: {
       phone: true,
       addresses: true,
-      ...homeAndPickupOrdersInclude
+      ...homeAndPickupOrdersInclude,
+      engagement: true,
     },
   });
 }

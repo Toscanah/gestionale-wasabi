@@ -83,7 +83,7 @@ export default function RandomSpinner({ isLoading, size = 200, color = "#ff0000"
 
   return (
     <div className="flex flex-col gap-8 items-center justify-center w-full h-full">
-      <SelectedSpinner loading={isLoading} size={size} color={color} />
+      {/* <SelectedSpinner loading={isLoading} size={size} color={color} /> */}
       <p className="text-muted-foreground text-lg italic">{phrase}</p>
     </div>
   );

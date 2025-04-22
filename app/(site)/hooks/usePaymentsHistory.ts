@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { OrderWithPayments } from "@shared"
-;
+import { OrderWithPayments } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
 import { isSameDay } from "date-fns";
 import { ShiftFilter } from "../components/filters/shift/ShiftFilterSelector";
@@ -20,7 +19,6 @@ export default function usePaymentsHistory() {
     fetchRequest<OrderWithPayments[]>("GET", "/api/payments", "getOrdersWithPayments")
       .then((orders) => {
         setAllOrders(orders);
-        filterOrders();
       })
       .finally(() => setIsLoading(false));
   };
@@ -31,7 +29,7 @@ export default function usePaymentsHistory() {
 
   useEffect(() => {
     filterOrders();
-  }, [date, typeFilter, shiftFilter]);
+  }, [allOrders, date, typeFilter, shiftFilter]);
 
   const filterOrders = useCallback(() => {
     const filtered = allOrders.filter((order) => {
@@ -40,6 +38,8 @@ export default function usePaymentsHistory() {
 
       return matchesDate && matchesType && orderMatchesShift(order, shiftFilter);
     });
+
+    console.log("Filtered orders:", filtered);
 
     setFilteredOrders(filtered);
   }, [allOrders, date, typeFilter, shiftFilter]);

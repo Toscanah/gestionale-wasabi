@@ -10,6 +10,7 @@ export default async function getCustomersWithDetails(): Promise<CustomerWithDet
       addresses: true,
       phone: true,
       ...homeAndPickupOrdersInclude,
+      engagement: true,
     },
   });
 

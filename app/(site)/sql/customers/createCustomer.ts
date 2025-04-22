@@ -29,6 +29,7 @@ export default async function createCustomer(
         phone: true,
         addresses: true,
         ...homeAndPickupOrdersInclude,
+        engagement: true,
       },
     });
   });

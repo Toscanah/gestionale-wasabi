@@ -17,6 +17,7 @@ export default async function getCustomerWithDetails(
       addresses: true,
       phone: true,
       ...homeAndPickupOrdersInclude,
+      engagement: true,
     },
   });
 
