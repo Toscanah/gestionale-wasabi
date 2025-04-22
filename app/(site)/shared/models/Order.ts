@@ -1,5 +1,6 @@
 import {
   AddressSchema,
+  EngagementSchema,
   HomeOrderSchema,
   OrderSchema,
   PaymentSchema,
@@ -10,44 +11,45 @@ import { z } from "zod";
 import { ProductInOrderWithOptionsSchema } from "./Product";
 import { CustomerWithPhoneSchema } from "./Customer";
 
-export const OrderWithProductsSchema = OrderSchema.extend({
+export const BaseOrderSchema = OrderSchema.extend({
   products: z.array(z.lazy(() => ProductInOrderWithOptionsSchema)),
+  engagement: z.array(EngagementSchema),
 });
 
-export const OrderWithProductsAndPaymentsSchema = OrderWithProductsSchema.extend({
+export const OrderWithPaymentsSchema = BaseOrderSchema.extend({
   payments: z.array(PaymentSchema),
 });
 
-export const TableOrderInOrderSchema = OrderWithProductsAndPaymentsSchema.extend({
+export const TableOrderInOrderSchema = OrderWithPaymentsSchema.extend({
   table_order: TableOrderSchema.nullable(),
 });
 
-export const HomeOrderInOrderSchema = OrderWithProductsAndPaymentsSchema.extend({
+export const HomeOrderInOrderSchema = OrderWithPaymentsSchema.extend({
   home_order: HomeOrderSchema.extend({
     customer: z.lazy(() => CustomerWithPhoneSchema),
     address: AddressSchema,
   }).nullable(),
 });
 
-export const PickupOrderInOrderSchema = OrderWithProductsAndPaymentsSchema.extend({
+export const PickupOrderInOrderSchema = OrderWithPaymentsSchema.extend({
   pickup_order: PickupOrderSchema.extend({
     customer: z.lazy(() => CustomerWithPhoneSchema).nullable(),
   }).nullable(),
 });
 
 export const TableOrderWithOrderSchema = TableOrderSchema.extend({
-  order: OrderWithProductsSchema,
+  order: BaseOrderSchema,
 });
 
 export const HomeOrderWithOrderSchema = HomeOrderSchema.extend({
-  order: OrderWithProductsSchema,
+  order: BaseOrderSchema,
 });
 
 export const PickupOrderWithOrderSchema = PickupOrderSchema.extend({
-  order: OrderWithProductsSchema,
+  order: BaseOrderSchema,
 });
 
-export const OrderWithPaymentsAndTotalsSchema = OrderWithProductsAndPaymentsSchema.extend({
+export const OrderWithPaymentsAndTotalsSchema = BaseOrderSchema.extend({
   totalCash: z.number().int(),
   totalCard: z.number().int(),
   totalVouch: z.number().int(),

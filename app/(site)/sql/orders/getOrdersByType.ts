@@ -21,6 +21,7 @@ export default async function getOrdersByType(type: OrderType): Promise<AnyOrder
       ...homeOrderInclude,
       ...pickupOrderInclude,
       table_order: true,
+      engagement: true,
     },
     where: {
       type: type,

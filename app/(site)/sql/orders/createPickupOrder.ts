@@ -1,7 +1,6 @@
-import { OrderType } from "@prisma/client";
+import { OrderType, EngagementState } from "@prisma/client";
 import prisma from "../db";
-import { PickupOrder } from "@shared"
-;
+import { PickupOrder } from "@shared";
 import { productsInOrderInclude } from "../includes";
 
 export default async function createPickupOrder(
@@ -9,84 +8,124 @@ export default async function createPickupOrder(
   when: string,
   phone?: string
 ): Promise<{ order: PickupOrder; isNewOrder: boolean }> {
-  let orderName = name;
-  let customerData = undefined;
+  return await prisma.$transaction(async (tx) => {
+    let orderName = name;
+    let customerData = undefined;
+    let customerId: number | null = null;
 
-  if (phone) {
-    const existingPhone = await prisma.phone.findUnique({
-      where: { phone: phone },
-      include: { customer: true },
-    });
-
-    if (existingPhone?.customer) {
-      customerData = {
-        connect: { id: existingPhone.customer.id },
-      };
-      orderName = existingPhone.customer.surname ?? name;
-    } else {
-      const newPhone = await prisma.phone.create({
-        data: { phone },
+    if (phone) {
+      const existingPhone = await tx.phone.findUnique({
+        where: { phone: phone },
+        include: { customer: true },
       });
 
-      customerData = {
-        create: {
-          name: name,
-          surname: "",
-          phone: {
-            connect: { id: newPhone.id },
+      if (existingPhone?.customer) {
+        customerId = existingPhone.customer.id;
+        customerData = {
+          connect: { id: customerId },
+        };
+        orderName = existingPhone.customer.surname ?? name;
+      } else {
+        const newPhone = await tx.phone.create({
+          data: { phone },
+        });
+
+        const newCustomer = await tx.customer.create({
+          data: {
+            name: name,
+            surname: "",
+            phone: {
+              connect: { id: newPhone.id },
+            },
           },
-        },
-      };
+        });
+
+        customerData = {
+          connect: { id: newCustomer.id },
+        };
+        customerId = newCustomer.id;
+      }
     }
-  }
 
-  const existingOrder: PickupOrder | null = await prisma.order.findFirst({
-    where: {
-      type: OrderType.PICKUP,
-      pickup_order: { name },
-      state: "ACTIVE",
-    },
-    include: {
-      payments: true,
-      pickup_order: {
-        include: {
-          customer: {
-            include: { phone: true },
+    // Check if there's already an ACTIVE pickup order with this name
+    const existingOrder: PickupOrder | null = await tx.order.findFirst({
+      where: {
+        type: OrderType.PICKUP,
+        pickup_order: { name },
+        state: "ACTIVE",
+      },
+      include: {
+        payments: true,
+        engagement: true,
+        pickup_order: {
+          include: {
+            customer: {
+              include: { phone: true },
+            },
+          },
+        },
+        ...productsInOrderInclude,
+      },
+    });
+
+    if (existingOrder) {
+      return { order: existingOrder, isNewOrder: false };
+    }
+
+    // Fetch engagements if customer exists
+    const pendingEngagements =
+      customerId !== null
+        ? await tx.engagement.findMany({
+            where: {
+              customer_id: customerId,
+              state: EngagementState.PENDING,
+            },
+          })
+        : [];
+
+    // Create the order
+    const createdOrder = await tx.order.create({
+      data: {
+        type: OrderType.PICKUP,
+        total: 0,
+        engagement: {
+          connect: pendingEngagements.map((e) => ({ id: e.id })),
+        },
+        pickup_order: {
+          create: {
+            name: orderName,
+            when,
+            customer: customerData,
           },
         },
       },
-      ...productsInOrderInclude,
-    },
-  });
-
-  if (existingOrder) {
-    return { order: existingOrder, isNewOrder: false };
-  }
-
-  const createdOrder = await prisma.order.create({
-    data: {
-      type: OrderType.PICKUP,
-      total: 0,
-      pickup_order: {
-        create: {
-          name: orderName,
-          when: when,
-          customer: customerData,
-        },
-      },
-    },
-    include: {
-      payments: true,
-      pickup_order: {
-        include: {
-          customer: {
-            include: { phone: true },
+      include: {
+        payments: true,
+        pickup_order: {
+          include: {
+            customer: {
+              include: { phone: true },
+            },
           },
         },
+        ...productsInOrderInclude,
+        engagement: true,
       },
-      ...productsInOrderInclude,
-    },
-  });
+    });
 
-  return { order: createdOrder, isNewOrder: true };
+    // Update applied engagements
+    if (pendingEngagements.length > 0) {
+      await tx.engagement.updateMany({
+        where: {
+          id: { in: pendingEngagements.map((e) => e.id) },
+        },
+        data: {
+          state: EngagementState.APPLIED,
+          order_id: createdOrder.id,
+        },
+      });
+    }
+
+    return { order: createdOrder, isNewOrder: true };
+  });
 }

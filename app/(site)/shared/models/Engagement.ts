@@ -13,7 +13,12 @@ export const ImagePayloadSchema = CommonPayloadSchema.extend({
   imageUrl: z.string(),
 });
 
+export const MessagePayloadSchema = CommonPayloadSchema.extend({
+  message: z.string(),
+});
+
 export const EngagementPayloadSchema = z.union([
   QrPayloadSchema,
   ImagePayloadSchema,
+  MessagePayloadSchema,
 ]);

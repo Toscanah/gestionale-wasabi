@@ -21,6 +21,7 @@ export default async function createTableOrder(
       payments: true,
       table_order: true,
       ...productsInOrderInclude,
+      engagement: true,
     },
   });
 
@@ -44,6 +45,7 @@ export default async function createTableOrder(
       payments: true,
       table_order: true,
       ...productsInOrderInclude,
+      engagement: true,
     },
   });
 

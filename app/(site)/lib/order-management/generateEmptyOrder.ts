@@ -1,10 +1,10 @@
 import { OrderType, WorkingShift } from "@prisma/client";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 
 export default function generateEmptyOrder(orderType: OrderType): AnyOrder {
   return {
     discount: 0,
+    engagement: [],
     shift: WorkingShift.UNSPECIFIED,
     is_receipt_printed: false,
     state: "ACTIVE",

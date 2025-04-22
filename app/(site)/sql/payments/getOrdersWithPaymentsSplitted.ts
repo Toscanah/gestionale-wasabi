@@ -16,6 +16,7 @@ export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPayments
       ...pickupOrderInclude,
       table_order: true,
       ...productsInOrderInclude,
+      engagement: true,
     },
   });
 

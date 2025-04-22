@@ -39,7 +39,10 @@ export const productsInOrderInclude = {
 
 export const orderInclude = {
   order: {
-    include: productsInOrderInclude,
+    include: {
+      ...productsInOrderInclude,
+      engagement: true,
+    },
   },
 };
 
@@ -53,7 +56,7 @@ export const pickupOrderInclude = {
   pickup_order: {
     include: { customer: { include: { phone: true } } },
   },
-}
+};
 
 export const homeAndPickupOrdersInclude = {
   home_orders: {

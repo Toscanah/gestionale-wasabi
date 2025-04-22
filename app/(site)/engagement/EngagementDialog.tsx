@@ -11,24 +11,35 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { AnyOrder } from "../shared";
 
 interface CreateEngagementDialogProps {
   trigger: DialogWrapperProps["trigger"];
-  customerId: number
+  order?: AnyOrder;
+  customerIds?: number[];
 }
 
-export default function EngagementDialog({ trigger, customerId }: CreateEngagementDialogProps) {
-  const { choice, setChoice, setTextAbove, setTextBelow, textAbove, textBelow } = useEngagement(customerId);
+export default function EngagementDialog({
+  trigger,
+  order,
+  customerIds,
+}: CreateEngagementDialogProps) {
+  return <></>
+  const params = order ? { order } : customerIds ? { customerIds } : undefined;
+
+  const { choice, setChoice, setTextAbove, setTextBelow, textAbove, textBelow } = useEngagement(
+    params!
+  );
 
   return (
     <DialogWrapper trigger={trigger}>
       <Accordion type="multiple" className="w-full">
         <AccordionItem value="active">
           <AccordionTrigger>Marketing attivo</AccordionTrigger>
-          <AccordionContent>TODO:</AccordionContent>
+          <AccordionContent></AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="new" >
+        <AccordionItem value="new">
           <AccordionTrigger>Crea nuovo marketing</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-2">
             <EngagementChoice choice={choice} setChoice={setChoice} />

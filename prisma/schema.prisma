@@ -61,6 +61,7 @@ enum KitchenType {
 
 enum EngagementType {
     QR_CODE
+    MESSAGE
     IMAGE
 }
 
@@ -163,8 +164,8 @@ model Engagement {
     state       EngagementState @default(PENDING)
     payload     Json
     created_at  DateTime        @default(now())
-    customer    Customer        @relation(fields: [customer_id], references: [id], onDelete: Cascade)
-    customer_id Int
+    customer    Customer?       @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+    customer_id Int?
     order       Order?          @relation(fields: [order_id], references: [id], onDelete: SetNull)
     order_id    Int?
     used_at     DateTime?

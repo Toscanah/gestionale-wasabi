@@ -1,7 +1,11 @@
-import { AddressSchema, CustomerSchema, PhoneSchema } from "@/prisma/generated/zod";
+import {
+  AddressSchema,
+  CustomerSchema,
+  EngagementSchema,
+  PhoneSchema,
+} from "@/prisma/generated/zod";
 import { z } from "zod";
 import { HomeOrderWithOrderSchema, PickupOrderWithOrderSchema } from "./Order";
-
 
 export const CustomerWithAddressesAndOrdersSchema = CustomerSchema.extend({
   addresses: z.array(AddressSchema),
@@ -10,8 +14,8 @@ export const CustomerWithAddressesAndOrdersSchema = CustomerSchema.extend({
   phone: PhoneSchema,
 });
 
-export const CustomerWithMarketing = CustomerWithAddressesAndOrdersSchema.extend({
-  // marketings: z.array(MarketingOnCustomerWithMarketingSchema),
+export const CustomerWithEngagementSchema = CustomerWithAddressesAndOrdersSchema.extend({
+  engagement: z.array(EngagementSchema),
 });
 
 export const CustomerWithPhoneSchema = CustomerSchema.extend({
@@ -23,6 +27,5 @@ export const CustomerWithAddressesSchema = CustomerWithPhoneSchema.extend({
 });
 
 export type CustomerWithPhone = z.infer<typeof CustomerWithPhoneSchema>;
-export type CustomerWithDetails = z.infer<typeof CustomerWithAddressesAndOrdersSchema>;
+export type CustomerWithDetails = z.infer<typeof CustomerWithEngagementSchema>;
 export type CustomerWithAddresses = z.infer<typeof CustomerWithAddressesSchema>;
-export type CustomerWithMarketing = z.infer<typeof CustomerWithMarketing>;

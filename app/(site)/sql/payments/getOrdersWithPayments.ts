@@ -16,6 +16,7 @@ export default async function getOrdersWithPayments(): Promise<OrderWithPayments
       ...pickupOrderInclude,
       table_order: true,
       ...productsInOrderInclude,
+      engagement: true,
     },
   });
 
