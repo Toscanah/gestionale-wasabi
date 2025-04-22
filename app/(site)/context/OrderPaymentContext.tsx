@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { PaymentType } from "@prisma/client";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import useOrderPayment from "../hooks/useOrderPayment";
 import roundToTwo from "../lib/formatting-parsing/roundToTwo";
 import applyDiscount from "../lib/order-management/applyDiscount";
@@ -19,6 +18,8 @@ interface OrderPaymentContextProps {
   setPaymentCalculations: React.Dispatch<React.SetStateAction<PaymentCalculation[]>>;
   resetPayment: () => void;
   order: AnyOrder;
+  isPaying: boolean;
+  setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface OrderPaymentProvider {
@@ -49,6 +50,7 @@ export const OrderPaymentProvider = ({
   onOrderPaid,
   children,
 }: OrderPaymentProvider) => {
+  const [isPaying, setIsPaying] = useState(false);
   const { order: contextOrder } = useOrderContext();
   const order = partialOrder || contextOrder;
 
@@ -72,6 +74,8 @@ export const OrderPaymentProvider = ({
 
   const [typedAmount, setTypedAmount] = useState<string>(roundToTwo(payment.remainingAmount));
   const { handlePaymentChange, payOrder, resetPaymentValues } = useOrderPayment(
+    isPaying,
+    setIsPaying,
     type,
     onOrderPaid,
     payment,
@@ -81,7 +85,7 @@ export const OrderPaymentProvider = ({
 
   useEffect(() => {
     setPayment(defaultPayment);
-    setTypedAmount(roundToTwo(defaultPayment.remainingAmount))
+    setTypedAmount(roundToTwo(defaultPayment.remainingAmount));
   }, [order.total]);
 
   const resetPayment = () => {
@@ -103,6 +107,8 @@ export const OrderPaymentProvider = ({
         setPaymentCalculations,
         resetPayment,
         order,
+        isPaying,
+        setIsPaying,
       }}
     >
       {children}

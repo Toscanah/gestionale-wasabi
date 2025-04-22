@@ -1,10 +1,12 @@
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
-import { AnyOrder, ProductInOrder } from "@shared"
-;
+import { AnyOrder, ProductInOrder } from "@shared";
 import { Payment } from "@/prisma/generated/zod";
 
-export default async function payOrder(payments: Payment[], productsToPay: ProductInOrder[]): Promise<AnyOrder> {
+export default async function payOrder(
+  payments: Payment[],
+  productsToPay: ProductInOrder[]
+): Promise<AnyOrder> {
   if (payments.length == 0) {
     throw new Error("No payments passed");
   }

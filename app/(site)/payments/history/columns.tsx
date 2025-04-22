@@ -1,7 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { AnyOrder, HomeOrder, OrderWithPayments } from "@shared"
-;
+import { AnyOrder, HomeOrder, OrderWithPayments } from "@shared";
 import { Badge } from "@/components/ui/badge";
 import { OrderType, QuickPaymentOption } from "@prisma/client";
 import applyDiscount from "../../lib/order-management/applyDiscount";
@@ -90,7 +89,7 @@ const columns: ColumnDef<OrderWithPayments>[] = [
 
   TableColumn({
     header: "Totale ordine",
-    cellContent: (row) => applyDiscount(row.original.total, row.original.discount),
+    cellContent: (row) => roundToTwo(applyDiscount(row.original.total, row.original.discount)),
   }),
 
   TableColumn({
