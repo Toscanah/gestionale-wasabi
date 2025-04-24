@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { CustomerWithDetails } from "@shared"
-;
+import { CustomerWithDetails } from "@shared";
 import {
   Accordion,
   AccordionContent,
@@ -9,12 +8,12 @@ import {
 } from "@/components/ui/accordion";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import applyDiscount from "../../lib/order-management/applyDiscount";
 import HistoryStats from "./HistoryStats";
 import OrderDetail from "./OrderDetail";
 import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
+import filterDeletedProducts from "../../lib/product-management/filterDeletedProducts";
 
 type ProductStats = {
   desc: string;
@@ -181,7 +180,9 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
                     onCheckboxChange={handleCheckboxChange}
                     type={type}
                     onCreate={onCreate}
-                    sortedProducts={order.products.sort((a, b) => b.quantity - a.quantity)}
+                    sortedProducts={filterDeletedProducts(
+                      order.products.sort((a, b) => b.quantity - a.quantity)
+                    )}
                   />
 
                   {onCreate && (

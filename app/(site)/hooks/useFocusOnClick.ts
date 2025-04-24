@@ -12,8 +12,6 @@ export default function useFocusOnClick(ids: string[]) {
     const elements = ids.map((id) => document.getElementById(id)).filter(Boolean);
     elements.forEach((element) => element?.addEventListener("focus", handleFocus));
 
-    return () => {
-      elements.forEach((element) => element?.removeEventListener("focus", handleFocus));
-    };
+    return () => elements.forEach((element) => element?.removeEventListener("focus", handleFocus));
   }, [ids]);
 }
