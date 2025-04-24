@@ -126,7 +126,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
         : [...prevSelected, product]
     );
 
-  const handleRecreate = () => onCreate?.(selectedProducts);
+  const handleRecreate = () => onCreate?.(filterDeletedProducts(selectedProducts));
 
   if (!orderTypes.some(({ orders }) => orders && orders.length > 0)) {
     return <p className="text-2xl text-center">Nessun ordine registrato</p>;
