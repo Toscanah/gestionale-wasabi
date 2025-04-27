@@ -12,8 +12,8 @@ import PaymentSection from "./sections/PaymentSection";
 import RiceSection from "./sections/RiceSection";
 import Footer from "./Footer";
 import SettingsSection from "./sections/SettingsSection";
-// import MarketingSection from "./sections/MarketingSection.tsx.disabled";
 import { Fragment } from "react";
+import EngagementSection from "./sections/EngagementSection";
 
 type SidebarSection = {
   label: string;
@@ -25,10 +25,10 @@ const sidebarSections: SidebarSection[] = [
     label: "Generale",
     components: [AdminSection, StatsSection, PaymentSection],
   },
-  // {
-  //   label: "Marketing",
-  //   components: [MarketingSection],
-  // },
+  {
+    label: "Marketing",
+    components: [EngagementSection],
+  },
   {
     label: "Riso",
     components: [RiceSection],

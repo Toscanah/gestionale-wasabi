@@ -1,12 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { EngagementType } from "@prisma/client";
-
-const ENGAGEMENT_TYPES = [
-  { value: EngagementType.QR_CODE, label: "QR Code" },
-  { value: EngagementType.IMAGE, label: "Immagine" },
-  { value: EngagementType.MESSAGE, label: "Messaggio" },
-];
+import { ENGAGEMENT_TYPES } from "./types/EngagementTypes";
 
 interface EngagementChoiceProps {
   choice: EngagementType;

@@ -1,13 +1,17 @@
 import { EngagementType, OrderType } from "@prisma/client";
 import { useState } from "react";
-import fetchRequest from "../lib/api/fetchRequest";
-import { AnyOrder, CreateEngagement, HomeOrder, PickupOrder } from "../shared";
+import fetchRequest from "../../lib/api/fetchRequest";
+import { AnyOrder, CreateEngagement, HomeOrder, PickupOrder } from "../../shared";
 
-type UseEngagementParams =
-  | { order: AnyOrder; customerIds?: never }
-  | { order?: never; customerIds: number[] };
+export type UseCreateEngagementParams =
+  | { order: AnyOrder; customerIds?: number[] }
+  | { order?: AnyOrder; customerIds: number[] };
 
-export default function useEngagement({ order, customerIds }: UseEngagementParams) {
+export default function useCreateEngagement({ order, customerIds }: UseCreateEngagementParams) {
+  if (!order && !customerIds) {
+    throw new Error("Either 'order' or 'customerIds' must be provided.");
+  }
+
   const [choice, setChoice] = useState<EngagementType>(EngagementType.QR_CODE);
   const [textAbove, setTextAbove] = useState<string>("");
   const [textBelow, setTextBelow] = useState<string>("");
@@ -29,8 +33,8 @@ export default function useEngagement({ order, customerIds }: UseEngagementParam
     });
   };
 
-  const createEngagement = async (payload: CreateEngagement["payload"]) => {
-    const results = await Promise.all(
+  const createEngagement = async (payload: CreateEngagement["payload"]) =>
+    await Promise.all(
       targetCustomerIds.map((customerId) =>
         fetchRequest("POST", "/api/engagements/", "createEngagement", {
           type: choice,
@@ -40,9 +44,6 @@ export default function useEngagement({ order, customerIds }: UseEngagementParam
         })
       )
     );
-
-    return results;
-  };
 
   return {
     choice,

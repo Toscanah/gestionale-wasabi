@@ -12,13 +12,13 @@ export default function TimeSelectionToggle({ selection, dispatch }: SelectionPr
       className="flex gap-4"
     >
       <div className="flex items-center gap-2">
-        <RadioGroupItem value="range" id="range" />
-        <Label htmlFor="range">Intervallo orario</Label>
-      </div>
-
-      <div className="flex items-center gap-2">
         <RadioGroupItem value="shift" id="shift" />
         <Label htmlFor="shift">Turno</Label>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="range" id="range" />
+        <Label htmlFor="range">Intervallo orario</Label>
       </div>
     </RadioGroup>
   );

@@ -23,11 +23,7 @@ function parseTime(time?: string): TimeValue {
   return { h, m };
 }
 
-function buildTime({ h, m }: TimeValue): string {
-  const paddedH = String(parseInt(h || "0", 10)).padStart(2, "0");
-  const paddedM = String(parseInt(m || "0", 10)).padStart(2, "0");
-  return `${paddedH}:${paddedM}`;
-}
+const buildTime = ({ h, m }: TimeValue): string => `${h}:${m}`;
 
 export default function TimePicker({
   from,
@@ -64,6 +60,7 @@ export default function TimePicker({
           value={fromState}
           onChange={(type, val) => updateTime("from", type, val)}
         />
+        
         <TimeInput
           label={labelTo}
           value={toState}

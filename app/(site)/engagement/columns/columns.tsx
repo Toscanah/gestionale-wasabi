@@ -1,11 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { CustomerWithMarketing } from "../../models";
 import TableColumn from "../../components/table/TableColumn";
-import joinItemsWithComma from "../../functions/formatting-parsing/joinItemsWithComma";
-import PrevMarketings from "./PrevMarketings";
+import { CustomerWithDetails } from "../../shared";
+import PrevEngagement from "./PrevEngagement";
 
-export default function columns(isRightTable: boolean): ColumnDef<CustomerWithMarketing>[] {
-  const columns: ColumnDef<CustomerWithMarketing>[] = [
+export default function columns({
+  isRightTable,
+}: {
+  isRightTable: boolean;
+}): ColumnDef<CustomerWithDetails>[] {
+  const columns: ColumnDef<CustomerWithDetails>[] = [
     TableColumn({
       header: "Chi",
       cellContent: (row) => {
@@ -47,13 +50,13 @@ export default function columns(isRightTable: boolean): ColumnDef<CustomerWithMa
     columns.push(
       TableColumn({
         header: "Conteggio",
-        cellContent: (row) => row.original.marketings.length,
+        cellContent: (row) => row.original.engagement.length,
         sortable: false,
       }),
 
       TableColumn({
         header: "Vecchie azioni",
-        cellContent: (row) => <PrevMarketings marketings={row.original.marketings} />,
+        cellContent: (row) => <PrevEngagement engagement={row.original.engagement} />,
         sortable: false,
       })
     );

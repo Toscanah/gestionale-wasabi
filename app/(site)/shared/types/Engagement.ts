@@ -1,6 +1,6 @@
 export type CommonPayload = {
-  testAbove?: string;
-  testBelow?: string;
+  textAbove?: string;
+  textBelow?: string;
 };
 
 export type QrPayload = CommonPayload & {

@@ -26,7 +26,7 @@ export const initialState: SectionState = {
   mainChoice: "date",
   specificDate: undefined,
   weekdaysSelection: { type: "range", range: undefined },
-  time: { type: "range", from: "", to: "" },
+  time: { type: "shift", shift: "all" },
 };
 
 type UpdateFunction = (state: SectionState, payload: any) => SectionState;
