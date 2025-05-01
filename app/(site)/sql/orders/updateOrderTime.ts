@@ -1,13 +1,15 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 
-export default async function updateOrderTime(
-  time: string,
-  orderId: number
-): Promise<AnyOrder> {
+export default async function updateOrderTime({
+  time,
+  orderId,
+}: {
+  time: string;
+  orderId: number;
+}): Promise<AnyOrder> {
   const baseOrder = await prisma.order.findUnique({
     where: { id: orderId },
     select: { type: true },
@@ -31,5 +33,5 @@ export default async function updateOrderTime(
     await prisma.homeOrder.update(updateData);
   }
 
-  return await getOrderById(orderId);
+  return await getOrderById({orderId});
 }

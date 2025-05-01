@@ -9,7 +9,7 @@ import {
 } from "@/prisma/generated/zod";
 import { z } from "zod";
 import { ProductInOrderWithOptionsSchema } from "./Product";
-import { CustomerWithPhoneSchema } from "./Customer";
+import { CustomerWithPhoneSchema, CustomerWithPhoneAndEngagementSchema } from "./Customer";
 
 export const BaseOrderSchema = OrderSchema.extend({
   products: z.array(z.lazy(() => ProductInOrderWithOptionsSchema)),
@@ -26,14 +26,14 @@ export const TableOrderInOrderSchema = OrderWithPaymentsSchema.extend({
 
 export const HomeOrderInOrderSchema = OrderWithPaymentsSchema.extend({
   home_order: HomeOrderSchema.extend({
-    customer: z.lazy(() => CustomerWithPhoneSchema),
+    customer: z.lazy(() => CustomerWithPhoneAndEngagementSchema),
     address: AddressSchema,
   }).nullable(),
 });
 
 export const PickupOrderInOrderSchema = OrderWithPaymentsSchema.extend({
   pickup_order: PickupOrderSchema.extend({
-    customer: z.lazy(() => CustomerWithPhoneSchema).nullable(),
+    customer: z.lazy(() => CustomerWithPhoneAndEngagementSchema).nullable(),
   }).nullable(),
 });
 

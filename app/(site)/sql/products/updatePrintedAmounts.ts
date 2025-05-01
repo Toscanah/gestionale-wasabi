@@ -1,9 +1,12 @@
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 
-export default async function updatePrintedAmounts(orderId: number): Promise<ProductInOrder[]> {
+export default async function updatePrintedAmounts({
+  orderId,
+}: {
+  orderId: number;
+}): Promise<ProductInOrder[]> {
   return await prisma.$transaction(async (tx) => {
     const order = await tx.order.findUnique({
       where: { id: orderId },

@@ -1,10 +1,15 @@
-import { TableOrder } from "@shared"
-;
+import { TableOrder } from "@shared";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 
-export default async function updateTable(table: string, orderId: number): Promise<TableOrder> {
-  const orderToUpdate = await getOrderById(orderId);
+export default async function updateTable({
+  table,
+  orderId,
+}: {
+  table: string;
+  orderId: number;
+}): Promise<TableOrder> {
+  const orderToUpdate = await getOrderById({ orderId });
 
   if (!orderToUpdate) {
     throw new Error("Order not found");
@@ -15,5 +20,5 @@ export default async function updateTable(table: string, orderId: number): Promi
     data: { table },
   });
 
-  return (await getOrderById(orderId)) as TableOrder;
+  return (await getOrderById({ orderId })) as TableOrder;
 }

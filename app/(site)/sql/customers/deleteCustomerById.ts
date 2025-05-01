@@ -1,6 +1,6 @@
 import prisma from "../db";
 
-export default async function deleteCustomerById(id: number) {
+export default async function deleteCustomerById({ id }: { id: number }) {
   return await prisma.$transaction(async (tx) => {
     const customer = await tx.customer.findUnique({
       where: { id },

@@ -1,11 +1,12 @@
-import { CategoryWithOptions } from "@shared"
-;
+import { CategoryWithOptions } from "@shared";
 import prisma from "../db";
 import { optionsInclude } from "../includes";
 
-export default async function createNewCategory(
-  category: CategoryWithOptions
-): Promise<CategoryWithOptions | null> {
+export default async function createNewCategory({
+  category,
+}: {
+  category: CategoryWithOptions;
+}): Promise<CategoryWithOptions | null> {
   return await prisma.$transaction(async (tx) => {
     const existingCategory = await tx.category.findFirst({
       where: { category: category.category },

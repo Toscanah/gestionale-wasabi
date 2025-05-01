@@ -1,11 +1,10 @@
 import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import prisma from "../db";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import { homeOrderInclude, pickupOrderInclude, productInOrderInclude } from "../includes";
 import calculateOrderTotal from "../../lib/order-management/calculateOrderTotal";
-export default async function getOrdersByType(type: OrderType): Promise<AnyOrder[]> {
+export default async function getOrdersByType({ type }: { type: OrderType }): Promise<AnyOrder[]> {
   const orders = await prisma.order.findMany({
     include: {
       products: {

@@ -3,13 +3,21 @@ import EngagementDialog from "@/app/(site)/engagement/EngagementDialog";
 import { Button } from "@/components/ui/button";
 
 export default function Engagement() {
-  const { order } = useOrderContext();
+  const { order, updateOrder } = useOrderContext();
 
   const MarketingTrigger = (
-    <Button className="h-12 text-xl" variant={"outline"}>
+    <Button className="h-12 text-xl w-full" variant={"outline"}>
       Marketing
     </Button>
   );
 
-  return <EngagementDialog trigger={MarketingTrigger} order={order} />;
+  return (
+    <EngagementDialog
+      trigger={MarketingTrigger}
+      order={order}
+      onSuccess={(newEngagement) =>
+        updateOrder({ engagement: [...order.engagement, newEngagement] })
+      }
+    />
+  );
 }

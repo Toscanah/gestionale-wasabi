@@ -1,9 +1,12 @@
 import prisma from "../db";
-import { CreateAddressInput } from "@shared"
-;
+import { CreateAddressInput } from "@shared";
 import { Address } from "@prisma/client";
 
-export default async function createAddress(address: CreateAddressInput): Promise<Address> {
+export default async function createAddress({
+  address,
+}: {
+  address: CreateAddressInput;
+}): Promise<Address> {
   return await prisma.address.create({
     data: {
       civic: address.civic,

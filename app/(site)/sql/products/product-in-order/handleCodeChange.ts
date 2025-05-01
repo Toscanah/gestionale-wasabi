@@ -1,15 +1,19 @@
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { OrderType, Prisma } from "@prisma/client";
 import { categoryInclude, productInOrderInclude } from "../../includes";
 import { getProductPrice } from "@/app/(site)/lib/product-management/getProductPrice";
 
-export default async function handleProductCodeChange(
-  tx: Prisma.TransactionClient,
-  currentOrder: { id: number; total: number; type: OrderType },
-  newProductCode: string,
-  productInOrder: ProductInOrder
-) {
+export default async function handleProductCodeChange({
+  tx,
+  currentOrder,
+  newProductCode,
+  productInOrder,
+}: {
+  tx: Prisma.TransactionClient;
+  currentOrder: { id: number; total: number; type: OrderType };
+  newProductCode: string;
+  productInOrder: ProductInOrder;
+}) {
   const newProduct = await tx.product.findFirst({
     where: { code: { equals: newProductCode, mode: "insensitive" } },
     include: { ...categoryInclude },

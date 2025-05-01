@@ -3,10 +3,13 @@ import { ProductInOrder } from "@shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 
-export default async function addProductsToOrder(
-  targetOrderId: number,
-  products: ProductInOrder[]
-): Promise<ProductInOrder[]> {
+export default async function addProductsToOrder({
+  targetOrderId,
+  products,
+}: {
+  targetOrderId: number;
+  products: ProductInOrder[];
+}): Promise<ProductInOrder[]> {
   const targetOrder = await prisma.order.findUnique({
     where: { id: targetOrderId },
     select: { type: true },

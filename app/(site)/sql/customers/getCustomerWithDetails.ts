@@ -1,14 +1,14 @@
-import { CustomerWithDetails } from "@shared"
-;
-import { HomeOrder } from "@shared"
-;
+import { CustomerWithDetails } from "@shared";
+import { HomeOrder } from "@shared";
 import prisma from "../db";
 import { homeAndPickupOrdersInclude } from "../includes";
 import filterInactiveProducts from "../../lib/product-management/filterInactiveProducts";
 
-export default async function getCustomerWithDetails(
-  customerId: number
-): Promise<CustomerWithDetails | null> {
+export default async function getCustomerWithDetails({
+  customerId,
+}: {
+  customerId: number;
+}): Promise<CustomerWithDetails | null> {
   const customer = await prisma.customer.findUnique({
     where: {
       id: customerId,

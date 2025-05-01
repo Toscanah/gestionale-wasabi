@@ -1,13 +1,16 @@
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { Prisma } from "@prisma/client";
 import { productInOrderInclude } from "../../includes";
 
-export default async function handleProductDeletion(
-  tx: Prisma.TransactionClient,
-  currentOrder: { id: number; total: number },
-  productInOrder: ProductInOrder
-) {
+export default async function handleProductDeletion({
+  tx,
+  currentOrder,
+  productInOrder,
+}: {
+  tx: Prisma.TransactionClient;
+  currentOrder: { id: number; total: number };
+  productInOrder: ProductInOrder;
+}) {
   if (productInOrder.paid_quantity === 0) {
     await tx.optionInProductOrder.deleteMany({
       where: { product_in_order_id: productInOrder.id },

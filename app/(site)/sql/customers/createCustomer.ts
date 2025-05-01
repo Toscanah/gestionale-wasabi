@@ -2,9 +2,11 @@ import prisma from "../db";
 import { CreateCustomerInput, CustomerWithDetails } from "@shared";
 import { homeAndPickupOrdersInclude } from "../includes";
 
-export default async function createCustomer(
-  customer: CreateCustomerInput
-): Promise<CustomerWithDetails | null> {
+export default async function createCustomer({
+  customer,
+}: {
+  customer: CreateCustomerInput;
+}): Promise<CustomerWithDetails | null> {
   return await prisma.$transaction(async (tx) => {
     const { phone, ...customerData } = customer;
 

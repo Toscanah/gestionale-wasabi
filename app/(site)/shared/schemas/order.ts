@@ -35,7 +35,7 @@ export const CreateSubOrderSchema = z.object({
   isReceiptPrinted: z.boolean(),
 });
 
-export const UpdateDiscountSchema = z.object({
+export const UpdateOrderDiscountSchema = z.object({
   orderId: z.number(),
   discount: z.number().optional(),
 });
@@ -91,7 +91,7 @@ export const CancelOrdersInBulkSchema = z.object({
 export const ORDER_SCHEMAS = {
   getOrderById: GetOrderByIdSchema,
   getOrdersByType: GetOrdersByTypeSchema,
-  updateDiscount: UpdateDiscountSchema,
+  updateOrderDiscount: UpdateOrderDiscountSchema,
   updateOrderNotes: UpdateOrderNotesSchema,
   updateOrderPayment: UpdateOrderPaymentSchema,
   createTableOrder: CreateTableOrderSchema,

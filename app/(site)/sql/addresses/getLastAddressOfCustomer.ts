@@ -1,8 +1,12 @@
 import getCustomerByPhone from "../customers/getCustomerByPhone";
 import prisma from "../db";
 
-export default async function getLastAddressOfCustomer(phone: string): Promise<number | null> {
-  const customer = await getCustomerByPhone(phone);
+export default async function getLastAddressOfCustomer({
+  phone,
+}: {
+  phone: string;
+}): Promise<number | null> {
+  const customer = await getCustomerByPhone({ phone });
 
   if (!customer) {
     return null;

@@ -1,12 +1,14 @@
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 
-export default async function updateAdditionalNote(
-  note: string,
-  productInOrderId: number
-): Promise<ProductInOrder> {
+export default async function updateAdditionalNote({
+  note,
+  productInOrderId,
+}: {
+  note: string;
+  productInOrderId: number;
+}): Promise<ProductInOrder> {
   const productInOrder = await prisma.productInOrder.findUnique({
     where: {
       id: productInOrderId,

@@ -16,7 +16,7 @@ export default function Discount() {
   const debouncedFetch = useCallback(
     debounce(
       (discount: number) =>
-        fetchRequest<AnyOrder>("PATCH", "/api/orders/", "updateDiscount", {
+        fetchRequest<AnyOrder>("PATCH", "/api/orders/", "updateOrderDiscount", {
           orderId: order.id,
           discount: discount,
         }).then((updatedOrder) => {

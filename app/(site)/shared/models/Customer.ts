@@ -22,10 +22,15 @@ export const CustomerWithPhoneSchema = CustomerSchema.extend({
   phone: PhoneSchema,
 });
 
+export const CustomerWithPhoneAndEngagementSchema = CustomerWithPhoneSchema.extend({
+  engagement: z.array(EngagementSchema),
+});
+
 export const CustomerWithAddressesSchema = CustomerWithPhoneSchema.extend({
   addresses: z.array(AddressSchema),
 });
 
 export type CustomerWithPhone = z.infer<typeof CustomerWithPhoneSchema>;
+export type CustomerWithPhoneAndEngagement = z.infer<typeof CustomerWithPhoneAndEngagementSchema>;
 export type CustomerWithDetails = z.infer<typeof CustomerWithEngagementSchema>;
 export type CustomerWithAddresses = z.infer<typeof CustomerWithAddressesSchema>;

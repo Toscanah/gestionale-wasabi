@@ -3,12 +3,17 @@ import prisma from "../db";
 import { productsInOrderInclude } from "../includes";
 import { HomeOrder } from "@shared";
 
-export default async function createHomeOrder(
-  customerId: number,
-  addressId: number,
-  notes: string,
-  contactPhone: string
-): Promise<HomeOrder> {
+export default async function createHomeOrder({
+  customerId,
+  addressId,
+  notes,
+  contactPhone,
+}: {
+  customerId: number;
+  addressId: number;
+  notes: string;
+  contactPhone: string;
+}): Promise<HomeOrder> {
   return await prisma.$transaction(async (tx) => {
     // 1. Get all PENDING engagements for the customer
     const pendingEngagements = await tx.engagement.findMany({
@@ -42,7 +47,7 @@ export default async function createHomeOrder(
         engagement: true,
         home_order: {
           include: {
-            customer: { include: { phone: true } },
+            customer: { include: { phone: true, engagement: true } },
             address: true,
           },
         },

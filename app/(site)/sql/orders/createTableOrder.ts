@@ -1,14 +1,17 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
-import { AnyOrder, TableOrder } from "@shared"
-;
+import { AnyOrder, TableOrder } from "@shared";
 import { productsInOrderInclude } from "../includes";
 
-export default async function createTableOrder(
-  table: string,
-  people: number,
-  resName?: string
-): Promise<{ order: TableOrder; isNewOrder: boolean }> {
+export default async function createTableOrder({
+  table,
+  people,
+  resName,
+}: {
+  table: string;
+  people: number;
+  resName?: string;
+}): Promise<{ order: TableOrder; isNewOrder: boolean }> {
   const existingOrder = await prisma.order.findFirst({
     where: {
       type: OrderType.TABLE,

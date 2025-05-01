@@ -23,7 +23,7 @@ export default async function executeAction(
     const parsedContent = schema.safeParse(content);
 
     if (!parsedContent.success) {
-      console.log(action, content);
+      console.log("Action: ", action, "Content: ", content);
       return NextResponse.json(
         {
           message: `Content validation failed in action "${action}"`,
@@ -34,9 +34,16 @@ export default async function executeAction(
       );
     }
 
-    return NextResponse.json(await func(...(content ? Object.values(content as any) : [])), {
-      status: 200,
-    });
+    const args = parsedContent.data;
+
+    const result =
+      typeof func === "function"
+        ? func.length === 1
+          ? await func(args) // new: single object param
+          : await func(...Object.values(args)) // legacy: positional
+        : undefined;
+
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       {

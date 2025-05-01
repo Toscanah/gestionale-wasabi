@@ -1,22 +1,26 @@
 import { OrderType, Prisma } from "@prisma/client";
 import { productInOrderInclude } from "../../includes";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { getProductPrice } from "@/app/(site)/lib/product-management/getProductPrice";
 import handleProductDeletion from "./handleProductDeletion";
 
-export default async function handleQuantityChange(
-  tx: Prisma.TransactionClient,
-  currentOrder: { id: number; total: number; type: OrderType },
-  newQuantity: number,
-  productInOrder: ProductInOrder
-) {
+export default async function handleQuantityChange({
+  tx,
+  currentOrder,
+  newQuantity,
+  productInOrder,
+}: {
+  tx: Prisma.TransactionClient;
+  currentOrder: { id: number; total: number; type: OrderType };
+  newQuantity: number;
+  productInOrder: ProductInOrder;
+}) {
   newQuantity = Number(newQuantity);
   const quantityDifference = newQuantity - productInOrder.quantity;
   const totalDifference = quantityDifference * getProductPrice(productInOrder, currentOrder.type);
 
   if (newQuantity === 0) {
-    return await handleProductDeletion(tx, currentOrder, productInOrder);
+    return await handleProductDeletion({ tx, currentOrder, productInOrder });
   }
 
   const updatedProduct = await tx.productInOrder.update({

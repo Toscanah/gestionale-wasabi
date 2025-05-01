@@ -1,11 +1,13 @@
-import { OptionInProductOrder } from "@shared"
-;
+import { OptionInProductOrder } from "@shared";
 import prisma from "../db";
 
-export default async function updateProductOptionsInOrder(
-  productInOrderId: number,
-  optionId: number
-): Promise<OptionInProductOrder> {
+export default async function updateProductOptionsInOrder({
+  productInOrderId,
+  optionId,
+}: {
+  productInOrderId: number;
+  optionId: number;
+}): Promise<OptionInProductOrder> {
   return await prisma.$transaction(async (tx) => {
     const deleted = await tx.optionInProductOrder.findFirst({
       where: { product_in_order_id: productInOrderId, option_id: optionId },

@@ -1,11 +1,12 @@
-import { CustomerWithDetails } from "@shared"
-;
+import { CustomerWithDetails } from "@shared";
 import prisma from "../db";
 import getCustomerWithDetails from "./getCustomerWithDetails";
 
-export default async function getCustomersByDoorbell(
-  doorbell: string
-): Promise<CustomerWithDetails[]> {
+export default async function getCustomersByDoorbell({
+  doorbell,
+}: {
+  doorbell: string;
+}): Promise<CustomerWithDetails[]> {
   const customersId = await prisma.customer.findMany({
     where: {
       addresses: {
@@ -21,7 +22,7 @@ export default async function getCustomersByDoorbell(
   });
 
   const customers = await Promise.all(
-    customersId.map(async (customer) => await getCustomerWithDetails(customer.id))
+    customersId.map(async (customer) => await getCustomerWithDetails({ customerId: customer.id }))
   ).then((results) => results.filter((customer) => customer !== null));
 
   return customers;

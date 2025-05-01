@@ -3,11 +3,15 @@ import prisma from "../db";
 import { PickupOrder } from "@shared";
 import { productsInOrderInclude } from "../includes";
 
-export default async function createPickupOrder(
-  name: string,
-  when: string,
-  phone?: string
-): Promise<{ order: PickupOrder; isNewOrder: boolean }> {
+export default async function createPickupOrder({
+  name,
+  when,
+  phone,
+}: {
+  name: string;
+  when: string;
+  phone?: string;
+}): Promise<{ order: PickupOrder; isNewOrder: boolean }> {
   return await prisma.$transaction(async (tx) => {
     let orderName = name;
     let customerData = undefined;
@@ -60,7 +64,7 @@ export default async function createPickupOrder(
         pickup_order: {
           include: {
             customer: {
-              include: { phone: true },
+              include: { phone: true, engagement: true },
             },
           },
         },
@@ -104,7 +108,7 @@ export default async function createPickupOrder(
         pickup_order: {
           include: {
             customer: {
-              include: { phone: true },
+              include: { phone: true, engagement: true },
             },
           },
         },

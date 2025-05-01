@@ -3,10 +3,13 @@ import getOrderById from "../orders/getOrderById";
 import { AnyOrder, ProductInOrder } from "@shared";
 import { Payment } from "@/prisma/generated/zod";
 
-export default async function payOrder(
-  payments: Payment[],
-  productsToPay: ProductInOrder[]
-): Promise<AnyOrder> {
+export default async function payOrder({
+  payments,
+  productsToPay,
+}: {
+  payments: Payment[];
+  productsToPay: ProductInOrder[];
+}): Promise<AnyOrder> {
   if (payments.length == 0) {
     throw new Error("No payments passed");
   }
@@ -26,7 +29,7 @@ export default async function payOrder(
   });
 
   // Retrieve the order along with associated products
-  const order = await getOrderById(orderId);
+  const order = await getOrderById({ orderId });
 
   if (!order) {
     throw new Error(`Order with id ${orderId} not found`);
@@ -81,5 +84,5 @@ export default async function payOrder(
     data: { is_receipt_printed: false },
   });
 
-  return await getOrderById(orderId);
+  return await getOrderById({ orderId });
 }

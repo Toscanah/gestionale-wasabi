@@ -1,6 +1,6 @@
 import prisma from "../db";
 
-export default async function toggleOption(id: number) {
+export default async function toggleOption({ id }: { id: number }) {
   const optionId = id;
   const option = await prisma.option.findUnique({ where: { id: optionId } });
 

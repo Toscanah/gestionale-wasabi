@@ -6,7 +6,7 @@ import createHomeOrder from "../../sql/orders/createHomeOrder";
 import updateOrderTime from "../../sql/orders/updateOrderTime";
 import cancelOrder from "../../sql/orders/cancelOrder";
 import updateOrderNotes from "../../sql/orders/updateOrderNotes";
-import updateDiscount from "../../sql/orders/updateDiscount";
+import updateOrderDiscount from "../../sql/orders/updateOrderDiscount";
 import createSubOrder from "../../sql/orders/createSubOrder";
 import updatePrintedFlag from "../../sql/orders/updatePrintedFlag";
 import cancelOrdersInBulk from "../../sql/orders/cancelOrdersInBulk";
@@ -34,7 +34,7 @@ const POST_ACTIONS = new Map([
 ]);
 
 const PATCH_ACTIONS = new Map([
-  ["updateDiscount", { func: updateDiscount, schema: ORDER_SCHEMAS.updateDiscount }],
+  ["updateOrderDiscount", { func: updateOrderDiscount, schema: ORDER_SCHEMAS.updateOrderDiscount }],
   ["updateOrderNotes", { func: updateOrderNotes, schema: ORDER_SCHEMAS.updateOrderNotes }],
   ["updateOrderTime", { func: updateOrderTime, schema: ORDER_SCHEMAS.updateOrderTime }],
   ["updatePrintedFlag", { func: updatePrintedFlag, schema: ORDER_SCHEMAS.updatePrintedFlag }],

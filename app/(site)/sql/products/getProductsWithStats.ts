@@ -5,14 +5,14 @@ import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector"
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
 import { orderMatchesShift } from "../../lib/order-management/shift/orderMatchesShift";
 
-export default async function getProductsWithStats(filters: {
-  time: {
-    timeScope: TimeScopeFilter;
-    from?: Date;
-    to?: Date;
+export default async function getProductsWithStats({
+  filters,
+}: {
+  filters: {
+    time: { timeScope: TimeScopeFilter; from?: Date; to?: Date };
+    shift: ShiftFilter;
+    categoryId?: number;
   };
-  shift: ShiftFilter;
-  categoryId?: number;
 }): Promise<ProductWithStats[]> {
   const { time, shift, categoryId } = filters;
   const { timeScope, from, to } = time;
@@ -48,13 +48,13 @@ export default async function getProductsWithStats(filters: {
             include: {
               home_order: {
                 select: {
-                  when: true
-                }
+                  when: true,
+                },
               },
               pickup_order: {
                 select: {
-                  when: true
-                }
+                  when: true,
+                },
               },
             },
           },

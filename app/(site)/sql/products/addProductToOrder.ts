@@ -1,15 +1,18 @@
 import { Order } from "@prisma/client";
 import prisma from "../db";
 import { getProductPrice } from "../../lib/product-management/getProductPrice";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { categoryInclude, productInOrderInclude } from "../includes";
 
-export default async function addProductToOrder(
-  order: Order,
-  productCode: string,
-  quantity: number
-): Promise<ProductInOrder | null> {
+export default async function addProductToOrder({
+  order,
+  productCode,
+  quantity,
+}: {
+  order: Order;
+  productCode: string;
+  quantity: number;
+}): Promise<ProductInOrder | null> {
   return await prisma.$transaction(async (tx) => {
     const product = await tx.product.findFirst({
       where: { code: { equals: productCode, mode: "insensitive" }, active: true },

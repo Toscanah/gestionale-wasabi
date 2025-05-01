@@ -3,11 +3,15 @@ import prisma from "../db";
 
 type ValidFields = Omit<RiceBatch, "id">;
 
-export default async function updateRiceBatch(
-  batchId: number,
-  field: keyof ValidFields,
-  value: any
-) {
+export default async function updateRiceBatch({
+  batchId,
+  field,
+  value,
+}: {
+  batchId: number;
+  field: keyof ValidFields;
+  value: any;
+}) {
   if (!batchId) {
     throw new Error("Batch ID is required");
   }

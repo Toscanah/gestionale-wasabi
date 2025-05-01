@@ -1,7 +1,11 @@
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 
-export default async function updatePrintedFlag(orderId: number): Promise<boolean> {
+export default async function updatePrintedFlag({
+  orderId,
+}: {
+  orderId: number;
+}): Promise<boolean> {
   await prisma.order.update({
     where: {
       id: orderId,
@@ -13,5 +17,5 @@ export default async function updatePrintedFlag(orderId: number): Promise<boolea
     },
   });
 
-  return (await getOrderById(orderId)).is_receipt_printed;
+  return (await getOrderById({orderId})).is_receipt_printed;
 }

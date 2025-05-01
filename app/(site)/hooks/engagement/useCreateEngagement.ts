@@ -1,7 +1,7 @@
-import { Engagement, EngagementType, OrderType } from "@prisma/client";
+import { EngagementType, OrderType } from "@prisma/client";
 import { useState } from "react";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { AnyOrder, CreateEngagement, EngagementPayload, HomeOrder, PickupOrder } from "../../shared";
+import { AnyOrder, EngagementPayload, HomeOrder, PickupOrder } from "../../shared";
 
 export type UseCreateEngagementParams =
   | { order: AnyOrder; customerIds?: number[] }
@@ -33,17 +33,31 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
     });
   };
 
-  const createEngagement = async (payload: EngagementPayload) =>
-    await Promise.all(
-      targetCustomerIds.map((customerId) =>
-        fetchRequest("POST", "/api/engagements/", "createEngagement", {
-          customerId,
-          payload,
-          type: choice,
-          ...(orderId ? { orderId } : {}),
-        })
-      )
-    );
+  const createEngagement = async (payload: EngagementPayload) => {
+    if (orderId) {
+      return await fetchRequest("POST", "/api/engagements/", "createEngagement", {
+        orderId,
+        customerId:
+          order.type === OrderType.HOME
+            ? (order as HomeOrder).home_order?.customer?.id
+            : order.type === OrderType.PICKUP
+            ? (order as PickupOrder).pickup_order?.customer?.id
+            : undefined,
+        payload,
+        type: choice,
+      });
+    } else {
+      return await Promise.all(
+        targetCustomerIds.map((customerId) =>
+          fetchRequest("POST", "/api/engagements/", "createEngagement", {
+            payload,
+            type: choice,
+            customerId,
+          })
+        )
+      );
+    }
+  };
 
   return {
     choice,

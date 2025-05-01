@@ -1,13 +1,15 @@
-import { TableOrder } from "@shared"
-;
+import { TableOrder } from "@shared";
 import prisma from "../db";
 import addProductsToOrder from "../products/addProductsToOrder";
 import getOrderById from "./getOrderById";
 
-export default async function joinTableOrders(
-  originalOrderId: number,
-  tableToJoin: string
-): Promise<{ updatedOrder: TableOrder; joinedTable: TableOrder } | null> {
+export default async function joinTableOrders({
+  originalOrderId,
+  tableToJoin,
+}: {
+  originalOrderId: number;
+  tableToJoin: string;
+}): Promise<{ updatedOrder: TableOrder; joinedTable: TableOrder } | null> {
   const possibleOrdersToJoin = await prisma.order.findMany({
     where: {
       table_order: {
@@ -23,9 +25,9 @@ export default async function joinTableOrders(
   }
 
   const orderToJoinId = possibleOrdersToJoin[0];
-  const orderToJoin = await getOrderById(orderToJoinId.id);
+  const orderToJoin = await getOrderById({ orderId: orderToJoinId.id });
 
-  await addProductsToOrder(originalOrderId, orderToJoin.products);
+  await addProductsToOrder({ targetOrderId: originalOrderId, products: orderToJoin.products });
 
   await Promise.all(
     orderToJoin.products.map((product) =>
@@ -42,7 +44,7 @@ export default async function joinTableOrders(
   });
 
   return {
-    updatedOrder: (await getOrderById(originalOrderId)) as TableOrder,
-    joinedTable: (await getOrderById(orderToJoinId.id)) as TableOrder,
+    updatedOrder: (await getOrderById({ orderId: originalOrderId })) as TableOrder,
+    joinedTable: (await getOrderById({ orderId: orderToJoinId.id })) as TableOrder,
   };
 }

@@ -28,10 +28,13 @@ const calculateAverageOrders = (allOrders: Order[]) => {
   return { averageOrdersWeek, averageOrdersMonth, averageOrdersYear };
 };
 
-export default async function getCustomersWithStats(
-  from: Date | undefined,
-  to: Date | undefined
-): Promise<CustomerWithStats[]> {
+export default async function getCustomersWithStats({
+  from,
+  to,
+}: {
+  from?: Date;
+  to?: Date;
+}): Promise<CustomerWithStats[]> {
   const customers = (await getCustomersWithDetails()).filter((customer) => customer.active);
 
   const customersWithStats = customers.map((customer) => {

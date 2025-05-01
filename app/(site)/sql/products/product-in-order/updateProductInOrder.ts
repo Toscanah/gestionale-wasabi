@@ -1,6 +1,5 @@
 import prisma from "../../db";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import handleProductCodeChange from "./handleCodeChange";
 import handleQuantityChange from "./handleQuantityChange";
 
@@ -10,12 +9,17 @@ export type UpdateProductInOrderResponse = {
   error?: string;
 };
 
-export default async function updateProductInOrder(
-  orderId: number,
-  key: string,
-  value: any,
-  productInOrder: ProductInOrder
-): Promise<UpdateProductInOrderResponse> {
+export default async function updateProductInOrder({
+  orderId,
+  key,
+  value,
+  productInOrder,
+}: {
+  orderId: number;
+  key: string;
+  value: any;
+  productInOrder: ProductInOrder;
+}): Promise<UpdateProductInOrderResponse> {
   return await prisma.$transaction(async (tx) => {
     const currentOrder = await tx.order.findUnique({
       where: { id: orderId },
@@ -27,9 +31,9 @@ export default async function updateProductInOrder(
     }
 
     if (key === "code") {
-      return handleProductCodeChange(tx, currentOrder, value, productInOrder);
+      return handleProductCodeChange({ tx, currentOrder, newProductCode: value, productInOrder });
     } else if (key === "quantity") {
-      return handleQuantityChange(tx, currentOrder, value, productInOrder);
+      return handleQuantityChange({ tx, currentOrder, newQuantity: value, productInOrder });
     }
 
     return { error: "Invalid key" };

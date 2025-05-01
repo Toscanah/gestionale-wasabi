@@ -2,9 +2,11 @@ import { CustomerWithDetails, CustomerWithPhone } from "@shared";
 import prisma from "../db";
 import { homeAndPickupOrdersInclude } from "../includes";
 
-export default async function updateCustomerFromAdmin(
-  customer: CustomerWithPhone
-): Promise<CustomerWithDetails> {
+export default async function updateCustomerFromAdmin({
+  customer,
+}: {
+  customer: CustomerWithPhone;
+}): Promise<CustomerWithDetails> {
   const { phone, ...customerData } = customer;
 
   if (!phone) {

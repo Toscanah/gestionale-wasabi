@@ -27,6 +27,7 @@ export default function EngagementPage() {
     data: filteredLeftCustomers,
     columns: columns({ isRightTable: false }),
   });
+
   const rightTable = getTable({
     data: filteredRightCustomers,
     columns: columns({ isRightTable: true }),
@@ -60,6 +61,7 @@ export default function EngagementPage() {
 
         <div className="flex gap-4 w-full items-center justify-center">
           <EngagementDialog
+            onSuccess={() => window.location.reload()}
             customerIds={filteredRightCustomers.map((c) => c.id)}
             trigger={<Button>Vai</Button>}
           />

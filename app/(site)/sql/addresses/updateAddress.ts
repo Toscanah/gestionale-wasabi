@@ -1,8 +1,7 @@
 import prisma from "../db";
-import { UpdateAddressInput } from "@shared"
-;
+import { UpdateAddressInput } from "@shared";
 
-export default async function updateAddress(address: UpdateAddressInput) {
+export default async function updateAddress({ address }: { address: UpdateAddressInput }) {
   return await prisma.address.update({
     data: {
       civic: address.civic,
@@ -14,9 +13,9 @@ export default async function updateAddress(address: UpdateAddressInput) {
       temporary: address.temporary,
       customer: {
         connect: {
-          id: address.customer_id
-        }
-      }
+          id: address.customer_id,
+        },
+      },
     },
     where: {
       id: address.id,
