@@ -9,7 +9,7 @@ interface ExtraItemsProps {
   putExtraItems?: boolean;
 }
 
-export default function ExtraItems({ order, putExtraItems = true }: ExtraItemsProps) {
+export default function ExtraItemsSection({ order, putExtraItems = true }: ExtraItemsProps) {
   const smallSize = getReceiptSize(1, 1);
 
   const { ricesFinal, soupsFinal, saladsFinal } = calculateExtraItems(order);

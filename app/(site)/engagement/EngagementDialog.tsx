@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import getEngagementName from "../lib/formatting-parsing/engagement/getEngagementName";
+import { CommonPayload, CreateEngagement } from "../shared";
 
 type CreateEngagementDialogProps = {
   trigger: DialogWrapperProps["trigger"];
@@ -35,8 +36,48 @@ export default function EngagementDialog({
     throw new Error("Either order or customerIds must be provided");
   }
 
-  const { choice, setChoice, setTextAbove, setTextBelow, textAbove, textBelow } =
+  const { choice, setChoice, setTextAbove, setTextBelow, textAbove, textBelow, createEngagement } =
     useCreateEngagement(params);
+
+  const onCreateEngagement = async () => {
+    const base: CommonPayload = {
+      textAbove,
+      textBelow,
+    };
+
+    let engagement: CreateEngagement;
+
+    if (choice === EngagementType.QR_CODE) {
+      console.log("Ok");
+      engagement = {
+        type: EngagementType.QR_CODE,
+        payload: {
+          ...base,
+          url: "https://example.com",
+        },
+      };
+    } else if (choice === EngagementType.IMAGE) {
+      engagement = {
+        type: EngagementType.IMAGE,
+        payload: {
+          ...base,
+          imageUrl: "https://example.com/image.jpg",
+        },
+      };
+    } else if (choice === EngagementType.MESSAGE) {
+      engagement = {
+        type: EngagementType.MESSAGE,
+        payload: {
+          ...base,
+          message: "Some message here",
+        },
+      };
+    } else {
+      throw new Error("Invalid engagement type");
+    }
+
+    await createEngagement(engagement.payload);
+  };
 
   const activeEngagements = order?.engagement ?? [];
 
@@ -51,6 +92,7 @@ export default function EngagementDialog({
             <EngagementWrapper
               onTextAboveChange={setTextAbove}
               onTextBelowChange={setTextBelow}
+              onCreateEngagement={onCreateEngagement}
               textAbove={textAbove}
               textBelow={textBelow}
             >

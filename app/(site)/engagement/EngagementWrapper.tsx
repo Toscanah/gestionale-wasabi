@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CreateEngagement } from "../shared";
 
 interface EngagementWrapperProps {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ interface EngagementWrapperProps {
   textBelow: string;
   onTextAboveChange: (val: string) => void;
   onTextBelowChange: (val: string) => void;
+  onCreateEngagement: () => Promise<void>;
 }
 
 export default function EngagementWrapper({
@@ -16,6 +18,7 @@ export default function EngagementWrapper({
   textBelow = "",
   onTextAboveChange,
   onTextBelowChange,
+  onCreateEngagement,
 }: EngagementWrapperProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -39,7 +42,7 @@ export default function EngagementWrapper({
         />
       </div>
 
-      <Button>Crea marketing</Button>
+      <Button onClick={onCreateEngagement}>Crea marketing</Button>
     </div>
   );
 }

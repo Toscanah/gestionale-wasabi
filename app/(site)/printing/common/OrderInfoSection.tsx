@@ -5,7 +5,7 @@ import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize
 import sanitazeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
 import { QuickPaymentOption } from "@prisma/client";
 import calculateExtraItems from "../../lib/order-management/calculateExtraItems";
-import ExtraItems from "./ExtraItems";
+import ExtraItemsSection from "./ExtraItemsSection";
 
 interface OrderInfoSectionProps {
   order: HomeOrder;
@@ -25,7 +25,7 @@ export default function OrderInfoSection({
 
   return (
     <>
-      {ExtraItems({ putExtraItems: extraItems, order })}
+      {ExtraItemsSection({ putExtraItems: extraItems, order })}
 
       {(order.home_order?.customer.preferences || order.home_order?.notes) && (
         <>

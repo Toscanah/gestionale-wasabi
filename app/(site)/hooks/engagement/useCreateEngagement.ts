@@ -1,7 +1,7 @@
-import { EngagementType, OrderType } from "@prisma/client";
+import { Engagement, EngagementType, OrderType } from "@prisma/client";
 import { useState } from "react";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { AnyOrder, CreateEngagement, HomeOrder, PickupOrder } from "../../shared";
+import { AnyOrder, CreateEngagement, EngagementPayload, HomeOrder, PickupOrder } from "../../shared";
 
 export type UseCreateEngagementParams =
   | { order: AnyOrder; customerIds?: number[] }
@@ -33,13 +33,13 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
     });
   };
 
-  const createEngagement = async (payload: CreateEngagement["payload"]) =>
+  const createEngagement = async (payload: EngagementPayload) =>
     await Promise.all(
       targetCustomerIds.map((customerId) =>
         fetchRequest("POST", "/api/engagements/", "createEngagement", {
-          type: choice,
-          payload,
           customerId,
+          payload,
+          type: choice,
           ...(orderId ? { orderId } : {}),
         })
       )

@@ -1,15 +1,15 @@
 import { Br, Cut, Line, Text } from "react-thermal-printer";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@shared"
-;
+import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@shared";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
-import { OrderType, QuickPaymentOption } from "@prisma/client";
+import { EngagementState, OrderType, QuickPaymentOption } from "@prisma/client";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
-import ExtraItems from "../common/ExtraItems";
+import ExtraItemsSection from "../common/ExtraItemsSection";
 import padReceiptText from "../../lib/formatting-parsing/printing/padReceiptText";
+import EngagementSection from "../common/EngagementSection";
 
 export default function OrderReceipt<T extends AnyOrder>(
   order: T,
@@ -23,6 +23,9 @@ export default function OrderReceipt<T extends AnyOrder>(
 
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
+
+  const activeEngagements = order.engagement.filter((e) => e.state == EngagementState.APPLIED);
+  console.log(activeEngagements);
 
   return (
     <>
@@ -78,10 +81,12 @@ export default function OrderReceipt<T extends AnyOrder>(
               </Text>
             </>
           )}
-          {ExtraItems({ order })}
+          {ExtraItemsSection({ order })}
           <Br />
         </>
       )}
+
+      {activeEngagements.length > 0 && EngagementSection({ activeEngagements })}
 
       {FooterSection(order.id)}
       {(forceCut || order.type !== OrderType.HOME) && <Cut />}
