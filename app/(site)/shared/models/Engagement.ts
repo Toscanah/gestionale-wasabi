@@ -13,11 +13,17 @@ export const QrPayloadSchema = CommonPayloadSchema.extend({
 
 export type QrPayload = z.infer<typeof QrPayloadSchema>;
 
-export const ImagePayloadSchema = CommonPayloadSchema.extend({
+export const DraftImagePayloadSchema = CommonPayloadSchema.extend({
+  imageFile: z.instanceof(File).nullable(),
+});
+
+export type DraftImagePayload = z.infer<typeof DraftImagePayloadSchema>;
+
+export const FinalImagePayloadSchema = CommonPayloadSchema.extend({
   imageUrl: z.string(),
 });
 
-export type ImagePayload = z.infer<typeof ImagePayloadSchema>;
+export type FinalImagePayload = z.infer<typeof FinalImagePayloadSchema>;
 
 export const MessagePayloadSchema = CommonPayloadSchema.extend({
   message: z.string(),
@@ -27,7 +33,7 @@ export type MessagePayload = z.infer<typeof MessagePayloadSchema>;
 
 export const EngagementPayloadSchema = z.union([
   QrPayloadSchema,
-  ImagePayloadSchema,
+  DraftImagePayloadSchema,
   MessagePayloadSchema,
 ]);
 

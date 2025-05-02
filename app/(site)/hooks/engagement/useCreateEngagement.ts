@@ -1,11 +1,26 @@
-import { EngagementType, OrderType } from "@prisma/client";
-import { useState } from "react";
+import { Engagement, EngagementType, OrderType } from "@prisma/client";
+import { useEffect, useState } from "react";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { AnyOrder, EngagementPayload, HomeOrder, PickupOrder } from "../../shared";
+import {
+  AnyOrder,
+  CreateEngagement,
+  EngagementPayload,
+  HomeOrder,
+  PickupOrder,
+} from "../../shared";
+import { toastSuccess } from "../../lib/util/toast";
 
 export type UseCreateEngagementParams =
   | { order: AnyOrder; customerIds?: number[] }
   | { order?: AnyOrder; customerIds: number[] };
+
+const DEFAULT_PAYLOAD: EngagementPayload = {
+  textAbove: "",
+  textBelow: "",
+  url: "",
+  imageFile: null,
+  message: "",
+};
 
 export default function useCreateEngagement({ order, customerIds }: UseCreateEngagementParams) {
   if (!order && !customerIds) {
@@ -13,8 +28,7 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
   }
 
   const [choice, setChoice] = useState<EngagementType>(EngagementType.QR_CODE);
-  const [textAbove, setTextAbove] = useState<string>("");
-  const [textBelow, setTextBelow] = useState<string>("");
+  const [payload, setPayload] = useState<EngagementPayload>(DEFAULT_PAYLOAD);
 
   const orderId = order?.id;
   const singleCustomerId =
@@ -33,9 +47,9 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
     });
   };
 
-  const createEngagement = async (payload: EngagementPayload) => {
+  const createEngagement = async (payload: CreateEngagement["payload"]) => {
     if (orderId) {
-      return await fetchRequest("POST", "/api/engagements/", "createEngagement", {
+      return await fetchRequest<Engagement>("POST", "/api/engagements/", "createEngagement", {
         orderId,
         customerId:
           order.type === OrderType.HOME
@@ -49,7 +63,7 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
     } else {
       return await Promise.all(
         targetCustomerIds.map((customerId) =>
-          fetchRequest("POST", "/api/engagements/", "createEngagement", {
+          fetchRequest<Engagement>("POST", "/api/engagements/", "createEngagement", {
             payload,
             type: choice,
             customerId,
@@ -57,16 +71,30 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
         )
       );
     }
+
+    // setPayload(DEFAULT_PAYLOAD); // TTODO: this doesn't work well
   };
+
+  const resetPayload = () => setPayload(DEFAULT_PAYLOAD);
+
+  useEffect(() => {
+    setPayload((prev) => ({
+      ...prev,
+      textAbove: prev.textAbove ?? "",
+      textBelow: prev.textBelow ?? "",
+      url: choice === EngagementType.QR_CODE ? "" : "",
+      imageFile: choice === EngagementType.IMAGE ? null : null,
+      message: choice === EngagementType.MESSAGE ? "" : "",
+    }));
+  }, [choice]);
 
   return {
     choice,
     setChoice,
-    textAbove,
-    setTextAbove,
-    textBelow,
-    setTextBelow,
+    payload,
+    setPayload,
     createEngagement,
     getEngagements,
+    resetPayload,
   };
 }

@@ -12,8 +12,8 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import Header from "./Header";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
-import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "@shared"
-;
+import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "@shared";
+import { ArrowsClockwise } from "@phosphor-icons/react";
 
 export type UpdateStateAction = "update" | "delete" | "add";
 
@@ -73,15 +73,15 @@ export default function Home() {
 
       return actions[action]?.() ?? prevOrders;
     });
--
-  useEffect(() => {
-    const fetchInitialOrders = async () =>
-      setOrders({
-        [OrderType.HOME]: await fetchOrdersByType<HomeOrder[]>(OrderType.HOME),
-        [OrderType.PICKUP]: await fetchOrdersByType<PickupOrder[]>(OrderType.PICKUP),
-        [OrderType.TABLE]: await fetchOrdersByType<TableOrder[]>(OrderType.TABLE),
-      });
 
+  const fetchInitialOrders = async () =>
+    setOrders({
+      [OrderType.HOME]: await fetchOrdersByType<HomeOrder[]>(OrderType.HOME),
+      [OrderType.PICKUP]: await fetchOrdersByType<PickupOrder[]>(OrderType.PICKUP),
+      [OrderType.TABLE]: await fetchOrdersByType<TableOrder[]>(OrderType.TABLE),
+    });
+
+  useEffect(() => {
     fetchInitialOrders();
   }, []);
 
@@ -94,6 +94,11 @@ export default function Home() {
         <div className="w-full flex justify-between items-center">
           <div className="flex items-center gap-4 text-2xl w-[28rem]">
             <SidebarTrigger /> Wasabi Sushi
+            <ArrowsClockwise
+              onClick={fetchInitialOrders}
+              size={32}
+              className="hover:cursor-pointer hover:rotate-[360deg] transform transition-transform duration-500 ease-in-out"
+            />
           </div>
 
           <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />

@@ -1,7 +1,8 @@
 import { Engagement, EngagementType } from "@prisma/client";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
-import { AnyOrder, CommonPayload, MessagePayload } from "../../shared";
-import { Line, Text } from "react-thermal-printer";
+import { CommonPayload, FinalImagePayload, MessagePayload, QrPayload } from "../../shared";
+import { Image, Line, QRCode, Text } from "react-thermal-printer";
+import { Fragment } from "react";
 
 interface EngagementSectionProps {
   activeEngagements: Engagement[];
@@ -15,23 +16,25 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
     <>
       <Line />
       {activeEngagements.map((engagement, index) => (
-        <>
-          <Text align="center" size={smallSize} key={"above-" + index} bold>
+        <Fragment key={index}>
+          <Text align="center" size={smallSize} bold>
             {(engagement.payload as CommonPayload).textAbove}
           </Text>
 
-          {engagement.type == EngagementType.MESSAGE ? (
-            <Text align="center" size={bigSize}>
+          {engagement.type === EngagementType.MESSAGE ? (
+            <Text align="center" size={bigSize} bold>
               {(engagement.payload as MessagePayload).message}
             </Text>
+          ) : engagement.type === EngagementType.QR_CODE ? (
+            <QRCode align="center" content={(engagement.payload as QrPayload).url} />
           ) : (
-            <></>
+            <Image align="center" src={(engagement.payload as FinalImagePayload).imageUrl} />
           )}
 
-          <Text align="center" size={smallSize} key={"below-" + index} bold>
+          <Text align="center" size={smallSize} bold>
             {(engagement.payload as CommonPayload).textBelow}
           </Text>
-        </>
+        </Fragment>
       ))}
     </>
   );

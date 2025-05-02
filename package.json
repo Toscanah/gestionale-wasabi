@@ -94,6 +94,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-lorem-ipsum": "^1.4.10",
     "react-resizable-panels": "^2.1.2",
+    "react-simple-image-viewer": "^1.2.2",
     "react-spinners": "^0.16.1",
     "react-tabindex": "^1.0.3",
     "react-thermal-printer": "^0.18.1",

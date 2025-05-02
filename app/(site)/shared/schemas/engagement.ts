@@ -1,6 +1,10 @@
 import { EngagementType } from "@prisma/client";
 import { z } from "zod";
-import { QrPayloadSchema, ImagePayloadSchema, MessagePayloadSchema } from "../models/Engagement";
+import {
+  QrPayloadSchema,
+  MessagePayloadSchema,
+  FinalImagePayloadSchema,
+} from "../models/Engagement";
 import { wrapSchema } from "./common";
 
 const commonCreateEngagementSchema = z.object({
@@ -18,7 +22,7 @@ export const createEngagementSchema = z.discriminatedUnion("type", [
   z
     .object({
       type: z.literal(EngagementType.IMAGE),
-      payload: ImagePayloadSchema,
+      payload: FinalImagePayloadSchema,
     })
     .merge(commonCreateEngagementSchema),
   z

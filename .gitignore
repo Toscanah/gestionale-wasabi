@@ -3,6 +3,10 @@
 # server pid
 /scripts/server.pid
 
+# images
+/public/engagement/*
+/public/logo/*
+
 # backup
 /backup
 

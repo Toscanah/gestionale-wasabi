@@ -10,7 +10,7 @@ import { Engagement, EngagementType } from "@prisma/client";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
 import getEngagementName from "../../lib/formatting-parsing/engagement/getEngagementName";
-import { CommonPayload, ImagePayload, QrPayload } from "../../shared";
+import { CommonPayload, DraftImagePayload, QrPayload } from "../../shared";
 import Link from "next/link";
 
 const formatDate = (date: Date) =>
@@ -66,7 +66,7 @@ const EngagementContent = ({ engagement }: { engagement: Engagement }) => (
     {engagement.type === EngagementType.IMAGE && (
       <span>
         URL immagine: // TODO: Implement image rendering
-        {(engagement.payload as ImagePayload)?.imageUrl || "Nessun URL immagine presente"}
+        {(engagement.payload as DraftImagePayload)?.imageUrl || "Nessun URL immagine presente"}
       </span>
     )}
 

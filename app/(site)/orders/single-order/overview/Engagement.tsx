@@ -16,7 +16,7 @@ export default function Engagement() {
       trigger={MarketingTrigger}
       order={order}
       onSuccess={(newEngagement) =>
-        updateOrder({ engagement: [...order.engagement, newEngagement] })
+        updateOrder({ engagement: [...order.engagement, newEngagement[0]] })
       }
     />
   );

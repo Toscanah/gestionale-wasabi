@@ -14,11 +14,22 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import getEngagementName from "../lib/formatting-parsing/engagement/getEngagementName";
-import { CommonPayload, CreateEngagement, HomeOrder, PickupOrder, QrPayload } from "../shared";
+import {
+  CommonPayload,
+  CreateEngagement,
+  HomeOrder,
+  DraftImagePayload,
+  MessagePayload,
+  PickupOrder,
+  QrPayload,
+} from "../shared";
+import Message from "./types/Message";
+import uploadImage from "../lib/api/uploadImage";
+import { toastSuccess } from "../lib/util/toast";
 
 type CreateEngagementDialogProps = {
   trigger: DialogWrapperProps["trigger"];
-  onSuccess: (engagement: CreateEngagement) => void;
+  onSuccess: (engagement: Engagement[]) => void;
 } & UseCreateEngagementParams;
 
 function dedupeEngagements(engagements: Engagement[]): Engagement[] {
@@ -34,6 +45,7 @@ export default function EngagementDialog({
   trigger,
   order,
   customerIds,
+  onSuccess,
 }: CreateEngagementDialogProps) {
   const isOrderContext = !!order;
 
@@ -48,30 +60,50 @@ export default function EngagementDialog({
     throw new Error("Either order or customerIds must be provided");
   }
 
-  const { choice, setChoice, setTextAbove, setTextBelow, textAbove, textBelow, createEngagement } =
+  const { choice, setChoice, payload, setPayload, createEngagement, resetPayload } =
     useCreateEngagement(params);
 
   const onCreateEngagement = async () => {
-    const basePayload: CommonPayload = { textAbove, textBelow };
+    const basePayload: CommonPayload = {
+      textAbove: payload.textAbove,
+      textBelow: payload.textBelow,
+    };
 
     let fullPayload: CreateEngagement["payload"];
     switch (choice) {
       case EngagementType.QR_CODE:
-        fullPayload = { ...basePayload, url: "https://example.com" };
+        fullPayload = { ...basePayload, url: (payload as QrPayload).url };
         break;
-      case EngagementType.IMAGE:
-        fullPayload = { ...basePayload, imageUrl: "https://example.com/image.jpg" };
+      case EngagementType.IMAGE: {
+        const imageFile = (payload as DraftImagePayload).imageFile;
+        if (!imageFile) {
+          throw new Error("Nessun file immagine selezionato");
+        }
+
+        const { path: imageUrl, success } = await uploadImage(imageFile, "engagement");
+        if (!success) {
+          throw new Error("Impossibile caricare l'immagine");
+        }
+
+        fullPayload = {
+          ...basePayload,
+          imageUrl,
+        };
         break;
+      }
       case EngagementType.MESSAGE:
-        fullPayload = { ...basePayload, message: "Some message here" };
+        fullPayload = { ...basePayload, message: (payload as MessagePayload).message };
         break;
       default:
         throw new Error("Invalid engagement type");
     }
 
-    console.log(fullPayload);
-
-    await createEngagement(fullPayload);
+    await createEngagement(fullPayload)
+      .then((res) => onSuccess(Array.isArray(res) ? res : [res]))
+      .finally(() => {
+        resetPayload();
+        toastSuccess("Marketing creato con successo");
+      });
   };
 
   const activeEngagements = isOrderContext
@@ -89,24 +121,35 @@ export default function EngagementDialog({
   return (
     <DialogWrapper trigger={trigger}>
       <Accordion type="multiple" className="w-full">
-        {/* Create new engagement */}
         <AccordionItem value="new">
           <AccordionTrigger>Crea nuovo marketing</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-2">
             <EngagementChoice choice={choice} setChoice={setChoice} />
+
             <EngagementWrapper
-              onTextAboveChange={setTextAbove}
-              onTextBelowChange={setTextBelow}
+              onTextAboveChange={(newText) =>
+                setPayload((prev) => ({ ...prev, textAbove: newText }))
+              }
+              onTextBelowChange={(newText) =>
+                setPayload((prev) => ({ ...prev, textBelow: newText }))
+              }
               onCreateEngagement={onCreateEngagement}
-              textAbove={textAbove}
-              textBelow={textBelow}
+              textAbove={payload.textAbove ?? ""}
+              textBelow={payload.textBelow ?? ""}
             >
-              {choice === EngagementType.QR_CODE ? <QRCode /> : <Image />}
+              {choice === EngagementType.QR_CODE ? (
+                <QRCode onChange={(value) => setPayload((prev) => ({ ...prev, url: value }))} />
+              ) : choice === EngagementType.IMAGE ? (
+                <Image onChange={(file) => setPayload((prev) => ({ ...prev, imageFile: file }))} />
+              ) : (
+                <Message
+                  onChange={(value) => setPayload((prev) => ({ ...prev, message: value }))}
+                />
+              )}
             </EngagementWrapper>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Show existing only in order context */}
         {isOrderContext &&
           activeEngagements.map((engagement, index) => {
             const { payload, type } = engagement;
