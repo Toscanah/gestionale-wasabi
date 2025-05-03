@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { EngagementState, OrderType, Prisma } from "@prisma/client";
 import addProductsToOrder from "../products/addProductsToOrder";
 import createPickupOrder from "./createPickupOrder";
 import createTableOrder from "./createTableOrder";
@@ -129,6 +129,21 @@ export default async function createSubOrder({
       is_receipt_printed: isReceiptPrinted,
     },
   });
+
+  if (parentOrder.engagement && parentOrder.engagement.length > 0) {
+    const copiedEngagements = parentOrder.engagement.map((eng) => ({
+      type: eng.type,
+      order_id: newSubOrder.id,
+      customer_id: eng.customer_id ?? null,
+      payload: eng.payload ?? {},
+      used_at: new Date(),
+      state: EngagementState.APPLIED,
+    }));
+
+    await prisma.engagement.createMany({
+      data: copiedEngagements,
+    });
+  }
 
   return await getOrderById({ orderId: newSubOrder.id });
 }

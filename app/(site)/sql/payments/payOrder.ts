@@ -77,6 +77,14 @@ export default async function payOrder({
       where: { id: orderId },
       data: { state: "PAID" },
     });
+
+    if (order.engagement.length > 0) {
+      // Update the state of engagements associated with the order to "USED"
+      await prisma.engagement.updateMany({
+        where: { order_id: orderId },
+        data: { state: "USED" },
+      });
+    }
   }
 
   await prisma.order.update({

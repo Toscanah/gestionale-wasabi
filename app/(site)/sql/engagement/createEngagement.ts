@@ -28,7 +28,7 @@ export default async function createEngagement({
           },
         ],
         state: {
-          not: "CANCELLED",
+          equals: "ACTIVE",
         },
       },
       orderBy: {

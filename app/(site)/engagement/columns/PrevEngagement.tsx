@@ -10,7 +10,7 @@ import { Engagement, EngagementType } from "@prisma/client";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
 import getEngagementName from "../../lib/formatting-parsing/engagement/getEngagementName";
-import { CommonPayload, DraftImagePayload, QrPayload } from "../../shared";
+import { CommonPayload, DraftImagePayload, FinalImagePayload, QrPayload } from "../../shared";
 import Link from "next/link";
 
 const formatDate = (date: Date) =>
@@ -66,7 +66,7 @@ const EngagementContent = ({ engagement }: { engagement: Engagement }) => (
     {engagement.type === EngagementType.IMAGE && (
       <span>
         URL immagine: // TODO: Implement image rendering
-        {(engagement.payload as DraftImagePayload)?.imageUrl || "Nessun URL immagine presente"}
+        {(engagement.payload as FinalImagePayload)?.imageUrl || "Nessun URL immagine presente"}
       </span>
     )}
 
@@ -93,6 +93,7 @@ export default function PrevEngagement({ engagement }: { engagement: Engagement[
       // putSeparator
     >
       <Accordion type="multiple" className="w-full max-h-[20rem] overflow-y-auto">
+        {/* TOODO: should filter out engagement that comes from a suborder otherwise dups might appear*/}
         {engagement.length > 0 ? (
           engagement.map((eng) => (
             <AccordionItem key={eng.id} value={`engagement-${eng.id}`}>

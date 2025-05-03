@@ -6,8 +6,6 @@
 # images
 /public/engagement/*
 /public/logo/*
-!uploads/engagement/.gitkeep
-!uploads/logo/.gitkeep
 
 # backup
 /backup
