@@ -61,9 +61,16 @@ export default function EngagementPage() {
 
         <div className="flex gap-4 w-full items-center justify-center">
           <EngagementDialog
-            onSuccess={() => window.location.reload()}
+            onSuccess={() => window.location.reload()} // TODO: implement smth better here
             customerIds={filteredRightCustomers.map((c) => c.id)}
-            trigger={<Button>Vai</Button>}
+            trigger={
+              <Button
+                disabled={filteredRightCustomers.length > 0 ? false : true}
+                className="w-full"
+              >
+                Vai
+              </Button>
+            }
           />
         </div>
       </div>

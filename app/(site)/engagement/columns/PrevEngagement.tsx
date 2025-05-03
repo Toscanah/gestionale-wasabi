@@ -10,8 +10,15 @@ import { Engagement, EngagementType } from "@prisma/client";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
 import getEngagementName from "../../lib/formatting-parsing/engagement/getEngagementName";
-import { CommonPayload, DraftImagePayload, FinalImagePayload, QrPayload } from "../../shared";
+import {
+  CommonPayload,
+  DraftImagePayload,
+  FinalImagePayload,
+  MessagePayload,
+  QrPayload,
+} from "../../shared";
 import Link from "next/link";
+import ImageViewer from "../../components/ui/misc/ImageViewer";
 
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat("it-IT", {
@@ -64,9 +71,15 @@ const EngagementContent = ({ engagement }: { engagement: Engagement }) => (
     )}
 
     {engagement.type === EngagementType.IMAGE && (
+      <ImageViewer src={(engagement.payload as FinalImagePayload).imageUrl} />
+    )}
+
+    {engagement.type === EngagementType.MESSAGE && (
       <span>
-        URL immagine: // TODO: Implement image rendering
-        {(engagement.payload as FinalImagePayload)?.imageUrl || "Nessun URL immagine presente"}
+        Messaggio:{" "}
+        <strong>
+          {(engagement.payload as MessagePayload)?.message || "Nessun messaggio presente"}
+        </strong>
       </span>
     )}
 

@@ -22,10 +22,12 @@ import {
   MessagePayload,
   PickupOrder,
   QrPayload,
+  FinalImagePayload,
 } from "../shared";
 import Message from "./types/Message";
 import uploadImage from "../lib/api/uploadImage";
 import { toastSuccess } from "../lib/util/toast";
+import NextImage from "next/image";
 
 type CreateEngagementDialogProps = {
   trigger: DialogWrapperProps["trigger"];
@@ -80,11 +82,7 @@ export default function EngagementDialog({
           throw new Error("Nessun file immagine selezionato");
         }
 
-        const { path: imageUrl, success } = await uploadImage(imageFile, "engagement");
-        if (!success) {
-          throw new Error("Impossibile caricare l'immagine");
-        }
-
+        const { path: imageUrl } = await uploadImage(imageFile, "engagement");
         fullPayload = {
           ...basePayload,
           imageUrl,
@@ -120,7 +118,11 @@ export default function EngagementDialog({
 
   return (
     <DialogWrapper trigger={trigger}>
-      <Accordion type="multiple" className="w-full">
+      <Accordion
+        type="multiple"
+        className="w-full"
+        defaultValue={!isOrderContext ? ["new"] : undefined}
+      >
         <AccordionItem value="new">
           <AccordionTrigger>Crea nuovo marketing</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-2">
@@ -155,6 +157,8 @@ export default function EngagementDialog({
             const { payload, type } = engagement;
             const { textAbove = "Nessuno", textBelow = "Nessuno" } = payload as CommonPayload;
             const url = (payload as QrPayload)?.url;
+            const imageUrl = (payload as FinalImagePayload)?.imageUrl;
+            const message = (payload as MessagePayload)?.message;
 
             return (
               <AccordionItem key={engagement.id} value={`active-${index}`}>
@@ -181,6 +185,21 @@ export default function EngagementDialog({
                           >
                             {url}
                           </a>
+                        </div>
+                      )}
+
+                      {type === EngagementType.IMAGE && imageUrl && (
+                        <NextImage
+                          src={imageUrl}
+                          alt="Immagine di marketing"
+                          width={200}
+                          height={200}
+                        />
+                      )}
+
+                      {type === EngagementType.MESSAGE && message && (
+                        <div className="text-center text-2xl">
+                          <strong>Messaggio:</strong> {message}
                         </div>
                       )}
 

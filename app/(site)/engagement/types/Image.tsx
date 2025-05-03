@@ -1,8 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import ImageViewer from "react-simple-image-viewer";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import ImageViewer from "../../components/ui/misc/ImageViewer";
 
 interface ImageProps {
   onChange: (file: File | null) => void;
@@ -10,7 +10,6 @@ interface ImageProps {
 
 export default function Image({ onChange }: ImageProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -33,23 +32,8 @@ export default function Image({ onChange }: ImageProps) {
           onChange={handleFileChange}
         />
 
-        {previewUrl && (
-          <Button type="button" variant={"outline"} onClick={() => setIsViewerOpen(true)}>
-            Mostra
-          </Button>
-        )}
+        {previewUrl && <ImageViewer src={previewUrl} />}
       </div>
-
-      {isViewerOpen && previewUrl && (
-        <ImageViewer
-          src={[previewUrl]}
-          currentIndex={0}
-          onClose={() => setIsViewerOpen(false)}
-          disableScroll={true}
-          backgroundStyle={{ backgroundColor: "rgba(0,0,0,0.9)" }}
-          closeOnClickOutside={true}
-        />
-      )}
     </div>
   );
 }
