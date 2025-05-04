@@ -14,7 +14,7 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
 
   return (
     <>
-      <Line />
+      {/* <Line /> */}
       {activeEngagements.map((engagement, index) => (
         <Fragment key={index}>
           <Text align="center" size={smallSize} bold>
@@ -26,7 +26,7 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
               {(engagement.payload as MessagePayload).message}
             </Text>
           ) : engagement.type === EngagementType.QR_CODE ? (
-            <QRCode align="center" content={(engagement.payload as QrPayload).url} />
+            <QRCode align="center" content={(engagement.payload as QrPayload).url} cellSize={6} />
           ) : (
             <Image align="center" src={(engagement.payload as FinalImagePayload).imageUrl} />
           )}
