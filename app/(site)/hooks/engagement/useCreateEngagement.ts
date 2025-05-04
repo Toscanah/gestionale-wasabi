@@ -4,7 +4,7 @@ import fetchRequest from "../../lib/api/fetchRequest";
 import {
   AnyOrder,
   CreateEngagement,
-  EngagementPayload,
+  EngagementTemplatePayload,
   HomeOrder,
   PickupOrder,
 } from "../../shared";
@@ -14,7 +14,7 @@ export type UseCreateEngagementParams =
   | { order: AnyOrder; customerIds?: number[] }
   | { order?: AnyOrder; customerIds: number[] };
 
-const DEFAULT_PAYLOAD: EngagementPayload = {
+const DEFAULT_PAYLOAD: EngagementTemplatePayload = {
   textAbove: "",
   textBelow: "",
   url: "",
@@ -28,7 +28,7 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
   }
 
   const [choice, setChoice] = useState<EngagementType>(EngagementType.QR_CODE);
-  const [payload, setPayload] = useState<EngagementPayload>(DEFAULT_PAYLOAD);
+  const [payload, setPayload] = useState<EngagementTemplatePayload>(DEFAULT_PAYLOAD);
 
   const orderId = order?.id;
   const singleCustomerId =

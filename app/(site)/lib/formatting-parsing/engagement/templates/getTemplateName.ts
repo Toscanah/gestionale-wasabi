@@ -1,7 +1,7 @@
-import { Engagement, EngagementType } from "@prisma/client";
+import { EngagementType } from "@prisma/client";
 
-export default function getEngagementName(engagement: Engagement) {
-  switch (engagement.type) {
+export default function getTemplateName(type: EngagementType) {
+  switch (type) {
     case EngagementType.IMAGE:
       return "Immagine";
     case EngagementType.QR_CODE:

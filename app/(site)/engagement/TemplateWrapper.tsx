@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { CreateEngagement } from "../shared";
 
 interface EngagementWrapperProps {
-  children: React.ReactNode;
+  templateComponent: React.ReactNode;
   textAbove: string;
   textBelow: string;
   onTextAboveChange: (val: string) => void;
@@ -12,8 +12,8 @@ interface EngagementWrapperProps {
   onCreateEngagement: () => Promise<void>;
 }
 
-export default function EngagementWrapper({
-  children,
+export default function TemplateWrapper({
+  templateComponent,
   textAbove = "",
   textBelow = "",
   onTextAboveChange,
@@ -31,7 +31,7 @@ export default function EngagementWrapper({
         />
       </div>
 
-      {children}
+      {templateComponent}
 
       <div className="flex flex-col space-y-2">
         <Label htmlFor="text-below">Messaggio sotto</Label>

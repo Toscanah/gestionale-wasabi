@@ -5,33 +5,30 @@ import {
   MessagePayloadSchema,
   FinalImagePayloadSchema,
 } from "../models/Engagement";
-import { wrapSchema } from "./common";
+import { NoContentSchema, wrapSchema } from "./common";
 
-const commonCreateEngagementSchema = z.object({
+export const createEngagementTemplateSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal(EngagementType.QR_CODE),
+    payload: QrPayloadSchema,
+  }),
+  z.object({
+    type: z.literal(EngagementType.IMAGE),
+    payload: FinalImagePayloadSchema,
+  }),
+  z.object({
+    type: z.literal(EngagementType.MESSAGE),
+    payload: MessagePayloadSchema,
+  }),
+]);
+
+export type CreateEngagementTemplate = z.infer<typeof createEngagementTemplateSchema>;
+
+export const createEngagementSchema = z.object({
+  engagementTemplateId: z.number(),
   customerId: z.number().optional(),
   orderId: z.number().optional(),
 });
-
-export const createEngagementSchema = z.discriminatedUnion("type", [
-  z
-    .object({
-      type: z.literal(EngagementType.QR_CODE),
-      payload: QrPayloadSchema,
-    })
-    .merge(commonCreateEngagementSchema),
-  z
-    .object({
-      type: z.literal(EngagementType.IMAGE),
-      payload: FinalImagePayloadSchema,
-    })
-    .merge(commonCreateEngagementSchema),
-  z
-    .object({
-      type: z.literal(EngagementType.MESSAGE),
-      payload: MessagePayloadSchema,
-    })
-    .merge(commonCreateEngagementSchema),
-]);
 
 export type CreateEngagement = z.infer<typeof createEngagementSchema>;
 
@@ -42,4 +39,6 @@ export type GetEngagementsByCustomer = z.infer<typeof GetEngagementsByCustomerSc
 export const ENGAGEMENT_SCHEMAS = {
   createEngagement: createEngagementSchema,
   getEngagementsByCustomer: GetEngagementsByCustomerSchema,
+  getEngagementTemplates: NoContentSchema,
+  createEngagementTemplate: createEngagementTemplateSchema,
 };

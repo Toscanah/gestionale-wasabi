@@ -1,9 +1,8 @@
 import { Engagement, EngagementType, OrderType } from "@prisma/client";
 import DialogWrapper, { DialogWrapperProps } from "../components/ui/dialog/DialogWrapper";
-import EngagementChoice from "./EngagementChoice";
-import EngagementWrapper from "./EngagementWrapper";
-import QRCode from "./types/QRCode";
-import Image from "./types/Image";
+import TemplateWrapper from "./TemplateWrapper";
+import QRCode from "./templates/types/QRCode";
+import Image from "./templates/types/Image";
 import useCreateEngagement, {
   UseCreateEngagementParams,
 } from "../hooks/engagement/useCreateEngagement";
@@ -13,7 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import getEngagementName from "../lib/formatting-parsing/engagement/getEngagementName";
+import getTemplateName from "../lib/formatting-parsing/engagement/templates/getTemplateName";
 import {
   CommonPayload,
   CreateEngagement,
@@ -24,7 +23,7 @@ import {
   QrPayload,
   FinalImagePayload,
 } from "../shared";
-import Message from "./types/Message";
+import Message from "./templates/types/Message";
 import uploadImage from "../lib/api/uploadImage";
 import { toastSuccess } from "../lib/util/toast";
 import NextImage from "next/image";
@@ -49,6 +48,7 @@ export default function EngagementDialog({
   customerIds,
   onSuccess,
 }: CreateEngagementDialogProps) {
+  return <></>
   const isOrderContext = !!order;
 
   const params =
@@ -126,29 +126,7 @@ export default function EngagementDialog({
         <AccordionItem value="new">
           <AccordionTrigger>Crea nuovo marketing</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-2">
-            <EngagementChoice choice={choice} setChoice={setChoice} />
-
-            <EngagementWrapper
-              onTextAboveChange={(newText) =>
-                setPayload((prev) => ({ ...prev, textAbove: newText }))
-              }
-              onTextBelowChange={(newText) =>
-                setPayload((prev) => ({ ...prev, textBelow: newText }))
-              }
-              onCreateEngagement={onCreateEngagement}
-              textAbove={payload.textAbove ?? ""}
-              textBelow={payload.textBelow ?? ""}
-            >
-              {choice === EngagementType.QR_CODE ? (
-                <QRCode onChange={(value) => setPayload((prev) => ({ ...prev, url: value }))} />
-              ) : choice === EngagementType.IMAGE ? (
-                <Image onChange={(file) => setPayload((prev) => ({ ...prev, imageFile: file }))} />
-              ) : (
-                <Message
-                  onChange={(value) => setPayload((prev) => ({ ...prev, message: value }))}
-                />
-              )}
-            </EngagementWrapper>
+            
           </AccordionContent>
         </AccordionItem>
 
@@ -166,7 +144,7 @@ export default function EngagementDialog({
                 <AccordionContent>
                   <div className="flex flex-col gap-4">
                     <div>
-                      <strong>Tipo:</strong> {getEngagementName(engagement)}
+                      <strong>Tipo:</strong> {getTemplateName(engagement)}
                     </div>
 
                     <div className="flex flex-col gap-2 items-center justify-center">

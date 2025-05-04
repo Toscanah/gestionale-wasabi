@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { CustomerWithDetails } from "../../shared";
 import fetchRequest from "../../lib/api/fetchRequest";
 import { useEngagementFilters, WeekFilterEnum } from "./useEngagementFilters";
-import { ENGAGEMENT_TYPES } from "../../engagement/types/EngagementTypes";
+import { ENGAGEMENT_TYPES } from "../../engagement/templates/types/EngagementTypes";
 import { EngagementType } from "@prisma/client";
 
 function getFilteredRightCustomers(

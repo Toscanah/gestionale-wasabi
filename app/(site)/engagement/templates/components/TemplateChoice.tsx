@@ -1,14 +1,14 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { EngagementType } from "@prisma/client";
-import { ENGAGEMENT_TYPES } from "./types/EngagementTypes";
+import { ENGAGEMENT_TYPES } from "../types/EngagementTypes";
 
 interface EngagementChoiceProps {
   choice: EngagementType;
   setChoice: React.Dispatch<React.SetStateAction<EngagementType>>;
 }
 
-export default function EngagementChoice({ choice, setChoice }: EngagementChoiceProps) {
+export default function TemplateChoice({ choice, setChoice }: EngagementChoiceProps) {
   return (
     <div className="flex flex-col gap-4 items-center">
       <RadioGroup

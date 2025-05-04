@@ -158,17 +158,25 @@ model Address {
     home_orders HomeOrder[]
 }
 
-model Engagement {
-    id          Int             @id @default(autoincrement())
+model EngagementTemplate {
+    id          Int            @id @default(autoincrement())
+    label       String?
     type        EngagementType
-    state       EngagementState @default(PENDING)
     payload     Json
-    created_at  DateTime        @default(now())
-    customer    Customer?       @relation(fields: [customer_id], references: [id], onDelete: Cascade)
-    customer_id Int?
-    order       Order?          @relation(fields: [order_id], references: [id], onDelete: SetNull)
-    order_id    Int?
-    used_at     DateTime?
+    created_at  DateTime       @default(now())
+    engagements Engagement[]
+}
+
+model Engagement {
+    id                     Int                @id @default(autoincrement())
+    engagement_template_id Int
+    engagement_template    EngagementTemplate @relation(fields: [engagement_template_id], references: [id])
+    created_at             DateTime           @default(now())
+    customer               Customer?          @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+    customer_id            Int?
+    order                  Order?             @relation(fields: [order_id], references: [id], onDelete: SetNull)
+    order_id               Int?
+    used_at                DateTime?
 }
 
 model Customer {

@@ -31,10 +31,10 @@ export const MessagePayloadSchema = CommonPayloadSchema.extend({
 
 export type MessagePayload = z.infer<typeof MessagePayloadSchema>;
 
-export const EngagementPayloadSchema = z.union([
+export const EngagementTemplatePayloadSchema = z.union([
   QrPayloadSchema,
   DraftImagePayloadSchema,
   MessagePayloadSchema,
 ]);
 
-export type EngagementPayload = z.infer<typeof EngagementPayloadSchema>;
+export type EngagementTemplatePayload = z.infer<typeof EngagementTemplatePayloadSchema>;

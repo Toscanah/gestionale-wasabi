@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { EngagementType } from "@prisma/client";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
-import { ENGAGEMENT_TYPES } from "../types/EngagementTypes";
+import { ENGAGEMENT_TYPES } from "../templates/types/EngagementTypes";
 import React from "react";
 
 interface EngagementFilterProps {
