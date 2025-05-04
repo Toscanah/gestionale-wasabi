@@ -17,10 +17,6 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
       {/* <Line /> */}
       {activeEngagements.map((engagement, index) => (
         <Fragment key={index}>
-          <Text align="center" size={smallSize} bold>
-            {(engagement.payload as CommonPayload).textAbove}
-          </Text>
-
           {(engagement.payload as CommonPayload).textAbove && (
             <>
               <Text align="center" size={smallSize} bold>
@@ -40,13 +36,16 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
             <Image align="center" src={(engagement.payload as FinalImagePayload).imageUrl} />
           )}
 
-          {(engagement.payload as CommonPayload).textBelow && (
-            <Text align="center" size={smallSize} bold>
-              {(engagement.payload as CommonPayload).textBelow}
-            </Text>
-          )}
-
           <Br />
+
+          {(engagement.payload as CommonPayload).textBelow && (
+            <>
+              <Text align="center" size={smallSize} bold>
+                {(engagement.payload as CommonPayload).textBelow}
+              </Text>
+              <Br />
+            </>
+          )}
         </Fragment>
       ))}
     </>
