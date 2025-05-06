@@ -48,7 +48,6 @@ export default function EngagementDialog({
   customerIds,
   onSuccess,
 }: CreateEngagementDialogProps) {
-  return <></>
   const isOrderContext = !!order;
 
   const params =
@@ -82,7 +81,7 @@ export default function EngagementDialog({
           throw new Error("Nessun file immagine selezionato");
         }
 
-        const { path: imageUrl } = await uploadImage(imageFile, "engagement");
+        const { path: imageUrl } = await uploadImage(imageFile, "engagements");
         fullPayload = {
           ...basePayload,
           imageUrl,

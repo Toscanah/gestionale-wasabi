@@ -66,3 +66,11 @@ export const homeAndPickupOrdersInclude = {
     include: orderInclude,
   },
 };
+
+export const engagementsInclude = {
+  engagements: {
+    include: {
+      template: true,
+    },
+  },
+};

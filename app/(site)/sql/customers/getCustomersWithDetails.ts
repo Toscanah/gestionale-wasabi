@@ -1,7 +1,7 @@
 import { CustomerWithDetails } from "@shared"
 ;
 import prisma from "../db";
-import { homeAndPickupOrdersInclude } from "../includes";
+import { engagementsInclude, homeAndPickupOrdersInclude } from "../includes";
 import filterInactiveProducts from "../../lib/product-management/filterInactiveProducts";
 
 export default async function getCustomersWithDetails(): Promise<CustomerWithDetails[]> {
@@ -10,7 +10,7 @@ export default async function getCustomersWithDetails(): Promise<CustomerWithDet
       addresses: true,
       phone: true,
       ...homeAndPickupOrdersInclude,
-      engagement: true,
+      ...engagementsInclude
     },
   });
 

@@ -1,5 +1,5 @@
-import SelectWrapper from "../../components/ui/select/SelectWrapper";
-import { WeekFilterEnum } from "../../hooks/engagement/useEngagementFilters";
+import SelectWrapper from "@/app/(site)/components/ui/select/SelectWrapper";
+import { WeekFilterEnum } from "@/app/(site)/hooks/engagement/useEngagementFilters";
 
 interface WeekFilterProps {
   weekFilter: WeekFilterEnum;

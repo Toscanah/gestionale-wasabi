@@ -1,3 +1,4 @@
+import { EngagementSchema, EngagementTemplateSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
 
 const CommonPayloadSchema = z.object({
@@ -31,10 +32,25 @@ export const MessagePayloadSchema = CommonPayloadSchema.extend({
 
 export type MessagePayload = z.infer<typeof MessagePayloadSchema>;
 
-export const EngagementTemplatePayloadSchema = z.union([
+export const DraftEngagementTemplatePayloadSchema = z.union([
   QrPayloadSchema,
   DraftImagePayloadSchema,
   MessagePayloadSchema,
 ]);
 
-export type EngagementTemplatePayload = z.infer<typeof EngagementTemplatePayloadSchema>;
+export type DraftEngagementTemplatePayload = z.infer<typeof DraftEngagementTemplatePayloadSchema>;
+
+export const FinalEngagementPayloadSchema = z.union([
+  QrPayloadSchema,
+  FinalImagePayloadSchema,
+  MessagePayloadSchema,
+]);
+export type FinalEngagementPayload = z.infer<typeof FinalEngagementPayloadSchema>;
+
+export const EngagementWithDetailsSchema = EngagementSchema.extend({
+  template: EngagementTemplateSchema.extend({
+    payload: z.any(),
+  }),
+});
+
+export type EngagementWithDetails = z.infer<typeof EngagementWithDetailsSchema>;

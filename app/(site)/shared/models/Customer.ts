@@ -6,6 +6,7 @@ import {
 } from "@/prisma/generated/zod";
 import { z } from "zod";
 import { HomeOrderWithOrderSchema, PickupOrderWithOrderSchema } from "./Order";
+import { EngagementWithDetailsSchema } from "./Engagement";
 
 export const CustomerWithAddressesAndOrdersSchema = CustomerSchema.extend({
   addresses: z.array(AddressSchema),
@@ -15,7 +16,7 @@ export const CustomerWithAddressesAndOrdersSchema = CustomerSchema.extend({
 });
 
 export const CustomerWithEngagementSchema = CustomerWithAddressesAndOrdersSchema.extend({
-  engagement: z.array(EngagementSchema),
+  engagements: z.array(EngagementWithDetailsSchema),
 });
 
 export const CustomerWithPhoneSchema = CustomerSchema.extend({
@@ -23,7 +24,7 @@ export const CustomerWithPhoneSchema = CustomerSchema.extend({
 });
 
 export const CustomerWithPhoneAndEngagementSchema = CustomerWithPhoneSchema.extend({
-  engagement: z.array(EngagementSchema),
+  engagements: z.array(EngagementWithDetailsSchema),
 });
 
 export const CustomerWithAddressesSchema = CustomerWithPhoneSchema.extend({

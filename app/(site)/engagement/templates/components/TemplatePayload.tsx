@@ -1,50 +1,114 @@
 import getTemplateName from "@/app/(site)/lib/formatting-parsing/engagement/templates/getTemplateName";
-import { CommonPayload, FinalImagePayload, MessagePayload, QrPayload } from "@/app/(site)/shared";
+import {
+  CommonPayload,
+  FinalCreateEngagementTemplate,
+  DraftEngagementTemplatePayload,
+  DraftUpdateEngagementTemplate,
+  FinalImagePayload,
+  MessagePayload,
+  QrPayload,
+  DraftCreateEngagementTemplate,
+} from "@/app/(site)/shared";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { EngagementTemplate, EngagementType } from "@prisma/client";
-import Image from "next/image";
 import TemplateWrapper from "../../TemplateWrapper";
+import QRCode from "../types/QRCode";
+import Message from "../types/Message";
+import Image from "../types/Image";
+import TemplateTypeSelector from "./TemplateTypeSelector";
 
-interface TemplatePayloadViewModeProps {
+type CommonPayloadProps = {
+  index: number;
+  onChange: (newPayload: DraftEngagementTemplatePayload) => void;
+};
+
+// Edit mode props
+type TemplatePayloadViewModeProps = CommonPayloadProps & {
   mode: "edit";
   template: EngagementTemplate;
-  onUpdate: (newPayload: Template) => void;
-}
+  onSave: (updatedTemplate: DraftUpdateEngagementTemplate) => Promise<void>;
+};
 
-// For creating a new template
-interface TemplatePayloadCreateModeProps {
+// Create mode props
+type TemplatePayloadCreateModeProps = CommonPayloadProps & {
   mode: "create";
-  type: EngagementType;
-  payload: Partial<TemplatePayload>;
-  setPayload: (newPayload: Partial<TemplatePayload>) => void;
-}
+  index: number;
+  selectedType: EngagementType;
+  setSelectedType: (type: EngagementType) => void;
+  draftPayload: DraftEngagementTemplatePayload | undefined;
+  onCreate: (newTemplate: DraftCreateEngagementTemplate) => Promise<void>;
+};
 
-// Unified type
-export type TemplatePayloadProps = undefn
-  // | TemplatePayloadViewModeProps
-  // | TemplatePayloadCreateModeProps;
+export type TemplatePayloadProps = TemplatePayloadViewModeProps | TemplatePayloadCreateModeProps;
 
-export default function TemplatePayload({  }: TemplatePayloadProps) {
-  const { payload, type } = template;
-  const { textAbove = "Nessuno", textBelow = "Nessuno" } = payload as CommonPayload;
-  const url = (payload as QrPayload)?.url;
-  const imageUrl = (payload as FinalImagePayload)?.imageUrl;
-  const message = (payload as MessagePayload)?.message;
+export default function TemplatePayload(props: TemplatePayloadProps) {
+  const type = props.mode === "edit" ? props.template.type : props.selectedType;
+  const payload =
+    props.mode === "edit" ? (props.template.payload as CommonPayload) : props.draftPayload;
+
+  const { textAbove = "Nessuno", textBelow = "Nessuno" } = payload || {};
+
+  const handleChange = (updated: DraftEngagementTemplatePayload) => {
+    const currentPayload =
+      props.mode === "edit"
+        ? (props.template.payload as DraftEngagementTemplatePayload)
+        : props.draftPayload ?? {};
+
+    props.onChange({
+      ...currentPayload,
+      ...updated,
+    });
+  };
 
   return (
-    <AccordionItem key={template.id} value={`active-${index}`}>
+    <AccordionItem
+      value={props.mode === "edit" ? `active-${props.index}` : `create-${props.index}`}
+    >
       <AccordionTrigger>
-        #{index + 1} - {template?.label ?? "Nessuna etichetta"} ({getTemplateName(template.type)})
+        {props.mode === "edit" ? (
+          <>
+            #{props.index + 1} - {props.template.label ?? "Nessuna etichetta"} (
+            {getTemplateName(type)})
+          </>
+        ) : (
+          <>Crea nuovo modello ({getTemplateName(type)})</>
+        )}
       </AccordionTrigger>
 
       <AccordionContent>
-        <TemplateWrapper templateComponent={choice === EngagementType.QR_CODE ? (
-            <QRCode onChange={(value) => setPayload((prev) => ({ ...prev, url: value }))} />
-          ) : choice === EngagementType.IMAGE ? (
-            <Image onChange={(file) => setPayload((prev) => ({ ...prev, imageFile: file }))} />
-          ) : (
-            <Message onChange={(value) => setPayload((prev) => ({ ...prev, message: value }))} />
-          )}}
+        <TemplateTypeSelector
+          disabled={props.mode === "edit"}
+          selectedType={type}
+          onChange={(newType) => {
+            if (props.mode === "create") {
+              props.setSelectedType(newType);
+            }
+          }}
+        />
+
+        <TemplateWrapper
+          onSave={props.onSave}
+          textAbove={textAbove}
+          textBelow={textBelow}
+          templateComponent={
+            type === EngagementType.QR_CODE ? (
+              <QRCode
+                value={(payload as QrPayload)?.url}
+                onChange={(url) => handleChange({ url })}
+              />
+            ) : type === EngagementType.IMAGE ? (
+              <Image
+                value={(payload as FinalImagePayload)?.imageUrl}
+                onChange={(imageUrl) => handleChange({ imageUrl })}
+              />
+            ) : (
+              <Message
+                value={(payload as MessagePayload)?.message}
+                onChange={(message) => handleChange({ message })}
+              />
+            )
+          }
+        />
       </AccordionContent>
     </AccordionItem>
   );

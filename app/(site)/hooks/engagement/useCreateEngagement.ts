@@ -4,17 +4,16 @@ import fetchRequest from "../../lib/api/fetchRequest";
 import {
   AnyOrder,
   CreateEngagement,
-  EngagementTemplatePayload,
+  DraftEngagementTemplatePayload,
   HomeOrder,
   PickupOrder,
 } from "../../shared";
-import { toastSuccess } from "../../lib/util/toast";
 
 export type UseCreateEngagementParams =
   | { order: AnyOrder; customerIds?: number[] }
   | { order?: AnyOrder; customerIds: number[] };
 
-const DEFAULT_PAYLOAD: EngagementTemplatePayload = {
+const DEFAULT_PAYLOAD: DraftEngagementTemplatePayload = {
   textAbove: "",
   textBelow: "",
   url: "",
@@ -28,7 +27,7 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
   }
 
   const [choice, setChoice] = useState<EngagementType>(EngagementType.QR_CODE);
-  const [payload, setPayload] = useState<EngagementTemplatePayload>(DEFAULT_PAYLOAD);
+  const [payload, setPayload] = useState<DraftEngagementTemplatePayload>(DEFAULT_PAYLOAD);
 
   const orderId = order?.id;
   const singleCustomerId =
@@ -47,7 +46,7 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
     });
   };
 
-  const createEngagement = async (payload: CreateEngagement["payload"]) => {
+  const createEngagement = async (templateId: CreateEngagement["templateId"]) => {
     if (orderId) {
       return await fetchRequest<Engagement>("POST", "/api/engagements/", "createEngagement", {
         orderId,
@@ -57,15 +56,13 @@ export default function useCreateEngagement({ order, customerIds }: UseCreateEng
             : order.type === OrderType.PICKUP
             ? (order as PickupOrder).pickup_order?.customer?.id
             : undefined,
-        payload,
-        type: choice,
+        templateId,
       });
     } else {
       return await Promise.all(
         targetCustomerIds.map((customerId) =>
           fetchRequest<Engagement>("POST", "/api/engagements/", "createEngagement", {
-            payload,
-            type: choice,
+            templateId,
             customerId,
           })
         )

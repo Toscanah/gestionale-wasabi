@@ -1,27 +1,23 @@
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { EngagementTemplate, EngagementType } from "@prisma/client";
 import TemplateChoice from "./TemplateChoice";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import TemplateWrapper from "../../TemplateWrapper";
 
 interface CreateTemplateProps {
   onCreate: (newTemplate: EngagementTemplate) => void;
+  choice: EngagementType;
+  setChoice: Dispatch<SetStateAction<EngagementType>>;
 }
 
-export default function CreateTemplate() {
-  return <></>;
+export default function CreateTemplate({ choice, setChoice, onCreate }: CreateTemplateProps) {
   return (
     <AccordionItem value="new">
       <AccordionTrigger>Crea nuovo modello</AccordionTrigger>
       <AccordionContent className="flex flex-col gap-2">
         <TemplateChoice choice={choice} setChoice={setChoice} />
 
-        <EngagementWrapper
-          onTextAboveChange={(newText) => setPayload((prev) => ({ ...prev, textAbove: newText }))}
-          onTextBelowChange={(newText) => setPayload((prev) => ({ ...prev, textBelow: newText }))}
-          onCreateEngagement={onCreateEngagement}
-          textAbove={payload.textAbove ?? ""}
-          textBelow={payload.textBelow ?? ""}
-        >
+        <TemplateWrapper>
           {choice === EngagementType.QR_CODE ? (
             <QRCode onChange={(value) => setPayload((prev) => ({ ...prev, url: value }))} />
           ) : choice === EngagementType.IMAGE ? (
@@ -29,7 +25,7 @@ export default function CreateTemplate() {
           ) : (
             <Message onChange={(value) => setPayload((prev) => ({ ...prev, message: value }))} />
           )}
-        </EngagementWrapper>
+        </TemplateWrapper>
       </AccordionContent>
     </AccordionItem>
   );

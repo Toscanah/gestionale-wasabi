@@ -22,6 +22,9 @@ export function updateInputSchema<T extends ZodObject<{ active: ZodBoolean } & Z
   return base.omit({ active: true }) as any;
 }
 
-export function wrapSchema<T extends ZodTypeAny>(key: string, schema: T) {
-  return z.object({ [key]: schema });
+export function wrapSchema<K extends string, T extends ZodTypeAny>(
+  key: K,
+  schema: T
+): ZodObject<{ [P in K]: T }> {
+  return z.object({ [key]: schema } as ZodRawShape) as ZodObject<{ [P in K]: T }>;
 }

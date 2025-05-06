@@ -10,11 +10,11 @@ export enum WeekFilterEnum {
   FOUR_WEEKS_AGO = "FOUR_WEEKS_AGO",
 }
 
-interface EngagementFiltersProps {
+interface EngagementFiltersParams {
   selectedCustomers: CustomerWithDetails[];
 }
 
-export function useEngagementFilters({ selectedCustomers }: EngagementFiltersProps) {
+export function useEngagementFilters({ selectedCustomers }: EngagementFiltersParams) {
   const [weekFilter, setWeekFilter] = useState<WeekFilterEnum>(WeekFilterEnum.THIS_WEEK);
   const [activeTypes, setActiveTypes] = useState<EngagementType[]>(Object.values(EngagementType));
   const [filteredLeftCustomers, setFilteredLeftCustomers] = useState<CustomerWithDetails[]>([]);
@@ -65,9 +65,9 @@ export function useEngagementFilters({ selectedCustomers }: EngagementFiltersPro
     () =>
       setFilteredRightCustomers(
         selectedCustomers.filter((c) =>
-          c.engagement.length === 0
+          c.engagements.length === 0
             ? activeTypes.length > 0
-            : c.engagement.some((e) => activeTypes.some((t) => t === e.type))
+            : c.engagements.some((e) => activeTypes.some((t) => t === e.template.type))
         )
       ),
     [activeTypes]

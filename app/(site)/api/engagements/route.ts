@@ -3,6 +3,7 @@ import handleRequest from "../util/handleRequest";
 import createEngagement from "../../sql/engagement/createEngagement";
 import { ENGAGEMENT_SCHEMAS } from "../../shared";
 import getEngagementTemplates from "../../sql/engagement/templates/getEngagementTemplates";
+import updateEngagementTemplate from "../../sql/engagement/templates/updateEngagementTemplate";
 
 const GET_ACTIONS = new Map([
   // [
@@ -23,7 +24,12 @@ const POST_ACTIONS = new Map([
   // ],
 ]);
 
-const PATCH_ACTIONS = new Map([]);
+const PATCH_ACTIONS = new Map([
+  [
+    "updateEngagementTemplate",
+    { func: updateEngagementTemplate, schema: ENGAGEMENT_SCHEMAS.updateEngagementTemplate },
+  ],
+]);
 
 const DELETE_ACTIONS = new Map([]);
 
@@ -31,9 +37,9 @@ export async function GET(request: NextRequest) {
   return await handleRequest(request, "GET", GET_ACTIONS);
 }
 
-// export async function PATCH(request: NextRequest) {
-//   return await handleRequest(request, "PATCH", PATCH_ACTIONS);
-// }
+export async function PATCH(request: NextRequest) {
+  return await handleRequest(request, "PATCH", PATCH_ACTIONS);
+}
 
 export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);

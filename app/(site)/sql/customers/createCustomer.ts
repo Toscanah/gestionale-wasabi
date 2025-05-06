@@ -1,6 +1,6 @@
 import prisma from "../db";
 import { CreateCustomerInput, CustomerWithDetails } from "@shared";
-import { homeAndPickupOrdersInclude } from "../includes";
+import { engagementsInclude, homeAndPickupOrdersInclude } from "../includes";
 
 export default async function createCustomer({
   customer,
@@ -31,7 +31,7 @@ export default async function createCustomer({
         phone: true,
         addresses: true,
         ...homeAndPickupOrdersInclude,
-        engagement: true,
+        ...engagementsInclude,
       },
     });
   });

@@ -4,16 +4,22 @@ import { EngagementType } from "@prisma/client";
 import { ENGAGEMENT_TYPES } from "../types/EngagementTypes";
 
 interface EngagementChoiceProps {
-  choice: EngagementType;
-  setChoice: React.Dispatch<React.SetStateAction<EngagementType>>;
+  selectedType: EngagementType;
+  onChange: (newType: EngagementType) => void;
+  disabled: boolean;
 }
 
-export default function TemplateChoice({ choice, setChoice }: EngagementChoiceProps) {
+export default function TemplateTypeSelector({
+  selectedType,
+  onChange,
+  disabled,
+}: EngagementChoiceProps) {
   return (
     <div className="flex flex-col gap-4 items-center">
       <RadioGroup
-        value={choice}
-        onValueChange={(val) => setChoice(val as EngagementType)}
+        disabled={disabled}
+        value={selectedType}
+        onValueChange={(val: EngagementType) => onChange(val)}
         className="flex gap-4"
       >
         {ENGAGEMENT_TYPES.map(({ value, label }) => (

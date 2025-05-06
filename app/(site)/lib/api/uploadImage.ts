@@ -1,9 +1,13 @@
-export type UploadImageType = "receipt" | "engagement";
+export type UploadImageType = "receipt" | "engagements";
 
 export default async function uploadImage(
-  file: File,
+  file: File | null,
   type: UploadImageType
 ): Promise<{ success: boolean; path: string }> {
+  if (!file) {
+    throw new Error("File is required");
+  }
+
   const formData = new FormData();
   formData.append("content", file);
   formData.append("type", type);

@@ -10,9 +10,9 @@ function getFilteredRightCustomers(
   activeTypes: EngagementType[]
 ) {
   return customers.filter((c) =>
-    c.engagement.length === 0
+    c.engagements.length === 0
       ? activeTypes.length === ENGAGEMENT_TYPES.length
-      : c.engagement.some((e) => activeTypes.includes(e.type))
+      : c.engagements.some((e) => activeTypes.includes(e.template.type))
   );
 }
 
@@ -28,7 +28,7 @@ export default function useEngagement() {
     filteredRightCustomers,
     setFilteredRightCustomers,
     activeTypes,
-    setActiveTypes
+    setActiveTypes,
   } = useEngagementFilters({
     selectedCustomers,
   });

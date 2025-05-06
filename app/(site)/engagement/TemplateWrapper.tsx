@@ -1,15 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CreateEngagement } from "../shared";
 
-interface EngagementWrapperProps {
+interface TemplateWrapperProps {
   templateComponent: React.ReactNode;
   textAbove: string;
   textBelow: string;
   onTextAboveChange: (val: string) => void;
   onTextBelowChange: (val: string) => void;
-  onCreateEngagement: () => Promise<void>;
+  onSave: () => Promise<void>; // now used for both create or update
 }
 
 export default function TemplateWrapper({
@@ -18,8 +17,8 @@ export default function TemplateWrapper({
   textBelow = "",
   onTextAboveChange,
   onTextBelowChange,
-  onCreateEngagement,
-}: EngagementWrapperProps) {
+  onSave,
+}: TemplateWrapperProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col space-y-2">
@@ -42,7 +41,7 @@ export default function TemplateWrapper({
         />
       </div>
 
-      <Button onClick={onCreateEngagement}>Crea marketing</Button>
+      <Button onClick={onSave}>Salva</Button>
     </div>
   );
 }
