@@ -2,7 +2,12 @@ import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import prisma from "../db";
 import { AnyOrder } from "@shared";
-import { homeOrderInclude, pickupOrderInclude, productInOrderInclude } from "../includes";
+import {
+  engagementsInclude,
+  homeOrderInclude,
+  pickupOrderInclude,
+  productInOrderInclude,
+} from "../includes";
 import calculateOrderTotal from "../../lib/order-management/calculateOrderTotal";
 export default async function getOrdersByType({ type }: { type: OrderType }): Promise<AnyOrder[]> {
   const orders = await prisma.order.findMany({
@@ -20,7 +25,7 @@ export default async function getOrdersByType({ type }: { type: OrderType }): Pr
       ...homeOrderInclude,
       ...pickupOrderInclude,
       table_order: true,
-      engagement: true,
+      ...engagementsInclude,
     },
     where: {
       type: type,

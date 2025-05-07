@@ -1,6 +1,6 @@
 import { AnyOrder } from "@shared";
 import prisma from "../db";
-import { homeOrderInclude, pickupOrderInclude, productInOrderInclude } from "../includes";
+import { engagementsInclude, homeOrderInclude, pickupOrderInclude, productInOrderInclude } from "../includes";
 
 export default async function getOrderById({
   orderId,
@@ -30,7 +30,7 @@ export default async function getOrderById({
       ...homeOrderInclude,
       ...pickupOrderInclude,
       table_order: true,
-      engagement: true,
+     ...engagementsInclude,
     },
   });
 

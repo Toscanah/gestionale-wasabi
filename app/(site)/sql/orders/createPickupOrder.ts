@@ -1,7 +1,7 @@
 import { OrderType, EngagementState } from "@prisma/client";
 import prisma from "../db";
 import { PickupOrder } from "@shared";
-import { productsInOrderInclude } from "../includes";
+import { engagementsInclude, productsInOrderInclude } from "../includes";
 
 export default async function createPickupOrder({
   name,
@@ -60,11 +60,11 @@ export default async function createPickupOrder({
       },
       include: {
         payments: true,
-        engagement: true,
+        ...engagementsInclude,
         pickup_order: {
           include: {
             customer: {
-              include: { phone: true, engagement: true },
+              include: { phone: true, ...engagementsInclude },
             },
           },
         },
@@ -92,7 +92,7 @@ export default async function createPickupOrder({
       data: {
         type: OrderType.PICKUP,
         total: 0,
-        engagement: {
+        engagements: {
           connect: pendingEngagements.map((e) => ({ id: e.id })),
         },
         pickup_order: {
@@ -108,12 +108,12 @@ export default async function createPickupOrder({
         pickup_order: {
           include: {
             customer: {
-              include: { phone: true, engagement: true },
+              include: { phone: true, ...engagementsInclude },
             },
           },
         },
         ...productsInOrderInclude,
-        engagement: true,
+        ...engagementsInclude,
       },
     });
 

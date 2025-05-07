@@ -4,6 +4,7 @@ import createEngagement from "../../sql/engagement/createEngagement";
 import { ENGAGEMENT_SCHEMAS } from "../../shared";
 import getEngagementTemplates from "../../sql/engagement/templates/getEngagementTemplates";
 import updateEngagementTemplate from "../../sql/engagement/templates/updateEngagementTemplate";
+import createEngagementTemplate from "../../sql/engagement/templates/createEngagementTemplate";
 
 const GET_ACTIONS = new Map([
   // [
@@ -18,10 +19,10 @@ const GET_ACTIONS = new Map([
 
 const POST_ACTIONS = new Map([
   ["createEngagement", { func: createEngagement, schema: ENGAGEMENT_SCHEMAS.createEngagement }],
-  // [
-  //   "createEngagementTemplate",
-  //   { func: createEngagementTemplate, schema: ENGAGEMENT_SCHEMAS.createEngagementTemplate },
-  // ],
+  [
+    "createEngagementTemplate",
+    { func: createEngagementTemplate, schema: ENGAGEMENT_SCHEMAS.createEngagementTemplate },
+  ],
 ]);
 
 const PATCH_ACTIONS = new Map([

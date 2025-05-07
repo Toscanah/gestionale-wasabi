@@ -171,6 +171,7 @@ model Engagement {
     id          Int                @id @default(autoincrement())
     template_id Int
     template    EngagementTemplate @relation(fields: [template_id], references: [id])
+    state       EngagementState    @default(PENDING)
     created_at  DateTime           @default(now())
     customer    Customer?          @relation(fields: [customer_id], references: [id], onDelete: Cascade)
     customer_id Int?

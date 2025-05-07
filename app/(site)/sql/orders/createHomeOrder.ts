@@ -1,6 +1,6 @@
 import { EngagementState, OrderType } from "@prisma/client";
 import prisma from "../db";
-import { productsInOrderInclude } from "../includes";
+import { engagementsInclude, productsInOrderInclude } from "../includes";
 import { HomeOrder } from "@shared";
 
 export default async function createHomeOrder({
@@ -28,7 +28,7 @@ export default async function createHomeOrder({
       data: {
         type: OrderType.HOME,
         total: 0,
-        engagement: {
+        engagements: {
           connect: pendingEngagements.map((e) => ({ id: e.id })),
         },
         home_order: {
@@ -44,10 +44,10 @@ export default async function createHomeOrder({
       include: {
         payments: true,
         ...productsInOrderInclude,
-        engagement: true,
+        ...engagementsInclude,
         home_order: {
           include: {
-            customer: { include: { phone: true, engagement: true } },
+            customer: { include: { phone: true, ...engagementsInclude } },
             address: true,
           },
         },

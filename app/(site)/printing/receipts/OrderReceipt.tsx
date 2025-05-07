@@ -24,7 +24,7 @@ export default function OrderReceipt<T extends AnyOrder>(
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
-  const activeEngagements = order.engagement.filter((e) => e.state == EngagementState.APPLIED);
+  const activeEngagements = order.engagements.filter((e) => e.state == EngagementState.APPLIED);
   console.log(activeEngagements);
 
   return (

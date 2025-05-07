@@ -10,10 +10,11 @@ import {
 import { z } from "zod";
 import { ProductInOrderWithOptionsSchema } from "./Product";
 import { CustomerWithPhoneSchema, CustomerWithPhoneAndEngagementSchema } from "./Customer";
+import { EngagementWithDetailsSchema } from "./Engagement";
 
 export const BaseOrderSchema = OrderSchema.extend({
   products: z.array(z.lazy(() => ProductInOrderWithOptionsSchema)),
-  engagement: z.array(EngagementSchema),
+  engagements: z.array(EngagementWithDetailsSchema),
 });
 
 export const OrderWithPaymentsSchema = BaseOrderSchema.extend({

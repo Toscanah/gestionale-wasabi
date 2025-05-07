@@ -130,19 +130,20 @@ export default async function createSubOrder({
     },
   });
 
-  if (parentOrder.engagement && parentOrder.engagement.length > 0) {
-    const copiedEngagements = parentOrder.engagement.map((eng) => ({
-      type: eng.type,
-      order_id: newSubOrder.id,
-      customer_id: eng.customer_id ?? null,
-      payload: eng.payload ?? {},
-      used_at: new Date(),
-      state: EngagementState.APPLIED,
-    }));
+  if (parentOrder.engagements && parentOrder.engagements.length > 0) {
+    // TODO: Copy engagements to the new suborder
+    // const copiedEngagements = parentOrder.engagements.map((eng) => ({
+    //   type: eng.type,
+    //   order_id: newSubOrder.id,
+    //   customer_id: eng.customer_id ?? null,
+    //   payload: eng.payload ?? {},
+    //   used_at: new Date(),
+    //   state: EngagementState.APPLIED,
+    // }));
 
-    await prisma.engagement.createMany({
-      data: copiedEngagements,
-    });
+    // await prisma.engagement.createMany({
+    //   data: copiedEngagements,
+    // });
   }
 
   return await getOrderById({ orderId: newSubOrder.id });

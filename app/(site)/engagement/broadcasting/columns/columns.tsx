@@ -50,7 +50,7 @@ export default function columns({
     columns.push(
       TableColumn({
         header: "Conteggio",
-        cellContent: (row) => row.original.engagement.length,
+        cellContent: (row) => row.original.engagements.length,
         sortable: false,
       }),
 

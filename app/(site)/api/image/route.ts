@@ -6,7 +6,7 @@ import { UploadImageType } from "../../lib/api/uploadImage";
 const allowedExtensions = ["png", "jpg", "jpeg"];
 const folders = {
   receipt: path.join(process.cwd(), "public", "uploads", "logo"),
-  engagement: path.join(process.cwd(), "public", "uploads", "engagement"),
+  engagements: path.join(process.cwd(), "public", "uploads", "engagements"),
 };
 
 export async function POST(request: NextRequest) {

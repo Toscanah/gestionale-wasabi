@@ -1,7 +1,7 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import { AnyOrder, TableOrder } from "@shared";
-import { productsInOrderInclude } from "../includes";
+import { engagementsInclude, productsInOrderInclude } from "../includes";
 
 export default async function createTableOrder({
   table,
@@ -24,7 +24,7 @@ export default async function createTableOrder({
       payments: true,
       table_order: true,
       ...productsInOrderInclude,
-      engagement: true,
+      ...engagementsInclude,
     },
   });
 
@@ -48,7 +48,7 @@ export default async function createTableOrder({
       payments: true,
       table_order: true,
       ...productsInOrderInclude,
-      engagement: true,
+      ...engagementsInclude,
     },
   });
 

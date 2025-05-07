@@ -2,41 +2,37 @@ import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import useMarketingTemplates from "../../hooks/engagement/templates/useMarketingTemplates";
 import { Accordion } from "@/components/ui/accordion";
-import TemplatePayload from "./components/TemplatePayload";
+import TemplateContent from "./components/TemplateContent";
 
 export default function MarketingTemplates() {
   const {
     templates,
     setTemplates,
-    selectedType,
-    setSelectedType,
-    draftPayload,
-    setDraftPayload,
+    draftTemplate,
+    setDraftTemplate,
     updateTemplate,
     createTemplate,
   } = useMarketingTemplates();
 
   return (
     <DialogWrapper
-      title={"Modelli marketing"}
+      title="Modelli marketing"
       size="medium"
       trigger={
         <SidebarMenuSubButton className="hover:cursor-pointer">Modelli</SidebarMenuSubButton>
       }
     >
       <Accordion type="multiple" className="w-full">
-        <TemplatePayload
+        <TemplateContent
           mode="create"
           index={templates.length + 1}
-          selectedType={selectedType}
-          setSelectedType={setSelectedType}
-          draftPayload={draftPayload}
-          onChange={(newPayload) => setDraftPayload((prev) => ({ ...prev, ...newPayload }))}
+          draftTemplate={draftTemplate}
+          onChange={(updatedDraft) => setDraftTemplate((prev) => ({ ...prev, ...updatedDraft }))}
           onCreate={(newTemplate) => createTemplate(newTemplate)}
         />
 
         {templates.map((template, index) => (
-          <TemplatePayload
+          <TemplateContent
             key={template.id}
             index={index}
             mode="edit"

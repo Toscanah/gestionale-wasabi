@@ -1,3 +1,11 @@
+export const engagementsInclude = {
+  engagements: {
+    include: {
+      template: true,
+    },
+  },
+};
+
 export const optionsInclude = {
   options: {
     include: {
@@ -41,7 +49,7 @@ export const orderInclude = {
   order: {
     include: {
       ...productsInOrderInclude,
-      engagement: true,
+      ...engagementsInclude,
     },
   },
 };
@@ -64,13 +72,5 @@ export const homeAndPickupOrdersInclude = {
   },
   pickup_orders: {
     include: orderInclude,
-  },
-};
-
-export const engagementsInclude = {
-  engagements: {
-    include: {
-      template: true,
-    },
   },
 };

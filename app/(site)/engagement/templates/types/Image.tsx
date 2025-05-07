@@ -6,10 +6,11 @@ import ImageViewer from "../../../components/ui/misc/ImageViewer";
 
 interface ImageProps {
   onChange: (file: File | null) => void;
+  value: string;
 }
 
-export default function Image({ onChange }: ImageProps) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export default function Image({ onChange, value }: ImageProps) {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(value);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

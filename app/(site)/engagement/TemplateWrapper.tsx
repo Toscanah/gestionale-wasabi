@@ -8,7 +8,7 @@ interface TemplateWrapperProps {
   textBelow: string;
   onTextAboveChange: (val: string) => void;
   onTextBelowChange: (val: string) => void;
-  onSave: () => Promise<void>; // now used for both create or update
+  onSubmit: () => Promise<void>;
 }
 
 export default function TemplateWrapper({
@@ -17,7 +17,7 @@ export default function TemplateWrapper({
   textBelow = "",
   onTextAboveChange,
   onTextBelowChange,
-  onSave,
+  onSubmit,
 }: TemplateWrapperProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -41,7 +41,7 @@ export default function TemplateWrapper({
         />
       </div>
 
-      <Button onClick={onSave}>Salva</Button>
+      <Button onClick={onSubmit}>Salva</Button>
     </div>
   );
 }

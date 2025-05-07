@@ -2,9 +2,8 @@ import { CreateEngagement as CreateEngagementParams } from "../../shared";
 import prisma from "../db";
 
 export default async function createEngagement({
+  templateId,
   customerId,
-  payload,
-  type,
   orderId,
 }: CreateEngagementParams) {
   let finalOrderId = orderId;

@@ -1,7 +1,5 @@
 import getTemplateName from "@/app/(site)/lib/formatting-parsing/engagement/templates/getTemplateName";
 import {
-  CommonPayload,
-  FinalCreateEngagementTemplate,
   DraftEngagementTemplatePayload,
   DraftUpdateEngagementTemplate,
   FinalImagePayload,
@@ -19,45 +17,57 @@ import TemplateTypeSelector from "./TemplateTypeSelector";
 
 type CommonPayloadProps = {
   index: number;
-  onChange: (newPayload: DraftEngagementTemplatePayload) => void;
 };
 
 // Edit mode props
-type TemplatePayloadViewModeProps = CommonPayloadProps & {
+type TemplateContentViewModeProps = CommonPayloadProps & {
   mode: "edit";
   template: EngagementTemplate;
-  onSave: (updatedTemplate: DraftUpdateEngagementTemplate) => Promise<void>;
+  onChange: (updatedTemplate: DraftUpdateEngagementTemplate) => void;
+  onSave: (template: DraftUpdateEngagementTemplate) => Promise<void>;
 };
 
 // Create mode props
-type TemplatePayloadCreateModeProps = CommonPayloadProps & {
+type TemplateContentCreateModeProps = CommonPayloadProps & {
   mode: "create";
-  index: number;
-  selectedType: EngagementType;
-  setSelectedType: (type: EngagementType) => void;
-  draftPayload: DraftEngagementTemplatePayload | undefined;
+  draftTemplate: DraftCreateEngagementTemplate;
+  onChange: (updatedDraft: DraftCreateEngagementTemplate) => void;
   onCreate: (newTemplate: DraftCreateEngagementTemplate) => Promise<void>;
 };
 
-export type TemplatePayloadProps = TemplatePayloadViewModeProps | TemplatePayloadCreateModeProps;
+export type TemplateContentProps = TemplateContentViewModeProps | TemplateContentCreateModeProps;
 
-export default function TemplatePayload(props: TemplatePayloadProps) {
-  const type = props.mode === "edit" ? props.template.type : props.selectedType;
+export default function TemplateContent(props: TemplateContentProps) {
+  const type = props.mode === "edit" ? props.template.type : props.draftTemplate.type;
   const payload =
-    props.mode === "edit" ? (props.template.payload as CommonPayload) : props.draftPayload;
+    props.mode === "edit"
+      ? (props.template.payload as DraftEngagementTemplatePayload)
+      : props.draftTemplate.payload;
 
   const { textAbove = "Nessuno", textBelow = "Nessuno" } = payload || {};
 
   const handleChange = (updated: DraftEngagementTemplatePayload) => {
-    const currentPayload =
+    const currentPayload: DraftEngagementTemplatePayload =
       props.mode === "edit"
         ? (props.template.payload as DraftEngagementTemplatePayload)
-        : props.draftPayload ?? {};
+        : props.draftTemplate.payload;
 
-    props.onChange({
+    const mergedPayload = {
       ...currentPayload,
       ...updated,
-    });
+    };
+
+    if (props.mode === "edit") {
+      props.onChange({
+        ...props.template,
+        payload: mergedPayload,
+      });
+    } else {
+      props.onChange({
+        ...props.draftTemplate,
+        payload: mergedPayload,
+      } as DraftCreateEngagementTemplate);
+    }
   };
 
   return (
@@ -79,31 +89,51 @@ export default function TemplatePayload(props: TemplatePayloadProps) {
         <TemplateTypeSelector
           disabled={props.mode === "edit"}
           selectedType={type}
-          onChange={(newType) => {
+          onChange={(newType: EngagementType) => {
             if (props.mode === "create") {
-              props.setSelectedType(newType);
+              props.onChange({
+                label: props.draftTemplate.label,
+                type: newType,
+                payload: {},
+              } as DraftCreateEngagementTemplate);
             }
           }}
         />
 
         <TemplateWrapper
-          onSave={props.onSave}
+          onTextAboveChange={(text) => handleChange({ ...payload, textAbove: text })}
+          onTextBelowChange={(text) => handleChange({ ...payload, textBelow: text })}
+          onSubmit={async () => {
+            if (props.mode === "edit") {
+              props.onSave({
+                id: props.template.id,
+                label: props.template.label,
+                payload,
+              });
+            } else {
+              props.onCreate({
+                type,
+                label: props.draftTemplate.label,
+                payload,
+              } as DraftCreateEngagementTemplate);
+            }
+          }}
           textAbove={textAbove}
           textBelow={textBelow}
           templateComponent={
             type === EngagementType.QR_CODE ? (
               <QRCode
-                value={(payload as QrPayload)?.url}
+                value={(payload as QrPayload).url}
                 onChange={(url) => handleChange({ url })}
               />
             ) : type === EngagementType.IMAGE ? (
               <Image
-                value={(payload as FinalImagePayload)?.imageUrl}
-                onChange={(imageUrl) => handleChange({ imageUrl })}
+                value={"imageUrl" in payload ? (payload.imageUrl as string) : ""}
+                onChange={(imageFile) => handleChange({ imageFile })}
               />
             ) : (
               <Message
-                value={(payload as MessagePayload)?.message}
+                value={(payload as MessagePayload).message}
                 onChange={(message) => handleChange({ message })}
               />
             )

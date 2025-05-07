@@ -1,7 +1,11 @@
-import { OrderWithPayments } from "@shared"
-;
+import { OrderWithPayments } from "@shared";
 import prisma from "../db";
-import { homeOrderInclude, pickupOrderInclude, productsInOrderInclude } from "../includes";
+import {
+  engagementsInclude,
+  homeOrderInclude,
+  pickupOrderInclude,
+  productsInOrderInclude,
+} from "../includes";
 
 export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPayments[]> {
   const orders = await prisma.order.findMany({
@@ -16,7 +20,7 @@ export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPayments
       ...pickupOrderInclude,
       table_order: true,
       ...productsInOrderInclude,
-      engagement: true,
+      ...engagementsInclude,
     },
   });
 

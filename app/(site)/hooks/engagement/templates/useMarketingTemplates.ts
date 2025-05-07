@@ -1,5 +1,6 @@
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import uploadImage from "@/app/(site)/lib/api/uploadImage";
+import { toastSuccess } from "@/app/(site)/lib/util/toast";
 import {
   DraftEngagementTemplatePayload,
   DraftImagePayload,
@@ -15,12 +16,19 @@ import {
 import { EngagementTemplate, EngagementType } from "@prisma/client";
 import { useEffect, useState } from "react";
 
+const EMPTY_DRAFT: DraftCreateEngagementTemplate = {
+  type: EngagementType.QR_CODE,
+  label: "",
+  payload: {
+    textAbove: "",
+    textBelow: "",
+    url: "",
+  },
+};
+
 export default function useMarketingTemplates() {
   const [templates, setTemplates] = useState<EngagementTemplate[]>([]);
-  const [selectedType, setSelectedType] = useState<EngagementType>(EngagementType.QR_CODE);
-  const [draftPayload, setDraftPayload] = useState<DraftEngagementTemplatePayload | undefined>(
-    undefined
-  );
+  const [draftTemplate, setDraftTemplate] = useState<DraftCreateEngagementTemplate>(EMPTY_DRAFT);
 
   const fetchTemplates = () =>
     fetchRequest<EngagementTemplate[]>("GET", "/api/engagements", "getEngagementTemplates").then(
@@ -91,6 +99,14 @@ export default function useMarketingTemplates() {
       label: newTemplate.label,
       payload: finalPayload,
     } as FinalCreateEngagementTemplate;
+
+    fetchRequest<EngagementTemplate>("POST", "/api/engagements", "createEngagementTemplate", {
+      ...finalTemplate,
+    }).then((createdTemplate) => {
+      setTemplates((prev) => [...prev, createdTemplate]);
+      setDraftPayload(undefined);
+      toastSuccess("Modello creato con successo");
+    });
   };
 
   useEffect(() => {
@@ -101,10 +117,8 @@ export default function useMarketingTemplates() {
     templates,
     setTemplates,
     updateTemplate,
-    selectedType,
-    setSelectedType,
-    draftPayload,
-    setDraftPayload,
-    createTemplate
+    draftTemplate,
+    setDraftTemplate,
+    createTemplate,
   };
 }

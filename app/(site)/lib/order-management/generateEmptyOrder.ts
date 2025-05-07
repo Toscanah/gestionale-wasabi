@@ -4,7 +4,7 @@ import { AnyOrder } from "@shared";
 export default function generateEmptyOrder(orderType: OrderType): AnyOrder {
   return {
     discount: 0,
-    engagement: [],
+    engagements: [],
     shift: WorkingShift.UNSPECIFIED,
     is_receipt_printed: false,
     state: "ACTIVE",
