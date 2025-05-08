@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableColumn from "../../components/table/TableColumn";
-import { CustomerWithDetails } from "../../shared";
 import PrevEngagement from "./PrevEngagement";
+import { CustomerWithDetails } from "@/app/(site)/shared";
+import TableColumn from "@/app/(site)/components/table/TableColumn";
 
 export default function columns({
   isRightTable,
@@ -56,7 +56,7 @@ export default function columns({
 
       TableColumn({
         header: "Vecchie azioni",
-        cellContent: (row) => <PrevEngagement engagement={row.original.engagement} />,
+        cellContent: (row) => <PrevEngagement engagements={row.original.engagements} />,
         sortable: false,
       })
     );

@@ -56,13 +56,13 @@ export const orderInclude = {
 
 export const homeOrderInclude = {
   home_order: {
-    include: { address: true, customer: { include: { phone: true, engagement: true } } },
+    include: { address: true, customer: { include: { phone: true, ...engagementsInclude } } },
   },
 };
 
 export const pickupOrderInclude = {
   pickup_order: {
-    include: { customer: { include: { phone: true, engagement: true } } },
+    include: { customer: { include: { phone: true, ...engagementsInclude } } },
   },
 };
 

@@ -1,3 +1,14 @@
+import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import ImageViewer from "@/app/(site)/components/ui/misc/ImageViewer";
+import capitalizeFirstLetter from "@/app/(site)/lib/formatting-parsing/capitalizeFirstLetter";
+import getTemplateName from "@/app/(site)/lib/formatting-parsing/engagement/templates/getTemplateName";
+import {
+  CommonPayload,
+  EngagementWithDetails,
+  ImagePayload,
+  MessagePayload,
+  QrPayload,
+} from "@/app/(site)/shared";
 import {
   Accordion,
   AccordionContent,
@@ -7,18 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash } from "@phosphor-icons/react";
 import { Engagement, EngagementType } from "@prisma/client";
-import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
-import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
-import getEngagementName from "../../lib/formatting-parsing/engagement/getEngagementName";
-import {
-  CommonPayload,
-  DraftImagePayload,
-  FinalImagePayload,
-  MessagePayload,
-  QrPayload,
-} from "../../shared";
 import Link from "next/link";
-import ImageViewer from "../../components/ui/misc/ImageViewer";
 
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat("it-IT", {
@@ -54,43 +54,45 @@ const DeleteEngagementDialog = ({
   </DialogWrapper>
 );
 
-const EngagementContent = ({ engagement }: { engagement: Engagement }) => (
+const EngagementContent = ({ engagement }: { engagement: EngagementWithDetails }) => (
   <>
     <span>
       Messaggio sopra:{" "}
-      {(engagement.payload as CommonPayload)?.textAbove || "Nessun messaggio sopra presente"}
+      {(engagement.template.payload as CommonPayload)?.textAbove ||
+        "Nessun messaggio sopra presente"}
     </span>
 
-    {engagement.type === EngagementType.QR_CODE && (
+    {engagement.template.type === EngagementType.QR_CODE && (
       <span>
         URL:{" "}
-        <Link href={(engagement.payload as QrPayload)?.url}>
-          {(engagement.payload as QrPayload)?.url || "Nessun URL presente"}
+        <Link href={(engagement.template.payload as QrPayload)?.url}>
+          {(engagement.template.payload as QrPayload)?.url || "Nessun URL presente"}
         </Link>
       </span>
     )}
 
-    {engagement.type === EngagementType.IMAGE && (
-      <ImageViewer src={(engagement.payload as FinalImagePayload).imageUrl} />
+    {engagement.template.type === EngagementType.IMAGE && (
+      <ImageViewer src={(engagement.template.payload as ImagePayload).imageUrl} />
     )}
 
-    {engagement.type === EngagementType.MESSAGE && (
+    {engagement.template.type === EngagementType.MESSAGE && (
       <span>
         Messaggio:{" "}
         <strong>
-          {(engagement.payload as MessagePayload)?.message || "Nessun messaggio presente"}
+          {(engagement.template.payload as MessagePayload)?.message || "Nessun messaggio presente"}
         </strong>
       </span>
     )}
 
     <span>
       Messaggio sotto:{" "}
-      {(engagement.payload as CommonPayload)?.textBelow || "Nessun messaggio sotto presente"}
+      {(engagement.template.payload as CommonPayload)?.textBelow ||
+        "Nessun messaggio sotto presente"}
     </span>
   </>
 );
 
-export default function PrevEngagement({ engagement }: { engagement: Engagement[] }) {
+export default function PrevEngagement({ engagements }: { engagements: EngagementWithDetails[] }) {
   const deleteEngagement = (engagement: Engagement) => {
     // fetchRequest("DELETE", "/api/engagements", "deleteEngagement", { id: engagement.id });
   };
@@ -107,12 +109,12 @@ export default function PrevEngagement({ engagement }: { engagement: Engagement[
     >
       <Accordion type="multiple" className="w-full max-h-[20rem] overflow-y-auto">
         {/* TOODO: should filter out engagement that comes from a suborder otherwise dups might appear*/}
-        {engagement.length > 0 ? (
-          engagement.map((eng) => (
+        {engagements.length > 0 ? (
+          engagements.map((eng) => (
             <AccordionItem key={eng.id} value={`engagement-${eng.id}`}>
               <AccordionTrigger>
                 <div className="flex justify-between items-center w-full">
-                  <span className="font-bold">{getEngagementName(eng)}</span>
+                  <span className="font-bold">{getTemplateName(eng.template.type)}</span>
                   <span className="text-sm text-muted-foreground mr-2">
                     {capitalizeFirstLetter(formatDate(eng.created_at).replace(", ", " alle "))}
                   </span>

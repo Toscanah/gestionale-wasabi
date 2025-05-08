@@ -1,6 +1,6 @@
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
-import useMarketingTemplates from "../../hooks/engagement/templates/useMarketingTemplates";
+import useEngagementTemplates from "../../hooks/engagement/templates/useEngagementTemplates";
 import { Accordion } from "@/components/ui/accordion";
 import TemplateContent from "./components/TemplateContent";
 
@@ -12,7 +12,7 @@ export default function MarketingTemplates() {
     setDraftTemplate,
     updateTemplate,
     createTemplate,
-  } = useMarketingTemplates();
+  } = useEngagementTemplates();
 
   return (
     <DialogWrapper
@@ -27,7 +27,16 @@ export default function MarketingTemplates() {
           mode="create"
           index={templates.length + 1}
           draftTemplate={draftTemplate}
-          onChange={(updatedDraft) => setDraftTemplate((prev) => ({ ...prev, ...updatedDraft }))}
+          onChange={(updatedDraft) =>
+            setDraftTemplate((prev) => ({
+              ...prev,
+              ...updatedDraft,
+              payload: {
+                ...prev.payload,
+                ...(updatedDraft.payload ?? {}),
+              },
+            }))
+          }
           onCreate={(newTemplate) => createTemplate(newTemplate)}
         />
 
@@ -37,9 +46,20 @@ export default function MarketingTemplates() {
             index={index}
             mode="edit"
             template={template}
-            onChange={(newPayload) =>
+            onChange={(updates) =>
               setTemplates((prev) =>
-                prev.map((t) => (t.id === template.id ? { ...t, payload: newPayload as any } : t))
+                prev.map((t) => {
+                  if (t.id !== template.id) return t;
+
+                  return {
+                    ...t,
+                    ...updates,
+                    payload: {
+                      ...t.payload,
+                      ...(updates.payload ?? {}),
+                    },
+                  };
+                })
               )
             }
             onSave={(updatedTemplate) => updateTemplate(updatedTemplate)}

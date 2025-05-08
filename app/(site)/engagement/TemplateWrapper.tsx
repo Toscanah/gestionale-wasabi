@@ -25,7 +25,7 @@ export default function TemplateWrapper({
         <Label htmlFor="text-above">Messaggio sopra</Label>
         <Input
           id="text-above"
-          value={textAbove}
+          defaultValue={textAbove}
           onChange={(e) => onTextAboveChange(e.target.value)}
         />
       </div>
@@ -36,7 +36,7 @@ export default function TemplateWrapper({
         <Label htmlFor="text-below">Messaggio sotto</Label>
         <Input
           id="text-below"
-          value={textBelow}
+          defaultValue={textBelow}
           onChange={(e) => onTextBelowChange(e.target.value)}
         />
       </div>

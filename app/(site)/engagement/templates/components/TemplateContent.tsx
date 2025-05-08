@@ -1,140 +1,143 @@
 import getTemplateName from "@/app/(site)/lib/formatting-parsing/engagement/templates/getTemplateName";
 import {
-  DraftEngagementTemplatePayload,
-  DraftUpdateEngagementTemplate,
-  FinalImagePayload,
-  MessagePayload,
+  CreateEngagementTemplate,
+  ParsedEngagementTemplate,
+  ParsedEngagementPayload,
   QrPayload,
-  DraftCreateEngagementTemplate,
+  MessagePayload,
+  ImagePayload,
+  TemplatePayloadDraft,
+  UpdateEngagementTemplate,
+  CommonPayload,
 } from "@/app/(site)/shared";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { EngagementTemplate, EngagementType } from "@prisma/client";
+import { EngagementType } from "@prisma/client";
 import TemplateWrapper from "../../TemplateWrapper";
 import QRCode from "../types/QRCode";
 import Message from "../types/Message";
 import Image from "../types/Image";
 import TemplateTypeSelector from "./TemplateTypeSelector";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-type CommonPayloadProps = {
+type CommonProps = {
   index: number;
 };
 
-// Edit mode props
-type TemplateContentViewModeProps = CommonPayloadProps & {
+// Edit mode
+type ViewModeProps = CommonProps & {
   mode: "edit";
-  template: EngagementTemplate;
-  onChange: (updatedTemplate: DraftUpdateEngagementTemplate) => void;
-  onSave: (template: DraftUpdateEngagementTemplate) => Promise<void>;
+  template: ParsedEngagementTemplate;
+  onChange: (updates: Partial<UpdateEngagementTemplate>) => void;
+  onSave: (template: ParsedEngagementTemplate) => Promise<void>;
 };
 
-// Create mode props
-type TemplateContentCreateModeProps = CommonPayloadProps & {
+// Create mode
+type CreateModeProps = CommonProps & {
   mode: "create";
-  draftTemplate: DraftCreateEngagementTemplate;
-  onChange: (updatedDraft: DraftCreateEngagementTemplate) => void;
-  onCreate: (newTemplate: DraftCreateEngagementTemplate) => Promise<void>;
+  draftTemplate: TemplatePayloadDraft;
+  onChange: (updates: Partial<CreateEngagementTemplate>) => void;
+  onCreate: (template: TemplatePayloadDraft) => Promise<void>;
 };
 
-export type TemplateContentProps = TemplateContentViewModeProps | TemplateContentCreateModeProps;
+export type TemplateContentProps = ViewModeProps | CreateModeProps;
 
 export default function TemplateContent(props: TemplateContentProps) {
-  const type = props.mode === "edit" ? props.template.type : props.draftTemplate.type;
-  const payload =
-    props.mode === "edit"
-      ? (props.template.payload as DraftEngagementTemplatePayload)
-      : props.draftTemplate.payload;
+  const isEdit = props.mode === "edit";
 
-  const { textAbove = "Nessuno", textBelow = "Nessuno" } = payload || {};
+  const template = isEdit ? props.template : props.draftTemplate;
+  const type = template.type;
+  const currentPayload = template.payload as ParsedEngagementPayload;
+  const { textAbove = "", textBelow = "" }: CommonPayload = currentPayload;
 
-  const handleChange = (updated: DraftEngagementTemplatePayload) => {
-    const currentPayload: DraftEngagementTemplatePayload =
-      props.mode === "edit"
-        ? (props.template.payload as DraftEngagementTemplatePayload)
-        : props.draftTemplate.payload;
-
-    const mergedPayload = {
-      ...currentPayload,
-      ...updated,
-    };
-
-    if (props.mode === "edit") {
-      props.onChange({
-        ...props.template,
-        payload: mergedPayload,
-      });
-    } else {
-      props.onChange({
-        ...props.draftTemplate,
-        payload: mergedPayload,
-      } as DraftCreateEngagementTemplate);
+  const handlePayloadChange = (updated: Partial<ParsedEngagementPayload>) => {
+    switch (type) {
+      case EngagementType.QR_CODE:
+        return props.onChange({ type: EngagementType.QR_CODE, payload: updated as QrPayload });
+      case EngagementType.IMAGE:
+        return props.onChange({ type: EngagementType.IMAGE, payload: updated as ImagePayload });
+      case EngagementType.MESSAGE:
+        return props.onChange({ type: EngagementType.MESSAGE, payload: updated as MessagePayload });
+      default:
+        break;
     }
   };
 
   return (
-    <AccordionItem
-      value={props.mode === "edit" ? `active-${props.index}` : `create-${props.index}`}
-    >
+    <AccordionItem value={isEdit ? `active-${props.index}` : `create-${props.index}`}>
       <AccordionTrigger>
-        {props.mode === "edit" ? (
+        {isEdit ? (
           <>
-            #{props.index + 1} - {props.template.label ?? "Nessuna etichetta"} (
-            {getTemplateName(type)})
+            #{props.index + 1} - {template.label ?? "Nessuna etichetta"} ({getTemplateName(type)})
           </>
         ) : (
           <>Crea nuovo modello ({getTemplateName(type)})</>
         )}
       </AccordionTrigger>
 
-      <AccordionContent>
-        <TemplateTypeSelector
-          disabled={props.mode === "edit"}
-          selectedType={type}
-          onChange={(newType: EngagementType) => {
-            if (props.mode === "create") {
-              props.onChange({
-                label: props.draftTemplate.label,
-                type: newType,
-                payload: {},
-              } as DraftCreateEngagementTemplate);
-            }
-          }}
-        />
+      <AccordionContent className="flex flex-col gap-4">
+        {!isEdit && (
+          <TemplateTypeSelector
+            selectedType={type}
+            onChange={(newType) => {
+              switch (newType) {
+                case EngagementType.QR_CODE:
+                  return props.onChange({
+                    type: newType,
+                    payload: {} as QrPayload,
+                  });
+
+                case EngagementType.IMAGE:
+                  return props.onChange({
+                    type: newType,
+                    payload: {} as ImagePayload,
+                  });
+
+                case EngagementType.MESSAGE:
+                  return props.onChange({
+                    type: newType,
+                    payload: {} as MessagePayload,
+                  });
+              }
+            }}
+          />
+        )}
+
+        <div className="flex flex-col space-y-2">
+          <Label htmlFor={"label" + props.index}>Etichetta</Label>
+          <Input
+            defaultValue={template.label ?? ""}
+            onChange={(e) => props.onChange({ label: e.target.value })}
+          />
+        </div>
 
         <TemplateWrapper
-          onTextAboveChange={(text) => handleChange({ ...payload, textAbove: text })}
-          onTextBelowChange={(text) => handleChange({ ...payload, textBelow: text })}
-          onSubmit={async () => {
-            if (props.mode === "edit") {
-              props.onSave({
-                id: props.template.id,
-                label: props.template.label,
-                payload,
-              });
-            } else {
-              props.onCreate({
-                type,
-                label: props.draftTemplate.label,
-                payload,
-              } as DraftCreateEngagementTemplate);
-            }
-          }}
           textAbove={textAbove}
           textBelow={textBelow}
+          onTextAboveChange={(textAbove) => handlePayloadChange({ textAbove })}
+          onTextBelowChange={(textBelow) => handlePayloadChange({ textBelow })}
+          onSubmit={async () => {
+            if (isEdit) {
+              await props.onSave(template as ParsedEngagementTemplate);
+            } else {
+              await props.onCreate(template as TemplatePayloadDraft);
+            }
+          }}
           templateComponent={
             type === EngagementType.QR_CODE ? (
               <QRCode
-                value={(payload as QrPayload).url}
-                onChange={(url) => handleChange({ url })}
+                value={(currentPayload as QrPayload).url}
+                onChange={(url) => handlePayloadChange({ url })}
               />
             ) : type === EngagementType.IMAGE ? (
               <Image
-                value={"imageUrl" in payload ? (payload.imageUrl as string) : ""}
-                onChange={(imageFile) => handleChange({ imageFile })}
+                value={(currentPayload as ImagePayload).imageUrl}
+                onChange={(selectedImage) => props.onChange({ selectedImage })}
               />
             ) : (
               <Message
-                value={(payload as MessagePayload).message}
-                onChange={(message) => handleChange({ message })}
+                value={(currentPayload as MessagePayload).message}
+                onChange={(message) => handlePayloadChange({ message })}
               />
             )
           }

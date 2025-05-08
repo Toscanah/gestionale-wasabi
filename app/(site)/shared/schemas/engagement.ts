@@ -3,15 +3,24 @@ import { z } from "zod";
 import {
   QrPayloadSchema,
   MessagePayloadSchema,
-  FinalImagePayloadSchema,
-  DraftEngagementTemplatePayloadSchema,
-  FinalEngagementPayloadSchema,
-  DraftImagePayloadSchema,
+  ImagePayloadSchema,
+  ParsedEngagementTemplateSchema,
 } from "../models/Engagement";
 import { NoContentSchema, wrapSchema } from "./common";
-import { EngagementTemplateSchema } from "@/prisma/generated/zod";
 
-const commonCreateEngagementTemplate = [
+export const TemplatePayloadDraftSchema = ParsedEngagementTemplateSchema.omit({
+  id: true,
+  created_at: true,
+}).extend({
+  selectedImage: z.instanceof(File).optional().nullable(),
+});
+
+export type TemplatePayloadDraft = z.infer<typeof TemplatePayloadDraftSchema>;
+
+//
+// Creation Schema (discriminated by type)
+//
+export const createEngagementTemplateSchema = z.discriminatedUnion("type", [
   z.object({
     label: z.string().optional(),
     type: z.literal(EngagementType.QR_CODE),
@@ -19,33 +28,32 @@ const commonCreateEngagementTemplate = [
   }),
   z.object({
     label: z.string().optional(),
+    type: z.literal(EngagementType.IMAGE),
+    payload: ImagePayloadSchema,
+  }),
+  z.object({
+    label: z.string().optional(),
     type: z.literal(EngagementType.MESSAGE),
     payload: MessagePayloadSchema,
   }),
-];
-
-export const draftCreateEngagementTemplateSchema = z.discriminatedUnion("type", [
-  z.object({
-    label: z.string().optional(),
-    type: z.literal(EngagementType.IMAGE),
-    payload: DraftImagePayloadSchema,
-  }),
-  ...commonCreateEngagementTemplate,
 ]);
 
-export type DraftCreateEngagementTemplate = z.infer<typeof draftCreateEngagementTemplateSchema>;
+export type CreateEngagementTemplate = z.infer<typeof createEngagementTemplateSchema>;
 
-export const finalCreateEngagementTemplateSchema = z.discriminatedUnion("type", [
-  z.object({
-    label: z.string().optional(),
-    type: z.literal(EngagementType.IMAGE),
-    payload: FinalImagePayloadSchema,
-  }),
-  ...commonCreateEngagementTemplate,
-]);
+//
+// Update Schema — based on existing Prisma shape
+//
+export const updateEngagementTemplateSchema = TemplatePayloadDraftSchema.extend({
+  id: z.number(),
+}).omit({
+  type: true,
+});
 
-export type FinalCreateEngagementTemplate = z.infer<typeof finalCreateEngagementTemplateSchema>;
+export type UpdateEngagementTemplate = z.infer<typeof updateEngagementTemplateSchema>;
 
+//
+// Create Engagement instance from template
+//
 export const createEngagementSchema = z.object({
   templateId: z.number(),
   customerId: z.number().optional(),
@@ -54,34 +62,19 @@ export const createEngagementSchema = z.object({
 
 export type CreateEngagement = z.infer<typeof createEngagementSchema>;
 
+//
+// Get Engagements by customer ID
+//
 export const GetEngagementsByCustomerSchema = wrapSchema("customerId", z.number());
-
 export type GetEngagementsByCustomer = z.infer<typeof GetEngagementsByCustomerSchema>;
 
-export const draftUpdateEngagementTemplateSchema = EngagementTemplateSchema.omit({
-  created_at: true,
-  type: true,
-  payload: true,
-}).extend({
-  payload: DraftEngagementTemplatePayloadSchema,
-});
-
-export type DraftUpdateEngagementTemplate = z.infer<typeof draftUpdateEngagementTemplateSchema>;
-
-export const finalUpdateEngagementTemplateSchema = EngagementTemplateSchema.omit({
-  created_at: true,
-  type: true,
-  payload: true,
-}).extend({
-  payload: FinalEngagementPayloadSchema,
-});
-
-export type FinalUpdateEngagementTemplate = z.infer<typeof finalUpdateEngagementTemplateSchema>;
-
+//
+// Schema Registry
+//
 export const ENGAGEMENT_SCHEMAS = {
   createEngagement: createEngagementSchema,
   getEngagementsByCustomer: GetEngagementsByCustomerSchema,
   getEngagementTemplates: NoContentSchema,
-  createEngagementTemplate: finalCreateEngagementTemplateSchema,
-  updateEngagementTemplate: finalUpdateEngagementTemplateSchema,
+  createEngagementTemplate: createEngagementTemplateSchema,
+  updateEngagementTemplate: updateEngagementTemplateSchema,
 };

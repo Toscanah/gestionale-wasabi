@@ -6,7 +6,7 @@ import MarketingTemplates from "@/app/(site)/engagement/templates/MarketingTempl
 
 export default function EngagementSection() {
   const engagementItems: SidebarMenuGroupItem[] = [
-    { type: "link", path: "/engagement", label: "Ai clienti" },
+    { type: "link", path: "/engagement/broadcasting", label: "Ai clienti" },
     { type: "component", element: <MarketingTemplates /> },
   ];
 

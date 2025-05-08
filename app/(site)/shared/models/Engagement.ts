@@ -14,17 +14,11 @@ export const QrPayloadSchema = CommonPayloadSchema.extend({
 
 export type QrPayload = z.infer<typeof QrPayloadSchema>;
 
-export const DraftImagePayloadSchema = CommonPayloadSchema.extend({
-  imageFile: z.instanceof(File).nullable(),
-});
-
-export type DraftImagePayload = z.infer<typeof DraftImagePayloadSchema>;
-
-export const FinalImagePayloadSchema = CommonPayloadSchema.extend({
+export const ImagePayloadSchema = CommonPayloadSchema.extend({
   imageUrl: z.string(),
 });
 
-export type FinalImagePayload = z.infer<typeof FinalImagePayloadSchema>;
+export type ImagePayload = z.infer<typeof ImagePayloadSchema>;
 
 export const MessagePayloadSchema = CommonPayloadSchema.extend({
   message: z.string(),
@@ -32,20 +26,13 @@ export const MessagePayloadSchema = CommonPayloadSchema.extend({
 
 export type MessagePayload = z.infer<typeof MessagePayloadSchema>;
 
-export const DraftEngagementTemplatePayloadSchema = z.union([
+export const ParsedEngagementPayloadSchema = z.union([
   QrPayloadSchema,
-  DraftImagePayloadSchema,
+  ImagePayloadSchema,
   MessagePayloadSchema,
 ]);
 
-export type DraftEngagementTemplatePayload = z.infer<typeof DraftEngagementTemplatePayloadSchema>;
-
-export const FinalEngagementPayloadSchema = z.union([
-  QrPayloadSchema,
-  FinalImagePayloadSchema,
-  MessagePayloadSchema,
-]);
-export type FinalEngagementPayload = z.infer<typeof FinalEngagementPayloadSchema>;
+export type ParsedEngagementPayload = z.infer<typeof ParsedEngagementPayloadSchema>;
 
 export const EngagementWithDetailsSchema = EngagementSchema.extend({
   template: EngagementTemplateSchema.extend({
@@ -54,3 +41,11 @@ export const EngagementWithDetailsSchema = EngagementSchema.extend({
 });
 
 export type EngagementWithDetails = z.infer<typeof EngagementWithDetailsSchema>;
+
+export const ParsedEngagementTemplateSchema = EngagementTemplateSchema.omit({
+  payload: true,
+}).extend({
+  payload: ParsedEngagementPayloadSchema,
+});
+
+export type ParsedEngagementTemplate = z.infer<typeof ParsedEngagementTemplateSchema>;

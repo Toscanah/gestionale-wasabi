@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           success: false,
           message: "File already exists. Skipped upload.",
-          path: `/uploads/engagement/${filename}`,
+          path: `/uploads/engagements/${filename}`,
         });
       }
     }
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     fs.writeFileSync(filePath, buffer);
 
-    const publicUrl = `/uploads/${type === "receipt" ? "logo" : "engagement"}/${filename}`;
+    const publicUrl = `/uploads/${type === "receipt" ? "logo" : "engagements"}/${filename}`;
     return NextResponse.json({ success: true, path: publicUrl }, { status: 200 });
   } catch (err) {
     console.error("Upload error:", err);

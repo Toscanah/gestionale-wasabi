@@ -21,7 +21,7 @@ import {
   MessagePayload,
   PickupOrder,
   QrPayload,
-  FinalImagePayload,
+  ImagePayload,
 } from "../shared";
 import Message from "./templates/types/Message";
 import uploadImage from "../lib/api/uploadImage";
@@ -134,7 +134,7 @@ export default function EngagementDialog({
             const { payload, type } = engagement;
             const { textAbove = "Nessuno", textBelow = "Nessuno" } = payload as CommonPayload;
             const url = (payload as QrPayload)?.url;
-            const imageUrl = (payload as FinalImagePayload)?.imageUrl;
+            const imageUrl = (payload as ImagePayload)?.imageUrl;
             const message = (payload as MessagePayload)?.message;
 
             return (

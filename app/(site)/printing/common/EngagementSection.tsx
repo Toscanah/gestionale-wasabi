@@ -3,7 +3,7 @@ import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize
 import {
   CommonPayload,
   EngagementWithDetails,
-  FinalImagePayload,
+  ImagePayload,
   MessagePayload,
   QrPayload,
 } from "../../shared";
@@ -45,7 +45,7 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
           ) : (
             <Image
               align="center"
-              src={(engagement.template.payload as FinalImagePayload).imageUrl}
+              src={(engagement.template.payload as ImagePayload).imageUrl}
             />
           )}
 

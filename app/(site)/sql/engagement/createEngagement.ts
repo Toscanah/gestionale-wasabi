@@ -26,12 +26,13 @@ export default async function createEngagement({
             },
           },
         ],
-        state: {
-          equals: "ACTIVE",
-        },
+        state: "ACTIVE",
       },
       orderBy: {
         created_at: "desc",
+      },
+      select: {
+        id: true,
       },
     });
 
@@ -42,8 +43,9 @@ export default async function createEngagement({
 
   return await prisma.engagement.create({
     data: {
-      type,
-      payload,
+      template: {
+        connect: { id: templateId },
+      },
       ...(customerId !== undefined && {
         customer: {
           connect: { id: customerId },
