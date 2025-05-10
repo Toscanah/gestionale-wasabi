@@ -18,7 +18,7 @@ export default function EngagementFilter({ activeTypes, setActiveTypes }: Engage
       size="small"
       title="Seleziona filtri marketing"
       trigger={
-        <Button className="w-full">
+        <Button className="w-full" disabled>
           Filtri marketing
           {/* <span className="text-muted-foreground">{" "}({activeTypes.length + " attivi"})</span> */}
         </Button>

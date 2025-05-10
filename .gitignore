@@ -4,8 +4,7 @@
 /scripts/server.pid
 
 # images
-/public/engagement/*
-/public/logo/*
+/public
 
 # backup
 /backup

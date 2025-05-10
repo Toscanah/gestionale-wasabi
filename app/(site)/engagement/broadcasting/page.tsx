@@ -8,7 +8,7 @@ import EngagementFilter from "./filters/EngagementFilter";
 import useEngagement from "../../hooks/engagement/useEngagement";
 import getTable from "../../lib/util/getTable";
 import Table from "../../components/table/Table";
-import EngagementDialog from "../EngagementDialog";
+import EngagementDialog from "./components/EngagementDialog";
 import GoBack from "../../components/ui/misc/GoBack";
 
 export default function EngagementPage() {
@@ -61,7 +61,8 @@ export default function EngagementPage() {
 
         <div className="flex gap-4 w-full items-center justify-center">
           <EngagementDialog
-            onSuccess={() => window.location.reload()} // TODO: implement smth better here
+            context="admin"
+            onSuccess={() => window.location.reload()} // TODO: implement smth better here -> setState that updates customers with new eng.
             customerIds={filteredRightCustomers.map((c) => c.id)}
             trigger={
               <Button

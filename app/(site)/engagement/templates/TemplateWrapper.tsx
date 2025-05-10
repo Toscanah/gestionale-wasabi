@@ -9,6 +9,7 @@ interface TemplateWrapperProps {
   onTextAboveChange: (val: string) => void;
   onTextBelowChange: (val: string) => void;
   onSubmit: () => Promise<void>;
+  disabled?: boolean;
 }
 
 export default function TemplateWrapper({
@@ -18,12 +19,14 @@ export default function TemplateWrapper({
   onTextAboveChange,
   onTextBelowChange,
   onSubmit,
+  disabled = false,
 }: TemplateWrapperProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col space-y-2">
         <Label htmlFor="text-above">Messaggio sopra</Label>
         <Input
+          disabled={disabled}
           id="text-above"
           defaultValue={textAbove}
           onChange={(e) => onTextAboveChange(e.target.value)}
@@ -35,6 +38,7 @@ export default function TemplateWrapper({
       <div className="flex flex-col space-y-2">
         <Label htmlFor="text-below">Messaggio sotto</Label>
         <Input
+          disabled={disabled}
           id="text-below"
           defaultValue={textBelow}
           onChange={(e) => onTextBelowChange(e.target.value)}

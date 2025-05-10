@@ -1,8 +1,11 @@
-import { OrderWithPayments } from "@shared"
-;
+import { OrderWithPayments } from "@shared";
 import prisma from "../db";
-import { homeOrderInclude, pickupOrderInclude, productsInOrderInclude } from "../includes";
-
+import {
+  engagementsInclude,
+  homeOrderInclude,
+  pickupOrderInclude,
+  productsInOrderInclude,
+} from "../includes";
 export default async function getOrdersWithPayments(): Promise<OrderWithPayments[]> {
   const orders = await prisma.order.findMany({
     where: {
@@ -16,11 +19,9 @@ export default async function getOrdersWithPayments(): Promise<OrderWithPayments
       ...pickupOrderInclude,
       table_order: true,
       ...productsInOrderInclude,
-      engagement: true,
+      ...engagementsInclude,
     },
   });
-
-  
 
   const ordersWithPaymentTotals = orders.map((order) => {
     const paymentTotals = {

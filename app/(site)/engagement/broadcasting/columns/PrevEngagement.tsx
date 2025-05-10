@@ -1,7 +1,7 @@
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import ImageViewer from "@/app/(site)/components/ui/misc/ImageViewer";
 import capitalizeFirstLetter from "@/app/(site)/lib/formatting-parsing/capitalizeFirstLetter";
-import getTemplateName from "@/app/(site)/lib/formatting-parsing/engagement/templates/getTemplateName";
+import getTemplateName from "@/app/(site)/lib/formatting-parsing/engagement/getTemplateName";
 import {
   CommonPayload,
   EngagementWithDetails,

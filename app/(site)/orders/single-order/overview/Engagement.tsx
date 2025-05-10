@@ -1,5 +1,5 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import EngagementDialog from "@/app/(site)/engagement/EngagementDialog";
+import EngagementDialog from "@/app/(site)/engagement/broadcasting/components/EngagementDialog";
 import { Button } from "@/components/ui/button";
 
 export default function Engagement() {
@@ -15,6 +15,7 @@ export default function Engagement() {
     <EngagementDialog
       trigger={MarketingTrigger}
       order={order}
+      context="order"
       onSuccess={(newEngagement) =>
         updateOrder({ engagements: [...order.engagements, newEngagement[0]] })
       }

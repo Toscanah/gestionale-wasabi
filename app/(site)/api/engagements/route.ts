@@ -5,6 +5,8 @@ import { ENGAGEMENT_SCHEMAS } from "../../shared";
 import getEngagementTemplates from "../../sql/engagement/templates/getEngagementTemplates";
 import updateEngagementTemplate from "../../sql/engagement/templates/updateEngagementTemplate";
 import createEngagementTemplate from "../../sql/engagement/templates/createEngagementTemplate";
+import deleteTemplateById from "../../sql/engagement/templates/deleteTemplateById";
+import deleteEngagementById from "../../sql/engagement/deleteEngagementById";
 
 const GET_ACTIONS = new Map([
   // [
@@ -32,7 +34,16 @@ const PATCH_ACTIONS = new Map([
   ],
 ]);
 
-const DELETE_ACTIONS = new Map([]);
+const DELETE_ACTIONS = new Map([
+  [
+    "deleteTemplateById",
+    { func: deleteTemplateById, schema: ENGAGEMENT_SCHEMAS.deleteTemplateById },
+  ],
+  [
+    "deleteEngagementById",
+    { func: deleteEngagementById, schema: ENGAGEMENT_SCHEMAS.deleteEngagementById },
+  ],
+]);
 
 export async function GET(request: NextRequest) {
   return await handleRequest(request, "GET", GET_ACTIONS);
@@ -46,6 +57,6 @@ export async function POST(request: NextRequest) {
   return await handleRequest(request, "POST", POST_ACTIONS);
 }
 
-// export async function DELETE(request: NextRequest) {
-//   return await handleRequest(request, "DELETE", DELETE_ACTIONS);
-// }
+export async function DELETE(request: NextRequest) {
+  return await handleRequest(request, "DELETE", DELETE_ACTIONS);
+}

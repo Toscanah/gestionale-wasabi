@@ -1,14 +1,15 @@
-import { CreateEngagement as CreateEngagementParams } from "../../shared";
+import { CreateEngagement as CreateEngagementParams, EngagementWithDetails } from "../../shared";
 import prisma from "../db";
+import normalizeTemplatePayload from "@/app/(site)/lib/formatting-parsing/engagement/normalizeTemplatePayload";
 
 export default async function createEngagement({
   templateId,
   customerId,
   orderId,
-}: CreateEngagementParams) {
+}: CreateEngagementParams): Promise<EngagementWithDetails | undefined> {
   let finalOrderId = orderId;
 
-  // If only customerId is provided, try to find their active order
+  // If only customerId is provided, try to find their first active order
   if (!orderId && customerId !== undefined) {
     const activeOrder = await prisma.order.findFirst({
       where: {
@@ -41,7 +42,20 @@ export default async function createEngagement({
     }
   }
 
-  return await prisma.engagement.create({
+  // ❌ Check for existing engagement with same template/customer/order
+  const existing = await prisma.engagement.findFirst({
+    where: {
+      template_id: templateId,
+      ...(customerId !== undefined && { customer_id: customerId }),
+      ...(finalOrderId !== undefined && { order_id: finalOrderId }),
+    },
+  });
+
+  if (existing) {
+    return;
+  }
+
+  const engagement = await prisma.engagement.create({
     data: {
       template: {
         connect: { id: templateId },
@@ -59,5 +73,13 @@ export default async function createEngagement({
       state: finalOrderId ? "APPLIED" : "PENDING",
       used_at: finalOrderId ? new Date() : null,
     },
+    include: {
+      template: true,
+    },
   });
+
+  return {
+    ...engagement,
+    template: normalizeTemplatePayload(engagement.template),
+  };
 }

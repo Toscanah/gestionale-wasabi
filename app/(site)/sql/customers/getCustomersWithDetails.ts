@@ -1,5 +1,4 @@
-import { CustomerWithDetails } from "@shared"
-;
+import { CustomerWithDetails } from "@shared";
 import prisma from "../db";
 import { engagementsInclude, homeAndPickupOrdersInclude } from "../includes";
 import filterInactiveProducts from "../../lib/product-management/filterInactiveProducts";
@@ -10,9 +9,9 @@ export default async function getCustomersWithDetails(): Promise<CustomerWithDet
       addresses: true,
       phone: true,
       ...homeAndPickupOrdersInclude,
-      ...engagementsInclude
+      ...engagementsInclude,
     },
   });
 
-  return customers.map(filterInactiveProducts);
+  return customers.map(filterInactiveProducts)
 }

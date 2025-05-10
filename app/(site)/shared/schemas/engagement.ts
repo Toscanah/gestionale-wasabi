@@ -69,6 +69,14 @@ export const GetEngagementsByCustomerSchema = wrapSchema("customerId", z.number(
 export type GetEngagementsByCustomer = z.infer<typeof GetEngagementsByCustomerSchema>;
 
 //
+
+export const deleteTemplateByIdSchema = wrapSchema("templateId", z.number());
+export type DeleteTemplateById = z.infer<typeof deleteTemplateByIdSchema>;
+
+export const deleteEngagementByIdSchema = wrapSchema("engagementId", z.number());
+export type DeleteEngagementById = z.infer<typeof deleteEngagementByIdSchema>;
+
+//
 // Schema Registry
 //
 export const ENGAGEMENT_SCHEMAS = {
@@ -77,4 +85,6 @@ export const ENGAGEMENT_SCHEMAS = {
   getEngagementTemplates: NoContentSchema,
   createEngagementTemplate: createEngagementTemplateSchema,
   updateEngagementTemplate: updateEngagementTemplateSchema,
+  deleteTemplateById: deleteTemplateByIdSchema,
+  deleteEngagementById: deleteEngagementByIdSchema,
 };

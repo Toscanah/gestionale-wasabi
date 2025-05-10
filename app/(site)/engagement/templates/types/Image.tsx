@@ -7,9 +7,10 @@ import ImageViewer from "../../../components/ui/misc/ImageViewer";
 interface ImageProps {
   onChange: (file: File | null) => void;
   value: string;
+  disabled?: boolean;
 }
 
-export default function Image({ onChange, value }: ImageProps) {
+export default function Image({ onChange, value, disabled }: ImageProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(value);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +26,7 @@ export default function Image({ onChange, value }: ImageProps) {
       <Label htmlFor="imageUpload">Carica immagine</Label>
       <div className="flex gap-2">
         <Input
+          disabled={disabled}
           id="imageUpload"
           type="file"
           accept="image/png, image/jpeg, image/jpg"

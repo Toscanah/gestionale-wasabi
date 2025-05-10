@@ -48,7 +48,7 @@ export default function useEngagementTemplates() {
   const updateTemplate = async (template: UpdateEngagementTemplate) => {
     const payload = await maybeUploadImage(template.payload, template.selectedImage);
 
-    console.log(templates)
+    console.log(templates);
 
     console.log("Updating template", template, payload);
 
@@ -87,6 +87,9 @@ export default function useEngagementTemplates() {
     });
   };
 
+  const deleteTemplate = async (templateId: number) =>
+    fetchRequest<number>("DELETE", "/api/engagements", "deleteTemplateById", { templateId });
+
   useEffect(() => {
     fetchTemplates();
   }, []);
@@ -98,5 +101,6 @@ export default function useEngagementTemplates() {
     draftTemplate,
     setDraftTemplate,
     createTemplate,
+    deleteTemplate,
   };
 }
