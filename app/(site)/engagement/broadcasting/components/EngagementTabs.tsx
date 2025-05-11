@@ -9,16 +9,10 @@ import {
 } from "../../../shared";
 import { OrderType } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 import MarketingTemplates from "../../templates/MarketingTemplates";
 import { Button } from "@/components/ui/button";
-import getTemplateName from "../../../lib/formatting-parsing/engagement/getTemplateName";
-import { updateOrderWithTemplate } from "../../../lib/order-management/updateOrderWithTemplate";
+import { patchOrderEngagements } from "../../../lib/order-management/patchOrderEngagements";
 import TemplateContent from "../../templates/components/TemplateContent";
 
 type OrderEngagementTabsProps = {
@@ -64,82 +58,25 @@ export function OrderEngagementTabs({
   const handleEngagementDelete = async (engagementId: number) => {
     await onDelete(engagementId);
 
-    // Remove the deleted engagement from activeEngagements
     setActiveEngagements((prev) => prev.filter((e) => e.id !== engagementId));
 
-    // Also remove it from the order context
-    const updatedOrder = {
-      ...order,
-      engagements: order.engagements?.filter((e) => e.id !== engagementId),
-      home_order:
-        order.type === OrderType.HOME
-          ? {
-              ...(order as HomeOrder).home_order,
-              customer: {
-                ...(order as HomeOrder).home_order?.customer,
-                engagements:
-                  (order as HomeOrder).home_order?.customer?.engagements.filter(
-                    (e) => e.id !== engagementId
-                  ) ?? [],
-              },
-            }
-          : (order as HomeOrder).home_order,
-      pickup_order:
-        order.type === OrderType.PICKUP
-          ? {
-              ...(order as PickupOrder).pickup_order,
-              customer: {
-                ...(order as PickupOrder).pickup_order?.customer,
-                engagements:
-                  (order as PickupOrder).pickup_order?.customer?.engagements.filter(
-                    (e) => e.id !== engagementId
-                  ) ?? [],
-              },
-            }
-          : (order as PickupOrder).pickup_order,
-    };
-
-    updateOrder(updatedOrder);
+    updateOrder(
+      patchOrderEngagements({
+        order,
+        removeIds: [engagementId],
+      })
+    );
   };
 
   const handleTemplateDelete = (templateId: number) => {
-    // Remove all active engagements that used this template
-    const updatedEngagements = activeEngagements.filter((e) => e.template.id !== templateId);
-    setActiveEngagements(updatedEngagements);
+    setActiveEngagements((prev) => prev.filter((e) => e.template.id !== templateId));
 
-    // Remove from order context as well
-    // const updatedOrder = {
-    //   ...order,
-    //   engagements: order.engagements?.filter((e) => e.template.id !== templateId),
-    //   home_order:
-    //     order.type === OrderType.HOME
-    //       ? {
-    //           ...(order as HomeOrder).home_order,
-    //           customer: {
-    //             ...(order as HomeOrder).home_order.customer,
-    //             engagements:
-    //               (order as HomeOrder).home_order.customer?.engagements.filter(
-    //                 (e) => e.template.id !== templateId
-    //               ) ?? [],
-    //           },
-    //         }
-    //       : order.home_order,
-    //   pickup_order:
-    //     order.type === OrderType.PICKUP
-    //       ? {
-    //           ...(order as PickupOrder).pickup_order,
-    //           customer: {
-    //             ...(order as PickupOrder).pickup_order.customer,
-    //             engagements:
-    //               (order as PickupOrder).pickup_order.customer?.engagements.filter(
-    //                 (e) => e.template.id !== templateId
-    //               ) ?? [],
-    //           },
-    //         }
-    //       : order.pickup_order,
-    // };
-
-    // updateOrder(updatedOrder);
+    updateOrder(
+      patchOrderEngagements({
+        order,
+        removeIds: activeEngagements.filter((e) => e.template.id === templateId).map((e) => e.id),
+      })
+    );
   };
 
   return (
@@ -180,7 +117,12 @@ export function OrderEngagementTabs({
           selectedTemplateIds={selectedTemplates}
           onSelectTemplate={onSelectTemplate}
           onTemplateChange={(updatedTemplate) =>
-            updateOrder(updateOrderWithTemplate(order, updatedTemplate))
+            updateOrder(
+              patchOrderEngagements({
+                order,
+                updateTemplates: [updatedTemplate],
+              })
+            )
           }
           onTemplateDelete={handleTemplateDelete}
         />

@@ -1,5 +1,6 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import EngagementDialog from "@/app/(site)/engagement/broadcasting/components/EngagementDialog";
+import { patchOrderEngagements } from "@/app/(site)/lib/order-management/patchOrderEngagements";
 import { Button } from "@/components/ui/button";
 
 export default function Engagement() {
@@ -16,8 +17,13 @@ export default function Engagement() {
       trigger={MarketingTrigger}
       order={order}
       context="order"
-      onSuccess={(newEngagement) =>
-        updateOrder({ engagements: [...order.engagements, newEngagement[0]] })
+      onSuccess={(newEngagements) =>
+        updateOrder(
+          patchOrderEngagements({
+            order,
+            add: newEngagements,
+          })
+        )
       }
     />
   );
