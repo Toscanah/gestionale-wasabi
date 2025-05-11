@@ -1,12 +1,7 @@
 import { OrderType } from "@prisma/client";
 import { useState } from "react";
 import fetchRequest from "../../lib/api/fetchRequest";
-import {
-  AnyOrder,
-  EngagementWithDetails,
-  HomeOrder,
-  PickupOrder,
-} from "../../shared";
+import { AnyOrder, EngagementWithDetails, HomeOrder, PickupOrder } from "../../shared";
 
 export type UseHandleEngagementParams =
   | { order: AnyOrder; customerIds?: number[] }
@@ -57,26 +52,40 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
           ? (order as PickupOrder).pickup_order?.customer?.id
           : undefined;
 
-      return await Promise.all(
+      const results = await Promise.all(
         selectedTemplates.map((templateId) =>
-          fetchRequest<EngagementWithDetails>("POST", "/api/engagements/", "createEngagement", {
-            orderId,
-            customerId,
-            templateId,
-          })
-        )
-      );
-    } else {
-      return await Promise.all(
-        targetCustomerIds.flatMap((customerId) =>
-          selectedTemplates.map((templateId) =>
-            fetchRequest<EngagementWithDetails>("POST", "/api/engagements/", "createEngagement", {
+          fetchRequest<EngagementWithDetails | undefined>(
+            "POST",
+            "/api/engagements/",
+            "createEngagement",
+            {
+              orderId,
               customerId,
               templateId,
-            })
+            }
           )
         )
       );
+
+      return results.filter(Boolean) as EngagementWithDetails[];
+    } else {
+      const results = await Promise.all(
+        targetCustomerIds.flatMap((customerId) =>
+          selectedTemplates.map((templateId) =>
+            fetchRequest<EngagementWithDetails | undefined>(
+              "POST",
+              "/api/engagements/",
+              "createEngagement",
+              {
+                customerId,
+                templateId,
+              }
+            )
+          )
+        )
+      );
+
+      return results.filter(Boolean) as EngagementWithDetails[];
     }
   };
 
