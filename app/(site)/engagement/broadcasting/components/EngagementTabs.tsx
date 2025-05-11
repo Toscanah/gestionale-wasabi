@@ -155,7 +155,9 @@ export function OrderEngagementTabs({
 
       <TabsContent value="existing" className="space-y-2">
         {activeEngagements.length === 0 ? (
-          <p className="text-muted text-sm">Nessun marketing attivo</p>
+          <p className="text-muted-foreground w-full flex justify-center">
+            Nessun marketing attivo
+          </p>
         ) : (
           <Accordion type="multiple" className="w-full">
             {activeEngagements.map((engagement, index) => (
@@ -184,7 +186,10 @@ export function OrderEngagementTabs({
         />
         <Button
           className="w-full"
-          onClick={onCreateEngagement}
+          onClick={() => {
+            onCreateEngagement();
+            selectedTemplates.map(onSelectTemplate);
+          }}
           disabled={selectedTemplates.length === 0}
         >
           Vai
