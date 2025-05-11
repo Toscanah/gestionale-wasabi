@@ -68,38 +68,38 @@ export function OrderEngagementTabs({
     setActiveEngagements((prev) => prev.filter((e) => e.id !== engagementId));
 
     // Also remove it from the order context
-    // const updatedOrder = {
-    //   ...order,
-    //   engagements: order.engagements?.filter((e) => e.id !== engagementId),
-    //   home_order:
-    //     order.type === OrderType.HOME
-    //       ? {
-    //           ...(order as HomeOrder).home_order,
-    //           customer: {
-    //             ...(order as HomeOrder).home_order.customer,
-    //             engagements:
-    //               (order as HomeOrder).home_order.customer?.engagements.filter(
-    //                 (e) => e.id !== engagementId
-    //               ) ?? [],
-    //           },
-    //         }
-    //       : order.home_order,
-    //   pickup_order:
-    //     order.type === OrderType.PICKUP
-    //       ? {
-    //           ...(order as PickupOrder).pickup_order,
-    //           customer: {
-    //             ...(order as PickupOrder).pickup_order.customer,
-    //             engagements:
-    //               (order as PickupOrder).pickup_order.customer?.engagements.filter(
-    //                 (e) => e.id !== engagementId
-    //               ) ?? [],
-    //           },
-    //         }
-    //       : order.pickup_order,
-    // };
+    const updatedOrder = {
+      ...order,
+      engagements: order.engagements?.filter((e) => e.id !== engagementId),
+      home_order:
+        order.type === OrderType.HOME
+          ? {
+              ...(order as HomeOrder).home_order,
+              customer: {
+                ...(order as HomeOrder).home_order?.customer,
+                engagements:
+                  (order as HomeOrder).home_order?.customer?.engagements.filter(
+                    (e) => e.id !== engagementId
+                  ) ?? [],
+              },
+            }
+          : (order as HomeOrder).home_order,
+      pickup_order:
+        order.type === OrderType.PICKUP
+          ? {
+              ...(order as PickupOrder).pickup_order,
+              customer: {
+                ...(order as PickupOrder).pickup_order?.customer,
+                engagements:
+                  (order as PickupOrder).pickup_order?.customer?.engagements.filter(
+                    (e) => e.id !== engagementId
+                  ) ?? [],
+              },
+            }
+          : (order as PickupOrder).pickup_order,
+    };
 
-    // updateOrder(updatedOrder);
+    updateOrder(updatedOrder);
   };
 
   const handleTemplateDelete = (templateId: number) => {
@@ -184,6 +184,7 @@ export function OrderEngagementTabs({
           }
           onTemplateDelete={handleTemplateDelete}
         />
+
         <Button
           className="w-full"
           onClick={() => {
