@@ -16,6 +16,10 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
     lunch: { opening: "12:00", closing: "14:30" },
     dinner: { opening: "18:30", closing: "22:30" },
   },
+  riders: {
+    avgPerHour: 3,
+    count: 5,
+  },
 };
 
 export default function useSettings() {

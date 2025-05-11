@@ -45,6 +45,20 @@ export default function ApplicationSettings() {
         </div>
       </div>
 
+      <div className="flex gap-6">
+        <div className="space-y-2 w-full">
+          <Label htmlFor="riders-count">Numero riders</Label>
+          <Input
+            type="number"
+            id="riders-count"
+            value={settings.riders.count}
+            onChange={(count) =>
+              updateSettings("riders", { ...settings.riders, count: count.target.valueAsNumber })
+            }
+          />
+        </div>
+      </div>
+
       {/* <div className="flex gap-6">
         <div className="space-y-2 w-full">
           <Label htmlFor="">Primo ordine pranzo</Label>

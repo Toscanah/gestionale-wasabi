@@ -26,6 +26,10 @@ export type ApplicationSettings = {
   whenSelectorGap: number;
   selectedPrinter: Printer;
   kitchenOffset: number;
+  riders: {
+    count: number;
+    avgPerHour: number;
+  }
 };
 
 export type GlobalSettings = RestaurantSettings & ApplicationSettings;
