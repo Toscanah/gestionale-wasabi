@@ -34,6 +34,7 @@ export default async function addProductsToOrder({
             quantity: productInOrder.quantity,
             total: productInOrder.total,
             rice_quantity: productInOrder.product.rice * productInOrder.quantity,
+            additional_note: productInOrder.additional_note,
           },
           include: {
             ...productInOrderInclude,
