@@ -6,7 +6,7 @@ export default async function createEngagement({
   templateId,
   customerId,
   orderId,
-}: CreateEngagementParams): Promise<EngagementWithDetails | undefined> {
+}: CreateEngagementParams): Promise<EngagementWithDetails | null> {
   let finalOrderId = orderId;
 
   // If only customerId is provided, try to find their first active order
@@ -52,7 +52,7 @@ export default async function createEngagement({
   });
 
   if (existing) {
-    return;
+    return null;
   }
 
   const engagement = await prisma.engagement.create({

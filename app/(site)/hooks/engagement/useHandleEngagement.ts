@@ -54,7 +54,7 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
 
       const results = await Promise.all(
         selectedTemplates.map((templateId) =>
-          fetchRequest<EngagementWithDetails | undefined>(
+          fetchRequest<EngagementWithDetails | null>(
             "POST",
             "/api/engagements/",
             "createEngagement",
@@ -72,7 +72,7 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
       const results = await Promise.all(
         targetCustomerIds.flatMap((customerId) =>
           selectedTemplates.map((templateId) =>
-            fetchRequest<EngagementWithDetails | undefined>(
+            fetchRequest<EngagementWithDetails | null>(
               "POST",
               "/api/engagements/",
               "createEngagement",
