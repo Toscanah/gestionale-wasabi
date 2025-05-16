@@ -22,14 +22,16 @@ export type RestaurantSettings = {
   businessHours: BusinessHours;
 };
 
+export type Riders = {
+  count: number;
+  avgPerHour: number;
+};
+
 export type ApplicationSettings = {
   whenSelectorGap: number;
   selectedPrinter: Printer;
   kitchenOffset: number;
-  riders: {
-    count: number;
-    avgPerHour: number;
-  }
+  riders: Riders;
 };
 
 export type GlobalSettings = RestaurantSettings & ApplicationSettings;

@@ -6,7 +6,7 @@ import { toastSuccess } from "@/app/(site)/lib/util/toast";
 import { useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
-export default function Time() {
+export default function When() {
   const { order, updateOrder } = useOrderContext();
 
   const [orderTime, setOrderTime] = useState<string>(

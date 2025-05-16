@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { PayingAction } from "../OrderTable";
 import { OrderType, QuickPaymentOption } from "@prisma/client";
 import Discount from "./Discount";
-import Time from "./Time";
+import When from "./When";
 import OldOrders from "./OldOrders";
 import Rice from "./Rice";
 import Total from "./Total";
@@ -11,10 +11,10 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableChange from "./TableChange";
 import Notes from "./Notes";
 import QuickPaymentOptions from "./QuickPaymentOptions";
-import { HomeOrder } from "@shared"
-;
+import { HomeOrder } from "@shared";
 import ShiftSelection from "./ShiftSelection";
 import Engagement from "./Engagement";
+import ETA from "./ETA";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
@@ -42,15 +42,17 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
       <div className="flex gap-6 items-center">
         {order.type !== OrderType.TABLE && (
           <>
-            <Time />
+            <When />
             {/* <ShiftSelection /> */}
           </>
         )}
+
         <Engagement />
         <Discount />
       </div>
 
       {order.type == OrderType.TABLE && <TableChange />}
+      {order.type != OrderType.TABLE && <ETA />}
 
       <Rice />
       <Total />
