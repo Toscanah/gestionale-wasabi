@@ -9,6 +9,7 @@ import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import calculateETA from "@/app/(site)/lib/order-management/calculateETA";
 
 export default function ETA() {
+  return <></>
   const { order } = useOrderContext();
   const { settings } = useWasabiContext();
   const [etaText, setEtaText] = useState<string | null>(null);

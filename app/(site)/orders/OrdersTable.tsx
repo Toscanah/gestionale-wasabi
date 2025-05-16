@@ -3,35 +3,46 @@
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
 import { Cell } from "@tanstack/react-table";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import Order from "./single-order/Order";
 import getTable from "../lib/util/getTable";
 import Table from "../components/table/Table";
+import { cn } from "@/lib/utils";
 
-interface OrdersTableProps {
+export interface OrdersTableProps {
   data: AnyOrder[];
   type: OrderType;
+  overdrawnOrderIds: Set<number>;
 }
 
 interface CustomCellProps {
   cell: Cell<AnyOrder, unknown>;
   className: string;
 }
-export default function OrdersTable({ data, type }: OrdersTableProps) {
+
+export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTableProps) {
   const columns = getColumns(type);
   const table = getTable<any>({ data, columns });
 
-  const CustomCell = ({ cell, className }: CustomCellProps) => (
-    <Order cell={cell} className={className} />
-  );
+  const CustomCell = ({ cell, className }: CustomCellProps) => {
+    const orderId = cell.row.original.id;
+    const isOverdrawn = overdrawnOrderIds.has(orderId);
+
+    return <Order cell={cell} className={className} isOverdrawn={isOverdrawn} />;
+  };
 
   return (
     <div className="w-full h-full ">
       <Table
         table={table}
-        tableClassName="max-h-[100%] h-[100%] rounded-none "
-        rowClassName={"hover:cursor-pointer w-full h-16 max-h-16 text-xl "}
+        tableClassName="max-h-[100%] h-[100%] rounded-none"
+        rowClassName={(row) => {
+          const isOverdrawn = overdrawnOrderIds.has(row.original.id);
+          return cn(
+            "hover:cursor-pointer w-full h-16 max-h-16 text-xl",
+            isOverdrawn && "!border !border-2 !border-red-500"
+          );
+        }}
         cellClassName={(index) => (index == 3 && type == OrderType.HOME ? "max-w-42 truncate" : "")}
         CustomCell={CustomCell}
       />

@@ -2,13 +2,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
-import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@shared"
-;
+import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@shared";
 import TableColumn from "../components/table/TableColumn";
 import applyDiscount from "../lib/order-management/applyDiscount";
 import roundToTwo from "../lib/formatting-parsing/roundToTwo";
 import { useWasabiContext } from "../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
+import { OrdersTableProps } from "./OrdersTable";
 
 export default function getColumns(type: OrderType): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [

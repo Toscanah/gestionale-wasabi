@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Cell, flexRender, Table as TanstackTable } from "@tanstack/react-table";
+import { Cell, flexRender, Row, Table as TanstackTable } from "@tanstack/react-table";
 import { Fragment } from "react";
 
 interface CustomeCellProps<T> {
@@ -20,7 +20,7 @@ interface TableProps<T> {
   table: TanstackTable<T>;
   tableClassName?: string;
   headerClassName?: string;
-  rowClassName?: string;
+  rowClassName?: (row: Row<T>) => string;
   cellClassName?: (index: number) => string;
   forceRowClick?: boolean;
   CustomCell?: ({ cell, className }: CustomeCellProps<T>) => JSX.Element;
@@ -106,7 +106,7 @@ export default function Table<T>({
                     key={row.id}
                     className={cn(
                       "h-8 max-h-8 transition",
-                      rowClassName,
+                      rowClassName?.(row),
                       shouldStick && "sticky z-10 bottom-0 bg-muted-foreground/20"
                     )}
                     data-state={row.getIsSelected() && "selected"}

@@ -2,20 +2,22 @@ import { TableCell } from "@/components/ui/table";
 import { Cell, flexRender } from "@tanstack/react-table";
 import OrderTable from "./OrderTable";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import { FormEvent, useState } from "react";
 import { OrderProvider } from "../../context/OrderContext";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useWasabiContext } from "../../context/WasabiContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Warning } from "@phosphor-icons/react";
 
 interface OrderProps {
   cell: Cell<AnyOrder, unknown>;
   className: string;
+  isOverdrawn: boolean;
 }
 
-export default function Order({ cell, className }: OrderProps) {
+export default function Order({ cell, className, isOverdrawn }: OrderProps) {
   const { selectedOrders, toggleOrderSelection } = useWasabiContext();
   const [open, setOpen] = useState<boolean>(false);
 
@@ -30,7 +32,7 @@ export default function Order({ cell, className }: OrderProps) {
       double={cell.row.original.type !== "TABLE"}
       onOpenChange={setOpen}
       size="large"
-      contentClassName="h-[95vh] flex"
+      contentClassName={cn("h-[95vh] flex", isOverdrawn && "!border !border-2 !border-red-500")}
       trigger={
         <TableCell
           key={cell.id}
@@ -40,11 +42,25 @@ export default function Order({ cell, className }: OrderProps) {
           )}
         >
           {cell.column.getIndex() == 0 && (
-            <Checkbox
-              className="h-6 w-6"
-              onClick={handleCheckboxClick}
-              checked={selectedOrders.includes(cell.row.original.id)}
-            />
+            <div className="flex gap-4 items-center">
+              {isOverdrawn && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Warning size={24} color="red" className="animate-pulse"/>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      Per finalizzare questo ordine è necessario cucinare più riso
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              <Checkbox
+                className="h-6 w-6"
+                onClick={handleCheckboxClick}
+                checked={selectedOrders.includes(cell.row.original.id)}
+              />
+            </div>
           )}
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
         </TableCell>
