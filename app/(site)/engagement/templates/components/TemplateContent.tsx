@@ -103,9 +103,7 @@ export default function TemplateContent(props: TemplateContentProps) {
       >
         <AccordionTrigger className="flex w-full">
           {isCreate ? (
-            <div className="w-full flex justify-start">
-              Crea nuovo modello ({getTemplateName(type)})
-            </div>
+            <div className="w-full flex justify-start">Crea nuovo modello</div>
           ) : (
             <div className="w-full flex justify-start">
               #{props.index + 1} - {template.label ?? "Nessuna etichetta"} ({getTemplateName(type)})

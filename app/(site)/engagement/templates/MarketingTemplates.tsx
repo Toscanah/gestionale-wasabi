@@ -95,7 +95,7 @@ export default function MarketingTemplates({
                 updateTemplate(updatedTemplate);
               }}
               onDelete={async (templateId) => {
-                await handleTemplateDelete(templateId);
+                handleTemplateDelete(templateId);
                 onTemplateDelete?.(templateId);
               }}
             />

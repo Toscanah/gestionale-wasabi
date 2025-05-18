@@ -14,6 +14,7 @@ import MarketingTemplates from "../../templates/MarketingTemplates";
 import { Button } from "@/components/ui/button";
 import { patchOrderEngagements } from "../../../lib/order-management/patchOrderEngagements";
 import TemplateContent from "../../templates/components/TemplateContent";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type OrderEngagementTabsProps = {
   order: AnyOrder;
@@ -83,7 +84,7 @@ export function OrderEngagementTabs({
     <Tabs defaultValue="existing" className="space-y-4">
       <TabsList className="w-full flex justify-start space-x-2">
         <TabsTrigger value="existing" className="w-full">
-          Marketing attivo
+          Marketing disponibile
         </TabsTrigger>
         <TabsTrigger value="select" className="w-full">
           Modelli
@@ -96,16 +97,22 @@ export function OrderEngagementTabs({
             Nessun marketing attivo
           </p>
         ) : (
-          <Accordion type="multiple" className="w-full">
+          <Accordion type="multiple" className="flex gap-4 w-full items-center">
             {activeEngagements.map((engagement, index) => (
-              <TemplateContent
-                key={engagement.id} // ✅ added key
-                mode="view"
-                onDelete={async () => handleEngagementDelete(engagement.id)}
-                index={index}
-                template={engagement.template as ParsedEngagementTemplate}
-                disabled={true}
-              />
+              <>
+                {/* <Checkbox
+                  checked={isSelected}
+                  onCheckedChange={() => handleCheckboxChange(template.id)}
+                /> */}
+                <TemplateContent
+                  key={engagement.id} // ✅ added key
+                  mode="view"
+                  onDelete={async () => handleEngagementDelete(engagement.id)}
+                  index={index}
+                  template={engagement.template as ParsedEngagementTemplate}
+                  disabled={true}
+                />
+              </>
             ))}
           </Accordion>
         )}

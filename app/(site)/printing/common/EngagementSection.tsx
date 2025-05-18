@@ -9,6 +9,7 @@ import {
 } from "../../shared";
 import { Br, Image, Line, QRCode, Text } from "react-thermal-printer";
 import { Fragment } from "react";
+import wrapTextCentered from "../../lib/formatting-parsing/printing/wrapTextCentered";
 
 interface EngagementSectionProps {
   activeEngagements: EngagementWithDetails[];
@@ -18,49 +19,56 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
   const smallSize = getReceiptSize(1, 1);
   const bigSize = getReceiptSize(2, 2);
 
+  // Max character width per font size (based on font specs)
+  const maxSmallChars = 48;
+  const maxBigChars = 24;
+
   return (
     <>
-      {/* <Line /> */}
-      {activeEngagements.map((engagement, index) => (
-        <Fragment key={index}>
-          {(engagement.template.payload as CommonPayload).textAbove && (
-            <>
-              <Text align="center" size={smallSize} bold>
-                {(engagement.template.payload as CommonPayload).textAbove}
-              </Text>
-              <Br />
-            </>
-          )}
+      {activeEngagements.map((engagement, index) => {
+        const payload = engagement.template.payload as CommonPayload;
+        const messagePayload = engagement.template.payload as MessagePayload;
 
-          {engagement.template.type === EngagementType.MESSAGE ? (
-            <Text align="center" size={bigSize} bold>
-              {(engagement.template.payload as MessagePayload).message}
-            </Text>
-          ) : engagement.template.type === EngagementType.QR_CODE ? (
-            <QRCode
-              align="center"
-              content={(engagement.template.payload as QrPayload).url}
-              cellSize={6}
-            />
-          ) : (
-            <Image
-              align="center"
-              src={(engagement.template.payload as ImagePayload).imageUrl}
-            />
-          )}
+        return (
+          <Fragment key={index}>
+            {payload.textAbove &&
+              wrapTextCentered(payload.textAbove, maxSmallChars).map((line, i) => (
+                <Text key={`above-${i}`} align="left" size={smallSize} bold>
+                  {line}
+                </Text>
+              ))}
 
-          <Br />
+            {payload.textAbove && <Br />}
 
-          {(engagement.template.payload as CommonPayload).textBelow && (
-            <>
-              <Text align="center" size={smallSize} bold>
-                {(engagement.template.payload as CommonPayload).textBelow}
-              </Text>
-              <Br />
-            </>
-          )}
-        </Fragment>
-      ))}
+            {engagement.template.type === EngagementType.MESSAGE ? (
+              wrapTextCentered(messagePayload.message, maxBigChars).map((line, i) => (
+                <Text key={`msg-${i}`} align="left" size={bigSize} bold>
+                  {line}
+                </Text>
+              ))
+            ) : engagement.template.type === EngagementType.QR_CODE ? (
+              <QRCode
+                align="center"
+                content={(engagement.template.payload as QrPayload).url}
+                cellSize={6}
+              />
+            ) : (
+              <Image align="center" src={(engagement.template.payload as ImagePayload).imageUrl} />
+            )}
+
+            <Br />
+
+            {payload.textBelow &&
+              wrapTextCentered(payload.textBelow, maxSmallChars).map((line, i) => (
+                <Text key={`below-${i}`} align="left" size={smallSize} bold>
+                  {line}
+                </Text>
+              ))}
+
+            {payload.textBelow && <Br />}
+          </Fragment>
+        );
+      })}
     </>
   );
 }
