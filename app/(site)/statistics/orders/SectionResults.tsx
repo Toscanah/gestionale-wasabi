@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
-import logo from "../../../../public/logo.png"; // Update with your actual image path
 import formatRice from "../../lib/formatting-parsing/formatRice";
 
 interface SectionResultsProps {
@@ -53,7 +52,7 @@ export default function SectionResults({
 
       {isLoading ? (
         <div className="w-full h-full flex items-center justify-center py-8">
-          <Image src={logo} alt="logo" width={200} height={200} className="animate-spin" />
+          <Image src={"/logo.png"} alt="logo" width={200} height={200} className="animate-spin" />
         </div>
       ) : (
         <table className="w-[20rem] text-lg">
