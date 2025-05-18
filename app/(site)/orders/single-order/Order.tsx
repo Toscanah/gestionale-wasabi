@@ -47,7 +47,7 @@ export default function Order({ cell, className, isOverdrawn }: OrderProps) {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Warning size={24} color="red" className="animate-pulse"/>
+                      <Warning size={24} color="red" className="animate-pulse" />
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
                       Per finalizzare questo ordine è necessario cucinare più riso

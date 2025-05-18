@@ -2,8 +2,7 @@ import { useRef, useState, useEffect, Dispatch, SetStateAction, ReactNode } from
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AnyOrder, TableOrder } from "@shared"
-;
+import { AnyOrder, TableOrder } from "@shared";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import fetchRequest from "../../../lib/api/fetchRequest";
 import { toastError, toastSuccess } from "../../../lib/util/toast";

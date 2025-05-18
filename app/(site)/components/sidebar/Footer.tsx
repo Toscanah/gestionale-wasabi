@@ -6,6 +6,7 @@ import fetchRequest from "../../lib/api/fetchRequest";
 import DialogWrapper from "../ui/dialog/DialogWrapper";
 
 export default function Footer() {
+  return <></>;
   return (
     <SidebarFooter>
       <SidebarMenu className="p-2">

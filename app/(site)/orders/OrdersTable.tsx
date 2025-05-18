@@ -40,7 +40,7 @@ export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTab
           const isOverdrawn = overdrawnOrderIds.has(row.original.id);
           return cn(
             "hover:cursor-pointer w-full h-16 max-h-16 text-xl",
-            isOverdrawn && "!border !border-2 !border-red-500"
+            // isOverdrawn && "!border !border-2 !border-red-500"
           );
         }}
         cellClassName={(index) => (index == 3 && type == OrderType.HOME ? "max-w-42 truncate" : "")}
