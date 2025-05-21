@@ -12,10 +12,13 @@ export default function getOverdrawnOrderIds(orders: AnyOrder[], totalRice: numb
   );
 
   for (const order of sortedOrders) {
-    riceLeft -= order.products.reduce((sum, pin) => sum + pin.product.rice * pin.quantity, 0);
-    if (riceLeft < 0) {
-      redIds.add(order.id); // make sure `id` is actually a number
+    const riceNeeded = order.products.reduce((sum, pin) => sum + (pin.rice_quantity ?? 0), 0);
+
+    if (riceLeft - riceNeeded < 0) {
+      redIds.add(order.id);
     }
+
+    riceLeft -= riceNeeded;
   }
 
   return redIds;

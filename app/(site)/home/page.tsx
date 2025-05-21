@@ -13,10 +13,10 @@ export type BuildOrderState<TTable, THome, TPickup> = {
   [OrderType.PICKUP]: TPickup;
 };
 
-type UpdateStateAction = "update" | "delete" | "add";
+type Orders = BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>;
 
 export default function HomeWrapper() {
-  const [orders, setOrders] = useState<BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>>({
+  const [orders, setOrders] = useState<Orders>({
     [OrderType.TABLE]: [],
     [OrderType.HOME]: [],
     [OrderType.PICKUP]: [],
