@@ -23,7 +23,7 @@ export default async function updateProductInOrder({
   return await prisma.$transaction(async (tx) => {
     const currentOrder = await tx.order.findUnique({
       where: { id: orderId },
-      select: { id: true, total: true, type: true },
+      select: { id: true, type: true },
     });
 
     if (!currentOrder) {

@@ -8,7 +8,7 @@ export default async function handleProductDeletion({
   productInOrder,
 }: {
   tx: Prisma.TransactionClient;
-  currentOrder: { id: number; total: number };
+  currentOrder: { id: number };
   productInOrder: ProductInOrder;
 }) {
   if (productInOrder.paid_quantity === 0) {
@@ -24,7 +24,6 @@ export default async function handleProductDeletion({
     await tx.order.update({
       where: { id: currentOrder.id },
       data: {
-        total: { decrement: productInOrder.total },
         is_receipt_printed: false,
       },
     });
@@ -45,7 +44,6 @@ export default async function handleProductDeletion({
   await tx.order.update({
     where: { id: currentOrder.id },
     data: {
-      total: { decrement: productInOrder.total },
       is_receipt_printed: false,
     },
   });

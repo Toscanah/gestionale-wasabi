@@ -1,9 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { AnyOrder, TableOrder } from "@shared"
-;
+import { AnyOrder, TableOrder } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { useWasabiContext } from "../context/WasabiContext";
 import generateDummyProduct from "../lib/product-management/generateDummyProduct";
 import { toastError, toastSuccess } from "../lib/util/toast";
@@ -67,7 +65,7 @@ export function useOrderManager(
       products,
       isReceiptPrinted,
     }).then((newSubOrder) => {
-      const { updatedProducts, updatedTotal } = scaleProducts({
+      const { updatedProducts } = scaleProducts({
         originalProducts: parentOrder.products,
         productsToScale: products,
         orderType: parentOrder.type,
@@ -77,7 +75,6 @@ export function useOrderManager(
 
       updateOrder({
         products: updatedProducts,
-        total: updatedTotal,
         is_receipt_printed: false,
       });
     });

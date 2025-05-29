@@ -1,19 +1,14 @@
 import { ProductWithStats, OptionStats } from "../../shared/types/ProductWithStats";
 import prisma from "../db";
-import { pickupOrderInclude, categoryInclude, homeOrderInclude, optionsInclude } from "../includes";
-import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
+import { categoryInclude, optionsInclude } from "../includes";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
 import { orderMatchesShift } from "../../lib/order-management/shift/orderMatchesShift";
+import { GetProductsWithStatsInput } from "../../shared";
+import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
 
 export default async function getProductsWithStats({
   filters,
-}: {
-  filters: {
-    time: { timeScope: TimeScopeFilter; from?: Date; to?: Date };
-    shift: ShiftFilter;
-    categoryId?: number;
-  };
-}): Promise<ProductWithStats[]> {
+}: GetProductsWithStatsInput): Promise<ProductWithStats[]> {
   const { time, shift, categoryId } = filters;
   const { timeScope, from, to } = time;
 
@@ -71,7 +66,7 @@ export default async function getProductsWithStats({
         const withinDate =
           !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
 
-        return withinDate && orderMatchesShift(order, shift);
+        return withinDate && orderMatchesShift(order, shift as ShiftFilter);
       });
 
       if (filteredOrders.length > 0) {

@@ -1,8 +1,6 @@
-import { AnyOrder, ProductInOrder } from "@shared"
-; // Replace with your actual types// Adjust as needed
+import { ProductInOrder } from "@shared";
 import { getProductPrice } from "./getProductPrice";
 import { OrderType } from "@prisma/client";
-import calculateOrderTotal from "../order-management/calculateOrderTotal";
 
 type ScaleProductsParams = {
   originalProducts: ProductInOrder[];
@@ -14,7 +12,7 @@ export default function scaleProducts({
   originalProducts,
   productsToScale,
   orderType,
-}: ScaleProductsParams): { updatedProducts: ProductInOrder[]; updatedTotal: number } {
+}: ScaleProductsParams): { updatedProducts: ProductInOrder[] } {
   const updatedProducts = originalProducts
     .map((product) => {
       const productToScale = productsToScale.find((p) => p.id === product.id);
@@ -44,7 +42,5 @@ export default function scaleProducts({
     })
     .filter(Boolean) as ProductInOrder[];
 
-  const updatedTotal = calculateOrderTotal({ products: updatedProducts, type: orderType });
-
-  return { updatedProducts, updatedTotal };
+  return { updatedProducts };
 }

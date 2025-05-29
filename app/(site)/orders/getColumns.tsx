@@ -4,11 +4,12 @@ import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@shared";
 import TableColumn from "../components/table/TableColumn";
-import applyDiscount from "../lib/order-management/applyDiscount";
+import getDiscountedTotal from "../lib/order-management/getDiscountedTotal";
 import roundToTwo from "../lib/formatting-parsing/roundToTwo";
 import { useWasabiContext } from "../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OrdersTableProps } from "./OrdersTable";
+import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 
 export default function getColumns(type: OrderType): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
@@ -125,7 +126,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     TableColumn<AnyOrder>({
       header: "Totale",
       cellContent: (row) =>
-        `€ ${roundToTwo(applyDiscount(row.original.total, row.original.discount))}`,
+        `€ ${getOrderTotal({ order: row.original, applyDiscount: true, round: true })}`,
     })
   );
 

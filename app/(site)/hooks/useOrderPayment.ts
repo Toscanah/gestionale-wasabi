@@ -1,11 +1,12 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import applyDiscount from "../lib/order-management/applyDiscount";
+import getDiscountedTotal from "../lib/order-management/getDiscountedTotal";
 import { AnyOrder } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
 import { PaymentType } from "@prisma/client";
 import { Payment } from "../context/OrderPaymentContext";
 import { useOrderContext } from "../context/OrderContext";
 import scaleProducts from "../lib/product-management/scaleProducts";
+import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 
 export default function useOrderPayment(
   isPaying: boolean,
@@ -27,7 +28,7 @@ export default function useOrderPayment(
     setPayment((prevPayment) => ({
       ...prevPayment,
       paidAmount: totalPaid,
-      remainingAmount: (applyDiscount(order.total, order.discount) ?? 0) - totalPaid,
+      remainingAmount: getOrderTotal({ order, applyDiscount: true }) - totalPaid,
     }));
   }, [payment.paymentAmounts]);
 
@@ -52,7 +53,7 @@ export default function useOrderPayment(
         [PaymentType.CREDIT]: undefined,
       },
       paidAmount: 0,
-      remainingAmount: applyDiscount(order.total, order.discount) ?? 0,
+      remainingAmount: getOrderTotal({ order, applyDiscount: true }),
     });
 
   const payOrder = () => {
@@ -81,7 +82,7 @@ export default function useOrderPayment(
           return;
         }
 
-        const { updatedProducts, updatedTotal } = scaleProducts({
+        const { updatedProducts } = scaleProducts({
           originalProducts: originalOrder.products,
           productsToScale: productsToPay,
           orderType: originalOrder.type,
@@ -90,7 +91,6 @@ export default function useOrderPayment(
         updateOrder({
           state: updatedOrder.state,
           products: updatedProducts,
-          total: updatedTotal,
         });
       })
       .finally(() => setIsPaying(false));

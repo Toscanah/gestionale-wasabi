@@ -8,7 +8,6 @@ import {
   pickupOrderInclude,
   productInOrderInclude,
 } from "../includes";
-import calculateOrderTotal from "../../lib/order-management/calculateOrderTotal";
 
 export default async function getOrdersByType({ type }: { type: OrderType }): Promise<AnyOrder[]> {
   const orders = await prisma.order.findMany({
@@ -46,12 +45,9 @@ export default async function getOrdersByType({ type }: { type: OrderType }): Pr
         getProductPrice(product, order.type as OrderType),
     }));
 
-    const unpaidOrderTotal = calculateOrderTotal({ products: unpaidProducts, type: order.type });
-
     return {
       ...order,
       products: unpaidProducts,
-      total: unpaidOrderTotal,
     };
   });
 

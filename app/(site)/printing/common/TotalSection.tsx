@@ -1,10 +1,11 @@
 import { Br, Text } from "react-thermal-printer";
 import { ProductInOrder } from "@shared";
-import applyDiscount from "../../lib/order-management/applyDiscount";
+import getDiscountedTotal from "../../lib/order-management/getDiscountedTotal";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import { OrderType } from "@prisma/client";
 import { getProductPrice } from "../../lib/product-management/getProductPrice";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 export default function TotalSection(
   products: ProductInOrder[],
@@ -19,15 +20,11 @@ export default function TotalSection(
       <Br />
 
       <Text size={bigSize} align="center" bold={bold}>
-        {`TOTALE: ${roundToTwo(
-          applyDiscount(
-            products.reduce(
-              (acc, product) => acc + getProductPrice(product, orderType) * product.quantity,
-              0
-            ),
-            discount
-          )
-        )} €`}
+        {`TOTALE: ${getOrderTotal({
+          order: { products, discount, type: orderType },
+          applyDiscount: true,
+          round: true,
+        })} €`}
       </Text>
     </>
   );

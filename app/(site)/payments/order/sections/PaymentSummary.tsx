@@ -3,11 +3,12 @@ import getPaymentName from "../../../lib/order-management/getPaymentName";
 import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import { PaymentType } from "@prisma/client";
-import applyDiscount from "@/app/(site)/lib/order-management/applyDiscount";
+import getDiscountedTotal from "@/app/(site)/lib/order-management/getDiscountedTotal";
+import { getOrderTotal } from "@/app/(site)/lib/order-management/getOrderTotal";
 
 export default function PaymentSummary() {
   const { payment, order } = useOrderPaymentContext();
-  const totalToPay = applyDiscount(order.total, order.discount);
+  const totalToPay = getOrderTotal({ order, applyDiscount: true });
 
   const paidPayments = Object.values(PaymentType).filter((type) => {
     const amount = payment.paymentAmounts[type];

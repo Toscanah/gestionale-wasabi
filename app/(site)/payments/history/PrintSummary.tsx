@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { PaymentType, OrderType } from "@prisma/client";
-import { OrderWithPayments } from "@shared"
-;
+import { OrderWithPayments } from "@shared";
 import print from "../../printing/print";
 import PaymentSummaryReceipt from "../../printing/receipts/PaymentSummaryReceipt";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 type PaymentTotals = {
   [key in PaymentType]: { label: string; total: number };
@@ -79,18 +79,20 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
         totalAmount += payment.amount;
       });
 
+      const orderTotal = getOrderTotal({ order });
+
       if (order.type === OrderType.TABLE) {
-        inPlaceAmount += order.total;
-        tableOrdersAmount += order.total;
+        inPlaceAmount += orderTotal;
+        tableOrdersAmount += orderTotal;
         customersCount += order.table_order?.people || 1;
         tableOrdersCount++;
       } else if (order.type === OrderType.HOME) {
-        takeawayAmount += order.total;
-        homeOrdersAmount += order.total;
+        takeawayAmount += orderTotal;
+        homeOrdersAmount += orderTotal;
         homeOrdersCount++;
       } else if (order.type === OrderType.PICKUP) {
-        takeawayAmount += order.total;
-        pickupOrdersAmount += order.total;
+        takeawayAmount += orderTotal;
+        pickupOrdersAmount += orderTotal;
         pickupOrdersCount++;
       }
     });

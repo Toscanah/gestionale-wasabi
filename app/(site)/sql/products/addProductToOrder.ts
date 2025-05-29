@@ -41,7 +41,6 @@ export default async function addProductToOrder({
       tx.order.update({
         where: { id: order.id },
         data: {
-          total: { increment: productTotalPrice },
           is_receipt_printed: false,
         },
       }),

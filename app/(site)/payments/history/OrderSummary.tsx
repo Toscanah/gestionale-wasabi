@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Badge } from "@/components/ui/badge";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import { OrderType } from "@prisma/client";
-import { OrderWithPayments } from "@shared"
-;
+import { OrderWithPayments } from "@shared";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 interface OrderSummaryProps {
   order: OrderWithPayments;
@@ -28,7 +27,7 @@ export default function OrderSummary({ order }: OrderSummaryProps) {
               : "Asporto"}
           </Badge>
           Ordine del {new Date(order.created_at).toLocaleDateString("it-IT")} - €{" "}
-          {roundToTwo(order.total)}
+          {getOrderTotal({ order, round: true })}
         </div>
       }
     >

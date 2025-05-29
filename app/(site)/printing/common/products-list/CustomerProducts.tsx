@@ -1,6 +1,5 @@
-import { ProductInOrder } from "@shared"
-;
-import applyDiscount from "@/app/(site)/lib/order-management/applyDiscount";
+import { ProductInOrder } from "@shared";
+import getDiscountedTotal from "@/app/(site)/lib/order-management/getDiscountedTotal";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import padReceiptText from "@/app/(site)/lib/formatting-parsing/printing/padReceiptText";
 import { Br, Row, Text } from "react-thermal-printer";
@@ -80,7 +79,7 @@ const OPTIONS_START_PADDING = 4;
 
 const calculateDiscountAmount = (products: ProductInOrder[], discount: number) => {
   const total = products.reduce((acc, product) => acc + product.total, 0);
-  return total - applyDiscount(total, discount);
+  return total - getDiscountedTotal({ orderTotal: total, discountPercentage: discount });
 };
 
 interface CustomerProductsProps {
@@ -121,13 +120,13 @@ export default function CustomerProducts({
 
         <Text inline>
           {padReceiptText(
-            roundToTwo(getProductPrice(product, orderType)),
+            String(roundToTwo(getProductPrice(product, orderType))),
             MAX_PRICE_WIDTH,
             PRICE_PADDING
           )}
         </Text>
 
-        <Text>{padReceiptText(roundToTwo(product.total), MAX_TOTAL_WIDTH, 0)}</Text>
+        <Text>{padReceiptText(String(roundToTwo(product.total)), MAX_TOTAL_WIDTH, 0)}</Text>
 
         {product.additional_note && (
           <Text>{" ".repeat(4) + sanitazeReceiptText(product.additional_note)}</Text>

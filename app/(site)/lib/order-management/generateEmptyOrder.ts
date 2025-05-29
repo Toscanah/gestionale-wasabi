@@ -9,7 +9,6 @@ export default function generateEmptyOrder(orderType: OrderType): AnyOrder {
     is_receipt_printed: false,
     state: "ACTIVE",
     suborder_of: null,
-    total: 0,
     id: -1,
     rices: 0,
     salads: 0,

@@ -35,7 +35,6 @@ export default async function createTableOrder({
   const newOrder = await prisma.order.create({
     data: {
       type: OrderType.TABLE,
-      total: 0,
       table_order: {
         create: {
           table: table,

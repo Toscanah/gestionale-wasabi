@@ -27,7 +27,6 @@ export default async function createHomeOrder({
     const order = await tx.order.create({
       data: {
         type: OrderType.HOME,
-        total: 0,
         engagements: {
           connect: pendingEngagements.map((e) => ({ id: e.id })),
         },

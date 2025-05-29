@@ -2,6 +2,7 @@ import { Order } from "@prisma/client";
 import { CustomerWithStats } from "../../shared/types/CustomerWithStats";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import getCustomersWithDetails from "./getCustomersWithDetails";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 const calculateAverageOrders = (allOrders: Order[]) => {
   if (allOrders.length === 0) {
@@ -61,7 +62,7 @@ export default async function getCustomersWithStats({
       });
     }
 
-    const totalSpending = allOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+    const totalSpending = allOrders.reduce((sum, order) => sum + getOrderTotal({ order }), 0);
 
     const lastOrderDate =
       allOrders.length > 0
@@ -88,13 +89,13 @@ export default async function getCustomersWithStats({
 
     return {
       ...customer,
-      totalSpending: Number(roundToTwo(totalSpending)),
+      totalSpending: roundToTwo(totalSpending),
       lastOrder: lastOrderDate,
       firstOrder: firstOrderDate,
-      averageSpending: Number(roundToTwo(averageSpending)),
-      averageOrdersWeek: Number(roundToTwo(averageOrdersWeek)),
-      averageOrdersMonth: Number(roundToTwo(averageOrdersMonth)),
-      averageOrdersYear: Number(roundToTwo(averageOrdersYear)),
+      averageSpending: roundToTwo(averageSpending),
+      averageOrdersWeek: roundToTwo(averageOrdersWeek),
+      averageOrdersMonth: roundToTwo(averageOrdersMonth),
+      averageOrdersYear: roundToTwo(averageOrdersYear),
     };
   });
 

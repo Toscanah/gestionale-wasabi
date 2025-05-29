@@ -5,10 +5,10 @@ import { ProductInOrder } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
 import { toastError, toastSuccess } from "../lib/util/toast";
 import { Table } from "@tanstack/react-table";
-import calculateOrderTotal from "../lib/order-management/calculateOrderTotal";
 import { RecursivePartial } from "./useOrderManager";
 import { getProductPrice } from "../lib/product-management/getProductPrice";
 import { UpdateProductInOrderResponse } from "../sql/products/product-in-order/updateProductInOrder";
+import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 
 export function useProductManager(
   order: AnyOrder,
@@ -190,7 +190,8 @@ export function useProductManager(
         (product) =>
           !deletedProducts.some((deleted) => deleted.id === product.id) &&
           !["DELETED_COOKED", "DELETED_UNCOOKED"].includes(product.state)
-      ).filter((product) => product.id !== -1)
+      )
+      .filter((product) => product.id !== -1)
       .map((product) => {
         const update = updatedProducts.find((p) => p.id === product.id);
         return update ? { ...product, ...update } : product;
@@ -198,14 +199,8 @@ export function useProductManager(
 
     const finalProducts = [...updatedProductsList, ...newProducts, generateDummyProduct()];
 
-    const total = calculateOrderTotal({
-      ...order,
-      products: finalProducts,
-    });
-
     updateOrder({
       products: finalProducts,
-      total,
       is_receipt_printed: updateFlag ? false : undefined,
     });
 

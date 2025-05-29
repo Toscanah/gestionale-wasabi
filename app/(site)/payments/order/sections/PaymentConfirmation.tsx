@@ -1,7 +1,9 @@
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
-import applyDiscount from "@/app/(site)/lib/order-management/applyDiscount";
+import getDiscountedTotal from "@/app/(site)/lib/order-management/getDiscountedTotal";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { Button } from "@/components/ui/button";
+import getOrderById from "@/app/(site)/sql/orders/getOrderById";
+import { getOrderTotal } from "@/app/(site)/lib/order-management/getOrderTotal";
 
 export default function PaymentConfirmation() {
   const { payOrder, resetPayment, order, isPaying } = useOrderPaymentContext();
@@ -11,7 +13,7 @@ export default function PaymentConfirmation() {
       <h1>
         <span>
           Vuoi procedere con l'incasso di{" "}
-          <b>€ {roundToTwo(applyDiscount(order.total, order.discount))}</b>?
+          <b>€ {getOrderTotal({ order, applyDiscount: true, round: true })}</b>?
         </span>
       </h1>
       <div className="w-full flex gap-6 items-center justify-center">

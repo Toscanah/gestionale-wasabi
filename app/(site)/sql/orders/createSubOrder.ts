@@ -114,13 +114,6 @@ export default async function createSubOrder({
     where: { order_id: parentOrder.id, state: { not: "DELETED_COOKED" } },
   });
 
-  const updatedTotal = remainingProducts.reduce((sum, product) => sum + product.total, 0);
-
-  await prisma.order.update({
-    where: { id: parentOrder.id },
-    data: { total: updatedTotal },
-  });
-
   await addProductsToOrder({ targetOrderId: newSubOrder.id, products });
 
   await prisma.order.update({
@@ -140,7 +133,6 @@ export default async function createSubOrder({
     //   used_at: new Date(),
     //   state: EngagementState.APPLIED,
     // }));
-
     // await prisma.engagement.createMany({
     //   data: copiedEngagements,
     // });

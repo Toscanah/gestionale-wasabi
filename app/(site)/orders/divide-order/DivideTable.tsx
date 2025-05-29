@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/button";
 import Table from "../../components/table/Table";
 import getTable from "../../lib/util/getTable";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
-import calculateOrderTotal from "../../lib/order-management/calculateOrderTotal";
-import generateEmptyOrder from "../../lib/order-management/generateEmptyOrder";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 interface DivideTableProps {
   products: ProductInOrder[];
@@ -44,7 +42,7 @@ export default function DivideTable({
           INCASSA 收钱
         </Button>
         <span className="h-14 text-xl flex items-center justify-center border rounded-md w-[30%]">
-          TOTALE: € {roundToTwo(calculateOrderTotal({ type: orderType, products }))}
+          TOTALE: € {getOrderTotal({ order: { type: orderType, products }, round: true })}
         </span>
       </div>
     </div>

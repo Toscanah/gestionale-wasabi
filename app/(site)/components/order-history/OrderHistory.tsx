@@ -9,11 +9,12 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductInOrder } from "@shared";
-import applyDiscount from "../../lib/order-management/applyDiscount";
+import getDiscountedTotal from "../../lib/order-management/getDiscountedTotal";
 import HistoryStats from "./HistoryStats";
 import OrderDetail from "./OrderDetail";
 import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
 import filterDeletedProducts from "../../lib/product-management/filterDeletedProducts";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 type ProductStats = {
   desc: string;
@@ -40,13 +41,13 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
       {
         type: "Domicilio",
         orders: customer.home_orders.filter(
-          (order) => order.order.total > 0 && order.order.state === "PAID"
+          (order) => getOrderTotal({ order: order.order }) > 0 && order.order.state === "PAID"
         ),
       },
       {
         type: "Asporto",
         orders: customer.pickup_orders.filter(
-          (order) => order.order.total > 0 && order.order.state === "PAID"
+          (order) => getOrderTotal({ order: order.order }) > 0 && order.order.state === "PAID"
         ),
       },
     ],
@@ -63,7 +64,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
   const allOrders = useMemo(
     () =>
       [...customer.home_orders, ...customer.pickup_orders].filter(
-        (order) => order.order.total > 0 && order.order.state === "PAID"
+        (order) => getOrderTotal({ order: order.order }) > 0 && order.order.state === "PAID"
       ),
     [customer.home_orders, customer.pickup_orders]
   );
@@ -95,7 +96,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
     const leastBoughtProduct = sortedProducts[sortedProducts.length - 1];
 
     const totalSpent = allOrders.reduce(
-      (sum, order) => sum + applyDiscount(order.order.total, order.order.discount),
+      (sum, order) => sum + getOrderTotal({ order: order.order, applyDiscount: true }),
       0
     );
     const avgOrderCost = totalSpent / allOrders.length;
@@ -170,7 +171,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
                     <span className="flex items-center gap-2">
                       <Badge className="text-base">{type}</Badge>
                       {formatDateWithDay(order.created_at)} -{" "}
-                      {"€ " + applyDiscount(order.total, order.discount)}
+                      {"€ " + getOrderTotal({ order, applyDiscount: true })}
                       {order.discount !== 0 ? <> (sconto {order.discount}%)</> : <></>}
                     </span>
                   </div>

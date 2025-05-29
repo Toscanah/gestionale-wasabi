@@ -11,13 +11,12 @@ export default async function handleQuantityChange({
   productInOrder,
 }: {
   tx: Prisma.TransactionClient;
-  currentOrder: { id: number; total: number; type: OrderType };
+  currentOrder: { id: number; type: OrderType };
   newQuantity: number;
   productInOrder: ProductInOrder;
 }) {
   newQuantity = Number(newQuantity);
   const quantityDifference = newQuantity - productInOrder.quantity;
-  const totalDifference = quantityDifference * getProductPrice(productInOrder, currentOrder.type);
 
   if (newQuantity === 0) {
     return await handleProductDeletion({ tx, currentOrder, productInOrder });
@@ -27,7 +26,6 @@ export default async function handleQuantityChange({
     where: { id: productInOrder.id },
     data: {
       quantity: newQuantity,
-      total: { increment: totalDifference },
       rice_quantity: { increment: quantityDifference * productInOrder.product.rice },
       printed_amount: {
         increment:
@@ -40,7 +38,6 @@ export default async function handleQuantityChange({
   await tx.order.update({
     where: { id: currentOrder.id },
     data: {
-      total: { increment: totalDifference },
       is_receipt_printed: false,
     },
   });

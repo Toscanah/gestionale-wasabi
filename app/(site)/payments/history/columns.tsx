@@ -3,7 +3,7 @@ import TableColumn from "../../components/table/TableColumn";
 import { AnyOrder, HomeOrder, OrderWithPayments } from "@shared";
 import { Badge } from "@/components/ui/badge";
 import { OrderType, QuickPaymentOption } from "@prisma/client";
-import applyDiscount from "../../lib/order-management/applyDiscount";
+import getDiscountedTotal from "../../lib/order-management/getDiscountedTotal";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import OrderSummary from "./OrderSummary";
@@ -11,6 +11,7 @@ import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import fetchRequest from "../../lib/api/fetchRequest";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({
@@ -89,7 +90,7 @@ const columns: ColumnDef<OrderWithPayments>[] = [
 
   TableColumn({
     header: "Totale ordine",
-    cellContent: (row) => roundToTwo(applyDiscount(row.original.total, row.original.discount)),
+    cellContent: (row) => getOrderTotal({ order: row.original, applyDiscount: true, round: true }),
   }),
 
   TableColumn({

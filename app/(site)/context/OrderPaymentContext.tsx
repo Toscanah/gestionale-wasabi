@@ -3,8 +3,9 @@ import { PaymentType } from "@prisma/client";
 import { AnyOrder } from "@shared";
 import useOrderPayment from "../hooks/useOrderPayment";
 import roundToTwo from "../lib/formatting-parsing/roundToTwo";
-import applyDiscount from "../lib/order-management/applyDiscount";
+import getDiscountedTotal from "../lib/order-management/getDiscountedTotal";
 import { useOrderContext } from "./OrderContext";
+import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 
 interface OrderPaymentContextProps {
   payment: Payment;
@@ -59,6 +60,8 @@ export const OrderPaymentProvider = ({
     { amount: 0, quantity: 0, total: 0 },
   ]);
 
+  const orderTotal = getOrderTotal({ order, applyDiscount: true });
+
   const defaultPayment: Payment = {
     paymentAmounts: {
       [PaymentType.CASH]: undefined,
@@ -67,12 +70,14 @@ export const OrderPaymentProvider = ({
       [PaymentType.CREDIT]: undefined,
     },
     paidAmount: 0,
-    remainingAmount: applyDiscount(order.total, order.discount) ?? 0,
+    remainingAmount: orderTotal,
   };
 
   const [payment, setPayment] = useState<Payment>(defaultPayment);
 
-  const [typedAmount, setTypedAmount] = useState<string>(roundToTwo(payment.remainingAmount));
+  const [typedAmount, setTypedAmount] = useState<string>(
+    roundToTwo(payment.remainingAmount).toString()
+  );
   const { handlePaymentChange, payOrder, resetPaymentValues } = useOrderPayment(
     isPaying,
     setIsPaying,
@@ -85,12 +90,12 @@ export const OrderPaymentProvider = ({
 
   useEffect(() => {
     setPayment(defaultPayment);
-    setTypedAmount(roundToTwo(defaultPayment.remainingAmount));
-  }, [order.total]);
+    setTypedAmount(roundToTwo(defaultPayment.remainingAmount).toString());
+  }, [orderTotal]);
 
   const resetPayment = () => {
     resetPaymentValues();
-    setTypedAmount((applyDiscount(order.total, order.discount) ?? 0).toString());
+    setTypedAmount(orderTotal.toString());
   };
 
   return (

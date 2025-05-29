@@ -48,9 +48,6 @@ export default async function deleteProductsFromOrder({
       id: orderId,
     },
     data: {
-      total: {
-        decrement: totalToDecrement,
-      },
       is_receipt_printed: false,
     },
   });

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { CustomerWithDetails } from "@shared"
-;
+import { CustomerWithDetails } from "@shared";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 interface ScoreDialogProps {
   customer: CustomerWithDetails;
@@ -91,7 +91,10 @@ export default function ScoreDialog({ customer }: ScoreDialogProps) {
 
   // 2. Spending Score function
   function calculateSpendingScore(orders: any[]) {
-    const totalSpent = orders.reduce((sum, order) => sum + order.order.total, 0);
+    const totalSpent = orders.reduce(
+      (sum, order) => sum + getOrderTotal({ order: order.order }),
+      0
+    );
     const averageSpent = totalSpent / (orders.length || 1); // Avoid division by zero
 
     return Math.min(

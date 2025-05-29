@@ -28,13 +28,19 @@ export const GetProductsWithStatsSchema = z.object({
   filters: z.object({
     time: z.object({
       timeScope: z.nativeEnum(TimeScopeFilter),
-      from: z.date().optional(),
-      to: z.date().optional(),
+      from: z
+        .preprocess((arg) => (typeof arg === "string" ? new Date(arg) : arg), z.date())
+        .optional(),
+      to: z
+        .preprocess((arg) => (typeof arg === "string" ? new Date(arg) : arg), z.date())
+        .optional(),
     }),
-    shift: z.nativeEnum(ShiftFilter),
+    shift: z.enum(["both", "lunch", "dinner"]), // cant use z.nativeEnum(ShiftFilter) cuz the import is from the client
     categoryId: z.number().optional(),
   }),
 });
+
+export type GetProductsWithStatsInput = z.infer<typeof GetProductsWithStatsSchema>;
 
 export const UpdateAdditionalNoteSchema = z.object({
   note: z.string(),

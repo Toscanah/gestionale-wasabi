@@ -10,7 +10,7 @@ export default async function handleProductCodeChange({
   productInOrder,
 }: {
   tx: Prisma.TransactionClient;
-  currentOrder: { id: number; total: number; type: OrderType };
+  currentOrder: { id: number; type: OrderType };
   newProductCode: string;
   productInOrder: ProductInOrder;
 }) {
@@ -65,7 +65,6 @@ export default async function handleProductCodeChange({
   await tx.order.update({
     where: { id: currentOrder.id },
     data: {
-      total: currentOrder.total + (newTotal - productInOrder.total),
       is_receipt_printed: false,
     },
   });

@@ -61,9 +61,6 @@ export default async function addProductsToOrder({
       id: targetOrderId,
     },
     data: {
-      total: {
-        increment: productTotalPrice,
-      },
       is_receipt_printed: false,
     },
   });

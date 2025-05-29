@@ -75,8 +75,8 @@ export default function useProductsStats() {
       filters: {
         time: {
           timeScope: timeScopeFilter,
-          from: dateFilter?.from,
-          to: dateFilter?.to,
+          from: dateFilter?.from ? new Date(dateFilter.from) : undefined,
+          to: dateFilter?.to ? new Date(dateFilter.to) : undefined,
         },
         shift: shiftFilter,
         categoryId: selectedCategory.id === -1 ? undefined : selectedCategory.id,

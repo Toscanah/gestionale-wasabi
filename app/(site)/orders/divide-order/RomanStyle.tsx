@@ -1,6 +1,5 @@
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
-import { AnyOrder, TableOrder } from "@shared"
-;
+import { AnyOrder, TableOrder } from "@shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useOrderContext } from "../../context/OrderContext";
 import fetchRequest from "../../lib/api/fetchRequest";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 interface RomanStyleProps {
   handleBackButton: () => void;
@@ -29,23 +29,23 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
 
     fetchRequest<number>("GET", "/api/payments/", "getRomanPaymentsByOrder", {
       orderId: order.id,
-      amount: roundToTwo(order.total / initialPpl),
+      amount: roundToTwo(getOrderTotal({ order }) / initialPpl),
     }).then((count) => {
       setCurrentPerson(count + 1);
-      const alreadyPaid = count * Number(roundToTwo(order.total / initialPpl));
+      const alreadyPaid = count * roundToTwo(getOrderTotal({ order }) / initialPpl);
       setPaidAmount(alreadyPaid);
-      setAmountToPay(Number(roundToTwo((order.total - alreadyPaid) / (initialPpl - count))));
+      setAmountToPay(roundToTwo((getOrderTotal({ order }) - alreadyPaid) / (initialPpl - count)));
     });
   }, []);
 
   const handlePplChange = (newPpl: number) => {
     if (newPpl <= 0 || newPpl < currentPerson) return; // Prevent invalid changes
 
-    const remainingAmount = order.total - paidAmount;
+    const remainingAmount = getOrderTotal({ order }) - paidAmount;
     const remainingPpl = newPpl - (currentPerson - 1); // Remaining people who haven't paid
 
     setPpl(newPpl);
-    setAmountToPay(Number(roundToTwo(remainingAmount / remainingPpl)));
+    setAmountToPay(roundToTwo(remainingAmount / remainingPpl));
   };
 
   const handleOrderPaymentComplete = () => {
@@ -54,7 +54,9 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
 
     if (currentPerson < ppl) {
       setCurrentPerson((prev) => prev + 1);
-      setAmountToPay(Number(roundToTwo((order.total - newPaidAmount) / (ppl - currentPerson)))); // Update dynamically
+      setAmountToPay(
+        roundToTwo((getOrderTotal({ order }) - newPaidAmount) / (ppl - currentPerson))
+      );
     } else {
       handleOrderPaid();
     }
@@ -86,7 +88,6 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
           key={currentPerson}
           partialOrder={{
             ...order,
-            total: amountToPay,
             products: currentPerson === ppl ? order.products : [],
           }}
           type={currentPerson === ppl ? "full" : "partial"}

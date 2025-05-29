@@ -91,7 +91,6 @@ export default async function createPickupOrder({
     const createdOrder = await tx.order.create({
       data: {
         type: OrderType.PICKUP,
-        total: 0,
         engagements: {
           connect: pendingEngagements.map((e) => ({ id: e.id })),
         },

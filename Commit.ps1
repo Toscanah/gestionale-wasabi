@@ -1,3 +1,7 @@
+param (
+    [string]$Hint = ""
+)
+
 function Initialize-API {
     Write-Host "[INFO] OpenAI API key configuration" -ForegroundColor Magenta
     $envPath = Join-Path (Get-Item $PSScriptRoot).Parent.FullName "gestionale-wasabi\.env"
@@ -41,14 +45,21 @@ if ([string]::IsNullOrEmpty($diff)) {
     exit
 }
 
+$systemPrompt = "Generate a concise and meaningful Git commit message from the provided code diff. Keep it under 15 words."
+
+if ($Hint) {
+    $systemPrompt += " Hint: $Hint"
+}
+
 $body = @{
     "model"       = "gpt-4o-mini"
     "messages"    = @(
-        @{ "role" = "system"; "content" = "Generate a concise and meaningful Git commit message from the provided code diff. Keep it under 15 words." },
+        @{ "role" = "system"; "content" = $systemPrompt },
         @{ "role" = "user"; "content" = ($diff -join "`n") }
     )
     "temperature" = 0.2
 }
+
 
 $bodyJson = $body | ConvertTo-Json -Depth 10 -Compress
 $bodyJson = [System.Text.Encoding]::UTF8.GetBytes($bodyJson)

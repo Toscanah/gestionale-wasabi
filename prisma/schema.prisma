@@ -89,7 +89,6 @@ model Order {
     id                 Int              @id @default(autoincrement())
     created_at         DateTime         @default(now())
     updated_at         DateTime         @default(now()) @updatedAt
-    total              Float            @default(0)
     discount           Float            @default(0)
     is_receipt_printed Boolean          @default(false)
     shift              WorkingShift     @default(UNSPECIFIED)

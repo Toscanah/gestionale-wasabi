@@ -10,7 +10,7 @@ export const PayOrderSchema = z.object({
 
 export const GetRomanPaymentsByOrderSchema = z.object({
   orderId: z.number(),
-  amount: z.string(),
+  amount: z.number(),
 });
 
 export const PAYMENT_SCHEMAS = {

@@ -30,7 +30,7 @@ export default function PaymentMethodsSelection() {
       const totalAmount = paymentCalculations.reduce((sum, row) => sum + row.total, 0);
 
       handlePaymentChange(type, totalAmount);
-      setTypedAmount(roundToTwo(payment.remainingAmount - totalAmount));
+      setTypedAmount(roundToTwo(payment.remainingAmount - totalAmount).toString());
       setPaymentCalculations([{ amount: 0, quantity: 0, total: 0 }]);
 
       if (totalAmount > 0) {
@@ -38,7 +38,7 @@ export default function PaymentMethodsSelection() {
       }
     } else {
       handlePaymentChange(type, Number(typedAmount));
-      setTypedAmount(roundToTwo(payment.remainingAmount - Number(typedAmount)));
+      setTypedAmount(roundToTwo(payment.remainingAmount - Number(typedAmount)).toString());
     }
   };
 
