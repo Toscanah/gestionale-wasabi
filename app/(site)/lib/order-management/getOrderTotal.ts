@@ -44,10 +44,9 @@ export function getOrderTotal({
 }): number {
   const { products, type } = order;
 
-  const orderTotal = products.reduce(
-    (acc, product) => acc + product.quantity * getProductPrice(product, type),
-    0
-  );
+  const orderTotal = products
+    .filter((product) => product.state === "IN_ORDER")
+    .reduce((acc, product) => acc + product.quantity * getProductPrice(product, type), 0);
 
   const total = applyDiscount
     ? getDiscountedTotal({
