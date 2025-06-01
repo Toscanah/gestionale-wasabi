@@ -73,29 +73,31 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
     let pickupOrdersCount = 0;
     let tableOrdersCount = 0;
 
-    orders.forEach((order) => {
-      order.payments.forEach((payment) => {
-        newTotals[payment.type].total += payment.amount;
-        totalAmount += payment.amount;
+    orders
+      .filter((o) => o.state == "PAID")
+      .forEach((order) => {
+        order.payments.forEach((payment) => {
+          newTotals[payment.type].total += payment.amount;
+          totalAmount += payment.amount;
+        });
+
+        const orderTotal = getOrderTotal({ order });
+
+        if (order.type === OrderType.TABLE) {
+          inPlaceAmount += orderTotal;
+          tableOrdersAmount += orderTotal;
+          customersCount += order.table_order?.people || 1;
+          tableOrdersCount++;
+        } else if (order.type === OrderType.HOME) {
+          takeawayAmount += orderTotal;
+          homeOrdersAmount += orderTotal;
+          homeOrdersCount++;
+        } else if (order.type === OrderType.PICKUP) {
+          takeawayAmount += orderTotal;
+          pickupOrdersAmount += orderTotal;
+          pickupOrdersCount++;
+        }
       });
-
-      const orderTotal = getOrderTotal({ order });
-
-      if (order.type === OrderType.TABLE) {
-        inPlaceAmount += orderTotal;
-        tableOrdersAmount += orderTotal;
-        customersCount += order.table_order?.people || 1;
-        tableOrdersCount++;
-      } else if (order.type === OrderType.HOME) {
-        takeawayAmount += orderTotal;
-        homeOrdersAmount += orderTotal;
-        homeOrdersCount++;
-      } else if (order.type === OrderType.PICKUP) {
-        takeawayAmount += orderTotal;
-        pickupOrdersAmount += orderTotal;
-        pickupOrdersCount++;
-      }
-    });
 
     setSummaryData({
       totals: newTotals,

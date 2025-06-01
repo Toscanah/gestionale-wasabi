@@ -41,6 +41,8 @@ export default function useProductsStats() {
     const isCustom = timeScopeFilter === TimeScopeFilter.CUSTOM_RANGE;
     const hasValidDates = dateFilter?.from && dateFilter?.to;
 
+    console.log(dateFilter)
+
     if (isCustom && !hasValidDates) {
       setFilteredProducts([]);
       return;
