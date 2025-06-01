@@ -6,6 +6,7 @@ import { orderMatchesShift } from "../../lib/order-management/shift/orderMatches
 import { GetProductsWithStatsInput } from "../../shared";
 import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
 import { OrderState, ProductInOrderState } from "@prisma/client";
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
 
 export default async function getProductsWithStats({
   filters,
@@ -40,6 +41,12 @@ export default async function getProductsWithStats({
       ...categoryInclude,
       orders: {
         include: {
+          product: {
+            select: {
+              site_price: true,
+              home_price: true,
+            },
+          },
           order: {
             include: {
               home_order: {
@@ -83,7 +90,9 @@ export default async function getProductsWithStats({
     const stats = product.orders.reduce(
       (acc, productInOrder) => {
         acc.quantity += productInOrder.quantity;
-        acc.total += productInOrder.total;
+        acc.total +=
+          getProductPrice(productInOrder as any, productInOrder.order.type) *
+          productInOrder.quantity;
 
         productInOrder.options.forEach((optionInOrder) => {
           const optionName = optionInOrder.option.option_name;

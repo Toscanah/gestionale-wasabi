@@ -16,20 +16,17 @@ interface PrintSummaryProps {
 
 export interface SummaryData {
   totals: PaymentTotals;
-  /** */
   inPlaceAmount: number;
   takeawayAmount: number;
-  /** (soldi) */
   tableOrdersAmount: number;
   homeOrdersAmount: number;
   pickupOrdersAmount: number;
-  /** (quanti, conteggio) */
   tableOrdersCount: number;
   homeOrdersCount: number;
   pickupOrdersCount: number;
-  /** altro */
   customersCount: number;
-  totalAmount: number;
+  totalAmount: number; // discounted
+  rawTotalAmount: number; // new field!
 }
 
 export default function PrintSummary({ orders }: PrintSummaryProps) {
@@ -46,22 +43,17 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
     homeOrdersAmount: 0,
     pickupOrdersAmount: 0,
     customersCount: 0,
-    totalAmount: 0,
     homeOrdersCount: 0,
     pickupOrdersCount: 0,
     tableOrdersCount: 0,
+    totalAmount: 0,
+    rawTotalAmount: 0,
   });
 
   useEffect(() => calculateSummaryData(orders), [orders]);
 
   const calculateSummaryData = (orders: OrderWithPayments[]) => {
-    const newTotals: PaymentTotals = {
-      [PaymentType.CASH]: { label: "Contanti", total: 0 },
-      [PaymentType.CARD]: { label: "Carta", total: 0 },
-      [PaymentType.VOUCH]: { label: "Buoni", total: 0 },
-      [PaymentType.CREDIT]: { label: "Crediti", total: 0 },
-    };
-
+    let rawTotalAmount = 0;
     let inPlaceAmount = 0;
     let takeawayAmount = 0;
     let homeOrdersAmount = 0;
@@ -73,31 +65,42 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
     let pickupOrdersCount = 0;
     let tableOrdersCount = 0;
 
-    orders
-      .filter((o) => o.state == "PAID")
-      .forEach((order) => {
-        order.payments.forEach((payment) => {
-          newTotals[payment.type].total += payment.amount;
-          totalAmount += payment.amount;
-        });
+    const newTotals: PaymentTotals = {
+      [PaymentType.CASH]: { label: "Contanti", total: 0 },
+      [PaymentType.CARD]: { label: "Carta", total: 0 },
+      [PaymentType.VOUCH]: { label: "Buoni", total: 0 },
+      [PaymentType.CREDIT]: { label: "Crediti", total: 0 },
+    };
 
-        const orderTotal = getOrderTotal({ order });
-
-        if (order.type === OrderType.TABLE) {
-          inPlaceAmount += orderTotal;
-          tableOrdersAmount += orderTotal;
-          customersCount += order.table_order?.people || 1;
-          tableOrdersCount++;
-        } else if (order.type === OrderType.HOME) {
-          takeawayAmount += orderTotal;
-          homeOrdersAmount += orderTotal;
-          homeOrdersCount++;
-        } else if (order.type === OrderType.PICKUP) {
-          takeawayAmount += orderTotal;
-          pickupOrdersAmount += orderTotal;
-          pickupOrdersCount++;
-        }
+    orders.forEach((order) => {
+      // Payments: reflect what was actually paid
+      order.payments.forEach((payment) => {
+        newTotals[payment.type].total += payment.amount;
+        totalAmount += payment.amount; // discounted (actual) money
       });
+
+      // Get both raw and discounted totals
+      const rawOrderTotal = getOrderTotal({ order, applyDiscount: false });
+      const discountedOrderTotal = getOrderTotal({ order, applyDiscount: true });
+
+      rawTotalAmount += rawOrderTotal;
+
+      // Assign to correct category
+      if (order.type === OrderType.TABLE) {
+        inPlaceAmount += discountedOrderTotal;
+        tableOrdersAmount += discountedOrderTotal;
+        customersCount += order.table_order?.people || 1;
+        tableOrdersCount++;
+      } else if (order.type === OrderType.HOME) {
+        takeawayAmount += discountedOrderTotal;
+        homeOrdersAmount += discountedOrderTotal;
+        homeOrdersCount++;
+      } else if (order.type === OrderType.PICKUP) {
+        takeawayAmount += discountedOrderTotal;
+        pickupOrdersAmount += discountedOrderTotal;
+        pickupOrdersCount++;
+      }
+    });
 
     setSummaryData({
       totals: newTotals,
@@ -107,10 +110,11 @@ export default function PrintSummary({ orders }: PrintSummaryProps) {
       pickupOrdersAmount,
       tableOrdersAmount,
       customersCount,
-      totalAmount,
       homeOrdersCount,
       pickupOrdersCount,
       tableOrdersCount,
+      totalAmount,
+      rawTotalAmount,
     });
   };
 
