@@ -126,7 +126,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     TableColumn<AnyOrder>({
       header: "Totale",
       cellContent: (row) =>
-        `€ ${getOrderTotal({ order: row.original, applyDiscount: true, round: true })}`,
+        `€ ${roundToTwo(getOrderTotal({ order: row.original, applyDiscount: true }))}`,
     })
   );
 

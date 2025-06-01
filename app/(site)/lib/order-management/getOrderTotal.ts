@@ -56,5 +56,5 @@ export function getOrderTotal({
       })
     : orderTotal;
 
-  return round ? roundToTwo(total) : total;
+  return round ? parseFloat(roundToTwo(total)) : total;
 }

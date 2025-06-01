@@ -89,13 +89,13 @@ export default async function getCustomersWithStats({
 
     return {
       ...customer,
-      totalSpending: roundToTwo(totalSpending),
+      totalSpending: parseFloat(roundToTwo(totalSpending)),
       lastOrder: lastOrderDate,
       firstOrder: firstOrderDate,
-      averageSpending: roundToTwo(averageSpending),
-      averageOrdersWeek: roundToTwo(averageOrdersWeek),
-      averageOrdersMonth: roundToTwo(averageOrdersMonth),
-      averageOrdersYear: roundToTwo(averageOrdersYear),
+      averageSpending: parseFloat(roundToTwo(averageSpending)),
+      averageOrdersWeek: parseFloat(roundToTwo(averageOrdersWeek)),
+      averageOrdersMonth: parseFloat(roundToTwo(averageOrdersMonth)),
+      averageOrdersYear: parseFloat(roundToTwo(averageOrdersYear)),
     };
   });
 

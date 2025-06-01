@@ -20,11 +20,12 @@ export default function TotalSection(
       <Br />
 
       <Text size={bigSize} align="center" bold={bold}>
-        {`TOTALE: ${getOrderTotal({
-          order: { products, discount, type: orderType },
-          applyDiscount: true,
-          round: true,
-        })} €`}
+        {`TOTALE: ${roundToTwo(
+          getOrderTotal({
+            order: { products, discount, type: orderType },
+            applyDiscount: true,
+          })
+        )} €`}
       </Text>
     </>
   );

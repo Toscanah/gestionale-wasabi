@@ -29,12 +29,14 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
 
     fetchRequest<number>("GET", "/api/payments/", "getRomanPaymentsByOrder", {
       orderId: order.id,
-      amount: roundToTwo(getOrderTotal({ order }) / initialPpl),
+      amount: parseFloat(roundToTwo(getOrderTotal({ order }) / initialPpl)),
     }).then((count) => {
       setCurrentPerson(count + 1);
-      const alreadyPaid = count * roundToTwo(getOrderTotal({ order }) / initialPpl);
+      const alreadyPaid = count * parseFloat(roundToTwo(getOrderTotal({ order }) / initialPpl));
       setPaidAmount(alreadyPaid);
-      setAmountToPay(roundToTwo((getOrderTotal({ order }) - alreadyPaid) / (initialPpl - count)));
+      setAmountToPay(
+        parseFloat(roundToTwo((getOrderTotal({ order }) - alreadyPaid) / (initialPpl - count)))
+      );
     });
   }, []);
 
@@ -45,7 +47,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
     const remainingPpl = newPpl - (currentPerson - 1); // Remaining people who haven't paid
 
     setPpl(newPpl);
-    setAmountToPay(roundToTwo(remainingAmount / remainingPpl));
+    setAmountToPay(parseFloat(roundToTwo(remainingAmount / remainingPpl)));
   };
 
   const handleOrderPaymentComplete = () => {
@@ -55,7 +57,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
     if (currentPerson < ppl) {
       setCurrentPerson((prev) => prev + 1);
       setAmountToPay(
-        roundToTwo((getOrderTotal({ order }) - newPaidAmount) / (ppl - currentPerson))
+        parseFloat(roundToTwo((getOrderTotal({ order }) - newPaidAmount) / (ppl - currentPerson)))
       );
     } else {
       handleOrderPaid();
