@@ -29,6 +29,7 @@ export default function PaymentsTable() {
     typeFilter,
     shiftFilter,
     setShiftFilter,
+    summaryData,
   } = usePaymentsHistory();
 
   const table = getTable({
@@ -91,12 +92,13 @@ export default function PaymentsTable() {
         {isLoading ? <RandomSpinner isLoading={isLoading} /> : <Table table={table} />}
 
         <div className="mt-auto flex justify-between">
-          <DailySummary orders={filteredOrders} />
+          <DailySummary summaryData={summaryData} />
           <PrintSummary
-            orders={
-              date
+            summaryData={summaryData}
+            firstOrderDate={
+              (date
                 ? allOrders.filter((order) => isSameDay(new Date(order.created_at), date))
-                : allOrders
+                : allOrders)[0]?.created_at
             }
           />
         </div>
