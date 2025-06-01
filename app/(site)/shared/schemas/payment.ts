@@ -8,9 +8,11 @@ export const PayOrderSchema = z.object({
   productsToPay: z.array(ProductInOrderWithOptionsSchema),
 });
 
+export type PayOrderInput = z.infer<typeof PayOrderSchema>;
+
 export const GetRomanPaymentsByOrderSchema = z.object({
   orderId: z.number(),
-  amount: z.number(),
+  amount: z.number().or(z.string()),
 });
 
 export const PAYMENT_SCHEMAS = {

@@ -6,14 +6,14 @@ import getOrderById from "@/app/(site)/sql/orders/getOrderById";
 import { getOrderTotal } from "@/app/(site)/lib/order-management/getOrderTotal";
 
 export default function PaymentConfirmation() {
-  const { payOrder, resetPayment, order, isPaying } = useOrderPaymentContext();
+  const { payOrder, resetPayment, orderTotal } = useOrderPaymentContext();
 
   return (
     <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center w-[55%]">
       <h1>
         <span>
           Vuoi procedere con l'incasso di{" "}
-          <b>€ {getOrderTotal({ order, applyDiscount: true, round: true })}</b>?
+          <b>€ {roundToTwo(orderTotal)}</b>?
         </span>
       </h1>
       <div className="w-full flex gap-6 items-center justify-center">
@@ -22,7 +22,6 @@ export default function PaymentConfirmation() {
         </Button>
 
         <Button
-          disabled={isPaying}
           onClick={payOrder}
           className="h-32 w-48 bg-green-500 text-3xl text-black hover:bg-green-500/90"
         >

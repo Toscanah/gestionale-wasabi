@@ -3,6 +3,7 @@ import { productInOrderInclude } from "../../includes";
 import { ProductInOrder } from "@shared";
 import { getProductPrice } from "@/app/(site)/lib/product-management/getProductPrice";
 import handleProductDeletion from "./handleProductDeletion";
+import { update } from "lodash";
 
 export default async function handleQuantityChange({
   tx,
@@ -15,8 +16,7 @@ export default async function handleQuantityChange({
   newQuantity: number;
   productInOrder: ProductInOrder;
 }) {
-  newQuantity = Number(newQuantity);
-  const quantityDifference = newQuantity - productInOrder.quantity;
+  const quantityDiff = newQuantity - productInOrder.quantity;
 
   if (newQuantity === 0) {
     return await handleProductDeletion({ tx, currentOrder, productInOrder });
@@ -25,11 +25,16 @@ export default async function handleQuantityChange({
   const updatedProduct = await tx.productInOrder.update({
     where: { id: productInOrder.id },
     data: {
-      quantity: newQuantity,
-      rice_quantity: { increment: quantityDifference * productInOrder.product.rice },
-      printed_amount: {
+      quantity: {
+        increment: quantityDiff,
+      },
+      total: {
         increment:
-          quantityDifference > 0 ? 0 : Math.max(quantityDifference, -productInOrder.printed_amount),
+          quantityDiff * getProductPrice({ product: productInOrder.product }, currentOrder.type),
+      },
+      rice_quantity: { increment: quantityDiff * productInOrder.product.rice },
+      printed_amount: {
+        increment: quantityDiff > 0 ? 0 : Math.max(quantityDiff, -productInOrder.printed_amount),
       },
     },
     include: { ...productInOrderInclude },
@@ -42,5 +47,14 @@ export default async function handleQuantityChange({
     },
   });
 
-  return { updatedProduct };
+  return {
+    updatedProduct: {
+      ...updatedProduct,
+      quantity: updatedProduct.quantity - updatedProduct.paid_quantity,
+      total:
+        updatedProduct.total -
+        updatedProduct.paid_quantity *
+          getProductPrice({ product: updatedProduct.product }, currentOrder.type),
+    },
+  } as { updatedProduct: ProductInOrder };
 }

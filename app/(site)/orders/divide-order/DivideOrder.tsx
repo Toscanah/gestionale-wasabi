@@ -141,7 +141,7 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
         ...order,
         products: productsToPay,
       }}
-      handleBackButton={() => setGoPay(false)}
+      onBackButton={() => setGoPay(false)}
       onOrderPaid={handleOrderPaid}
     />
   );

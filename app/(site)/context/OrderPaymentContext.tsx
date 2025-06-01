@@ -3,7 +3,6 @@ import { PaymentType } from "@prisma/client";
 import { AnyOrder } from "@shared";
 import useOrderPayment from "../hooks/useOrderPayment";
 import roundToTwo from "../lib/formatting-parsing/roundToTwo";
-import getDiscountedTotal from "../lib/order-management/getDiscountedTotal";
 import { useOrderContext } from "./OrderContext";
 import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 
@@ -19,15 +18,15 @@ interface OrderPaymentContextProps {
   setPaymentCalculations: React.Dispatch<React.SetStateAction<PaymentCalculation[]>>;
   resetPayment: () => void;
   order: AnyOrder;
-  isPaying: boolean;
-  setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
+  orderTotal: number;
 }
 
-interface OrderPaymentProvider {
+interface OrderPaymentProviderProps {
   type: "full" | "partial";
   onOrderPaid: () => void;
   children: ReactNode;
   partialOrder?: AnyOrder;
+  manualTotalAmount?: number;
 }
 
 const OrderPaymentContext = createContext<OrderPaymentContextProps | undefined>(undefined);
@@ -43,54 +42,59 @@ export type Payment = {
   remainingAmount: number;
 };
 
+export const DEFAULT_PAYMENT: Payment = {
+  paymentAmounts: {
+    [PaymentType.CASH]: undefined,
+    [PaymentType.CARD]: undefined,
+    [PaymentType.VOUCH]: undefined,
+    [PaymentType.CREDIT]: undefined,
+  },
+  paidAmount: 0,
+  remainingAmount: 0,
+};
+
 export type PaymentCalculation = { amount: number; quantity: number; total: number };
+
+export const DEFAULT_CALCULATIONS: PaymentCalculation[] = [{ amount: 0, quantity: 0, total: 0 }];
 
 export const OrderPaymentProvider = ({
   partialOrder,
   type,
   onOrderPaid,
   children,
-}: OrderPaymentProvider) => {
-  const [isPaying, setIsPaying] = useState(false);
+  manualTotalAmount,
+}: OrderPaymentProviderProps) => {
   const { order: contextOrder } = useOrderContext();
-  const order = partialOrder || contextOrder;
+  const payingOrder = partialOrder || contextOrder;
+  const orderTotal =
+    manualTotalAmount ?? getOrderTotal({ order: payingOrder, applyDiscount: true });
 
   const [activeTool, setActiveTool] = useState<"manual" | "table">("manual");
-  const [paymentCalculations, setPaymentCalculations] = useState<PaymentCalculation[]>([
-    { amount: 0, quantity: 0, total: 0 },
-  ]);
-
-  const orderTotal = getOrderTotal({ order, applyDiscount: true });
-
-  const defaultPayment: Payment = {
-    paymentAmounts: {
-      [PaymentType.CASH]: undefined,
-      [PaymentType.CARD]: undefined,
-      [PaymentType.VOUCH]: undefined,
-      [PaymentType.CREDIT]: undefined,
-    },
-    paidAmount: 0,
+  const [payment, setPayment] = useState<Payment>({
+    ...DEFAULT_PAYMENT,
     remainingAmount: orderTotal,
-  };
-
-  const [payment, setPayment] = useState<Payment>(defaultPayment);
-
+  });
+  const [paymentCalculations, setPaymentCalculations] =
+    useState<PaymentCalculation[]>(DEFAULT_CALCULATIONS);
   const [typedAmount, setTypedAmount] = useState<string>(
     roundToTwo(payment.remainingAmount).toString()
   );
-  const { handlePaymentChange, payOrder, resetPaymentValues } = useOrderPayment(
-    isPaying,
-    setIsPaying,
+
+  const { handlePaymentChange, payOrder, resetPaymentValues } = useOrderPayment({
     type,
     onOrderPaid,
     payment,
     setPayment,
-    order
-  );
+    payingOrder,
+    manualTotalAmount,
+  });
 
   useEffect(() => {
-    setPayment(defaultPayment);
-    setTypedAmount(roundToTwo(defaultPayment.remainingAmount).toString());
+    setPayment({
+      ...DEFAULT_PAYMENT,
+      remainingAmount: orderTotal,
+    });
+    setTypedAmount(roundToTwo(orderTotal).toString());
   }, [orderTotal]);
 
   const resetPayment = () => {
@@ -111,9 +115,8 @@ export const OrderPaymentProvider = ({
         paymentCalculations,
         setPaymentCalculations,
         resetPayment,
-        order,
-        isPaying,
-        setIsPaying,
+        order: payingOrder,
+        orderTotal,
       }}
     >
       {children}

@@ -1,5 +1,4 @@
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import { Separator } from "@/components/ui/separator";
 import getDiscountedTotal from "../../lib/order-management/getDiscountedTotal";
 import { Icon } from "@phosphor-icons/react";
@@ -22,18 +21,25 @@ export type PaymentMethod = {
 interface OrderPaymentProps {
   type: "full" | "partial";
   onOrderPaid: () => void;
-  handleBackButton: () => void;
+  onBackButton: () => void;
   partialOrder?: AnyOrder;
+  manualTotalAmount?: number;
 }
 
 export default function OrderPayment({
   type,
   onOrderPaid,
-  handleBackButton,
+  onBackButton,
   partialOrder,
+  manualTotalAmount,
 }: OrderPaymentProps) {
   return (
-    <OrderPaymentProvider type={type} onOrderPaid={onOrderPaid} partialOrder={partialOrder}>
+    <OrderPaymentProvider
+      type={type}
+      onOrderPaid={onOrderPaid}
+      partialOrder={partialOrder}
+      manualTotalAmount={manualTotalAmount}
+    >
       <div className="w-full h-full flex flex-col gap-6">
         <PaymentMethodsSelection />
 
@@ -47,7 +53,7 @@ export default function OrderPayment({
           </div>
         </div>
 
-        <Button onClick={handleBackButton} className="text-lg">
+        <Button onClick={onBackButton} className="text-lg">
           Indietro
         </Button>
       </div>

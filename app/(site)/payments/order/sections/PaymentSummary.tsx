@@ -7,8 +7,7 @@ import getDiscountedTotal from "@/app/(site)/lib/order-management/getDiscountedT
 import { getOrderTotal } from "@/app/(site)/lib/order-management/getOrderTotal";
 
 export default function PaymentSummary() {
-  const { payment, order } = useOrderPaymentContext();
-  const totalToPay = getOrderTotal({ order, applyDiscount: true });
+  const { payment, orderTotal } = useOrderPaymentContext();
 
   const paidPayments = Object.values(PaymentType).filter((type) => {
     const amount = payment.paymentAmounts[type];
@@ -58,7 +57,7 @@ export default function PaymentSummary() {
         <tbody>
           <tr>
             <td className="text-left font-bold">Totale da Pagare:</td>
-            <td className="text-right font-bold">€ {roundToTwo(totalToPay)}</td>
+            <td className="text-right font-bold">€ {roundToTwo(orderTotal)}</td>
           </tr>
         </tbody>
       </table>

@@ -119,7 +119,7 @@ export default function OrderTable() {
     <OrderPayment
       type="full"
       onOrderPaid={() => setPayingAction("paidFull")}
-      handleBackButton={() => setPayingAction("none")}
+      onBackButton={() => setPayingAction("none")}
     />
   ) : payingAction == "payRoman" ? (
     <RomanStyle

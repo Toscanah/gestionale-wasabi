@@ -7,10 +7,16 @@ export default async function getRomanPaymentsByOrder({
   orderId: number;
   amount: string;
 }): Promise<number> {
+  const target = parseFloat(amount);
+  const EPSILON = 0.03;
+
   return await prisma.payment.count({
     where: {
       order_id: orderId,
-      amount: Number(amount),
+      amount: {
+        gte: target - EPSILON,
+        lte: target + EPSILON,
+      },
     },
   });
 }

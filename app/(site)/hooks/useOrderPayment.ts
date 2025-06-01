@@ -1,36 +1,43 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import getDiscountedTotal from "../lib/order-management/getDiscountedTotal";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { AnyOrder } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
 import { PaymentType } from "@prisma/client";
-import { Payment } from "../context/OrderPaymentContext";
+import { DEFAULT_PAYMENT, Payment } from "../context/OrderPaymentContext";
 import { useOrderContext } from "../context/OrderContext";
 import scaleProducts from "../lib/product-management/scaleProducts";
 import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 
-export default function useOrderPayment(
-  isPaying: boolean,
-  setIsPaying: Dispatch<SetStateAction<boolean>>,
-  type: "full" | "partial",
-  onOrderPaid: () => void,
-  payment: Payment,
-  setPayment: Dispatch<SetStateAction<Payment>>,
-  order: AnyOrder
-) {
+type UseOrderPaymentParams = {
+  type: "full" | "partial";
+  onOrderPaid: () => void;
+  payment: Payment;
+  setPayment: Dispatch<SetStateAction<Payment>>;
+  payingOrder: AnyOrder;
+  manualTotalAmount?: number;
+};
+
+export default function useOrderPayment({
+  type,
+  onOrderPaid,
+  payment,
+  setPayment,
+  payingOrder,
+  manualTotalAmount,
+}: UseOrderPaymentParams) {
   const { updateOrder, order: originalOrder } = useOrderContext();
+  const { paymentAmounts } = payment;
+  const orderTotal =
+    manualTotalAmount ?? getOrderTotal({ order: payingOrder, applyDiscount: true });
 
   useEffect(() => {
-    const totalPaid = Object.values(payment.paymentAmounts).reduce(
-      (sum, amount) => sum + (amount ?? 0),
-      0
-    );
+    const totalPaid = Object.values(paymentAmounts).reduce((sum, amount) => sum + (amount ?? 0), 0);
 
     setPayment((prevPayment) => ({
       ...prevPayment,
       paidAmount: totalPaid,
-      remainingAmount: getOrderTotal({ order, applyDiscount: true }) - totalPaid,
+      remainingAmount: orderTotal - totalPaid,
     }));
-  }, [payment.paymentAmounts]);
+  }, [paymentAmounts, orderTotal]);
 
   const handlePaymentChange = (type: PaymentType, value: number | undefined) =>
     setPayment((prevPayment) => ({
@@ -46,54 +53,51 @@ export default function useOrderPayment(
 
   const resetPaymentValues = () =>
     setPayment({
-      paymentAmounts: {
-        [PaymentType.CASH]: undefined,
-        [PaymentType.CARD]: undefined,
-        [PaymentType.VOUCH]: undefined,
-        [PaymentType.CREDIT]: undefined,
-      },
-      paidAmount: 0,
-      remainingAmount: getOrderTotal({ order, applyDiscount: true }),
+      ...DEFAULT_PAYMENT,
+      remainingAmount: orderTotal,
     });
 
   const payOrder = () => {
-    if (isPaying) return;
+    const productsToPay = payingOrder.products;
 
-    setIsPaying(true);
+    const totalToPay = orderTotal;
+    let remaining = totalToPay;
 
-    const productsToPay = order.products;
     const payments = Object.entries(payment.paymentAmounts)
       .filter(([_, amount]) => amount && amount > 0)
-      .map(([type, amount]) => ({
-        amount,
-        type: type.toUpperCase() as PaymentType,
-        order_id: order.id,
-      }));
+      .map(([type, amount]) => {
+        const clipped = Math.min(amount!, remaining);
+        remaining -= clipped;
+        return {
+          amount: clipped,
+          type: type.toUpperCase() as PaymentType,
+          order_id: payingOrder.id,
+        };
+      })
+      .filter((p) => p.amount > 0);
 
     fetchRequest<AnyOrder>("POST", "/api/payments/", "payOrder", {
       payments,
       productsToPay,
-    })
-      .then((updatedOrder) => {
-        onOrderPaid();
+    }).then((updatedOrder) => {
+      onOrderPaid();
 
-        if (type == "full") {
-          updateOrder({ state: "PAID" });
-          return;
-        }
+      if (type == "full") {
+        updateOrder({ state: "PAID" });
+        return;
+      }
 
-        const { updatedProducts } = scaleProducts({
-          originalProducts: originalOrder.products,
-          productsToScale: productsToPay,
-          orderType: originalOrder.type,
-        });
+      const { updatedProducts } = scaleProducts({
+        originalProducts: originalOrder.products,
+        productsToScale: productsToPay,
+        orderType: originalOrder.type,
+      });
 
-        updateOrder({
-          state: updatedOrder.state,
-          products: updatedProducts,
-        });
-      })
-      .finally(() => setIsPaying(false));
+      updateOrder({
+        state: updatedOrder.state,
+        products: updatedProducts,
+      });
+    });
   };
 
   return { handlePaymentChange, payOrder, resetPaymentValues };
