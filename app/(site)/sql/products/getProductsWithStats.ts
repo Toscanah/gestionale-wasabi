@@ -5,6 +5,7 @@ import TimeScopeFilter from "../../components/filters/shift/TimeScope";
 import { orderMatchesShift } from "../../lib/order-management/shift/orderMatchesShift";
 import { GetProductsWithStatsInput } from "../../shared";
 import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
+import { ProductInOrderState } from "@prisma/client";
 
 export default async function getProductsWithStats({
   filters,
@@ -63,10 +64,11 @@ export default async function getProductsWithStats({
     .map((product) => {
       const filteredOrders = product.orders.filter((productInOrder) => {
         const order = productInOrder.order;
+        const isInOrder = productInOrder.state === ProductInOrderState.IN_ORDER;
         const withinDate =
           !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
 
-        return withinDate && orderMatchesShift(order, shift as ShiftFilter);
+        return isInOrder && withinDate && orderMatchesShift(order, shift as ShiftFilter);
       });
 
       if (filteredOrders.length > 0) {
