@@ -147,12 +147,12 @@ export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSumm
 
       <Row
         left={
-          <Text bold size={bigSize}>
+          <Text bold size={smallSize}>
             TOTALE CON SCONTI
           </Text>
         }
         right={
-          <Text bold size={bigSize}>
+          <Text bold size={smallSize}>
             {roundToTwo(summaryData.totalAmount)} €
           </Text>
         }
@@ -161,7 +161,7 @@ export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSumm
       <Row
         left={
           <Text bold size={bigSize}>
-            TOTALE CRUDO
+            TOTALE LORDO
           </Text>
         }
         right={
