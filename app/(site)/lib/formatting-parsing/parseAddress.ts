@@ -1,4 +1,4 @@
-export default function parseAddress(street: string) {
+export default function parseAddress(street: string): { street: string; civic: string } {
   let index = 0;
   while (index < street.length && !/\d/.test(street[index])) {
     index++;

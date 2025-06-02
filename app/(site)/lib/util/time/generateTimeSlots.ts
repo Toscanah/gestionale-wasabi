@@ -7,7 +7,7 @@ export default function generateTimeSlots(
   endMinute: number,
   currentHour: number,
   currentMinute: number
-) {
+): string[] {
   const { settings } = useWasabiContext();
 
   const times = [];

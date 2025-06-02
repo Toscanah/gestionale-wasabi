@@ -1,5 +1,4 @@
-import { CustomerWithDetails } from "@shared"
-;
+import { CustomerWithDetails } from "@shared";
 
 export default function filterInactiveProducts(customer: CustomerWithDetails): CustomerWithDetails {
   customer.home_orders.forEach((homeOrder) => {

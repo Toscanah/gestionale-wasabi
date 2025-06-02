@@ -1,4 +1,4 @@
-export default function formatRice(rice: number) {
+export default function formatRice(rice: number): string {
   const absoluteRice = Math.abs(rice);
   const sign = rice < 0 ? "-" : "";
 
