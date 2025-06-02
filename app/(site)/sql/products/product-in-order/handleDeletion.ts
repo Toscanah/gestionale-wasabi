@@ -2,13 +2,13 @@ import { ProductInOrder } from "@shared";
 import { Prisma } from "@prisma/client";
 import { productInOrderInclude } from "../../includes";
 
-export default async function handleProductDeletion({
+export default async function handleDeletion({
   tx,
-  currentOrder,
+  currentOrderId,
   productInOrder,
 }: {
   tx: Prisma.TransactionClient;
-  currentOrder: { id: number };
+  currentOrderId: number;
   productInOrder: ProductInOrder;
 }) {
   if (productInOrder.paid_quantity === 0) {
@@ -22,10 +22,8 @@ export default async function handleProductDeletion({
     });
 
     await tx.order.update({
-      where: { id: currentOrder.id },
-      data: {
-        is_receipt_printed: false,
-      },
+      where: { id: currentOrderId },
+      data: { is_receipt_printed: false },
     });
 
     return { deletedProduct };
@@ -34,18 +32,14 @@ export default async function handleProductDeletion({
   const updatedProduct = await tx.productInOrder.update({
     where: { id: productInOrder.id },
     data: {
-      quantity: { decrement: productInOrder.quantity },
-      total: { decrement: productInOrder.total },
-      is_paid_fully: productInOrder.paid_quantity >= productInOrder.quantity,
+      quantity: productInOrder.paid_quantity,
     },
     include: { ...productInOrderInclude },
   });
 
   await tx.order.update({
-    where: { id: currentOrder.id },
-    data: {
-      is_receipt_printed: false,
-    },
+    where: { id: currentOrderId },
+    data: { is_receipt_printed: false },
   });
 
   return { deletedProduct: { ...updatedProduct, quantity: 0, total: 0 } };

@@ -77,8 +77,15 @@ const HEAD_PRODUCT_PADDING =
 /* --- ALTRO --- */
 const OPTIONS_START_PADDING = 4;
 
-const calculateDiscountAmount = (products: ProductInOrder[], discount: number) => {
-  const total = products.reduce((acc, product) => acc + product.total, 0);
+const calculateDiscountAmount = (
+  products: ProductInOrder[],
+  discount: number,
+  orderType: OrderType
+) => {
+  const total = products.reduce(
+    (acc, product) => acc + product.quantity * getProductPrice(product, orderType),
+    0
+  );
   return total - getDiscountedTotal({ orderTotal: total, discountPercentage: discount });
 };
 
@@ -126,7 +133,13 @@ export default function CustomerProducts({
           )}
         </Text>
 
-        <Text>{padReceiptText(String(roundToTwo(product.total)), MAX_TOTAL_WIDTH, 0)}</Text>
+        <Text>
+          {padReceiptText(
+            String(roundToTwo(product.quantity * getProductPrice(product, orderType))),
+            MAX_TOTAL_WIDTH,
+            0
+          )}
+        </Text>
 
         {product.additional_note && (
           <Text>{" ".repeat(4) + sanitazeReceiptText(product.additional_note)}</Text>
@@ -173,7 +186,11 @@ export default function CustomerProducts({
       {discount > 0 && (
         <Row
           left={<Text>- {discount}%</Text>}
-          right={<Text>- {roundToTwo(calculateDiscountAmount(originalProducts, discount))}</Text>}
+          right={
+            <Text>
+              - {roundToTwo(calculateDiscountAmount(originalProducts, discount, orderType))}
+            </Text>
+          }
         />
       )}
 

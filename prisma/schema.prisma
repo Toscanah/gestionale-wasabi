@@ -247,10 +247,7 @@ model ProductInOrder {
     product_id      Int
     order_id        Int
     quantity        Int                    @default(0)
-    total           Float                  @default(0)
-    is_paid_fully   Boolean                @default(false)
     paid_quantity   Int                    @default(0)
-    rice_quantity   Float                  @default(0)
     printed_amount  Int                    @default(0)
     state           ProductInOrderState    @default(IN_ORDER)
     additional_note String?

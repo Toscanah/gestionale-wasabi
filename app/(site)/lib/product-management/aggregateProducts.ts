@@ -1,5 +1,4 @@
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { OrderType } from "@prisma/client";
 import { getProductPrice } from "./getProductPrice";
 import joinItemsWithComma from "../formatting-parsing/joinItemsWithComma";
@@ -35,10 +34,6 @@ export default function aggregateProducts(
       existingProduct.quantity += product.quantity;
       existingProduct.printed_amount =
         (existingProduct.printed_amount || 0) + product.printed_amount;
-
-      // Recalculate total price
-      existingProduct.total =
-        existingProduct.quantity * getProductPrice(existingProduct, orderType);
     } else {
       // Add the product to the group as-is
       groupedProducts[optionsKey].push({ ...product });

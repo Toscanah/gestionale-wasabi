@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import addProductToOrder from "../../sql/products/addProductToOrder";
 import addProductsToOrder from "../../sql/products/addProductsToOrder";
 import updateProductInOrder from "../../sql/products/product-in-order/updateProductInOrder";
-import deleteProductsFromOrder from "../../sql/products/deleteProductsFromOrder";
+import removeProductsFromOrder from "../../sql/products/removeProductsFromOrder";
 import getProducts from "../../sql/products/getProducts";
 import updateProduct from "../../sql/products/updateProduct";
 import updateProductOptionsInOrder from "../../sql/products/updateProductOptionsInOrder";
@@ -49,7 +49,7 @@ const GET_ACTIONS = new Map([
 const DELETE_ACTIONS = new Map([
   [
     "deleteProductsFromOrder",
-    { func: deleteProductsFromOrder, schema: PRODUCT_SCHEMAS.deleteProductsFromOrder },
+    { func: removeProductsFromOrder, schema: PRODUCT_SCHEMAS.deleteProductsFromOrder },
   ],
 ]);
 

@@ -19,11 +19,6 @@ export default async function addProductsToOrder({
     throw new Error("Target order not found");
   }
 
-  const productTotalPrice = products.reduce(
-    (sum, product) => sum + getProductPrice(product, targetOrder.type) * product.quantity,
-    0
-  );
-
   const newProducts = await Promise.all(
     products.map(
       async (productInOrder) =>
@@ -32,8 +27,6 @@ export default async function addProductsToOrder({
             order_id: targetOrderId,
             product_id: productInOrder.product.id,
             quantity: productInOrder.quantity,
-            total: productInOrder.total,
-            rice_quantity: productInOrder.product.rice * productInOrder.quantity,
             additional_note: productInOrder.additional_note,
           },
           include: {

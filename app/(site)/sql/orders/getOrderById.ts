@@ -1,6 +1,11 @@
 import { AnyOrder } from "@shared";
 import prisma from "../db";
-import { engagementsInclude, homeOrderInclude, pickupOrderInclude, productInOrderInclude } from "../includes";
+import {
+  engagementsInclude,
+  homeOrderInclude,
+  pickupOrderInclude,
+  productInOrderInclude,
+} from "../includes";
 
 export default async function getOrderById({
   orderId,
@@ -15,13 +20,6 @@ export default async function getOrderById({
     },
     include: {
       products: {
-        ...(variant !== "onlyPaid"
-          ? {}
-          : {
-              where: {
-                is_paid_fully: false,
-              },
-            }),
         include: {
           ...productInOrderInclude,
         },
@@ -30,7 +28,7 @@ export default async function getOrderById({
       ...homeOrderInclude,
       ...pickupOrderInclude,
       table_order: true,
-     ...engagementsInclude,
+      ...engagementsInclude,
     },
   });
 
@@ -38,5 +36,14 @@ export default async function getOrderById({
     throw new Error(`Order with id ${orderId} not found`);
   }
 
-  return existingOrder;
+  // Filter products manually if needed
+  const filteredProducts =
+    variant === "onlyPaid"
+      ? existingOrder.products.filter((p) => (p.paid_quantity ?? 0) < p.quantity)
+      : existingOrder.products;
+
+  return {
+    ...existingOrder,
+    products: filteredProducts,
+  };
 }

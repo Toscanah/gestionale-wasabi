@@ -1,6 +1,7 @@
 import prisma from "../db";
+import { cancelProductInOrder } from "./product-in-order/cancelProductInOrder";
 
-export default async function deleteProductsFromOrder({
+export default async function removeProductsFromOrder({
   productIds,
   orderId,
   cooked = false,
@@ -10,30 +11,17 @@ export default async function deleteProductsFromOrder({
   cooked?: boolean;
 }) {
   const productsToDelete = await prisma.productInOrder.findMany({
-    where: {
-      id: {
-        in: productIds,
-      },
-    },
-    select: {
-      id: true,
-      total: true,
-      state: true,
-    },
+    where: { id: { in: productIds } },
+    include: { options: true },
   });
 
-  const totalToDecrement = productsToDelete.reduce((acc, product) => acc + product.total, 0);
-
-  await prisma.productInOrder.updateMany({
-    where: {
-      id: {
-        in: productIds,
-      },
-    },
-    data: {
-      state: cooked ? "DELETED_COOKED" : "DELETED_UNCOOKED",
-    },
-  });
+  for (const pio of productsToDelete) {
+    await cancelProductInOrder({
+      tx: prisma,
+      pio,
+      cooked,
+    });
+  }
 
   await prisma.optionInProductOrder.deleteMany({
     where: {

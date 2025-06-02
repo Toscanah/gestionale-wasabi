@@ -2,7 +2,7 @@ import { OrderType, Prisma } from "@prisma/client";
 import { productInOrderInclude } from "../../includes";
 import { ProductInOrder } from "@shared";
 import { getProductPrice } from "@/app/(site)/lib/product-management/getProductPrice";
-import handleProductDeletion from "./handleProductDeletion";
+import handleDeletion from "./handleDeletion";
 import { update } from "lodash";
 
 export default async function handleQuantityChange({
@@ -19,7 +19,7 @@ export default async function handleQuantityChange({
   const quantityDiff = newQuantity - productInOrder.quantity;
 
   if (newQuantity === 0) {
-    return await handleProductDeletion({ tx, currentOrder, productInOrder });
+    return await handleDeletion({ tx, currentOrderId: currentOrder.id, productInOrder });
   }
 
   const updatedProduct = await tx.productInOrder.update({
@@ -28,11 +28,6 @@ export default async function handleQuantityChange({
       quantity: {
         increment: quantityDiff,
       },
-      total: {
-        increment:
-          quantityDiff * getProductPrice({ product: productInOrder.product }, currentOrder.type),
-      },
-      rice_quantity: { increment: quantityDiff * productInOrder.product.rice },
       printed_amount: {
         increment: quantityDiff > 0 ? 0 : Math.max(quantityDiff, -productInOrder.printed_amount),
       },
@@ -51,10 +46,6 @@ export default async function handleQuantityChange({
     updatedProduct: {
       ...updatedProduct,
       quantity: updatedProduct.quantity - updatedProduct.paid_quantity,
-      total:
-        updatedProduct.total -
-        updatedProduct.paid_quantity *
-          getProductPrice({ product: updatedProduct.product }, currentOrder.type),
     },
   } as { updatedProduct: ProductInOrder };
 }

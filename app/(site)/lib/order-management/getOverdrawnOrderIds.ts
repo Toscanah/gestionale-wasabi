@@ -1,4 +1,5 @@
 import { AnyOrder } from "../../shared";
+import getPioRice from "../product-management/getPioRice";
 
 /**
  * Returns a Set of numeric order IDs that cause or follow a rice shortage.
@@ -12,7 +13,7 @@ export default function getOverdrawnOrderIds(orders: AnyOrder[], totalRice: numb
   );
 
   for (const order of sortedOrders) {
-    const riceNeeded = order.products.reduce((sum, pin) => sum + (pin.rice_quantity ?? 0), 0);
+    const riceNeeded = order.products.reduce((sum, pin) => sum + getPioRice(pin), 0);
 
     if (riceLeft - riceNeeded < 0) {
       redIds.add(order.id);

@@ -1,21 +1,16 @@
-import { EngagementState, OrderType, Prisma } from "@prisma/client";
+import { OrderType } from "@prisma/client";
 import addProductsToOrder from "../products/addProductsToOrder";
 import createPickupOrder from "./createPickupOrder";
 import createTableOrder from "./createTableOrder";
 import prisma from "../db";
-import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import getOrderById from "./getOrderById";
-import { AnyOrder, PickupOrder, ProductInOrder, TableOrder } from "@shared";
+import { AnyOrder, CreateSubOrderInput, PickupOrder, TableOrder } from "@shared";
 
 export default async function createSubOrder({
   parentOrder,
   products,
   isReceiptPrinted,
-}: {
-  parentOrder: AnyOrder;
-  products: ProductInOrder[];
-  isReceiptPrinted: boolean;
-}) {
+}: CreateSubOrderInput) {
   let newSubOrder: AnyOrder | undefined;
 
   const suborderCount = await prisma.order.count({
@@ -85,8 +80,6 @@ export default async function createSubOrder({
       });
 
       const newQuantity = productInOrder.quantity - product.quantity;
-      const newRiceQuantity =
-        productInOrder.rice_quantity - product.product.rice * product.quantity;
       const newPrintedAmount = productInOrder.printed_amount - product.quantity;
 
       if (newQuantity > 0) {
@@ -94,9 +87,7 @@ export default async function createSubOrder({
           where: { id: productInOrder.id },
           data: {
             quantity: newQuantity,
-            rice_quantity: newRiceQuantity,
             printed_amount: newPrintedAmount,
-            total: newQuantity * getProductPrice(product, parentOrder.type),
           },
         });
       } else {
@@ -110,9 +101,9 @@ export default async function createSubOrder({
     }
   }
 
-  const remainingProducts = await prisma.productInOrder.findMany({
-    where: { order_id: parentOrder.id, state: { not: "DELETED_COOKED" } },
-  });
+  // const remainingProducts = await prisma.productInOrder.findMany({
+  //   where: { order_id: parentOrder.id, state: { not: "DELETED_COOKED" } },
+  // });
 
   await addProductsToOrder({ targetOrderId: newSubOrder.id, products });
 

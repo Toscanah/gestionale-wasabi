@@ -1,11 +1,11 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
-import { SummaryData } from "../../payments/history/PrintSummary";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
+import { PaymentsSummaryData } from "../../hooks/usePaymentsHistory";
 
 interface PaymentSummaryReceiptProps {
-  summaryData: SummaryData;
+  summaryData: PaymentsSummaryData;
   date: Date;
 }
 

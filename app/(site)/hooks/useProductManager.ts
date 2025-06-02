@@ -136,14 +136,12 @@ export function useProductManager(
     );
 
     if (unprintedProducts.length > 0) {
-      const updatedProducts = unprintedProducts.map((unprintedProduct) => {
+      const updatedProducts: ProductInOrder[] = unprintedProducts.map((unprintedProduct) => {
         const remainingQuantity = unprintedProduct.quantity - unprintedProduct.paid_quantity;
 
         return {
           ...unprintedProduct,
           quantity: remainingQuantity,
-          total: remainingQuantity * getProductPrice(unprintedProduct, order.type),
-          rice_quantity: remainingQuantity * unprintedProduct.product.rice,
           printed_amount: unprintedProduct.quantity,
         };
       });

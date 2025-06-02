@@ -1,13 +1,15 @@
 import { useEffect, useReducer, useState } from "react";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import { OrderType, ProductInOrderState, WorkingShift } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import sectionReducer, { initialState } from "./sectionReducer";
 import { isSameDay } from "date-fns";
 import timeToDecimal from "../../lib/util/time/timeToDecimal";
-import { getEffectiveOrderShift, parseOrderTime } from "../../lib/order-management/shift/getOrderShift";
-
+import {
+  getEffectiveOrderShift,
+  parseOrderTime,
+} from "../../lib/order-management/shift/getOrderShift";
+import getPioRice from "../../lib/product-management/getPioRice";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -135,10 +137,13 @@ export default function useOrdersStats(orders: AnyOrder[]) {
       return (
         sum +
         order.products.reduce((prodSum, product) => {
-          const shouldCount =
+          const isCooked =
             product.state === ProductInOrderState.IN_ORDER ||
             product.state === ProductInOrderState.DELETED_COOKED;
-          return prodSum + (shouldCount ? product.rice_quantity || 0 : 0);
+
+          const paidQty = product.paid_quantity ?? 0;
+
+          return prodSum + (isCooked && paidQty > 0 ? getPioRice(product) : 0);
         }, 0)
       );
     }, 0);

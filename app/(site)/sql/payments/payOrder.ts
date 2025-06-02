@@ -11,7 +11,6 @@ export default async function payOrder({
   }
 
   const filteredProducts = productsToPay.filter((ptp) => ptp.id !== -1);
-
   const orderId = payments[0].order_id;
 
   await prisma.$transaction(async (tx) => {
@@ -24,7 +23,7 @@ export default async function payOrder({
       })),
     });
 
-    // 2. Update products: use increment to prevent race conditions
+    // 2. Increment paid_quantity for each product
     await Promise.all(
       filteredProducts.map((productToPay) =>
         tx.productInOrder.update({
@@ -36,34 +35,22 @@ export default async function payOrder({
       )
     );
 
-    // 3. Mark fully paid products (done separately to avoid conditional logic inside loop)
-    await Promise.all(
-      filteredProducts.map(async (productToPay) => {
-        const updated = await tx.productInOrder.findUnique({
-          where: { id: productToPay.id },
-          select: { quantity: true, paid_quantity: true },
-        });
-
-        if (updated && updated.paid_quantity >= updated.quantity) {
-          await tx.productInOrder.update({
-            where: { id: productToPay.id },
-            data: { is_paid_fully: true },
-          });
-        }
-      })
-    );
-
     // 4. Check if all "IN_ORDER" products are fully paid
-    const unpaidCount = await tx.productInOrder.count({
+    const allProducts = await tx.productInOrder.findMany({
       where: {
         order_id: orderId,
-        is_paid_fully: false,
         state: "IN_ORDER",
+      },
+      select: {
+        quantity: true,
+        paid_quantity: true,
       },
     });
 
+    const allPaid = allProducts.every((p) => (p.paid_quantity ?? 0) >= p.quantity);
+
     // 5. Update order state and engagements if needed
-    if (unpaidCount === 0) {
+    if (allPaid) {
       await tx.order.update({
         where: { id: orderId },
         data: { state: "PAID" },

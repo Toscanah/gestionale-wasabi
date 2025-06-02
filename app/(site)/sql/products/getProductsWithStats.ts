@@ -74,8 +74,11 @@ export default async function getProductsWithStats({
         const isPaid = order.state === OrderState.PAID;
         const withinDate =
           !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
+        const isValidState = productInOrder.state === ProductInOrderState.IN_ORDER;
 
-        return isPaid && withinDate && orderMatchesShift(order, shift as ShiftFilter);
+        return (
+          isValidState && isPaid && withinDate && orderMatchesShift(order, shift as ShiftFilter)
+        );
       });
 
       if (filteredOrders.length > 0) {
@@ -89,15 +92,17 @@ export default async function getProductsWithStats({
   return filteredProducts.map((product) => {
     const stats = product.orders.reduce(
       (acc, productInOrder) => {
-        acc.quantity += productInOrder.quantity;
-        acc.total +=
-          getProductPrice(productInOrder as any, productInOrder.order.type) *
-          productInOrder.quantity;
+        if (productInOrder.state === "IN_ORDER" && productInOrder.paid_quantity > 0) {
+          const paidQty = Math.min(productInOrder.paid_quantity, productInOrder.quantity);
 
-        productInOrder.options.forEach((optionInOrder) => {
-          const optionName = optionInOrder.option.option_name;
-          acc.options[optionName] = (acc.options[optionName] || 0) + productInOrder.quantity;
-        });
+          acc.quantity += paidQty;
+          acc.total += getProductPrice({ product }, productInOrder.order.type) * paidQty;
+
+          productInOrder.options.forEach((optionInOrder) => {
+            const optionName = optionInOrder.option.option_name;
+            acc.options[optionName] = (acc.options[optionName] || 0) + paidQty;
+          });
+        }
 
         return acc;
       },

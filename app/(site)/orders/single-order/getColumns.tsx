@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { Input } from "@/components/ui/input";
 import { OrderType } from "@prisma/client";
 import TableColumn from "../../components/table/TableColumn";
@@ -213,11 +212,16 @@ export default function getColumns(
     TableColumn<ProductInOrder>({
       header: "Totale",
       sortable: false,
-      cellContent: (row) => (
-        <span className="text-2xl">
-          {row.original.total == 0 ? "" : `€ ${roundToTwo(row.original.total)}`}
-        </span>
-      ),
+      cellContent: (row) => {
+        const product = row.original;
+        const productTotal = getProductPrice(product, type) * product.quantity;
+
+        return (
+          <span className="text-2xl">
+            {productTotal == 0 ? "" : `€ ${roundToTwo(productTotal)}`}
+          </span>
+        );
+      },
     }),
   ];
 }

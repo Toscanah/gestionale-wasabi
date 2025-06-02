@@ -3,6 +3,7 @@ import formatRice from "../../../lib/formatting-parsing/formatRice";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import getPioRice from "@/app/(site)/lib/product-management/getPioRice";
 
 export default function Rice() {
   const { order } = useOrderContext();
@@ -11,13 +12,12 @@ export default function Rice() {
 
   useEffect(() => {
     const currentUsedRice = order.products.reduce(
-      (total, product) => total + (product.rice_quantity ?? 0),
+      (total, product) => total + getPioRice(product),
       0
     );
+
     setUsedRice(currentUsedRice);
-
     fetchRemainingRice();
-
     // updateRemainingRice(currentUsedRice);
   }, [order.products]);
 

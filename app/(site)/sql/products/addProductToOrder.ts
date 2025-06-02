@@ -23,17 +23,12 @@ export default async function addProductToOrder({
       return null;
     }
 
-    const productTotalPrice =
-      getProductPrice({ product: { ...product } } as any, order.type) * quantity;
-
     const [productInOrder] = await Promise.all([
       tx.productInOrder.create({
         data: {
           order_id: order.id,
           product_id: product.id,
           quantity: Number(quantity),
-          total: productTotalPrice,
-          rice_quantity: product.rice * Number(quantity) || 0,
         },
         include: { ...productInOrderInclude },
       }),

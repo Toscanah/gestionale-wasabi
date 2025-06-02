@@ -1,5 +1,6 @@
 import prisma from "../db";
 import { AnyOrder } from "@shared";
+import cancelOrder from "./cancelOrder";
 
 export default async function cancelOrdersInBulk({
   ordersId,
@@ -8,22 +9,16 @@ export default async function cancelOrdersInBulk({
   ordersId: number[];
   productsCooked?: boolean;
 }): Promise<Pick<AnyOrder, "id" | "type">[]> {
-  return await prisma.$transaction(async (tx) => {
-    await Promise.all([
-      tx.productInOrder.updateMany({
-        where: { order_id: { in: ordersId } },
-        data: { state: productsCooked ? "DELETED_COOKED" : "DELETED_UNCOOKED" },
-      }),
+  const cancelledOrders = await prisma.$transaction(async () => {
+    const results: Pick<AnyOrder, "id" | "type">[] = [];
 
-      tx.order.updateMany({
-        where: { id: { in: ordersId } },
-        data: { state: "CANCELLED" },
-      }),
-    ]);
+    for (const orderId of ordersId) {
+      const order = await cancelOrder({ orderId, cooked: productsCooked });
+      results.push({ id: order.id, type: order.type });
+    }
 
-    return tx.order.findMany({
-      where: { id: { in: ordersId } },
-      select: { id: true, type: true },
-    });
+    return results;
   });
+
+  return cancelledOrders;
 }

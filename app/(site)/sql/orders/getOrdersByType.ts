@@ -14,7 +14,6 @@ export default async function getOrdersByType({ type }: { type: OrderType }): Pr
     include: {
       products: {
         where: {
-          is_paid_fully: false,
           state: "IN_ORDER",
         },
         include: {
@@ -28,7 +27,7 @@ export default async function getOrdersByType({ type }: { type: OrderType }): Pr
       ...engagementsInclude,
     },
     where: {
-      type: type,
+      type,
       state: "ACTIVE",
     },
     orderBy: {
@@ -37,13 +36,15 @@ export default async function getOrdersByType({ type }: { type: OrderType }): Pr
   });
 
   const adjustedOrders = orders.map((order) => {
-    const unpaidProducts = order.products.map((product) => ({
-      ...product,
-      quantity: product.quantity - product.paid_quantity,
-      total:
-        (product.quantity - product.paid_quantity) *
-        getProductPrice(product, order.type as OrderType),
-    }));
+    const unpaidProducts = order.products
+      .filter((product) => (product.paid_quantity ?? 0) < product.quantity)
+      .map((product) => {
+        const unpaidQty = product.quantity - (product.paid_quantity ?? 0);
+        return {
+          ...product,
+          quantity: unpaidQty,
+        };
+      });
 
     return {
       ...order,

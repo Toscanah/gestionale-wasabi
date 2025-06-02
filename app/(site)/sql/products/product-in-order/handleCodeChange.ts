@@ -27,16 +27,10 @@ export default async function handleProductCodeChange({
     return { updatedProduct: productInOrder };
   }
 
-  const newTotal =
-    productInOrder.quantity *
-    getProductPrice({ product: { ...newProduct } } as any, currentOrder.type);
-
   const updatedProduct = await tx.productInOrder.update({
     where: { id: productInOrder.id },
     data: {
       product_id: newProduct.id,
-      total: newTotal,
-      rice_quantity: newProduct.rice * productInOrder.quantity,
       printed_amount: 0,
     },
     include: { ...productInOrderInclude },

@@ -13,7 +13,7 @@ export default function scaleProducts({
   productsToScale,
   orderType,
 }: ScaleProductsParams): { updatedProducts: ProductInOrder[] } {
-  const updatedProducts = originalProducts
+  const updatedProducts: ProductInOrder[] = originalProducts
     .map((product) => {
       const productToScale = productsToScale.find((p) => p.id === product.id);
 
@@ -21,19 +21,11 @@ export default function scaleProducts({
         const paidQuantity = productToScale.quantity;
         const remainingQuantity = product.quantity - paidQuantity;
 
-        const newTotal = remainingQuantity * getProductPrice(product, orderType);
-        const newRiceQuantity = remainingQuantity * product.product.rice;
-
-        const isPaidFully = paidQuantity >= product.quantity;
-
         return remainingQuantity > 0
           ? {
               ...product,
               quantity: remainingQuantity,
               paid_quantity: paidQuantity,
-              total: newTotal,
-              rice_quantity: newRiceQuantity,
-              is_paid_fully: isPaidFully,
             }
           : null;
       }

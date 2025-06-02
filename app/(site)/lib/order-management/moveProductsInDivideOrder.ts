@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { getProductPrice } from "../product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 
@@ -23,15 +22,13 @@ export default function moveProductsInDivideOrder(
       const index = sourceCopy.findIndex((p) => p.id === product.id);
       sourceCopy.splice(index, 1);
     }
-    sourceProduct.total = sourceProduct.quantity * getProductPrice(sourceProduct, orderType);
   }
 
   const targetProduct = targetCopy.find((p) => p.id === product.id);
   if (targetProduct) {
     targetProduct.quantity += 1;
-    targetProduct.total = targetProduct.quantity * getProductPrice(targetProduct, orderType);
   } else {
-    targetCopy.push({ ...product, quantity: 1, total: getProductPrice(product, orderType) });
+    targetCopy.push({ ...product, quantity: 1 });
   }
 
   setSource(sourceCopy);

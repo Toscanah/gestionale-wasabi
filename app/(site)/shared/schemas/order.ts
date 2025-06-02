@@ -35,6 +35,8 @@ export const CreateSubOrderSchema = z.object({
   isReceiptPrinted: z.boolean(),
 });
 
+export type CreateSubOrderInput = z.infer<typeof CreateSubOrderSchema>;
+
 export const UpdateOrderDiscountSchema = z.object({
   orderId: z.number(),
   discount: z.number().optional(),

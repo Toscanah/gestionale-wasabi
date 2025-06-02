@@ -1,11 +1,9 @@
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 
 export default function generateDummyProduct(): ProductInOrder {
   return {
     created_at: new Date(Date.now() + 60 * 1000),
     additional_note: "",
-    rice_quantity: 0,
     state: "IN_ORDER",
     printed_amount: -1,
     product: {
@@ -32,9 +30,7 @@ export default function generateDummyProduct(): ProductInOrder {
     product_id: -1,
     order_id: -1,
     quantity: 0,
-    total: 0,
     id: -1,
-    is_paid_fully: false,
     paid_quantity: 0,
   };
 }
