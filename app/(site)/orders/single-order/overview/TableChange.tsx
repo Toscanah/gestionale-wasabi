@@ -1,6 +1,5 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { TableOrder } from "@shared"
-;
+import { TableOrder } from "@shared";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/lib/util/toast";
 import { Input } from "@/components/ui/input";

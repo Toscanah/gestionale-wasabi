@@ -1,5 +1,4 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import getDiscountedTotal from "@/app/(site)/lib/order-management/getDiscountedTotal";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { getOrderTotal } from "@/app/(site)/lib/order-management/getOrderTotal";
 

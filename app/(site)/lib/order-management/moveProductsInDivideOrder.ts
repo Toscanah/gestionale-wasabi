@@ -8,8 +8,7 @@ export default function moveProductsInDivideOrder(
   source: ProductInOrder[],
   setSource: Dispatch<SetStateAction<ProductInOrder[]>>,
   target: ProductInOrder[],
-  setTarget: Dispatch<SetStateAction<ProductInOrder[]>>,
-  orderType: OrderType
+  setTarget: Dispatch<SetStateAction<ProductInOrder[]>>
 ) {
   const sourceCopy = source.map((p) => ({ ...p }));
   const targetCopy = target.map((p) => ({ ...p }));

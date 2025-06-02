@@ -1,5 +1,4 @@
-import { HomeOrder } from "@shared"
-;
+import { HomeOrder } from "@shared";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/lib/util/toast";
 import { Dispatch, SetStateAction, useEffect } from "react";
@@ -36,7 +35,10 @@ export default function QuickPaymentOptions({
     }).then((updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
       updateOrder({
-        home_order: { ...updatedOrder.home_order, payment: updatedOrder.home_order?.payment || QuickPaymentOption.UNKNOWN },
+        home_order: {
+          ...updatedOrder.home_order,
+          payment: updatedOrder.home_order?.payment || QuickPaymentOption.UNKNOWN,
+        },
         is_receipt_printed: false,
       });
     });
