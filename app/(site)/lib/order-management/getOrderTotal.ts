@@ -3,7 +3,6 @@ import { getProductPrice } from "../product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 import getDiscountedTotal from "./getDiscountedTotal";
 import roundToTwo from "../formatting-parsing/roundToTwo";
-import { only } from "node:test";
 
 type BaseOrderInput = {
   products: ProductInOrder[];
@@ -51,10 +50,12 @@ export function getOrderTotal({
 
   const orderTotal = products
     .filter((product) => product.state === "IN_ORDER")
-    .reduce((acc, product) => {
-      const quantity = onlyPaid ? product.paid_quantity : product.quantity;
-      return acc + quantity * getProductPrice(product, type);
-    }, 0);
+    .reduce(
+      (acc, product) =>
+        acc +
+        (onlyPaid ? product.paid_quantity : product.quantity) * getProductPrice(product, type),
+      0
+    );
 
   const total = applyDiscount
     ? getDiscountedTotal({
