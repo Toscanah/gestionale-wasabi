@@ -9,19 +9,37 @@ export default async function cancelOrder({
   orderId: number;
   cooked?: boolean;
 }): Promise<AnyOrder> {
-  await prisma.productInOrder.updateMany({
+  // Get all PIOs for the order
+  const productsInOrder = await prisma.productInOrder.findMany({
     where: {
       order_id: orderId,
     },
-    data: {
-      state: cooked ? "DELETED_COOKED" : "DELETED_UNCOOKED",
+    select: {
+      id: true,
+      is_paid_fully: true,
     },
   });
 
+  // Filter only unpaid PIOs
+  const unpaidPioIds = productsInOrder.filter((pio) => !pio.is_paid_fully).map((pio) => pio.id);
+
+  // Conditionally update only unpaid PIOs
+  if (unpaidPioIds.length > 0) {
+    await prisma.productInOrder.updateMany({
+      where: {
+        id: { in: unpaidPioIds },
+      },
+      data: {
+        state: cooked ? "DELETED_COOKED" : "DELETED_UNCOOKED",
+      },
+    });
+  }
+
+  // Cancel the order regardless
   await prisma.order.update({
     where: { id: orderId },
     data: { state: "CANCELLED" },
   });
 
-  return getOrderById({orderId});
+  return getOrderById({ orderId });
 }

@@ -128,8 +128,8 @@ export default function usePaymentsHistory() {
       });
 
       // Get both raw and discounted totals
-      const rawOrderTotal = getOrderTotal({ order, applyDiscount: false });
-      const discountedOrderTotal = getOrderTotal({ order, applyDiscount: true });
+      const rawOrderTotal = getOrderTotal({ order, applyDiscount: false, onlyPaid: true });
+      const discountedOrderTotal = getOrderTotal({ order, applyDiscount: true, onlyPaid: true });
 
       rawTotalAmount += rawOrderTotal;
 

@@ -7,7 +7,7 @@ import { ArrowsLeftRight } from "@phosphor-icons/react/dist/ssr";
 import ResetPayment from "../ResetPayment";
 
 export default function Tools() {
-  const { setActiveTool, activeTool } = useOrderPaymentContext();
+  const { setActiveTool, activeTool, setTypedAmount } = useOrderPaymentContext();
 
   const toggleTool = () =>
     setActiveTool((prevTool) => (prevTool === "manual" ? "table" : "manual"));
