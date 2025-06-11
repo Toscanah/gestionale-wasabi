@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { OrderType } from "@prisma/client";
+import { OrderType, PaymentScope } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
-import { AnyOrder, TableOrder } from "@shared";
+import { TableOrder } from "@shared";
 import { useOrderContext } from "../../context/OrderContext";
 import fetchRequest from "../../lib/api/fetchRequest";
 import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
@@ -26,13 +26,8 @@ interface RomanStyleProps {
   handleOrderPaid: () => void;
 }
 
-function computeRomanSplit(total: number, ppl: number): number[] {
-  const rawSplit = total / ppl;
-  return Array.from({ length: ppl }, () => roundToCents(rawSplit));
-}
-
 export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanStyleProps) {
-  const { order } = useOrderContext();
+  const { order, updateOrder } = useOrderContext();
   const [ppl, setPpl] = useState<number>(0);
   const [currentPerson, setCurrentPerson] = useState<number>(1);
   const [amountToPay, setAmountToPay] = useState<number>(0);
@@ -41,23 +36,29 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
   const total = getOrderTotal({ order });
 
   useEffect(() => {
-    const initialPpl =
-      order.type === OrderType.TABLE ? (order as TableOrder).table_order?.people ?? 0 : 0;
+    if (total <= 0) return;
 
-    if (initialPpl <= 0) return;
+    fetchRequest<{ payments: { amount: number }[] }>(
+      "GET",
+      "/api/payments/",
+      "getRomanPaymentsByOrder",
+      {
+        orderId: order.id,
+      }
+    ).then(({ payments }) => {
+      const ppl = (order as TableOrder).table_order?.people || 1; // fixed, never recomputed
+      const totalToSplit = total; // updated total if changed
 
-    setPpl(initialPpl);
+      const alreadyPaid = roundToCents(payments.reduce((sum, p) => sum + p.amount, 0));
 
-    const amounts = computeRomanSplit(total, initialPpl);
+      const currentPersonIndex = payments.length + 1;
+      const remainingPeople = ppl - payments.length;
+      const remaining = roundToCents(totalToSplit - alreadyPaid);
 
-    fetchRequest<number>("GET", "/api/payments/", "getRomanPaymentsByOrder", {
-      orderId: order.id,
-      amount: amounts[0],
-    }).then((count) => {
-      const alreadyPaid = amounts.slice(0, count).reduce((acc, val) => acc + val, 0);
-      const nextAmount = amounts[count] ?? 0;
+      const nextAmount = remainingPeople > 0 ? roundToCents(remaining / remainingPeople) : 0;
 
-      setCurrentPerson(count + 1);
+      setPpl(ppl); // real value from table
+      setCurrentPerson(currentPersonIndex);
       setPaidAmount(alreadyPaid);
       setAmountToPay(nextAmount);
     });
@@ -66,10 +67,17 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
   const handlePplChange = (newPpl: number) => {
     if (newPpl <= 0 || newPpl < currentPerson) return;
 
+    // fetchRequest<TableOrder>("PATCH", "/api/orders", "updateTablePpl", {
+    //   orderId: order.id,
+    //   people: newPpl,
+    // }).then((updatedOrder) =>
+    //   updateOrder({ table_order: { ...(updatedOrder as TableOrder).table_order, people: newPpl } })
+    // );
+    setPpl(newPpl);
+
     const remaining = roundToCents(total - paidAmount);
     const remainingPpl = newPpl - (currentPerson - 1);
 
-    setPpl(newPpl);
     setAmountToPay(roundToCents(remaining / remainingPpl));
   };
 
@@ -78,6 +86,9 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
     const remainingPpl = ppl - currentPerson;
 
     setPaidAmount(newPaidAmount);
+    updateOrder({
+      payments: [...order.payments, { amount: amountToPay, scope: PaymentScope.ROMAN }],
+    });
 
     if (currentPerson < ppl) {
       setCurrentPerson((prev) => prev + 1);
@@ -95,7 +106,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
         <Input
           type="number"
           value={ppl}
-          disabled={currentPerson > 1}
+          disabled={true}
           onChange={(e) => handlePplChange(e.target.valueAsNumber)}
           className="max-w-sm text-lg"
         />
@@ -103,9 +114,9 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
         {ppl > 0 && (
           <div className="ml-auto flex gap-4 items-center">
             {currentPerson} di {ppl} persone
-            <Button onClick={handleOrderPaymentComplete} disabled={currentPerson > ppl}>
+            {/* <Button onClick={handleOrderPaymentComplete} disabled={currentPerson > ppl}>
               Salta questo pagamento
-            </Button>
+            </Button> */}
           </div>
         )}
       </div>
@@ -118,7 +129,8 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
             products: currentPerson === ppl ? order.products : [],
           }}
           manualTotalAmount={amountToPay}
-          type={currentPerson === ppl ? "full" : "partial"}
+          scope={PaymentScope.ROMAN}
+          stage={currentPerson === ppl ? "FINAL" : "PARTIAL"}
           onBackButton={handleBackButton}
           onOrderPaid={handleOrderPaymentComplete}
         />

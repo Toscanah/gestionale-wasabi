@@ -3,7 +3,7 @@ import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { UploadImageType } from "../../lib/api/uploadImage";
 
-const allowedExtensions = ["png", "jpg", "jpeg", "svg", "ico"];
+const allowedExtensions = ["png", "jpg", "jpeg", "svg", "ico", "bmp"];
 const folders = {
   receipt: path.join(process.cwd(), "public", "uploads", "logo"),
   engagements: path.join(process.cwd(), "public", "uploads", "engagements"),

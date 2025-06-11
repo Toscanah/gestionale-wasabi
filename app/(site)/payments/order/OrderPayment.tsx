@@ -4,7 +4,7 @@ import getDiscountedTotal from "../../lib/order-management/getDiscountedTotal";
 import { Icon } from "@phosphor-icons/react";
 import PaymentSummary from "./sections/PaymentSummary";
 import { Button } from "@/components/ui/button";
-import { PaymentType } from "@prisma/client";
+import { PaymentScope, PaymentType } from "@prisma/client";
 import { OrderPaymentProvider } from "../../context/OrderPaymentContext";
 import PaymentMethodsSelection from "./sections/PaymentMethodsSelection";
 import PaymentConfirmationAndTools from "./sections/PaymentConfirmationAndTools";
@@ -18,8 +18,9 @@ export type PaymentMethod = {
   icon: Icon;
 };
 
-interface OrderPaymentProps {
-  type: "full" | "partial";
+export interface OrderPaymentProps {
+  scope: PaymentScope;
+  stage: "FINAL" | "PARTIAL";
   onOrderPaid: () => void;
   onBackButton: () => void;
   partialOrder?: AnyOrder;
@@ -27,7 +28,8 @@ interface OrderPaymentProps {
 }
 
 export default function OrderPayment({
-  type,
+  stage,
+  scope,
   onOrderPaid,
   onBackButton,
   partialOrder,
@@ -35,7 +37,8 @@ export default function OrderPayment({
 }: OrderPaymentProps) {
   return (
     <OrderPaymentProvider
-      type={type}
+      scope={scope}
+      stage={stage}
       onOrderPaid={onOrderPaid}
       partialOrder={partialOrder}
       manualTotalAmount={manualTotalAmount}

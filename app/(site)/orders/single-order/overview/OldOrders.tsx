@@ -58,7 +58,7 @@ export default function OldOrders() {
         size="medium"
         trigger={
           <Button type="button" variant={"outline"} className="h-12 text-xl">
-            Vedi ordini precedenti
+            Vedi ordini precedenti 购买记录
           </Button>
         }
       >

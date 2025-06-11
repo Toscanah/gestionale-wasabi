@@ -20,6 +20,7 @@ import updateOrderExtraItems from "../../sql/orders/updateOrderExtraItems";
 import { updateOrderShift } from "../../sql/orders/updateOrderShift";
 import { fixOrdersShift } from "../../sql/orders/fixOrdersShift";
 import { ORDER_SCHEMAS } from "../../shared/schemas/order";
+import updateTablePpl from "../../sql/orders/updateTablePpl";
 
 const GET_ACTIONS = new Map([
   ["getOrdersByType", { func: getOrdersByType, schema: ORDER_SCHEMAS.getOrdersByType }],
@@ -47,6 +48,7 @@ const PATCH_ACTIONS = new Map([
     { func: updateOrderExtraItems, schema: ORDER_SCHEMAS.updateOrderExtraItems },
   ],
   ["fixOrdersShift", { func: fixOrdersShift, schema: ORDER_SCHEMAS.fixOrdersShift }],
+  ["updateTablePpl", { func: updateTablePpl, schema: ORDER_SCHEMAS.updateTablePpl }],
 ]);
 
 const DELETE_ACTIONS = new Map([

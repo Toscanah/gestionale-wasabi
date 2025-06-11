@@ -15,6 +15,8 @@ import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@shared";
 import { ArrowsClockwise } from "@phosphor-icons/react";
 import getOverdrawnOrderIds from "../lib/order-management/getOverdrawnOrderIds";
 import { BuildOrderState } from "./page";
+import { Button } from "@/components/ui/button";
+import fetchRequest from "../lib/api/fetchRequest";
 
 interface HomePageProps {
   orders: BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>;
@@ -56,6 +58,11 @@ export default function HomePage({ orders }: HomePageProps) {
               size={32}
               className="hover:cursor-pointer hover:rotate-[360deg] transform transition-transform duration-500 ease-in-out"
             /> */}
+            <Button
+              onClick={() => {
+                fetchRequest("GET", "/api/payments", "analyzePaymentScopes");
+              }}
+            ></Button>
           </div>
 
           <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />

@@ -5,6 +5,8 @@ import useOrderPayment from "../hooks/useOrderPayment";
 import roundToTwo from "../lib/formatting-parsing/roundToTwo";
 import { useOrderContext } from "./OrderContext";
 import { getOrderTotal } from "../lib/order-management/getOrderTotal";
+import { OrderPaymentProps } from "../payments/order/OrderPayment";
+import roundToCents from "../lib/util/roundToCents";
 
 interface OrderPaymentContextProps {
   payment: Payment;
@@ -21,12 +23,8 @@ interface OrderPaymentContextProps {
   orderTotal: number;
 }
 
-interface OrderPaymentProviderProps {
-  type: "full" | "partial";
-  onOrderPaid: () => void;
+interface OrderPaymentProviderProps extends Omit<OrderPaymentProps, "onBackButton"> {
   children: ReactNode;
-  partialOrder?: AnyOrder;
-  manualTotalAmount?: number;
 }
 
 const OrderPaymentContext = createContext<OrderPaymentContextProps | undefined>(undefined);
@@ -59,29 +57,32 @@ export const DEFAULT_CALCULATIONS: PaymentCalculation[] = [{ amount: 0, quantity
 
 export const OrderPaymentProvider = ({
   partialOrder,
-  type,
+  scope,
+  stage,
   onOrderPaid,
   children,
   manualTotalAmount,
 }: OrderPaymentProviderProps) => {
   const { order: contextOrder } = useOrderContext();
   const payingOrder = partialOrder || contextOrder;
-  const orderTotal =
-    manualTotalAmount ?? getOrderTotal({ order: payingOrder, applyDiscount: true });
+  const orderTotal = roundToCents(
+    manualTotalAmount ?? getOrderTotal({ order: payingOrder, applyDiscount: true })
+  );
 
   const [activeTool, setActiveTool] = useState<"manual" | "table">("manual");
   const [payment, setPayment] = useState<Payment>({
     ...DEFAULT_PAYMENT,
-    remainingAmount: orderTotal,
+    remainingAmount: roundToCents(orderTotal),
   });
   const [paymentCalculations, setPaymentCalculations] =
     useState<PaymentCalculation[]>(DEFAULT_CALCULATIONS);
   const [typedAmount, setTypedAmount] = useState<string>(
-    roundToTwo(payment.remainingAmount).toString()
+    roundToCents(payment.remainingAmount).toString()
   );
 
   const { handlePaymentChange, payOrder, resetPaymentValues } = useOrderPayment({
-    type,
+    scope,
+    stage,
     onOrderPaid,
     payment,
     setPayment,
@@ -92,14 +93,14 @@ export const OrderPaymentProvider = ({
   useEffect(() => {
     setPayment({
       ...DEFAULT_PAYMENT,
-      remainingAmount: orderTotal,
+      remainingAmount: roundToCents(orderTotal),
     });
-    setTypedAmount(roundToTwo(orderTotal).toString());
+    setTypedAmount(roundToCents(orderTotal).toString());
   }, [orderTotal]);
 
   const resetPayment = () => {
     resetPaymentValues();
-    setTypedAmount(orderTotal.toString());
+    setTypedAmount(roundToCents(orderTotal).toString());
   };
 
   return (

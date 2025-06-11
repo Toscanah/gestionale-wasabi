@@ -5,5 +5,5 @@ import PaymentConfirmation from "./PaymentConfirmation";
 export default function PaymentConfirmationAndTools() {
   const { payment } = useOrderPaymentContext();
 
-  return payment.remainingAmount > 0 ? <Tools /> : <PaymentConfirmation />;
+  return payment.remainingAmount !== 0 ? <Tools /> : <PaymentConfirmation />;
 }

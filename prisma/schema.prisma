@@ -77,6 +77,13 @@ enum RiceLogType {
     RESET
 }
 
+enum PaymentScope {
+    UNKNOWN
+    FULL
+    PARTIAL
+    ROMAN
+}
+
 model Rider {
     id       Int     @id @default(autoincrement())
     name     String
@@ -201,12 +208,13 @@ model Phone {
 }
 
 model Payment {
-    id         Int         @id @default(autoincrement())
-    amount     Float       @default(0)
+    id         Int          @id @default(autoincrement())
+    amount     Float        @default(0)
     order_id   Int
-    created_at DateTime    @default(now())
+    created_at DateTime     @default(now())
     type       PaymentType
-    order      Order       @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    scope      PaymentScope @default(UNKNOWN)
+    order      Order        @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }
 
 model RiceLog {

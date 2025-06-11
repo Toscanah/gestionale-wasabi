@@ -20,6 +20,7 @@ export default async function payOrder({
         amount: payment.amount,
         type: payment.type,
         order_id: payment.order_id,
+        scope: payment.scope,
       })),
     });
 

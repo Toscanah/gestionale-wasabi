@@ -71,13 +71,16 @@ export default async function getProductsWithStats({
     .map((product) => {
       const filteredOrders = product.orders.filter((productInOrder) => {
         const order = productInOrder.order;
-        const isPaid = order.state === OrderState.PAID;
-        const withinDate =
+        const isOrderPaid = order.state === OrderState.PAID;
+        const isWithinDate =
           !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
         const isValidState = productInOrder.state === ProductInOrderState.IN_ORDER;
 
         return (
-          isValidState && isPaid && withinDate && orderMatchesShift(order, shift as ShiftFilter)
+          isValidState &&
+          isOrderPaid &&
+          isWithinDate &&
+          orderMatchesShift(order, shift as ShiftFilter)
         );
       });
 

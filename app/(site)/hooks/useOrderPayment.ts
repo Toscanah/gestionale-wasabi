@@ -6,18 +6,17 @@ import { DEFAULT_PAYMENT, Payment } from "../context/OrderPaymentContext";
 import { useOrderContext } from "../context/OrderContext";
 import scaleProducts from "../lib/product-management/scaleProducts";
 import { getOrderTotal } from "../lib/order-management/getOrderTotal";
+import { OrderPaymentProps } from "../payments/order/OrderPayment";
 
-type UseOrderPaymentParams = {
-  type: "full" | "partial";
-  onOrderPaid: () => void;
+interface UseOrderPaymentParams extends Omit<OrderPaymentProps, "onBackButton" | "partialOrder"> {
   payment: Payment;
   setPayment: Dispatch<SetStateAction<Payment>>;
   payingOrder: AnyOrder;
-  manualTotalAmount?: number;
-};
+}
 
 export default function useOrderPayment({
-  type,
+  stage,
+  scope,
   onOrderPaid,
   payment,
   setPayment,
@@ -72,9 +71,10 @@ export default function useOrderPayment({
           amount: clipped,
           type: type.toUpperCase() as PaymentType,
           order_id: payingOrder.id,
+          scope,
         };
       })
-      .filter((p) => p.amount > 0);
+      // .filter((p) => p.amount > 0);
 
     fetchRequest<AnyOrder>("POST", "/api/payments/", "payOrder", {
       payments,
@@ -82,7 +82,7 @@ export default function useOrderPayment({
     }).then((updatedOrder) => {
       onOrderPaid();
 
-      if (type == "full") {
+      if (stage == "FINAL") {
         updateOrder({ state: "PAID" });
         return;
       }

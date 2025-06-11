@@ -1,4 +1,3 @@
-import { OrderWithPayments } from "@shared";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import { PaymentsSummaryData } from "../../hooks/usePaymentsHistory";
 

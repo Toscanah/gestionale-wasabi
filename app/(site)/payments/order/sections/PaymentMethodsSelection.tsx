@@ -1,7 +1,10 @@
 import { PaymentType } from "@prisma/client";
 import { PaymentMethod } from "../OrderPayment";
 import { Coins, CreditCard, ForkKnife, Money } from "@phosphor-icons/react";
-import { DEFAULT_CALCULATIONS, useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
+import {
+  DEFAULT_CALCULATIONS,
+  useOrderPaymentContext,
+} from "@/app/(site)/context/OrderPaymentContext";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
@@ -37,8 +40,19 @@ export default function PaymentMethodsSelection() {
         setActiveTool("manual");
       }
     } else {
-      handlePaymentChange(type, Number(typedAmount));
-      setTypedAmount(roundToTwo(payment.remainingAmount - Number(typedAmount)).toString());
+      const currentPaid = payment.paymentAmounts[type] ?? 0;
+      let parsedAmount = Number(typedAmount);
+
+      if (isNaN(parsedAmount)) {
+        return;
+      }
+
+      if ((payment.paymentAmounts[type] ?? 0) + parsedAmount < 0) {
+        parsedAmount = -currentPaid;
+      }
+
+      handlePaymentChange(type, parsedAmount);
+      setTypedAmount(roundToTwo(payment.remainingAmount - parsedAmount).toString());
     }
   };
 

@@ -1,22 +1,23 @@
 import prisma from "../db";
+import { PaymentScope } from "@prisma/client";
 
 export default async function getRomanPaymentsByOrder({
   orderId,
-  amount,
 }: {
   orderId: number;
-  amount: string;
-}): Promise<number> {
-  const target = parseFloat(amount);
-  const EPSILON = 0.03;
-
-  return await prisma.payment.count({
+}): Promise<{ payments: { amount: number }[] }> {
+  const romanPayments = await prisma.payment.findMany({
     where: {
       order_id: orderId,
-      amount: {
-        gte: target - EPSILON,
-        lte: target + EPSILON,
-      },
+      scope: PaymentScope.ROMAN,
+    },
+    orderBy: {
+      created_at: "asc",
+    },
+    select: {
+      amount: true,
     },
   });
+
+  return { payments: romanPayments };
 }

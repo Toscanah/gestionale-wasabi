@@ -1,6 +1,5 @@
 import getColumns from "./getColumns";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
 import getTable from "../../lib/util/getTable";
@@ -14,7 +13,8 @@ import print from "../../printing/print";
 import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
 import Notes from "./overview/Notes";
 import ExtraItems from "./overview/ExtraItems";
-import { OrderType } from "@prisma/client";
+import { OrderType, PaymentScope } from "@prisma/client";
+import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
@@ -103,7 +103,7 @@ export default function OrderTable() {
         />
 
         <ExtraItems />
-        
+
         {order.type !== OrderType.TABLE && (
           <div className="flex space-x-6">
             <Notes />
@@ -117,7 +117,16 @@ export default function OrderTable() {
     </div>
   ) : payingAction == "payFull" ? (
     <OrderPayment
-      type="full"
+      manualTotalAmount={
+        order.payments.some((p) => p.scope === PaymentScope.ROMAN)
+          ? getOrderTotal({ order, applyDiscount: true }) -
+            order.payments
+              .filter((p) => p.scope === PaymentScope.ROMAN)
+              .reduce((sum, p) => sum + p.amount, 0)
+          : undefined
+      }
+      stage="FINAL"
+      scope={PaymentScope.FULL}
       onOrderPaid={() => setPayingAction("paidFull")}
       onBackButton={() => setPayingAction("none")}
     />

@@ -90,6 +90,13 @@ export const CancelOrdersInBulkSchema = z.object({
   productsCooked: z.boolean(),
 });
 
+export const UpdateTablePplSchema = z.object({
+  orderId: z.number(),
+  people: z.number(),
+});
+
+export type UpdateTablePplInput = z.infer<typeof UpdateTablePplSchema>;
+
 export const ORDER_SCHEMAS = {
   getOrderById: GetOrderByIdSchema,
   getOrdersByType: GetOrdersByTypeSchema,
@@ -110,4 +117,5 @@ export const ORDER_SCHEMAS = {
   updateOrderExtraItems: UpdateOrderExtraItemsSchema,
   updateOrderShift: UpdateOrderShiftSchema,
   fixOrdersShift: NoContentSchema,
+  updateTablePpl: UpdateTablePplSchema,
 };

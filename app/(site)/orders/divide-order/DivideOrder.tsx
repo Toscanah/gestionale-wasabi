@@ -9,6 +9,7 @@ import { useOrderContext } from "../../context/OrderContext";
 import DivideTable from "./DivideTable";
 import moveProductsInDivideOrder from "../../lib/order-management/moveProductsInDivideOrder";
 import fetchRequest from "../../lib/api/fetchRequest";
+import { OrderState, PaymentScope } from "@prisma/client";
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
@@ -34,6 +35,13 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
   }, [products]);
 
   useEffect(() => {
+    if (order.state === OrderState.PAID) {
+      setPayingAction("paidFull");
+      setGoPay(false);
+    }
+  }, [order.state]);
+
+  useEffect(() => {
     if (leftProducts.length === 0 && rightProducts.length === 0) {
       setPayingAction("paidFull");
     }
@@ -44,6 +52,8 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
       ...order,
       products,
     };
+
+    
 
     setProductsToPay(products);
     setPayingAction("payPart");
@@ -87,6 +97,15 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
     }
   }, [dialogOpen]);
 
+  const isPayingLeft = productsToPay.every((p) => leftProducts.some((lp) => lp.id === p.id));
+
+  const isPayingRight = productsToPay.every((p) => rightProducts.some((rp) => rp.id === p.id));
+
+  const stage =
+    (isPayingLeft && rightProducts.length === 0) || (isPayingRight && leftProducts.length === 0)
+      ? "FINAL"
+      : "PARTIAL";
+
   return !goPay ? (
     <div className="w-full h-full flex flex-col gap-8">
       <div className="w-full h-full flex gap-8">
@@ -104,8 +123,7 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
               leftProducts,
               setLeftProducts,
               rightProducts,
-              setRightProducts,
-              order.type
+              setRightProducts
             )
           }
         />
@@ -121,8 +139,7 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
               rightProducts,
               setRightProducts,
               leftProducts,
-              setLeftProducts,
-              order.type
+              setLeftProducts
             )
           }
         />
@@ -136,7 +153,8 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
     </div>
   ) : (
     <OrderPayment
-      type="partial"
+      scope={PaymentScope.PARTIAL}
+      stage={stage}
       partialOrder={{
         ...order,
         products: productsToPay,

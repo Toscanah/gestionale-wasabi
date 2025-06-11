@@ -63,9 +63,10 @@ export default function MarketingTemplates({
         const isSelected = selectedTemplateIds.includes(template.id);
 
         return (
-          <div key={template.id} className="flex gap-4 w-full items-center">
+          <div key={template.id} className="flex gap-6 w-full items-center">
             {selection && (
               <Checkbox
+                className="ml-6"
                 checked={isSelected}
                 onCheckedChange={() => handleCheckboxChange(template.id)}
               />
@@ -74,7 +75,7 @@ export default function MarketingTemplates({
               index={index}
               mode="edit"
               template={template}
-              onChange={(updates) => {
+              onChange={(updates) =>
                 setTemplates((prev) =>
                   prev.map((t) => {
                     if (t.id !== template.id) return t;
@@ -88,8 +89,8 @@ export default function MarketingTemplates({
                       },
                     };
                   })
-                );
-              }}
+                )
+              }
               onSave={async (updatedTemplate) => {
                 onTemplateChange?.(updatedTemplate);
                 updateTemplate(updatedTemplate);

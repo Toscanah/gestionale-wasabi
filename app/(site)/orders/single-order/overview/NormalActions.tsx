@@ -5,7 +5,7 @@ import { PayingAction } from "../OrderTable";
 import print from "@/app/(site)/printing/print";
 import OrderReceipt from "@/app/(site)/printing/receipts/OrderReceipt";
 import RiderReceipt from "../../../printing/receipts/RiderReceipt";
-import { OrderType, QuickPaymentOption } from "@prisma/client";
+import { OrderType, PaymentScope, QuickPaymentOption } from "@prisma/client";
 import { ProductInOrder } from "@shared";
 import KitchenReceipt from "@/app/(site)/printing/receipts/KitchenReceipt";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
@@ -145,7 +145,10 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
         <Button
           className="w-full text-3xl h-12"
           onClick={() => setAction("payPart")}
-          disabled={!canSplit(order.products.filter((product) => product.id !== -1))}
+          disabled={
+            !canSplit(order.products.filter((product) => product.id !== -1)) ||
+            order.payments.some((p) => p.scope === PaymentScope.ROMAN)
+          }
         >
           Dividi 分单
         </Button>
