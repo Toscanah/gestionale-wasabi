@@ -4,7 +4,7 @@ import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
-import { EngagementState, OrderType, QuickPaymentOption } from "@prisma/client";
+import { OrderType, QuickPaymentOption } from "@prisma/client";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
 import ExtraItemsSection from "../common/ExtraItemsSection";
@@ -24,8 +24,7 @@ export default function OrderReceipt<T extends AnyOrder>(
   const bigSize = getReceiptSize(2, 2);
   const smallSize = getReceiptSize(1, 1);
 
-  const activeEngagements = order.engagements.filter((e) => e.state == EngagementState.APPLIED);
-  console.log(activeEngagements);
+  const activeEngagements = order.engagements.filter((e) => e.enabled);
 
   return (
     <>

@@ -21,9 +21,7 @@ export default async function createEngagement({
           },
           {
             home_order: {
-              customer: {
-                id: customerId,
-              },
+              customer_id: customerId,
             },
           },
         ],
@@ -70,8 +68,6 @@ export default async function createEngagement({
           connect: { id: finalOrderId },
         },
       }),
-      state: finalOrderId ? "APPLIED" : "PENDING",
-      used_at: finalOrderId ? new Date() : null,
     },
     include: {
       template: true,

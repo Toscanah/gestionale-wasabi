@@ -84,10 +84,10 @@ export function OrderEngagementTabs({
     <Tabs defaultValue="existing" className="space-y-4">
       <TabsList className="w-full flex justify-start space-x-2">
         <TabsTrigger value="existing" className="w-full">
-          Marketing disponibile
+          Marketing attivo
         </TabsTrigger>
         <TabsTrigger value="select" className="w-full">
-          Modelli
+          Modelli disponibili
         </TabsTrigger>
       </TabsList>
 

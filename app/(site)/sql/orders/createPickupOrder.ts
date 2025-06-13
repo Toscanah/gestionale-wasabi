@@ -1,4 +1,4 @@
-import { OrderType, EngagementState } from "@prisma/client";
+import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import { PickupOrder } from "@shared";
 import { engagementsInclude, productsInOrderInclude } from "../includes";
@@ -76,13 +76,11 @@ export default async function createPickupOrder({
       return { order: existingOrder, isNewOrder: false };
     }
 
-    // Fetch engagements if customer exists
-    const pendingEngagements =
+    const customerEngagements =
       customerId !== null
         ? await tx.engagement.findMany({
             where: {
               customer_id: customerId,
-              state: EngagementState.PENDING,
             },
           })
         : [];
@@ -92,7 +90,7 @@ export default async function createPickupOrder({
       data: {
         type: OrderType.PICKUP,
         engagements: {
-          connect: pendingEngagements.map((e) => ({ id: e.id })),
+          connect: customerEngagements.map((e) => ({ id: e.id })),
         },
         pickup_order: {
           create: {
@@ -116,14 +114,13 @@ export default async function createPickupOrder({
       },
     });
 
-    // Update applied engagements
-    if (pendingEngagements.length > 0) {
+    if (customerEngagements.length > 0) {
       await tx.engagement.updateMany({
         where: {
-          id: { in: pendingEngagements.map((e) => e.id) },
+          id: { in: customerEngagements.map((e) => e.id) },
         },
         data: {
-          state: EngagementState.APPLIED,
+          enabled: true,
           order_id: createdOrder.id,
         },
       });

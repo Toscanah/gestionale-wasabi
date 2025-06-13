@@ -48,10 +48,6 @@ export default function useEngagementTemplates() {
   const updateTemplate = async (template: UpdateEngagementTemplate) => {
     const payload = await maybeUploadImage(template.payload, template.selectedImage);
 
-    console.log(templates);
-
-    console.log("Updating template", template, payload);
-
     fetchRequest<ParsedEngagementTemplate>(
       "PATCH",
       "/api/engagements",
@@ -75,8 +71,6 @@ export default function useEngagementTemplates() {
       label: draft.label ?? "",
       payload: finalPayload as ParsedEngagementPayload,
     } as CreateEngagementTemplate;
-
-    console.log("Creating template", newTemplate);
 
     fetchRequest<ParsedEngagementTemplate>("POST", "/api/engagements", "createEngagementTemplate", {
       ...newTemplate,

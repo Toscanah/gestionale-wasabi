@@ -4,8 +4,8 @@ import { Label } from "@/components/ui/label";
 
 interface TemplateWrapperProps {
   templateComponent: React.ReactNode;
-  textAbove: string;
-  textBelow: string;
+  textAbove?: string;
+  textBelow?: string;
   onTextAboveChange: (val: string) => void;
   onTextBelowChange: (val: string) => void;
   onSubmit: () => Promise<void>;

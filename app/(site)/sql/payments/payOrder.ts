@@ -59,7 +59,7 @@ export default async function payOrder({
 
       await tx.engagement.updateMany({
         where: { order_id: orderId },
-        data: { state: "USED" },
+        data: { enabled: true },
       });
     }
 

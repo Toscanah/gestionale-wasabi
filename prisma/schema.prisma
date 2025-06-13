@@ -65,12 +65,6 @@ enum EngagementType {
     IMAGE
 }
 
-enum EngagementState {
-    PENDING // waiting for the next order to be created and engagement applied
-    APPLIED // engagement applied to the order
-    USED // engagement used (after order is PAID) and not valid anymore
-}
-
 enum RiceLogType {
     MANUAL
     BATCH
@@ -177,13 +171,12 @@ model Engagement {
     id          Int                @id @default(autoincrement())
     template_id Int
     template    EngagementTemplate @relation(fields: [template_id], references: [id])
-    state       EngagementState    @default(PENDING)
     created_at  DateTime           @default(now())
     customer    Customer?          @relation(fields: [customer_id], references: [id], onDelete: Cascade)
     customer_id Int?
     order       Order?             @relation(fields: [order_id], references: [id], onDelete: SetNull)
     order_id    Int?
-    used_at     DateTime?
+    enabled     Boolean            @default(true)
 }
 
 model Customer {

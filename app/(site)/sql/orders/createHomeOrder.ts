@@ -1,4 +1,4 @@
-import { EngagementState, OrderType } from "@prisma/client";
+import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import { engagementsInclude, productsInOrderInclude } from "../includes";
 import { HomeOrder } from "@shared";
@@ -15,11 +15,9 @@ export default async function createHomeOrder({
   contactPhone: string;
 }): Promise<HomeOrder> {
   return await prisma.$transaction(async (tx) => {
-    // 1. Get all PENDING engagements for the customer
-    const pendingEngagements = await tx.engagement.findMany({
+    const customerEngagements = await tx.engagement.findMany({
       where: {
         customer_id: customerId,
-        state: EngagementState.PENDING,
       },
     });
 
@@ -28,7 +26,7 @@ export default async function createHomeOrder({
       data: {
         type: OrderType.HOME,
         engagements: {
-          connect: pendingEngagements.map((e) => ({ id: e.id })),
+          connect: customerEngagements.map((e) => ({ id: e.id })),
         },
         home_order: {
           create: {
@@ -54,13 +52,13 @@ export default async function createHomeOrder({
     });
 
     // 3. Mark those engagements as APPLIED
-    if (pendingEngagements.length > 0) {
+    if (customerEngagements.length > 0) {
       await tx.engagement.updateMany({
         where: {
-          id: { in: pendingEngagements.map((e) => e.id) },
+          id: { in: customerEngagements.map((e) => e.id) },
         },
         data: {
-          state: EngagementState.APPLIED,
+          enabled: true,
           order_id: order.id,
         },
       });
