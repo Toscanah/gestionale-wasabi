@@ -6,6 +6,7 @@ import { ShiftFilter } from "../components/filters/shift/ShiftFilterSelector";
 import { orderMatchesShift } from "../lib/order-management/shift/orderMatchesShift";
 import { OrderType, PaymentType } from "@prisma/client";
 import { getOrderTotal } from "../lib/order-management/getOrderTotal";
+import roundToCents from "../lib/util/roundToCents";
 
 export type PaymentTotals = {
   [key in PaymentType]: { label: string; total: number };
@@ -24,6 +25,7 @@ export interface PaymentsSummaryData {
   customersCount: number;
   totalAmount: number; // discounted
   rawTotalAmount: number; // new field!
+  centsDifference: number;
 }
 
 const DEFAULT_SUMMARY_DATA: PaymentsSummaryData = {
@@ -44,6 +46,7 @@ const DEFAULT_SUMMARY_DATA: PaymentsSummaryData = {
   tableOrdersCount: 0,
   totalAmount: 0,
   rawTotalAmount: 0,
+  centsDifference: 0,
 };
 
 export default function usePaymentsHistory() {
@@ -112,6 +115,7 @@ export default function usePaymentsHistory() {
     let homeOrdersCount = 0;
     let pickupOrdersCount = 0;
     let tableOrdersCount = 0;
+    let centsDifference = 0;
 
     const newTotals: PaymentTotals = {
       [PaymentType.CASH]: { label: "Contanti", total: 0 },
@@ -121,19 +125,26 @@ export default function usePaymentsHistory() {
     };
 
     orders.forEach((order) => {
-      // Payments: reflect what was actually paid
-      order.payments.forEach((payment) => {
-        newTotals[payment.type].total += payment.amount;
-        totalAmount += payment.amount; // discounted (actual) money
-      });
-
-      // Get both raw and discounted totals
       const rawOrderTotal = getOrderTotal({ order, applyDiscount: false, onlyPaid: true });
       const discountedOrderTotal = getOrderTotal({ order, applyDiscount: true, onlyPaid: true });
+      const paidTotal = order.payments.reduce((sum, p) => sum + p.amount, 0);
 
+      const isCloseEnough = Math.abs(paidTotal - discountedOrderTotal) <= 0.05;
+      const effectivePaidTotal = isCloseEnough ? discountedOrderTotal : paidTotal;
+
+      // Track cent difference if it's "close enough"
+      if (isCloseEnough) {
+        const diff = roundToCents(paidTotal - discountedOrderTotal);
+        centsDifference += diff;
+      }
+
+      order.payments.forEach((payment) => {
+        newTotals[payment.type].total += payment.amount;
+      });
+
+      totalAmount += effectivePaidTotal;
       rawTotalAmount += rawOrderTotal;
 
-      // Assign to correct category
       if (order.type === OrderType.TABLE) {
         inPlaceAmount += discountedOrderTotal;
         tableOrdersAmount += discountedOrderTotal;
@@ -163,6 +174,7 @@ export default function usePaymentsHistory() {
       tableOrdersCount,
       totalAmount,
       rawTotalAmount,
+      centsDifference,
     });
   };
 

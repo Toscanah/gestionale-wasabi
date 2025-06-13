@@ -8,6 +8,23 @@ type PaymentReport = {
   amounts: number[];
 };
 
+function groupByRoundedAmount(amounts: number[], epsilon = 0.01): Map<number, number> {
+  const clusters = new Map<number, number>();
+
+  for (const amount of amounts) {
+    // Try to find a close match
+    const match = [...clusters.keys()].find((key) => Math.abs(key - amount) <= epsilon);
+
+    if (match !== undefined) {
+      clusters.set(match, clusters.get(match)! + 1);
+    } else {
+      clusters.set(amount, 1);
+    }
+  }
+
+  return clusters;
+}
+
 export default async function analyzePaymentScopes(): Promise<void> {
   const allPayments = await prisma.payment.findMany({
     select: {
@@ -35,9 +52,8 @@ export default async function analyzePaymentScopes(): Promise<void> {
       console.log(`🔄 Processing order ${processed} of ${total}...`);
     }
 
-    const uniqueAmounts = [...new Set(amounts)];
-    const countMap = new Map<number, number>();
-    amounts.forEach((a) => countMap.set(a, (countMap.get(a) ?? 0) + 1));
+    const countMap = groupByRoundedAmount(amounts, 0.01);
+    const uniqueAmounts = [...countMap.keys()];
 
     let inferredScope: PaymentScope;
 
@@ -98,7 +114,6 @@ export default async function analyzePaymentScopes(): Promise<void> {
 
   console.log("\n✅ Analysis complete.");
 }
-
 
 /**
  * for (const [orderId, amounts] of grouped.entries()) {

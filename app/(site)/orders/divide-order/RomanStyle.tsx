@@ -8,18 +8,7 @@ import { TableOrder } from "@shared";
 import { useOrderContext } from "../../context/OrderContext";
 import fetchRequest from "../../lib/api/fetchRequest";
 import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
-
-// ✅ Rounding that matches new requirement: round-half-up to 2 decimals
-function roundToCents(n: number): number {
-  const floored = Math.floor(n * 100); // e.g., 162.124 → 16212
-  const fraction = n * 100 - floored; // e.g., 0.4 or 0.5
-
-  if (fraction >= 0.5) {
-    return (floored + 1) / 100;
-  } else {
-    return floored / 100;
-  }
-}
+import roundToCents from "../../lib/util/roundToCents";
 
 interface RomanStyleProps {
   handleBackButton: () => void;
@@ -42,59 +31,34 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
       "GET",
       "/api/payments/",
       "getRomanPaymentsByOrder",
-      {
-        orderId: order.id,
-      }
+      { orderId: order.id }
     ).then(({ payments }) => {
-      const ppl = (order as TableOrder).table_order?.people || 1; // fixed, never recomputed
-      const totalToSplit = total; // updated total if changed
-
+      const ppl = (order as TableOrder).table_order?.people || 1;
       const alreadyPaid = roundToCents(payments.reduce((sum, p) => sum + p.amount, 0));
-
       const currentPersonIndex = payments.length + 1;
-      const remainingPeople = ppl - payments.length;
-      const remaining = roundToCents(totalToSplit - alreadyPaid);
 
-      const nextAmount = remainingPeople > 0 ? roundToCents(remaining / remainingPeople) : 0;
+      const perPersonAmount = roundToCents(total / ppl);
 
-      setPpl(ppl); // real value from table
+      setPpl(ppl);
       setCurrentPerson(currentPersonIndex);
       setPaidAmount(alreadyPaid);
-      setAmountToPay(nextAmount);
+      setAmountToPay(perPersonAmount);
     });
   }, [order, total]);
 
-  const handlePplChange = (newPpl: number) => {
-    if (newPpl <= 0 || newPpl < currentPerson) return;
-
-    // fetchRequest<TableOrder>("PATCH", "/api/orders", "updateTablePpl", {
-    //   orderId: order.id,
-    //   people: newPpl,
-    // }).then((updatedOrder) =>
-    //   updateOrder({ table_order: { ...(updatedOrder as TableOrder).table_order, people: newPpl } })
-    // );
-    setPpl(newPpl);
-
-    const remaining = roundToCents(total - paidAmount);
-    const remainingPpl = newPpl - (currentPerson - 1);
-
-    setAmountToPay(roundToCents(remaining / remainingPpl));
-  };
-
   const handleOrderPaymentComplete = () => {
-    const newPaidAmount = roundToCents(paidAmount + amountToPay);
-    const remainingPpl = ppl - currentPerson;
+    const currentRoundedPayment = roundToCents(amountToPay); // always same
+    const newPaidAmount = roundToCents(paidAmount + currentRoundedPayment);
 
-    setPaidAmount(newPaidAmount);
     updateOrder({
-      payments: [...order.payments, { amount: amountToPay, scope: PaymentScope.ROMAN }],
+      payments: [...order.payments, { amount: currentRoundedPayment, scope: PaymentScope.ROMAN }],
     });
 
     if (currentPerson < ppl) {
       setCurrentPerson((prev) => prev + 1);
-      const remaining = roundToCents(total - newPaidAmount);
-      setAmountToPay(roundToCents(remaining / remainingPpl));
+      setPaidAmount(newPaidAmount);
     } else {
+      setPaidAmount(newPaidAmount);
       handleOrderPaid();
     }
   };
@@ -107,16 +71,13 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
           type="number"
           value={ppl}
           disabled={true}
-          onChange={(e) => handlePplChange(e.target.valueAsNumber)}
+          onChange={(e) => {}}
           className="max-w-sm text-lg"
         />
 
         {ppl > 0 && (
           <div className="ml-auto flex gap-4 items-center">
             {currentPerson} di {ppl} persone
-            {/* <Button onClick={handleOrderPaymentComplete} disabled={currentPerson > ppl}>
-              Salta questo pagamento
-            </Button> */}
           </div>
         )}
       </div>

@@ -171,6 +171,19 @@ export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSumm
         }
       />
 
+      <Row
+        left={
+          <Text bold size={smallSize}>
+            CENTESIMI ARROTONDATI
+          </Text>
+        }
+        right={
+          <Text bold size={smallSize}>
+            {roundToTwo(summaryData.centsDifference)} €
+          </Text>
+        }
+      />
+
       <Cut />
     </>
   );
