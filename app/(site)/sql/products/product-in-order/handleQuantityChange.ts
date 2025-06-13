@@ -1,9 +1,7 @@
 import { OrderType, Prisma } from "@prisma/client";
 import { productInOrderInclude } from "../../includes";
 import { ProductInOrder } from "@shared";
-import { getProductPrice } from "@/app/(site)/lib/product-management/getProductPrice";
 import handleDeletion from "./handleDeletion";
-import { update } from "lodash";
 
 export default async function handleQuantityChange({
   tx,
@@ -18,7 +16,7 @@ export default async function handleQuantityChange({
 }) {
   const quantityDiff = newQuantity - productInOrder.quantity;
 
-  if (newQuantity === 0) {
+  if (Number(newQuantity) === 0) {
     return await handleDeletion({ tx, currentOrderId: currentOrder.id, productInOrder });
   }
 

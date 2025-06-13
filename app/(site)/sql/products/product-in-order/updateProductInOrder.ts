@@ -33,7 +33,7 @@ export default async function updateProductInOrder({
     if (key === "code") {
       return handleProductCodeChange({ tx, currentOrder, newProductCode: value, productInOrder });
     } else if (key === "quantity") {
-      return handleQuantityChange({ tx, currentOrder, newQuantity: value, productInOrder });
+      return handleQuantityChange({ tx, currentOrder, newQuantity: Number(value), productInOrder });
     }
 
     return { error: "Invalid key" };

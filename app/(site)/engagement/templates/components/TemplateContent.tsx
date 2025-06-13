@@ -12,7 +12,7 @@ import {
 } from "@/app/(site)/shared";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { EngagementType } from "@prisma/client";
-import TemplateWrapper from "../TemplateWrapper";
+import TemplateWrapper from "./TemplateWrapper";
 import QRCode from "../types/QRCode";
 import Message from "../types/Message";
 import Image from "../types/Image";
