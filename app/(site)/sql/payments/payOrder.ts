@@ -1,3 +1,4 @@
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
 import { AnyOrder, PayOrderInput } from "@shared";
@@ -17,7 +18,7 @@ export default async function payOrder({
     // 1. Create payments
     await tx.payment.createMany({
       data: payments.map((payment) => ({
-        amount: payment.amount,
+        amount: Number(roundToTwo(payment.amount)),
         type: payment.type,
         order_id: payment.order_id,
         scope: payment.scope,
