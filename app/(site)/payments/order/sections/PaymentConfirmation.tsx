@@ -1,20 +1,19 @@
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { debounce } from "lodash";
+import { useRef, useState } from "react";
 
 export default function PaymentConfirmation() {
   const { payOrder, resetPayment, orderTotal } = useOrderPaymentContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleConfirm = async () => {
+  const debouncedPay = useRef(debounce(() => payOrder(), 500)).current;
+
+  const handleConfirm = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-    try {
-      await payOrder();
-    } finally {
-      setIsSubmitting(false);
-    }
+    debouncedPay();
   };
 
   return (
