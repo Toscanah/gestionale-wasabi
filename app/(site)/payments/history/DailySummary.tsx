@@ -7,8 +7,6 @@ export default function DailySummary({ summaryData }: { summaryData: PaymentsSum
   const totalDaily = roundToTwo(totalAmount);
   const parsedCentsDifference = roundToTwo(centsDifference);
 
-  console.log(parsedCentsDifference)
-
   return (
     <table className="w-[25rem] text-xl">
       <tbody>
