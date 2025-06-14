@@ -12,11 +12,18 @@ import fetchRequest from "../../lib/api/fetchRequest";
 import { OrderState, PaymentScope } from "@prisma/client";
 
 interface DividerOrderProps {
+  setIsSubOrderCreating: Dispatch<SetStateAction<boolean>>;
+  isSubOrderCreating: boolean;
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
   products: ProductInOrder[];
 }
 
-export default function DivideOrder({ setPayingAction, products }: DividerOrderProps) {
+export default function DivideOrder({
+  setPayingAction,
+  products,
+  isSubOrderCreating,
+  setIsSubOrderCreating,
+}: DividerOrderProps) {
   const { order, createSubOrder, updateOrder } = useOrderContext();
   const { dialogOpen } = useOrderContext();
 
@@ -87,11 +94,18 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
   };
 
   useEffect(() => {
-    const asyncSubOrder = async (isReceiptPrinted: boolean) =>
-      await createSubOrder(order, rightProducts, isReceiptPrinted);
+    const asyncSubOrder = async (isReceiptPrinted: boolean) => {
+      setIsSubOrderCreating(true);
+
+      try {
+        await createSubOrder(order, rightProducts, isReceiptPrinted);
+      } finally {
+        setIsSubOrderCreating(false);
+      }
+    };
 
     if (!dialogOpen && rightProducts.length > 0) {
-      asyncSubOrder(goPay ? true : false);
+      asyncSubOrder(goPay);
     }
   }, [dialogOpen]);
 
