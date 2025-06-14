@@ -33,7 +33,6 @@ export default function OrderTable() {
 
   const [payingAction, setPayingAction] = useState<PayingAction>("none");
   const [rowSelection, setRowSelection] = useState({});
-  const [isSubOrderCreating, setIsSubOrderCreating] = useState(false);
 
   useEffect(() => {
     if (newCode !== "" && newQuantity > 0) {
@@ -73,10 +72,6 @@ export default function OrderTable() {
     if (payingAction === "paidFull") {
       toggleDialog(false);
     }
-
-    if (payingAction == "payPart") {
-      setIsSubOrderCreating(true);
-    }
   }, [payingAction]);
 
   useEffect(() => {
@@ -88,17 +83,14 @@ export default function OrderTable() {
       }
     };
 
-    console.log(isSubOrderCreating);
-
-    // 🚫 Skip if we're paying partially
-    if (!dialogOpen && !order.suborder_of && order.state !== "CANCELLED" && !isSubOrderCreating) {
+    if (!dialogOpen && !order.suborder_of && order.state !== "CANCELLED") {
       if (payingAction === "payPart") {
-        printKitchenRec();
+        setTimeout(() => printKitchenRec(), 1000);
       } else {
         printKitchenRec();
       }
     }
-  }, [dialogOpen, isSubOrderCreating]);
+  }, [dialogOpen]);
 
   return payingAction == "none" ? (
     <div className="w-full h-full flex gap-6 justify-between">
@@ -145,8 +137,6 @@ export default function OrderTable() {
     />
   ) : (
     <DivideOrder
-      isSubOrderCreating={isSubOrderCreating}
-      setIsSubOrderCreating={setIsSubOrderCreating}
       products={order.products.filter((product) => product.product_id !== -1)}
       setPayingAction={setPayingAction}
     />
