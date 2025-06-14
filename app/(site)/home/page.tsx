@@ -25,11 +25,11 @@ export default function HomeWrapper() {
   });
 
   // DO NOT CHANGE! THIS IS SO DELICATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) => {
+  const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) =>
     setOrders((prevOrders) => {
       const existingOrders = prevOrders[order.type] || [];
 
-      const actions = {
+      const actions: Record<UpdateStateAction, () => typeof prevOrders> = {
         update: () => ({
           ...prevOrders,
           [order.type]: existingOrders.map((o) => (o.id === order.id ? order : o)),
@@ -51,7 +51,6 @@ export default function HomeWrapper() {
 
       return actions[action]();
     });
-  };
 
   const fetchOrdersByType = async <T,>(type: OrderType): Promise<T> =>
     await fetchRequest<T>("GET", "/api/orders", "getOrdersByType", {
