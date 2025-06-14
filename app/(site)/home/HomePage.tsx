@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Fragment, useMemo } from "react";
+import { useState, useEffect, Fragment, useMemo } from "react";
 import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";

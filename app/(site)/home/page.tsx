@@ -32,24 +32,23 @@ export default function HomeWrapper() {
       const actions: Record<UpdateStateAction, () => typeof prevOrders> = {
         update: () => ({
           ...prevOrders,
-          [order.type]: existingOrders.map((o) => (o.id === order.id ? order : o)),
+          [order.type]: existingOrders.map((existingOrder) =>
+            existingOrder.id === order.id ? order : existingOrder
+          ),
         }),
+
         delete: () => ({
           ...prevOrders,
-          [order.type]: existingOrders.filter((o) => o.id !== order.id),
+          [order.type]: existingOrders.filter((existingOrder) => existingOrder.id !== order.id),
         }),
-        add: () => {
-          const alreadyExists = existingOrders.some((o) => o.id === order.id);
-          return alreadyExists
-            ? prevOrders
-            : {
-                ...prevOrders,
-                [order.type]: [...existingOrders, order],
-              };
-        },
+
+        add: () => ({
+          ...prevOrders,
+          [order.type]: [...existingOrders, order],
+        }),
       };
 
-      return actions[action]();
+      return actions[action]?.() ?? prevOrders;
     });
 
   const fetchOrdersByType = async <T,>(type: OrderType): Promise<T> =>
