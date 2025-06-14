@@ -84,11 +84,7 @@ export default function OrderTable() {
     };
 
     if (!dialogOpen && !order.suborder_of && order.state !== "CANCELLED") {
-      if (payingAction == "payPart") {
-        setTimeout(printKitchenRec, 500);
-      } else {
-        printKitchenRec();
-      }
+      printKitchenRec();
     }
   }, [dialogOpen]);
 

@@ -71,12 +71,15 @@ export function useOrderManager(
         orderType: parentOrder.type,
       });
 
-      updateGlobalState(newSubOrder, "add");
+      setTimeout(() => {
+        console.log("Halo");
+        updateGlobalState(newSubOrder, "add");
 
-      updateOrder({
-        products: updatedProducts,
-        is_receipt_printed: false,
-      });
+        updateOrder({
+          products: updatedProducts,
+          is_receipt_printed: false,
+        });
+      }, 1000);
     });
 
   const joinTableOrders = (tableToJoin: string) =>
