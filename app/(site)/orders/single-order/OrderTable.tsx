@@ -85,7 +85,7 @@ export default function OrderTable() {
 
     if (!dialogOpen && !order.suborder_of && order.state !== "CANCELLED") {
       if (payingAction === "payPart") {
-        setTimeout(() => printKitchenRec(), 1000);
+        setTimeout(() => printKitchenRec(), 750);
       } else {
         printKitchenRec();
       }
