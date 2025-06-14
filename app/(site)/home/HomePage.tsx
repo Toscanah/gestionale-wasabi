@@ -58,11 +58,11 @@ export default function HomePage({ orders }: HomePageProps) {
               size={32}
               className="hover:cursor-pointer hover:rotate-[360deg] transform transition-transform duration-500 ease-in-out"
             /> */}
-            <Button
+            {/* <Button
               onClick={() => {
                 fetchRequest("GET", "/api/payments", "analyzePaymentScopes");
               }}
-            ></Button>
+            ></Button> */}
           </div>
 
           <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />
