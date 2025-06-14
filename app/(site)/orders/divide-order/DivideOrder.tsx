@@ -53,8 +53,6 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
       products,
     };
 
-    
-
     setProductsToPay(products);
     setPayingAction("payPart");
     setGoPay(true);

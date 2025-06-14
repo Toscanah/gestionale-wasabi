@@ -27,8 +27,8 @@ export default function HomePage({ orders }: HomePageProps) {
 
   const [activeOrders, setActiveOrders] = useState<BuildOrderState<boolean, boolean, boolean>>({
     [OrderType.TABLE]: true,
-    [OrderType.HOME]: true,
-    [OrderType.PICKUP]: true,
+    [OrderType.HOME]: false,
+    [OrderType.PICKUP]: false,
   });
 
   const toggleOrdersByType = (type: OrderType) =>

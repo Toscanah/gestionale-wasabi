@@ -15,6 +15,8 @@ export type BuildOrderState<TTable, THome, TPickup> = {
 
 type Orders = BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>;
 
+type UpdateStateAction = "update" | "delete" | "add";
+
 export default function HomeWrapper() {
   const [orders, setOrders] = useState<Orders>({
     [OrderType.TABLE]: [],
@@ -22,25 +24,33 @@ export default function HomeWrapper() {
     [OrderType.PICKUP]: [],
   });
 
-  const updateGlobalState = (order: AnyOrder, action: "update" | "delete" | "add") => {
-    const existingOrders = orders[order.type] || [];
+  // DO NOT CHANGE! THIS IS SO DELICATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) => {
+    setOrders((prevOrders) => {
+      const existingOrders = prevOrders[order.type] || [];
 
-    const actions = {
-      update: () => ({
-        ...orders,
-        [order.type]: existingOrders.map((o) => (o.id === order.id ? order : o)),
-      }),
-      delete: () => ({
-        ...orders,
-        [order.type]: existingOrders.filter((o) => o.id !== order.id),
-      }),
-      add: () => ({
-        ...orders,
-        [order.type]: [...existingOrders, order],
-      }),
-    };
+      const actions = {
+        update: () => ({
+          ...prevOrders,
+          [order.type]: existingOrders.map((o) => (o.id === order.id ? order : o)),
+        }),
+        delete: () => ({
+          ...prevOrders,
+          [order.type]: existingOrders.filter((o) => o.id !== order.id),
+        }),
+        add: () => {
+          const alreadyExists = existingOrders.some((o) => o.id === order.id);
+          return alreadyExists
+            ? prevOrders
+            : {
+                ...prevOrders,
+                [order.type]: [...existingOrders, order],
+              };
+        },
+      };
 
-    setOrders(actions[action] ?? orders);
+      return actions[action]();
+    });
   };
 
   const fetchOrdersByType = async <T,>(type: OrderType): Promise<T> =>

@@ -38,6 +38,8 @@ export function useOrderManager(
         is_receipt_printed,
       } as AnyOrder;
 
+      console.log("Io sono updateOrder");
+
       updateGlobalState(
         updatedOrder,
         updatedOrder.state == "PAID" || updatedOrder.state == "CANCELLED" ? "delete" : "update"
