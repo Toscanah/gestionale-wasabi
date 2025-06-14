@@ -6,6 +6,7 @@ import { useWasabiContext } from "../context/WasabiContext";
 import generateDummyProduct from "../lib/product-management/generateDummyProduct";
 import { toastError, toastSuccess } from "../lib/util/toast";
 import scaleProducts from "../lib/product-management/scaleProducts";
+import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
