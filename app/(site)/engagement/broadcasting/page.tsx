@@ -8,11 +8,14 @@ import EngagementFilter from "./filters/EngagementFilter";
 import useEngagement from "../../hooks/engagement/useEngagement";
 import getTable from "../../lib/util/getTable";
 import Table from "../../components/table/Table";
-import EngagementDialog from "./components/EngagementDialog.tsx.disabled";
 import GoBack from "../../components/ui/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";
+import useGlobalFilter from "../../hooks/useGlobalFilter";
+import { Input } from "@/components/ui/input";
 
 export default function EngagementPage() {
+  const [globalFilter, setGlobalFilter] = useGlobalFilter();
+
   const {
     activeTypes,
     filteredLeftCustomers,
@@ -27,6 +30,8 @@ export default function EngagementPage() {
   const leftTable = getTable({
     data: filteredLeftCustomers,
     columns: columns({ isRightTable: false }),
+    globalFilter,
+    setGlobalFilter,
   });
 
   const rightTable = getTable({
@@ -36,27 +41,35 @@ export default function EngagementPage() {
 
   return (
     <div className="h-screen w-screen flex justify-center items-center p-16">
-      <div className="w-full h-full p-4 flex flex-col gap-4">
-        <WeekFilter onWeekFilterChange={onWeekFilterChange} weekFilter={weekFilter} />
+      <div className="min-w-w-[47.5%] w-[47.5%] h-full p-4 flex flex-col">
+        <div className="flex w-full gap-4 items-center mb-4">
+          <Input
+            value={globalFilter}
+            type="text"
+            placeholder="Cerca..."
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
+          <WeekFilter onWeekFilterChange={onWeekFilterChange} weekFilter={weekFilter} />
+        </div>
 
         <Table
           table={leftTable}
-          tableClassName="max-h-[70vh] h-[70vh]"
+          tableClassName="max-h-[74vh] h-[74vh] "
           onRowClick={onLeftTableRowClick}
         />
       </div>
 
-      <div className="h-full flex flex-col items-center justify-center">
+      <div className="w-[5%] h-full flex flex-col items-center justify-center">
         <ArrowRight size={80} />
       </div>
 
-      <div className="w-full h-full p-4 flex flex-col gap-4">
-        <EngagementFilter activeTypes={activeTypes} setActiveTypes={setActiveTypes} />
+      <div className="min-w-w-[47.5%] w-[47.5%] h-full p-4 flex flex-col gap-4">
+        {/* <EngagementFilter activeTypes={activeTypes} setActiveTypes={setActiveTypes} /> */}
 
         <Table
           cellClassName={(index) => (index == 3 ? "max-w-60 w-60 truncate" : "")}
           table={rightTable}
-          tableClassName="max-h-[70vh] h-[70vh]"
+          tableClassName="max-h-[74vh] h-[74vh]"
           onRowClick={onRightTableRowClick}
         />
 

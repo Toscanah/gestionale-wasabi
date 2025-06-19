@@ -6,6 +6,7 @@ import {
   pickupOrderInclude,
   productInOrderInclude,
 } from "../includes";
+import normalizeTemplatePayload from "../../lib/formatting-parsing/engagement/normalizeTemplatePayload";
 
 export default async function getOrderById({
   orderId,
@@ -45,5 +46,9 @@ export default async function getOrderById({
   return {
     ...existingOrder,
     products: filteredProducts,
+    engagements: existingOrder.engagements.map((e) => ({
+      ...e,
+      template: normalizeTemplatePayload(e.template),
+    })),
   };
 }

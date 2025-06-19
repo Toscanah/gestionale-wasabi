@@ -14,11 +14,11 @@ import { Accordion } from "@/components/ui/accordion";
 export default function EngagementSection() {
   const EngagementModels = () => (
     <DialogWrapper
-      onOpenChange={(open) => {
-        if (!open) {
-          window.location.reload();
-        }
-      }}
+      // onOpenChange={(open) => {
+      //   if (!open) {
+      //     window.location.reload();
+      //   }
+      // }}
       title="Modelli marketing"
       size="medium"
       trigger={
@@ -30,7 +30,7 @@ export default function EngagementSection() {
   );
 
   const engagementItems: SidebarMenuGroupItem[] = [
-    // { type: "link", path: "/engagement/broadcasting", label: "Ai clienti" },
+    { type: "link", path: "/engagement/broadcasting", label: "Ai clienti" },
     {
       type: "component",
       element: <EngagementModels />,

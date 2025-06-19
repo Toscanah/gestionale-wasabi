@@ -46,21 +46,15 @@ export default function columns({
     }),
   ];
 
-  if (isRightTable) {
-    columns.push(
-      TableColumn({
-        header: "Conteggio",
-        cellContent: (row) => row.original.engagements.length,
-        sortable: false,
-      }),
-
-      TableColumn({
-        header: "Vecchie azioni",
-        cellContent: (row) => <PrevEngagement engagements={row.original.engagements} />,
-        sortable: false,
-      })
-    );
-  }
+  // if (isRightTable) {
+  //   columns.push(
+  //     TableColumn({
+  //       header: "Vecchie azioni",
+  //       cellContent: (row) => <PrevEngagement engagements={row.original.engagements} />,
+  //       sortable: false,
+  //     })
+  //   );
+  // }
 
   return columns;
 }
