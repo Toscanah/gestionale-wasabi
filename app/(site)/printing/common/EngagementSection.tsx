@@ -43,22 +43,24 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
             {payload.textAbove && <Br />}
 
             {engagement.template.type === EngagementType.MESSAGE ? (
-              wrapTextCentered(messagePayload.message, MAX_BIG_CHARS).map((line, i) => (
-                <Text key={`msg-${i}`} align="left" size={bigSize} bold>
-                  {line}
-                </Text>
-              ))
-            ) : engagement.template.type === EngagementType.QR_CODE ? (
               <>
                 <Text key={`qr-${engagement.template.id}a`}>{"=".repeat(MAX_SMALL_CHARS)}</Text>
 
+                {wrapTextCentered(messagePayload.message, MAX_BIG_CHARS).map((line, i) => (
+                  <Text key={`msg-${i}`} align="left" size={bigSize} bold>
+                    {line}
+                  </Text>
+                ))}
+
+                <Text key={`qr-${engagement.template.id}b`}>{"=".repeat(MAX_SMALL_CHARS)}</Text>
+              </>
+            ) : engagement.template.type === EngagementType.QR_CODE ? (
+              <>
                 <QRCode
                   align="center"
                   content={(engagement.template.payload as QrPayload).url}
                   cellSize={6}
                 />
-
-                <Text key={`qr-${engagement.template.id}b`}>{"=".repeat(MAX_SMALL_CHARS)}</Text>
               </>
             ) : (
               <Image align="center" src={(engagement.template.payload as ImagePayload).imageUrl} />
