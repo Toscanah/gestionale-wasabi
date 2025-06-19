@@ -31,6 +31,8 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
 
         return (
           <Fragment key={index}>
+            <Br />
+
             {payload.textAbove &&
               wrapTextCentered(payload.textAbove, MAX_SMALL_CHARS).map((line, i) => (
                 <Text key={`above-${i}`} align="left" size={smallSize} bold>
@@ -48,9 +50,7 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
               ))
             ) : engagement.template.type === EngagementType.QR_CODE ? (
               <>
-                <Text key={`qr-${engagement.template.id}a`}>
-                  {"#" + "=".repeat(MAX_SMALL_CHARS - 2) + "#"}
-                </Text>
+                <Text key={`qr-${engagement.template.id}a`}>{"=".repeat(MAX_SMALL_CHARS)}</Text>
 
                 <QRCode
                   align="center"
@@ -58,9 +58,7 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
                   cellSize={6}
                 />
 
-                <Text key={`qr-${engagement.template.id}b`}>
-                  {"#" + "=".repeat(MAX_SMALL_CHARS - 2) + "#"}
-                </Text>
+                <Text key={`qr-${engagement.template.id}b`}>{"=".repeat(MAX_SMALL_CHARS)}</Text>
               </>
             ) : (
               <Image align="center" src={(engagement.template.payload as ImagePayload).imageUrl} />

@@ -28,6 +28,15 @@ export default async function cancelOrder({
     });
   }
 
+  await prisma.engagement.updateMany({
+    where: {
+      order_id: orderId,
+    },
+    data: {
+      enabled: true,
+    },
+  });
+
   // Cancel the order
   await prisma.order.update({
     where: { id: orderId },
