@@ -14,8 +14,6 @@ interface MarketingTemplatesProps {
   selection?: boolean;
   onSelectTemplate?: (templateId: number, selected: boolean) => void;
   selectedTemplateIds?: number[];
-  onTemplateChange?: (template: ParsedEngagementTemplate) => void;
-  onTemplateDelete?: (templateId: number) => void;
   filterFn?: (template: ParsedEngagementTemplate) => boolean;
 }
 
@@ -23,8 +21,6 @@ export default function MarketingTemplates({
   selection = false,
   onSelectTemplate,
   selectedTemplateIds = [],
-  onTemplateChange,
-  onTemplateDelete,
   filterFn,
 }: MarketingTemplatesProps) {
   const {
@@ -48,11 +44,9 @@ export default function MarketingTemplates({
   const handleTemplateDelete = async (templateId: number) => {
     await deleteTemplate(templateId);
     setTemplates((prev) => prev.filter((t) => t.id !== templateId));
-    onTemplateDelete?.(templateId);
   };
 
   const handleTemplateSave = async (updatedTemplate: ParsedEngagementTemplate) => {
-    onTemplateChange?.(updatedTemplate);
     updateTemplate(updatedTemplate);
   };
 

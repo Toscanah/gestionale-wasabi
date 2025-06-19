@@ -1,4 +1,4 @@
-import { Engagement, EngagementType } from "@prisma/client";
+import { EngagementType } from "@prisma/client";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import {
   CommonPayload,
@@ -20,8 +20,8 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
   const bigSize = getReceiptSize(2, 2);
 
   // Max character width per font size (based on font specs)
-  const maxSmallChars = 48;
-  const maxBigChars = 24;
+  const MAX_SMALL_CHARS = 48;
+  const MAX_BIG_CHARS = 24;
 
   return (
     <>
@@ -32,7 +32,7 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
         return (
           <Fragment key={index}>
             {payload.textAbove &&
-              wrapTextCentered(payload.textAbove, maxSmallChars).map((line, i) => (
+              wrapTextCentered(payload.textAbove, MAX_SMALL_CHARS).map((line, i) => (
                 <Text key={`above-${i}`} align="left" size={smallSize} bold>
                   {line}
                 </Text>
@@ -41,17 +41,27 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
             {payload.textAbove && <Br />}
 
             {engagement.template.type === EngagementType.MESSAGE ? (
-              wrapTextCentered(messagePayload.message, maxBigChars).map((line, i) => (
+              wrapTextCentered(messagePayload.message, MAX_BIG_CHARS).map((line, i) => (
                 <Text key={`msg-${i}`} align="left" size={bigSize} bold>
                   {line}
                 </Text>
               ))
             ) : engagement.template.type === EngagementType.QR_CODE ? (
-              <QRCode
-                align="center"
-                content={(engagement.template.payload as QrPayload).url}
-                cellSize={6}
-              />
+              <>
+                <Text key={`qr-${engagement.template.id}a`}>
+                  {"#" + "=".repeat(MAX_SMALL_CHARS - 2) + "#"}
+                </Text>
+
+                <QRCode
+                  align="center"
+                  content={(engagement.template.payload as QrPayload).url}
+                  cellSize={6}
+                />
+
+                <Text key={`qr-${engagement.template.id}b`}>
+                  {"#" + "=".repeat(MAX_SMALL_CHARS - 2) + "#"}
+                </Text>
+              </>
             ) : (
               <Image align="center" src={(engagement.template.payload as ImagePayload).imageUrl} />
             )}
@@ -59,7 +69,7 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
             <Br />
 
             {payload.textBelow &&
-              wrapTextCentered(payload.textBelow, maxSmallChars).map((line, i) => (
+              wrapTextCentered(payload.textBelow, MAX_SMALL_CHARS).map((line, i) => (
                 <Text key={`below-${i}`} align="left" size={smallSize} bold>
                   {line}
                 </Text>

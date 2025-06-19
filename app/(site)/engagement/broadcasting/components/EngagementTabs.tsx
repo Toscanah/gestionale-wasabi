@@ -61,14 +61,17 @@ export function OrderEngagementTabs({
   }, [order]);
 
   const handleEngagementDelete = async (engagementId: number) => {
-    await onDeleteEngagement(engagementId);
-    setEngagements((prev) => prev.filter((e) => e.id !== engagementId));
-    updateOrder(
-      patchOrderEngagements({
-        order,
-        removeTemplateIds: [engagementId],
+    await onDeleteEngagement(engagementId)
+      .then(() => {
+        setEngagements((prev) => prev.filter((e) => e.id !== engagementId));
+        updateOrder(
+          patchOrderEngagements({
+            order,
+            removeTemplateIds: [engagementId],
+          })
+        );
       })
-    );
+      .finally(() => toastSuccess("Marketing rimosso con successo"));
   };
 
   const handleEngagementToggle = async (engagementId: number, enabled: boolean) => {
@@ -153,8 +156,6 @@ export function OrderEngagementTabs({
           selection
           selectedTemplateIds={selectedTemplates}
           onSelectTemplate={onSelectTemplate}
-          onTemplateChange={handleTemplateChange}
-          onTemplateDelete={handleTemplateDelete}
           filterFn={(template) => !engagements.some((e) => e.template.id === template.id)}
         />
 
