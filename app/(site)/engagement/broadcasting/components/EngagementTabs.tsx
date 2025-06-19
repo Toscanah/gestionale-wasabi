@@ -13,15 +13,18 @@ import { Accordion } from "@/components/ui/accordion";
 import MarketingTemplates from "../../templates/MarketingTemplates";
 import { Button } from "@/components/ui/button";
 import { patchOrderEngagements } from "../../../lib/order-management/patchOrderEngagements";
-import TemplateContent from "../../templates/components/TemplateContent";
 import { Checkbox } from "@/components/ui/checkbox";
+import TemplateContentView from "../../templates/components/content/TemplateContentView";
+import { toastSuccess } from "@/app/(site)/lib/util/toast";
+import { Trash } from "@phosphor-icons/react";
 
 type OrderEngagementTabsProps = {
   order: AnyOrder;
   selectedTemplates: number[];
   onSelectTemplate: (id: number) => void;
   onCreateEngagement: () => void;
-  onDelete: (engagementId: number) => Promise<void>;
+  onDeleteEngagement: (engagementId: number) => Promise<void>;
+  onToggleEngagement: (engagementId: number) => Promise<void>;
 };
 
 function dedupeEngagements(engagements: EngagementWithDetails[]): EngagementWithDetails[] {
@@ -38,10 +41,11 @@ export function OrderEngagementTabs({
   selectedTemplates,
   onSelectTemplate,
   onCreateEngagement,
-  onDelete,
+  onDeleteEngagement,
+  onToggleEngagement,
 }: OrderEngagementTabsProps) {
   const { updateOrder } = useOrderContext();
-  const [activeEngagements, setActiveEngagements] = useState<EngagementWithDetails[]>([]);
+  const [engagements, setEngagements] = useState<EngagementWithDetails[]>([]);
 
   useEffect(() => {
     const all = [
@@ -53,85 +57,105 @@ export function OrderEngagementTabs({
         ? (order as PickupOrder).pickup_order?.customer?.engagements ?? []
         : []),
     ];
-    setActiveEngagements(dedupeEngagements(all));
+    setEngagements(dedupeEngagements(all));
   }, [order]);
 
   const handleEngagementDelete = async (engagementId: number) => {
-    await onDelete(engagementId);
-
-    setActiveEngagements((prev) => prev.filter((e) => e.id !== engagementId));
-
+    await onDeleteEngagement(engagementId);
+    setEngagements((prev) => prev.filter((e) => e.id !== engagementId));
     updateOrder(
       patchOrderEngagements({
         order,
-        removeIds: [engagementId],
+        removeTemplateIds: [engagementId],
       })
     );
+  };
+
+  const handleEngagementToggle = async (engagementId: number, enabled: boolean) => {
+    await onToggleEngagement(engagementId)
+      .then(() => {
+        setEngagements((prev) => prev.map((e) => (e.id === engagementId ? { ...e, enabled } : e)));
+        updateOrder(
+          patchOrderEngagements({
+            order,
+            updateEngagements: [{ id: engagementId, enabled }],
+          })
+        );
+      })
+      .finally(() =>
+        toastSuccess(`Marketing ${enabled ? "attivato" : "disattivato"} con successo`)
+      );
   };
 
   const handleTemplateDelete = (templateId: number) => {
-    setActiveEngagements((prev) => prev.filter((e) => e.template.id !== templateId));
-
+    setEngagements((prev) => prev.filter((e) => e.template.id !== templateId));
     updateOrder(
       patchOrderEngagements({
         order,
-        removeIds: activeEngagements.filter((e) => e.template.id === templateId).map((e) => e.id),
+        removeTemplateIds: engagements.filter((e) => e.template.id === templateId).map((e) => e.id),
       })
     );
   };
+
+  const handleTemplateChange = (updatedTemplate: ParsedEngagementTemplate) =>
+    updateOrder(
+      patchOrderEngagements({
+        order,
+        updateTemplates: [updatedTemplate],
+      })
+    );
 
   return (
     <Tabs defaultValue="existing" className="space-y-4">
       <TabsList className="w-full flex justify-start space-x-2">
         <TabsTrigger value="existing" className="w-full">
-          Marketing attivo
+          Marketing applicati
         </TabsTrigger>
-        <TabsTrigger value="select" className="w-full">
-          Modelli disponibili
+        <TabsTrigger value="templates-list" className="w-full">
+          Lista modelli
         </TabsTrigger>
       </TabsList>
 
       <TabsContent value="existing" className="space-y-2">
-        {activeEngagements.length === 0 ? (
+        {engagements.length === 0 ? (
           <p className="text-muted-foreground w-full flex justify-center">
-            Nessun marketing attivo
+            Nessun marketing applicato
           </p>
         ) : (
-          <Accordion type="multiple" className="flex gap-4 w-full items-center">
-            {activeEngagements.map((engagement, index) => (
-              <>
-                {/* <Checkbox
-                  checked={isSelected}
-                  onCheckedChange={() => handleCheckboxChange(template.id)}
-                /> */}
-                <TemplateContent
-                  key={engagement.id} // ✅ added key
-                  mode="view"
-                  onDelete={async () => handleEngagementDelete(engagement.id)}
-                  index={index}
-                  template={engagement.template as ParsedEngagementTemplate}
-                  disabled={true}
+          <Accordion type="multiple" className="flex flex-col gap-4 w-full items-center">
+            {engagements.map((engagement, index) => (
+              <div className="flex gap-6 w-full items-center">
+                <Checkbox
+                  className="ml-6"
+                  checked={engagement.enabled}
+                  onCheckedChange={(checked) =>
+                    handleEngagementToggle(engagement.id, Boolean(checked))
+                  }
                 />
-              </>
+
+                <TemplateContentView
+                  index={index}
+                  key={engagement.id}
+                  template={engagement.template as ParsedEngagementTemplate}
+                />
+
+                <Button onClick={() => handleEngagementDelete(engagement.id)} className="mr-2">
+                  <Trash size={24} />
+                </Button>
+              </div>
             ))}
           </Accordion>
         )}
       </TabsContent>
 
-      <TabsContent value="select" className="space-y-4">
+      <TabsContent value="templates-list" className="space-y-4">
         <MarketingTemplates
           selection
           selectedTemplateIds={selectedTemplates}
           onSelectTemplate={onSelectTemplate}
-          onTemplateChange={(updatedTemplate) =>
-            updateOrder(
-              patchOrderEngagements({
-                order,
-                updateTemplates: [updatedTemplate],
-              })
-            )
-          }
+          onTemplateChange={handleTemplateChange}
           onTemplateDelete={handleTemplateDelete}
+          filterFn={(template) => !engagements.some((e) => e.template.id === template.id)}
         />
 
         <Button

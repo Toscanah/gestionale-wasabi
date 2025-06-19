@@ -17,26 +17,11 @@ export const TemplatePayloadDraftSchema = ParsedEngagementTemplateSchema.omit({
 
 export type TemplatePayloadDraft = z.infer<typeof TemplatePayloadDraftSchema>;
 
-//
-// Creation Schema (discriminated by type)
-//
-export const createEngagementTemplateSchema = z.discriminatedUnion("type", [
-  z.object({
-    label: z.string().optional(),
-    type: z.literal(EngagementType.QR_CODE),
-    payload: QrPayloadSchema,
-  }),
-  z.object({
-    label: z.string().optional(),
-    type: z.literal(EngagementType.IMAGE),
-    payload: ImagePayloadSchema,
-  }),
-  z.object({
-    label: z.string().optional(),
-    type: z.literal(EngagementType.MESSAGE),
-    payload: MessagePayloadSchema,
-  }),
-]);
+export const createEngagementTemplateSchema = z.object({
+  label: z.string().optional(),
+  type: z.nativeEnum(EngagementType),
+  payload: z.record(z.any()),
+});
 
 export type CreateEngagementTemplate = z.infer<typeof createEngagementTemplateSchema>;
 
@@ -76,6 +61,9 @@ export type DeleteTemplateById = z.infer<typeof deleteTemplateByIdSchema>;
 export const deleteEngagementByIdSchema = wrapSchema("engagementId", z.number());
 export type DeleteEngagementById = z.infer<typeof deleteEngagementByIdSchema>;
 
+export const toggleEngagementByIdSchema = wrapSchema("engagementId", z.number());
+
+export type ToggleEngagementById = z.infer<typeof toggleEngagementByIdSchema>;
 //
 // Schema Registry
 //
@@ -87,4 +75,5 @@ export const ENGAGEMENT_SCHEMAS = {
   updateEngagementTemplate: updateEngagementTemplateSchema,
   deleteTemplateById: deleteTemplateByIdSchema,
   deleteEngagementById: deleteEngagementByIdSchema,
+  toggleEngagementById: toggleEngagementByIdSchema,
 };

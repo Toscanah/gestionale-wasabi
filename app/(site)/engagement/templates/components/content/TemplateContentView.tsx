@@ -8,19 +8,18 @@ import renderByType from "../../types/renderByType";
 
 type ViewModeProps = {
   index: number;
-  onDelete: (engagementId: number) => Promise<void>;
   template: ParsedEngagementTemplate;
 };
 
-export default function TemplateContentView({ index, template, onDelete }: ViewModeProps) {
-  const { type, payload, label, id } = template;
+export default function TemplateContentView({ index, template }: ViewModeProps) {
+  const { type, label, payload } = template;
 
   return (
     <>
       <AccordionItem value={`view-${index}`} className="w-full">
         <AccordionTrigger>
           <div className="w-full flex justify-start">
-            #{index + 1} - {label ?? "Nessuna etichetta"} ({getTemplateName(type)})
+            #{index + 1} - {label?.length ? label : "Nessuna etichetta"} ({getTemplateName(type)})
           </div>
         </AccordionTrigger>
 
@@ -33,10 +32,6 @@ export default function TemplateContentView({ index, template, onDelete }: ViewM
           />
         </AccordionContent>
       </AccordionItem>
-
-      <Button onClick={() => onDelete(id)} className="mr-2">
-        <Trash size={24} />
-      </Button>
     </>
   );
 }

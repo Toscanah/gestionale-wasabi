@@ -20,12 +20,7 @@ type CreateModeProps = {
   draftTemplate: TemplatePayloadDraft;
   onChange: (updates: Partial<CreateTemplateWithImage>) => void;
   onCreate: (template: TemplatePayloadDraft) => Promise<void>;
-};
-
-const EMPTY_PAYLOADS: Record<EngagementType, ParsedEngagementPayload> = {
-  QR_CODE: { url: "", textAbove: "", textBelow: "" },
-  IMAGE: { imageUrl: "", textAbove: "", textBelow: "" },
-  MESSAGE: { message: "", textAbove: "", textBelow: "" },
+  onTypeChange: (newType: EngagementType) => void;
 };
 
 export default function TemplateContentCreate({
@@ -33,52 +28,60 @@ export default function TemplateContentCreate({
   draftTemplate,
   onChange,
   onCreate,
+  onTypeChange,
 }: CreateModeProps) {
   const { type, payload, label } = draftTemplate;
 
-  const handleTemplateChange = (updates: Partial<CreateTemplateWithImage>) => {
-    if (type === EngagementType.IMAGE && "selectedImage" in updates) {
-      onChange(updates);
-    } else {
-      handlePayloadChange(updates.payload );
-    }
-  };
-
-  const handlePayloadChange = (updates: Partial<CreateEngagementTemplate>) =>
+  const updatePayload = (newValues: Partial<ParsedEngagementPayload>) => {
     onChange({
       type,
-      payload: {
-        ...payload,
-        ...updates,
-      } as any,
+      payload: { ...payload, ...newValues },
     });
+  };
+
+  const updateField = (field: keyof ParsedEngagementPayload, value: string) => {
+    updatePayload({ [field]: value });
+  };
+
+  const handleLabelChange = (value: string) => {
+    onChange({ label: value });
+  };
+
+  const handleTemplateComponentChange = (
+    patch: Partial<ParsedEngagementPayload> | { selectedImage: File | null }
+  ) => {
+    if ("selectedImage" in patch) {
+      onChange({ selectedImage: patch.selectedImage });
+    } else {
+      updatePayload(patch);
+    }
+  };
 
   return (
     <AccordionItem value={`create-${index}`} className="w-full">
       <AccordionTrigger>
         <div className="w-full flex justify-start">Crea nuovo modello</div>
       </AccordionTrigger>
-      <AccordionContent className="flex flex-col gap-4">
-        <TemplateTypeSelector
-          selectedType={type}
-          onChange={(newType) =>
-            onChange({
-              type: newType,
-              payload: EMPTY_PAYLOADS[newType] as any,
-            })
-          }
-        />
 
-        <Label htmlFor={`label-${index}`}>Etichetta</Label>
-        <Input defaultValue={label ?? ""} onChange={(e) => onChange({ label: e.target.value })} />
+      <AccordionContent className="flex flex-col gap-4">
+        <TemplateTypeSelector selectedType={type} onChange={onTypeChange} />
+
+        <div className="flex flex-col space-y-2">
+          <Label htmlFor={`label-${index}`}>Etichetta</Label>
+          <Input
+            id={`label-${index}`}
+            value={label ?? ""}
+            onChange={(e) => handleLabelChange(e.target.value)}
+          />
+        </div>
 
         <TemplateWrapper
           textAbove={payload.textAbove}
           textBelow={payload.textBelow}
-          onTextAboveChange={(val) => handleTemplateChange({ payload: { textAbove: val } })}
-          onTextBelowChange={(val) => handleTemplateChange({ payload: { textBelow: val } })}
+          onTextAboveChange={(val) => updateField("textAbove", val)}
+          onTextBelowChange={(val) => updateField("textBelow", val)}
           onSubmit={() => onCreate(draftTemplate)}
-          templateComponent={renderByType(type, payload, handlePayloadChange)}
+          templateComponent={renderByType(type, payload, handleTemplateComponentChange)}
         />
       </AccordionContent>
     </AccordionItem>

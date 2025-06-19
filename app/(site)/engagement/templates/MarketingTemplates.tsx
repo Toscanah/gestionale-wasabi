@@ -1,6 +1,5 @@
 import { Accordion } from "@/components/ui/accordion";
 import useEngagementTemplates from "../../hooks/engagement/templates/useEngagementTemplates";
-import TemplateContent from "./components/TemplateContent";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   CreateEngagementTemplate,
@@ -8,6 +7,8 @@ import {
   TemplatePayloadDraft,
 } from "../../shared";
 import TemplateContentCreate from "./components/content/TemplateContentCreate";
+import TemplateContentEdit from "./components/content/TemplateContentEdit";
+import TemplateContentView from "./components/content/TemplateContentView";
 
 interface MarketingTemplatesProps {
   selection?: boolean;
@@ -15,6 +16,7 @@ interface MarketingTemplatesProps {
   selectedTemplateIds?: number[];
   onTemplateChange?: (template: ParsedEngagementTemplate) => void;
   onTemplateDelete?: (templateId: number) => void;
+  filterFn?: (template: ParsedEngagementTemplate) => boolean;
 }
 
 export default function MarketingTemplates({
@@ -23,6 +25,7 @@ export default function MarketingTemplates({
   selectedTemplateIds = [],
   onTemplateChange,
   onTemplateDelete,
+  filterFn,
 }: MarketingTemplatesProps) {
   const {
     templates,
@@ -32,7 +35,10 @@ export default function MarketingTemplates({
     updateTemplate,
     createTemplate,
     deleteTemplate,
+    resetDraftTemplate,
   } = useEngagementTemplates();
+
+  const filteredTemplates = filterFn ? templates.filter(filterFn) : templates;
 
   const handleCheckboxChange = (templateId: number) => {
     const isSelected = selectedTemplateIds.includes(templateId);
@@ -53,7 +59,7 @@ export default function MarketingTemplates({
   const handleTemplateCreate = async (newTemplate: TemplatePayloadDraft) =>
     await createTemplate(newTemplate);
 
-  const handleNewTemplateChange = (updatedDraft: Partial<CreateEngagementTemplate>) =>
+  const handleNewTemplateChange = (updatedDraft: Partial<CreateEngagementTemplate>) => {
     setDraftTemplate((prev) => ({
       ...prev,
       ...updatedDraft,
@@ -62,6 +68,7 @@ export default function MarketingTemplates({
         ...(updatedDraft.payload ?? {}),
       },
     }));
+  };
 
   const handleTemplateChange = (templateId: number, updates: Partial<ParsedEngagementTemplate>) => {
     setTemplates((prev) =>
@@ -79,16 +86,21 @@ export default function MarketingTemplates({
     );
   };
 
-  return (
-    <Accordion type="multiple" className="w-full">
-      <TemplateContentCreate
-        index={templates.length + 1}
-        draftTemplate={draftTemplate}
-        onChange={handleNewTemplateChange}
-        onCreate={handleTemplateCreate}
-      />
+  const handleTypeChange = resetDraftTemplate;
 
-      {templates.map((template, index) => {
+  return filteredTemplates.length ? (
+    <Accordion type="multiple" className="w-full">
+      {!selection && (
+        <TemplateContentCreate
+          index={filteredTemplates.length + 1}
+          draftTemplate={draftTemplate}
+          onChange={handleNewTemplateChange}
+          onCreate={handleTemplateCreate}
+          onTypeChange={handleTypeChange}
+        />
+      )}
+
+      {filteredTemplates.map((template, index) => {
         const isSelected = selectedTemplateIds.includes(template.id);
 
         return (
@@ -101,17 +113,22 @@ export default function MarketingTemplates({
               />
             )}
 
-            <TemplateContent
-              index={index}
-              mode="edit"
-              template={template}
-              onChange={(updates) => handleTemplateChange(template.id, updates)}
-              onSave={handleTemplateSave}
-              onDelete={handleTemplateDelete}
-            />
+            {selection ? (
+              <TemplateContentView index={index} template={template} />
+            ) : (
+              <TemplateContentEdit
+                index={index}
+                template={template}
+                onChange={(updates) => handleTemplateChange(template.id, updates)}
+                onDelete={handleTemplateDelete}
+                onSave={handleTemplateSave}
+              />
+            )}
           </div>
         );
       })}
     </Accordion>
+  ) : (
+    <p className="text-muted-foreground w-full flex justify-center">Nessun modello disponibile</p>
   );
 }

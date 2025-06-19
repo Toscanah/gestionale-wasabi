@@ -36,7 +36,7 @@ export type ParsedEngagementPayload = z.infer<typeof ParsedEngagementPayloadSche
 
 export const EngagementWithDetailsSchema = EngagementSchema.extend({
   template: EngagementTemplateSchema.extend({
-    payload: z.any(),
+    payload: z.record(z.any()),
   }),
 });
 

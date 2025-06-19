@@ -94,11 +94,15 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
       engagementId,
     });
 
+  const toggleEngagement = async (engagementId: number) =>
+    fetchRequest<void>("PATCH", "/api/engagements", "toggleEngagementById", { engagementId });
+
   return {
     createEngagements,
     getEngagements,
     selectedTemplates,
     onSelectTemplate,
     deleteEngagement,
+    toggleEngagement,
   };
 }

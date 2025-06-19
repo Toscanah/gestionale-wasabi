@@ -7,6 +7,7 @@ import updateEngagementTemplate from "../../sql/engagement/templates/updateEngag
 import createEngagementTemplate from "../../sql/engagement/templates/createEngagementTemplate";
 import deleteTemplateById from "../../sql/engagement/templates/deleteTemplateById";
 import deleteEngagementById from "../../sql/engagement/deleteEngagementById";
+import toggleEngagementById from "../../sql/engagement/toggleEngagementById";
 
 const GET_ACTIONS = new Map([
   // [
@@ -31,6 +32,13 @@ const PATCH_ACTIONS = new Map([
   [
     "updateEngagementTemplate",
     { func: updateEngagementTemplate, schema: ENGAGEMENT_SCHEMAS.updateEngagementTemplate },
+  ],
+  [
+    "toggleEngagementById",
+    {
+      func: toggleEngagementById,
+      schema: ENGAGEMENT_SCHEMAS.toggleEngagementById,
+    },
   ],
 ]);
 

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 import { OrderEngagementTabs } from "./EngagementTabs";
 
-type EngagementDialogContext = "order" | "admin" | "templates";
+type EngagementDialogContext = "order" | "admin";
 
 type CreateEngagementDialogProps = {
   trigger: DialogWrapperProps["trigger"];
@@ -38,7 +38,7 @@ export default function EngagementDialog({
   const { createEngagements, selectedTemplates, onSelectTemplate, deleteEngagement } =
     useHandleEngagement(params);
 
-  const onCreateEngagement = async () => {
+  const handleCreateEngagement = async () => {
     if (!selectedTemplates.length) return;
     await createEngagements()
       .then(onSuccess)
@@ -48,9 +48,7 @@ export default function EngagementDialog({
   return (
     <DialogWrapper title="Marketing" trigger={trigger}>
       <div className="space-y-4">
-        {context === "templates" && <MarketingTemplates selection={false} />}
-
-        {context === "admin" && (
+        {/* {context === "admin" && (
           <>
             <MarketingTemplates
               selection
@@ -65,14 +63,14 @@ export default function EngagementDialog({
               Vai
             </Button>
           </>
-        )}
+        )} */}
 
         {context === "order" && order && (
           <OrderEngagementTabs
             order={order}
             selectedTemplates={selectedTemplates}
             onSelectTemplate={onSelectTemplate}
-            onCreateEngagement={onCreateEngagement}
+            onCreateEngagement={handleCreateEngagement}
             onDelete={async (engagementId) => {
               deleteEngagement(engagementId);
             }}

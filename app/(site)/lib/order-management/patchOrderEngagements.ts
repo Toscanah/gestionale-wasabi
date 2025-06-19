@@ -7,77 +7,87 @@ import {
 } from "../../shared";
 import { OrderType } from "@prisma/client";
 
+interface PatchEngagementsParams {
+  order: AnyOrder;
+  addEngagements?: EngagementWithDetails[];
+  removeTemplateIds?: number[];
+  updateTemplates?: ParsedEngagementTemplate[];
+  updateEngagements?: Partial<EngagementWithDetails>[];
+}
+
 export function patchOrderEngagements({
   order,
-  add = [],
-  removeIds = [],
+  addEngagements = [],
+  removeTemplateIds = [],
   updateTemplates = [],
-}: {
-  order: AnyOrder;
-  add?: EngagementWithDetails[];
-  removeIds?: number[];
-  updateTemplates?: ParsedEngagementTemplate[];
-}): AnyOrder {
-  const updateEngagements = (
-    engagements: EngagementWithDetails[] | undefined
+  updateEngagements = [],
+}: PatchEngagementsParams): AnyOrder {
+  const patchEngagementList = (
+    existing: EngagementWithDetails[] | undefined
   ): EngagementWithDetails[] => {
-    let updated = engagements ?? [];
+    let patched = existing ?? [];
 
-    // Remove by ID
-    if (removeIds.length > 0) {
-      updated = updated.filter((e) => !removeIds.includes(e.id));
+    // Remove unwanted templates (by engagement ID)
+    if (removeTemplateIds.length > 0) {
+      patched = patched.filter((e) => !removeTemplateIds.includes(e.id));
     }
 
-    // Update templates
+    // Apply template updates
     if (updateTemplates.length > 0) {
-      updated = updated.map((e) => {
+      patched = patched.map((e) => {
         const updatedTemplate = updateTemplates.find((t) => t.id === e.template.id);
         return updatedTemplate ? { ...e, template: updatedTemplate } : e;
       });
     }
 
-    // Add new ones
-    return [...updated, ...add];
+    // Apply engagement-level updates (like enabled toggle)
+    if (updateEngagements && updateEngagements.length > 0) {
+      patched = patched.map((e) => {
+        const patch = updateEngagements.find((u) => u.id === e.id);
+        return patch ? { ...e, ...patch } : e;
+      });
+    }
+
+    // Add new engagements
+    return [...patched, ...addEngagements];
   };
 
-  const base = {
-    ...order,
-    engagements: updateEngagements(order.engagements),
-  };
+  const patchedEngagements = patchEngagementList(order.engagements);
+  const baseOrder: AnyOrder = { ...order, engagements: patchedEngagements };
 
   if (order.type === OrderType.HOME) {
-    const homeOrder = (order as HomeOrder).home_order;
-    if (!homeOrder) return base;
+    const home = (order as HomeOrder).home_order;
+    if (!home) return baseOrder;
 
     return {
-      ...base,
+      ...baseOrder,
       home_order: {
-        ...homeOrder,
+        ...home,
         customer: {
-          ...homeOrder.customer,
-          engagements: updateEngagements(homeOrder.customer?.engagements),
+          ...home.customer,
+          engagements: patchEngagementList(home.customer.engagements),
         },
       },
     };
   }
 
   if (order.type === OrderType.PICKUP) {
-    const pickupOrder = (order as PickupOrder).pickup_order;
-    if (!pickupOrder) return base;
+    const pickup = (order as PickupOrder).pickup_order;
+    if (!pickup) return baseOrder;
 
     return {
-      ...base,
+      ...baseOrder,
       pickup_order: {
-        ...pickupOrder,
-        customer: pickupOrder.customer
+        ...pickup,
+        customer: pickup.customer
           ? {
-              ...pickupOrder.customer,
-              engagements: updateEngagements(pickupOrder.customer.engagements),
+              ...pickup.customer,
+              engagements: patchEngagementList(pickup.customer.engagements),
             }
           : null,
       },
     };
   }
 
-  return base;
+  return baseOrder;
 }

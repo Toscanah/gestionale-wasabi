@@ -11,20 +11,24 @@ import {
 import { EngagementType } from "@prisma/client";
 import { useEffect, useState } from "react";
 
-const EMPTY_DRAFT: TemplatePayloadDraft = {
-  type: EngagementType.QR_CODE,
-  label: "",
-  payload: {
-    textAbove: "",
-    textBelow: "",
-    url: "",
-  },
-  selectedImage: null,
+export const EMPTY_PAYLOADS: Record<EngagementType, ParsedEngagementPayload> = {
+  QR_CODE: { url: "", textAbove: "", textBelow: "" },
+  IMAGE: { imageUrl: "", textAbove: "", textBelow: "" },
+  MESSAGE: { message: "", textAbove: "", textBelow: "" },
 };
+
+const createEmptyDraft = (type: EngagementType): TemplatePayloadDraft => ({
+  type,
+  label: "",
+  payload: EMPTY_PAYLOADS[type],
+  selectedImage: type === EngagementType.IMAGE ? null : undefined,
+});
 
 export default function useEngagementTemplates() {
   const [templates, setTemplates] = useState<ParsedEngagementTemplate[]>([]);
-  const [draftTemplate, setDraftTemplate] = useState<TemplatePayloadDraft>(EMPTY_DRAFT);
+  const [draftTemplate, setDraftTemplate] = useState<TemplatePayloadDraft>(() =>
+    createEmptyDraft(EngagementType.QR_CODE)
+  );
 
   const fetchTemplates = () =>
     fetchRequest<ParsedEngagementTemplate[]>(
@@ -76,13 +80,18 @@ export default function useEngagementTemplates() {
       ...newTemplate,
     }).then((created) => {
       setTemplates((prev) => [...prev, created]);
-      setDraftTemplate(EMPTY_DRAFT);
+      setDraftTemplate(() => createEmptyDraft(EngagementType.QR_CODE));
       toastSuccess("Modello creato con successo");
     });
   };
 
   const deleteTemplate = async (templateId: number) =>
-    fetchRequest<number>("DELETE", "/api/engagements", "deleteTemplateById", { templateId });
+    fetchRequest<number>("DELETE", "/api/engagements", "deleteTemplateById", { templateId }).then(
+      () => toastSuccess("Modello eliminato con successo")
+    );
+
+  const resetDraftTemplate = (newType: EngagementType) =>
+    setDraftTemplate(() => createEmptyDraft(newType));
 
   useEffect(() => {
     fetchTemplates();
@@ -96,5 +105,6 @@ export default function useEngagementTemplates() {
     setDraftTemplate,
     createTemplate,
     deleteTemplate,
+    resetDraftTemplate,
   };
 }

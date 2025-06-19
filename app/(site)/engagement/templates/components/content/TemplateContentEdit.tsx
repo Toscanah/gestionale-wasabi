@@ -1,5 +1,4 @@
 import {
-  CreateEngagementTemplate,
   ParsedEngagementPayload,
   ParsedEngagementTemplate,
   UpdateEngagementTemplate,
@@ -22,8 +21,6 @@ type EditModeProps = {
   onSave: (template: ParsedEngagementTemplate) => Promise<void>;
 };
 
-
-
 export default function TemplateContentEdit({
   index,
   template,
@@ -31,12 +28,26 @@ export default function TemplateContentEdit({
   onSave,
   onDelete,
 }: EditModeProps) {
-  const { type, payload, label, id } = template;
+  const { id, type, label, payload } = template;
 
-  const handlePayloadChange = (updates: Partial<ParsedEngagementPayload>) => {
+  const updatePayload = (updates: Partial<ParsedEngagementPayload>) => {
     onChange({
-      payload: { ...payload, ...updates } as any,
+      payload: { ...payload, ...updates },
     });
+  };
+
+  const handleLabelChange = (value: string) => {
+    onChange({ label: value });
+  };
+
+  const handleComponentChange = (
+    patch: Partial<ParsedEngagementPayload> | { selectedImage: File | null }
+  ) => {
+    if ("selectedImage" in patch) {
+      onChange({ selectedImage: patch.selectedImage });
+    } else {
+      updatePayload(patch as Partial<ParsedEngagementPayload>);
+    }
   };
 
   return (
@@ -44,21 +55,27 @@ export default function TemplateContentEdit({
       <AccordionItem value={`edit-${index}`} className="w-full">
         <AccordionTrigger>
           <div className="w-full flex justify-start">
-            #{index + 1} - {label ?? "Nessuna etichetta"} ({getTemplateName(type)})
+            #{index + 1} - {label?.length ? label : "Nessuna etichetta"} ({getTemplateName(type)})
           </div>
         </AccordionTrigger>
 
         <AccordionContent className="flex flex-col gap-4">
-          <Label htmlFor={`label-${index}`}>Etichetta</Label>
-          <Input defaultValue={label ?? ""} onChange={(e) => onChange({ label: e.target.value })} />
+          <div className="flex flex-col space-y-2">
+            <Label htmlFor={`label-${index}`}>Etichetta</Label>
+            <Input
+              id={`label-${index}`}
+              defaultValue={label ?? ""}
+              onChange={(e) => handleLabelChange(e.target.value)}
+            />
+          </div>
 
           <TemplateWrapper
             textAbove={payload.textAbove}
             textBelow={payload.textBelow}
-            onTextAboveChange={(val) => handlePayloadChange({ textAbove: val })}
-            onTextBelowChange={(val) => handlePayloadChange({ textBelow: val })}
+            onTextAboveChange={(val) => updatePayload({ textAbove: val })}
+            onTextBelowChange={(val) => updatePayload({ textBelow: val })}
             onSubmit={() => onSave(template)}
-            templateComponent={renderByType(type, payload, handlePayloadChange)}
+            templateComponent={renderByType(type, payload, handleComponentChange)}
           />
         </AccordionContent>
       </AccordionItem>
