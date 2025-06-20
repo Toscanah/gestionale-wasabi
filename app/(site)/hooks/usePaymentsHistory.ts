@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { OrderWithPayments } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
 import { isSameDay } from "date-fns";
-import { ShiftFilter } from "../components/filters/shift/ShiftFilterSelector";
-import { orderMatchesShift } from "../lib/order-management/shift/orderMatchesShift";
 import { OrderType, PaymentType } from "@prisma/client";
 import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 import roundToCents from "../lib/util/roundToCents";
+import { ShiftFilter } from "../shared/types/ShiftFilter";
+import orderMatchesShift from "../lib/order-management/shift/orderMatchesShift";
 
 export type PaymentTotals = {
   [key in PaymentType]: { label: string; total: number };

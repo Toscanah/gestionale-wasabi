@@ -66,7 +66,7 @@ export default function RiceDefaultValues() {
       size="medium"
       title="Valori di default del riso"
       desc="I valori si salvano automaticamente"
-      contentClassName=""
+      contentClassName="border-t-4 border-t-gray-400"
       onOpenChange={() => fetchRiceBatches()}
       autoFocus={false}
       trigger={
@@ -75,7 +75,7 @@ export default function RiceDefaultValues() {
         </SidebarMenuSubButton>
       }
     >
-      <div className="max-h-[40vh] overflow-y-auto pr-4">
+      <div className="max-h-[40vh] overflow-y-auto">
         {riceBatches.length > 0 ? (
           <div className="flex flex-col gap-2 items-center w-full">
             {riceBatches.map((riceBatch) => (

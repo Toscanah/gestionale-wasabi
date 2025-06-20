@@ -9,7 +9,6 @@ import {
 import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
 import { ProductInOrderWithOptionsSchema } from "../models/Product";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
-import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
 
 export const CreateProductInputSchema = createInputSchema(ProductSchema).partial({
   category_id: true,

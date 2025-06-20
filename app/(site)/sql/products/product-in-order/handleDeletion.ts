@@ -42,5 +42,5 @@ export default async function handleDeletion({
     data: { is_receipt_printed: false },
   });
 
-  return { deletedProduct: { ...updatedProduct, quantity: 0, total: 0 } };
+  return { deletedProduct: { ...updatedProduct, quantity: 0 } };
 }

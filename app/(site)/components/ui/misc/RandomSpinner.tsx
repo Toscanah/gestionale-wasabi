@@ -63,7 +63,7 @@ const SUSHI_PHRASES = [
 ];
 
 export default function RandomSpinner({ isLoading, size = 200, color = "#ff0000" }: SpinnerProps) {
-  const [SelectedSpinner, setSelectedSpinner] = useState(
+  const [selectedSpinner, setSelectedSpinner] = useState(
     () => SPINNERS[Math.floor(Math.random() * SPINNERS.length)]
   );
   const [phrase, setPhrase] = useState(

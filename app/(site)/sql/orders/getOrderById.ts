@@ -46,9 +46,9 @@ export default async function getOrderById({
   return {
     ...existingOrder,
     products: filteredProducts,
-    engagements: existingOrder.engagements.map((e) => ({
-      ...e,
-      template: normalizeTemplatePayload(e.template),
-    })),
+    // engagements: existingOrder.engagements.map((e) => ({
+    //   ...e,
+    //   template: normalizeTemplatePayload(e.template),
+    // })),
   };
 }

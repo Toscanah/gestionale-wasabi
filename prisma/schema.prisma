@@ -247,7 +247,7 @@ model ProductInOrder {
     id              Int                    @id @default(autoincrement())
     product_id      Int
     order_id        Int
-    // frozen_price    Int                    @default(0)
+    frozen_price    Int                    @default(0)
     quantity        Int                    @default(0)
     paid_quantity   Int                    @default(0)
     printed_amount  Int                    @default(0)

@@ -1,7 +1,7 @@
-import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import { ProductInOrder } from "@shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
+import { getProductPrice } from "../../lib/product-management/getProductPrice";
 
 export default async function addProductsToOrder({
   targetOrderId,
@@ -28,6 +28,7 @@ export default async function addProductsToOrder({
             product_id: productInOrder.product.id,
             quantity: productInOrder.quantity,
             additional_note: productInOrder.additional_note,
+            frozen_price: getProductPrice(productInOrder, targetOrder.type),
           },
           include: {
             ...productInOrderInclude,

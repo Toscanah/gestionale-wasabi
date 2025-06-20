@@ -1,6 +1,7 @@
 import prisma from "../db";
 import { CreateCustomerInput, CustomerWithDetails } from "@shared";
 import { engagementsInclude, homeAndPickupOrdersInclude } from "../includes";
+import normalizeTemplatePayload from "../../lib/formatting-parsing/engagement/normalizeTemplatePayload";
 
 export default async function createCustomer({
   customer,

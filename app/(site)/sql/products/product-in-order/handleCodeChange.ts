@@ -32,6 +32,7 @@ export default async function handleProductCodeChange({
     data: {
       product_id: newProduct.id,
       printed_amount: 0,
+      frozen_price: getProductPrice({ product: newProduct }, currentOrder.type),
     },
     include: { ...productInOrderInclude },
   });
@@ -55,7 +56,6 @@ export default async function handleProductCodeChange({
     }
   }
 
-  // Update order total
   await tx.order.update({
     where: { id: currentOrder.id },
     data: {

@@ -11,8 +11,6 @@ import useGlobalFilter from "../../hooks/useGlobalFilter";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import Calendar from "../../components/ui/calendar/Calendar";
 import ShiftFilterSelector from "../../components/filters/shift/ShiftFilterSelector";
-import logo from "../../../../public/logo.png";
-import Image from "next/image";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
 import RandomSpinner from "../../components/ui/misc/RandomSpinner";
 

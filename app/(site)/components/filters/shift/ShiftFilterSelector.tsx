@@ -4,12 +4,7 @@ import { Warning } from "@phosphor-icons/react";
 import SelectWrapper from "../../ui/select/SelectWrapper";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-
-export enum ShiftFilter {
-  BOTH = "both",
-  LUNCH = "lunch",
-  DINNER = "dinner",
-}
+import { ShiftFilter } from "@/app/(site)/shared/types/ShiftFilter";
 
 interface ShiftFilterSelectorProps {
   shiftFilter: ShiftFilter;

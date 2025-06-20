@@ -1,9 +1,12 @@
 import { WorkingShift } from "@prisma/client";
-import { ShiftFilter } from "@/app/(site)/components/filters/shift/ShiftFilterSelector";
 import { getEffectiveOrderShift } from "./getOrderShift";
 import { ShiftEvaluableOrder } from "@/app/(site)/shared/types/ShiftEvaluableOrder";
+import { ShiftFilter } from "@/app/(site)/shared/types/ShiftFilter";
 
-export function orderMatchesShift(order: ShiftEvaluableOrder, shiftFilter: ShiftFilter): boolean {
+export default function orderMatchesShift(
+  order: ShiftEvaluableOrder,
+  shiftFilter: ShiftFilter
+): boolean {
   if (shiftFilter === ShiftFilter.BOTH) return true;
 
   const { effectiveShift } = getEffectiveOrderShift(order);

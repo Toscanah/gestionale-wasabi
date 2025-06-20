@@ -1,5 +1,4 @@
 import { OrderType } from "@prisma/client";
-import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import prisma from "../db";
 import { AnyOrder } from "@shared";
 import {

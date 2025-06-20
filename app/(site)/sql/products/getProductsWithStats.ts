@@ -2,11 +2,11 @@ import { ProductWithStats, OptionStats } from "../../shared/types/ProductWithSta
 import prisma from "../db";
 import { categoryInclude, optionsInclude } from "../includes";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
-import { orderMatchesShift } from "../../lib/order-management/shift/orderMatchesShift";
 import { GetProductsWithStatsInput } from "../../shared";
-import { ShiftFilter } from "../../components/filters/shift/ShiftFilterSelector";
 import { OrderState, ProductInOrderState } from "@prisma/client";
 import { getProductPrice } from "../../lib/product-management/getProductPrice";
+import orderMatchesShift from "../../lib/order-management/shift/orderMatchesShift";
+import { ShiftFilter } from "../../shared/types/ShiftFilter";
 
 export default async function getProductsWithStats({
   filters,
@@ -71,17 +71,14 @@ export default async function getProductsWithStats({
     .map((product) => {
       const filteredOrders = product.orders.filter((productInOrder) => {
         const order = productInOrder.order;
+
         const isOrderPaid = order.state === OrderState.PAID;
         const isWithinDate =
           !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
         const isValidState = productInOrder.state === ProductInOrderState.IN_ORDER;
+        const isInShift = orderMatchesShift(order, shift as ShiftFilter);
 
-        return (
-          isValidState &&
-          isOrderPaid &&
-          isWithinDate &&
-          orderMatchesShift(order, shift as ShiftFilter)
-        );
+        return isValidState && isOrderPaid && isWithinDate && isInShift;
       });
 
       if (filteredOrders.length > 0) {
@@ -95,7 +92,10 @@ export default async function getProductsWithStats({
   return filteredProducts.map((product) => {
     const stats = product.orders.reduce(
       (acc, productInOrder) => {
-        if (productInOrder.state === "IN_ORDER" && productInOrder.paid_quantity > 0) {
+        if (
+          productInOrder.state === ProductInOrderState.IN_ORDER &&
+          productInOrder.paid_quantity > 0
+        ) {
           const paidQty = Math.min(productInOrder.paid_quantity, productInOrder.quantity);
 
           acc.quantity += paidQty;

@@ -6,6 +6,7 @@ export default function generateDummyProduct(): ProductInOrder {
     additional_note: "",
     state: "IN_ORDER",
     printed_amount: -1,
+    frozen_price: 0,
     product: {
       kitchen: "NONE",
       active: true,

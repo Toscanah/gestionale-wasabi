@@ -21,6 +21,7 @@ export default function EngagementSection() {
       // }}
       title="Modelli marketing"
       size="medium"
+      contentClassName="border-t-4 border-t-gray-400"
       trigger={
         <SidebarMenuSubButton className="hover:cursor-pointer">Modelli</SidebarMenuSubButton>
       }

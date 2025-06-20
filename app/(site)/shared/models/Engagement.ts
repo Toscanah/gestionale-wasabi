@@ -35,8 +35,8 @@ export const ParsedEngagementPayloadSchema = z.union([
 export type ParsedEngagementPayload = z.infer<typeof ParsedEngagementPayloadSchema>;
 
 export const EngagementWithDetailsSchema = EngagementSchema.extend({
-  template: EngagementTemplateSchema.extend({
-    payload: z.record(z.any()),
+  template: EngagementTemplateSchema.omit({ payload: true }).extend({
+    payload: z.any()
   }),
 });
 

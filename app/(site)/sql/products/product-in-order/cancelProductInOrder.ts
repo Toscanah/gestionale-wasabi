@@ -38,6 +38,7 @@ export async function cancelProductInOrder({
         quantity: paid_quantity,
         paid_quantity,
         state: ProductInOrderState.IN_ORDER,
+        frozen_price: pio.frozen_price ?? 0,
         options: {
           connect: options.map((opt) => ({
             id: opt.option_id,
