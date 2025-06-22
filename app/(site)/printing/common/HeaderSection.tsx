@@ -1,4 +1,4 @@
-import { Br, Image, Text } from "react-thermal-printer";
+import { Br, Text } from "react-thermal-printer";
 import TimeSection from "./TimeSection";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import { GlobalSettings } from "../../shared/types/Settings";

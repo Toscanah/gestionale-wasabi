@@ -3,8 +3,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { OrderType } from "@prisma/client";
 import Table from "./table/Table";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import generateEmptyOrder from "../../lib/order-management/generateEmptyOrder";
 import Pickup from "./pickup/Pickup";
 import SearchHome from "./home/SearchHome";
