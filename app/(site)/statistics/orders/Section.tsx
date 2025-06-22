@@ -44,6 +44,8 @@ export type SelectionProps<T> = {
 export default function Section({ orders }: SectionProps) {
   const { dispatch, filteredResults, isFiltersValid, state } = useOrdersStats(orders);
 
+  console.log("Section state:", state);
+
   const isWeekdaysSelected = state.mainChoice === "weekdays";
   const isSpecificDateSelected = state.mainChoice === "date";
   const hasValidWeekdays = isWeekdaysSelected && !!state.weekdays?.length;

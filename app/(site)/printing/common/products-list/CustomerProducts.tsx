@@ -5,7 +5,6 @@ import padReceiptText from "@/app/(site)/lib/formatting-parsing/printing/padRece
 import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
 import { Fragment } from "react";
-import { getProductPrice } from "@/app/(site)/lib/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 import { uniqueId } from "lodash";
 import splitOptionsIntoLines from "@/app/(site)/lib/formatting-parsing/printing/splitOptionsIntoLines";
@@ -82,10 +81,7 @@ const calculateDiscountAmount = (
   discount: number,
   orderType: OrderType
 ) => {
-  const total = products.reduce(
-    (acc, product) => acc + product.quantity * getProductPrice(product, orderType),
-    0
-  );
+  const total = products.reduce((acc, product) => acc + product.quantity * product.frozen_price, 0);
   return total - getDiscountedTotal({ orderTotal: total, discountPercentage: discount });
 };
 
@@ -126,16 +122,12 @@ export default function CustomerProducts({
         </Text>
 
         <Text inline>
-          {padReceiptText(
-            String(roundToTwo(getProductPrice(product, orderType))),
-            MAX_PRICE_WIDTH,
-            PRICE_PADDING
-          )}
+          {padReceiptText(String(roundToTwo(product.frozen_price)), MAX_PRICE_WIDTH, PRICE_PADDING)}
         </Text>
 
         <Text>
           {padReceiptText(
-            String(roundToTwo(product.quantity * getProductPrice(product, orderType))),
+            String(roundToTwo(product.quantity * product.frozen_price)),
             MAX_TOTAL_WIDTH,
             0
           )}

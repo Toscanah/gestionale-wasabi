@@ -7,11 +7,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import useGridFocus, { FocussableInput } from "../../hooks/useGridFocus";
 import { Button } from "@/components/ui/button";
-import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { debounce } from "lodash";
-import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import { useOrderContext } from "../../context/OrderContext";
-import { useCallback, useEffect, useRef } from "react";
 import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 
@@ -204,7 +201,7 @@ export default function getColumns(
         <span className="text-2xl">
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
-            : `€ ${roundToTwo(getProductPrice(row.original, type))}`}
+            : `€ ${roundToTwo(row.original.frozen_price)}`}
         </span>
       ),
     }),
@@ -214,7 +211,7 @@ export default function getColumns(
       sortable: false,
       cellContent: (row) => {
         const product = row.original;
-        const productTotal = getProductPrice(product, type) * product.quantity;
+        const productTotal = product.frozen_price * product.quantity;
 
         return (
           <span className="text-2xl">

@@ -19,6 +19,9 @@ export async function cancelProductInOrder({
   cooked: boolean;
 }) {
   const { id, quantity, paid_quantity, product_id, order_id, options } = pio;
+  const newState = cooked
+    ? ProductInOrderState.DELETED_COOKED
+    : ProductInOrderState.DELETED_UNCOOKED;
 
   if (paid_quantity >= quantity) {
     // Fully paid — do nothing
@@ -53,16 +56,14 @@ export async function cancelProductInOrder({
       data: {
         quantity: unpaidQuantity,
         paid_quantity: 0,
-        state: cooked ? ProductInOrderState.DELETED_COOKED : ProductInOrderState.DELETED_UNCOOKED,
+        state: newState,
       },
     });
   } else {
     // Fully unpaid — mark as deleted
     await tx.productInOrder.update({
       where: { id },
-      data: {
-        state: cooked ? ProductInOrderState.DELETED_COOKED : ProductInOrderState.DELETED_UNCOOKED,
-      },
+      data: { state: newState },
     });
   }
 }

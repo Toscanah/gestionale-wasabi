@@ -1,5 +1,4 @@
 import { ProductInOrder } from "@shared";
-import { getProductPrice } from "../product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 import getDiscountedTotal from "./getDiscountedTotal";
 import roundToTwo from "../formatting-parsing/roundToTwo";
@@ -47,11 +46,11 @@ export function getOrderTotal({
   round?: boolean;
   onlyPaid?: boolean;
 }): number {
-  const { products, type } = order;
+  const { products } = order;
 
   const orderTotal = filterDeletedProducts(products).reduce(
     (acc, product) =>
-      acc + (onlyPaid ? product.paid_quantity : product.quantity) * getProductPrice(product, type),
+      acc + (onlyPaid ? product.paid_quantity : product.quantity) * product.frozen_price,
     0
   );
 

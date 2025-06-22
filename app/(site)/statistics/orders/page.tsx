@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import { Button } from "@/components/ui/button";
 import { uniqueId } from "lodash";
 import Section from "./Section";
@@ -11,10 +10,16 @@ import { Flipper, Flipped, spring } from "react-flip-toolkit";
 import { Plus, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import GoBack from "../../components/ui/misc/GoBack";
+import dynamic from "next/dynamic";
+
+const RandomSpinner = dynamic(() => import("../../components/ui/misc/RandomSpinner"), {
+  ssr: false,
+});
 
 export default function OrdersStats() {
   const [orders, setOrders] = useState<AnyOrder[]>([]);
   const [sections, setSections] = useState<{ id: string }[]>([{ id: uniqueId() }]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const addSection = () => setSections((prev) => [...prev, { id: uniqueId() }]);
 
@@ -27,9 +32,9 @@ export default function OrdersStats() {
     );
 
   const fetchOrders = () =>
-    fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments").then((orders) =>
-      setOrders(orders.filter((order) => order.state !== "CANCELLED"))
-    );
+    fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments")
+      .then((orders) => setOrders(orders.filter((order) => order.state !== "CANCELLED")))
+      .finally(() => setIsLoading(false));
 
   useEffect(() => {
     fetchOrders();
@@ -41,7 +46,11 @@ export default function OrdersStats() {
       delay: index * 50,
     });
 
-  return (
+  return isLoading ? (
+    <div className="w-screen h-screen">
+      <RandomSpinner isLoading={isLoading} />
+    </div>
+  ) : (
     <div className="flex flex-col w-screen h-screen gap-4 items-center">
       <h1 className="text-3xl mt-4">Statistiche ordini</h1>
 
@@ -84,7 +93,9 @@ export default function OrdersStats() {
           return (
             <Flipped key={section.id} flipId={section.id} onAppear={onElementAppear}>
               <div
-                className={cn("relative group select-none border p-4 rounded-lg shadow-md h-[45rem]")}
+                className={cn(
+                  "relative group select-none border p-4 rounded-lg shadow-md h-[45rem]"
+                )}
                 style={{
                   flexBasis: shouldStretch ? "100%" : "calc(50% - 0.25rem)",
                   maxWidth: shouldStretch ? "100%" : "calc(50% - 0.25rem)",

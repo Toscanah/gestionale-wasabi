@@ -1,18 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-import { Input } from "@/components/ui/input";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-
-import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
-
-import { Label } from "@/components/ui/label";
 import TableColumn from "../../components/table/TableColumn";
-import { ProductInOrder } from "@shared"
-;
+import { ProductInOrder } from "@shared";
 import { OrderType } from "@prisma/client";
-import { getProductPrice } from "../../lib/product-management/getProductPrice";
-import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {
   return [
@@ -50,7 +39,7 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[]
         <>
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
-            : `€ ${getProductPrice(row.original, type)}`}
+            : `€ ${row.original.frozen_price}`}
         </>
       ),
     }),
