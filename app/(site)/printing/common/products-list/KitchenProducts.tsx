@@ -3,7 +3,7 @@ import getReceiptSize from "@/app/(site)/lib/formatting-parsing/printing/getRece
 import { Fragment } from "react";
 import { Line, Text } from "react-thermal-printer";
 import { uniqueId } from "lodash";
-import splitOptionsInLines from "@/app/(site)/lib/formatting-parsing/printing/splitOptionsInLines";
+import splitOptionsIntoLines from "@/app/(site)/lib/formatting-parsing/printing/splitOptionsIntoLines";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
 import sanitazeReceiptText from "@/app/(site)/lib/formatting-parsing/printing/sanitazeReceiptText";
 
@@ -64,7 +64,7 @@ export default function KitchenProducts({ groupedProducts }: KitchenProductsProp
           <Fragment key={`group-${idx}`}>
             {products.map((product) => ProductLine({ product }))}
 
-            {splitOptionsInLines(optionsKey, 48, 4).map((line, lineIdx) => (
+            {splitOptionsIntoLines(optionsKey, 48, 4).map((line, lineIdx) => (
               <Text bold size={smallSize} key={`options-${idx}-${lineIdx}`}>
                 {line}
               </Text>

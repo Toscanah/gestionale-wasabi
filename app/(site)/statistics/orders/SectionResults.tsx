@@ -2,19 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import formatRice from "../../lib/formatting-parsing/formatRice";
+import RandomSpinner from "../../components/ui/misc/RandomSpinner";
+import { Results } from "../../hooks/statistics/useOrdersStats";
 
 interface SectionResultsProps {
-  homeOrders: number;
-  pickupOrders: number;
-  tableOrders: number;
-  totalRiceConsumed: number;
+  results: Results;
 }
 
 export default function SectionResults({
-  homeOrders,
-  pickupOrders,
-  tableOrders,
-  totalRiceConsumed,
+  results: {
+    homeOrders,
+    pickupOrders,
+    tableOrders,
+    totalRiceConsumed,
+    totalProducts,
+    totalFromProducts,
+  },
 }: SectionResultsProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +27,8 @@ export default function SectionResults({
     pickupOrders,
     tableOrders,
     totalRiceConsumed,
+    totalProducts,
+    totalFromProducts,
   });
 
   useEffect(() => {
@@ -31,54 +36,63 @@ export default function SectionResults({
       homeOrders !== prevValues.homeOrders ||
       pickupOrders !== prevValues.pickupOrders ||
       tableOrders !== prevValues.tableOrders ||
-      totalRiceConsumed !== prevValues.totalRiceConsumed;
+      totalRiceConsumed !== prevValues.totalRiceConsumed ||
+      totalProducts !== prevValues.totalProducts ||
+      totalFromProducts !== prevValues.totalFromProducts;
 
     if (hasChanged) {
       setIsLoading(true);
-      setPrevValues({ homeOrders, pickupOrders, tableOrders, totalRiceConsumed });
+      setPrevValues({
+        homeOrders,
+        pickupOrders,
+        tableOrders,
+        totalRiceConsumed,
+        totalProducts,
+        totalFromProducts,
+      });
 
       // Simulate a loading transition
       const timeout = setTimeout(() => {
         setIsLoading(false);
-      }, 500); // adjust duration to taste
+      }, Math.floor(Math.random() * (500 - 200 + 1)) + 200); // adjust duration to taste
 
       return () => clearTimeout(timeout);
     }
-  }, [homeOrders, pickupOrders, tableOrders, totalRiceConsumed]);
+  }, [homeOrders, pickupOrders, tableOrders, totalRiceConsumed, totalProducts, totalFromProducts]);
 
   return (
     <>
       <Separator orientation="horizontal" />
 
       {isLoading ? (
-        <div className="w-full h-full flex items-center justify-center py-8">
-          <Image src={"/logo.png"} alt="logo" width={200} height={200} className="animate-spin" />
-        </div>
+        <RandomSpinner isLoading={isLoading} />
       ) : (
-        <table className="w-[20rem] text-lg">
-          <tbody>
-            <tr>
-              <td className="py-2">Ordini totali</td>
-              <td className="py-2 text-right">{homeOrders + pickupOrders + tableOrders}</td>
-            </tr>
-            <tr>
-              <td className="py-2">Ordini domicilio</td>
-              <td className="py-2 text-right">{homeOrders}</td>
-            </tr>
-            <tr>
-              <td className="py-2">Ordini asporto</td>
-              <td className="py-2 text-right">{pickupOrders}</td>
-            </tr>
-            <tr>
-              <td className="py-2">Ordini tavolo</td>
-              <td className="py-2 text-right">{tableOrders}</td>
-            </tr>
-            <tr>
-              <td className="py-2">Riso consumato</td>
-              <td className="py-2 text-right">{formatRice(totalRiceConsumed)}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="grid grid-cols-4 gap-x-12 gap-y-2 text-lg justify-center w-full max-w-3xl">
+          <div>Ordini totali</div>
+          <div className="text-right">{homeOrders + pickupOrders + tableOrders}</div>
+
+          <div>Riso consumato</div>
+          <div className="text-right">{formatRice(totalRiceConsumed)}</div>
+
+          <div>Ordini domicilio</div>
+          <div className="text-right">{homeOrders}</div>
+
+          <div>Prodotti cucinati</div>
+          <div className="text-right">{totalProducts}</div>
+
+          <div>Ordini asporto</div>
+          <div className="text-right">{pickupOrders}</div>
+
+          <div>Totale dai prodotti</div>
+          <div className="text-right">{totalFromProducts}</div>
+
+          <div>Ordini tavolo</div>
+          <div className="text-right">{tableOrders}</div>
+
+          {/* Empty cells to balance the row */}
+          <div></div>
+          <div></div>
+        </div>
       )}
     </>
   );

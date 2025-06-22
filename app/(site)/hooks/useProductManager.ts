@@ -6,9 +6,7 @@ import fetchRequest from "../lib/api/fetchRequest";
 import { toastError, toastSuccess } from "../lib/util/toast";
 import { Table } from "@tanstack/react-table";
 import { RecursivePartial } from "./useOrderManager";
-import { getProductPrice } from "../lib/product-management/getProductPrice";
 import { UpdateProductInOrderResponse } from "../sql/products/product-in-order/updateProductInOrder";
-import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 
 export function useProductManager(
   order: AnyOrder,

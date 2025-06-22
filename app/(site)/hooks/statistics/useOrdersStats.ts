@@ -30,12 +30,13 @@ export type Shift = "lunch" | "dinner" | "all";
 
 export type Time = { type: "shift"; shift: Shift } | { type: "range"; from: string; to: string };
 
-type Results = {
+export type Results = {
   homeOrders: number;
   pickupOrders: number;
   tableOrders: number;
   totalRiceConsumed: number;
-  // avgPerHour: number;
+  totalProducts: number;
+  totalFromProducts: number;
 };
 
 export default function useOrdersStats(orders: AnyOrder[]) {
@@ -45,7 +46,8 @@ export default function useOrdersStats(orders: AnyOrder[]) {
     pickupOrders: 0,
     tableOrders: 0,
     totalRiceConsumed: 0,
-    // avgPerHour: 0,
+    totalProducts: 0,
+    totalFromProducts: 0,
   });
 
   const weekdayMap = {
@@ -129,31 +131,44 @@ export default function useOrdersStats(orders: AnyOrder[]) {
     return orders;
   };
 
-  const calculateResults = (orders: AnyOrder[]) => {
-    const homeOrders = orders.filter((order) => order.type === OrderType.HOME).length;
-    const pickupOrders = orders.filter((order) => order.type === OrderType.PICKUP).length;
-    const tableOrders = orders.filter((order) => order.type === OrderType.TABLE).length;
-    const totalRiceConsumed = orders.reduce((sum, order) => {
-      return (
-        sum +
-        order.products.reduce((prodSum, product) => {
-          const isCooked =
-            product.state === ProductInOrderState.IN_ORDER ||
-            product.state === ProductInOrderState.DELETED_COOKED;
+  const calculateResults = (orders: AnyOrder[]): Results => {
+    let homeOrders = 0;
+    let pickupOrders = 0;
+    let tableOrders = 0;
+    let totalRiceConsumed = 0;
+    let totalProducts = 0;
+    let totalFromProducts = 0;
 
-          const paidQty = product.paid_quantity ?? 0;
+    for (const order of orders) {
+      if (order.type === OrderType.HOME) homeOrders++;
+      if (order.type === OrderType.PICKUP) pickupOrders++;
+      if (order.type === OrderType.TABLE) tableOrders++;
 
-          return prodSum + (isCooked && paidQty > 0 ? getPioRice(product) : 0);
-        }, 0)
-      );
-    }, 0);
+      for (const product of order.products) {
+        const isCooked =
+          product.state === ProductInOrderState.IN_ORDER ||
+          product.state === ProductInOrderState.DELETED_COOKED;
+
+        const paidQty = product.paid_quantity ?? 0;
+        const qty = product.quantity ?? 0;
+        const frozenPrice = product.frozen_price ?? 0;
+
+        if (isCooked && paidQty > 0) {
+          totalRiceConsumed += getPioRice(product);
+        }
+
+        totalProducts += qty;
+        totalFromProducts += qty * frozenPrice;
+      }
+    }
 
     return {
       homeOrders,
       pickupOrders,
       tableOrders,
       totalRiceConsumed,
-      // avgPerHour: 0, // Uncomment if avgPerHour is needed
+      totalProducts,
+      totalFromProducts,
     };
   };
 

@@ -29,7 +29,7 @@ export default function TimeInput({ label, value, onChange }: TimeInputProps) {
       />
 
       <span>:</span>
-      
+
       <Input
         id={label + "-m"}
         type="text"

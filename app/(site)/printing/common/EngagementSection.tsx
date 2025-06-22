@@ -10,6 +10,7 @@ import {
 import { Br, Image, Line, QRCode, Text } from "react-thermal-printer";
 import { Fragment } from "react";
 import wrapTextCentered from "../../lib/formatting-parsing/printing/wrapTextCentered";
+import sanitizeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
 
 interface EngagementSectionProps {
   activeEngagements: EngagementWithDetails[];
@@ -34,11 +35,13 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
             <Br />
 
             {payload.textAbove &&
-              wrapTextCentered(payload.textAbove, MAX_SMALL_CHARS).map((line, i) => (
-                <Text key={`above-${i}`} align="left" size={smallSize} bold>
-                  {line}
-                </Text>
-              ))}
+              wrapTextCentered(sanitizeReceiptText(payload.textAbove), MAX_SMALL_CHARS).map(
+                (line, i) => (
+                  <Text key={`above-${i}`} align="left" size={smallSize} bold>
+                    {line}
+                  </Text>
+                )
+              )}
 
             {payload.textAbove && <Br />}
 
@@ -46,11 +49,13 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
               <>
                 <Text key={`qr-${engagement.template.id}a`}>{"=".repeat(MAX_SMALL_CHARS)}</Text>
 
-                {wrapTextCentered(messagePayload.message, MAX_BIG_CHARS).map((line, i) => (
-                  <Text key={`msg-${i}`} align="left" size={bigSize} bold>
-                    {line}
-                  </Text>
-                ))}
+                {wrapTextCentered(sanitizeReceiptText(messagePayload.message), MAX_BIG_CHARS).map(
+                  (line, i) => (
+                    <Text key={`msg-${i}`} align="left" size={bigSize} bold>
+                      {line}
+                    </Text>
+                  )
+                )}
 
                 <Text key={`qr-${engagement.template.id}b`}>{"=".repeat(MAX_SMALL_CHARS)}</Text>
               </>
@@ -69,11 +74,13 @@ export default function EngagementSection({ activeEngagements }: EngagementSecti
             <Br />
 
             {payload.textBelow &&
-              wrapTextCentered(payload.textBelow, MAX_SMALL_CHARS).map((line, i) => (
-                <Text key={`below-${i}`} align="left" size={smallSize} bold>
-                  {line}
-                </Text>
-              ))}
+              wrapTextCentered(sanitizeReceiptText(payload.textBelow), MAX_SMALL_CHARS).map(
+                (line, i) => (
+                  <Text key={`below-${i}`} align="left" size={smallSize} bold>
+                    {line}
+                  </Text>
+                )
+              )}
 
             {payload.textBelow && <Br />}
           </Fragment>

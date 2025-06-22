@@ -4,7 +4,6 @@ import { categoryInclude, optionsInclude } from "../includes";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
 import { GetProductsWithStatsInput } from "../../shared";
 import { OrderState, ProductInOrderState } from "@prisma/client";
-import { getProductPrice } from "../../lib/product-management/getProductPrice";
 import orderMatchesShift from "../../lib/order-management/shift/orderMatchesShift";
 import { ShiftFilter } from "../../shared/types/ShiftFilter";
 
@@ -99,7 +98,7 @@ export default async function getProductsWithStats({
           const paidQty = Math.min(productInOrder.paid_quantity, productInOrder.quantity);
 
           acc.quantity += paidQty;
-          acc.total += getProductPrice({ product }, productInOrder.order.type) * paidQty;
+          acc.total += (productInOrder.frozen_price ?? 0) * paidQty;
 
           productInOrder.options.forEach((optionInOrder) => {
             const optionName = optionInOrder.option.option_name;

@@ -1,5 +1,4 @@
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import WeekdaysOrDateToggle from "./weekdays-or-date/WeekdaysOrDateToggle";
 import WeekdaysSelection from "./weekdays-or-date/WeekdaysSelection";
 import WeekdaysFilterTypeSelection from "./weekdays-or-date/WeekdaysFilterTypeSelection";
@@ -84,7 +83,7 @@ export default function Section({ orders }: SectionProps) {
         )}
       </div>
 
-      {isFiltersValid() && <SectionResults {...filteredResults} />}
+      {isFiltersValid() && <SectionResults results={filteredResults} />}
     </div>
   );
 }

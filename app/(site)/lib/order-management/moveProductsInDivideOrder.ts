@@ -1,7 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
 import { ProductInOrder } from "@shared";
-import { getProductPrice } from "../product-management/getProductPrice";
-import { OrderType } from "@prisma/client";
 
 export default function moveProductsInDivideOrder(
   product: ProductInOrder,

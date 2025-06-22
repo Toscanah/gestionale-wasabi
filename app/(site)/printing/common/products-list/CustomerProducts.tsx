@@ -8,7 +8,7 @@ import { Fragment } from "react";
 import { getProductPrice } from "@/app/(site)/lib/product-management/getProductPrice";
 import { OrderType } from "@prisma/client";
 import { uniqueId } from "lodash";
-import splitOptionsInLines from "@/app/(site)/lib/formatting-parsing/printing/splitOptionsInLines";
+import splitOptionsIntoLines from "@/app/(site)/lib/formatting-parsing/printing/splitOptionsIntoLines";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
 import sanitazeReceiptText from "@/app/(site)/lib/formatting-parsing/printing/sanitazeReceiptText";
 
@@ -165,7 +165,7 @@ export default function CustomerProducts({
           <Fragment key={`group-${idx}`}>
             {products.map((product) => ProductLine({ product }))}
 
-            {splitOptionsInLines(optionsKey, TOTAL_ROW_WIDTH, OPTIONS_START_PADDING).map(
+            {splitOptionsIntoLines(optionsKey, TOTAL_ROW_WIDTH, OPTIONS_START_PADDING).map(
               (line, lineIdx) => (
                 <Text key={`options-${idx}-${lineIdx}`}>{line}</Text>
               )

@@ -1,5 +1,4 @@
 import { ProductInOrder } from "@shared";
-import { getProductPrice } from "./getProductPrice";
 import { OrderType } from "@prisma/client";
 
 type ScaleProductsParams = {

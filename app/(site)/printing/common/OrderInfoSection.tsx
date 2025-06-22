@@ -1,11 +1,11 @@
 import { Br, Line, Text } from "react-thermal-printer";
-import { HomeOrder } from "@shared"
-;
+import { HomeOrder } from "@shared";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
 import { QuickPaymentOption } from "@prisma/client";
 import calculateExtraItems from "../../lib/order-management/calculateExtraItems";
 import ExtraItemsSection from "./ExtraItemsSection";
+import splitIntoLines from "../../lib/formatting-parsing/splitIntoLines";
 
 interface OrderInfoSectionProps {
   order: HomeOrder;
@@ -51,7 +51,17 @@ export default function OrderInfoSection({
         </>
       )}
 
-      <Text size={bigSize}>{sanitazeReceiptText(order.home_order?.address.doorbell)}</Text>
+      {splitIntoLines(
+        sanitazeReceiptText(order.home_order?.address.doorbell ?? "").split(/\s+/), // <-- convert string to words
+        24,
+        " "
+      ).map((line, idx) => (
+        <Text size={bigSize} key={idx}>
+          {line}
+        </Text>
+      ))}
+
+      {/* <Text size={bigSize}>{sanitazeReceiptText(order.home_order?.address.doorbell)}</Text> */}
       <Line />
 
       <Text bold inline size={smallSize}>
@@ -94,7 +104,7 @@ export default function OrderInfoSection({
               )}
             </>
           )}
-          
+
           {order.home_order?.address.stair && (
             <>
               <Text bold inline size={smallSize}>
