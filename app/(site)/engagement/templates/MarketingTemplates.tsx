@@ -82,7 +82,7 @@ export default function MarketingTemplates({
 
   const handleTypeChange = resetDraftTemplate;
 
-  return filteredTemplates.length ? (
+  return (
     <Accordion type="multiple" className="w-full">
       {!selection && (
         <TemplateContentCreate
@@ -94,35 +94,39 @@ export default function MarketingTemplates({
         />
       )}
 
-      {filteredTemplates.map((template, index) => {
-        const isSelected = selectedTemplateIds.includes(template.id);
+      {filteredTemplates.length > 0 ? (
+        filteredTemplates.map((template, index) => {
+          const isSelected = selectedTemplateIds.includes(template.id);
 
-        return (
-          <div key={template.id} className="flex gap-6 w-full items-center">
-            {selection && (
-              <Checkbox
-                className="ml-6"
-                checked={isSelected}
-                onCheckedChange={() => handleCheckboxChange(template.id)}
-              />
-            )}
+          return (
+            <div key={template.id} className="flex gap-6 w-full items-center">
+              {selection && (
+                <Checkbox
+                  className="ml-6"
+                  checked={isSelected}
+                  onCheckedChange={() => handleCheckboxChange(template.id)}
+                />
+              )}
 
-            {selection ? (
-              <TemplateContentView index={index} template={template} />
-            ) : (
-              <TemplateContentEdit
-                index={index}
-                template={template}
-                onChange={(updates) => handleTemplateChange(template.id, updates)}
-                onDelete={handleTemplateDelete}
-                onSave={handleTemplateSave}
-              />
-            )}
-          </div>
-        );
-      })}
+              {selection ? (
+                <TemplateContentView index={index} template={template} />
+              ) : (
+                <TemplateContentEdit
+                  index={index}
+                  template={template}
+                  onChange={(updates) => handleTemplateChange(template.id, updates)}
+                  onDelete={handleTemplateDelete}
+                  onSave={handleTemplateSave}
+                />
+              )}
+            </div>
+          );
+        })
+      ) : (
+        <p className="mt-4 text-muted-foreground w-full flex justify-center">
+          Nessun modello disponibile
+        </p>
+      )}
     </Accordion>
-  ) : (
-    <p className="text-muted-foreground w-full flex justify-center">Nessun modello disponibile</p>
   );
 }
