@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { OrderWithPayments } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
-import { isSameDay } from "date-fns";
 import { OrderType, PaymentType } from "@prisma/client";
 import { getOrderTotal } from "../lib/order-management/getOrderTotal";
 import roundToCents from "../lib/util/roundToCents";
 import { ShiftFilter } from "../shared/types/ShiftFilter";
 import orderMatchesShift from "../lib/order-management/shift/orderMatchesShift";
+import { DateRange } from "react-day-picker";
+import { isSameDay } from "date-fns";
 
 export type PaymentTotals = {
   [key in PaymentType]: { label: string; total: number };
@@ -50,14 +51,20 @@ const DEFAULT_SUMMARY_DATA: PaymentsSummaryData = {
 };
 
 export default function usePaymentsHistory() {
+  const [summaryData, setSummaryData] = useState<PaymentsSummaryData>(DEFAULT_SUMMARY_DATA);
   const [allOrders, setAllOrders] = useState<OrderWithPayments[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderWithPayments[]>([]);
 
-  const [summaryData, setSummaryData] = useState<PaymentsSummaryData>(DEFAULT_SUMMARY_DATA);
-
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [shiftFilter, setShiftFilter] = useState<ShiftFilter>(ShiftFilter.BOTH);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  const [timeScope, setTimeScope] = useState<"single" | "range">("single");
+  const [singleDate, setSingleDate] = useState<Date | undefined>(new Date());
+  const [rangeDate, setRangeDate] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: new Date(),
+  });
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchInitialOrders = () => {
@@ -75,24 +82,37 @@ export default function usePaymentsHistory() {
 
   useEffect(() => {
     filterOrders();
-  }, [allOrders, date, typeFilter, shiftFilter]);
+  }, [allOrders, singleDate, rangeDate, timeScope, typeFilter, shiftFilter]);
 
   const filterOrders = useCallback(() => {
     const filtered = allOrders.filter((order) => {
-      const matchesDate = date ? isSameDay(new Date(order.created_at), date) : true;
+      const orderDate = new Date(order.created_at);
+      let matchesDate = true;
+
+      if (timeScope === "single" && singleDate) {
+        matchesDate = isSameDay(orderDate, singleDate);
+      } else if (timeScope === "range" && rangeDate?.from && rangeDate?.to) {
+        const from = new Date(rangeDate.from.setHours(0, 0, 0, 0));
+        const to = new Date(rangeDate.to.setHours(23, 59, 59, 999));
+        matchesDate = orderDate >= from && orderDate <= to;
+      }
+
       const matchesType = typeFilter === "all" || order.type === typeFilter;
 
       return matchesDate && matchesType && orderMatchesShift(order, shiftFilter);
     });
 
     setFilteredOrders(filtered);
-  }, [allOrders, date, typeFilter, shiftFilter]);
+  }, [allOrders, singleDate, rangeDate, timeScope, typeFilter, shiftFilter]);
 
   const resetFilters = () => {
-    setDate(new Date());
+    setSingleDate(new Date());
     setTypeFilter("all");
     setShiftFilter(ShiftFilter.BOTH);
     filterOrders();
+    setTimeScope("single")
+    setRangeDate(undefined)
+    setSingleDate(new Date())
   };
 
   useEffect(() => {
@@ -184,11 +204,15 @@ export default function usePaymentsHistory() {
     typeFilter,
     setTypeFilter,
     resetFilters,
-    date,
-    setDate,
+    singleDate,
+    setSingleDate,
     shiftFilter,
     setShiftFilter,
     summaryData,
     allOrders,
+    timeScope,
+    setTimeScope,
+    rangeDate,
+    setRangeDate,
   };
 }
