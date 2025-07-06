@@ -4,6 +4,7 @@ import Image from "next/image";
 import formatRice from "../../lib/formatting-parsing/formatRice";
 import RandomSpinner from "../../components/ui/misc/RandomSpinner";
 import { Results } from "../../hooks/statistics/useOrdersStats";
+import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 
 interface SectionResultsProps {
   results: Results;
@@ -84,7 +85,7 @@ export default function SectionResults({
           <div className="text-right">{pickupOrders}</div>
 
           <div>Totale dai prodotti</div>
-          <div className="text-right">{totalFromProducts}</div>
+          <div className="text-right">€ {roundToTwo(totalFromProducts)}</div>
 
           <div>Ordini tavolo</div>
           <div className="text-right">{tableOrders}</div>
