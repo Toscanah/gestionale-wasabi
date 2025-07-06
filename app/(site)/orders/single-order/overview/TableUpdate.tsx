@@ -5,12 +5,14 @@ import { toastSuccess } from "@/app/(site)/lib/util/toast";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
+import { PaymentScope } from "@prisma/client";
 
-export default function TableChange() {
+export default function TableUpdate() {
   const { order: anyOrder, joinTableOrders, updateOrder } = useOrderContext();
   const order = anyOrder as TableOrder;
 
   const [table, setTable] = useState<string>(order.table_order?.table ?? "");
+  const [people, setPeople] = useState<number>(order.table_order?.people ?? 0);
   const [join, setJoin] = useState<string>("");
 
   const debouncedHandleTableChange = useCallback(
@@ -20,7 +22,7 @@ export default function TableChange() {
           table: newTable,
           orderId: order.id,
         }).then(() => {
-          updateOrder({ table_order: { table: newTable } });
+          updateOrder({ table_order: { ...order.table_order, table: newTable } });
           toastSuccess("Tavolo aggiornato con successo");
         });
       }
@@ -37,6 +39,19 @@ export default function TableChange() {
     [joinTableOrders]
   );
 
+  const debouncedHandlePplChange = useCallback(
+    debounce((newPpl: number) => {
+      fetchRequest<TableOrder>("PATCH", "/api/orders", "updateTablePpl", {
+        people: newPpl,
+        orderId: order.id,
+      }).then(() => {
+        updateOrder({ table_order: { ...order.table_order, people: newPpl } });
+        toastSuccess("Numero di persone aggiornato con successo");
+      });
+    }, 1000),
+    []
+  );
+
   const handleTableInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTable = e.target.value;
     setTable(newTable);
@@ -49,11 +64,31 @@ export default function TableChange() {
     debouncedHandleTableJoin(tableToJoin);
   };
 
+  const handlePplUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPpl = e.target.valueAsNumber;
+    if (isNaN(newPpl) || newPpl < 0) {
+      return;
+    }
+    setPeople(newPpl);
+    debouncedHandlePplChange(newPpl);
+  };
+
   return (
     <div className="w-full flex gap-6 items-center">
       <div className="w-full flex flex-col space-y-2">
         <span>Tavolo</span>
         <Input className="text-xl h-12" value={table} onChange={handleTableInputChange} />
+      </div>
+
+      <div className="w-full flex flex-col space-y-2">
+        <span>N° persone</span>
+        <Input
+          disabled={order.payments.some((payment) => payment.scope === PaymentScope.ROMAN)}
+          className="text-xl h-12"
+          type="number"
+          value={people}
+          onChange={handlePplUpdate}
+        />
       </div>
 
       {/* <div className="w-full flex flex-col space-y-2">

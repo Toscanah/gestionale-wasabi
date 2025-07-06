@@ -1,5 +1,4 @@
-import { AnyOrder } from "@shared"
-;
+import { AnyOrder } from "@shared";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { Input } from "@/components/ui/input";
 import { useState, useCallback } from "react";
@@ -35,14 +34,12 @@ export default function Discount() {
   };
 
   return (
-    <div className="flex gap-2 justify-between items-center w-full">
-      <Input
-        value={discount}
-        onChange={(e) => handleDiscount(e.target.valueAsNumber)}
-        className="text-xl h-12"
-        placeholder="Sconto"
-        type="number"
-      />
-    </div>
+    <Input
+      value={discount}
+      onChange={(e) => handleDiscount(e.target.valueAsNumber)}
+      className="w-full text-xl h-12"
+      placeholder="Sconto"
+      type="number"
+    />
   );
 }

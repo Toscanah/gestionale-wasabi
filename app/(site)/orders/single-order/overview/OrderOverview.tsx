@@ -8,7 +8,7 @@ import Rice from "./Rice";
 import Total from "./Total";
 import NormalActions from "./NormalActions";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import TableChange from "./TableChange";
+import TableUpdate from "./TableUpdate";
 import Notes from "./Notes";
 import QuickPaymentOptions from "./QuickPaymentOptions";
 import { HomeOrder } from "@shared";
@@ -39,7 +39,7 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
 
       {order.type !== OrderType.TABLE && <OldOrders />}
 
-      <div className="flex gap-6 items-center">
+      <div className="w-full flex gap-6 items-center">
         {order.type !== OrderType.TABLE && (
           <>
             <When />
@@ -51,8 +51,8 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
         <Discount />
       </div>
 
-      {order.type == OrderType.TABLE && <TableChange />}
-      {order.type != OrderType.TABLE && <ETA />}
+      {order.type == OrderType.TABLE && <TableUpdate />}
+      {/* {order.type != OrderType.TABLE && <ETA />} */}
 
       <Rice />
       <Total />
