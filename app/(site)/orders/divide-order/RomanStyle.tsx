@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { OrderType, PaymentScope } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,9 @@ import { useOrderContext } from "../../context/OrderContext";
 import fetchRequest from "../../lib/api/fetchRequest";
 import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
 import roundToCents from "../../lib/util/roundToCents";
+import { debounce } from "lodash";
+import { toastSuccess } from "../../lib/util/toast";
+import useFocusOnClick from "../../hooks/useFocusOnClick";
 
 interface RomanStyleProps {
   handleBackButton: () => void;
@@ -63,15 +66,43 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
     }
   };
 
+  const debouncedHandlePplChange = useCallback(
+    debounce((newPpl: number) => {
+      fetchRequest<TableOrder>("PATCH", "/api/orders", "updateTablePpl", {
+        people: newPpl,
+        orderId: order.id,
+      }).then(() => {
+        updateOrder({ table_order: { ...(order as TableOrder).table_order, people: newPpl } });
+        toastSuccess("Numero di persone aggiornato con successo");
+      });
+    }, 1000),
+    []
+  );
+
+  const handlePplUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPpl = e.target.valueAsNumber;
+    if (isNaN(newPpl) || newPpl < 0) {
+      return;
+    }
+    setPpl(newPpl);
+    debouncedHandlePplChange(newPpl);
+  };
+
+  useFocusOnClick(["people"]);
+
   return (
     <div className="w-full h-full flex flex-col gap-4">
       <div className="flex items-center gap-4 w-full">
         <Label className="text-2xl">Quante persone?</Label>
         <Input
+          id="people"
           type="number"
           value={ppl}
-          disabled={true}
-          onChange={(e) => {}}
+          disabled={
+            order.payments.some((payment) => payment.scope === PaymentScope.ROMAN) ||
+            currentPerson > 1
+          }
+          onChange={handlePplUpdate}
           className="max-w-sm text-lg"
         />
 
