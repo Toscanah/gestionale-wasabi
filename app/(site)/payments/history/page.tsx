@@ -8,7 +8,7 @@ import TableControls from "../../components/table/TableControls";
 import Calendar from "../../components/ui/calendar/Calendar";
 import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import GoBack from "../../components/ui/misc/GoBack";
-import DailySummary from "./DailySummary";
+import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
 import columns from "./columns";
 import RandomSpinner from "../../components/ui/misc/RandomSpinner";
@@ -22,14 +22,18 @@ export default function PaymentsTable() {
     filteredOrders,
     isLoading,
     allOrders,
-    date,
+    singleDate,
     resetFilters,
-    setDate,
+    setSingleDate,
     setTypeFilter,
     typeFilter,
     shiftFilter,
     setShiftFilter,
     summaryData,
+    timeScope,
+    setTimeScope,
+    rangeDate,
+    setRangeDate,
   } = usePaymentsHistory();
 
   const table = getTable({
@@ -81,23 +85,47 @@ export default function PaymentsTable() {
 
           <OrderTypeSelector />
 
-          <Calendar
-            mode="single"
-            dateFilter={date}
-            handleDateFilter={setDate}
+          <SelectWrapper
+            className="h-10"
+            value={timeScope}
             disabled={isLoading}
+            onValueChange={(newScope) => setTimeScope(newScope as any)}
+            groups={[
+              {
+                items: [
+                  { name: "Giorno specifico", value: "single" },
+                  { name: "Arco temporale", value: "range" },
+                ],
+              },
+            ]}
           />
+
+          {timeScope == "single" ? (
+            <Calendar
+              mode="single"
+              dateFilter={singleDate}
+              handleDateFilter={setSingleDate}
+              disabled={isLoading}
+            />
+          ) : (
+            <Calendar
+              mode="range"
+              dateFilter={rangeDate}
+              handleDateFilter={setRangeDate}
+              disabled={isLoading}
+            />
+          )}
         </TableControls>
 
         {isLoading ? <RandomSpinner isLoading={isLoading} /> : <Table table={table} />}
 
         <div className="mt-auto flex justify-between">
-          <DailySummary summaryData={summaryData} />
+          <PaymentsSummary summaryData={summaryData} />
           <PrintSummary
             summaryData={summaryData}
             firstOrderDate={
-              (date
-                ? allOrders.filter((order) => isSameDay(new Date(order.created_at), date))
+              (singleDate
+                ? allOrders.filter((order) => isSameDay(new Date(order.created_at), singleDate))
                 : allOrders)[0]?.created_at
             }
           />

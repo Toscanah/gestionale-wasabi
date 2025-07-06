@@ -1,10 +1,10 @@
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import { PaymentsSummaryData } from "../../hooks/usePaymentsHistory";
 
-export default function DailySummary({ summaryData }: { summaryData: PaymentsSummaryData }) {
+export default function PaymentsSummary({ summaryData }: { summaryData: PaymentsSummaryData }) {
   const { totals, totalAmount, rawTotalAmount, centsDifference } = summaryData;
 
-  const totalDaily = roundToTwo(totalAmount);
+  const total = roundToTwo(totalAmount);
   const parsedCentsDifference = roundToTwo(centsDifference);
 
   return (
@@ -37,7 +37,7 @@ export default function DailySummary({ summaryData }: { summaryData: PaymentsSum
         <tr>
           <td className="font-bold text-left">Totale giornaliero</td>
           <td className="font-bold text-left">
-            €{totalDaily}{" "}
+            €{total}{" "}
             {parsedCentsDifference !== "0.00" && (
               <span className="text-muted-foreground">
                 (+ {summaryData.centsDifference.toFixed(2)})
