@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
 import { PaymentScope } from "@prisma/client";
+import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 
 export default function TableUpdate() {
   const { order: anyOrder, joinTableOrders, updateOrder } = useOrderContext();
@@ -73,16 +74,24 @@ export default function TableUpdate() {
     debouncedHandlePplChange(newPpl);
   };
 
+  useFocusOnClick(["table", "people"]);
+
   return (
     <div className="w-full flex gap-6 items-center">
       <div className="w-full flex flex-col space-y-2">
         <span>Tavolo</span>
-        <Input className="text-xl h-12" value={table} onChange={handleTableInputChange} />
+        <Input
+          className="text-xl h-12"
+          id="table"
+          value={table}
+          onChange={handleTableInputChange}
+        />
       </div>
 
       <div className="w-full flex flex-col space-y-2">
         <span>N° persone</span>
         <Input
+          id="people"
           disabled={order.payments.some((payment) => payment.scope === PaymentScope.ROMAN)}
           className="text-xl h-12"
           type="number"
