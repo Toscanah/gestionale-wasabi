@@ -17,7 +17,14 @@ export default function Engagement() {
 
   useEffect(() => {
     fetchRequest<AnyOrder>("GET", "/api/orders", "getOrderById", { orderId: order.id }).then(
-      updateOrder
+      (fetchedOrder) => {
+        const patched = patchOrderEngagements({
+          order,
+          updateEngagements: fetchedOrder.engagements,
+        });
+
+        updateOrder({ engagements: patched.engagements });
+      }
     );
   }, []);
 
