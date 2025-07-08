@@ -5,7 +5,7 @@ import { ProductInOrderWithOptionsSchema } from "../models/Product";
 import { PaymentScope } from "@prisma/client";
 
 export const PayOrderSchema = z.object({
-  payments: z.array(PaymentSchema.omit({ id: true, created_at: true })),
+  payments: z.array(PaymentSchema.omit({ id: true, created_at: true, payment_group_code: true })),
   productsToPay: z.array(ProductInOrderWithOptionsSchema),
 });
 

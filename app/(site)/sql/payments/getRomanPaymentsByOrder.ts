@@ -5,7 +5,7 @@ export default async function getRomanPaymentsByOrder({
   orderId,
 }: {
   orderId: number;
-}): Promise<{ payments: { amount: number }[] }> {
+}): Promise<{ payments: { amount: number; payment_group_code: string | null }[] }> {
   const romanPayments = await prisma.payment.findMany({
     where: {
       order_id: orderId,
@@ -16,6 +16,7 @@ export default async function getRomanPaymentsByOrder({
     },
     select: {
       amount: true,
+      payment_group_code: true,
     },
   });
 

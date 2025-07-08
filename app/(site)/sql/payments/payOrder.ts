@@ -1,7 +1,9 @@
+import { PaymentScope } from "@prisma/client";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
 import { AnyOrder, PayOrderInput } from "@shared";
+import { randomUUID } from "crypto";
 
 export default async function payOrder({
   payments,
@@ -14,6 +16,9 @@ export default async function payOrder({
   const filteredProducts = productsToPay.filter((ptp) => ptp.id !== -1);
   const orderId = payments[0].order_id;
 
+  const containsRoman = payments.some((p) => p.scope === PaymentScope.ROMAN);
+  const paymentGroupCode = containsRoman ? randomUUID() : null;
+
   await prisma.$transaction(async (tx) => {
     // 1. Create payments
     await tx.payment.createMany({
@@ -22,6 +27,7 @@ export default async function payOrder({
         type: payment.type,
         order_id: payment.order_id,
         scope: payment.scope,
+        ...(paymentGroupCode ? { payment_group_code: paymentGroupCode } : {}),
       })),
     });
 

@@ -30,17 +30,32 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
   useEffect(() => {
     if (total <= 0) return;
 
-    fetchRequest<{ payments: { amount: number }[] }>(
+    fetchRequest<{ payments: { amount: number; payment_group_code: string | null }[] }>(
       "GET",
       "/api/payments/",
       "getRomanPaymentsByOrder",
       { orderId: order.id }
     ).then(({ payments }) => {
       const ppl = (order as TableOrder).table_order?.people || 1;
-      const alreadyPaid = roundToCents(payments.reduce((sum, p) => sum + p.amount, 0));
-      const currentPersonIndex = payments.length + 1;
-
       const perPersonAmount = roundToCents(total / ppl);
+
+      const groupMap = new Map<string, number>();
+
+      for (const payment of payments) {
+        if (!payment.payment_group_code) continue;
+
+        const prev = groupMap.get(payment.payment_group_code) || 0;
+        groupMap.set(payment.payment_group_code, roundToCents(prev + payment.amount));
+      }
+
+      // Count how many "people" (groups) have fully paid
+      const fullyPaidPeople = Array.from(groupMap.values()).filter(
+        (paid) => paid >= perPersonAmount
+      ).length;
+
+      const alreadyPaid = roundToCents(payments.reduce((sum, p) => sum + p.amount, 0));
+
+      const currentPersonIndex = fullyPaidPeople + 1;
 
       setPpl(ppl);
       setCurrentPerson(currentPersonIndex);

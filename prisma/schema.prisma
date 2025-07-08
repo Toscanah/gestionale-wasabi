@@ -201,13 +201,14 @@ model Phone {
 }
 
 model Payment {
-    id         Int          @id @default(autoincrement())
-    amount     Float        @default(0)
-    order_id   Int
-    created_at DateTime     @default(now())
-    type       PaymentType
-    scope      PaymentScope @default(UNKNOWN)
-    order      Order        @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    id                 Int          @id @default(autoincrement())
+    amount             Float        @default(0)
+    order_id           Int
+    created_at         DateTime     @default(now())
+    type               PaymentType
+    scope              PaymentScope @default(UNKNOWN)
+    payment_group_code String?
+    order              Order        @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }
 
 model RiceLog {

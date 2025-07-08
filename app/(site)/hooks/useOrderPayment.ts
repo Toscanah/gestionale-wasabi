@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { AnyOrder } from "@shared";
 import fetchRequest from "../lib/api/fetchRequest";
-import { PaymentType } from "@prisma/client";
+import { PaymentScope, PaymentType } from "@prisma/client";
 import { DEFAULT_PAYMENT, Payment } from "../context/OrderPaymentContext";
 import { useOrderContext } from "../context/OrderContext";
 import scaleProducts from "../lib/product-management/scaleProducts";
@@ -73,8 +73,8 @@ export default function useOrderPayment({
           order_id: payingOrder.id,
           scope,
         };
-      })
-      // .filter((p) => p.amount > 0);
+      });
+    // .filter((p) => p.amount > 0);
 
     fetchRequest<AnyOrder>("POST", "/api/payments/", "payOrder", {
       payments,
