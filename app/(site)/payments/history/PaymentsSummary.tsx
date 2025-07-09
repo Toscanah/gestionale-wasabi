@@ -8,7 +8,7 @@ export default function PaymentsSummary({ summaryData }: { summaryData: Payments
   const parsedCentsDifference = roundToTwo(centsDifference);
 
   return (
-    <table className="w-[25rem] text-xl">
+    <table className="w-[30rem] text-xl">
       <tbody>
         <tr>
           <td className="text-left">Totale contanti</td>

@@ -70,9 +70,7 @@ export default function usePaymentsHistory() {
   const fetchInitialOrders = () => {
     setIsLoading(true);
     fetchRequest<OrderWithPayments[]>("GET", "/api/payments", "getOrdersWithPayments")
-      .then((orders) => {
-        setAllOrders(orders);
-      })
+      .then((orders) => setAllOrders(orders))
       .finally(() => setIsLoading(false));
   };
 
@@ -110,9 +108,9 @@ export default function usePaymentsHistory() {
     setTypeFilter("all");
     setShiftFilter(ShiftFilter.BOTH);
     filterOrders();
-    setTimeScope("single")
-    setRangeDate(undefined)
-    setSingleDate(new Date())
+    setTimeScope("single");
+    setRangeDate(undefined);
+    setSingleDate(new Date());
   };
 
   useEffect(() => {

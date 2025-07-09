@@ -20,13 +20,14 @@ export default async function cancelOrder({
     },
   });
 
-  for (const pio of productsInOrder) {
-    await cancelProductInOrder({
-      tx: prisma,
-      pio,
-      cooked,
-    });
-  }
+  productsInOrder.forEach(
+    async (pio) =>
+      await cancelProductInOrder({
+        tx: prisma,
+        pio,
+        cooked,
+      })
+  );
 
   await prisma.engagement.updateMany({
     where: {
@@ -34,6 +35,12 @@ export default async function cancelOrder({
     },
     data: {
       enabled: true,
+    },
+  });
+
+  await prisma.payment.deleteMany({
+    where: {
+      order_id: orderId,
     },
   });
 
