@@ -1,5 +1,5 @@
 param (
-    [string]$Hint = ""
+    [string]$h = ""
 )
 
 function Initialize-API {
@@ -47,8 +47,8 @@ if ([string]::IsNullOrEmpty($diff)) {
 
 $systemPrompt = "Generate a concise and meaningful Git commit message from the provided code diff. Keep it under 15 words."
 
-if ($Hint) {
-    $systemPrompt += " Hint: $Hint"
+if ($h) {
+    $systemPrompt += " Hint: $h"
 }
 
 $body = @{

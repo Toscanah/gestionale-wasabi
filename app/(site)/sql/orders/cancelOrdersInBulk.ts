@@ -2,20 +2,24 @@ import prisma from "../db";
 import { AnyOrder } from "@shared";
 import cancelOrder from "./cancelOrder";
 
+export type CancelOrdersInBulkResponse = Pick<AnyOrder, "id" | "type">;
+
 export default async function cancelOrdersInBulk({
   ordersId,
   productsCooked = false,
 }: {
   ordersId: number[];
   productsCooked?: boolean;
-}): Promise<Pick<AnyOrder, "id" | "type">[]> {
+}): Promise<CancelOrdersInBulkResponse[]> {
   const cancelledOrders = await prisma.$transaction(async () => {
-    const results: Pick<AnyOrder, "id" | "type">[] = [];
+    const results: CancelOrdersInBulkResponse[] = [];
 
-    for (const orderId of ordersId) {
-      const order = await cancelOrder({ orderId, cooked: productsCooked });
-      results.push({ id: order.id, type: order.type });
-    }
+    await Promise.all(
+      ordersId.map(async (orderId) => {
+        const { id, type } = await cancelOrder({ orderId, cooked: productsCooked });
+        results.push({ id, type });
+      })
+    );
 
     return results;
   });

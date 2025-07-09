@@ -1,7 +1,6 @@
 import { AnyOrder } from "@shared";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
-import { ProductInOrderState } from "@prisma/client";
 import { cancelProductInOrder } from "../products/product-in-order/cancelProductInOrder";
 
 export default async function cancelOrder({
@@ -20,13 +19,14 @@ export default async function cancelOrder({
     },
   });
 
-  productsInOrder.forEach(
-    async (pio) =>
-      await cancelProductInOrder({
+  await Promise.all(
+    productsInOrder.map((pio) =>
+      cancelProductInOrder({
         tx: prisma,
         pio,
         cooked,
       })
+    )
   );
 
   await prisma.engagement.updateMany({
@@ -50,5 +50,5 @@ export default async function cancelOrder({
     data: { state: "CANCELLED" },
   });
 
-  return getOrderById({ orderId });
+  return await getOrderById({ orderId });
 }
