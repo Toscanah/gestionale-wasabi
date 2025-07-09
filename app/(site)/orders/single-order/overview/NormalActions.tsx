@@ -147,7 +147,8 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
           onClick={() => setAction("payPart")}
           disabled={
             !canSplit(order.products.filter((product) => product.id !== -1)) ||
-            order.payments.some((p) => p.scope === PaymentScope.ROMAN)
+            order.payments.some((p) => p.scope === PaymentScope.ROMAN) ||
+            order.type === OrderType.HOME
           }
         >
           Dividi 分单
