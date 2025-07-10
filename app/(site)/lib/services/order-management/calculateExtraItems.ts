@@ -1,6 +1,6 @@
 import { AnyOrder, ProductInOrder } from "@/app/(site)/lib/shared"
 ;
-import { ExtraItems } from "../../../orders/single-order/overview/ExtraItems";
+import { ExtraItems } from "../../../domains/orders/single-order/overview/ExtraItems";
 
 const computeItemsByKey = (key: ExtraItems, products: ProductInOrder[]) =>
   products

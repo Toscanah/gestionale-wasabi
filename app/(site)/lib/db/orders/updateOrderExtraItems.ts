@@ -1,4 +1,4 @@
-import { ExtraItems } from "../../../orders/single-order/overview/ExtraItems";
+import { ExtraItems } from "../../../domains/orders/single-order/overview/ExtraItems";
 import prisma from "../db";
 
 export default async function updateOrderExtraItems({

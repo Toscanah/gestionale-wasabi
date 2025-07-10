@@ -3,8 +3,8 @@
 import { useState, Fragment, useMemo } from "react";
 import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
-import OrdersTable from "../orders/OrdersTable";
-import CreateOrder from "../orders/create-order/CreateOrder";
+import OrdersTable from "../domains/orders/OrdersTable";
+import CreateOrder from "../domains/orders/create-order/CreateOrder";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";

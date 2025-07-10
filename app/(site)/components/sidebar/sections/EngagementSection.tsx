@@ -1,15 +1,10 @@
-import { Megaphone, WindowsLogo } from "@phosphor-icons/react";
-import Link from "next/link";
+import { Megaphone } from "@phosphor-icons/react";
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
-import MarketingTemplates from "@/app/(site)/engagement/templates/MarketingTemplates";
+import MarketingTemplates from "@/app/(site)/domains/engagement/templates/MarketingTemplates";
 import DialogWrapper from "../../ui/dialog/DialogWrapper";
-import { Accordion } from "@/components/ui/accordion";
 
 export default function EngagementSection() {
   const EngagementModels = () => (

@@ -5,7 +5,7 @@ import useOrderPayment from "../hooks/useOrderPayment";
 import roundToTwo from "../lib/formatting-parsing/roundToTwo";
 import { useOrderContext } from "./OrderContext";
 import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
-import { OrderPaymentProps } from "../payments/order/OrderPayment";
+import { OrderPaymentProps } from "../domains/payments/order/OrderPayment";
 import roundToCents from "../lib/utils/roundToCents";
 
 interface OrderPaymentContextProps {

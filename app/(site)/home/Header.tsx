@@ -1,14 +1,14 @@
 "use client";
 
-import RiceDialog from "../rice/RiceDialog";
+import RiceDialog from "../domains/rice/RiceDialog";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import RiceSummary from "../rice/RiceSummary";
+import RiceSummary from "../domains/rice/RiceSummary";
 import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
-import DeleteOrdersBulk from "../orders/components/DeleteOrdersBulk";
+import DeleteOrdersBulk from "../domains/orders/components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";
-import SendMessagesDialog from "../meta-messages/SendMessagesDialog";
+import SendMessagesDialog from "../domains/meta-messages/SendMessagesDialog";
 
 interface HeaderProps {
   toggleOrdersByType: (type: OrderType) => void;

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ChangeTheme } from "./(site)/ChangeTheme";
+import { ChangeTheme } from "./(site)/components/ui/ChangeTheme";
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { type ThemeProviderProps } from "next-themes/dist/types";
