@@ -10,7 +10,7 @@ export default function Home() {
 
   useEffect(() => {
     setTheme("light");
-    router.push("./home");
+    router.push("/home");
   }, [router]);
 
   return <>Ciao!</>;

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { OrderWithPayments } from "@/app/(site)/lib/shared";
-import fetchRequest from "../lib/core/fetchRequest";
+import fetchRequest from "../lib/api/fetchRequest";
 import { OrderType, PaymentType } from "@prisma/client";
 import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
 import roundToCents from "../lib/utils/roundToCents";

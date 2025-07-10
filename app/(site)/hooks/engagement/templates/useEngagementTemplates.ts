@@ -1,4 +1,4 @@
-import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
+import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import uploadImage from "@/app/(site)/lib/integrations/images/uploadImage";
 import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import {

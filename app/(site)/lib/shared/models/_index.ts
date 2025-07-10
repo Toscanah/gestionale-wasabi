@@ -5,3 +5,4 @@ export * from "./Option";
 export * from "./Order";
 export * from "./Product";
 export * from "./Rice";
+export * from "./Meta"

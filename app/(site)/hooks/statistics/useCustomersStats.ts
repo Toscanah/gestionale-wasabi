@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { endOfYear, startOfYear, subDays, startOfDay, endOfMonth, startOfMonth } from "date-fns";
 import { CustomerWithStats } from "@/app/(site)/lib/shared/types/CustomerWithStats";
-import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
+import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { DatePreset } from "../../lib/shared/enums/DatePreset";
 
 const today = new Date();

@@ -1,16 +1,17 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import useRice, { Rice } from "../hooks/useRice";
 import useSettings from "../hooks/useSettings";
 import { GlobalSettings } from "../lib/shared/types/Settings";
+import { OrderType } from "@prisma/client";
 
 interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
   rice: Rice;
   updateRice: (total: Rice) => void;
   resetRice: () => void;
-  selectedOrders: number[];
-  toggleOrderSelection: (orderId: number) => void;
+  selectedOrders: SelectedOrders[];
+  toggleOrderSelection: (order: SelectedOrders) => void;
   updateRemainingRice: (amount: number) => void;
   fetchRemainingRice: () => void;
   settings: GlobalSettings;
@@ -32,17 +33,22 @@ interface WasabiProviderProps {
   updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
 }
 
+type SelectedOrders = { id: number; type: OrderType };
+
 export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderProps) => {
-  const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
+  const [selectedOrders, setSelectedOrders] = useState<SelectedOrders[]>([]);
   const { settings, updateSettings } = useSettings();
   const { rice, updateRice, updateRemainingRice, resetRice } = useRice();
 
-  const toggleOrderSelection = (orderId: number) =>
-    setSelectedOrders((prevSelected) =>
-      prevSelected.includes(orderId)
-        ? prevSelected.filter((id) => id !== orderId)
-        : [...prevSelected, orderId]
-    );
+  const toggleOrderSelection = (order: SelectedOrders) =>
+    setSelectedOrders((prevSelected) => {
+      const isSelected = prevSelected.some((o) => o.id === order.id);
+      return isSelected ? prevSelected.filter((o) => o.id !== order.id) : [...prevSelected, order];
+    });
+
+  useEffect(() => {
+    console.log(selectedOrders);
+  }, [selectedOrders]);
 
   return (
     <WasabiContext.Provider

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import executeAction from "./executeAction";
 import { ZodSchema } from "zod";
-import { HTTPMethod } from "../core/fetchRequest";
+import { HTTPMethod } from "./fetchRequest";
 
 export type ActionEntry = {
   func: (...content: any[]) => Promise<any>;

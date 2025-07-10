@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
-import fetchRequest from "../lib/core/fetchRequest";
+import fetchRequest from "../lib/api/fetchRequest";
 import { PaymentScope, PaymentType } from "@prisma/client";
 import { DEFAULT_PAYMENT, Payment } from "../context/OrderPaymentContext";
 import { useOrderContext } from "../context/OrderContext";
 import scaleProducts from "../lib/services/product-management/scaleProducts";
 import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
-import { OrderPaymentProps } from "../domains/payments/order/OrderPayment";
+import { OrderPaymentProps } from "../(domains)/payments/order/OrderPayment";
 
 interface UseOrderPaymentParams extends Omit<OrderPaymentProps, "onBackButton" | "partialOrder"> {
   payment: Payment;

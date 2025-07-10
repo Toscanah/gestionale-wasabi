@@ -1,6 +1,6 @@
 import { OrderType } from "@prisma/client";
 import { useState } from "react";
-import fetchRequest from "../../lib/core/fetchRequest";
+import fetchRequest from "../../lib/api/fetchRequest";
 import { AnyOrder, EngagementWithDetails, HomeOrder, PickupOrder } from "../../lib/shared";
 
 export type UseHandleEngagementParams =

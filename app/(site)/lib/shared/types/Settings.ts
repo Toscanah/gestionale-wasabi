@@ -1,4 +1,4 @@
-import { Printer } from "../../../domains/settings/application/PrinterChoice";
+import { Printer } from "../../../(domains)/settings/application/PrinterChoice";
 
 type BusinessTime = `${string}:${string}`;
 

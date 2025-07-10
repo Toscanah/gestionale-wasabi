@@ -3,7 +3,7 @@ import {
   SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
-import MarketingTemplates from "@/app/(site)/domains/engagement/templates/MarketingTemplates";
+import MarketingTemplates from "@/app/(site)/(domains)/engagement/templates/MarketingTemplates";
 import DialogWrapper from "../../ui/dialog/DialogWrapper";
 
 export default function EngagementSection() {

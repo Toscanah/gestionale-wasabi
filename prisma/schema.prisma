@@ -78,12 +78,6 @@ enum PaymentScope {
     ROMAN
 }
 
-enum MessageType {
-    ORDER_CONFIRMATION
-    FEEDBACK
-    LATE_ORDER
-}
-
 model Rider {
     id       Int     @id @default(autoincrement())
     name     String
@@ -302,14 +296,13 @@ model OptionInProductOrder {
 }
 
 model MetaMessageLog {
-    id            Int         @id @default(autoincrement())
+    id            Int       @id @default(autoincrement())
     home_order_id Int
     template_name String
-    message_type  MessageType
-    created_at    DateTime    @default(now())
-    home_order    HomeOrder   @relation(fields: [home_order_id], references: [id], onDelete: Cascade)
+    created_at    DateTime  @default(now())
+    home_order    HomeOrder @relation(fields: [home_order_id], references: [id], onDelete: Cascade)
 
-    @@unique([home_order_id, template_name, message_type])
+    @@unique([home_order_id, template_name])
 }
 
 // model WhatsappMessageLog {

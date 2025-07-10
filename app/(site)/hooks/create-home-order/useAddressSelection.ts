@@ -1,7 +1,7 @@
 import { Address } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useCreateHomeOrder } from "../../context/CreateHomeOrderContext";
-import fetchRequest from "../../lib/core/fetchRequest";
+import fetchRequest from "../../lib/api/fetchRequest";
 import { HomeOrder } from "@/app/(site)/lib/shared"
 ;
 
