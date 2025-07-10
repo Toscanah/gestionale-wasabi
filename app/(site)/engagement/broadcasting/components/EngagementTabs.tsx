@@ -6,16 +6,16 @@ import {
   HomeOrder,
   ParsedEngagementTemplate,
   PickupOrder,
-} from "../../../shared";
+} from "../../../lib/shared";
 import { OrderType } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import MarketingTemplates from "../../templates/MarketingTemplates";
 import { Button } from "@/components/ui/button";
-import { patchOrderEngagements } from "../../../lib/order-management/patchOrderEngagements";
+import { patchOrderEngagements } from "../../../lib/services/order-management/patchOrderEngagements";
 import { Checkbox } from "@/components/ui/checkbox";
 import TemplateContentView from "../../templates/components/content/TemplateContentView";
-import { toastSuccess } from "@/app/(site)/lib/util/toast";
+import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import { Trash } from "@phosphor-icons/react";
 
 type OrderEngagementTabsProps = {

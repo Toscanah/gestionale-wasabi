@@ -1,12 +1,12 @@
 import { NextRequest } from "next/server";
-import getAllOptions from "../../sql/options/getAllOptions";
-import updateOptionsOfCategory from "../../sql/options/updateOptionsOfCategory";
-import getAllOptionsWithCategories from "../../sql/options/getAllOptionsWithCategories";
-import updateOption from "../../sql/options/updateOption";
-import createNewOption from "../../sql/options/createNewOption";
-import toggleOption from "../../sql/options/toggleOption";
-import handleRequest from "../util/handleRequest";
-import { OPTION_SCHEMAS } from "../../shared/schemas/option";
+import getAllOptions from "../../lib/db/options/getAllOptions";
+import updateOptionsOfCategory from "../../lib/db/options/updateOptionsOfCategory";
+import getAllOptionsWithCategories from "../../lib/db/options/getAllOptionsWithCategories";
+import updateOption from "../../lib/db/options/updateOption";
+import createNewOption from "../../lib/db/options/createNewOption";
+import toggleOption from "../../lib/db/options/toggleOption";
+import handleRequest from "../../lib/api/handleRequest";
+import { OPTION_SCHEMAS } from "../../lib/shared/schemas/option";
 
 const POST_ACTIONS = new Map([
   ["createNewOption", { func: createNewOption, schema: OPTION_SCHEMAS.createNewOption }],

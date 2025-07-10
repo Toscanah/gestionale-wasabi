@@ -3,9 +3,9 @@
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
 import { Cell } from "@tanstack/react-table";
-import { AnyOrder } from "@shared";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import Order from "./single-order/Order";
-import getTable from "../lib/util/getTable";
+import getTable from "../lib/utils/getTable";
 import Table from "../components/table/Table";
 import { cn } from "@/lib/utils";
 

@@ -2,14 +2,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
-import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@shared";
+import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import TableColumn from "../components/table/TableColumn";
-import getDiscountedTotal from "../lib/order-management/getDiscountedTotal";
+import getDiscountedTotal from "../lib/services/order-management/getDiscountedTotal";
 import roundToTwo from "../lib/formatting-parsing/roundToTwo";
 import { useWasabiContext } from "../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OrdersTableProps } from "./OrdersTable";
-import { getOrderTotal } from "../lib/order-management/getOrderTotal";
+import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
 
 export default function getColumns(type: OrderType): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [

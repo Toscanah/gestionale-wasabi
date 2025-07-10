@@ -2,7 +2,7 @@
 
 import { isSameDay } from "date-fns";
 import { OrderType } from "@prisma/client";
-import getTable from "../../lib/util/getTable";
+import getTable from "../../lib/utils/getTable";
 import Table from "../../components/table/Table";
 import TableControls from "../../components/table/TableControls";
 import Calendar from "../../components/ui/calendar/Calendar";

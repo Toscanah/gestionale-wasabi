@@ -23,10 +23,10 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@shared": ["app/(site)/shared/index.ts"],
-      "@shared/models": ["app/(site)/shared/models"],
-      "@shared/schemas": ["app/(site)/shared/schemas"],
-      "@shared/types": ["app/(site)/shared/types"]
+      "@shared": ["app/(site)/lib/shared/index.ts"],
+      "@shared/models": ["app/(site)/lib/shared/models"],
+      "@shared/schemas": ["app/(site)/lib/shared/schemas"],
+      "@shared/types": ["app/(site)/lib/shared/types"]
     }
   },
   "include": [

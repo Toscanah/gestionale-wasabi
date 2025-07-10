@@ -1,8 +1,8 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import OrderEngagementDialog from "@/app/(site)/engagement/broadcasting/components/OrderEngagementDialog";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { patchOrderEngagements } from "@/app/(site)/lib/order-management/patchOrderEngagements";
-import { AnyOrder } from "@/app/(site)/shared";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
+import { patchOrderEngagements } from "@/app/(site)/lib/services/order-management/patchOrderEngagements";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 

@@ -1,6 +1,6 @@
-import { AnyOrder } from "@shared";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import { Separator } from "@/components/ui/separator";
-import getDiscountedTotal from "../../lib/order-management/getDiscountedTotal";
+import getDiscountedTotal from "../../lib/services/order-management/getDiscountedTotal";
 import { Icon } from "@phosphor-icons/react";
 import PaymentSummary from "./sections/PaymentSummary";
 import { Button } from "@/components/ui/button";

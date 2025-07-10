@@ -1,11 +1,11 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import getCategories from "../../sql/categories/getCategories";
-import createNewCategory from "../../sql/categories/createNewCategory";
-import updateCategory from "../../sql/categories/updateCategory";
-import toggleCategory from "../../sql/categories/toggleCategory";
-import handleRequest from "../util/handleRequest";
-import { CATEGORY_SCHEMAS } from "../../shared/schemas/category";
+import getCategories from "../../lib/db/categories/getCategories";
+import createNewCategory from "../../lib/db/categories/createNewCategory";
+import updateCategory from "../../lib/db/categories/updateCategory";
+import toggleCategory from "../../lib/db/categories/toggleCategory";
+import handleRequest from "../../lib/api/handleRequest";
+import { CATEGORY_SCHEMAS } from "../../lib/shared/schemas/category";
 
 
 const POST_ACTIONS = new Map([

@@ -1,7 +1,7 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { TableOrder } from "@shared";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { toastSuccess } from "@/app/(site)/lib/util/toast";
+import { TableOrder } from "@/app/(site)/lib/shared";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
+import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";

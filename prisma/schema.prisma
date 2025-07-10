@@ -78,6 +78,12 @@ enum PaymentScope {
     ROMAN
 }
 
+enum MessageType {
+    ORDER_CONFIRMATION
+    FEEDBACK
+    LATE_ORDER
+}
+
 model Rider {
     id       Int     @id @default(autoincrement())
     name     String
@@ -127,9 +133,12 @@ model HomeOrder {
     notes         String?
     payment       QuickPaymentOption @default(UNKNOWN)
     contact_phone String?
+    last_reply_at DateTime?
+    reply_seen_at DateTime?
     order         Order              @relation(fields: [order_id], references: [id], onDelete: Cascade)
     address       Address            @relation(fields: [address_id], references: [id])
     customer      Customer           @relation(fields: [customer_id], references: [id])
+    messages      MetaMessageLog[]
 }
 
 model PickupOrder {
@@ -291,3 +300,35 @@ model OptionInProductOrder {
     product_in_order    ProductInOrder @relation(fields: [product_in_order_id], references: [id], onDelete: Cascade)
     option              Option         @relation(fields: [option_id], references: [id])
 }
+
+model MetaMessageLog {
+    id            Int         @id @default(autoincrement())
+    home_order_id Int
+    template_name String
+    message_type  MessageType
+    created_at    DateTime    @default(now())
+    home_order    HomeOrder   @relation(fields: [home_order_id], references: [id], onDelete: Cascade)
+
+    @@unique([home_order_id, template_name, message_type])
+}
+
+// model WhatsappMessageLog {
+//   id              Int               @id @default(autoincrement())
+//   created_at      DateTime          @default(now())
+//   order_id        Int?
+//   customer_id     Int?
+//   template_id     Int               // Foreign key instead of template_name!
+//   message_type    MessageType
+//   message_id      String
+//   sent            Boolean           @default(false)
+//   delivered       Boolean           @default(false)
+//   read            Boolean           @default(false)
+//   replied         Boolean           @default(false)
+//   reply_text      String?
+
+//   order           Order?            @relation(fields: [order_id], references: [id], onDelete: SetNull)
+//   customer        Customer?         @relation(fields: [customer_id], references: [id], onDelete: SetNull)
+//   template        WhatsappTemplate  @relation(fields: [template_id], references: [id])
+
+//   @@index([order_id, customer_id, message_type])
+// }

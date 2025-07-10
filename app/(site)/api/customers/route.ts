@@ -1,17 +1,17 @@
 import { NextRequest } from "next/server";
-import getCustomerByPhone from "../../sql/customers/getCustomerByPhone";
-import createCustomer from "../../sql/customers/createCustomer";
-import toggleCustomer from "../../sql/customers/toggleCustomer";
-import getCustomersWithDetails from "../../sql/customers/getCustomersWithDetails";
-import updateAddressesOfCustomer from "../../sql/customers/updateAddressesOfCustomer";
-import updateCustomerFromOrder from "../../sql/customers/updateCustomerFromOrder";
-import getCustomerWithDetails from "../../sql/customers/getCustomerWithDetails";
-import updateCustomerFromAdmin from "../../sql/customers/updateCustomerFromAdmin";
-import getCustomersByDoorbell from "../../sql/customers/getCustomersByDoorbell";
-import { CUSTOMER_SCHEMAS } from "@shared";
-import handleRequest from "../util/handleRequest";
-import deleteCustomerById from "../../sql/customers/deleteCustomerById";
-import getCustomersWithStats from "../../sql/customers/getCustomersWithStats";
+import getCustomerByPhone from "../../lib/db/customers/getCustomerByPhone";
+import createCustomer from "../../lib/db/customers/createCustomer";
+import toggleCustomer from "../../lib/db/customers/toggleCustomer";
+import getCustomersWithDetails from "../../lib/db/customers/getCustomersWithDetails";
+import updateAddressesOfCustomer from "../../lib/db/customers/updateAddressesOfCustomer";
+import updateCustomerFromOrder from "../../lib/db/customers/updateCustomerFromOrder";
+import getCustomerWithDetails from "../../lib/db/customers/getCustomerWithDetails";
+import updateCustomerFromAdmin from "../../lib/db/customers/updateCustomerFromAdmin";
+import getCustomersByDoorbell from "../../lib/db/customers/getCustomersByDoorbell";
+import { CUSTOMER_SCHEMAS } from "@/app/(site)/lib/shared";
+import handleRequest from "../../lib/api/handleRequest";
+import deleteCustomerById from "../../lib/db/customers/deleteCustomerById";
+import getCustomersWithStats from "../../lib/db/customers/getCustomersWithStats";
 // import getCustomersWithMarketing from "../../sql/customers/getCustomersWithMarketing.ts.disabled";
 
 const POST_ACTIONS = new Map([

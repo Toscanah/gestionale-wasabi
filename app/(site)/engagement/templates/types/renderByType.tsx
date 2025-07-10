@@ -4,7 +4,7 @@ import {
   ParsedEngagementPayload,
   QrPayload,
   TemplatePayloadDraft,
-} from "@/app/(site)/shared";
+} from "@/app/(site)/lib/shared";
 import { EngagementType } from "@prisma/client";
 import QRCode from "./QRCode";
 import Image from "./Image";

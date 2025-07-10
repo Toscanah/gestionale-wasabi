@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { OptionWithCategories } from "@shared"
+import { OptionWithCategories } from "@/app/(site)/lib/shared"
 ;
 import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 

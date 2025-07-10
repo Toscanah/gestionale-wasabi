@@ -7,7 +7,7 @@ import {
   CreateEngagementTemplate,
   ParsedEngagementPayload,
   TemplatePayloadDraft,
-} from "@/app/(site)/shared";
+} from "@/app/(site)/lib/shared";
 import renderByType from "../../types/renderByType";
 import { EngagementType } from "@prisma/client";
 

@@ -1,10 +1,10 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import calculateExtraItems from "@/app/(site)/lib/order-management/calculateExtraItems";
-import { toastSuccess } from "@/app/(site)/lib/util/toast";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
+import calculateExtraItems from "@/app/(site)/lib/services/order-management/calculateExtraItems";
+import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
 import useLocalExtraItems from "@/app/(site)/hooks/useLocalExtraItems";
-import { AnyOrder } from "@shared"
+import { AnyOrder } from "@/app/(site)/lib/shared"
 ;
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

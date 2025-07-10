@@ -1,6 +1,6 @@
 "use client";
 
-import getTable from "../../lib/util/getTable";
+import getTable from "../../lib/utils/getTable";
 import Table from "../../components/table/Table";
 import columns from "./columns";
 import TableControls from "../../components/table/TableControls";
@@ -9,7 +9,7 @@ import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import GoBack from "../../components/ui/misc/GoBack";
 import { useCustomersStats } from "../../hooks/statistics/useCustomersStats";
 import { TablePagination } from "../../components/table/TablePagination";
-import { DATE_PRESETS, DatePreset } from "../../enums/DatePreset";
+import { DATE_PRESETS, DatePreset } from "../../lib/shared/enums/DatePreset";
 import Calendar from "../../components/ui/calendar/Calendar";
 
 export default function CustomersStats() {

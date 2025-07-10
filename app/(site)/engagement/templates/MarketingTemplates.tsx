@@ -5,7 +5,7 @@ import {
   CreateEngagementTemplate,
   ParsedEngagementTemplate,
   TemplatePayloadDraft,
-} from "../../shared";
+} from "../../lib/shared";
 import TemplateContentCreate from "./components/content/TemplateContentCreate";
 import TemplateContentEdit from "./components/content/TemplateContentEdit";
 import TemplateContentView from "./components/content/TemplateContentView";

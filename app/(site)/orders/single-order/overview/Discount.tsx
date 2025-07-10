@@ -1,9 +1,9 @@
-import { AnyOrder } from "@shared";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
+import { AnyOrder } from "@/app/(site)/lib/shared";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
 import { Input } from "@/components/ui/input";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
-import { toastSuccess } from "@/app/(site)/lib/util/toast";
+import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 
 export default function Discount() {

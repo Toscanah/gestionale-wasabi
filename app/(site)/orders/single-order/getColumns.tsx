@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ProductInOrder } from "@shared";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Input } from "@/components/ui/input";
 import { OrderType } from "@prisma/client";
 import TableColumn from "../../components/table/TableColumn";

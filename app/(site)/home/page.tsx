@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { WasabiProvider } from "../context/WasabiContext";
 import { OrderType } from "@prisma/client";
-import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "@shared";
+import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "@/app/(site)/lib/shared";
 import HomePage from "./HomePage";
-import fetchRequest from "../lib/api/fetchRequest";
+import fetchRequest from "../lib/core/fetchRequest";
 
 export type BuildOrderState<TTable, THome, TPickup> = {
   [OrderType.TABLE]: TTable;

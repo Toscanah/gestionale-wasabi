@@ -1,9 +1,9 @@
 import { Br, Text } from "react-thermal-printer";
-import { ProductInOrder } from "@shared";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import { OrderType } from "@prisma/client";
-import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
+import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 
 export default function TotalSection(
   products: ProductInOrder[],

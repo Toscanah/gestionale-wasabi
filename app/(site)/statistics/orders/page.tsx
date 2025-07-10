@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import fetchRequest from "../../lib/api/fetchRequest";
-import { AnyOrder } from "@shared";
+import fetchRequest from "../../lib/core/fetchRequest";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { uniqueId } from "lodash";
 import Section from "./Section";

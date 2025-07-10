@@ -1,13 +1,13 @@
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import uploadImage from "@/app/(site)/lib/api/uploadImage";
-import { toastSuccess } from "@/app/(site)/lib/util/toast";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
+import uploadImage from "@/app/(site)/lib/integrations/images/uploadImage";
+import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import {
   ParsedEngagementTemplate,
   UpdateEngagementTemplate,
   CreateEngagementTemplate,
   ParsedEngagementPayload,
   TemplatePayloadDraft,
-} from "@/app/(site)/shared";
+} from "@/app/(site)/lib/shared";
 import { EngagementType } from "@prisma/client";
 import { useEffect, useState } from "react";
 

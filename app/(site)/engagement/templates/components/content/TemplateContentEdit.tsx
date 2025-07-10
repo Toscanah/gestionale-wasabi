@@ -2,7 +2,7 @@ import {
   ParsedEngagementPayload,
   ParsedEngagementTemplate,
   UpdateEngagementTemplate,
-} from "@/app/(site)/shared";
+} from "@/app/(site)/lib/shared";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

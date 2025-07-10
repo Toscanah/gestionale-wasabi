@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { ProductInOrder } from "@shared";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {

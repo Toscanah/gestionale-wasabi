@@ -11,12 +11,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import parseAddress from "@/app/(site)/lib/formatting-parsing/parseAddress";
 import { Button } from "@/components/ui/button";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { CustomerWithDetails } from "@shared"
+import { CustomerWithDetails } from "@/app/(site)/lib/shared"
 ;
-import { toastError } from "@/app/(site)/lib/util/toast";
+import { toastError } from "@/app/(site)/lib/utils/toast";
 
 interface CustomerAddressesProps {
   addresses: Address[];

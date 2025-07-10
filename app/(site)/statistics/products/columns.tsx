@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { ProductWithStats } from "../../shared/types/ProductWithStats";
+import { ProductWithStats } from "../../lib/shared/types/ProductWithStats";
 import formatRice from "../../lib/formatting-parsing/formatRice";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";

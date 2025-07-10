@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server";
-import createAddress from "../../sql/addresses/createAddress";
-import updateAddress from "../../sql/addresses/updateAddress";
-import getAddressesByCustomer from "../../sql/addresses/getAddressesByCustomer";
-import getLastAddressOfCustomer from "../../sql/addresses/getLastAddressOfCustomer";
-import handleRequest from "../util/handleRequest";
-import { ADDRESS_SCHEMAS } from "@shared";
+import createAddress from "../../lib/db/addresses/createAddress";
+import updateAddress from "../../lib/db/addresses/updateAddress";
+import getAddressesByCustomer from "../../lib/db/addresses/getAddressesByCustomer";
+import getLastAddressOfCustomer from "../../lib/db/addresses/getLastAddressOfCustomer";
+import handleRequest from "../../lib/api/handleRequest";
+import { ADDRESS_SCHEMAS } from "@/app/(site)/lib/shared";
 
 const POST_ACTIONS = new Map([
   ["createAddress", { func: createAddress, schema: ADDRESS_SCHEMAS.createAddress }],

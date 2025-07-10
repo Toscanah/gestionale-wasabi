@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../components/table/TableColumn";
-import { CustomerWithDetails } from "@shared"
+import { CustomerWithDetails } from "@/app/(site)/lib/shared"
 ;
 import { format } from "date-fns"; // Ensure date-fns is installed
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import ScoreDialog from "./ScoreDialog";
 import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
-import { CustomerWithStats } from "../../shared/types/CustomerWithStats";
+import { CustomerWithStats } from "../../lib/shared/types/CustomerWithStats";
 import OrderHistory from "../../components/order-history/OrderHistory";
 
 const columns: ColumnDef<CustomerWithStats>[] = [

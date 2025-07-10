@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CustomerWithDetails } from "../../shared";
+import { CustomerWithDetails } from "../../lib/shared";
 import { EngagementType } from "@prisma/client";
 
 export enum WeekFilterEnum {

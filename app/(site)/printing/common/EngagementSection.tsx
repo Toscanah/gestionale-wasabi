@@ -6,7 +6,7 @@ import {
   ImagePayload,
   MessagePayload,
   QrPayload,
-} from "../../shared";
+} from "../../lib/shared";
 import { Br, Image, Line, QRCode, Text } from "react-thermal-printer";
 import { Fragment } from "react";
 import wrapTextCentered from "../../lib/formatting-parsing/printing/wrapTextCentered";

@@ -1,7 +1,7 @@
 import DialogWrapper, { DialogWrapperProps } from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import useHandleEngagement from "@/app/(site)/hooks/engagement/useHandleEngagement";
-import { toastSuccess } from "@/app/(site)/lib/util/toast";
-import { EngagementWithDetails } from "@/app/(site)/shared";
+import { toastSuccess } from "@/app/(site)/lib/utils/toast";
+import { EngagementWithDetails } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import MarketingTemplates from "../../templates/MarketingTemplates";
 

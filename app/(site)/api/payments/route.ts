@@ -1,12 +1,12 @@
 import { NextRequest } from "next/server";
-import handleRequest from "../util/handleRequest";
-import payOrder from "../../sql/payments/payOrder";
-import getOrdersWithPayments from "../../sql/payments/getOrdersWithPayments";
-import getRomanPaymentsByOrder from "../../sql/payments/getRomanPaymentsByOrder";
-import { getOrdersWithPaymentsSplitted } from "../../sql/payments/getOrdersWithPaymentsSplitted";
-import { PAYMENT_SCHEMAS } from "../../shared/schemas/payment";
-import analyzePaymentScopes from "../../sql/analyzePaymentScopes";
-import applyPaymentScopes from "../../sql/applyPaymentScopes";
+import handleRequest from "../../lib/api/handleRequest";
+import payOrder from "../../lib/db/payments/payOrder";
+import getOrdersWithPayments from "../../lib/db/payments/getOrdersWithPayments";
+import getRomanPaymentsByOrder from "../../lib/db/payments/getRomanPaymentsByOrder";
+import { getOrdersWithPaymentsSplitted } from "../../lib/db/payments/getOrdersWithPaymentsSplitted";
+import { PAYMENT_SCHEMAS } from "../../lib/shared/schemas/payment";
+import analyzePaymentScopes from "../../lib/db/analyzePaymentScopes";
+import applyPaymentScopes from "../../lib/db/applyPaymentScopes";
 
 const POST_ACTIONS = new Map([["payOrder", { func: payOrder, schema: PAYMENT_SCHEMAS.payOrder }]]);
 

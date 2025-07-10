@@ -1,6 +1,6 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
-import { getOrderTotal } from "@/app/(site)/lib/order-management/getOrderTotal";
+import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 
 export default function Total() {
   const { order } = useOrderContext();

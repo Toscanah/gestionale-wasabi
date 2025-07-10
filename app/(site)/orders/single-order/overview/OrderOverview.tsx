@@ -11,7 +11,7 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableUpdate from "./TableUpdate";
 import Notes from "./Notes";
 import QuickPaymentOptions from "./QuickPaymentOptions";
-import { HomeOrder } from "@shared";
+import { HomeOrder } from "@/app/(site)/lib/shared";
 import ShiftSelection from "./ShiftSelection";
 import Engagement from "./Engagement";
 import ETA from "./ETA";

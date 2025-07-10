@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { ProductInOrder } from "@shared";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 

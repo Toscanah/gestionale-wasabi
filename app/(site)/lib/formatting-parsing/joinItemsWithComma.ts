@@ -1,4 +1,4 @@
-import { CategoryWithOptions, CustomerWithDetails, OptionWithCategories } from "@shared"
+import { CategoryWithOptions, CustomerWithDetails, OptionWithCategories } from "@/app/(site)/lib/shared"
 ;
 import capitalizeFirstLetter from "./capitalizeFirstLetter";
 

@@ -1,11 +1,11 @@
 import { Address, Customer } from "@prisma/client";
-import fetchRequest from "../../lib/api/fetchRequest";
+import fetchRequest from "../../lib/core/fetchRequest";
 import parseAddress from "../../lib/formatting-parsing/parseAddress";
 import { FormValues } from "../../orders/create-order/home/address/form";
 import { ExtraInfo } from "../../context/CreateHomeOrderContext";
-import { toastSuccess } from "../../lib/util/toast";
+import { toastSuccess } from "../../lib/utils/toast";
 import { Dispatch, SetStateAction } from "react";
-import { CreateAddressInput, CreateCustomerInput, UpdateAddressInput } from "../../shared";
+import { CreateAddressInput, CreateCustomerInput, UpdateAddressInput } from "../../lib/shared";
 
 function getActionType(object: object | undefined): string {
   return object === undefined ? "create" : "update";

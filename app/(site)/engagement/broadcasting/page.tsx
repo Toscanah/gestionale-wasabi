@@ -6,7 +6,7 @@ import WeekFilter from "./filters/WeekFilter";
 import { Button } from "@/components/ui/button";
 import EngagementFilter from "./filters/EngagementFilter";
 import useEngagement from "../../hooks/engagement/useEngagement";
-import getTable from "../../lib/util/getTable";
+import getTable from "../../lib/utils/getTable";
 import Table from "../../components/table/Table";
 import GoBack from "../../components/ui/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";

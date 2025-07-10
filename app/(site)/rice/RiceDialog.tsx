@@ -9,7 +9,7 @@ import DialogWrapper from "../components/ui/dialog/DialogWrapper";
 import SelectWrapper from "../components/ui/select/SelectWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
-import fetchRequest from "../lib/api/fetchRequest";
+import fetchRequest from "../lib/core/fetchRequest";
 import { Rice } from "../hooks/useRice";
 import useFocusOnClick from "../hooks/useFocusOnClick";
 

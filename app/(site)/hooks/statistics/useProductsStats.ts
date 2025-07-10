@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Category } from "@prisma/client";
 import { DateRange } from "react-day-picker";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { ProductWithStats } from "@/app/(site)/shared/types/ProductWithStats";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
+import { ProductWithStats } from "@/app/(site)/lib/shared/types/ProductWithStats";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
-import { ShiftFilter } from "../../shared/types/ShiftFilter";
+import { ShiftFilter } from "../../lib/shared/types/ShiftFilter";
 
 const DEFAULT_START_DATE = new Date(new Date().setHours(0, 0, 0, 0));
 const DEFAULT_END_DATE = new Date(new Date().setHours(23, 59, 59, 999));

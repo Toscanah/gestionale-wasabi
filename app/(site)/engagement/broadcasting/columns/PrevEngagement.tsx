@@ -8,7 +8,7 @@ import {
   ImagePayload,
   MessagePayload,
   QrPayload,
-} from "@/app/(site)/shared";
+} from "@/app/(site)/lib/shared";
 import {
   Accordion,
   AccordionContent,

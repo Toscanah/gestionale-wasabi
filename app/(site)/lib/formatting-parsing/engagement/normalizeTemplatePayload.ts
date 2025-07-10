@@ -3,7 +3,7 @@ import {
   MessagePayload,
   ParsedEngagementTemplate,
   QrPayload,
-} from "@/app/(site)/shared";
+} from "@/app/(site)/lib/shared";
 import { EngagementTemplate, EngagementType } from "@prisma/client";
 
 export default function normalizeTemplatePayload(

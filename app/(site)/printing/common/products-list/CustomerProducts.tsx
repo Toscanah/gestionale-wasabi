@@ -1,5 +1,5 @@
-import { ProductInOrder } from "@shared";
-import getDiscountedTotal from "@/app/(site)/lib/order-management/getDiscountedTotal";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
+import getDiscountedTotal from "@/app/(site)/lib/services/order-management/getDiscountedTotal";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import padReceiptText from "@/app/(site)/lib/formatting-parsing/printing/padReceiptText";
 import { Br, Row, Text } from "react-thermal-printer";

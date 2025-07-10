@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { OrderType } from "@prisma/client";
-import { AnyOrder, HomeOrder } from "@shared";
+import { AnyOrder, HomeOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import calculateETA from "@/app/(site)/lib/order-management/calculateETA";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
+import calculateETA from "@/app/(site)/lib/services/order-management/calculateETA";
 
 export default function ETA() {
   return <></>

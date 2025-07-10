@@ -1,9 +1,9 @@
 import { Br, Line, Text } from "react-thermal-printer";
-import { HomeOrder } from "@shared";
+import { HomeOrder } from "@/app/(site)/lib/shared";
 import getReceiptSize from "../../lib/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../lib/formatting-parsing/printing/sanitazeReceiptText";
 import { QuickPaymentOption } from "@prisma/client";
-import calculateExtraItems from "../../lib/order-management/calculateExtraItems";
+import calculateExtraItems from "../../lib/services/order-management/calculateExtraItems";
 import ExtraItemsSection from "./ExtraItemsSection";
 import splitIntoLines from "../../lib/formatting-parsing/splitIntoLines";
 

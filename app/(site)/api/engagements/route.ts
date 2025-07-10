@@ -1,13 +1,13 @@
 import { NextRequest } from "next/server";
-import handleRequest from "../util/handleRequest";
-import createEngagement from "../../sql/engagement/createEngagement";
-import { ENGAGEMENT_SCHEMAS } from "../../shared";
-import getEngagementTemplates from "../../sql/engagement/templates/getEngagementTemplates";
-import updateEngagementTemplate from "../../sql/engagement/templates/updateEngagementTemplate";
-import createEngagementTemplate from "../../sql/engagement/templates/createEngagementTemplate";
-import deleteTemplateById from "../../sql/engagement/templates/deleteTemplateById";
-import deleteEngagementById from "../../sql/engagement/deleteEngagementById";
-import toggleEngagementById from "../../sql/engagement/toggleEngagementById";
+import handleRequest from "../../lib/api/handleRequest";
+import createEngagement from "../../lib/db/engagement/createEngagement";
+import { ENGAGEMENT_SCHEMAS } from "../../lib/shared";
+import getEngagementTemplates from "../../lib/db/engagement/templates/getEngagementTemplates";
+import updateEngagementTemplate from "../../lib/db/engagement/templates/updateEngagementTemplate";
+import createEngagementTemplate from "../../lib/db/engagement/templates/createEngagementTemplate";
+import deleteTemplateById from "../../lib/db/engagement/templates/deleteTemplateById";
+import deleteEngagementById from "../../lib/db/engagement/deleteEngagementById";
+import toggleEngagementById from "../../lib/db/engagement/toggleEngagementById";
 
 const GET_ACTIONS = new Map([
   // [

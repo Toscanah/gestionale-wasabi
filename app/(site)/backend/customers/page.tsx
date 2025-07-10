@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import fetchRequest from "../../lib/api/fetchRequest";
+import fetchRequest from "../../lib/core/fetchRequest";
 import FormFields from "../FormFields";
 import { formSchema, getCustomerFields } from "./form";
 import Manager from "../Manager";
 import columns from "./columns";
 import GoBack from "../../components/ui/misc/GoBack";
-import { CustomerWithDetails } from "@shared"
+import { CustomerWithDetails } from "@/app/(site)/lib/shared"
 ;
 import RandomSpinner from "../../components/ui/misc/RandomSpinner";
 

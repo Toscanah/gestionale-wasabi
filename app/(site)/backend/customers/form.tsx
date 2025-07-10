@@ -1,5 +1,5 @@
 import { z } from "zod";
-import getZodField from "../../lib/util/getZodField";
+import getZodField from "../../lib/utils/getZodField";
 import { FormFieldType } from "../FormFields";
 import { Textarea } from "@/components/ui/textarea";
 

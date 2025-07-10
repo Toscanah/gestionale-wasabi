@@ -4,7 +4,7 @@ import { Warning } from "@phosphor-icons/react";
 import SelectWrapper from "../../ui/select/SelectWrapper";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { ShiftFilter } from "@/app/(site)/shared/types/ShiftFilter";
+import { ShiftFilter } from "@/app/(site)/lib/shared/types/ShiftFilter";
 
 interface ShiftFilterSelectorProps {
   shiftFilter: ShiftFilter;

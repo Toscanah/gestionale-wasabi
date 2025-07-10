@@ -8,6 +8,7 @@ import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../context/WasabiContext";
 import DeleteOrdersBulk from "../orders/components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";
+import SendMessagesDialog from "../meta-messages/SendMessagesDialog";
 
 interface HeaderProps {
   toggleOrdersByType: (type: OrderType) => void;
@@ -27,7 +28,14 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
     <>
       <div className="flex flex-col gap-4 items-center">
         <div className="flex items-center w-full">
-          {selectedOrders.length > 0 ? <DeleteOrdersBulk /> : <RiceDialog variant="header" />}
+          {selectedOrders.length > 0 ? (
+            <div className="flex items-center gap-2 w-full">
+              <SendMessagesDialog />
+              <DeleteOrdersBulk />
+            </div>
+          ) : (
+            <RiceDialog variant="header" />
+          )}
           {/* <EngagementDialog trigger={<Button>YOOOOOOOOOOO</Button>} /> */}
         </div>
 

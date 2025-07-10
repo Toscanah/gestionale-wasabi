@@ -1,4 +1,4 @@
-import { AnyOrder } from "@shared";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import WeekdaysOrDateToggle from "./weekdays-or-date/WeekdaysOrDateToggle";
 import WeekdaysSelection from "./weekdays-or-date/WeekdaysSelection";
 import WeekdaysFilterTypeSelection from "./weekdays-or-date/WeekdaysFilterTypeSelection";

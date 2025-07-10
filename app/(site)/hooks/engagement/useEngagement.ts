@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { CustomerWithDetails } from "../../shared";
-import fetchRequest from "../../lib/api/fetchRequest";
+import { CustomerWithDetails } from "../../lib/shared";
+import fetchRequest from "../../lib/core/fetchRequest";
 import { useEngagementFilters, WeekFilterEnum } from "./useEngagementFilters";
 import { ENGAGEMENT_TYPES } from "../../engagement/templates/types/EngagementTypes";
 import { EngagementType } from "@prisma/client";

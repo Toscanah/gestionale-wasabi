@@ -11,12 +11,12 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import Header from "./Header";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../components/sidebar/Sidebar";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@shared";
+import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import { ArrowsClockwise } from "@phosphor-icons/react";
-import getOverdrawnOrderIds from "../lib/order-management/getOverdrawnOrderIds";
+import getOverdrawnOrderIds from "../lib/services/order-management/getOverdrawnOrderIds";
 import { BuildOrderState } from "./page";
 import { Button } from "@/components/ui/button";
-import fetchRequest from "../lib/api/fetchRequest";
+import fetchRequest from "../lib/core/fetchRequest";
 
 interface HomePageProps {
   orders: BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>;

@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import fetchRequest from "../../lib/api/fetchRequest";
+import fetchRequest from "../../lib/core/fetchRequest";
 import columns from "./columns";
 import Manager from "../Manager";
 import GoBack from "../../components/ui/misc/GoBack";
 import FormFields from "../FormFields";
 import { formSchema, getCategoryFields } from "./form";
-import { CategoryWithOptions } from "@shared"
+import { CategoryWithOptions } from "@/app/(site)/lib/shared"
 ;
 import { Option } from "@/prisma/generated/zod";
 import RandomSpinner from "../../components/ui/misc/RandomSpinner";

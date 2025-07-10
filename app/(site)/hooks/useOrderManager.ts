@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { AnyOrder, TableOrder } from "@shared";
-import fetchRequest from "../lib/api/fetchRequest";
-import { ProductInOrder } from "@shared";
+import { AnyOrder, TableOrder } from "@/app/(site)/lib/shared";
+import fetchRequest from "../lib/core/fetchRequest";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../context/WasabiContext";
-import generateDummyProduct from "../lib/product-management/generateDummyProduct";
-import { toastError, toastSuccess } from "../lib/util/toast";
-import scaleProducts from "../lib/product-management/scaleProducts";
-import { getOrderTotal } from "../lib/order-management/getOrderTotal";
+import generateDummyProduct from "../lib/services/product-management/generateDummyProduct";
+import { toastError, toastSuccess } from "../lib/utils/toast";
+import scaleProducts from "../lib/services/product-management/scaleProducts";
+import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { Fragment, ReactNode } from "react";
-import getNestedValue from "../../lib/util/getNestedValue";
+import getNestedValue from "../../lib/utils/getNestedValue";
 import joinItemsWithComma, {
   JoinItemType,
 } from "@/app/(site)/lib/formatting-parsing/joinItemsWithComma";

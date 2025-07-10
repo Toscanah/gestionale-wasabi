@@ -3,7 +3,7 @@ import formatRice from "../../../lib/formatting-parsing/formatRice";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import getPioRice from "@/app/(site)/lib/product-management/getPioRice";
+import getPioRice from "@/app/(site)/lib/services/product-management/getPioRice";
 
 export default function Rice() {
   const { order } = useOrderContext();

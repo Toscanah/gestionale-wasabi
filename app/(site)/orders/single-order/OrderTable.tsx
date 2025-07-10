@@ -1,8 +1,8 @@
 import getColumns from "./getColumns";
-import { ProductInOrder } from "@shared";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useEffect, useState } from "react";
 import Table from "../../components/table/Table";
-import getTable from "../../lib/util/getTable";
+import getTable from "../../lib/utils/getTable";
 import OrderOverview from "./overview/OrderOverview";
 import OrderPayment from "../../payments/order/OrderPayment";
 import DivideOrder from "../divide-order/DivideOrder";
@@ -14,7 +14,7 @@ import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
 import Notes from "./overview/Notes";
 import ExtraItems from "./overview/ExtraItems";
 import { OrderType, PaymentScope } from "@prisma/client";
-import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
+import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 

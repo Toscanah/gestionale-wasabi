@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import PrevEngagement from "./PrevEngagement";
-import { CustomerWithDetails } from "@/app/(site)/shared";
+import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 import TableColumn from "@/app/(site)/components/table/TableColumn";
 
 export default function columns({

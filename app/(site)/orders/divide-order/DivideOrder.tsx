@@ -1,4 +1,4 @@
-import { ProductInOrder } from "@shared";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
@@ -7,8 +7,8 @@ import print from "../../printing/print";
 import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import { useOrderContext } from "../../context/OrderContext";
 import DivideTable from "./DivideTable";
-import moveProductsInDivideOrder from "../../lib/order-management/moveProductsInDivideOrder";
-import fetchRequest from "../../lib/api/fetchRequest";
+import moveProductsInDivideOrder from "../../lib/services/order-management/moveProductsInDivideOrder";
+import fetchRequest from "../../lib/core/fetchRequest";
 import { OrderState, PaymentScope } from "@prisma/client";
 
 interface DividerOrderProps {

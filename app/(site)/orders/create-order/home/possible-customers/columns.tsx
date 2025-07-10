@@ -1,11 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { CustomerWithDetails } from "@shared"
+import { CustomerWithDetails } from "@/app/(site)/lib/shared"
 ;
 import TableColumn from "@/app/(site)/components/table/TableColumn";
 import joinItemsWithComma from "@/app/(site)/lib/formatting-parsing/joinItemsWithComma";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
+import fetchRequest from "@/app/(site)/lib/core/fetchRequest";
 import { Dispatch, SetStateAction } from "react";
 
 const columns = (

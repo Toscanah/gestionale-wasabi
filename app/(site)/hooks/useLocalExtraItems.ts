@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOrderContext } from "../context/OrderContext";
-import calculateExtraItems from "@/app/(site)/lib/order-management/calculateExtraItems";
+import calculateExtraItems from "@/app/(site)/lib/services/order-management/calculateExtraItems";
 
 export type LocalExtraItems = {
   soupsMade: number;

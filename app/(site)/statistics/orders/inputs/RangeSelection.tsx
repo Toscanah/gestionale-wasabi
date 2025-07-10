@@ -1,6 +1,6 @@
 import { DateRange } from "react-day-picker";
 import { SelectionProps, WeekdaysSelection } from "../Section";
-import { DATE_PRESETS, DatePreset } from "@/app/(site)/enums/DatePreset";
+import { DATE_PRESETS, DatePreset } from "@/app/(site)/lib/shared/enums/DatePreset";
 import { endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, subDays } from "date-fns";
 import Calendar from "@/app/(site)/components/ui/calendar/Calendar";
 

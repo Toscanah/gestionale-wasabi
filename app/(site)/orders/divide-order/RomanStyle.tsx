@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import OrderPayment from "@/app/(site)/payments/order/OrderPayment";
-import { TableOrder } from "@shared";
+import { TableOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "../../context/OrderContext";
-import fetchRequest from "../../lib/api/fetchRequest";
-import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
-import roundToCents from "../../lib/util/roundToCents";
+import fetchRequest from "../../lib/core/fetchRequest";
+import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
+import roundToCents from "../../lib/utils/roundToCents";
 import { debounce } from "lodash";
-import { toastSuccess } from "../../lib/util/toast";
+import { toastSuccess } from "../../lib/utils/toast";
 import useFocusOnClick from "../../hooks/useFocusOnClick";
 
 interface RomanStyleProps {

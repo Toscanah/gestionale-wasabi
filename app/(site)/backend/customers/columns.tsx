@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
 import OrderHistory from "../../components/order-history/OrderHistory";
-import { CustomerWithDetails } from "@shared"
+import { CustomerWithDetails } from "@/app/(site)/lib/shared"
 ;
 import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
 

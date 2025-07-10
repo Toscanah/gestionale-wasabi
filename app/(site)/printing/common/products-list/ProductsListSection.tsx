@@ -1,6 +1,6 @@
-import { ProductInOrder } from "@shared";
+import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
-import aggregateProducts from "../../../lib/product-management/aggregateProducts";
+import aggregateProducts from "../../../lib/services/product-management/aggregateProducts";
 import CustomerProducts from "./CustomerProducts";
 import KitchenProducts from "./KitchenProducts";
 

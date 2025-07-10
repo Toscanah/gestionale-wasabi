@@ -1,18 +1,18 @@
 import { NextRequest } from "next/server";
-import addProductToOrder from "../../sql/products/addProductToOrder";
-import addProductsToOrder from "../../sql/products/addProductsToOrder";
-import updateProductInOrder from "../../sql/products/product-in-order/updateProductInOrder";
-import removeProductsFromOrder from "../../sql/products/removeProductsFromOrder";
-import getProducts from "../../sql/products/getProducts";
-import updateProduct from "../../sql/products/updateProduct";
-import updateProductOptionsInOrder from "../../sql/products/updateProductOptionsInOrder";
-import createNewProduct from "../../sql/products/createNewProduct";
-import toggleProduct from "../../sql/products/toggleProduct";
-import updatePrintedAmounts from "../../sql/products/updatePrintedAmounts";
-import handleRequest from "../util/handleRequest";
-import updateAdditionalNote from "../../sql/customers/updateAdditionalNote";
-import getProductsWithStats from "../../sql/products/getProductsWithStats";
-import { PRODUCT_SCHEMAS } from "../../shared/schemas/product";
+import addProductToOrder from "../../lib/db/products/addProductToOrder";
+import addProductsToOrder from "../../lib/db/products/addProductsToOrder";
+import updateProductInOrder from "../../lib/db/products/product-in-order/updateProductInOrder";
+import removeProductsFromOrder from "../../lib/db/products/removeProductsFromOrder";
+import getProducts from "../../lib/db/products/getProducts";
+import updateProduct from "../../lib/db/products/updateProduct";
+import updateProductOptionsInOrder from "../../lib/db/products/updateProductOptionsInOrder";
+import createNewProduct from "../../lib/db/products/createNewProduct";
+import toggleProduct from "../../lib/db/products/toggleProduct";
+import updatePrintedAmounts from "../../lib/db/products/updatePrintedAmounts";
+import handleRequest from "../../lib/api/handleRequest";
+import updateAdditionalNote from "../../lib/db/customers/updateAdditionalNote";
+import getProductsWithStats from "../../lib/db/products/getProductsWithStats";
+import { PRODUCT_SCHEMAS } from "../../lib/shared/schemas/product";
 
 const POST_ACTIONS = new Map([
   ["createNewProduct", { func: createNewProduct, schema: PRODUCT_SCHEMAS.createNewProduct }],

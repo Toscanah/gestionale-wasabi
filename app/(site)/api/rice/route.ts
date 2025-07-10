@@ -1,13 +1,13 @@
 import { NextRequest } from "next/server";
-import getDailyRiceUsage from "../../sql/rice/getDailyRiceUsage";
-import handleRequest from "../util/handleRequest";
-import getRiceBatches from "../../sql/rice/getRiceBatches";
-import addRiceBatch from "../../sql/rice/addRiceBatch";
-import updateRiceBatch from "../../sql/rice/updateRiceBatch";
-import deleteRiceBatch from "../../sql/rice/deleteRiceBatch";
-import getRiceLogs from "../../sql/rice/getRiceLogs";
-import addRiceLog from "../../sql/rice/addRiceLog";
-import { RICE_SCHEMAS } from "../../shared/schemas/rice";
+import getDailyRiceUsage from "../../lib/db/rice/getDailyRiceUsage";
+import handleRequest from "../../lib/api/handleRequest";
+import getRiceBatches from "../../lib/db/rice/getRiceBatches";
+import addRiceBatch from "../../lib/db/rice/addRiceBatch";
+import updateRiceBatch from "../../lib/db/rice/updateRiceBatch";
+import deleteRiceBatch from "../../lib/db/rice/deleteRiceBatch";
+import getRiceLogs from "../../lib/db/rice/getRiceLogs";
+import addRiceLog from "../../lib/db/rice/addRiceLog";
+import { RICE_SCHEMAS } from "../../lib/shared/schemas/rice";
 
 const POST_ACTIONS = new Map([
   ["addRiceBatch", { func: addRiceBatch, schema: RICE_SCHEMAS.addRiceBatch }],

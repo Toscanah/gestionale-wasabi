@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { OrderWithPayments } from "@shared";
-import fetchRequest from "../lib/api/fetchRequest";
+import { OrderWithPayments } from "@/app/(site)/lib/shared";
+import fetchRequest from "../lib/core/fetchRequest";
 import { OrderType, PaymentType } from "@prisma/client";
-import { getOrderTotal } from "../lib/order-management/getOrderTotal";
-import roundToCents from "../lib/util/roundToCents";
-import { ShiftFilter } from "../shared/types/ShiftFilter";
-import orderMatchesShift from "../lib/order-management/shift/orderMatchesShift";
+import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
+import roundToCents from "../lib/utils/roundToCents";
+import { ShiftFilter } from "../lib/shared/types/ShiftFilter";
+import orderMatchesShift from "../lib/services/order-management/shift/orderMatchesShift";
 import { DateRange } from "react-day-picker";
 import { isSameDay } from "date-fns";
 

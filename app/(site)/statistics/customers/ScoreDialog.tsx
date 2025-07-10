@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { CustomerWithDetails } from "@shared";
+import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getOrderTotal } from "../../lib/order-management/getOrderTotal";
+import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 
 interface ScoreDialogProps {
   customer: CustomerWithDetails;

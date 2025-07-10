@@ -1,15 +1,15 @@
 import { useEffect, useReducer, useState } from "react";
-import { AnyOrder } from "@shared";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import { OrderType, ProductInOrderState, WorkingShift } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import sectionReducer, { initialState } from "./sectionReducer";
 import { isSameDay } from "date-fns";
-import timeToDecimal from "../../lib/util/time/timeToDecimal";
+import timeToDecimal from "../../lib/utils/time/timeToDecimal";
 import {
   getEffectiveOrderShift,
   parseOrderTime,
-} from "../../lib/order-management/shift/getOrderShift";
-import getPioRice from "../../lib/product-management/getPioRice";
+} from "../../lib/services/order-management/shift/getOrderShift";
+import getPioRice from "../../lib/services/product-management/getPioRice";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
