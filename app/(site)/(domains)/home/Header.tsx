@@ -8,7 +8,7 @@ import { OrderType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
 import DeleteOrdersBulk from "../orders/components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";
-import SendMessagesDialog from "../meta-messages/SendMessagesDialog";
+import SendMessagesDialog from "../meta/SendMessagesDialog";
 
 interface HeaderProps {
   toggleOrdersByType: (type: OrderType) => void;

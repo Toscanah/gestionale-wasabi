@@ -5,7 +5,7 @@ import { OrderType } from "@prisma/client";
 import TableColumn from "../../../components/table/TableColumn";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import useGridFocus, { FocussableInput } from "../../../hooks/useGridFocus";
+import useGridFocus, { FocussableInput } from "../../../hooks/focus/useGridFocus";
 import { Button } from "@/components/ui/button";
 import { debounce } from "lodash";
 import { useOrderContext } from "../../../context/OrderContext";

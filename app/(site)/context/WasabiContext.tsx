@@ -46,10 +46,6 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
       return isSelected ? prevSelected.filter((o) => o.id !== order.id) : [...prevSelected, order];
     });
 
-  useEffect(() => {
-    console.log(selectedOrders);
-  }, [selectedOrders]);
-
   return (
     <WasabiContext.Provider
       value={{

@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import handleRequest, { ActionsMap } from "../../lib/api/handleRequest";
-import { sendMessage } from "../../lib/integrations/meta/sendMessage";
 import { META_SCHEMAS } from "../../lib/shared";
 import { getMetaTemplates } from "../../lib/integrations/meta/getMetaTemplates";
+import sendMessage from "../../lib/integrations/meta/sendMessage";
 
 const POST_ACTIONS: ActionsMap = new Map([
   ["sendMessage", { func: sendMessage, schema: META_SCHEMAS.sendMessage }],

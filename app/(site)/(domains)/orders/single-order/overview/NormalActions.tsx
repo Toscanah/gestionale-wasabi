@@ -1,6 +1,6 @@
 import { AnyOrder, HomeOrder } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { PayingAction } from "../OrderTable";
 import print from "@/app/(site)/(domains)/printing/print";
 import OrderReceipt from "@/app/(site)/(domains)/printing/receipts/OrderReceipt";
@@ -12,6 +12,9 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
+import useMetaTemplates from "@/app/(site)/hooks/meta/useMetaTemplates";
+import { useTemplatesParams } from "@/app/(site)/hooks/meta/useTemplatesParams";
+import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/app/(site)/lib/integrations/meta/constants";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
@@ -19,8 +22,61 @@ interface NormalActionsProps {
 }
 
 export default function NormalActions({ setAction, quickPaymentOption }: NormalActionsProps) {
-  const { order, updateUnprintedProducts, updateOrder, toggleDialog } = useOrderContext();
+  const { order, updateUnprintedProducts, updateOrder, toggleDialog, dialogOpen } =
+    useOrderContext();
   const [rePrintDialog, setRePrintDialog] = useState<boolean>(false);
+  const [paramsReady, setParamsReady] = useState(false);
+
+  const hasConfirmationSent = useCallback(() => {
+    return (
+      order.type == OrderType.HOME &&
+      (order as HomeOrder).home_order?.messages.some(
+        (mess) => mess.template_name === ORDER_CONFIRMATION_TEMPLATE_NAME
+      )
+    );
+  }, [order]);
+
+  const { paramsMap, setParam } = useTemplatesParams();
+  const { templates, sendMessages } = useMetaTemplates({
+    open: dialogOpen,
+    paramsMap,
+  });
+
+  useEffect(() => {
+    const prepareParams = async () => {
+      if (!hasConfirmationSent()) {
+        const confermaTemplate = templates.find((t) => t.name === ORDER_CONFIRMATION_TEMPLATE_NAME);
+        if (!confermaTemplate) return;
+
+        const templateId = confermaTemplate.id;
+
+        const when = (order as HomeOrder).home_order?.when;
+
+        let finalWhen: string;
+
+        if (when === "immediate") {
+          const createdAt = new Date(order.created_at);
+          const futureTime = new Date(createdAt.getTime() + 40 * 60000); // Add 40 minutes
+          const hours = futureTime.getHours().toString().padStart(2, "0");
+          const minutes = futureTime.getMinutes().toString().padStart(2, "0");
+          finalWhen = `${hours}:${minutes}`;
+        } else {
+          finalWhen = when ?? "";
+        }
+
+        // setParam(templateId, "header_text", 1, "ORDINE_ID_PLACEHOLDER");
+        setParam(templateId, "body_text", 1, finalWhen);
+        // setParam(templateId, "body_text", 2, "TEMPO_CONSEGNA_PLACEHOLDER");
+
+        setParamsReady(true);
+      } else {
+        setParamsReady(true); // Already sent = nothing to prepare
+      }
+    };
+
+    setParamsReady(false); // Reset before starting
+    prepareParams();
+  }, [order, hasConfirmationSent, templates]);
 
   useEffect(() => {
     const handlePrintShortcut = async (event: KeyboardEvent) => {
@@ -92,6 +148,14 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     await updatePrintedFlag();
     const content = await buildPrintContent(order, quickPaymentOption, false);
     await print(...content).then(() => toggleDialog(false));
+
+    if (!hasConfirmationSent()) {
+      await sendMessages({
+        templateName: ORDER_CONFIRMATION_TEMPLATE_NAME,
+        order,
+        toast: false,
+      });
+    }
   };
 
   const handleFullPayment = async () => {
@@ -168,7 +232,11 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       <RePrintButton />
 
       <div className="flex gap-6">
-        <Button className="w-full text-3xl h-36" disabled={!hasProducts} onClick={handlePrint}>
+        <Button
+          className="w-full text-3xl h-36"
+          disabled={!hasProducts || !paramsReady}
+          onClick={handlePrint}
+        >
           STAMPA 打印
         </Button>
 

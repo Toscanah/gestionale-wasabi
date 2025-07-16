@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
+import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";

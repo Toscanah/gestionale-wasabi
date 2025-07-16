@@ -11,7 +11,7 @@ import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
 import fetchRequest from "../../lib/api/fetchRequest";
 import { Rice } from "../../hooks/useRice";
-import useFocusOnClick from "../../hooks/useFocusOnClick";
+import useFocusOnClick from "../../hooks/focus/useFocusOnClick";
 
 interface RiceDialogProps {
   variant: "header" | "sidebar";

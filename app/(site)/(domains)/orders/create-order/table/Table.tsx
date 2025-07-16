@@ -6,7 +6,7 @@ import { AnyOrder, TableOrder } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import fetchRequest from "../../../../lib/api/fetchRequest";
 import { toastError, toastSuccess } from "../../../../lib/utils/toast";
-import useFocusCycle from "@/app/(site)/hooks/useFocusCycle";
+import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import { cn } from "@/lib/utils";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";

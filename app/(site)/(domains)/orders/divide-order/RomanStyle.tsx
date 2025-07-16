@@ -11,7 +11,7 @@ import { getOrderTotal } from "../../../lib/services/order-management/getOrderTo
 import roundToCents from "../../../lib/utils/roundToCents";
 import { debounce } from "lodash";
 import { toastSuccess } from "../../../lib/utils/toast";
-import useFocusOnClick from "../../../hooks/useFocusOnClick";
+import useFocusOnClick from "../../../hooks/focus/useFocusOnClick";
 
 interface RomanStyleProps {
   handleBackButton: () => void;
@@ -25,7 +25,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
   const [amountToPay, setAmountToPay] = useState<number>(0);
   const [paidAmount, setPaidAmount] = useState<number>(0);
 
-  const total = getOrderTotal({ order });
+  const total = getOrderTotal({ order, applyDiscount: true });
 
   useEffect(() => {
     if (total <= 0) return;

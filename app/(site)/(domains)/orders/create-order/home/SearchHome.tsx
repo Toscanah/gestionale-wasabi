@@ -1,5 +1,5 @@
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
-import useFocusCycle from "@/app/(site)/hooks/useFocusCycle";
+import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -1,21 +1,32 @@
 import { z } from "zod";
+import {
+  ButtonType,
+  TemplateCategory,
+  TemplateComponentType,
+  TemplateFormat,
+  TemplateLanguage,
+  TemplateParameterFormat,
+  TemplateStatus,
+} from "../enums/Meta";
 
 // BUTTONS
 
 const QuickReplyButtonSchema = z.object({
-  type: z.literal("QUICK_REPLY"),
+  type: z.literal(ButtonType.QUICK_REPLY),
   text: z.string(),
 });
 
 const UrlButtonSchema = z.object({
-  type: z.literal("URL"),
+  type: z.literal(ButtonType.URL),
   text: z.string(),
   url: z.string(),
   example: z.string().optional(),
 });
 
+export type UrlButton = z.infer<typeof UrlButtonSchema>;
+
 const PhoneNumberButtonSchema = z.object({
-  type: z.literal("PHONE_NUMBER"),
+  type: z.literal(ButtonType.PHONE_NUMBER),
   text: z.string(),
   phone_number: z.string(),
 });
@@ -28,43 +39,46 @@ export const TemplateButtonSchema = z.union([
 
 // HEADER
 
-const HeaderTextExampleSchema = z.object({
-  header_text: z.array(z.string()),
-});
+type HeaderMediaExampleFormat = Lowercase<TemplateFormat>;
+type HeaderMediaExample<T extends HeaderMediaExampleFormat> = z.ZodObject<{
+  [K in `header_${T}`]: z.ZodArray<z.ZodString>;
+}>;
 
-const HeaderMediaExampleSchema = <T extends "image" | "video" | "document">(key: T) =>
+const HeaderMediaExampleSchema = <T extends HeaderMediaExampleFormat>(key: T) =>
   z.object({
-    ["header_" + key]: z.array(z.string()),
-  } as Record<T, z.ZodArray<z.ZodString>>); // typed key return
+    [`header_${key}`]: z.array(z.string()),
+  }) as HeaderMediaExample<T>;
 
 const TemplateHeaderTextSchema = z.object({
-  type: z.literal("HEADER"),
-  format: z.literal("TEXT"),
+  type: z.literal(TemplateComponentType.HEADER),
+  format: z.literal(TemplateFormat.TEXT),
   text: z.string(),
-  example: HeaderTextExampleSchema.optional(),
+  example: HeaderMediaExampleSchema("text").optional(),
 });
 
+export type TemplateHeaderTextExample = z.infer<typeof TemplateHeaderTextSchema>["example"];
+
 const TemplateHeaderImageSchema = z.object({
-  type: z.literal("HEADER"),
-  format: z.literal("IMAGE"),
+  type: z.literal(TemplateComponentType.HEADER),
+  format: z.literal(TemplateFormat.IMAGE),
   example: HeaderMediaExampleSchema("image").optional(),
 });
 
 const TemplateHeaderDocumentSchema = z.object({
-  type: z.literal("HEADER"),
-  format: z.literal("DOCUMENT"),
+  type: z.literal(TemplateComponentType.HEADER),
+  format: z.literal(TemplateFormat.DOCUMENT),
   example: HeaderMediaExampleSchema("document").optional(),
 });
 
 const TemplateHeaderVideoSchema = z.object({
-  type: z.literal("HEADER"),
-  format: z.literal("VIDEO"),
+  type: z.literal(TemplateComponentType.HEADER),
+  format: z.literal(TemplateFormat.VIDEO),
   example: HeaderMediaExampleSchema("video").optional(),
 });
 
 const TemplateHeaderLocationSchema = z.object({
-  type: z.literal("HEADER"),
-  format: z.literal("LOCATION"),
+  type: z.literal(TemplateComponentType.HEADER),
+  format: z.literal(TemplateFormat.LOCATION),
   example: z.undefined().optional(),
 });
 
@@ -82,9 +96,11 @@ const TemplateBodyExampleSchema = z.object({
   body_text: z.array(z.array(z.string())),
 });
 
+export type TemplateBodyExample = z.infer<typeof TemplateBodyExampleSchema>;
+
 export const TemplateBodyComponentSchema = z.object({
-  type: z.literal("BODY"),
-  format: z.literal("TEXT"),
+  type: z.literal(TemplateComponentType.BODY),
+  format: z.literal(TemplateFormat.TEXT),
   text: z.string(),
   example: TemplateBodyExampleSchema.optional(),
 });
@@ -92,8 +108,8 @@ export const TemplateBodyComponentSchema = z.object({
 // FOOTER
 
 export const TemplateFooterComponentSchema = z.object({
-  type: z.literal("FOOTER"),
-  format: z.literal("TEXT"),
+  type: z.literal(TemplateComponentType.FOOTER),
+  format: z.literal(TemplateFormat.TEXT),
   text: z.string(),
   example: z.undefined().optional(),
 });
@@ -101,8 +117,8 @@ export const TemplateFooterComponentSchema = z.object({
 // COMPONENTS
 
 export const TemplateButtonsComponentSchema = z.object({
-  type: z.literal("BUTTONS"),
-  format: z.literal("TEXT"),
+  type: z.literal(TemplateComponentType.BUTTONS),
+  format: z.literal(TemplateFormat.TEXT),
   buttons: z.array(TemplateButtonSchema),
   example: z.undefined().optional(),
 });
@@ -118,8 +134,11 @@ export const TemplateComponentSchema = z.union([
 
 export const MetaTemplateSchema = z.object({
   name: z.string(),
-  category: z.enum(["AUTHENTICATION", "MARKETING", "UTILITY"]),
-  language: z.union([z.literal("it_IT"), z.literal("en_US"), z.string()]),
+  id: z.string(),
+  parameter_format: z.literal(TemplateParameterFormat.POSITIONAL),
+  status: z.nativeEnum(TemplateStatus),
+  category: z.nativeEnum(TemplateCategory),
+  language: z.union([z.nativeEnum(TemplateLanguage), z.string()]),
   components: z.array(TemplateComponentSchema),
 });
 

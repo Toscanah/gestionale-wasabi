@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
 import { PaymentScope } from "@prisma/client";
-import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
+import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 
 export default function TableUpdate() {
   const { order: anyOrder, joinTableOrders, updateOrder } = useOrderContext();
@@ -83,6 +83,7 @@ export default function TableUpdate() {
         <Input
           className="text-xl h-12"
           id="table"
+          disabled={order.payments.some((payment) => payment.scope === PaymentScope.ROMAN)}
           value={table}
           onChange={handleTableInputChange}
         />

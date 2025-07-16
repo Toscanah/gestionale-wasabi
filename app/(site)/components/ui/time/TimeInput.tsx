@@ -1,7 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { TimeValue } from "./TimePicker";
 import { Input } from "@/components/ui/input";
-import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
+import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 
 interface TimeInputProps {
   label: string;

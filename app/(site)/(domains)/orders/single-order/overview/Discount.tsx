@@ -5,6 +5,7 @@ import { useState, useCallback } from "react";
 import { debounce } from "lodash";
 import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 
 export default function Discount() {
   const { order, updateOrder } = useOrderContext();
@@ -33,8 +34,11 @@ export default function Discount() {
     debouncedFetch(correctDiscount ?? 0);
   };
 
+  useFocusOnClick(["discount"]);
+
   return (
     <Input
+      id="discount"
       value={discount}
       onChange={(e) => handleDiscount(e.target.valueAsNumber)}
       className="w-full text-xl h-12"

@@ -10,6 +10,7 @@ import { useWasabiContext } from "../../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OrdersTableProps } from "./OrdersTable";
 import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
+import MetaLogs from "../meta/MetaLogs";
 
 export default function getColumns(type: OrderType): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
@@ -129,6 +130,15 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
         `€ ${roundToTwo(getOrderTotal({ order: row.original, applyDiscount: true }))}`,
     })
   );
+
+  if (type === OrderType.HOME) {
+    columns.push(
+      TableColumn<HomeOrder>({
+        header: "Messaggi",
+        cellContent: (row) => <MetaLogs order={row.original} />,
+      })
+    );
+  }
 
   return columns;
 }

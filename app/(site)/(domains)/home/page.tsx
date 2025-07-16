@@ -56,7 +56,7 @@ export default function HomeWrapper() {
       type,
     });
 
-  const fetchInitialOrders = async () =>
+  const fetchAllOrders = async () =>
     setOrders({
       [OrderType.HOME]: await fetchOrdersByType<HomeOrder[]>(OrderType.HOME),
       [OrderType.PICKUP]: await fetchOrdersByType<PickupOrder[]>(OrderType.PICKUP),
@@ -64,7 +64,7 @@ export default function HomeWrapper() {
     });
 
   useEffect(() => {
-    fetchInitialOrders();
+    fetchAllOrders();
   }, []);
 
   return (

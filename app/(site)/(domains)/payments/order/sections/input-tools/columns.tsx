@@ -1,7 +1,7 @@
 import TableColumn from "@/app/(site)/components/table/TableColumn";
 import { Input } from "@/components/ui/input";
 import { ColumnDef } from "@tanstack/react-table";
-import useGridFocus from "@/app/(site)/hooks/useGridFocus";
+import useGridFocus from "@/app/(site)/hooks/focus/useGridFocus";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { PaymentCalculation } from "@/app/(site)/context/OrderPaymentContext";
 import { X } from "@phosphor-icons/react";

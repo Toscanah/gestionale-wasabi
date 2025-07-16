@@ -6,7 +6,7 @@ import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared"
 ;
 import { toastSuccess } from "@/app/(site)/lib/utils/toast";
-import useFocusOnClick from "@/app/(site)/hooks/useFocusOnClick";
+import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import { OrderType } from "@prisma/client";
 
 type PossibleOrdersType = HomeOrder | PickupOrder;
