@@ -17,7 +17,7 @@ export default function PrinterChoice() {
 
   return (
     <>
-      <Label htmlFor="printer">Stampante</Label>
+      <Label htmlFor="printer" className="cursor-pointer">Stampante</Label>
       <SelectWrapper
         id="printer"
         className="h-10"

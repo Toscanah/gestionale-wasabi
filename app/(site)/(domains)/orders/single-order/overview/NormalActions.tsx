@@ -15,6 +15,7 @@ import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrd
 import useMetaTemplates from "@/app/(site)/hooks/meta/useMetaTemplates";
 import { useTemplatesParams } from "@/app/(site)/hooks/meta/useTemplatesParams";
 import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/app/(site)/lib/integrations/meta/constants";
+import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
@@ -24,6 +25,7 @@ interface NormalActionsProps {
 export default function NormalActions({ setAction, quickPaymentOption }: NormalActionsProps) {
   const { order, updateUnprintedProducts, updateOrder, toggleDialog, dialogOpen } =
     useOrderContext();
+
   const [rePrintDialog, setRePrintDialog] = useState<boolean>(false);
   const [paramsReady, setParamsReady] = useState(false);
 
@@ -36,6 +38,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     );
   }, [order]);
 
+  const { settings } = useWasabiContext();
   const { paramsMap, setParam } = useTemplatesParams();
   const { templates, sendMessages } = useMetaTemplates({
     open: dialogOpen,
@@ -149,7 +152,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     const content = await buildPrintContent(order, quickPaymentOption, false);
     await print(...content).then(() => toggleDialog(false));
 
-    if (!hasConfirmationSent()) {
+    if (!hasConfirmationSent() && settings.useWhatsApp) {
       await sendMessages({
         templateName: ORDER_CONFIRMATION_TEMPLATE_NAME,
         order,

@@ -33,7 +33,7 @@ export default async function sendMessage({
     return await getOrderById({ orderId });
   }
 
-  const tempAllowedPhones = ["3342954184", "3339998542"];
+  const tempAllowedPhones = ["3342954184", "3339998542", "3930855830"];
 
   if (!tempAllowedPhones.includes(phone)) {
     throw new Error("Phone number not allowed");

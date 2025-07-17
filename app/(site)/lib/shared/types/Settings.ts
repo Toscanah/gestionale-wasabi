@@ -32,6 +32,7 @@ export type ApplicationSettings = {
   selectedPrinter: Printer;
   kitchenOffset: number;
   riders: Riders;
+  useWhatsApp: boolean;
 };
 
 export type GlobalSettings = RestaurantSettings & ApplicationSettings;

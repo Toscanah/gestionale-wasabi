@@ -22,7 +22,7 @@ const orderLabels: { type: OrderType; label: string }[] = [
 ];
 
 export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps) {
-  const { selectedOrders } = useWasabiContext();
+  const { selectedOrders, settings } = useWasabiContext();
 
   return (
     <>
@@ -30,9 +30,10 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
         <div className="flex items-center w-full">
           {selectedOrders.length > 0 ? (
             <div className="flex items-center gap-2 w-full">
-              {selectedOrders.every((order) => order.type === OrderType.HOME) && (
-                <SendMessagesDialog />
-              )}
+              {settings.useWhatsApp &&
+                selectedOrders.every((order) => order.type === OrderType.HOME) && (
+                  <SendMessagesDialog />
+                )}
               <DeleteOrdersBulk />
             </div>
           ) : (
