@@ -8,6 +8,7 @@ import Order from "./single-order/Order";
 import getTable from "../../lib/utils/getTable";
 import Table from "../../components/table/Table";
 import { cn } from "@/lib/utils";
+import { useWasabiContext } from "../../context/WasabiContext";
 
 export interface OrdersTableProps {
   data: AnyOrder[];
@@ -21,7 +22,8 @@ interface CustomCellProps {
 }
 
 export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTableProps) {
-  const columns = getColumns(type);
+  const {settings} = useWasabiContext()
+  const columns = getColumns(type, settings.useWhatsApp);
   const table = getTable<any>({ data, columns });
 
   const CustomCell = ({ cell, className }: CustomCellProps) => {

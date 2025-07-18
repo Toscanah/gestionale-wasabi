@@ -12,7 +12,7 @@ import { OrdersTableProps } from "./OrdersTable";
 import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 import MetaLogs from "../meta/MetaLogs";
 
-export default function getColumns(type: OrderType): ColumnDef<any>[] {
+export default function getColumns(type: OrderType, useWhatsapp: boolean): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
     // {
     //   accessorKey: "#",
@@ -131,7 +131,7 @@ export default function getColumns(type: OrderType): ColumnDef<any>[] {
     })
   );
 
-  if (type === OrderType.HOME) {
+  if (type === OrderType.HOME && useWhatsapp) {
     columns.push(
       TableColumn<HomeOrder>({
         header: "Messaggi",
