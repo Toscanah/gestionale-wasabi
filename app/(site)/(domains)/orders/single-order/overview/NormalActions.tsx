@@ -69,7 +69,8 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
         // setParam(templateId, "header_text", 1, "ORDINE_ID_PLACEHOLDER");
         setParam(templateId, "body_text", 1, finalWhen);
-        // setParam(templateId, "body_text", 2, "TEMPO_CONSEGNA_PLACEHOLDER");
+        setParam(templateId, "body_text", 2, "https://www.wasabi-trieste.it/politiche-di-ritardo");
+        setParam(templateId, "button_text", 1, "https://www.wasabi-trieste.it/smistamento");
 
         setParamsReady(true);
       } else {
