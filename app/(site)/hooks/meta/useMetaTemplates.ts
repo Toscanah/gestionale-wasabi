@@ -39,6 +39,7 @@ export default function useMetaTemplates({ open, paramsMap }: UseMetaTemplatesPa
     order?: AnyOrder;
     toast?: boolean;
   } = {}): Promise<boolean> => {
+    console.log(paramsMap)
     const messagePromises: Promise<void>[] = [];
     const VAR_REGEX = /\{\{(\d+)\}\}/g;
 
@@ -56,13 +57,13 @@ export default function useMetaTemplates({ open, paramsMap }: UseMetaTemplatesPa
       const paramGroups = {
         header_text: paramsMap[templateId]?.header_text ?? {},
         body_text: paramsMap[templateId]?.body_text ?? {},
-        button_text: paramsMap[templateId]?.button_text ?? {},
+        button_url: paramsMap[templateId]?.button_url ?? {},
       };
 
       const expectedCounts = {
         header_text: 0,
         body_text: 0,
-        button_text: 0,
+        button_url: 0,
       };
 
       for (const component of template.components) {
@@ -79,7 +80,7 @@ export default function useMetaTemplates({ open, paramsMap }: UseMetaTemplatesPa
         if (component.type === "BUTTONS") {
           for (const button of component.buttons) {
             const matches = [...button.text.matchAll(VAR_REGEX)];
-            expectedCounts.button_text += new Set(matches.map((m) => m[1])).size;
+            expectedCounts.button_url += new Set(matches.map((m) => m[1])).size;
           }
         }
       }
@@ -87,13 +88,13 @@ export default function useMetaTemplates({ open, paramsMap }: UseMetaTemplatesPa
       const actualCounts = {
         header_text: Object.keys(paramGroups.header_text).length,
         body_text: Object.keys(paramGroups.body_text).length,
-        button_text: Object.keys(paramGroups.button_text).length,
+        button_text: Object.keys(paramGroups.button_url).length,
       };
 
       if (
         actualCounts.header_text < expectedCounts.header_text ||
         actualCounts.body_text < expectedCounts.body_text ||
-        actualCounts.button_text < expectedCounts.button_text
+        actualCounts.button_text < expectedCounts.button_url
       ) {
         toastError(
           `Il template "${templateName}" richiede più parametri. Compila tutti i campi prima di inviare.`

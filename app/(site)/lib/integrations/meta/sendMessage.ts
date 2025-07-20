@@ -49,6 +49,7 @@ export default async function sendMessage({
   };
 
   const components: any[] = [];
+  console.log(JSON.stringify(params) + "\n")
 
   if (params.header_text && Object.keys(params.header_text).length > 0) {
     components.push({
@@ -64,8 +65,8 @@ export default async function sendMessage({
     });
   }
 
-  if (params.button_text && Object.keys(params.button_text).length > 0) {
-    Object.entries(params.button_text).forEach(([index, value]) => {
+  if (params.button_url && Object.keys(params.button_url).length > 0) {
+    Object.entries(params.button_url).forEach(([index, value]) => {
       components.push({
         type: "button",
         sub_type: "url", // adjust if needed (e.g., QUICK_REPLY or PHONE_NUMBER not supported with `sub_type`)
@@ -74,6 +75,8 @@ export default async function sendMessage({
       });
     });
   }
+
+  console.log(JSON.stringify(components))
 
   try {
     await axios.post(

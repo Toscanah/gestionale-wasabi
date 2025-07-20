@@ -13,7 +13,7 @@ export const SendMessageSchema = z.object({
   params: z.object({
     header_text: z.record(z.string()).optional(), // { "1": "Mario" }
     body_text: z.record(z.string()).optional(), // { "1": "ABC123", "2": "Napoli" }
-    button_text: z.record(z.string()).optional(), // { "1": "https://..." }
+    button_url: z.record(z.string()).optional(), // { "1": "https://..." }
   }),
 });
 

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-export type ParamType = "header_text" | "body_text" | "button_text";
+export type ParamType = "header_text" | "body_text" | "button_url";
 
 export type TemplateParamsMap = Record<
   string, // templateId
