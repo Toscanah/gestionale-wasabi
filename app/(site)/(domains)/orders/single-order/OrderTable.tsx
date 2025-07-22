@@ -33,6 +33,17 @@ export default function OrderTable() {
 
   const [payingAction, setPayingAction] = useState<PayingAction>("none");
   const [rowSelection, setRowSelection] = useState({});
+  const [interactionReady, setInteractionReady] = useState(false);
+
+  useEffect(() => {
+    if (dialogOpen) {
+      setInteractionReady(false);
+      const timeout = setTimeout(() => {
+        setInteractionReady(true);
+      }, 400);
+      return () => clearTimeout(timeout);
+    }
+  }, [dialogOpen]);
 
   useEffect(() => {
     if (newCode !== "" && newQuantity > 0) {
@@ -54,7 +65,7 @@ export default function OrderTable() {
     }
   };
 
-  const columns = getColumns(handleFieldChange, order.type, {
+  const columns = getColumns(handleFieldChange, interactionReady, {
     rowIndex: order.products.length - 1,
     colIndex: 0,
   });

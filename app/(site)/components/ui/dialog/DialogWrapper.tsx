@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -60,10 +60,30 @@ export default function DialogWrapper({
   onOpenChange,
   size = "medium",
 }: DialogWrapperProps) {
+  // const [interactionReady, setInteractionReady] = useState(false);
+
   const isDeleteVariant = variant === "delete";
   const isWarningVariant = variant === "warning";
 
   const thisOnOpenChange = (open: boolean) => onOpenChange?.(open);
+
+  // useEffect(() => {
+  //   if (open && double) {
+  //     setInteractionReady(false);
+  //     const timeout = setTimeout(() => {
+  //       setInteractionReady(true);
+
+  //     }, 10000);
+
+  //     return () => clearTimeout(timeout);
+  //   }
+  // }, [open, double]);
+
+  // useEffect(() => {
+  //   if (double) {
+  //     console.log("Interaction ready:", interactionReady);
+  //   }
+  // }, [interactionReady]);
 
   return (
     <Dialog onOpenChange={thisOnOpenChange} open={open}>
@@ -93,8 +113,10 @@ export default function DialogWrapper({
           sizes[size],
           isDeleteVariant && "border-t-4 border-t-red-600",
           isWarningVariant && "border-t-4 border-t-orange-500",
+          // !interactionReady && "*:cursor-not-allowed", // add this
           contentClassName
         )}
+        // style={{ pointerEvents: interactionReady ? "auto" : "none" }}
         showCloseButton={showCloseButton}
       >
         {(title || isDeleteVariant || isWarningVariant) && (

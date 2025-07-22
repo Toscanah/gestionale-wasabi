@@ -14,7 +14,7 @@ import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
 
 export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,
-  type: OrderType,
+  interactionReady: boolean,
   defaultFocusedInput: FocussableInput
 ): ColumnDef<ProductInOrder>[] {
   const { updateProductOption: selectOption, updateAddionalNote } = useOrderContext();
@@ -66,6 +66,7 @@ export default function getColumns(
       sortable: false,
       cellContent: (row) => (
         <Input
+          disabled={!interactionReady}
           onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 0 })}
           ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 0 })}
           className="max-w-32 w-32 text-2xl uppercase"
@@ -101,6 +102,7 @@ export default function getColumns(
       cellContent: (row) => (
         <div className="flex gap-2 items-center">
           <Button
+            disabled={!interactionReady}
             className="p-0 h-10 w-10"
             variant="outline"
             onClick={() => handleQuantityArrows("down", row.index)}
@@ -109,6 +111,7 @@ export default function getColumns(
           </Button>
 
           <Input
+            disabled={!interactionReady}
             ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 1 })}
             onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 1 })}
             type="text"
@@ -130,6 +133,7 @@ export default function getColumns(
           />
 
           <Button
+            disabled={!interactionReady}
             className="p-0 h-10 w-10"
             variant="outline"
             onClick={() => handleQuantityArrows("up", row.index)}
