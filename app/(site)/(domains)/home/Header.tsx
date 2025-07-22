@@ -56,7 +56,9 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
         </div>
       </div>
 
-      <RiceSummary />
+      <div className="flex flex-col gap-2">
+        <RiceSummary />
+      </div>
     </>
   );
 }

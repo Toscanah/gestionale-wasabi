@@ -16,6 +16,7 @@ import useMetaTemplates from "@/app/(site)/hooks/meta/useMetaTemplates";
 import { useTemplatesParams } from "@/app/(site)/hooks/meta/useTemplatesParams";
 import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/app/(site)/lib/integrations/meta/constants";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
+import useSettings from "@/app/(site)/hooks/useSettings";
 
 interface NormalActionsProps {
   quickPaymentOption: QuickPaymentOption;
@@ -238,7 +239,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       <div className="flex gap-6">
         <Button
           className="w-full text-3xl h-36"
-          disabled={!hasProducts || !paramsReady}
+          disabled={!hasProducts || (settings.useWhatsApp && !paramsReady)}
           onClick={handlePrint}
         >
           STAMPA 打印

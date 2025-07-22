@@ -8,6 +8,8 @@ import { OrderType } from "@prisma/client";
 interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
   rice: Rice;
+  lunchRice: number;
+  dinnerRice: number;
   updateRice: (total: Rice) => void;
   resetRice: () => void;
   selectedOrders: SelectedOrders[];
@@ -38,7 +40,7 @@ type SelectedOrders = { id: number; type: OrderType };
 export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderProps) => {
   const [selectedOrders, setSelectedOrders] = useState<SelectedOrders[]>([]);
   const { settings, updateSettings } = useSettings();
-  const { rice, updateRice, updateRemainingRice, resetRice } = useRice();
+  const { rice, updateRice, updateRemainingRice, resetRice, lunchRice, dinnerRice } = useRice();
 
   const toggleOrderSelection = (order: SelectedOrders) =>
     setSelectedOrders((prevSelected) => {
@@ -51,6 +53,8 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
       value={{
         updateGlobalState,
         rice,
+        lunchRice,
+        dinnerRice,
         updateRice,
         updateRemainingRice,
         resetRice,
