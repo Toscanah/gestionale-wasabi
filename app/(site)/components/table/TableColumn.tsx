@@ -25,6 +25,13 @@ type TableColumnProps<T> = {
       header: string;
     }
   | { joinOptions: JoinOptions; accessorKey?: never; cellContent?: never; header?: string }
+  | {
+      isRowIndex: true;
+      accessorKey?: never;
+      cellContent?: never;
+      joinOptions?: never;
+      header?: string;
+    }
 );
 
 const HEADERS: Record<JoinItemType, string> = {
@@ -46,7 +53,8 @@ export default function TableColumn<T>({
 
   return {
     id: String(
-      accessorKey || (joinOptions ? joinOptions.key : header.length !== 0 ? header : uniqueId())
+      accessorKey ||
+        (joinOptions ? joinOptions.key : header && header.length !== 0 ? header : uniqueId())
     ),
 
     ...(joinOptions

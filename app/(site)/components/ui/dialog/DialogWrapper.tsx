@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 const sizes = {
   small: "max-w-[25vw] w-[25vw]",
   medium: "max-w-[40vw] w-[40vw]",
+  mediumPlus: "max-w-[60vw] w-[60vw]",
   large: "max-w-[97.5vw] w-[97.5vw]",
 };
 

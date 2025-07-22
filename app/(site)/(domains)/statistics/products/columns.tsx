@@ -5,6 +5,8 @@ import formatRice from "../../../lib/formatting-parsing/formatRice";
 import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
 import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
+import TopOptions from "./dialogs/TopOptions";
+import TopCustomers from "./dialogs/TopCustomers";
 
 const columns: ColumnDef<ProductWithStats>[] = [
   TableColumn({
@@ -35,31 +37,12 @@ const columns: ColumnDef<ProductWithStats>[] = [
   TableColumn({
     header: "Altro",
     sortable: false,
-    cellContent: (row) =>
-      (row.original.category?.options || []).length > 0 && (
-        <DialogWrapper
-          size="small"
-          trigger={<Button variant="default">Vedi opzioni usate</Button>}
-          title="Opzioni più utilizzate"
-          putSeparator
-        >
-          <div className="space-y-2">
-            {row.original.optionsRank.length > 0 ? (
-              <ul className="list-decimal list-inside">
-                {row.original.optionsRank.map((option, index) => (
-                  <li key={index} className="text-lg">
-                    <span>{option.option}</span> ({option.count} volte)
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="flex w-full justify-center items-center text-lg text-gray-500">
-                Nessuna opzione utilizzata per questo prodotto
-              </p>
-            )}
-          </div>
-        </DialogWrapper>
-      ),
+    cellContent: (row) => (
+      <div className="flex items-center gap-2">
+        {(row.original.category?.options || []).length > 0 && <TopOptions product={row.original} />}
+        <TopCustomers product={{ id: row.original.id, name: row.original.desc }} />
+      </div>
+    ),
   }),
 ];
 
