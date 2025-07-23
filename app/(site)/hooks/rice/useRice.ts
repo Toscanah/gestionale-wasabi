@@ -8,10 +8,19 @@ import { z } from "zod";
 import useRiceState from "./useRiceState";
 import { toastSuccess } from "../../lib/utils/toast";
 
-export type UpdateRiceInput = {
-  delta: number;
-  threshold: number;
-};
+export type UpdateRiceInput =
+  | {
+      delta: number;
+      threshold: number;
+      log: "manual";
+      selectedRiceBatchId?: never;
+    }
+  | {
+      delta: number;
+      threshold: number;
+      log: "batch";
+      selectedRiceBatchId: number;
+    };
 
 export default function useRice() {
   const { rice, save, load } = useRiceState();
@@ -32,6 +41,7 @@ export default function useRice() {
       fetchDailyRiceUsage(ShiftType.LUNCH),
       fetchDailyRiceUsage(ShiftType.DINNER),
     ]);
+
     save((prev) => ({
       ...prev,
       remainingLunch: total - lunch,
@@ -39,16 +49,25 @@ export default function useRice() {
     }));
   };
 
-  const updateRice = async ({ delta, threshold }: UpdateRiceInput) => {
+  const updateRice = async ({ delta, threshold, log, selectedRiceBatchId }: UpdateRiceInput) => {
     if (!delta) return;
 
-    await fetchRequest("POST", "/api/rice", "addRiceLog", {
-      riceBatchId: null,
-      manualValue: delta,
-      type: RiceLogType.MANUAL,
-    });
+    if (log === "manual") {
+      await fetchRequest("POST", "/api/rice", "addRiceLog", {
+        riceBatchId: null,
+        manualValue: delta,
+        type: RiceLogType.MANUAL,
+      });
+    } else if (log === "batch") {
+      await fetchRequest("POST", "/api/rice", "addRiceLog", {
+        riceBatchId: selectedRiceBatchId,
+        manualValue: null,
+        type: RiceLogType.BATCH,
+      });
+    }
 
     const newTotal = rice.total + delta;
+
     save((prev) => ({
       ...prev,
       total: newTotal,

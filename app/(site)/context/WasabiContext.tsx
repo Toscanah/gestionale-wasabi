@@ -9,7 +9,7 @@ import { Rice } from "../hooks/rice/useRiceState";
 interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
   rice: Rice;
-  updateRice: ({ delta, threshold }: UpdateRiceInput) => void;
+  updateRice: ({ delta, threshold, log, selectedRiceBatchId }: UpdateRiceInput) => void;
   resetRice: () => void;
   selectedOrders: SelectedOrders[];
   toggleOrderSelection: (order: SelectedOrders) => void;

@@ -36,12 +36,12 @@ export default function RiceSummary() {
     {
       label: "Riso rimanente",
       value: remaining,
-      condition: filter === ShiftType.ALL && remaining < rice.threshold,
+      condition: filter === ShiftType.ALL && rice.total > 0 && remaining < rice.threshold,
     },
     {
       label: "Fino alla soglia",
-      value: remaining - rice.threshold,
-      condition: filter === ShiftType.ALL && remaining - rice.threshold <= 0,
+      value: rice.total === 0 ? 0 : remaining - rice.threshold,
+      condition: filter === ShiftType.ALL && rice.total > 0 && remaining - rice.threshold <= 0,
       shouldStrike: filter !== ShiftType.ALL,
     },
   ];

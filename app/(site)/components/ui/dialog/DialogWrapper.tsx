@@ -23,7 +23,7 @@ const sizes = {
 };
 
 export type DialogWrapperProps = {
-  upperBorder?: boolean;
+  putUpperBorder?: boolean;
   double?: boolean;
   autoFocus?: boolean;
   children?: ReactNode;
@@ -45,7 +45,7 @@ export type DialogWrapperProps = {
 );
 
 export default function DialogWrapper({
-  upperBorder = false,
+  putUpperBorder = false,
   double = false,
   children,
   putSeparator = false,
@@ -116,7 +116,7 @@ export default function DialogWrapper({
           sizes[size],
           isDeleteVariant && "border-t-4 border-t-red-600",
           isWarningVariant && "border-t-4 border-t-orange-500",
-          upperBorder && "border-t-4 border-t-gray-400",
+          putUpperBorder && "border-t-4 border-t-gray-400",
           // !interactionReady && "*:cursor-not-allowed", // add this
           contentClassName
         )}

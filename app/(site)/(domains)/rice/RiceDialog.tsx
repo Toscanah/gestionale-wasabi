@@ -59,26 +59,22 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   };
 
   const handleSave = async () => {
-    let manualValue = riceToAdd - riceToRemove;
+    const manualValue = riceToAdd - riceToRemove;
 
-    if (selectedRiceBatchId) {
-      await fetchRequest("POST", "/api/rice/", "addRiceLog", {
-        riceBatchId: selectedRiceBatchId,
-        manualValue: null,
-        type: RiceLogType.BATCH,
+    if (selectedRiceBatchId !== null) {
+      updateRice({
+        delta: riceToAdd,
+        threshold,
+        log: "batch",
+        selectedRiceBatchId,
       });
     } else if (manualValue !== 0) {
-      await fetchRequest("POST", "/api/rice/", "addRiceLog", {
-        riceBatchId: null,
-        manualValue,
-        type: RiceLogType.MANUAL,
+      updateRice({
+        delta: manualValue,
+        threshold,
+        log: "manual",
       });
     }
-
-    updateRice({
-      threshold,
-      delta: manualValue ?? 0,
-    });
   };
 
   const handleReset = () => {
@@ -104,7 +100,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
       title="Gestione riso"
       desc="Tutti i valori sono calcolati in grammi"
       contentClassName="gap-4"
-      upperBorder
+      putUpperBorder
       trigger={
         variant === "sidebar" ? (
           <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
@@ -215,6 +211,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                 id="total"
                 value={rice.total}
               />
+
               <RiceHistory />
             </div>
           </div>

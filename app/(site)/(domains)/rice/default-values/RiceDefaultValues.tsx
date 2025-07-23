@@ -78,7 +78,7 @@ export default function RiceDefaultValues() {
       size="medium"
       title="Valori di default del riso"
       desc="I valori si salvano automaticamente"
-      upperBorder
+      putUpperBorder
       onOpenChange={() => fetchRiceBatches()}
       autoFocus={false}
       trigger={

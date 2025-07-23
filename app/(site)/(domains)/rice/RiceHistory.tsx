@@ -48,7 +48,8 @@ export default function RiceHistory() {
 
   return (
     <DialogWrapper
-      upperBorder
+      putUpperBorder
+      putSeparator
       trigger={<Button variant={"outline"}>Storico</Button>}
       title="Storico di oggi"
       size="medium"
