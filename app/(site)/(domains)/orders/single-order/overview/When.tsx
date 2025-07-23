@@ -46,12 +46,10 @@ export default function When() {
   };
 
   return (
-    <div className="flex gap-2 justify-between items-center w-full">
-      <WhenSelector
-        className="h-12 text-2xl uppercase w-full"
-        value={orderTime == "immediate" ? "immediate" : orderTime}
-        onValueChange={updateOrderTime}
-      />
-    </div>
+    <WhenSelector
+      className="h-12 text-2xl uppercase w-full"
+      value={orderTime}
+      onValueChange={updateOrderTime}
+    />
   );
 }

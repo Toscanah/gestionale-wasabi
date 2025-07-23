@@ -124,7 +124,7 @@ export default function DialogWrapper({
         showCloseButton={showCloseButton}
       >
         {(title || isDeleteVariant || isWarningVariant) && (
-          <DialogHeader>
+          <DialogHeader className="w-full">
             <DialogTitle className="text-2xl">
               {isDeleteVariant || isWarningVariant ? (
                 <span className="flex gap-2 items-center">

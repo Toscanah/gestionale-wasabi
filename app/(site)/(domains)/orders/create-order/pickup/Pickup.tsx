@@ -56,6 +56,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
 
   return (
     <DialogWrapper
+      title={order.id !== -1 ? "" : "Ordine per asporto"}
       size={order.id !== -1 ? "large" : "medium"}
       open={open}
       trigger={

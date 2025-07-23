@@ -62,6 +62,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
 
   return (
     <DialogWrapper
+      title={order.id !== -1 ? "" : "Ordine al tavolo"}
       size={order.id !== -1 ? "large" : "medium"}
       open={open}
       trigger={

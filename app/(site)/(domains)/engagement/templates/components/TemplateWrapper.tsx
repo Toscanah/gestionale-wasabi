@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 type SharedProps = {
   templateComponent: React.ReactNode;
@@ -39,7 +40,7 @@ export default function TemplateWrapper(props: TemplateWrapperProps) {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col space-y-2">
         <Label htmlFor="text-above">Messaggio sopra</Label>
-        <Input
+        <Textarea
           disabled={disabled}
           id="text-above"
           value={textAbove}
@@ -51,7 +52,7 @@ export default function TemplateWrapper(props: TemplateWrapperProps) {
 
       <div className="flex flex-col space-y-2">
         <Label htmlFor="text-below">Messaggio sotto</Label>
-        <Input
+        <Textarea
           disabled={disabled}
           id="text-below"
           value={textBelow}
