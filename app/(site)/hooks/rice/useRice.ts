@@ -4,7 +4,6 @@ import { RiceLog } from "../../lib/shared/models/Rice";
 import { isToday } from "date-fns";
 import { RiceLogType } from "@prisma/client";
 import { ShiftType } from "../../lib/shared/enums/Shift";
-import { z } from "zod";
 import useRiceState from "./useRiceState";
 import { toastSuccess } from "../../lib/utils/toast";
 

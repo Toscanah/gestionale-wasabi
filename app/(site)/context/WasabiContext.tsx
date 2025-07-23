@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import useRice, { UpdateRiceInput } from "../hooks/rice/useRice";
 import useSettings from "../hooks/useSettings";
