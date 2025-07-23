@@ -12,6 +12,7 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";
 import useGlobalFilter from "../../../hooks/useGlobalFilter";
 import { Input } from "@/components/ui/input";
+import RandomSpinner from "@/app/(site)/components/ui/misc/RandomSpinner";
 
 export default function EngagementPage() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
@@ -25,6 +26,7 @@ export default function EngagementPage() {
     onLeftTableRowClick,
     onRightTableRowClick,
     setActiveTypes,
+    isLoading,
   } = useEngagement();
 
   const leftTable = getTable({
@@ -52,11 +54,15 @@ export default function EngagementPage() {
           <WeekFilter onWeekFilterChange={onWeekFilterChange} weekFilter={weekFilter} />
         </div>
 
-        <Table
-          table={leftTable}
-          tableClassName="max-h-[74vh] h-[74vh] "
-          onRowClick={onLeftTableRowClick}
-        />
+        {isLoading ? (
+          <RandomSpinner isLoading={isLoading} />
+        ) : (
+          <Table
+            table={leftTable}
+            tableClassName="max-h-[74vh] h-[74vh] "
+            onRowClick={onLeftTableRowClick}
+          />
+        )}
       </div>
 
       <div className="w-[5%] h-full flex flex-col items-center justify-center">

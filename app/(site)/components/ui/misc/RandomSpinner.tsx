@@ -62,7 +62,7 @@ const SUSHI_PHRASES = [
   "Calma, precisione, sushi. 🎯",
 ];
 
-export default function RandomSpinner({ isLoading, size = 200, color = "#ff0000" }: SpinnerProps) {
+export default function RandomSpinner({ isLoading, size = 50, color = "#ff0000" }: SpinnerProps) {
   const [selectedSpinner, setSelectedSpinner] = useState(
     () => SPINNERS[Math.floor(Math.random() * SPINNERS.length)]
   );
@@ -81,9 +81,11 @@ export default function RandomSpinner({ isLoading, size = 200, color = "#ff0000"
 
   if (!isLoading) return null;
 
+  const SpinnerComponent = selectedSpinner;
+
   return (
-    <div className="flex flex-col gap-8 items-center justify-center w-full h-full">
-      {/* <SelectedSpinner loading={isLoading} size={size} color={color} /> */}
+    <div className="flex flex-col gap-12 items-center justify-center w-full h-full">
+      <SpinnerComponent loading={isLoading} size={size} color={color} />
       <p className="text-muted-foreground text-lg italic">{phrase}</p>
     </div>
   );

@@ -12,13 +12,15 @@ const defaultDate: DateRange = {
 };
 
 export function useCustomersStats() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [customers, setCustomers] = useState<CustomerWithStats[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<CustomerWithStats[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<DateRange | undefined>(defaultDate);
 
   useEffect(() => {
-    fetchInitialCustomers();
+    setIsLoading(true);
+    fetchInitialCustomers().then(() => setIsLoading(false));
   }, []);
 
   useEffect(() => {
@@ -175,5 +177,6 @@ export function useCustomersStats() {
     handlePresetSelect,
     applyFilter,
     handleReset,
+    isLoading
   };
 }

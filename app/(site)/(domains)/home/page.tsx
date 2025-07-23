@@ -24,6 +24,12 @@ export default function HomeWrapper() {
     [OrderType.PICKUP]: [],
   });
 
+  const [loadings, setLoadings] = useState<BuildOrderState<boolean, boolean, boolean>>({
+    [OrderType.TABLE]: true,
+    [OrderType.HOME]: true,
+    [OrderType.PICKUP]: true,
+  });
+
   // DO NOT CHANGE! THIS IS SO DELICATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) =>
     setOrders((prevOrders) => {
@@ -56,12 +62,33 @@ export default function HomeWrapper() {
       type,
     });
 
-  const fetchAllOrders = async () =>
-    setOrders({
-      [OrderType.HOME]: await fetchOrdersByType<HomeOrder[]>(OrderType.HOME),
-      [OrderType.PICKUP]: await fetchOrdersByType<PickupOrder[]>(OrderType.PICKUP),
-      [OrderType.TABLE]: await fetchOrdersByType<TableOrder[]>(OrderType.TABLE),
+  const fetchAllOrders = async () => {
+    setLoadings({
+      [OrderType.HOME]: true,
+      [OrderType.PICKUP]: true,
+      [OrderType.TABLE]: true,
     });
+
+    const [home, pickup, table] = await Promise.all([
+      fetchOrdersByType<HomeOrder[]>(OrderType.HOME),
+      fetchOrdersByType<PickupOrder[]>(OrderType.PICKUP),
+      fetchOrdersByType<TableOrder[]>(OrderType.TABLE),
+    ]);
+
+    // await new Promise((r) => setTimeout(r, 2000));
+
+    setOrders({
+      [OrderType.HOME]: home,
+      [OrderType.PICKUP]: pickup,
+      [OrderType.TABLE]: table,
+    });
+
+    setLoadings({
+      [OrderType.HOME]: false,
+      [OrderType.PICKUP]: false,
+      [OrderType.TABLE]: false,
+    });
+  };
 
   useEffect(() => {
     fetchAllOrders();
@@ -69,7 +96,7 @@ export default function HomeWrapper() {
 
   return (
     <WasabiProvider updateGlobalState={updateGlobalState}>
-      <HomePage orders={orders} />
+      <HomePage orders={orders} loadings={loadings} />
     </WasabiProvider>
   );
 }

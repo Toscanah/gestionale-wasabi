@@ -11,18 +11,21 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import Header from "./Header";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../../components/sidebar/Sidebar";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
-import { ArrowsClockwise } from "@phosphor-icons/react";
+import { HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import getOverdrawnOrderIds from "../../lib/services/order-management/getOverdrawnOrderIds";
 import { BuildOrderState } from "./page";
-import { Button } from "@/components/ui/button";
-import fetchRequest from "../../lib/api/fetchRequest";
+import dynamic from "next/dynamic";
+
+const RandomSpinner = dynamic(() => import("../../components/ui/misc/RandomSpinner"), {
+  ssr: false,
+});
 
 interface HomePageProps {
   orders: BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>;
+  loadings: BuildOrderState<boolean, boolean, boolean>;
 }
 
-export default function HomePage({ orders }: HomePageProps) {
+export default function HomePage({ orders, loadings }: HomePageProps) {
   const { rice } = useWasabiContext();
 
   const [activeOrders, setActiveOrders] = useState<BuildOrderState<boolean, boolean, boolean>>({
@@ -85,6 +88,8 @@ export default function HomePage({ orders }: HomePageProps) {
               defaultSize = 100 / totalTypes;
             }
 
+            const isLoading = loadings[type];
+
             return (
               <Fragment key={type}>
                 <ResizablePanel
@@ -105,13 +110,18 @@ export default function HomePage({ orders }: HomePageProps) {
                     </CreateOrder>
                   </div>
 
-                  <OrdersTable
-                    overdrawnOrderIds={overdrawnOrderIds}
-                    data={orders[type].sort(
-                      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-                    )}
-                    type={type}
-                  />
+                  {isLoading ? (
+                    <RandomSpinner isLoading={isLoading} size={32} />
+                  ) : (
+                    <OrdersTable
+                      overdrawnOrderIds={overdrawnOrderIds}
+                      data={orders[type].sort(
+                        (a, b) =>
+                          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                      )}
+                      type={type}
+                    />
+                  )}
                 </ResizablePanel>
 
                 {index < totalTypes - 1 && <ResizableHandle />}

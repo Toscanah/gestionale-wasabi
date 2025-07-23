@@ -19,6 +19,7 @@ function getFilteredRightCustomers(
 export default function useEngagement() {
   const [allCustomers, setAllCustomers] = useState<CustomerWithDetails[]>([]);
   const [selectedCustomers, setSelectedCustomers] = useState<CustomerWithDetails[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     weekFilter,
@@ -34,10 +35,12 @@ export default function useEngagement() {
   });
 
   const fetchInitialCustomers = () => {
+    setIsLoading(true);
     fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "getCustomersWithDetails").then(
       (customers) => {
         setAllCustomers(customers);
         applyWeekFilter(customers, WeekFilterEnum.THIS_WEEK);
+        setIsLoading(false);
       }
     );
   };
@@ -76,5 +79,6 @@ export default function useEngagement() {
     setActiveTypes,
     onLeftTableRowClick,
     onRightTableRowClick,
+    isLoading,
   };
 }
