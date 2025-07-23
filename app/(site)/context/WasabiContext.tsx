@@ -1,9 +1,10 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
-import useRice, { Rice, UpdateRiceInput } from "../hooks/useRice";
+import useRice, { UpdateRiceInput } from "../hooks/rice/useRice";
 import useSettings from "../hooks/useSettings";
 import { GlobalSettings } from "../lib/shared/types/Settings";
 import { OrderType } from "@prisma/client";
+import { Rice } from "../hooks/rice/useRiceState";
 
 interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;

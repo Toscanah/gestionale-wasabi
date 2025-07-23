@@ -1,10 +1,10 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
-import { RecursivePartial, useOrderManager } from "../hooks/useOrderManager";
-import { useProductManager } from "../hooks/useProductManager";
+import { useProductManager } from "../hooks/order/useProductManager";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Table } from "@tanstack/react-table";
 import generateDummyProduct from "../lib/services/product-management/generateDummyProduct";
+import { RecursivePartial, useOrderManager } from "../hooks/order/useOrderManager";
 
 interface OrderProviderProps {
   order: AnyOrder;
@@ -15,7 +15,7 @@ interface OrderProviderProps {
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
-type OrderContextType = {
+interface OrderContextType {
   setOrder: Dispatch<SetStateAction<AnyOrder>>;
   order: AnyOrder;
   dialogOpen: boolean;
@@ -38,7 +38,7 @@ type OrderContextType = {
   updateOrder: (order: RecursivePartial<AnyOrder>) => void;
   joinTableOrders: (tableToJoin: string) => void;
   updateAddionalNote: (note: string, productInOrderId: number) => void;
-};
+}
 
 export const OrderProvider = ({
   children,
@@ -61,6 +61,7 @@ export const OrderProvider = ({
     setOrder,
     dialogOpen
   );
+
   const {
     addProduct,
     addProducts,

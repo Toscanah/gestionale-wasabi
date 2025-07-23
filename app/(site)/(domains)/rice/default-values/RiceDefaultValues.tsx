@@ -1,19 +1,24 @@
 import { useCallback, useEffect, useState } from "react";
-import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
+import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
-import { toastSuccess } from "../../lib/utils/toast";
-import fetchRequest from "../../lib/api/fetchRequest";
+import { toastSuccess } from "../../../lib/utils/toast";
+import fetchRequest from "../../../lib/api/fetchRequest";
 import { RiceBatch } from "@prisma/client";
 import { debounce } from "lodash";
+import getTable from "@/app/(site)/lib/utils/getTable";
+import columns from "./columns";
+
+const DEFAULT_NEW_BATCH: RiceBatch = { id: -1, amount: 0, label: "" };
 
 export default function RiceDefaultValues() {
-  const defaultNewBatch = { id: -1, amount: 0, label: "" };
-  const [newBatch, setNewBatch] = useState<RiceBatch>(defaultNewBatch);
+  const [newBatch, setNewBatch] = useState<RiceBatch>(DEFAULT_NEW_BATCH);
   const [riceBatches, setRiceBatches] = useState<RiceBatch[]>([]);
+
+  // const table = getTable({ data: riceBatches, columns: columns() });
 
   const fetchRiceBatches = async () =>
     fetchRequest<RiceBatch[]>("GET", "/api/rice/", "getRiceBatches").then(setRiceBatches);
@@ -39,7 +44,7 @@ export default function RiceDefaultValues() {
         return prev;
       });
 
-      setNewBatch(defaultNewBatch);
+      setNewBatch(DEFAULT_NEW_BATCH);
       toastSuccess("Valore aggiunto con successo");
     });
   };
@@ -89,13 +94,15 @@ export default function RiceDefaultValues() {
                     debouncedUpdateBatch(riceBatch.id, "amount", parseFloat(e.target.value) || 0)
                   }
                 />
-                <Input
+
+                {/* <Input
                   className="w-[40%]"
                   type="text"
                   placeholder="Modifica etichetta"
                   defaultValue={riceBatch.label || ""}
                   onChange={(e) => debouncedUpdateBatch(riceBatch.id, "label", e.target.value)}
-                />
+                /> */}
+
                 <Button className="group w-[20%]" onClick={() => removeRiceBatch(riceBatch.id)}>
                   <Trash
                     size={24}

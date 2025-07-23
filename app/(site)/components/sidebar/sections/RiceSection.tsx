@@ -1,4 +1,4 @@
-import RiceDefaultValues from "@/app/(site)/(domains)/rice/RiceDefaultValues";
+import RiceDefaultValues from "@/app/(site)/(domains)/rice/default-values/RiceDefaultValues";
 import RiceDialog from "@/app/(site)/(domains)/rice/RiceDialog";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
 import { CookingPot } from "@phosphor-icons/react";
