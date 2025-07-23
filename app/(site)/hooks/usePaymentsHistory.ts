@@ -4,7 +4,7 @@ import fetchRequest from "../lib/api/fetchRequest";
 import { OrderType, PaymentType } from "@prisma/client";
 import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
 import roundToCents from "../lib/utils/roundToCents";
-import { ShiftFilter } from "../lib/shared/types/ShiftFilter";
+import { ShiftType } from "../lib/shared/enums/Shift";
 import orderMatchesShift from "../lib/services/order-management/shift/orderMatchesShift";
 import { DateRange } from "react-day-picker";
 import { isSameDay } from "date-fns";
@@ -56,7 +56,7 @@ export default function usePaymentsHistory() {
   const [filteredOrders, setFilteredOrders] = useState<OrderWithPayments[]>([]);
 
   const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [shiftFilter, setShiftFilter] = useState<ShiftFilter>(ShiftFilter.BOTH);
+  const [shiftFilter, setShiftFilter] = useState<ShiftType>(ShiftType.ALL);
 
   const [timeScope, setTimeScope] = useState<"single" | "range">("single");
   const [singleDate, setSingleDate] = useState<Date | undefined>(new Date());
@@ -106,7 +106,7 @@ export default function usePaymentsHistory() {
   const resetFilters = () => {
     setSingleDate(new Date());
     setTypeFilter("all");
-    setShiftFilter(ShiftFilter.BOTH);
+    setShiftFilter(ShiftType.ALL);
     filterOrders();
     setTimeScope("single");
     setRangeDate(undefined);

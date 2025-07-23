@@ -6,7 +6,7 @@ import { AnyOrder } from "@/app/(site)/lib/shared";
 import { CancelOrdersInBulkResponse } from "../../../lib/db/orders/cancelOrdersInBulk";
 
 export default function DeleteOrdersBulk() {
-  const { selectedOrders, updateGlobalState, toggleOrderSelection, fetchRemainingRice } =
+  const { selectedOrders, updateGlobalState, toggleOrderSelection, updateRemainingRice } =
     useWasabiContext();
 
   const deleteOrders = (productsCooked: boolean) =>
@@ -18,7 +18,7 @@ export default function DeleteOrdersBulk() {
         toggleOrderSelection({ id: o.id, type: o.type });
         updateGlobalState({ ...o } as any, "delete");
       });
-      fetchRemainingRice();
+      updateRemainingRice();
     });
 
   return (

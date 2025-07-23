@@ -7,7 +7,7 @@ import getPioRice from "@/app/(site)/lib/services/product-management/getPioRice"
 
 export default function Rice() {
   const { order } = useOrderContext();
-  const { rice, fetchRemainingRice } = useWasabiContext();
+  const { rice, updateRemainingRice } = useWasabiContext();
   const [usedRice, setUsedRice] = useState<number>(0);
 
   useEffect(() => {
@@ -17,9 +17,11 @@ export default function Rice() {
     );
 
     setUsedRice(currentUsedRice);
-    fetchRemainingRice();
+    updateRemainingRice();
     // updateRemainingRice(currentUsedRice);
   }, [order.products]);
+
+  const adjustedRemaining = rice.remainingLunch + rice.remainingDinner - rice.total;
 
   return (
     <div className="w-full flex flex-col overflow-hidden border-foreground">
@@ -31,7 +33,7 @@ export default function Rice() {
         <div
           className={cn(
             "w-1/2 border-r p-2 h-12",
-            rice.remaining < rice.threshold && "text-destructive"
+            adjustedRemaining < rice.threshold && "text-destructive"
           )}
         >
           Rimanente
@@ -43,10 +45,10 @@ export default function Rice() {
         <div
           className={cn(
             "w-1/2 border-r p-2 h-12",
-            rice.remaining < rice.threshold && "text-destructive"
+            adjustedRemaining < rice.threshold && "text-destructive"
           )}
         >
-          {formatRice(rice.remaining)}
+          {formatRice(adjustedRemaining)}
         </div>
         <div className="w-1/2 p-2 h-12">{formatRice(usedRice)}</div>
       </div>

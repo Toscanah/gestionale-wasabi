@@ -1,81 +1,99 @@
-import { cn } from "@/lib/utils";
-import { useWasabiContext } from "../../context/WasabiContext";
-import formatRice from "../../lib/formatting-parsing/formatRice";
 import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useWasabiContext } from "../../context/WasabiContext";
+import { cn } from "@/lib/utils";
+import { ShiftType } from "../../lib/shared/enums/Shift";
+import formatRice from "../../lib/formatting-parsing/formatRice";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 export default function RiceSummary() {
-  const { rice, lunchRice, dinnerRice } = useWasabiContext();
+  const { rice } = useWasabiContext();
+  const [filter, setFilter] = useState<ShiftType>(ShiftType.ALL);
 
-  const [filters, setFilters] = useState({
-    lunch: true,
-    dinner: true,
-  });
+  const consumedLunch = rice.total - rice.remainingLunch;
+  const consumedDinner = rice.total - rice.remainingDinner;
 
-  const toggleFilter = (key: "lunch" | "dinner") =>
-    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+  const remaining =
+    filter === ShiftType.ALL
+      ? rice.remainingLunch + rice.remainingDinner - rice.total
+      : filter === ShiftType.LUNCH
+      ? rice.remainingLunch
+      : rice.remainingDinner;
 
-  const isLunch = filters.lunch;
-  const isDinner = filters.dinner;
-
-  const consumed = (() => {
-    if (isLunch && isDinner) return lunchRice + dinnerRice;
-    if (isLunch) return lunchRice;
-    if (isDinner) return dinnerRice;
-    return rice.total - rice.remaining; // fallback: full day
-  })();
-
-  const remaining = (() => {
-    if (isLunch && isDinner) return rice.total - (lunchRice + dinnerRice);
-    if (isLunch) return rice.total - lunchRice;
-    if (isDinner) return rice.total - dinnerRice;
-    return rice.remaining;
-  })();
-
-  const calculateStyles = (condition: boolean) =>
-    cn("text-right font-bold pl-3", condition && "text-red-600");
+  const consumed =
+    filter === ShiftType.ALL
+      ? consumedLunch + consumedDinner
+      : filter === ShiftType.LUNCH
+      ? consumedLunch
+      : consumedDinner;
 
   const summaryRows = [
     {
       label: "Riso consumato",
       value: consumed,
-      condition: consumed > rice.total,
+      condition: filter === ShiftType.ALL && consumed > rice.total,
     },
     {
       label: "Riso rimanente",
       value: remaining,
-      condition: remaining < rice.threshold,
+      condition: filter === ShiftType.ALL && remaining < rice.threshold,
     },
     {
       label: "Fino alla soglia",
       value: remaining - rice.threshold,
-      condition: remaining - rice.threshold <= 0,
+      condition: filter === ShiftType.ALL && remaining - rice.threshold <= 0,
+      shouldStrike: filter !== ShiftType.ALL,
     },
   ];
 
-  return (
-    <>
-      {/* <div className="w-full flex justify-end gap-4 text-sm">
-        <label className="flex items-center gap-1 cursor-pointer">
-          <Checkbox checked={filters.lunch} onCheckedChange={() => toggleFilter("lunch")} />
-          Solo pranzo
-        </label>
-        <label className="flex items-center gap-1 cursor-pointer">
-          <Checkbox checked={filters.dinner} onCheckedChange={() => toggleFilter("dinner")} />
-          Solo cena
-        </label>
-      </div> */}
+  const shiftOptions = [
+    { label: "Pranzo", value: ShiftType.LUNCH, id: "lunch" },
+    { label: "Cena", value: ShiftType.DINNER, id: "dinner" },
+    { label: "Pranzo + cena", value: ShiftType.ALL, id: "all" },
+  ];
 
-      <table className={cn("w-[28rem] text-2xl border-collapse")}>
+  return (
+    <div className="flex flex-col gap-4">
+      <RadioGroup
+        value={filter}
+        onValueChange={(val) => setFilter(val as ShiftType)}
+        className="w-full flex gap-16 justify-end items-center"
+      >
+        {shiftOptions.map(({ label, value, id }) => (
+          <div key={id} className="flex gap-2 items-center">
+            <RadioGroupItem id={id} value={value} />
+            <Label htmlFor={id} className="hover:cursor-pointer">
+              {label}
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
+
+      <table className="w-[28rem] text-2xl border-collapse">
         <tbody>
-          {summaryRows.map(({ label, value, condition }, index) => (
-            <tr key={index} className="w-full">
-              <td className="text-right text-2xl w-[60%]">{label}</td>
-              <td className={calculateStyles(condition)}>{formatRice(value)}</td>
+          {summaryRows.map(({ label, value, condition, shouldStrike = false }, index) => (
+            <tr key={index}>
+              <td
+                className={cn(
+                  "text-right text-2xl w-[60%]",
+                  shouldStrike && "line-through text-muted-foreground"
+                )}
+              >
+                {label}
+              </td>
+              <td
+                className={cn(
+                  "text-right font-bold pl-3 whitespace-pre",
+                  condition && "text-red-600",
+                  shouldStrike && "line-through text-muted-foreground"
+                )}
+              >
+                {formatRice(value, true)}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }

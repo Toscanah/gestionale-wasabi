@@ -1,7 +1,7 @@
 import { OrderType, WorkingShift } from "@prisma/client";
 import timeToDecimal from "../../../utils/time/timeToDecimal";
-import Timestamps from "@/app/(site)/lib/shared/enums/Timestamps";
 import { ShiftEvaluableOrder } from "@/app/(site)/lib/shared/types/ShiftEvaluableOrder";
+import { ShiftTime } from "../../../shared/enums/Shift";
 
 function normalizeWhen(when?: string): string | "immediate" {
   return when?.toLowerCase() ?? "immediate";
@@ -26,11 +26,11 @@ export function parseOrderTime(order: ShiftEvaluableOrder): number {
 }
 
 function inferShift(time: number): WorkingShift {
-  if (time >= Timestamps.LUNCH_START && time <= Timestamps.LUNCH_END) {
+  if (time >= ShiftTime.LUNCH_FROM && time <= ShiftTime.LUNCH_TO) {
     return WorkingShift.LUNCH;
   }
 
-  if (time > Timestamps.LUNCH_END && time <= Timestamps.DINNER_END) {
+  if (time > ShiftTime.LUNCH_TO && time <= ShiftTime.DINNER_TO) {
     return WorkingShift.DINNER;
   }
 

@@ -4,7 +4,7 @@ import { DateRange } from "react-day-picker";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { ProductWithStats } from "@/app/(site)/lib/shared/types/ProductWithStats";
 import TimeScopeFilter from "../../components/filters/shift/TimeScope";
-import { ShiftFilter } from "../../lib/shared/types/ShiftFilter";
+import { ShiftType } from "../../lib/shared/enums/Shift";
 
 const DEFAULT_START_DATE = new Date(new Date().setHours(0, 0, 0, 0));
 const DEFAULT_END_DATE = new Date(new Date().setHours(23, 59, 59, 999));
@@ -30,7 +30,7 @@ export default function useProductsStats() {
 
   const [timeScopeFilter, setTimeScopeFilter] = useState<TimeScopeFilter>(TimeScopeFilter.ALL_TIME);
   const [dateFilter, setDateFilter] = useState<DateRange | undefined>(DEFAULT_DATE);
-  const [shiftFilter, setShiftFilter] = useState<ShiftFilter>(ShiftFilter.BOTH);
+  const [shiftFilter, setShiftFilter] = useState<ShiftType>(ShiftType.ALL);
 
   useEffect(() => {
     fetchInitialProducts();
@@ -62,7 +62,7 @@ export default function useProductsStats() {
         time: {
           timeScope: TimeScopeFilter.ALL_TIME,
         },
-        shift: ShiftFilter.BOTH,
+        shift: ShiftType.ALL,
       },
     })
       .then(setProducts)
@@ -90,7 +90,7 @@ export default function useProductsStats() {
     setTimeScopeFilter(TimeScopeFilter.ALL_TIME);
     setDateFilter(DEFAULT_DATE);
     setSelectedCategory(ALL_CATEGORIES);
-    setShiftFilter(ShiftFilter.BOTH);
+    setShiftFilter(ShiftType.ALL);
     fetchInitialProducts();
   };
 

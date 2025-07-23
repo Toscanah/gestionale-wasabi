@@ -22,7 +22,7 @@ export default function MetaTemplatePreview({
   const renderVariableInputs = (
     indexes: number[],
     example: string[] | undefined,
-    type: ParamType,
+    type: ParamType
     // componentIndex: number
   ) => {
     const values = getParams(template.id, type);
@@ -56,7 +56,7 @@ export default function MetaTemplatePreview({
                 {renderVariableInputs(
                   extractVariableIndexes(component.text),
                   getExampleParams("header_text", component.example),
-                  "header_text",
+                  "header_text"
                 )}
               </>
             )}
@@ -72,7 +72,7 @@ export default function MetaTemplatePreview({
             {renderVariableInputs(
               extractVariableIndexes(component.text),
               getExampleParams("body_text", component.example),
-              "body_text",
+              "body_text"
             )}
           </div>
         );
@@ -105,7 +105,7 @@ export default function MetaTemplatePreview({
                         {renderVariableInputs(
                           indexes,
                           button.type === "URL" && button.example ? [button.example] : undefined,
-                          "button_text",
+                          "button_url"
                         )}
                       </div>
                     )}

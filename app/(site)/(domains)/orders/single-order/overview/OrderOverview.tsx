@@ -9,12 +9,9 @@ import Total from "./Total";
 import NormalActions from "./NormalActions";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableUpdate from "./TableUpdate";
-import Notes from "./Notes";
 import QuickPaymentOptions from "./QuickPaymentOptions";
 import { HomeOrder } from "@/app/(site)/lib/shared";
-import ShiftSelection from "./ShiftSelection";
 import Engagement from "./Engagement";
-import ETA from "./ETA";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;

@@ -10,7 +10,6 @@ import SelectWrapper from "../../components/ui/select/SelectWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { Rice } from "../../hooks/useRice";
 import useFocusOnClick from "../../hooks/focus/useFocusOnClick";
 
 interface RiceDialogProps {
@@ -20,9 +19,7 @@ interface RiceDialogProps {
 export default function RiceDialog({ variant }: RiceDialogProps) {
   const { rice, updateRice, resetRice } = useWasabiContext();
 
-  const defaultNewRice: Rice = { ...rice, total: 0, threshold: 0 };
-
-  const [newRice, setNewRice] = useState<Rice>(defaultNewRice);
+  const [threshold, setThreshold] = useState<number>(rice.threshold);
   const [riceToAdd, setRiceToAdd] = useState<number>(0);
   const [riceToRemove, setRiceToRemove] = useState<number>(0);
   const [selectedRiceBatchId, setSelectedRiceBatchId] = useState<number | null>(null);
@@ -38,83 +35,80 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   }, []);
 
   const handleAddRice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.valueAsNumber;
-
-    if (value === undefined || value === null || isNaN(value)) {
-      value = 0;
-    }
-
+    const value = e.target.valueAsNumber || 0;
     setRiceToAdd(value);
-    setNewRice({ ...newRice, total: value });
+    setRiceToRemove(0);
     setSelectedRiceBatchId(null);
   };
 
   const handleRemoveRice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.valueAsNumber;
-
-    if (value === undefined || value === null || isNaN(value)) {
-      value = 0;
-    }
-
+    const value = e.target.valueAsNumber || 0;
     setRiceToRemove(value);
-    setNewRice({ ...newRice, total: -value });
+    setRiceToAdd(0);
     setSelectedRiceBatchId(null);
   };
 
   const handleSelectChange = (val: string) => {
-    const selectedRice = Number(val);
-    const batch = riceBatches.find((batch) => batch.amount === selectedRice);
+    const selectedId = Number(val);
+    const batch = riceBatches.find((b) => b.id === selectedId);
+    if (!batch) return;
 
-    if (batch) {
-      setSelectedRiceBatchId(batch.id);
-      setRiceToAdd(selectedRice);
-      setNewRice({ ...newRice, total: selectedRice });
-    }
+    setSelectedRiceBatchId(batch.id);
+    setRiceToAdd(batch.amount);
+    setRiceToRemove(0);
   };
 
-  const logRiceChange = () => {
+  const handleSave = async () => {
+    let manualValue = riceToAdd - riceToRemove;
+
     if (selectedRiceBatchId) {
-      fetchRequest("POST", "/api/rice/", "addRiceLog", {
+      await fetchRequest("POST", "/api/rice/", "addRiceLog", {
         riceBatchId: selectedRiceBatchId,
         manualValue: null,
         type: RiceLogType.BATCH,
       });
-    } else if (riceToAdd || riceToRemove) {
-      const manualValue = riceToAdd - riceToRemove;
-      fetchRequest("POST", "/api/rice/", "addRiceLog", {
+    } else if (manualValue !== 0) {
+      await fetchRequest("POST", "/api/rice/", "addRiceLog", {
         riceBatchId: null,
-        manualValue: manualValue,
+        manualValue,
         type: RiceLogType.MANUAL,
       });
     }
+
+    updateRice({
+      threshold,
+      delta: manualValue ?? 0,
+    });
   };
 
-  const handleSave = () => {
-    logRiceChange();
-    updateRice(newRice);
+  const handleReset = () => {
+    resetRice();
+    resetForm();
   };
 
-  const handleOpenChange = () => {
-    setNewRice(defaultNewRice);
+  const resetForm = () => {
     setRiceToAdd(0);
     setRiceToRemove(0);
     setSelectedRiceBatchId(null);
-    fetchRiceBatches();
   };
+
+  useEffect(() => {
+    setThreshold(rice.threshold);
+  }, [rice.threshold]);
 
   return (
     <DialogWrapper
       size="medium"
       autoFocus={false}
-      onOpenChange={handleOpenChange}
-      title={"Gestione riso"}
+      onOpenChange={resetForm}
+      title="Gestione riso"
       desc="Tutti i valori sono calcolati in grammi"
       contentClassName="border-t-4 border-t-gray-400 gap-6"
       trigger={
-        variant == "sidebar" ? (
+        variant === "sidebar" ? (
           <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
         ) : (
-          <Button variant={"outline"} className="w-full">
+          <Button variant="outline" className="w-full">
             <Gear className="mr-2 h-4 w-4" />
             Riso
           </Button>
@@ -125,12 +119,9 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <DialogWrapper
             size="small"
             variant="delete"
-            onDelete={() => {
-              setNewRice(defaultNewRice);
-              resetRice();
-            }}
+            onDelete={handleReset}
             trigger={
-              <Button className="w-full border-red-600 text-red-600 text-xl" variant={"outline"}>
+              <Button className="w-full border-red-600 text-red-600 text-xl" variant="outline">
                 Azzera
               </Button>
             }
@@ -152,24 +143,22 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <SelectWrapper
             disabled={riceBatches.length === 0}
             className="h-10 text-xl"
-            groups={
-              riceBatches && riceBatches.length > 0
-                ? [
-                    {
-                      items: riceBatches
-                        .sort((a, b) => b.amount - a.amount)
-                        .map((item) => ({
-                          name: String(item.label || item.amount),
-                          value: String(item.amount),
-                        })),
-                    },
-                  ]
-                : []
-            }
+            value={selectedRiceBatchId !== null ? String(selectedRiceBatchId) : undefined}
+            groups={[
+              {
+                items: riceBatches
+                  .sort((a, b) => b.amount - a.amount)
+                  .map((batch) => ({
+                    name: batch.label || `${batch.amount}`,
+                    value: String(batch.id),
+                  })),
+              },
+            ]}
             onValueChange={handleSelectChange}
           />
         </div>
 
+        {/* Inputs for add/remove */}
         <div className="flex w-full justify-between space-x-4">
           <div className="space-y-2 w-full">
             <Label htmlFor="add-rice" className="text-xl">
@@ -198,6 +187,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           </div>
         </div>
 
+        {/* Threshold + Total */}
         <div className="flex w-full justify-between space-x-4">
           <div className="space-y-2 w-full">
             <Label htmlFor="threshold" className="text-xl">
@@ -207,16 +197,15 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
               className="h-10 text-2xl"
               type="number"
               id="threshold"
-              value={newRice.threshold}
-              onChange={(e) => setNewRice({ ...newRice, threshold: e.target.valueAsNumber || 0 })}
+              value={threshold}
+              onChange={(e) => setThreshold(e.target.valueAsNumber || 0)}
             />
           </div>
 
-          <div className="space-y-2 w-full ">
+          <div className="space-y-2 w-full">
             <Label htmlFor="total" className="text-xl">
               Riso totale fin ad ora
             </Label>
-
             <div className="flex gap-2">
               <Input
                 disabled
@@ -225,7 +214,6 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                 id="total"
                 value={rice.total}
               />
-
               <RiceHistory />
             </div>
           </div>

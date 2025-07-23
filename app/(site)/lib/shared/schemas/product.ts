@@ -9,6 +9,7 @@ import {
 import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
 import { ProductInOrderWithOptionsSchema } from "../models/Product";
 import TimeScopeFilter from "../../../components/filters/shift/TimeScope";
+import { ShiftType } from "../enums/Shift";
 
 export const CreateProductInputSchema = createInputSchema(ProductSchema).partial({
   category_id: true,
@@ -34,7 +35,7 @@ export const GetProductsWithStatsSchema = z.object({
         .preprocess((arg) => (typeof arg === "string" ? new Date(arg) : arg), z.date())
         .optional(),
     }),
-    shift: z.enum(["both", "lunch", "dinner"]), // cant use z.nativeEnum(ShiftFilter) cuz the import is from the client
+    shift: z.nativeEnum(ShiftType),
     categoryId: z.number().optional(),
   }),
 });

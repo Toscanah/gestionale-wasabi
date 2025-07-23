@@ -4,11 +4,11 @@ import { Warning } from "@phosphor-icons/react";
 import SelectWrapper from "../../ui/select/SelectWrapper";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { ShiftFilter } from "@/app/(site)/lib/shared/types/ShiftFilter";
+import { ShiftType } from "@/app/(site)/lib/shared/enums/Shift";
 
 interface ShiftFilterSelectorProps {
-  shiftFilter: ShiftFilter;
-  onShiftChange: (value: ShiftFilter) => void;
+  shiftFilter: ShiftType;
+  onShiftChange: (value: ShiftType) => void;
   disabled?: boolean;
 }
 
@@ -21,7 +21,7 @@ export default function ShiftFilterSelector({
     <div className="flex items-center justify-center w-full gap-4">
       <TooltipProvider delayDuration={0}>
         <Tooltip>
-          <TooltipTrigger asChild className={cn(shiftFilter === ShiftFilter.BOTH && "hidden")}>
+          <TooltipTrigger asChild className={cn(shiftFilter === ShiftType.ALL && "hidden")}>
             <Warning size={24} color="red" />
           </TooltipTrigger>
           <TooltipContent side="bottom" className="w-[250px]">
@@ -37,21 +37,21 @@ export default function ShiftFilterSelector({
         className="h-10"
         value={shiftFilter}
         disabled={disabled}
-        onValueChange={(value) => onShiftChange(value as ShiftFilter)}
+        onValueChange={(value) => onShiftChange(value as ShiftType)}
         groups={[
           {
             items: [
               {
                 name: "Pranzo + cena",
-                value: ShiftFilter.BOTH,
+                value: ShiftType.ALL,
               },
               {
                 name: "Pranzo",
-                value: ShiftFilter.LUNCH,
+                value: ShiftType.LUNCH,
               },
               {
                 name: "Cena",
-                value: ShiftFilter.DINNER,
+                value: ShiftType.DINNER,
               },
             ],
           },

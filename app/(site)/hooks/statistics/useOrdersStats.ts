@@ -8,7 +8,7 @@ import timeToDecimal from "../../lib/utils/time/timeToDecimal";
 import {
   getEffectiveOrderShift,
   parseOrderTime,
-} from "../../lib/services/order-management/shift/getOrderShift";
+} from "../../lib/services/order-management/shift/getEffectiveOrderShift";
 import getPioRice from "../../lib/services/product-management/getPioRice";
 
 export enum DAYS_OF_WEEK {

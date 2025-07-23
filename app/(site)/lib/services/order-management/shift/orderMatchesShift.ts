@@ -1,21 +1,21 @@
 import { WorkingShift } from "@prisma/client";
-import { getEffectiveOrderShift } from "./getOrderShift";
+import { getEffectiveOrderShift } from "./getEffectiveOrderShift";
 import { ShiftEvaluableOrder } from "@/app/(site)/lib/shared/types/ShiftEvaluableOrder";
-import { ShiftFilter } from "@/app/(site)/lib/shared/types/ShiftFilter";
+import { ShiftType } from "@/app/(site)/lib/shared/enums/Shift";
 
 export default function orderMatchesShift(
   order: ShiftEvaluableOrder,
-  shiftFilter: ShiftFilter
+  shiftFilter: ShiftType
 ): boolean {
-  if (shiftFilter === ShiftFilter.BOTH) return true;
+  if (shiftFilter === ShiftType.ALL) return true;
 
   const { effectiveShift } = getEffectiveOrderShift(order);
 
-  if (shiftFilter === ShiftFilter.LUNCH) {
+  if (shiftFilter === ShiftType.LUNCH) {
     return effectiveShift === WorkingShift.LUNCH;
   }
 
-  if (shiftFilter === ShiftFilter.DINNER) {
+  if (shiftFilter === ShiftType.DINNER) {
     return effectiveShift === WorkingShift.DINNER;
   }
 

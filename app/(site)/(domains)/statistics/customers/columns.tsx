@@ -90,7 +90,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
             </Button>
           }
         >
-          <OrderHistory noStatistics customer={customer} />
+          <OrderHistory customer={customer} />
         </DialogWrapper>
       );
     },

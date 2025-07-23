@@ -17,7 +17,7 @@ export function useOrderManager(
   setOrder: Dispatch<SetStateAction<AnyOrder>>,
   dialogOpen: boolean
 ) {
-  const { updateGlobalState, fetchRemainingRice } = useWasabiContext();
+  const { updateGlobalState, updateRemainingRice } = useWasabiContext();
   const [joinedTables, setJoinedTables] = useState<TableOrder[]>([]);
 
   const updateOrder = (newOrder: RecursivePartial<AnyOrder>) =>
@@ -52,7 +52,7 @@ export function useOrderManager(
       orderId,
       cooked,
     }).then((deletedOrder) => {
-      fetchRemainingRice();
+      updateRemainingRice();
       updateGlobalState(deletedOrder, "delete");
     });
 

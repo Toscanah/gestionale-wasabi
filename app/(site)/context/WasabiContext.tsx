@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
-import useRice, { Rice } from "../hooks/useRice";
+import useRice, { Rice, UpdateRiceInput } from "../hooks/useRice";
 import useSettings from "../hooks/useSettings";
 import { GlobalSettings } from "../lib/shared/types/Settings";
 import { OrderType } from "@prisma/client";
@@ -8,14 +8,11 @@ import { OrderType } from "@prisma/client";
 interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
   rice: Rice;
-  lunchRice: number;
-  dinnerRice: number;
-  updateRice: (total: Rice) => void;
+  updateRice: ({ delta, threshold }: UpdateRiceInput) => void;
   resetRice: () => void;
   selectedOrders: SelectedOrders[];
   toggleOrderSelection: (order: SelectedOrders) => void;
-  updateRemainingRice: (amount: number) => void;
-  fetchRemainingRice: () => void;
+  updateRemainingRice: (total?: number) => void;
   settings: GlobalSettings;
   updateSettings: (key: keyof GlobalSettings, value: any) => void;
 }
@@ -40,7 +37,7 @@ type SelectedOrders = { id: number; type: OrderType };
 export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderProps) => {
   const [selectedOrders, setSelectedOrders] = useState<SelectedOrders[]>([]);
   const { settings, updateSettings } = useSettings();
-  const { rice, updateRice, updateRemainingRice, resetRice, lunchRice, dinnerRice } = useRice();
+  const { rice, updateRice, updateRemainingRice, resetRice } = useRice();
 
   const toggleOrderSelection = (order: SelectedOrders) =>
     setSelectedOrders((prevSelected) => {
@@ -53,14 +50,11 @@ export const WasabiProvider = ({ children, updateGlobalState }: WasabiProviderPr
       value={{
         updateGlobalState,
         rice,
-        lunchRice,
-        dinnerRice,
         updateRice,
         updateRemainingRice,
         resetRice,
         selectedOrders,
         toggleOrderSelection,
-        fetchRemainingRice: updateRemainingRice,
         settings,
         updateSettings,
       }}
