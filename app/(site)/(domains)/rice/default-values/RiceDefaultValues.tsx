@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
@@ -11,14 +13,14 @@ import { RiceBatch } from "@prisma/client";
 import { debounce } from "lodash";
 import getTable from "@/app/(site)/lib/utils/getTable";
 import columns from "./columns";
+import Table from "@/app/(site)/components/table/Table";
+import { Label } from "@/components/ui/label";
 
 const DEFAULT_NEW_BATCH: RiceBatch = { id: -1, amount: 0, label: "" };
 
 export default function RiceDefaultValues() {
   const [newBatch, setNewBatch] = useState<RiceBatch>(DEFAULT_NEW_BATCH);
   const [riceBatches, setRiceBatches] = useState<RiceBatch[]>([]);
-
-  // const table = getTable({ data: riceBatches, columns: columns() });
 
   const fetchRiceBatches = async () =>
     fetchRequest<RiceBatch[]>("GET", "/api/rice/", "getRiceBatches").then(setRiceBatches);
@@ -66,12 +68,17 @@ export default function RiceDefaultValues() {
     []
   );
 
+  const table = getTable({
+    data: riceBatches,
+    columns: columns({ debouncedUpdateBatch, removeRiceBatch }),
+  });
+
   return (
     <DialogWrapper
       size="medium"
       title="Valori di default del riso"
       desc="I valori si salvano automaticamente"
-      contentClassName="border-t-4 border-t-gray-400"
+      upperBorder
       onOpenChange={() => fetchRiceBatches()}
       autoFocus={false}
       trigger={
@@ -80,39 +87,9 @@ export default function RiceDefaultValues() {
         </SidebarMenuSubButton>
       }
     >
-      <div className="max-h-[40vh] overflow-y-auto">
+      <div className="overflow-y-auto">
         {riceBatches.length > 0 ? (
-          <div className="flex flex-col gap-2 items-center w-full">
-            {riceBatches.map((riceBatch) => (
-              <div className="flex items-center gap-2 w-full" key={riceBatch.id}>
-                <Input
-                  className="w-[40%]"
-                  type="number"
-                  placeholder="Modifica valore"
-                  defaultValue={riceBatch.amount}
-                  onChange={(e) =>
-                    debouncedUpdateBatch(riceBatch.id, "amount", parseFloat(e.target.value) || 0)
-                  }
-                />
-
-                {/* <Input
-                  className="w-[40%]"
-                  type="text"
-                  placeholder="Modifica etichetta"
-                  defaultValue={riceBatch.label || ""}
-                  onChange={(e) => debouncedUpdateBatch(riceBatch.id, "label", e.target.value)}
-                /> */}
-
-                <Button className="group w-[20%]" onClick={() => removeRiceBatch(riceBatch.id)}>
-                  <Trash
-                    size={24}
-                    className="transform transition-transform duration-300 
-                          group-hover:rotate-[360deg] hover:font-bold hover:drop-shadow-2xl"
-                  />
-                </Button>
-              </div>
-            ))}
-          </div>
+          <Table table={table} tableClassName="max-h-full" />
         ) : (
           <div className="w-full text-center text-xl">Nessun valore di default presente!</div>
         )}
@@ -120,34 +97,44 @@ export default function RiceDefaultValues() {
 
       <Separator />
 
-      <div className="w-full flex gap-2">
-        <Input
-          className="w-[40%]"
-          type="number"
-          placeholder="Aggiungi valore"
-          value={newBatch.amount || ""}
-          onChange={(e) =>
-            setNewBatch((prevBatch) => ({
-              ...prevBatch,
-              amount: parseFloat(e.target.value) || 0,
-            }))
-          }
-        />
+      <div className="w-full flex flex-col gap-4 justify-center items-center ">
+        <div className="w-full flex justify-center items-center gap-4">
+          <div className="w-full space-y-2">
+            <Label htmlFor="label">Etichetta</Label>
+            <Input
+              id="label"
+              className="w-full"
+              type="text"
+              placeholder="Etichetta"
+              value={newBatch.label || ""}
+              onChange={(e) =>
+                setNewBatch((prevBatch) => ({
+                  ...prevBatch,
+                  label: e.target.value,
+                }))
+              }
+            />
+          </div>
 
-        <Input
-          className="w-[40%]"
-          type="text"
-          placeholder="Aggiungi etichetta"
-          value={newBatch.label || ""}
-          onChange={(e) =>
-            setNewBatch((prevBatch) => ({
-              ...prevBatch,
-              label: e.target.value,
-            }))
-          }
-        />
+          <div className="w-full space-y-2">
+            <Label htmlFor="amount">Valore</Label>
+            <Input
+              id="amount"
+              className="w-full"
+              type="number"
+              placeholder="Valore"
+              value={newBatch.amount || ""}
+              onChange={(e) =>
+                setNewBatch((prevBatch) => ({
+                  ...prevBatch,
+                  amount: parseFloat(e.target.value) || 0,
+                }))
+              }
+            />
+          </div>
+        </div>
 
-        <Button className="w-[20%]" onClick={addRiceBatch} disabled={!newBatch.amount}>
+        <Button className="w-full" onClick={addRiceBatch} disabled={!newBatch.amount}>
           <Plus size={24} />
         </Button>
       </div>

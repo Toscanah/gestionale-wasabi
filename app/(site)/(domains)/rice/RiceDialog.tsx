@@ -103,7 +103,8 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
       onOpenChange={resetForm}
       title="Gestione riso"
       desc="Tutti i valori sono calcolati in grammi"
-      contentClassName="border-t-4 border-t-gray-400 gap-6"
+      contentClassName="gap-4"
+      upperBorder
       trigger={
         variant === "sidebar" ? (
           <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
@@ -135,7 +136,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
         </>
       }
     >
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         <div className="space-y-2">
           <Label htmlFor="rice" className="text-xl">
             Valori di base

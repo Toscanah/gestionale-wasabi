@@ -1,7 +1,5 @@
 import { Megaphone } from "@phosphor-icons/react";
-import {
-  SidebarMenuSubButton,
-} from "@/components/ui/sidebar";
+import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
 import MarketingTemplates from "@/app/(site)/(domains)/engagement/templates/MarketingTemplates";
 import DialogWrapper from "../../ui/dialog/DialogWrapper";
@@ -16,7 +14,7 @@ export default function EngagementSection() {
       // }}
       title="Modelli marketing"
       size="medium"
-      contentClassName="border-t-4 border-t-gray-400"
+      upperBorder
       trigger={
         <SidebarMenuSubButton className="hover:cursor-pointer">Modelli</SidebarMenuSubButton>
       }

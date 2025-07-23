@@ -17,12 +17,13 @@ import { Separator } from "@/components/ui/separator";
 
 const sizes = {
   small: "max-w-[25vw] w-[25vw]",
-  medium: "max-w-[40vw] w-[40vw]",
+  medium: "max-w-[40vw] w-[40vw]", //  h-[65vh] max-h-[65vh]
   mediumPlus: "max-w-[60vw] w-[60vw]",
   large: "max-w-[97.5vw] w-[97.5vw]",
 };
 
 export type DialogWrapperProps = {
+  upperBorder?: boolean;
   double?: boolean;
   autoFocus?: boolean;
   children?: ReactNode;
@@ -44,6 +45,7 @@ export type DialogWrapperProps = {
 );
 
 export default function DialogWrapper({
+  upperBorder = false,
   double = false,
   children,
   putSeparator = false,
@@ -114,6 +116,7 @@ export default function DialogWrapper({
           sizes[size],
           isDeleteVariant && "border-t-4 border-t-red-600",
           isWarningVariant && "border-t-4 border-t-orange-500",
+          upperBorder && "border-t-4 border-t-gray-400",
           // !interactionReady && "*:cursor-not-allowed", // add this
           contentClassName
         )}

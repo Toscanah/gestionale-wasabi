@@ -29,6 +29,7 @@ export default function SettingsDialog() {
           <Gear className="h-4 w-4" /> Impostazioni
         </SidebarMenuButton>
       }
+      upperBorder
       contentClassName="h-[45rem] max-h-[45rem] flex flex-col gap-6"
     >
       <Tabs defaultValue="application" className="w-full h-full">
