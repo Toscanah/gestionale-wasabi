@@ -13,14 +13,14 @@ export default function RiceSummary() {
   const consumedLunch = rice.total - rice.remainingLunch;
   const consumedDinner = rice.total - rice.remainingDinner;
 
-  const remaining =
+  const calculatedRemaining =
     filter === ShiftType.ALL
       ? rice.remainingLunch + rice.remainingDinner - rice.total
       : filter === ShiftType.LUNCH
       ? rice.remainingLunch
       : rice.total - consumedLunch - consumedDinner;
 
-  const consumed =
+  const calculatedConsumed =
     filter === ShiftType.ALL
       ? consumedLunch + consumedDinner
       : filter === ShiftType.LUNCH
@@ -30,18 +30,18 @@ export default function RiceSummary() {
   const summaryRows = [
     {
       label: "Riso consumato",
-      value: consumed,
-      condition: filter === ShiftType.ALL && consumed > rice.total,
+      value: calculatedConsumed,
+      condition: filter === ShiftType.ALL && calculatedConsumed > rice.total,
     },
     {
       label: "Riso rimanente",
-      value: remaining,
-      condition: filter === ShiftType.ALL && rice.total > 0 && remaining < rice.threshold,
+      value: calculatedRemaining,
+      condition: filter === ShiftType.ALL && rice.total > 0 && calculatedRemaining < rice.threshold,
     },
     {
       label: "Fino alla soglia",
-      value: rice.total === 0 ? 0 : remaining - rice.threshold,
-      condition: filter === ShiftType.ALL && rice.total > 0 && remaining - rice.threshold <= 0,
+      value: rice.total === 0 ? 0 : calculatedRemaining - rice.threshold,
+      condition: filter === ShiftType.ALL && rice.total > 0 && calculatedRemaining - rice.threshold <= 0,
       shouldStrike: filter !== ShiftType.ALL,
     },
   ];
