@@ -18,7 +18,7 @@ export default function RiceSummary() {
       ? rice.remainingLunch + rice.remainingDinner - rice.total
       : filter === ShiftType.LUNCH
       ? rice.remainingLunch
-      : rice.remainingDinner;
+      : rice.total - consumedLunch - consumedDinner;
 
   const consumed =
     filter === ShiftType.ALL
