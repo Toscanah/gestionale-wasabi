@@ -138,7 +138,7 @@ export const MetaTemplateSchema = z.object({
   parameter_format: z.literal(TemplateParameterFormat.POSITIONAL),
   status: z.nativeEnum(TemplateStatus),
   category: z.nativeEnum(TemplateCategory),
-  language: z.union([z.nativeEnum(TemplateLanguage), z.string()]),
+  language: z.nativeEnum(TemplateLanguage),
   components: z.array(TemplateComponentSchema),
 });
 

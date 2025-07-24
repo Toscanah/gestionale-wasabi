@@ -15,9 +15,8 @@ export enum TemplateCategory {
 }
 
 export enum TemplateLanguage {
-  IT = "it_IT",
+  IT = "it",
   EN = "en_US",
-  // You can add more or use TemplateLanguageEnum as string union
 }
 
 export enum TemplateComponentType {
