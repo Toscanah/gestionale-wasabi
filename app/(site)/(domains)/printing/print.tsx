@@ -47,7 +47,7 @@ import { GlobalSettings } from "../../lib/shared/types/Settings";
  */
 
 type PrintContent = () => ReactNode;
-const PRINTER_MODEL: PrinterType = "epson"
+const PRINTER_MODEL: PrinterType = "epson";
 
 export default async function print(...content: PrintContent[]) {
   const selectedPrinter: SelectedPrinter = (
@@ -56,10 +56,28 @@ export default async function print(...content: PrintContent[]) {
     ) as GlobalSettings
   ).selectedPrinter;
 
-  const ports: SerialPort[] = await window.navigator.serial.getPorts();
+  const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
 
-  let selectedPort: SerialPort | null = ports[0] ?? null;
-  let characterSetToUse: CharacterSet = selectedPrinter.charSet;
+  let ports: SerialPort[] = [];
+
+  try {
+    ports = await navigator.serial.getPorts();
+
+    if (ports.length === 0 && !isDevMode) {
+      const userSelectedPort = await navigator.serial.requestPort();
+      ports = [userSelectedPort];
+    }
+  } catch (error: any) {
+    if (error?.name === "NotFoundError") {
+      console.warn("User canceled the serial port selection.");
+    } else {
+      console.error("Failed to access serial port:", error);
+    }
+    return false;
+  }
+
+  const selectedPort: SerialPort | null = ports[0] ?? null;
+  const characterSetToUse: CharacterSet = selectedPrinter.charSet;
 
   const receipt = (
     <Printer characterSet={characterSetToUse} type={PRINTER_MODEL}>
@@ -69,10 +87,14 @@ export default async function print(...content: PrintContent[]) {
 
   const data: Uint8Array = await render(receipt);
 
-  // console.clear()
-  // console.log(new TextDecoder().decode(data));
-
   if (!selectedPort) {
+    if (isDevMode) {
+      console.log("[DEV MODE] Skipping actual print. Rendered data:");
+      console.log(new TextDecoder().decode(data));
+      return true;
+    }
+
+    console.warn("No serial port selected.");
     return false;
   }
 
@@ -80,7 +102,7 @@ export default async function print(...content: PrintContent[]) {
     await selectedPort.open({ baudRate: 19200 });
     const writer = selectedPort.writable?.getWriter();
 
-    if (writer != null) {
+    if (writer) {
       await writer.write(data);
       writer.releaseLock();
     }
