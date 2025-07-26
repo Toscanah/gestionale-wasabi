@@ -39,7 +39,6 @@ export default function useMetaTemplates({ open, paramsMap }: UseMetaTemplatesPa
     order?: AnyOrder;
     toast?: boolean;
   } = {}): Promise<boolean> => {
-    console.log(paramsMap)
     const messagePromises: Promise<void>[] = [];
     const VAR_REGEX = /\{\{(\d+)\}\}/g;
 

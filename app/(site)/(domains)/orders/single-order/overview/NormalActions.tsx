@@ -41,8 +41,10 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
 
   const { settings } = useWasabiContext();
   const { paramsMap, setParam } = useTemplatesParams();
+  const shouldLoadTemplates = settings.useWhatsApp && dialogOpen;
+
   const { templates, sendMessages } = useMetaTemplates({
-    open: dialogOpen,
+    open: shouldLoadTemplates,
     paramsMap,
   });
 
