@@ -4,8 +4,7 @@ import calculateExtraItems from "@/app/(site)/lib/services/order-management/calc
 import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import useLocalExtraItems from "@/app/(site)/hooks/useLocalExtraItems";
-import { AnyOrder } from "@/app/(site)/lib/shared"
-;
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -20,6 +19,8 @@ interface ExtraItemProps {
 }
 
 export type ExtraItems = "salads" | "soups" | "rices";
+
+export type ManualExtras = Record<ExtraItems, number>;
 
 const ExtraItem = ({ label, computedValue, stateValue, onValueChange }: ExtraItemProps) => (
   <div className="flex gap-4 items-center h-full">
@@ -80,9 +81,6 @@ const ExtraItem = ({ label, computedValue, stateValue, onValueChange }: ExtraIte
 
 export default function ExtraItems() {
   const { order, updateOrder } = useOrderContext();
-  const [salads, setSalads] = useState(0);
-  const [rices, setRices] = useState(0);
-  const [soups, setSoups] = useState(0);
 
   const {
     soupsFromProducts,
@@ -96,49 +94,56 @@ export default function ExtraItems() {
   useFocusOnClick(["Zuppe", "Insalate", "Riso"]);
   useLocalExtraItems();
 
+  const [manualExtras, setManualExtras] = useState<ManualExtras>({
+    soups: 0,
+    salads: 0,
+    rices: 0,
+  });
+
   useEffect(() => {
-    setRices(ricesFinal);
-    setSalads(saladsFinal);
-    setSoups(soupsFinal);
+    setManualExtras({
+      soups: soupsFinal,
+      salads: saladsFinal,
+      rices: ricesFinal,
+    });
   }, [order.products]);
 
-  const updateOrderExtraItems = (items: ExtraItems, value: number, order: AnyOrder) => {
-    const { soupsFromProducts, saladsFromProducts, ricesFromProducts } = calculateExtraItems(order);
+  const debouncedUpdateAllExtras = useCallback(
+    debounce((extras: ManualExtras, order: AnyOrder) => {
+      const { soupsFromProducts, saladsFromProducts, ricesFromProducts } =
+        calculateExtraItems(order);
 
-    const computedValue =
-      items === "soups"
-        ? soupsFromProducts
-        : items === "salads"
-        ? saladsFromProducts
-        : ricesFromProducts;
+      const updates: Partial<ManualExtras> = {};
 
-    const newValue = value === computedValue ? null : value;
+      if (extras.soups !== soupsFromProducts)
+        updates.soups = extras.soups === soupsFromProducts ? undefined : extras.soups;
+      if (extras.salads !== saladsFromProducts)
+        updates.salads = extras.salads === saladsFromProducts ? undefined : extras.salads;
+      if (extras.rices !== ricesFromProducts)
+        updates.rices = extras.rices === ricesFromProducts ? undefined : extras.rices;
 
-    fetchRequest("PATCH", "/api/orders/", "updateOrderExtraItems", {
-      orderId: order.id,
-      items,
-      value: newValue,
-    }).then(() => {
-      updateOrder({ [items]: newValue });
-      toastSuccess("Zuppe, insalate e risi aggiornati correttamente");
-    });
-  };
+      const updatePromises = Object.entries(updates).map(([key, value]) =>
+        fetchRequest("PATCH", "/api/orders/", "updateOrderExtraItems", {
+          orderId: order.id,
+          items: key as ExtraItems,
+          value,
+        })
+      );
 
-  const debouncedUpdateOrderExtraItems = useCallback(
-    debounce(
-      (items: ExtraItems, value: number, order: AnyOrder) =>
-        updateOrderExtraItems(items, value, order),
-      1000
-    ),
+      Promise.all(updatePromises).then(() => {
+        updateOrder(updates);
+        toastSuccess("Zuppe, insalate e risi aggiornati correttamente");
+      });
+    }, 750),
     []
   );
 
   const handleManualChange = (type: ExtraItems, value: number) => {
-    if (type === "salads") setSalads(value);
-    if (type === "soups") setSoups(value);
-    if (type === "rices") setRices(value);
-
-    debouncedUpdateOrderExtraItems(type, value, order);
+    setManualExtras((prev) => {
+      const updated = { ...prev, [type]: value };
+      debouncedUpdateAllExtras(updated, order);
+      return updated;
+    });
   };
 
   return (
@@ -146,21 +151,21 @@ export default function ExtraItems() {
       <ExtraItem
         computedValue={soupsFromProducts}
         label="Zuppe"
-        stateValue={soups}
+        stateValue={manualExtras.soups}
         onValueChange={(val) => handleManualChange("soups", val)}
       />
 
       <ExtraItem
         computedValue={saladsFromProducts}
         label="Insalate"
-        stateValue={salads}
+        stateValue={manualExtras.salads}
         onValueChange={(val) => handleManualChange("salads", val)}
       />
 
       <ExtraItem
         computedValue={ricesFromProducts}
         label="Riso"
-        stateValue={rices}
+        stateValue={manualExtras.rices}
         onValueChange={(val) => handleManualChange("rices", val)}
       />
     </div>
