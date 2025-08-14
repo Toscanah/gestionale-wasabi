@@ -6,12 +6,10 @@ import { HomeOrder } from "@/app/(site)/lib/shared";
 export default async function createHomeOrder({
   customerId,
   addressId,
-  notes,
   contactPhone,
 }: {
   customerId: number;
   addressId: number;
-  notes: string;
   contactPhone: string;
 }): Promise<HomeOrder> {
   return await prisma.$transaction(async (tx) => {

@@ -7,8 +7,7 @@ import React, {
   SetStateAction,
   useEffect,
 } from "react";
-import { AnyOrder, CustomerWithDetails, HomeOrder } from "@/app/(site)/lib/shared"
-;
+import { AnyOrder, CustomerWithDetails, HomeOrder } from "@/app/(site)/lib/shared";
 import useCustomerLookup from "../hooks/create-home-order/useCustomerLookup";
 import fetchRequest from "../lib/api/fetchRequest";
 import { useWasabiContext } from "./WasabiContext";
@@ -52,7 +51,6 @@ type CreateHomeOrderProps = {
 const CreateHomeOrderContext = createContext<CreateHomeOrderType | undefined>(undefined);
 
 export type ExtraInfo = {
-  notes?: string | undefined;
   contactPhone?: string | undefined;
 };
 
@@ -62,7 +60,7 @@ export const CreateHomeOrderProvider = ({
   initialPhone,
   initialDoorbell,
 }: CreateHomeOrderProps) => {
-  const [extraInfo, setExtraInfo] = useState<ExtraInfo>({ contactPhone: "", notes: "" });
+  const [extraInfo, setExtraInfo] = useState<ExtraInfo>({ contactPhone: "" });
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(undefined);
   const [selectedOption, setSelectedOption] = useState<string>("");
 
@@ -113,7 +111,6 @@ export const CreateHomeOrderProvider = ({
     fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {
       customerId: customer.id,
       addressId: selectedAddress.id,
-      notes: extraInfo.notes || "",
       contactPhone: extraInfo.contactPhone || "",
     }).then((newHomeOrder) => {
       setOrder(newHomeOrder);
@@ -121,7 +118,7 @@ export const CreateHomeOrderProvider = ({
     });
   };
 
-  useEffect(() => setExtraInfo({ contactPhone: "", notes: "" }), [phone]);
+  useEffect(() => setExtraInfo({ contactPhone: "" }), [phone]);
 
   return (
     <CreateHomeOrderContext.Provider

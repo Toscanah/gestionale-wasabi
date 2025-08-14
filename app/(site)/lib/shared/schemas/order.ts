@@ -26,7 +26,6 @@ export const CreatePickupOrderSchema = z.object({
 export const CreateHomeOrderSchema = z.object({
   customerId: z.number(),
   addressId: z.number(),
-  notes: z.string(),
   contactPhone: z.string(),
 });
 

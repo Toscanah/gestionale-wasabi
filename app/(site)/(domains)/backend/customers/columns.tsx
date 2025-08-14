@@ -41,6 +41,11 @@ const columns = (
   }),
 
   TableColumn({
+    accessorKey: "order_notes",
+    header: "Note degli ordini",
+  }),
+
+  TableColumn({
     header: "Storico ordini",
     cellContent: (row) => {
       const customer = row.original;

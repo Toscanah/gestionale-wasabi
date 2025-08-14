@@ -97,7 +97,7 @@ export default function useCustomerManager({
       temporary: selectedOption === "temp",
     };
 
-    setExtraInfo({ notes: values.order_notes, contactPhone: values.contact_phone });
+    setExtraInfo({ contactPhone: values.contact_phone });
 
     let updatedCustomer: Customer;
     if (actionCustomer === "create") {
