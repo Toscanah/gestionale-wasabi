@@ -10,7 +10,7 @@ const formSchema = z.object({
   floor: getZodField("string", false),
   stair: getZodField("string", false),
   street_info: getZodField("string", false),
-  notes: getZodField("string", false),
+  order_notes: getZodField("string", false),
   contact_phone: getZodField("string", false),
   preferences: getZodField("string", false),
 });

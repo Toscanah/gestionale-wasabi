@@ -1,22 +1,22 @@
 import { OrderType } from "@prisma/client";
-import addProductsToOrder from "../products/addProductsToOrder";
-import createPickupOrder from "./createPickupOrder";
-import createTableOrder from "./createTableOrder";
-import prisma from "../db";
-import getOrderById from "./getOrderById";
-import { AnyOrder, CreateSubOrderInput, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder, OrderSchemaInputs, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
+import prisma from "../../db";
+import createPickupOrder from "../pickup/createPickupOrder";
+import createTableOrder from "../table/createTableOrder";
+import addProductsToOrder from "../../products/addProductsToOrder";
+import getOrderById from "../getOrderById";
 
 export default async function createSubOrder({
   parentOrder,
   products,
   isReceiptPrinted,
-}: CreateSubOrderInput) {
+}: OrderSchemaInputs["CreateSubOrderInput"]) {
   let newSubOrder: AnyOrder | undefined;
 
   const suborderCount = await prisma.order.count({
     where: {
       suborder_of: parentOrder.id,
-      state: {
+      status: {
         in: ["ACTIVE", "PAID"],
       },
     },
@@ -94,7 +94,7 @@ export default async function createSubOrder({
         await prisma.productInOrder.update({
           where: { id: productInOrder.id },
           data: {
-            state: "DELETED_COOKED",
+            status: "DELETED_COOKED",
           },
         });
       }

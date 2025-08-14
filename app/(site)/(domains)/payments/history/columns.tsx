@@ -2,16 +2,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import TableColumn from "../../../components/table/TableColumn";
 import { AnyOrder, HomeOrder, OrderWithPayments } from "@/app/(site)/lib/shared";
 import { Badge } from "@/components/ui/badge";
-import { OrderType, QuickPaymentOption } from "@prisma/client";
-import getDiscountedTotal from "../../../lib/services/order-management/getDiscountedTotal";
-import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
+import { OrderType, PlannedPayment } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import OrderSummary from "./OrderSummary";
-import print from "../../printing/print";
-import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import fetchRequest from "../../../lib/api/fetchRequest";
 import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
+import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   TableColumn({
@@ -82,12 +78,6 @@ const columns: ColumnDef<OrderWithPayments>[] = [
     cellContent: (row) => roundToTwo(row.original.totalVouch),
   }),
 
-  // TableColumn({
-  //   accessorKey: "totalCredit",
-  //   header: "Totale credito",
-  //   cellContent: (row) => roundToTwo(row.original.totalCredit),
-  // }),
-
   TableColumn({
     header: "Totale ordine",
     cellContent: (row) => getOrderTotal({ order: row.original, applyDiscount: true, round: true }),
@@ -95,27 +85,7 @@ const columns: ColumnDef<OrderWithPayments>[] = [
 
   TableColumn({
     header: "Ristampa",
-    cellContent: (row) => (
-      <Button
-        onClick={async () => {
-          const order = await fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrderById", {
-            orderId: row.original.id,
-            variant: "allProducts",
-          });
-
-          let quickPayment: QuickPaymentOption = QuickPaymentOption.UNKNOWN;
-
-          if (order.type == OrderType.HOME) {
-            const parsedOrder = order as HomeOrder;
-            quickPayment = parsedOrder.home_order?.payment || QuickPaymentOption.UNKNOWN;
-          }
-
-          await print(() => OrderReceipt<typeof order>(order, quickPayment, true, true));
-        }}
-      >
-        Stampa
-      </Button>
-    ),
+    cellContent: (row) => <ReprintCell orderId={row.original.id} />,
   }),
 
   // TableColumn({
@@ -126,3 +96,23 @@ const columns: ColumnDef<OrderWithPayments>[] = [
 ];
 
 export default columns;
+
+function ReprintCell({ orderId }: { orderId: number }) {
+  const { printOrder } = usePrinter();
+
+  const handleClick = async () => {
+    const order = await fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrderById", {
+      orderId,
+      variant: "allProducts",
+    });
+
+    let plannedPayment: PlannedPayment = PlannedPayment.UNKNOWN;
+    if (order.type == OrderType.HOME) {
+      plannedPayment = (order as HomeOrder).home_order?.planned_payment || PlannedPayment.UNKNOWN;
+    }
+
+    await printOrder({ order, plannedPayment, putInfo: true });
+  };
+
+  return <Button onClick={handleClick}>Stampa</Button>;
+}

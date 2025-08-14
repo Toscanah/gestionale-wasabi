@@ -1,6 +1,6 @@
 import { OrderType } from "@prisma/client";
-import prisma from "../db";
-import { engagementsInclude, homeOrderInclude, productsInOrderInclude } from "../includes";
+import prisma from "../../db";
+import { engagementsInclude, homeOrderInclude, productsInOrderInclude } from "../../includes";
 import { HomeOrder } from "@/app/(site)/lib/shared";
 
 export default async function createHomeOrder({
@@ -33,7 +33,6 @@ export default async function createHomeOrder({
             address: { connect: { id: addressId } },
             customer: { connect: { id: customerId } },
             contact_phone: contactPhone,
-            notes,
             when: "immediate",
           },
         },
@@ -42,7 +41,7 @@ export default async function createHomeOrder({
         payments: true,
         ...productsInOrderInclude,
         ...engagementsInclude,
-        ...homeOrderInclude
+        ...homeOrderInclude,
       },
     });
 

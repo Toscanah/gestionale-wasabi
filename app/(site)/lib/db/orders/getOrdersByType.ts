@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
 import prisma from "../db";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import {
@@ -13,7 +13,7 @@ export default async function getOrdersByType({ type }: { type: OrderType }): Pr
     include: {
       products: {
         where: {
-          state: "IN_ORDER",
+          status: ProductInOrderStatus.IN_ORDER,
         },
         include: {
           ...productInOrderInclude,
@@ -27,7 +27,7 @@ export default async function getOrdersByType({ type }: { type: OrderType }): Pr
     },
     where: {
       type,
-      state: "ACTIVE",
+      status: OrderStatus.ACTIVE,
     },
     orderBy: {
       created_at: "asc",

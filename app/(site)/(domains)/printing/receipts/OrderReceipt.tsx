@@ -2,29 +2,30 @@ import { Br, Cut, Line, Text } from "react-thermal-printer";
 import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
-import OrderInfoSection from "../common/OrderInfoSection";
+import OrderInfoSection from "../common/info/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
-import { OrderType, QuickPaymentOption } from "@prisma/client";
-import getReceiptSize from "../../../lib/formatting-parsing/printing/getReceiptSize";
+import { OrderType, PlannedPayment } from "@prisma/client";
 import sanitazeReceiptText from "../../../lib/formatting-parsing/printing/sanitazeReceiptText";
-import ExtraItemsSection from "../common/ExtraItemsSection";
-import padReceiptText from "../../../lib/formatting-parsing/printing/padReceiptText";
-import EngagementSection from "../common/EngagementSection";
+import { BIG_PRINT } from "../constants";
 
-export default function OrderReceipt<T extends AnyOrder>(
-  order: T,
-  quickPaymentOption: QuickPaymentOption,
-  putInfo: boolean = true,
-  forceCut: boolean = false
-) {
+export interface OrderReceiptProps {
+  order: AnyOrder;
+  plannedPayment: PlannedPayment;
+  putInfo?: boolean;
+  forceCut?: boolean;
+}
+
+export default function OrderReceipt<T extends AnyOrder>({
+  order,
+  plannedPayment,
+  putInfo = true,
+  forceCut = false
+}: OrderReceiptProps) {
   const tableOrder = (order as TableOrder).table_order;
   const homeOrder = (order as HomeOrder).home_order;
   const pickupOrder = (order as PickupOrder).pickup_order;
 
-  const bigSize = getReceiptSize(2, 2);
-  const smallSize = getReceiptSize(1, 1);
-
-  const activeEngagements = order.engagements.filter((e) => e.enabled);
+  const { products, type, discount } = order;
 
   return (
     <>
@@ -34,7 +35,7 @@ export default function OrderReceipt<T extends AnyOrder>(
         <>
           <Br />
 
-          <Text align="right" size={bigSize}>
+          <Text align="right" size={BIG_PRINT}>
             TAVOLO {sanitazeReceiptText(tableOrder.table)}
           </Text>
           <Br />
@@ -46,7 +47,7 @@ export default function OrderReceipt<T extends AnyOrder>(
           <Br />
 
           <Text align="right">{sanitazeReceiptText(pickupOrder.name)}</Text>
-          <Text align="right" size={bigSize}>
+          <Text align="right" size={BIG_PRINT}>
             {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
           </Text>
 
@@ -57,37 +58,17 @@ export default function OrderReceipt<T extends AnyOrder>(
       <Line />
       <Br />
 
-      {ProductsListSection(order.products, order.type, order.discount, "customer")}
+      {ProductsListSection({ products, orderType: type, discount, recipient: "customer" })}
       <Line />
 
-      {homeOrder && putInfo && (
+      {(homeOrder || pickupOrder) && putInfo && (
         <>
-          {OrderInfoSection({ order: order as HomeOrder, quickPaymentOption, when: false })}
+          {OrderInfoSection({ order, plannedPayment, options: { putWhen: false } })}
           <Line />
         </>
       )}
 
-      {pickupOrder && (
-        <>
-          <Br />
-          {pickupOrder.notes && (
-            <>
-              <Text size={smallSize} bold inline>
-                Note ordine:{" "}
-              </Text>
-              <Text size={smallSize}>
-                {padReceiptText(sanitazeReceiptText(pickupOrder.notes), 40)}
-              </Text>
-            </>
-          )}
-          {ExtraItemsSection({ order })}
-          <Br />
-        </>
-      )}
-
-      {activeEngagements.length > 0 && EngagementSection({ activeEngagements })}
-
-      {FooterSection(order.id)}
+      {FooterSection({ orderId: order.id })}
       {(forceCut || order.type !== OrderType.HOME) && <Cut />}
     </>
   );

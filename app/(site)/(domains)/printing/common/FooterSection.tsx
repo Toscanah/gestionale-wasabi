@@ -1,15 +1,14 @@
-import { Br, QRCode, Text } from "react-thermal-printer";
+import { Br, Text } from "react-thermal-printer";
 import capitalizeFirstLetter from "../../../lib/formatting-parsing/capitalizeFirstLetter";
+import { DATE_FORMAT_OPTIONS } from "../constants";
 
-export default function FooterSection(orderId: number) {
+interface FooterSection {
+  orderId: number;
+}
+
+export default function FooterSection({ orderId }: FooterSection) {
   const currentDate = new Date();
-  const options: Intl.DateTimeFormatOptions = {
-    weekday: "short",
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  };
-  const formattedDate = currentDate.toLocaleDateString("it-IT", options);
+  const formattedDate = currentDate.toLocaleDateString("it-IT", DATE_FORMAT_OPTIONS);
 
   return (
     <>

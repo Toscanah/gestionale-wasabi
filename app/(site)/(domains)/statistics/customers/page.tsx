@@ -45,10 +45,13 @@ export default function CustomersStats() {
             <TableControls
               table={table}
               globalFilter={globalFilter}
-              setGlobalFilter={setGlobalFilter}
+              setGlobalFilter={(filter) => {
+                setGlobalFilter(filter);
+                table.setPageIndex(0);
+              }}
               onReset={handleReset}
             >
-              <SelectWrapper
+              {/* <SelectWrapper
                 className="h-10"
                 onValueChange={(value) => applyFilter(value, customers)}
                 value={selectedFilter ?? "all"}
@@ -67,7 +70,7 @@ export default function CustomersStats() {
                     ],
                   },
                 ]}
-              />
+              /> */}
 
               <Calendar
                 dateFilter={dateFilter}

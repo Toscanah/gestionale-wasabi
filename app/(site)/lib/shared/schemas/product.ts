@@ -10,6 +10,7 @@ import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
 import { ProductInOrderWithOptionsSchema } from "../models/Product";
 import TimeScopeFilter from "../../../components/filters/shift/TimeScope";
 import { ShiftType } from "../enums/Shift";
+import { SchemaInputs } from "../types/SchemaInputs";
 
 export const CreateProductInputSchema = createInputSchema(ProductSchema).partial({
   category_id: true,
@@ -40,10 +41,8 @@ export const GetProductsWithStatsSchema = z.object({
   }),
 });
 
-export type GetProductsWithStatsInput = z.infer<typeof GetProductsWithStatsSchema>;
-
-export const UpdateAdditionalNoteSchema = z.object({
-  note: z.string(),
+export const UpdateProductVariationInOrderSchema = z.object({
+  variation: z.string(),
   productInOrderId: z.number(),
 });
 
@@ -61,7 +60,7 @@ export const UpdateProductInOrderSchema = z.object({
 });
 
 export const AddProductsToOrderSchema = z.object({
-  targetOrderId: z.number(),
+  orderId: z.number(),
   products: z.array(ProductInOrderWithOptionsSchema),
 });
 
@@ -80,7 +79,7 @@ export const DeleteProductsFromOrderSchema = z.object({
 
 export const PRODUCT_SCHEMAS = {
   getProducts: NoContentSchema,
-  updateAdditionalNote: UpdateAdditionalNoteSchema,
+  updateProductVariationInOrder: UpdateProductVariationInOrderSchema,
   createNewProduct: CreateProductSchema,
   updateProduct: UpdateProductSchema,
   addProductToOrder: AddProductToOrderSchema,
@@ -92,3 +91,5 @@ export const PRODUCT_SCHEMAS = {
   deleteProductsFromOrder: DeleteProductsFromOrderSchema,
   getProductsWithStats: GetProductsWithStatsSchema,
 };
+
+export type ProductSchemaInputs = SchemaInputs<typeof PRODUCT_SCHEMAS>;

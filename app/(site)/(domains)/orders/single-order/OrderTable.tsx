@@ -9,12 +9,11 @@ import DivideOrder from "../divide-order/DivideOrder";
 import RomanStyle from "../divide-order/RomanStyle";
 import DangerActions from "./overview/DangerActions";
 import { useOrderContext } from "../../../context/OrderContext";
-import print from "../../printing/print";
-import KitchenReceipt from "../../printing/receipts/KitchenReceipt";
 import Notes from "./overview/Notes";
 import ExtraItems from "./overview/ExtraItems";
-import { OrderType, PaymentScope } from "@prisma/client";
+import { OrderStatus, OrderType, PaymentScope } from "@prisma/client";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
+import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
@@ -30,6 +29,7 @@ export default function OrderTable() {
     updateProductField,
     updateUnprintedProducts,
   } = useOrderContext();
+  const { printKitchen } = usePrinter();
 
   const [payingAction, setPayingAction] = useState<PayingAction>("none");
   const [rowSelection, setRowSelection] = useState({});
@@ -90,11 +90,11 @@ export default function OrderTable() {
       const unprintedProducts = await updateUnprintedProducts();
 
       if (unprintedProducts.length > 0) {
-        await print(() => KitchenReceipt({ ...order, products: unprintedProducts }));
+        await printKitchen({ order: { ...order, products: unprintedProducts } });
       }
     };
 
-    if (!dialogOpen && !order.suborder_of && order.state !== "CANCELLED") {
+    if (!dialogOpen && !order.suborder_of && order.status !== OrderStatus.CANCELLED) {
       if (payingAction === "payPart") {
         setTimeout(printKitchenRec, 500);
       } else {

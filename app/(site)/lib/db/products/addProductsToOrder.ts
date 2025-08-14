@@ -27,7 +27,7 @@ export default async function addProductsToOrder({
             order_id: targetOrderId,
             product_id: productInOrder.product.id,
             quantity: productInOrder.quantity,
-            additional_note: productInOrder.additional_note,
+            variation: productInOrder.variation,
             frozen_price: getProductPrice(productInOrder, targetOrder.type),
           },
           include: {

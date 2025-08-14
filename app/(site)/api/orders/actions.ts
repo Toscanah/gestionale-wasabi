@@ -1,15 +1,8 @@
 import { ActionsMapRecord } from "../../lib/api/createHandler";
-import createTableOrder from "../../lib/db/orders/createTableOrder";
-import createPickupOrder from "../../lib/db/orders/createPickupOrder";
-import createHomeOrder from "../../lib/db/orders/createHomeOrder";
-import createSubOrder from "../../lib/db/orders/createSubOrder";
 import updateOrderDiscount from "../../lib/db/orders/updateOrderDiscount";
-import updateOrderNotes from "../../lib/db/orders/updateOrderNotes";
 import updateOrderTime from "../../lib/db/orders/updateOrderTime";
-import updatePrintedFlag from "../../lib/db/orders/updatePrintedFlag";
-import joinTableOrders from "../../lib/db/orders/joinTableOrders";
-import updateTable from "../../lib/db/orders/updateTable";
-import updateOrderPayment from "../../lib/db/orders/updateOrderPayment";
+import updateOrderPrintedFlag from "../../lib/db/orders/updateOrderPrintedFlag";
+import updateOrderPaymentStatus from "../../lib/db/orders/updateOrderPaymentStatus";
 import { updateOrderShift } from "../../lib/db/orders/updateOrderShift";
 import { fixOrdersShift } from "../../lib/db/orders/fixOrdersShift";
 import updateOrderExtraItems from "../../lib/db/orders/updateOrderExtraItems";
@@ -18,8 +11,14 @@ import cancelOrdersInBulk from "../../lib/db/orders/cancelOrdersInBulk";
 import deleteEverything from "../../lib/db/deleteEverything";
 import getOrdersByType from "../../lib/db/orders/getOrdersByType";
 import getOrderById from "../../lib/db/orders/getOrderById";
-import updateTablePpl from "../../lib/db/orders/updateTablePpl";
 import { ORDER_SCHEMAS } from "../../lib/shared/schemas/order";
+import createTableOrder from "../../lib/db/orders/table/createTableOrder";
+import createPickupOrder from "../../lib/db/orders/pickup/createPickupOrder";
+import createHomeOrder from "../../lib/db/orders/home/createHomeOrder";
+import createSubOrder from "../../lib/db/orders/sub/createSubOrder";
+import joinTableOrders from "../../lib/db/orders/table/joinTableOrders";
+import updateOrderTable from "../../lib/db/orders/table/updateOrderTable";
+import updateOrderTablePpl from "../../lib/db/orders/table/updateOrderTablePpl";
 
 const GET_ACTIONS = new Map([
   ["getOrdersByType", { func: getOrdersByType, schema: ORDER_SCHEMAS.getOrdersByType }],
@@ -35,19 +34,18 @@ const POST_ACTIONS = new Map([
 
 const PATCH_ACTIONS = new Map([
   ["updateOrderDiscount", { func: updateOrderDiscount, schema: ORDER_SCHEMAS.updateOrderDiscount }],
-  ["updateOrderNotes", { func: updateOrderNotes, schema: ORDER_SCHEMAS.updateOrderNotes }],
   ["updateOrderTime", { func: updateOrderTime, schema: ORDER_SCHEMAS.updateOrderTime }],
-  ["updatePrintedFlag", { func: updatePrintedFlag, schema: ORDER_SCHEMAS.updatePrintedFlag }],
-  ["joinTableOrders", { func: joinTableOrders, schema: ORDER_SCHEMAS.joinTableOrders }],
-  ["updateTable", { func: updateTable, schema: ORDER_SCHEMAS.updateTable }],
-  ["updateOrderPayment", { func: updateOrderPayment, schema: ORDER_SCHEMAS.updateOrderPayment }],
+  ["updateOrderPrintedFlag", { func: updateOrderPrintedFlag, schema: ORDER_SCHEMAS.updateOrderPrintedFlag }],
+  ["updateOrderTable", { func: updateOrderTable, schema: ORDER_SCHEMAS.updateOrderTable }],
+  ["updateOrderPaymentStatus", { func: updateOrderPaymentStatus, schema: ORDER_SCHEMAS.updateOrderPaymentStatus }],
   ["updateOrderShift", { func: updateOrderShift, schema: ORDER_SCHEMAS.updateOrderShift }],
   [
     "updateOrderExtraItems",
     { func: updateOrderExtraItems, schema: ORDER_SCHEMAS.updateOrderExtraItems },
   ],
+  ["joinTableOrders", { func: joinTableOrders, schema: ORDER_SCHEMAS.joinTableOrders }],
   ["fixOrdersShift", { func: fixOrdersShift, schema: ORDER_SCHEMAS.fixOrdersShift }],
-  ["updateTablePpl", { func: updateTablePpl, schema: ORDER_SCHEMAS.updateTablePpl }],
+  ["updateOrderTablePpl", { func: updateOrderTablePpl, schema: ORDER_SCHEMAS.updateOrderTablePpl }],
 ]);
 
 const DELETE_ACTIONS = new Map([

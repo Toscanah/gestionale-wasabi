@@ -1,20 +1,20 @@
 import axios from "axios";
 import prisma from "../../db/db";
-import { AnyOrder, SendMessageOptions } from "../../shared";
+import { AnyOrder, MetaSchemaInputs } from "../../shared";
 import getOrderById from "../../db/orders/getOrderById";
 import { MessageDirection } from "@prisma/client";
 import getMetaSecrets from "../../services/meta/getMetaSecrets";
 
-export default async function sendMessage({
+export default async function sendMetaMessage({
   template,
   params,
   orderId,
-}: SendMessageOptions): Promise<AnyOrder | undefined> {
+}: MetaSchemaInputs["SendMetaMessageInput"]): Promise<AnyOrder | undefined> {
   const { WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN } = getMetaSecrets();
   const API_URL = `https://graph.facebook.com/v18.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
   const homeOrder = await prisma.homeOrder.findUnique({
-    where: { order_id: orderId },
+    where: { id: orderId },
     include: {
       customer: {
         include: { phone: true },
@@ -33,7 +33,7 @@ export default async function sendMessage({
     return await getOrderById({ orderId });
   }
 
-  const tempAllowedPhones = ["3342954184", "3339998542", "3930855830"];
+  const tempAllowedPhones = ["3342954184", "3339998542"];
 
   if (!tempAllowedPhones.includes(phone)) {
     throw new Error("Phone number not allowed");
@@ -49,7 +49,6 @@ export default async function sendMessage({
   };
 
   const components: any[] = [];
-  console.log(JSON.stringify(params) + "\n")
 
   if (params.header_text && Object.keys(params.header_text).length > 0) {
     components.push({
@@ -76,7 +75,7 @@ export default async function sendMessage({
     });
   }
 
-  console.log(JSON.stringify(components))
+  console.log(JSON.stringify(components));
 
   try {
     await axios.post(

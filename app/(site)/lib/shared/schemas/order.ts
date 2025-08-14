@@ -1,7 +1,8 @@
-import { OrderType, QuickPaymentOption, WorkingShift } from "@prisma/client";
+import { OrderType, PlannedPayment, WorkingShift } from "@prisma/client";
 import { z } from "zod";
 import { NoContentSchema, wrapSchema } from "./common";
 import { AnyOrderSchema, ProductInOrderWithOptionsSchema } from "../models/_index";
+import { SchemaInputs } from "../types/SchemaInputs";
 
 export const GetOrderByIdSchema = z.object({
   orderId: z.number(),
@@ -35,36 +36,30 @@ export const CreateSubOrderSchema = z.object({
   isReceiptPrinted: z.boolean(),
 });
 
-export type CreateSubOrderInput = z.infer<typeof CreateSubOrderSchema>;
-
 export const UpdateOrderDiscountSchema = z.object({
   orderId: z.number(),
   discount: z.number().optional(),
 });
 
-export const UpdateOrderNotesSchema = z.object({
+export const UpdateOrderPaymentStatusSchema = z.object({
   orderId: z.number(),
-  notes: z.string(),
-});
-
-export const UpdateOrderPaymentSchema = z.object({
-  orderId: z.number(),
-  payment: z.nativeEnum(QuickPaymentOption),
+  prepaid: z.boolean(),
+  plannedPayment: z.nativeEnum(PlannedPayment),
 });
 
 export const UpdateOrderTimeSchema = z.object({
-  time: z.string(),
   orderId: z.number(),
+  time: z.string(),
 });
 
-export const UpdatePrintedFlagSchema = wrapSchema("orderId", z.number());
+export const UpdateOrderPrintedFlagSchema = wrapSchema("orderId", z.number());
 
 export const JoinTableOrdersSchema = z.object({
   tableToJoin: z.string(),
   originalOrderId: z.number(),
 });
 
-export const UpdateTableSchema = z.object({
+export const UpdateOrderTableSchema = z.object({
   table: z.string(),
   orderId: z.number(),
 });
@@ -86,36 +81,35 @@ export const CancelOrderSchema = z.object({
 });
 
 export const CancelOrdersInBulkSchema = z.object({
-  ordersId: z.array(z.number()),
+  orderIds: z.array(z.number()),
   productsCooked: z.boolean(),
 });
 
-export const UpdateTablePplSchema = z.object({
+export const UpdateOrderTablePplSchema = z.object({
   orderId: z.number(),
   people: z.number(),
 });
-
-export type UpdateTablePplInput = z.infer<typeof UpdateTablePplSchema>;
 
 export const ORDER_SCHEMAS = {
   getOrderById: GetOrderByIdSchema,
   getOrdersByType: GetOrdersByTypeSchema,
   updateOrderDiscount: UpdateOrderDiscountSchema,
-  updateOrderNotes: UpdateOrderNotesSchema,
-  updateOrderPayment: UpdateOrderPaymentSchema,
+  updateOrderPaymentStatus: UpdateOrderPaymentStatusSchema,
   createTableOrder: CreateTableOrderSchema,
   createPickupOrder: CreatePickupOrderSchema,
   createHomeOrder: CreateHomeOrderSchema,
   updateOrderTime: UpdateOrderTimeSchema,
   cancelOrder: CancelOrderSchema,
   createSubOrder: CreateSubOrderSchema,
-  updatePrintedFlag: UpdatePrintedFlagSchema,
+  updateOrderPrintedFlag: UpdateOrderPrintedFlagSchema,
   cancelOrdersInBulk: CancelOrdersInBulkSchema,
   deleteEverything: NoContentSchema,
   joinTableOrders: JoinTableOrdersSchema,
-  updateTable: UpdateTableSchema,
+  updateOrderTable: UpdateOrderTableSchema,
   updateOrderExtraItems: UpdateOrderExtraItemsSchema,
   updateOrderShift: UpdateOrderShiftSchema,
   fixOrdersShift: NoContentSchema,
-  updateTablePpl: UpdateTablePplSchema,
+  updateOrderTablePpl: UpdateOrderTablePplSchema,
 };
+
+export type OrderSchemaInputs = SchemaInputs<typeof ORDER_SCHEMAS>;

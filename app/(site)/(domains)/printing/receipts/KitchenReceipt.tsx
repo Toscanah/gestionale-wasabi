@@ -1,12 +1,11 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared"
-;
+import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
-import { KitchenType, OrderType } from "@prisma/client";
-import getReceiptSize from "../../../lib/formatting-parsing/printing/getReceiptSize";
+import { KitchenType } from "@prisma/client";
 import sanitazeReceiptText from "../../../lib/formatting-parsing/printing/sanitazeReceiptText";
 import { GlobalSettings } from "../../../lib/shared/types/Settings";
+import { BIG_PRINT, SMALL_PRINT } from "../constants";
 
 const calculateAdjustedTime = (originalTime: string) => {
   const timeParts = originalTime.split(":");
@@ -40,13 +39,14 @@ const MAX_LABEL = 16;
 
 type ReceiptTitle = "SUSHI" | "CUCINA" | "ALTRO";
 
-export default function KitchenReceipt<T extends AnyOrder>(order: T) {
-  const bigSize = getReceiptSize(2, 2);
-  const smallSize = getReceiptSize(1, 1);
+export interface KitchenReceiptProps {
+  order: AnyOrder;
+}
 
-  const tableOrder = (order as TableOrder)?.table_order ?? false;
-  const homeOrder = (order as HomeOrder)?.home_order ?? false;
-  const pickupOrder = (order as PickupOrder)?.pickup_order ?? false;
+export default function KitchenReceipt({ order }: KitchenReceiptProps) {
+  const tableOrder = (order as TableOrder).table_order ?? false;
+  const homeOrder = (order as HomeOrder).home_order ?? false;
+  const pickupOrder = (order as PickupOrder).pickup_order ?? false;
 
   const hotProducts = order.products.filter(
     (product) =>
@@ -64,6 +64,8 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
     (product) => product.product.kitchen === KitchenType.OTHER
   );
 
+  const { type, discount } = order;
+
   const renderReceiptSection = (title: ReceiptTitle, products: typeof order.products) => (
     <>
       {TimeSection({})}
@@ -72,12 +74,12 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {tableOrder && (
         <Row
           left={
-            <Text bold size={bigSize}>
+            <Text bold size={BIG_PRINT}>
               TAVOLO
             </Text>
           }
           right={
-            <Text bold size={bigSize}>
+            <Text bold size={BIG_PRINT}>
               {sanitazeReceiptText(tableOrder.table.slice(0, MAX_LABEL))}
             </Text>
           }
@@ -88,7 +90,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
         <Row
           left={""}
           right={
-            <Text bold size={bigSize}>
+            <Text bold size={BIG_PRINT}>
               {sanitazeReceiptText(pickupOrder.name.slice(0, MAX_LABEL))}
             </Text>
           }
@@ -99,7 +101,7 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
         <Row
           left={""}
           right={
-            <Text bold size={bigSize}>
+            <Text bold size={BIG_PRINT}>
               {sanitazeReceiptText(homeOrder.address.doorbell.slice(0, MAX_LABEL))}
             </Text>
           }
@@ -109,12 +111,12 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {pickupOrder && (
         <Row
           left={
-            <Text bold size={bigSize}>
+            <Text bold size={BIG_PRINT}>
               ASPORTO
             </Text>
           }
           right={
-            <Text bold size={bigSize}>
+            <Text bold size={BIG_PRINT}>
               {pickupOrder.when == "immediate" ? "SUBITO" : pickupOrder.when}
             </Text>
           }
@@ -124,12 +126,12 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
       {homeOrder && (
         <Row
           left={
-            <Text bold size={bigSize}>
+            <Text bold size={BIG_PRINT}>
               DELIVERY
             </Text>
           }
           right={
-            <Text bold size={bigSize}>
+            <Text bold size={BIG_PRINT}>
               {homeOrder.when == "immediate"
                 ? "SUBITO"
                 : calculateAdjustedTime(homeOrder.when ?? "")}
@@ -140,10 +142,10 @@ export default function KitchenReceipt<T extends AnyOrder>(order: T) {
 
       <Line />
       <Br />
-      {ProductsListSection(products, order.type as OrderType, 0, "kitchen")}
+      {ProductsListSection({ products, orderType: type, discount, recipient: "kitchen" })}
       <Br />
 
-      <Text align="center" bold size={smallSize}>
+      <Text align="center" bold size={SMALL_PRINT}>
         {title.toUpperCase()}
       </Text>
 

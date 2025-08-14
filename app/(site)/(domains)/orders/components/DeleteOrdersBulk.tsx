@@ -11,7 +11,7 @@ export default function DeleteOrdersBulk() {
 
   const deleteOrders = (productsCooked: boolean) =>
     fetchRequest<CancelOrdersInBulkResponse[]>("DELETE", "/api/orders", "cancelOrdersInBulk", {
-      ordersId: selectedOrders.map((o) => o.id),
+      orderIds: selectedOrders.map((o) => o.id),
       productsCooked,
     }).then((deletedOrders) => {
       deletedOrders.map((o) => {

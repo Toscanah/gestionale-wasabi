@@ -3,7 +3,7 @@ import getCustomerByPhone from "../../lib/db/customers/getCustomerByPhone";
 import createCustomer from "../../lib/db/customers/createCustomer";
 import toggleCustomer from "../../lib/db/customers/toggleCustomer";
 import getCustomersWithDetails from "../../lib/db/customers/getCustomersWithDetails";
-import updateAddressesOfCustomer from "../../lib/db/customers/updateAddressesOfCustomer";
+import updateCustomerAddresses from "../../lib/db/customers/updateCustomerAddresses";
 import updateCustomerFromOrder from "../../lib/db/customers/updateCustomerFromOrder";
 import getCustomerWithDetails from "../../lib/db/customers/getCustomerWithDetails";
 import updateCustomerFromAdmin from "../../lib/db/customers/updateCustomerFromAdmin";
@@ -11,6 +11,7 @@ import getCustomersByDoorbell from "../../lib/db/customers/getCustomersByDoorbel
 import deleteCustomerById from "../../lib/db/customers/deleteCustomerById";
 import getCustomersWithStats from "../../lib/db/customers/getCustomersWithStats";
 import { CUSTOMER_SCHEMAS } from "../../lib/shared";
+import updateCustomerOrderNotes from "../../lib/db/customers/updateCustomerOrderNotes";
 
 const POST_ACTIONS = new Map([
   ["createCustomer", { func: createCustomer, schema: CUSTOMER_SCHEMAS.createCustomer }],
@@ -27,8 +28,12 @@ const PATCH_ACTIONS = new Map([
   ],
   ["toggleCustomer", { func: toggleCustomer, schema: CUSTOMER_SCHEMAS.toggleCustomer }],
   [
-    "updateAddressesOfCustomer",
-    { func: updateAddressesOfCustomer, schema: CUSTOMER_SCHEMAS.updateAddressesOfCustomer },
+    "updateCustomerAddresses",
+    { func: updateCustomerAddresses, schema: CUSTOMER_SCHEMAS.updateCustomerAddresses },
+  ],
+  [
+    "updateCustomerOrderNotes",
+    { func: updateCustomerOrderNotes, schema: CUSTOMER_SCHEMAS.updateCustomerOrderNotes },
   ],
 ]);
 

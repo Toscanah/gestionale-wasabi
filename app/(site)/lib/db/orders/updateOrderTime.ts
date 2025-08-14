@@ -20,7 +20,14 @@ export default async function updateOrderTime({
   }
 
   const when = time?.toLowerCase() === "Prima possibile" ? "immediate" : time;
-  const updateData = { data: { when }, where: { order_id: orderId } };
+  const subtypeUpdateWhen = {
+    data: {
+      when,
+    },
+    where: {
+      id: orderId,
+    },
+  };
 
   await prisma.order.update({
     where: { id: orderId },
@@ -28,10 +35,10 @@ export default async function updateOrderTime({
   });
 
   if (baseOrder.type === OrderType.PICKUP) {
-    await prisma.pickupOrder.update(updateData);
+    await prisma.pickupOrder.update(subtypeUpdateWhen);
   } else {
-    await prisma.homeOrder.update(updateData);
+    await prisma.homeOrder.update(subtypeUpdateWhen);
   }
 
-  return await getOrderById({orderId});
+  return await getOrderById({ orderId });
 }

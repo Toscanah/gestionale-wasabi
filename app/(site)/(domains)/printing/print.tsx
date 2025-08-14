@@ -46,11 +46,11 @@ import { GlobalSettings } from "../../lib/shared/types/Settings";
  * - Alla fine, la connessione alla porta viene chiusa.
  */
 
-type PrintContent = () => ReactNode;
+export type PrintContent = () => ReactNode;
 const PRINTER_MODEL: PrinterType = "epson";
 
 export default async function print(...content: PrintContent[]) {
-  const selectedPrinter: SelectedPrinter = (
+  const SELECTED_PRINTER: SelectedPrinter = (
     JSON.parse(
       localStorage.getItem("settings") || JSON.stringify(DEFAULT_SETTINGS)
     ) as GlobalSettings
@@ -77,7 +77,7 @@ export default async function print(...content: PrintContent[]) {
   }
 
   const selectedPort: SerialPort | null = ports[0] ?? null;
-  const characterSetToUse: CharacterSet = selectedPrinter.charSet;
+  const characterSetToUse: CharacterSet = SELECTED_PRINTER.charSet;
 
   const receipt = (
     <Printer characterSet={characterSetToUse} type={PRINTER_MODEL}>

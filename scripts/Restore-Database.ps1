@@ -7,6 +7,13 @@ Write-Host "[INFO] Rilevato sistema operativo: $OS" -ForegroundColor Magenta
 function Restore-Database {
     Write-Host "[INFO] Avvio del ripristino del database" -ForegroundColor Magenta
 
+    Write-Host "[INFO] Scarico gli aggiornamenti" -ForegroundColor Magenta
+    & git pull
+
+    Write-Host "`n[INFO] Imposto il database" -ForegroundColor Magenta
+    # & npx prisma db push
+    # & npx prisma generate
+
     $backupFile = Join-Path $global:RESTORE_FOLDER "$env:PGDATABASE.dump"
 
     if (!(Test-Path $backupFile)) {

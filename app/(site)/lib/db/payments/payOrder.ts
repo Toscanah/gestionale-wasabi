@@ -2,13 +2,13 @@ import { PaymentScope } from "@prisma/client";
 import roundToTwo from "../../formatting-parsing/roundToTwo";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
-import { AnyOrder, PayOrderInput } from "@/app/(site)/lib/shared";
+import { AnyOrder, PaymentSchemaInputs } from "@/app/(site)/lib/shared";
 import { randomUUID } from "crypto";
 
 export default async function payOrder({
   payments,
   productsToPay,
-}: PayOrderInput): Promise<AnyOrder> {
+}: PaymentSchemaInputs["PayOrderInput"]): Promise<AnyOrder> {
   if (payments.length === 0) {
     throw new Error("No payments passed");
   }
@@ -47,7 +47,7 @@ export default async function payOrder({
     const allProducts = await tx.productInOrder.findMany({
       where: {
         order_id: orderId,
-        state: "IN_ORDER",
+        status: "IN_ORDER",
       },
       select: {
         quantity: true,
@@ -57,11 +57,11 @@ export default async function payOrder({
 
     const allPaid = allProducts.every((p) => (p.paid_quantity ?? 0) >= p.quantity);
 
-    // 5. Update order state and engagements if needed
+    // 5. Update order status and engagements if needed
     if (allPaid) {
       await tx.order.update({
         where: { id: orderId },
-        data: { state: "PAID" },
+        data: { status: "PAID" },
       });
 
       await tx.engagement.updateMany({

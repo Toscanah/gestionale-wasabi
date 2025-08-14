@@ -1,4 +1,4 @@
-import { Prisma, ProductInOrder, ProductInOrderState } from "@prisma/client";
+import { Prisma, ProductInOrder, ProductInOrderStatus } from "@prisma/client";
 
 type PIO = Partial<ProductInOrder> & {
   id: number;
@@ -19,9 +19,9 @@ export async function cancelProductInOrder({
   cooked: boolean;
 }) {
   const { id, quantity, paid_quantity, product_id, order_id, options } = pio;
-  const newState = cooked
-    ? ProductInOrderState.DELETED_COOKED
-    : ProductInOrderState.DELETED_UNCOOKED;
+  const newStatus = cooked
+    ? ProductInOrderStatus.DELETED_COOKED
+    : ProductInOrderStatus.DELETED_UNCOOKED;
 
   if (paid_quantity >= quantity) {
     // Fully paid — do nothing
@@ -40,7 +40,7 @@ export async function cancelProductInOrder({
         product_id,
         quantity: paid_quantity,
         paid_quantity,
-        state: ProductInOrderState.IN_ORDER,
+        status: ProductInOrderStatus.IN_ORDER,
         frozen_price: pio.frozen_price ?? 0,
         options: {
           connect: options.map((opt) => ({
@@ -56,14 +56,14 @@ export async function cancelProductInOrder({
       data: {
         quantity: unpaidQuantity,
         paid_quantity: 0,
-        state: newState,
+        status: newStatus,
       },
     });
   } else {
     // Fully unpaid — mark as deleted
     await tx.productInOrder.update({
       where: { id },
-      data: { state: newState },
+      data: { status: newStatus },
     });
   }
 }

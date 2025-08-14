@@ -1,4 +1,4 @@
-import { OrderState, OrderType, WorkingShift } from "@prisma/client";
+import { OrderStatus, OrderType, WorkingShift } from "@prisma/client";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 
 export default function generateEmptyOrder(orderType: OrderType): AnyOrder {
@@ -7,7 +7,7 @@ export default function generateEmptyOrder(orderType: OrderType): AnyOrder {
     engagements: [],
     shift: WorkingShift.UNSPECIFIED,
     is_receipt_printed: false,
-    state: OrderState.ACTIVE,
+    status: OrderStatus.ACTIVE,
     suborder_of: null,
     id: -1,
     rices: 0,

@@ -7,7 +7,7 @@ import SpecificDatePicker from "./weekdays-or-date/SpecificDatePicker";
 import TimeSelectionToggle from "./time-selection/TimeSelectionToggle";
 import TimePicker from "../../../components/ui/time/TimePicker";
 import ShiftSelection from "./time-selection/ShiftSelection";
-import SectionResults from "./SectionResults";
+import SectionResults from "./results/SectionResults";
 import useOrdersStats from "../../../hooks/statistics/useOrdersStats";
 import { ReducerActions } from "../../../hooks/statistics/sectionReducer";
 import HoursIntervalFilter from "./time-selection/HoursIntervalFilter";

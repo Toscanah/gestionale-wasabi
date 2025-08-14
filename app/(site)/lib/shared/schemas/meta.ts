@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { NoContentSchema } from "./common";
+import { SchemaInputs } from "../types/SchemaInputs";
 
 export const GetMetaTemplatesSchema = NoContentSchema;
 
-export const SendMessageSchema = z.object({
+export const SendMetaMessageSchema = z.object({
   template: z.object({
     name: z.string(),
     id: z.string(),
@@ -16,9 +17,9 @@ export const SendMessageSchema = z.object({
   }),
 });
 
-export type SendMessageOptions = z.infer<typeof SendMessageSchema>;
-
 export const META_SCHEMAS = {
   getMetaTemplates: GetMetaTemplatesSchema,
-  sendMessage: SendMessageSchema,
+  sendMetaMessage: SendMetaMessageSchema,
 };
+
+export type MetaSchemaInputs = SchemaInputs<typeof META_SCHEMAS>;

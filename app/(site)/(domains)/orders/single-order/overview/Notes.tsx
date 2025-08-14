@@ -3,8 +3,7 @@ import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared"
-;
+import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import { OrderType } from "@prisma/client";
@@ -17,13 +16,13 @@ export default function Notes() {
 
   const initialNotes =
     order.type === OrderType.HOME
-      ? (order as HomeOrder).home_order?.notes ?? ""
-      : (order as PickupOrder).pickup_order?.notes ?? "";
+      ? (order as HomeOrder).home_order?.customer.order_notes ?? ""
+      : (order as PickupOrder).pickup_order?.customer?.order_notes ?? "";
 
   const [additionalNotes, setAdditionalNotes] = useState<string>(initialNotes);
 
-  const updateOrderNotes = (notes: string) => {
-    fetchRequest<PossibleOrdersType>("PATCH", "/api/orders/", "updateOrderNotes", {
+  const updateCustomerOrderNotes = (notes: string) =>
+    fetchRequest<PossibleOrdersType>("PATCH", "/api/orders/", "updateCustomerOrderNotes", {
       orderId: order.id,
       notes,
     }).then((updatedOrder) => {
@@ -39,13 +38,22 @@ export default function Notes() {
       updateOrder({
         ...(order.type == OrderType.HOME
           ? {
-              home_order: { ...parsedOrder, notes: parsedOrder?.notes },
+              home_order: {
+                ...parsedOrder,
+                customer: {
+                  ...parsedOrder?.customer,
+                  order_notes: parsedOrder?.customer?.order_notes ?? "",
+                },
+              },
             }
           : order.type == OrderType.PICKUP
           ? {
               pickup_order: {
                 ...parsedOrder,
-                notes: parsedOrder?.notes,
+                customer: {
+                  ...parsedOrder?.customer,
+                  order_notes: parsedOrder?.customer?.order_notes ?? "",
+                },
               },
             }
           : {}),
@@ -53,10 +61,9 @@ export default function Notes() {
         is_receipt_printed: false,
       });
     });
-  };
 
   const debouncedUpdateNotes = useCallback(
-    debounce((notes: string) => updateOrderNotes(notes), 1500),
+    debounce((notes: string) => updateCustomerOrderNotes(notes), 1500),
     []
   );
 

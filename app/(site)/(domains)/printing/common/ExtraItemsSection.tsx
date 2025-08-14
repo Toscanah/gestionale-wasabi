@@ -1,17 +1,13 @@
 import { Br, Text } from "react-thermal-printer";
-import getReceiptSize from "../../../lib/formatting-parsing/printing/getReceiptSize";
 import calculateExtraItems from "../../../lib/services/order-management/calculateExtraItems";
-import { AnyOrder } from "@/app/(site)/lib/shared"
-;
+import { AnyOrder } from "@/app/(site)/lib/shared";
+import { SMALL_PRINT } from "../constants";
 
 interface ExtraItemsProps {
   order: AnyOrder;
-  putExtraItems?: boolean;
 }
 
-export default function ExtraItemsSection({ order, putExtraItems = true }: ExtraItemsProps) {
-  const smallSize = getReceiptSize(1, 1);
-
+export default function ExtraItemsSection({ order }: ExtraItemsProps) {
   const { ricesFinal, soupsFinal, saladsFinal } = calculateExtraItems(order);
 
   const hasSoups = soupsFinal > 0;
@@ -20,56 +16,52 @@ export default function ExtraItemsSection({ order, putExtraItems = true }: Extra
 
   return (
     <>
-      {putExtraItems && (hasSoups || hasSalads || hasRices) && (
+      {hasSoups && (
         <>
-          {hasSoups && (
-            <>
-              <Text bold inline size={smallSize}>
-                Zuppe:{" "}
-              </Text>
-              <Text inline size={smallSize}>
-                {soupsFinal}
-              </Text>
-            </>
-          )}
-
-          {hasSoups && (hasSalads || hasRices) && (
-            <Text inline size={smallSize}>
-              {" "}
-            </Text>
-          )}
-
-          {hasSalads && (
-            <>
-              <Text bold inline size={smallSize}>
-                Insalate:{" "}
-              </Text>
-              <Text inline size={smallSize}>
-                {saladsFinal}
-              </Text>
-            </>
-          )}
-
-          {hasSalads && hasRices && (
-            <Text inline size={smallSize}>
-              {" "}
-            </Text>
-          )}
-
-          {hasRices && (
-            <>
-              <Text bold inline size={smallSize}>
-                Riso:{" "}
-              </Text>
-              <Text inline size={smallSize}>
-                {ricesFinal}
-              </Text>
-            </>
-          )}
+          <Text bold inline size={SMALL_PRINT}>
+            Zuppe:{" "}
+          </Text>
+          <Text inline size={SMALL_PRINT}>
+            {soupsFinal}
+          </Text>
         </>
       )}
 
-      {putExtraItems && (hasSoups || hasSalads || hasRices) && <Br />}
+      {hasSoups && (hasSalads || hasRices) && (
+        <Text inline size={SMALL_PRINT}>
+          {" "}
+        </Text>
+      )}
+
+      {hasSalads && (
+        <>
+          <Text bold inline size={SMALL_PRINT}>
+            Insalate:{" "}
+          </Text>
+          <Text inline size={SMALL_PRINT}>
+            {saladsFinal}
+          </Text>
+        </>
+      )}
+
+      {hasSalads && hasRices && (
+        <Text inline size={SMALL_PRINT}>
+          {" "}
+        </Text>
+      )}
+
+      {hasRices && (
+        <>
+          <Text bold inline size={SMALL_PRINT}>
+            Riso:{" "}
+          </Text>
+          <Text inline size={SMALL_PRINT}>
+            {ricesFinal}
+          </Text>
+        </>
+      )}
+
+      {(hasSoups || hasSalads || hasRices) && <Br />}
     </>
   );
 }

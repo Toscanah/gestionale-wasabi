@@ -2,7 +2,7 @@ import axios from "axios";
 import { MetaTemplate } from "../../shared";
 import getMetaSecrets from "../../services/meta/getMetaSecrets";
 
-export async function getMetaTemplates(): Promise<MetaTemplate[]> {
+export async function getTemplates(): Promise<MetaTemplate[]> {
   const { WHATSAPP_BUSINESS_ACCOUNT_ID, WHATSAPP_ACCESS_TOKEN } = getMetaSecrets();
   const API_URL = `https://graph.facebook.com/v18.0/${WHATSAPP_BUSINESS_ACCOUNT_ID}/message_templates`;
 
@@ -12,7 +12,7 @@ export async function getMetaTemplates(): Promise<MetaTemplate[]> {
         Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
       },
     });
-    // console.log(JSON.stringify(response.data.data));
+
     return response.data.data as MetaTemplate[];
   } catch (error: any) {
     console.error("❌ Failed to fetch templates:", error.response?.data || error.message);

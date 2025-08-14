@@ -8,7 +8,7 @@ import { Table } from "@tanstack/react-table";
 import { RecursivePartial } from "./useOrderManager";
 import { UpdateProductInOrderResponse } from "../../lib/db/products/product-in-order/updateProductInOrder";
 
-export function useProductManager(
+export function useProductsManager(
   order: AnyOrder,
   updateOrder: (order: RecursivePartial<AnyOrder>) => void
 ) {
@@ -31,7 +31,7 @@ export function useProductManager(
 
   const addProducts = (products: ProductInOrder[]) =>
     fetchRequest<ProductInOrder[]>("POST", "/api/products", "addProductsToOrder", {
-      targetOrderId: order.id,
+      orderId: order.id,
       products,
     }).then((newProducts) => updateProductsList({ newProducts }));
 
@@ -154,9 +154,9 @@ export function useProductManager(
     return unprintedProducts;
   };
 
-  const updateAddionalNote = (note: string, productInOrderId: number) =>
-    fetchRequest<ProductInOrder>("PATCH", "/api/products/", "updateAdditionalNote", {
-      note,
+  const updateProductVariation = (variation: string, productInOrderId: number) =>
+    fetchRequest<ProductInOrder>("PATCH", "/api/products/", "updateProductVariationInOrder", {
+      variation,
       productInOrderId,
     }).then((updatedProduct) => {
       if (updatedProduct) {
@@ -185,7 +185,7 @@ export function useProductManager(
       .filter(
         (product) =>
           !deletedProducts.some((deleted) => deleted.id === product.id) &&
-          !["DELETED_COOKED", "DELETED_UNCOOKED"].includes(product.state)
+          !["DELETED_COOKED", "DELETED_UNCOOKED"].includes(product.status)
       )
       .filter((product) => product.id !== -1)
       .map((product) => {
@@ -216,6 +216,6 @@ export function useProductManager(
     deleteProducts,
     updateProductOption,
     updateUnprintedProducts,
-    updateAddionalNote,
+    updateProductVariation,
   };
 }

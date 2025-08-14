@@ -83,7 +83,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
 
   const debouncedHandlePplChange = useCallback(
     debounce((newPpl: number) => {
-      fetchRequest<TableOrder>("PATCH", "/api/orders", "updateTablePpl", {
+      fetchRequest<TableOrder>("PATCH", "/api/orders", "updateOrderTablePpl", {
         people: newPpl,
         orderId: order.id,
       }).then(() => {

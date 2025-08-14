@@ -4,83 +4,12 @@ generator client {
 
 generator zod {
     provider         = "zod-prisma-types"
-    createInputTypes = false
+    createInputTypes = "false"
 }
 
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
-    // directUrl = env("DIRECT_URL")
-}
-
-enum WorkingShift {
-    UNSPECIFIED
-    LUNCH
-    DINNER
-}
-
-enum OrderType {
-    TABLE
-    HOME
-    PICKUP
-}
-
-enum OrderState {
-    ACTIVE
-    PAID
-    CANCELLED
-}
-
-enum ProductInOrderState {
-    IN_ORDER
-    DELETED_COOKED
-    DELETED_UNCOOKED
-}
-
-enum PaymentType {
-    CASH
-    CARD
-    VOUCH
-    CREDIT
-}
-
-enum QuickPaymentOption {
-    ALREADY_PAID
-    CASH
-    CARD
-    UNKNOWN
-}
-
-enum KitchenType {
-    HOT
-    COLD
-    HOT_AND_COLD
-    OTHER
-    NONE
-}
-
-enum EngagementType {
-    QR_CODE
-    MESSAGE
-    IMAGE
-}
-
-enum RiceLogType {
-    MANUAL
-    BATCH
-    RESET
-}
-
-enum PaymentScope {
-    UNKNOWN
-    FULL
-    PARTIAL
-    ROMAN
-}
-
-enum MessageDirection {
-    INBOUND
-    OUTBOUND
 }
 
 model Rider {
@@ -96,59 +25,56 @@ model Order {
     created_at         DateTime         @default(now())
     updated_at         DateTime         @default(now()) @updatedAt
     discount           Float            @default(0)
-    is_receipt_printed Boolean          @default(false)
-    shift              WorkingShift     @default(UNSPECIFIED)
-    soups              Int?
-    salads             Int?
-    rices              Int?
-    suborder_of        Int?
-    state              OrderState       @default(ACTIVE)
     type               OrderType
-    products           ProductInOrder[]
-    payments           Payment[]
+    is_receipt_printed Boolean          @default(false)
+    suborder_of        Int?
+    rices              Int?
+    salads             Int?
+    soups              Int?
+    shift              WorkingShift     @default(UNSPECIFIED)
+    status             OrderStatus      @default(ACTIVE)
     engagements        Engagement[]
-    table_order        TableOrder?
+    payments           Payment[]
+    products           ProductInOrder[]
+    //
     home_order         HomeOrder?
     pickup_order       PickupOrder?
-
-    @@index([created_at, type, state])
+    table_order        TableOrder?
 }
 
 model TableOrder {
-    id       Int     @id @default(autoincrement())
-    order_id Int     @unique
+    id       Int     @id
     table    String
     res_name String?
     people   Int
-    order    Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    order    Order   @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 model HomeOrder {
-    id            Int                @id @default(autoincrement())
-    order_id      Int                @unique
-    address_id    Int
-    customer_id   Int
-    when          String             @default("immediate")
-    notes         String?
-    payment       QuickPaymentOption @default(UNKNOWN)
-    contact_phone String?
-    last_reply_at DateTime?
-    reply_seen_at DateTime?
-    order         Order              @relation(fields: [order_id], references: [id], onDelete: Cascade)
-    address       Address            @relation(fields: [address_id], references: [id])
-    customer      Customer           @relation(fields: [customer_id], references: [id])
-    messages      MetaMessageLog[]
+    id              Int              @id
+    address_id      Int
+    customer_id     Int
+    when            String           @default("immediate")
+    contact_phone   String?
+    last_reply_at   DateTime?
+    reply_seen_at   DateTime?
+    prepaid         Boolean          @default(false)
+    planned_payment PlannedPayment   @default(UNKNOWN)
+    address         Address          @relation(fields: [address_id], references: [id])
+    customer        Customer         @relation(fields: [customer_id], references: [id])
+    order           Order            @relation(fields: [id], references: [id], onDelete: Cascade)
+    messages        MetaMessageLog[]
 }
 
 model PickupOrder {
-    id          Int       @id @default(autoincrement())
-    order_id    Int       @unique
-    customer_id Int?
-    when        String    @default("immediate")
-    notes       String?
-    name        String
-    customer    Customer? @relation(fields: [customer_id], references: [id])
-    order       Order     @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    id              Int            @id
+    customer_id     Int?
+    when            String         @default("immediate")
+    name            String
+    planned_payment PlannedPayment @default(UNKNOWN)
+    prepaid         Boolean        @default(false)
+    customer        Customer?      @relation(fields: [customer_id], references: [id])
+    order           Order          @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 model Address {
@@ -177,14 +103,14 @@ model EngagementTemplate {
 
 model Engagement {
     id          Int                @id @default(autoincrement())
-    template_id Int
-    template    EngagementTemplate @relation(fields: [template_id], references: [id])
     created_at  DateTime           @default(now())
-    customer    Customer?          @relation(fields: [customer_id], references: [id], onDelete: Cascade)
     customer_id Int?
-    order       Order?             @relation(fields: [order_id], references: [id], onDelete: SetNull)
     order_id    Int?
+    template_id Int
     enabled     Boolean            @default(true)
+    customer    Customer?          @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+    order       Order?             @relation(fields: [order_id], references: [id])
+    template    EngagementTemplate @relation(fields: [template_id], references: [id])
 }
 
 model Customer {
@@ -195,11 +121,12 @@ model Customer {
     preferences   String?
     active        Boolean       @default(true)
     phone_id      Int           @unique
-    phone         Phone         @relation(fields: [phone_id], references: [id], onDelete: Cascade)
+    order_notes   String?
     addresses     Address[]
+    phone         Phone         @relation(fields: [phone_id], references: [id], onDelete: Cascade)
+    engagements   Engagement[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
-    engagements   Engagement[]
 }
 
 model Phone {
@@ -223,9 +150,9 @@ model RiceLog {
     id            Int         @id @default(autoincrement())
     created_at    DateTime    @default(now())
     rice_batch_id Int?
-    rice_batch    RiceBatch?  @relation(fields: [rice_batch_id], references: [id])
     manual_value  Float?
     type          RiceLogType
+    rice_batch    RiceBatch?  @relation(fields: [rice_batch_id], references: [id])
 }
 
 model RiceBatch {
@@ -243,37 +170,37 @@ model Product {
     site_price  Float            @default(0)
     home_price  Float            @default(0)
     rice        Float            @default(0)
-    salads      Int              @default(0)
-    soups       Int              @default(0)
-    rices       Int              @default(0)
     active      Boolean          @default(true)
     kitchen     KitchenType      @default(NONE)
-    orders      ProductInOrder[]
+    rices       Int              @default(0)
+    salads      Int              @default(0)
+    soups       Int              @default(0)
     category    Category?        @relation(fields: [category_id], references: [id])
+    orders      ProductInOrder[]
 }
 
 model ProductInOrder {
-    id              Int                    @id @default(autoincrement())
-    product_id      Int
-    order_id        Int
-    frozen_price    Float                  @default(0)
-    quantity        Int                    @default(0)
-    paid_quantity   Int                    @default(0)
-    printed_amount  Int                    @default(0)
-    state           ProductInOrderState    @default(IN_ORDER)
-    additional_note String?
-    created_at      DateTime               @default(now())
-    options         OptionInProductOrder[]
-    product         Product                @relation(fields: [product_id], references: [id])
-    order           Order                  @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    id             Int                    @id @default(autoincrement())
+    product_id     Int
+    order_id       Int
+    quantity       Int                    @default(0)
+    paid_quantity  Int                    @default(0)
+    printed_amount Int                    @default(0)
+    created_at     DateTime               @default(now())
+    frozen_price   Float                  @default(0)
+    status         ProductInOrderStatus   @default(IN_ORDER)
+    variation      String?
+    options        OptionInProductOrder[]
+    order          Order                  @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    product        Product                @relation(fields: [product_id], references: [id])
 }
 
 model Category {
     id       Int                @id @default(autoincrement())
     category String
     active   Boolean            @default(true)
-    products Product[]
     options  CategoryOnOption[]
+    products Product[]
 }
 
 model CategoryOnOption {
@@ -296,8 +223,8 @@ model OptionInProductOrder {
     id                  Int            @id @default(autoincrement())
     product_in_order_id Int
     option_id           Int
-    product_in_order    ProductInOrder @relation(fields: [product_in_order_id], references: [id], onDelete: Cascade)
     option              Option         @relation(fields: [option_id], references: [id])
+    product_in_order    ProductInOrder @relation(fields: [product_in_order_id], references: [id], onDelete: Cascade)
 }
 
 model MetaMessageLog {
@@ -310,23 +237,71 @@ model MetaMessageLog {
     home_order    HomeOrder        @relation(fields: [home_order_id], references: [id], onDelete: Cascade)
 }
 
-// model WhatsappMessageLog {
-//   id              Int               @id @default(autoincrement())
-//   created_at      DateTime          @default(now())
-//   order_id        Int?
-//   customer_id     Int?
-//   template_id     Int               // Foreign key instead of template_name!
-//   message_type    MessageType
-//   message_id      String
-//   sent            Boolean           @default(false)
-//   delivered       Boolean           @default(false)
-//   read            Boolean           @default(false)
-//   replied         Boolean           @default(false)
-//   reply_text      String?
+enum WorkingShift {
+    UNSPECIFIED
+    LUNCH
+    DINNER
+}
 
-//   order           Order?            @relation(fields: [order_id], references: [id], onDelete: SetNull)
-//   customer        Customer?         @relation(fields: [customer_id], references: [id], onDelete: SetNull)
-//   template        WhatsappTemplate  @relation(fields: [template_id], references: [id])
+enum OrderType {
+    TABLE
+    HOME
+    PICKUP
+}
 
-//   @@index([order_id, customer_id, message_type])
-// }
+enum PaymentType {
+    CASH
+    CARD
+    VOUCH
+    CREDIT
+}
+
+enum KitchenType {
+    HOT
+    COLD
+    HOT_AND_COLD
+    NONE
+    OTHER
+}
+
+enum EngagementType {
+    QR_CODE
+    IMAGE
+    MESSAGE
+}
+
+enum RiceLogType {
+    MANUAL
+    BATCH
+    RESET
+}
+
+enum PaymentScope {
+    UNKNOWN
+    FULL
+    PARTIAL
+    ROMAN
+}
+
+enum MessageDirection {
+    INBOUND
+    OUTBOUND
+}
+
+enum OrderStatus {
+    ACTIVE
+    PAID
+    CANCELLED
+}
+
+enum PlannedPayment {
+    CASH
+    CARD
+    UNKNOWN
+}
+
+enum ProductInOrderStatus {
+    IN_ORDER
+    DELETED_COOKED
+    DELETED_UNCOOKED
+}

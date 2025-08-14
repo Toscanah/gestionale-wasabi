@@ -9,7 +9,7 @@ import updateProductOptionsInOrder from "../../lib/db/products/updateProductOpti
 import createNewProduct from "../../lib/db/products/createNewProduct";
 import toggleProduct from "../../lib/db/products/toggleProduct";
 import updatePrintedAmounts from "../../lib/db/products/updatePrintedAmounts";
-import updateAdditionalNote from "../../lib/db/customers/updateAdditionalNote";
+import updateProductVariationInOrder from "../../lib/db/products/updateProductVariationInOrder";
 import getProductsWithStats from "../../lib/db/products/getProductsWithStats";
 import { PRODUCT_SCHEMAS } from "../../lib/shared/schemas/product";
 
@@ -26,8 +26,8 @@ const POST_ACTIONS = new Map([
 const PATCH_ACTIONS = new Map([
   ["updateProduct", { func: updateProduct, schema: PRODUCT_SCHEMAS.updateProduct }],
   [
-    "updateAdditionalNote",
-    { func: updateAdditionalNote, schema: PRODUCT_SCHEMAS.updateAdditionalNote },
+    "updateProductVariationInOrder",
+    { func: updateProductVariationInOrder, schema: PRODUCT_SCHEMAS.updateProductVariationInOrder },
   ],
   [
     "updateProductInOrder",

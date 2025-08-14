@@ -1,7 +1,7 @@
 import {
+  EngagementSchemaInputs,
   ParsedEngagementPayload,
   ParsedEngagementTemplate,
-  UpdateEngagementTemplate,
 } from "@/app/(site)/lib/shared";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ import { EngagementType } from "@prisma/client";
 type EditModeProps = {
   index: number;
   template: ParsedEngagementTemplate;
-  onChange: (updates: Partial<UpdateEngagementTemplate>) => void;
+  onChange: (updates: Partial<EngagementSchemaInputs["UpdateEngagementTemplateInput"]>) => void;
   onDelete: (templateId: number) => Promise<void>;
   onSave: (template: ParsedEngagementTemplate) => Promise<void>;
 };

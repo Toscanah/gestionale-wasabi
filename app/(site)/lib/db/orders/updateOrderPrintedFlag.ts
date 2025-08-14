@@ -1,7 +1,7 @@
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 
-export default async function updatePrintedFlag({
+export default async function updateOrderPrintedFlag({
   orderId,
 }: {
   orderId: number;

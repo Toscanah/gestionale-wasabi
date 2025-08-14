@@ -11,6 +11,7 @@ import { Plus, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import GoBack from "../../../components/ui/misc/GoBack";
 import dynamic from "next/dynamic";
+import { OrderStatus } from "@prisma/client";
 
 const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
   ssr: false,
@@ -33,7 +34,7 @@ export default function OrdersStats() {
 
   const fetchOrders = () =>
     fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments")
-      .then((orders) => setOrders(orders.filter((order) => order.state !== "CANCELLED")))
+      .then((orders) => setOrders(orders.filter((order) => order.status !== OrderStatus.CANCELLED)))
       .finally(() => setIsLoading(false));
 
   useEffect(() => {
@@ -83,7 +84,7 @@ export default function OrdersStats() {
       <Flipper
         flipKey={sections.map((section) => section.id).join("")}
         spring={"stiff"}
-        className="w-full flex flex-wrap gap-2 px-8 pt-4 pb-8 justify-center"
+        className="w-full flex flex-wrap gap-2 px-8 pt-6 pb-8 justify-center"
       >
         {sections.map((section, index) => {
           const isLast = index === sections.length - 1;
@@ -93,9 +94,7 @@ export default function OrdersStats() {
           return (
             <Flipped key={section.id} flipId={section.id} onAppear={onElementAppear}>
               <div
-                className={cn(
-                  "relative group select-none border p-4 rounded-lg shadow-md h-[45rem]"
-                )}
+                className={cn("relative group select-none border p-6 rounded-lg shadow-md ")} // h-[45rem]
                 style={{
                   flexBasis: shouldStretch ? "100%" : "calc(50% - 0.25rem)",
                   maxWidth: shouldStretch ? "100%" : "calc(50% - 0.25rem)",

@@ -1,12 +1,8 @@
 import { EngagementType } from "@prisma/client";
 import { z } from "zod";
-import {
-  QrPayloadSchema,
-  MessagePayloadSchema,
-  ImagePayloadSchema,
-  ParsedEngagementTemplateSchema,
-} from "../models/Engagement";
+import { ParsedEngagementTemplateSchema } from "../models/Engagement";
 import { NoContentSchema, wrapSchema } from "./common";
+import { SchemaInputs } from "../types/SchemaInputs";
 
 export const TemplatePayloadDraftSchema = ParsedEngagementTemplateSchema.omit({
   id: true,
@@ -17,63 +13,54 @@ export const TemplatePayloadDraftSchema = ParsedEngagementTemplateSchema.omit({
 
 export type TemplatePayloadDraft = z.infer<typeof TemplatePayloadDraftSchema>;
 
-export const createEngagementTemplateSchema = z.object({
+export const CreateEngagementTemplateSchema = z.object({
   label: z.string().optional(),
   type: z.nativeEnum(EngagementType),
   payload: z.record(z.any()),
 });
 
-export type CreateEngagementTemplate = z.infer<typeof createEngagementTemplateSchema>;
-
 //
 // Update Schema — based on existing Prisma shape
 //
-export const updateEngagementTemplateSchema = TemplatePayloadDraftSchema.extend({
+export const UpdateEngagementTemplateSchema = TemplatePayloadDraftSchema.extend({
   id: z.number(),
 }).omit({
   type: true,
 });
 
-export type UpdateEngagementTemplate = z.infer<typeof updateEngagementTemplateSchema>;
-
 //
 // Create Engagement instance from template
 //
-export const createEngagementSchema = z.object({
+export const CreateEngagementSchema = z.object({
   templateId: z.number(),
   customerId: z.number().optional(),
   orderId: z.number().optional(),
 });
 
-export type CreateEngagement = z.infer<typeof createEngagementSchema>;
-
 //
 // Get Engagements by customer ID
 //
 export const GetEngagementsByCustomerSchema = wrapSchema("customerId", z.number());
-export type GetEngagementsByCustomer = z.infer<typeof GetEngagementsByCustomerSchema>;
 
 //
 
-export const deleteTemplateByIdSchema = wrapSchema("templateId", z.number());
-export type DeleteTemplateById = z.infer<typeof deleteTemplateByIdSchema>;
+export const DeleteTemplateByIdSchema = wrapSchema("templateId", z.number());
 
-export const deleteEngagementByIdSchema = wrapSchema("engagementId", z.number());
-export type DeleteEngagementById = z.infer<typeof deleteEngagementByIdSchema>;
+export const DeleteEngagementByIdSchema = wrapSchema("engagementId", z.number());
 
-export const toggleEngagementByIdSchema = wrapSchema("engagementId", z.number());
+export const ToggleEngagementByIdSchema = wrapSchema("engagementId", z.number());
 
-export type ToggleEngagementById = z.infer<typeof toggleEngagementByIdSchema>;
-//
 // Schema Registry
 //
 export const ENGAGEMENT_SCHEMAS = {
-  createEngagement: createEngagementSchema,
+  createEngagement: CreateEngagementSchema,
   getEngagementsByCustomer: GetEngagementsByCustomerSchema,
   getEngagementTemplates: NoContentSchema,
-  createEngagementTemplate: createEngagementTemplateSchema,
-  updateEngagementTemplate: updateEngagementTemplateSchema,
-  deleteTemplateById: deleteTemplateByIdSchema,
-  deleteEngagementById: deleteEngagementByIdSchema,
-  toggleEngagementById: toggleEngagementByIdSchema,
+  createEngagementTemplate: CreateEngagementTemplateSchema,
+  updateEngagementTemplate: UpdateEngagementTemplateSchema,
+  deleteTemplateById: DeleteTemplateByIdSchema,
+  deleteEngagementById: DeleteEngagementByIdSchema,
+  toggleEngagementById: ToggleEngagementByIdSchema,
 };
+
+export type EngagementSchemaInputs = SchemaInputs<typeof ENGAGEMENT_SCHEMAS>;

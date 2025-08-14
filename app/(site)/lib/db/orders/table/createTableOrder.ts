@@ -1,7 +1,7 @@
-import { OrderType } from "@prisma/client";
-import prisma from "../db";
+import { OrderStatus, OrderType } from "@prisma/client";
+import prisma from "../../db";
 import { TableOrder } from "@/app/(site)/lib/shared";
-import { engagementsInclude, productsInOrderInclude } from "../includes";
+import { engagementsInclude, productsInOrderInclude } from "../../includes";
 
 export default async function createTableOrder({
   table,
@@ -18,7 +18,7 @@ export default async function createTableOrder({
       table_order: {
         table: table,
       },
-      state: "ACTIVE",
+      status: OrderStatus.ACTIVE,
     },
     include: {
       payments: true,

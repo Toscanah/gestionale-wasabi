@@ -3,6 +3,7 @@ import { NoContentSchema, ToggleDeleteObjectSchema, wrapSchema } from "./common"
 import { RiceBatchSchema } from "@/prisma/generated/zod";
 import { RiceLogType } from "@prisma/client";
 import { ShiftType } from "../enums/Shift";
+import { SchemaInputs } from "../types/SchemaInputs";
 
 export const AddRiceBatchSchema = wrapSchema("batch", RiceBatchSchema.omit({ id: true }));
 
@@ -18,11 +19,9 @@ export const AddRiceLogSchema = z.object({
   type: z.nativeEnum(RiceLogType).nullable(),
 });
 
-const GetDailyRiceUsageSchema = z.object({
+export const GetDailyRiceUsageSchema = z.object({
   shift: z.nativeEnum(ShiftType),
 });
-
-export type GetDailyRiceUsageInput = z.infer<typeof GetDailyRiceUsageSchema>;
 
 export const RICE_SCHEMAS = {
   getDailyRiceUsage: GetDailyRiceUsageSchema,
@@ -33,3 +32,5 @@ export const RICE_SCHEMAS = {
   getRiceLogs: NoContentSchema,
   addRiceLog: AddRiceLogSchema,
 };
+
+export type RiceSchemaInputs = SchemaInputs<typeof RICE_SCHEMAS>;

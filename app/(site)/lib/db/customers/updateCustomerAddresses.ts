@@ -3,7 +3,7 @@ import prisma from "../db";
 import getCustomerWithDetails from "./getCustomerWithDetails";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 
-export default async function updateAddressesOfCustomer({
+export default async function updateCustomerAddresses({
   addresses,
   customerId,
 }: {

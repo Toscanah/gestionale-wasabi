@@ -1,4 +1,4 @@
-export default function padReceiptText(
+export default function fitReceiptText(
   text: string,
   maxChar: number,
   rightPadding: number = 0

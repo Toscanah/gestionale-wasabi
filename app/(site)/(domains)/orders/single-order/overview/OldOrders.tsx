@@ -38,13 +38,13 @@ export default function OldOrders() {
 
       if (order.type === OrderType.HOME) {
         filteredCustomer.home_orders = customer.home_orders.filter(
-          (homeOrder) => homeOrder.order_id !== order.id
+          (homeOrder) => homeOrder.id !== order.id
         );
       }
       
       if (order.type === OrderType.PICKUP) {
         filteredCustomer.pickup_orders = customer.pickup_orders.filter(
-          (pickupOrder) => pickupOrder.order_id !== order.id
+          (pickupOrder) => pickupOrder.id !== order.id
         );
       }
 

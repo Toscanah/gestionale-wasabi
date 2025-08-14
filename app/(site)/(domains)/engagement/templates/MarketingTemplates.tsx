@@ -2,7 +2,7 @@ import { Accordion } from "@/components/ui/accordion";
 import useEngagementTemplates from "../../../hooks/engagement/templates/useEngagementTemplates";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  CreateEngagementTemplate,
+  EngagementSchemaInputs,
   ParsedEngagementTemplate,
   TemplatePayloadDraft,
 } from "../../../lib/shared";
@@ -53,7 +53,9 @@ export default function MarketingTemplates({
   const handleTemplateCreate = async (newTemplate: TemplatePayloadDraft) =>
     await createTemplate(newTemplate);
 
-  const handleNewTemplateChange = (updatedDraft: Partial<CreateEngagementTemplate>) => {
+  const handleNewTemplateChange = (
+    updatedDraft: Partial<EngagementSchemaInputs["CreateEngagementTemplateInput"]>
+  ) => {
     setDraftTemplate((prev) => ({
       ...prev,
       ...updatedDraft,

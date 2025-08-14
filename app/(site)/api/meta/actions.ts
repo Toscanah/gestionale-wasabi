@@ -1,10 +1,10 @@
 import { ActionsMapRecord } from "../../lib/api/createHandler";
-import sendMessage from "../../lib/integrations/meta/sendMessage";
-import { getMetaTemplates } from "../../lib/integrations/meta/getMetaTemplates";
+import sendMetaMessage from "../../lib/integrations/meta/sendMetaMessage";
+import { getTemplates as getMetaTemplates } from "../../lib/integrations/meta/getTemplates";
 import { META_SCHEMAS } from "../../lib/shared";
 
 const POST_ACTIONS = new Map([
-  ["sendMessage", { func: sendMessage, schema: META_SCHEMAS.sendMessage }],
+  ["sendMetaMessage", { func: sendMetaMessage, schema: META_SCHEMAS.sendMetaMessage }],
 ]);
 
 const PATCH_ACTIONS = new Map();

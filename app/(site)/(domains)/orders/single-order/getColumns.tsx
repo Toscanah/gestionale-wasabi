@@ -17,7 +17,7 @@ export default function getColumns(
   interactionReady: boolean,
   defaultFocusedInput: FocussableInput
 ): ColumnDef<ProductInOrder>[] {
-  const { updateProductOption: selectOption, updateAddionalNote } = useOrderContext();
+  const { updateProductOption: selectOption, updateProductVariation } = useOrderContext();
 
   const { getInputRef, addInputRef, setFocusedInput, handleKeyNavigation, focusedInput } =
     useGridFocus(defaultFocusedInput, 1);
@@ -27,8 +27,8 @@ export default function getColumns(
     0
   );
 
-  const debouncedAddNoteChange = debounce(
-    (note: string, productInOrderId: number) => updateAddionalNote(note, productInOrderId),
+  const debouncedVariationChange = debounce(
+    (variation: string, productInOrderId: number) => updateProductVariation(variation, productInOrderId),
     1500
   );
 
@@ -190,8 +190,8 @@ export default function getColumns(
 
             <Input
               type="text"
-              defaultValue={row.original.additional_note ?? ""}
-              onChange={(e) => debouncedAddNoteChange(e.target.value, row.original.id)}
+              defaultValue={row.original.variation ?? ""}
+              onChange={(e) => debouncedVariationChange(e.target.value, row.original.id)}
             />
           </div>
         );

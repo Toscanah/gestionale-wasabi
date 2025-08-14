@@ -6,6 +6,7 @@ import generateDummyProduct from "../../lib/services/product-management/generate
 import fetchRequest from "../../lib/api/fetchRequest";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";
 import { toastError, toastSuccess } from "../../lib/utils/toast";
+import { OrderStatus } from "@prisma/client";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -40,11 +41,18 @@ export function useOrderManager(
 
       updateGlobalState(
         updatedOrder,
-        updatedOrder.state == "PAID" || updatedOrder.state == "CANCELLED" ? "delete" : "update"
+        updatedOrder.status == OrderStatus.PAID || updatedOrder.status == OrderStatus.CANCELLED
+          ? "delete"
+          : "update"
       );
 
       return updatedOrder;
     });
+
+  const updatePrintedFlag = async () =>
+    fetchRequest<boolean>("PATCH", "/api/orders", "updateOrderPrintedFlag", {
+      orderId,
+    }).then((is_receipt_printed) => updateOrder({ is_receipt_printed }));
 
   const cancelOrder = async (cooked: boolean = false) =>
     fetchRequest<AnyOrder>("DELETE", "/api/orders/", "cancelOrder", {
@@ -104,5 +112,5 @@ export function useOrderManager(
     }
   }, [dialogOpen]);
 
-  return { updateOrder, cancelOrder, createSubOrder, joinTableOrders };
+  return { updateOrder, updatePrintedFlag, cancelOrder, createSubOrder, joinTableOrders };
 }

@@ -102,7 +102,7 @@ export default function useMetaTemplates({ open, paramsMap }: UseMetaTemplatesPa
       }
 
       for (const order of orders) {
-        const promise = fetchRequest<AnyOrder | undefined>("POST", "/api/meta/", "sendMessage", {
+        const promise = fetchRequest<AnyOrder | undefined>("POST", "/api/meta/", "sendMetaMessage", {
           template: {
             name: templateName,
             id: templateId,

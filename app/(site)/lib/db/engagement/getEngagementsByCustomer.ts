@@ -1,13 +1,10 @@
 import normalizeTemplatePayload from "../../formatting-parsing/engagement/normalizeTemplatePayload";
-import {
-  EngagementWithDetails,
-  GetEngagementsByCustomer as GetEngagementsByCustomerParams,
-} from "../../shared";
+import { EngagementSchemaInputs, EngagementWithDetails } from "../../shared";
 import prisma from "../db";
 
 export default async function getEngagementsByCustomer({
   customerId,
-}: GetEngagementsByCustomerParams): Promise<EngagementWithDetails[]> {
+}: EngagementSchemaInputs["GetEngagementsByCustomerInput"]): Promise<EngagementWithDetails[]> {
   const engagements = await prisma.engagement.findMany({
     where: {
       customer_id: customerId,

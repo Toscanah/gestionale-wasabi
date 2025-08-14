@@ -1,14 +1,11 @@
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductInOrder, ProductSchemaInputs } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 
-export default async function updateAdditionalNote({
-  note,
+export default async function updateProductVariationInOrder({
+  variation,
   productInOrderId,
-}: {
-  note: string;
-  productInOrderId: number;
-}): Promise<ProductInOrder> {
+}: ProductSchemaInputs["UpdateProductVariationInOrderInput"]): Promise<ProductInOrder> {
   const productInOrder = await prisma.productInOrder.findUnique({
     where: {
       id: productInOrderId,
@@ -24,7 +21,7 @@ export default async function updateAdditionalNote({
       id: productInOrderId,
     },
     data: {
-      additional_note: note,
+      variation,
     },
     include: {
       ...productInOrderInclude,

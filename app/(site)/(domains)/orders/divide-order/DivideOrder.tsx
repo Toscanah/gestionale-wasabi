@@ -9,7 +9,8 @@ import { useOrderContext } from "../../../context/OrderContext";
 import DivideTable from "./DivideTable";
 import moveProductsInDivideOrder from "../../../lib/services/order-management/moveProductsInDivideOrder";
 import fetchRequest from "../../../lib/api/fetchRequest";
-import { OrderState, PaymentScope } from "@prisma/client";
+import { OrderStatus, PaymentScope, PlannedPayment } from "@prisma/client";
+import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;
@@ -17,7 +18,8 @@ interface DividerOrderProps {
 }
 
 export default function DivideOrder({ setPayingAction, products }: DividerOrderProps) {
-  const { order, createSubOrder, updateOrder } = useOrderContext();
+  const { order, createSubOrder, updatePrintedFlag } = useOrderContext();
+  const { printOrder } = usePrinter();
   const { dialogOpen } = useOrderContext();
 
   const [goPay, setGoPay] = useState<boolean>(false);
@@ -25,21 +27,16 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
   const [rightProducts, setRightProducts] = useState<ProductInOrder[]>([]);
   const [productsToPay, setProductsToPay] = useState<ProductInOrder[]>([]);
 
-  const updatePrintedFlag = async () =>
-    fetchRequest<boolean>("PATCH", "/api/orders", "updatePrintedFlag", {
-      orderId: order.id,
-    }).then((is_receipt_printed) => updateOrder({ is_receipt_printed }));
-
   useEffect(() => {
     setLeftProducts(products);
   }, [products]);
 
   useEffect(() => {
-    if (order.state === OrderState.PAID) {
+    if (order.status === OrderStatus.PAID) {
       setPayingAction("paidFull");
       setGoPay(false);
     }
-  }, [order.state]);
+  }, [order.status]);
 
   useEffect(() => {
     if (leftProducts.length === 0 && rightProducts.length === 0) {
@@ -57,7 +54,12 @@ export default function DivideOrder({ setPayingAction, products }: DividerOrderP
     setPayingAction("payPart");
     setGoPay(true);
 
-    await print(() => OrderReceipt(partialOrder, "UNKNOWN", false, true));
+    await printOrder({
+      order: partialOrder,
+      plannedPayment: PlannedPayment.UNKNOWN,
+      putInfo: false,
+      forceCut: true,
+    });
   };
 
   const handleOrderPaid = () => {

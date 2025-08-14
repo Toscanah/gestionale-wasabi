@@ -1,15 +1,13 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder, OrderSchemaInputs } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 import { cancelProductInOrder } from "../products/product-in-order/cancelProductInOrder";
+import { OrderStatus } from "@prisma/client";
 
 export default async function cancelOrder({
   orderId,
   cooked = false,
-}: {
-  orderId: number;
-  cooked?: boolean;
-}): Promise<AnyOrder> {
+}: OrderSchemaInputs["CancelOrderInput"]): Promise<AnyOrder> {
   const productsInOrder = await prisma.productInOrder.findMany({
     where: {
       order_id: orderId,
@@ -47,7 +45,7 @@ export default async function cancelOrder({
   // Cancel the order
   await prisma.order.update({
     where: { id: orderId },
-    data: { state: "CANCELLED" },
+    data: { status: OrderStatus.CANCELLED },
   });
 
   return await getOrderById({ orderId });

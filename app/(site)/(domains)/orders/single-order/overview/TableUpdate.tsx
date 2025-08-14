@@ -19,7 +19,7 @@ export default function TableUpdate() {
   const debouncedHandleTableChange = useCallback(
     debounce((newTable: string) => {
       if (newTable !== "") {
-        fetchRequest<TableOrder>("PATCH", "/api/orders", "updateTable", {
+        fetchRequest<TableOrder>("PATCH", "/api/orders", "updateOrderTable", {
           table: newTable,
           orderId: order.id,
         }).then(() => {
@@ -42,7 +42,7 @@ export default function TableUpdate() {
 
   const debouncedHandlePplChange = useCallback(
     debounce((newPpl: number) => {
-      fetchRequest<TableOrder>("PATCH", "/api/orders", "updateTablePpl", {
+      fetchRequest<TableOrder>("PATCH", "/api/orders", "updateOrderTablePpl", {
         people: newPpl,
         orderId: order.id,
       }).then(() => {

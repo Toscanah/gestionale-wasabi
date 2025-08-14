@@ -1,4 +1,5 @@
 import { CategoryWithOptionsSchema } from "../models/_index";
+import { SchemaInputs } from "../types/SchemaInputs";
 import {
   createInputSchema,
   NoContentSchema,
@@ -20,3 +21,5 @@ export const CATEGORY_SCHEMAS = {
   toggleCategory: ToggleCategorySchema,
   getCategories: NoContentSchema,
 };
+
+export type CategorySchemaInputs = SchemaInputs<typeof CATEGORY_SCHEMAS>;

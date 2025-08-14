@@ -7,6 +7,7 @@ import {
   updateInputSchema,
   wrapSchema,
 } from "./common";
+import { SchemaInputs } from "../types/SchemaInputs";
 
 export const UpdateOptionsOfCategorySchema = z.object({
   category: CategorySchema,
@@ -24,3 +25,5 @@ export const OPTION_SCHEMAS = {
   createNewOption: CreateOptionSchema,
   toggleOption: ToggleDeleteObjectSchema,
 };
+
+export type OptionSchemaInputs = SchemaInputs<typeof OPTION_SCHEMAS>;

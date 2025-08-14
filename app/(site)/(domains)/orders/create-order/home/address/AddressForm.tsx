@@ -28,7 +28,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
       floor: selectedAddress?.floor || "",
       stair: selectedAddress?.stair || "",
       street_info: selectedAddress?.street_info || "",
-      notes: extraInfo.notes,
+      order_notes: customer?.order_notes || "",
       contact_phone: extraInfo.contactPhone,
       doorbell: selectedAddress?.doorbell || "",
       email: customer?.email || "",
@@ -145,7 +145,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
 
             <FormField
               control={form.control}
-              name="notes"
+              name="order_notes"
               ref={refs[9]}
               handleKeyDown={handleKeyDown}
               label="Note sull'ordine"

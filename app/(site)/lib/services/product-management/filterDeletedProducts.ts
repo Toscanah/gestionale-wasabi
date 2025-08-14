@@ -1,4 +1,4 @@
-import { ProductInOrderState } from "@prisma/client";
+import { ProductInOrderStatus } from "@prisma/client";
 import { ProductInOrder } from "../../shared";
 
 export default function filterDeletedProducts(products: ProductInOrder[]): ProductInOrder[] {
@@ -10,5 +10,5 @@ export default function filterDeletedProducts(products: ProductInOrder[]): Produ
     return products;
   }
 
-  return products.filter((product) => product.state == ProductInOrderState.IN_ORDER);
+  return products.filter((product) => product.status == ProductInOrderStatus.IN_ORDER);
 }

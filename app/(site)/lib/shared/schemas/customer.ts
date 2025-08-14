@@ -1,6 +1,7 @@
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
 import { createInputSchema, NoContentSchema, ToggleDeleteObjectSchema, wrapSchema } from "./common";
+import { SchemaInputs } from "../types/SchemaInputs";
 
 export const GetCustomerByPhoneSchema = z.object({ phone: z.string() });
 
@@ -25,11 +26,9 @@ export const CreateCustomerInputSchema = createInputSchema(CustomerSchema)
     surname: z.string().nullable(),
   });
 
-export type CreateCustomerInput = z.infer<typeof CreateCustomerInputSchema>;
-
 export const CreateCustomerSchema = wrapSchema("customer", CreateCustomerInputSchema);
 
-export const UpdateAddressesOfCustomerSchema = z.object({
+export const UpdateCustomerAddressesSchema = z.object({
   addresses: z.array(AddressSchema),
   customerId: z.number(),
 });
@@ -39,6 +38,11 @@ export const GetCustomersWithStatsSchema = z.object({
   to: z.coerce.date().optional(),
 });
 
+export const UpdateCustomerOrderNotesSchema = z.object({
+  orderId: z.number(),
+  notes: z.string(),
+});
+
 export const CUSTOMER_SCHEMAS = {
   getCustomerByPhone: GetCustomerByPhoneSchema,
   getCustomerWithDetails: GetCustomerWithDetailsSchema,
@@ -46,10 +50,13 @@ export const CUSTOMER_SCHEMAS = {
   getCustomersByDoorbell: GetCustomersByDoorbellSchema,
   updateCustomerFromAdmin: UpdateCustomerFromAdminSchema,
   updateCustomerFromOrder: UpdateCustomerFromOrderSchema,
+  updateCustomerOrderNotes: UpdateCustomerOrderNotesSchema,
   createCustomer: CreateCustomerSchema,
   toggleCustomer: ToggleDeleteObjectSchema,
-  updateAddressesOfCustomer: UpdateAddressesOfCustomerSchema,
+  updateCustomerAddresses: UpdateCustomerAddressesSchema,
   deleteCustomerById: ToggleDeleteObjectSchema,
   getCustomersWithStats: GetCustomersWithStatsSchema,
   getCustomersWithMarketing: NoContentSchema,
 };
+
+export type CustomerSchemaInputs = SchemaInputs<typeof CUSTOMER_SCHEMAS>;

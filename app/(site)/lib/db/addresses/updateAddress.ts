@@ -1,7 +1,9 @@
+import { AddressSchemaInputs } from "../../shared";
 import prisma from "../db";
-import { UpdateAddressInput } from "@/app/(site)/lib/shared";
 
-export default async function updateAddress({ address }: { address: UpdateAddressInput }) {
+export default async function updateAddress({
+  address,
+}: AddressSchemaInputs["UpdateAddressInput"]) {
   return await prisma.address.update({
     data: {
       civic: address.civic,

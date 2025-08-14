@@ -1,10 +1,10 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
-import getReceiptSize from "../../../lib/formatting-parsing/printing/getReceiptSize";
 import sanitazeReceiptText from "../../../lib/formatting-parsing/printing/sanitazeReceiptText";
 import { PaymentsSummaryData } from "../../../hooks/usePaymentsHistory";
+import { SMALL_PRINT } from "../constants";
 
-interface PaymentSummaryReceiptProps {
+export interface PaymentSummaryReceiptProps {
   summaryData: PaymentsSummaryData;
   date: Date;
 }
@@ -18,8 +18,19 @@ export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSumm
     }).format(date)
   );
 
-  const smallSize = getReceiptSize(1, 1);
-  const bigSize = getReceiptSize(2, 2);
+  const {
+    totals,
+    homeOrdersAmount,
+    pickupOrdersAmount,
+    tableOrdersAmount,
+    homeOrdersCount,
+    pickupOrdersCount,
+    tableOrdersCount,
+    customersCount,
+    totalAmount,
+    rawTotalAmount,
+    centsDifference,
+  } = summaryData;
 
   return (
     <>
@@ -30,16 +41,16 @@ export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSumm
       <Line />
       <Br />
 
-      {Object.entries(summaryData.totals).map(([label, data]) => (
+      {Object.entries(totals).map(([label, data]) => (
         <Row
           key={label}
           left={
-            <Text bold size={smallSize}>
+            <Text bold size={SMALL_PRINT}>
               {data.label.toLocaleUpperCase()}
             </Text>
           }
           right={
-            <Text bold size={smallSize}>
+            <Text bold size={SMALL_PRINT}>
               {roundToTwo(data.total)} €
             </Text>
           }
@@ -52,91 +63,91 @@ export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSumm
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             TOTALE DOMICILIO
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {roundToTwo(summaryData.homeOrdersAmount)} €
+          <Text bold size={SMALL_PRINT}>
+            {roundToTwo(homeOrdersAmount)} €
           </Text>
         }
       />
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             TOTALE ASPORTO
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {roundToTwo(summaryData.pickupOrdersAmount)} €
+          <Text bold size={SMALL_PRINT}>
+            {roundToTwo(pickupOrdersAmount)} €
           </Text>
         }
       />
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             TOTALE TAVOLI
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {roundToTwo(summaryData.tableOrdersAmount)} €
+          <Text bold size={SMALL_PRINT}>
+            {roundToTwo(tableOrdersAmount)} €
           </Text>
         }
       />
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             CONTEGGIO DOMICILIO
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {summaryData.homeOrdersCount.toString()}
+          <Text bold size={SMALL_PRINT}>
+            {homeOrdersCount.toString()}
           </Text>
         }
       />
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             CONTEGGIO ASPORTO
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {summaryData.pickupOrdersCount.toString()}
+          <Text bold size={SMALL_PRINT}>
+            {pickupOrdersCount.toString()}
           </Text>
         }
       />
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             CONTEGGIO TAVOLO
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {summaryData.tableOrdersCount.toString()}
+          <Text bold size={SMALL_PRINT}>
+            {tableOrdersCount.toString()}
           </Text>
         }
       />
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             CLIENTI TOTALI
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {summaryData.customersCount.toString()}
+          <Text bold size={SMALL_PRINT}>
+            {customersCount.toString()}
           </Text>
         }
       />
@@ -147,39 +158,39 @@ export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSumm
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             TOTALE CON SCONTI
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {roundToTwo(summaryData.totalAmount)} €
+          <Text bold size={SMALL_PRINT}>
+            {roundToTwo(totalAmount)} €
           </Text>
         }
       />
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             TOTALE LORDO
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {roundToTwo(summaryData.rawTotalAmount)} €
+          <Text bold size={SMALL_PRINT}>
+            {roundToTwo(rawTotalAmount)} €
           </Text>
         }
       />
 
       <Row
         left={
-          <Text bold size={smallSize}>
+          <Text bold size={SMALL_PRINT}>
             CENTESIMI ARROTONDATI
           </Text>
         }
         right={
-          <Text bold size={smallSize}>
-            {roundToTwo(summaryData.centsDifference)} €
+          <Text bold size={SMALL_PRINT}>
+            {roundToTwo(centsDifference)} €
           </Text>
         }
       />

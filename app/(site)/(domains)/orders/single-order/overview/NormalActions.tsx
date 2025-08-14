@@ -4,10 +4,8 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "reac
 import { PayingAction } from "../OrderTable";
 import print from "@/app/(site)/(domains)/printing/print";
 import OrderReceipt from "@/app/(site)/(domains)/printing/receipts/OrderReceipt";
-import RiderReceipt from "../../../printing/receipts/RiderReceipt";
-import { OrderType, PaymentScope, QuickPaymentOption } from "@prisma/client";
+import { OrderType, PaymentScope, PlannedPayment } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import KitchenReceipt from "@/app/(site)/(domains)/printing/receipts/KitchenReceipt";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
@@ -16,16 +14,15 @@ import useMetaTemplates from "@/app/(site)/hooks/meta/useMetaTemplates";
 import { useTemplatesParams } from "@/app/(site)/hooks/meta/useTemplatesParams";
 import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/app/(site)/lib/integrations/meta/constants";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import useSettings from "@/app/(site)/hooks/useSettings";
+import usePrintingActions from "@/app/(site)/hooks/printing/usePrintingActions";
 
 interface NormalActionsProps {
-  quickPaymentOption: QuickPaymentOption;
+  plannedPayment: PlannedPayment;
   setAction: Dispatch<SetStateAction<PayingAction>>;
 }
 
-export default function NormalActions({ setAction, quickPaymentOption }: NormalActionsProps) {
-  const { order, updateUnprintedProducts, updateOrder, toggleDialog, dialogOpen } =
-    useOrderContext();
+export default function NormalActions({ setAction, plannedPayment }: NormalActionsProps) {
+  const { order, updatePrintedFlag, dialogOpen } = useOrderContext();
 
   const [rePrintDialog, setRePrintDialog] = useState<boolean>(false);
   const [paramsReady, setParamsReady] = useState(false);
@@ -85,10 +82,23 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     prepareParams();
   }, [order, hasConfirmationSent, templates]);
 
+  const maybeSendConfirmation = async (order: AnyOrder) => {
+    if (!hasConfirmationSent() && settings.useWhatsApp) {
+      await sendMessages({
+        templateName: ORDER_CONFIRMATION_TEMPLATE_NAME,
+        order,
+        toast: false,
+      });
+    }
+  };
+
+  const { handleFullRePrint, handleOrderRePrint, handleKitchenRePrint, handlePrint } =
+    usePrintingActions({ maybeSendConfirmation });
+
   useEffect(() => {
     const handlePrintShortcut = async (event: KeyboardEvent) => {
       if (event.altKey && event.key === "p") {
-        await handlePrint();
+        await handlePrint(order, plannedPayment);
       }
     };
 
@@ -102,73 +112,12 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
     products.length > 1 ||
     (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.HOME);
 
-  const updatePrintedFlag = async () =>
-    fetchRequest<boolean>("PATCH", "/api/orders", "updatePrintedFlag", {
-      orderId: order.id,
-    }).then((is_receipt_printed) => updateOrder({ is_receipt_printed }));
-
-  const buildPrintContent = async (
-    order: AnyOrder,
-    quickPaymentOption: QuickPaymentOption,
-    isRePrint = false
-  ) => {
-    const content = [];
-
-    if (!isRePrint && !order.suborder_of) {
-      const unprintedProducts = await updateUnprintedProducts();
-
-      if (unprintedProducts.length > 0) {
-        content.push(() => KitchenReceipt<typeof order>({ ...order, products: unprintedProducts }));
-      }
-    } else {
-      content.push(() => KitchenReceipt<typeof order>(order));
-    }
-
-    content.push(() =>
-      OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.HOME)
-    );
-
-    if (order.type === OrderType.HOME) {
-      content.push(() => RiderReceipt(order as HomeOrder, quickPaymentOption));
-    }
-
-    return content;
-  };
-
-  const handleKitchenRePrint = async () => await print(() => KitchenReceipt<typeof order>(order));
-
-  const handleOrderRePrint = async () =>
-    await print(
-      () => OrderReceipt<typeof order>(order, quickPaymentOption, order.type === OrderType.HOME),
-      ...(order.type === OrderType.HOME
-        ? [() => RiderReceipt(order as HomeOrder, quickPaymentOption)]
-        : [])
-    );
-
-  const handleFullRePrint = async () => {
-    await updatePrintedFlag();
-    const content = await buildPrintContent(order, quickPaymentOption, true);
-    await print(...content);
-  };
-
-  const handlePrint = async () => {
-    await updatePrintedFlag();
-    const content = await buildPrintContent(order, quickPaymentOption, false);
-    await print(...content).then(() => toggleDialog(false));
-
-    if (!hasConfirmationSent() && settings.useWhatsApp) {
-      await sendMessages({
-        templateName: ORDER_CONFIRMATION_TEMPLATE_NAME,
-        order,
-        toast: false,
-      });
-    }
-  };
-
   const handleFullPayment = async () => {
     if (!order.is_receipt_printed) {
       await updatePrintedFlag();
-      await print(() => OrderReceipt<typeof order>(order, quickPaymentOption, false, true));
+      await print(() =>
+        OrderReceipt<typeof order>({ order, plannedPayment, putInfo: false, forceCut: true })
+      );
     }
 
     setAction("payFull");
@@ -190,19 +139,23 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
       <div className="flex gap-6">
         <Button
           className="w-full text-4xl h-24"
-          onClick={() => handleKitchenRePrint().then(() => setRePrintDialog(false))}
+          onClick={() => handleKitchenRePrint(order).then(() => setRePrintDialog(false))}
         >
           Cucina 厨房
         </Button>
         <Button
           className="w-full text-4xl h-24"
-          onClick={() => handleFullRePrint().then(() => setRePrintDialog(false))}
+          onClick={() =>
+            handleFullRePrint(order, plannedPayment).then(() => setRePrintDialog(false))
+          }
         >
           Tutto 所有
         </Button>
         <Button
           className="w-full text-4xl h-24"
-          onClick={() => handleOrderRePrint().then(() => setRePrintDialog(false))}
+          onClick={() =>
+            handleOrderRePrint(order, plannedPayment).then(() => setRePrintDialog(false))
+          }
         >
           Ordine 客人
         </Button>
@@ -242,7 +195,7 @@ export default function NormalActions({ setAction, quickPaymentOption }: NormalA
         <Button
           className="w-full text-3xl h-36"
           disabled={!hasProducts || (settings.useWhatsApp && !paramsReady)}
-          onClick={handlePrint}
+          onClick={() => handlePrint(order, plannedPayment)}
         >
           STAMPA 打印
         </Button>

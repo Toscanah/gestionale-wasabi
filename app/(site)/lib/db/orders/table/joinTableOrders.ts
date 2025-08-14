@@ -1,7 +1,8 @@
 import { TableOrder } from "@/app/(site)/lib/shared";
-import prisma from "../db";
-import addProductsToOrder from "../products/addProductsToOrder";
-import getOrderById from "./getOrderById";
+import prisma from "../../db";
+import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
+import getOrderById from "../getOrderById";
+import addProductsToOrder from "../../products/addProductsToOrder";
 
 export default async function joinTableOrders({
   originalOrderId,
@@ -15,7 +16,7 @@ export default async function joinTableOrders({
       table_order: {
         table: String(tableToJoin),
       },
-      state: "ACTIVE",
+      status: OrderStatus.ACTIVE,
     },
     select: { id: true },
   });
@@ -33,14 +34,14 @@ export default async function joinTableOrders({
     orderToJoin.products.map((product) =>
       prisma.productInOrder.update({
         where: { id: product.id },
-        data: { state: "DELETED_COOKED" }, // TODO: sarebbe da specificare se erano stati cucinati o meno
+        data: { status: ProductInOrderStatus.DELETED_COOKED }, // TODO: sarebbe da specificare se erano stati cucinati o meno
       })
     )
   );
 
   await prisma.order.update({
     where: { id: orderToJoinId.id },
-    data: { state: "CANCELLED" },
+    data: { status: OrderStatus.CANCELLED },
   });
 
   return {

@@ -3,8 +3,8 @@ import { ProductInOrder } from "@/app/(site)/lib/shared";
 export default function generateDummyProduct(): ProductInOrder {
   return {
     created_at: new Date(Date.now() + 60 * 1000),
-    additional_note: "",
-    state: "IN_ORDER",
+    variation: "",
+    status: "IN_ORDER",
     printed_amount: -1,
     frozen_price: 0,
     product: {

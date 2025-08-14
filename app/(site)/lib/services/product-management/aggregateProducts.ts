@@ -22,8 +22,8 @@ export default function aggregateProducts(
     const existingProductIndex = groupedProducts[optionsKey].findIndex(
       (existingProduct) =>
         existingProduct.product.code === product.product.code &&
-        !existingProduct.additional_note && // The existing product must have no note
-        !product.additional_note // The new product must also have no note
+        !existingProduct.variation &&
+        !product.variation
     );
 
     if (existingProductIndex !== -1) {

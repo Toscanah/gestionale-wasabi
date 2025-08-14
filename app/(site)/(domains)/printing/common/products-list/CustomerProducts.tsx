@@ -1,7 +1,7 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import getDiscountedTotal from "@/app/(site)/lib/services/order-management/getDiscountedTotal";
 import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
-import padReceiptText from "@/app/(site)/lib/formatting-parsing/printing/padReceiptText";
+import fitReceiptText from "@/app/(site)/lib/formatting-parsing/printing/fitReceiptText";
 import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
 import { Fragment } from "react";
@@ -102,11 +102,11 @@ export default function CustomerProducts({
     return (
       <Fragment key={uniqueId()}>
         <Text inline>
-          {padReceiptText(product.quantity.toString(), MAX_QUANTITY_WIDTH, QUANTITY_PADDING)}
+          {fitReceiptText(product.quantity.toString(), MAX_QUANTITY_WIDTH, QUANTITY_PADDING)}
         </Text>
 
         <Text inline>
-          {padReceiptText(
+          {fitReceiptText(
             sanitazeReceiptText(product.product.code.toUpperCase()),
             MAX_CODE_WIDTH,
             CODE_PADDING
@@ -114,7 +114,7 @@ export default function CustomerProducts({
         </Text>
 
         <Text inline>
-          {padReceiptText(
+          {fitReceiptText(
             sanitazeReceiptText(product.product.desc),
             MAX_DESCRIPTION_WIDTH,
             DESCRIPTION_PADDING
@@ -122,20 +122,18 @@ export default function CustomerProducts({
         </Text>
 
         <Text inline>
-          {padReceiptText(String(roundToTwo(product.frozen_price)), MAX_PRICE_WIDTH, PRICE_PADDING)}
+          {fitReceiptText(String(roundToTwo(product.frozen_price)), MAX_PRICE_WIDTH, PRICE_PADDING)}
         </Text>
 
         <Text>
-          {padReceiptText(
+          {fitReceiptText(
             String(roundToTwo(product.quantity * product.frozen_price)),
             MAX_TOTAL_WIDTH,
             0
           )}
         </Text>
 
-        {product.additional_note && (
-          <Text>{" ".repeat(4) + sanitazeReceiptText(product.additional_note)}</Text>
-        )}
+        {product.variation && <Text>{" ".repeat(4) + sanitazeReceiptText(product.variation)}</Text>}
       </Fragment>
     );
   };
@@ -143,10 +141,10 @@ export default function CustomerProducts({
   return (
     <>
       <Text>
-        {padReceiptText(QUANTITY_TITLE, HEAD_QUANTITY_MAX, HEAD_QUANTITY_PADDING)}
-        {padReceiptText(PRODUCT_TITLE, HEAD_PRODUCT_MAX, HEAD_PRODUCT_PADDING)}
-        {padReceiptText(PRICE_TITLE, HEAD_PRICE_MAX, HEAD_PRICE_PADDING)}
-        {padReceiptText(TOTAL_TITLE, HEAD_TOTAL_MAX, 0)}
+        {fitReceiptText(QUANTITY_TITLE, HEAD_QUANTITY_MAX, HEAD_QUANTITY_PADDING)}
+        {fitReceiptText(PRODUCT_TITLE, HEAD_PRODUCT_MAX, HEAD_PRODUCT_PADDING)}
+        {fitReceiptText(PRICE_TITLE, HEAD_PRICE_MAX, HEAD_PRICE_PADDING)}
+        {fitReceiptText(TOTAL_TITLE, HEAD_TOTAL_MAX, 0)}
       </Text>
 
       <Br />
@@ -186,7 +184,7 @@ export default function CustomerProducts({
         />
       )}
 
-      {TotalSection(originalProducts, discount, true, orderType)}
+      {TotalSection({ products: originalProducts, discount, orderType })}
       <Br />
     </>
   );

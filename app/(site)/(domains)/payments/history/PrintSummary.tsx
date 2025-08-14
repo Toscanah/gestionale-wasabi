@@ -1,28 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { PaymentType } from "@prisma/client";
-import print from "../../printing/print";
-import PaymentSummaryReceipt from "../../printing/receipts/PaymentSummaryReceipt";
 import { PaymentsSummaryData } from "../../../hooks/usePaymentsHistory";
+import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 
 interface PrintSummaryProps {
   summaryData: PaymentsSummaryData;
-
   firstOrderDate?: Date;
 }
 
 export default function PrintSummary({ summaryData, firstOrderDate }: PrintSummaryProps) {
   const isButtonDisabled = Object.values(summaryData.totals).every(({ total }) => total === 0);
+  const { printPaymentSummary } = usePrinter();
 
   return (
     <Button
       className="mt-auto"
       onClick={async () =>
-        await print(() =>
-          PaymentSummaryReceipt({
-            summaryData,
-            date: new Date(firstOrderDate || new Date()),
-          })
-        )
+        await printPaymentSummary({ summaryData, date: new Date(firstOrderDate || new Date()) })
       }
       disabled={isButtonDisabled}
     >

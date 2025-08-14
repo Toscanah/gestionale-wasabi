@@ -1,12 +1,18 @@
 import { Cut, Line } from "react-thermal-printer";
-import { HomeOrder } from "@/app/(site)/lib/shared"
-;
-import OrderInfoSection from "../common/OrderInfoSection";
+import { HomeOrder } from "@/app/(site)/lib/shared";
+import OrderInfoSection from "../common/info/OrderInfoSection";
 import TimeSection from "../common/TimeSection";
 import TotalSection from "../common/TotalSection";
-import { QuickPaymentOption } from "@prisma/client";
+import { PlannedPayment } from "@prisma/client";
 
-export default function RiderReceipt(order: HomeOrder, quickPaymentOption: QuickPaymentOption) {
+export interface RiderReceiptProps {
+  order: HomeOrder;
+  plannedPayment: PlannedPayment;
+}
+
+export default function RiderReceipt({ order, plannedPayment }: RiderReceiptProps) {
+  const { products, discount, type } = order;
+  
   return (
     <>
       <Cut />
@@ -14,10 +20,10 @@ export default function RiderReceipt(order: HomeOrder, quickPaymentOption: Quick
       {TimeSection({})}
       <Line />
 
-      {OrderInfoSection({ order, quickPaymentOption, extraItems: false })}
+      {OrderInfoSection({ order, plannedPayment, options: { putExtraItems: false } })}
       <Line />
 
-      {TotalSection(order.products, order.discount, true, order.type)}
+      {TotalSection({ products, discount, orderType: type })}
       <Cut />
     </>
   );

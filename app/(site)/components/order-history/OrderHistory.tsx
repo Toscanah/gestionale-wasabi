@@ -15,6 +15,7 @@ import OrderDetail from "./OrderDetail";
 import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
 import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 import filterDeletedProducts from "../../lib/services/product-management/filterDeletedProducts";
+import { OrderStatus } from "@prisma/client";
 
 type ProductStats = {
   desc: string;
@@ -42,13 +43,15 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
       {
         type: "Domicilio",
         orders: customer.home_orders.filter(
-          (order) => getOrderTotal({ order: order.order }) > 0 && order.order.state === "PAID"
+          (order) =>
+            getOrderTotal({ order: order.order }) > 0 && order.order.status === OrderStatus.PAID
         ),
       },
       {
         type: "Asporto",
         orders: customer.pickup_orders.filter(
-          (order) => getOrderTotal({ order: order.order }) > 0 && order.order.state === "PAID"
+          (order) =>
+            getOrderTotal({ order: order.order }) > 0 && order.order.status === OrderStatus.PAID
         ),
       },
     ],
@@ -66,7 +69,8 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
   const allOrders = useMemo(
     () =>
       [...customer.home_orders, ...customer.pickup_orders].filter(
-        (order) => getOrderTotal({ order: order.order }) > 0 && order.order.state === "PAID"
+        (order) =>
+          getOrderTotal({ order: order.order }) > 0 && order.order.status === OrderStatus.PAID
       ),
     [customer.home_orders, customer.pickup_orders]
   );

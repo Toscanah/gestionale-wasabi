@@ -134,7 +134,7 @@ export default function ExtraItems() {
         updateOrder(updates);
         toastSuccess("Zuppe, insalate e risi aggiornati correttamente");
       });
-    }, 750),
+    }, 1500),
     []
   );
 

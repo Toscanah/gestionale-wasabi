@@ -1,6 +1,6 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
-import { useProductManager } from "../hooks/order/useProductManager";
+import { useProductsManager } from "../hooks/order/useProductsManager";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Table } from "@tanstack/react-table";
 import generateDummyProduct from "../lib/services/product-management/generateDummyProduct";
@@ -36,8 +36,9 @@ interface OrderContextType {
   updateProductOption: (productInOrderId: number, optionId: number) => void;
   updateUnprintedProducts: () => Promise<ProductInOrder[]>;
   updateOrder: (order: RecursivePartial<AnyOrder>) => void;
+  updatePrintedFlag: () => Promise<void>;
   joinTableOrders: (tableToJoin: string) => void;
-  updateAddionalNote: (note: string, productInOrderId: number) => void;
+  updateProductVariation: (variation: string, productInOrderId: number) => void;
 }
 
 export const OrderProvider = ({
@@ -56,11 +57,8 @@ export const OrderProvider = ({
 
   const toggleDialog = (dialogOpen: boolean) => setDialogOpen(dialogOpen);
 
-  const { updateOrder, cancelOrder, createSubOrder, joinTableOrders } = useOrderManager(
-    order.id,
-    setOrder,
-    dialogOpen
-  );
+  const { updateOrder, updatePrintedFlag, cancelOrder, createSubOrder, joinTableOrders } =
+    useOrderManager(order.id, setOrder, dialogOpen);
 
   const {
     addProduct,
@@ -72,8 +70,8 @@ export const OrderProvider = ({
     deleteProducts,
     updateProductOption,
     updateUnprintedProducts,
-    updateAddionalNote,
-  } = useProductManager(order, updateOrder);
+    updateProductVariation,
+  } = useProductsManager(order, updateOrder);
 
   return (
     <OrderContext.Provider
@@ -95,7 +93,8 @@ export const OrderProvider = ({
         updateProductOption,
         updateUnprintedProducts,
         updateOrder,
-        updateAddionalNote,
+        updatePrintedFlag,
+        updateProductVariation,
       }}
     >
       {children}

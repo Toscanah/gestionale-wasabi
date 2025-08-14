@@ -1,13 +1,15 @@
+import { EngagementSchemaInputs } from "../../shared";
 import prisma from "../db";
-import { DeleteEngagementById } from "../../shared";
 
-export default async function deleteEngagementById({ engagementId }: DeleteEngagementById) {
+export default async function deleteEngagementById({
+  engagementId,
+}: EngagementSchemaInputs["DeleteEngagementByIdInput"]) {
   return await prisma.engagement.delete({
     where: {
       id: engagementId,
     },
     select: {
-      id: true
-    }
+      id: true,
+    },
   });
 }

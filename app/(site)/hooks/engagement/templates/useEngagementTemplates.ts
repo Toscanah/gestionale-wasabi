@@ -3,10 +3,9 @@ import uploadImage from "@/app/(site)/lib/integrations/images/uploadImage";
 import { toastSuccess } from "@/app/(site)/lib/utils/toast";
 import {
   ParsedEngagementTemplate,
-  UpdateEngagementTemplate,
-  CreateEngagementTemplate,
   ParsedEngagementPayload,
   TemplatePayloadDraft,
+  EngagementSchemaInputs,
 } from "@/app/(site)/lib/shared";
 import { EngagementType } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -49,7 +48,7 @@ export default function useEngagementTemplates() {
     return payload;
   };
 
-  const updateTemplate = async (template: UpdateEngagementTemplate) => {
+  const updateTemplate = async (template: EngagementSchemaInputs["UpdateEngagementTemplateInput"]) => {
     const payload = await maybeUploadImage(template.payload, template.selectedImage);
 
     fetchRequest<ParsedEngagementTemplate>(
@@ -70,11 +69,11 @@ export default function useEngagementTemplates() {
   const createTemplate = async (draft: TemplatePayloadDraft) => {
     const finalPayload = await maybeUploadImage(draft.payload, draft.selectedImage);
 
-    const newTemplate: CreateEngagementTemplate = {
+    const newTemplate: EngagementSchemaInputs["CreateEngagementTemplateInput"] = {
       type: draft.type,
       label: draft.label ?? "",
       payload: finalPayload as ParsedEngagementPayload,
-    } as CreateEngagementTemplate;
+    } as EngagementSchemaInputs["CreateEngagementTemplateInput"];
 
     fetchRequest<ParsedEngagementTemplate>("POST", "/api/engagements", "createEngagementTemplate", {
       ...newTemplate,

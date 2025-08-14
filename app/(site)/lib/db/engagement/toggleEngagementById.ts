@@ -1,7 +1,9 @@
-import { ToggleEngagementById } from "../../shared";
+import { EngagementSchemaInputs } from "../../shared";
 import prisma from "../db";
 
-export default async function toggleEngagementById({ engagementId }: ToggleEngagementById) {
+export default async function toggleEngagementById({
+  engagementId,
+}: EngagementSchemaInputs["ToggleEngagementByIdInput"]) {
   const engagement = await prisma.engagement.findFirst({
     where: {
       id: engagementId,

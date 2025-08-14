@@ -22,7 +22,7 @@ export default function When() {
 
     fetchRequest<AnyOrder>("PATCH", "/api/orders/", "updateOrderTime", {
       time: value,
-      orderId: order.id,
+      orderId: order.id
     }).then((updatedOrder) => {
       updateOrder(
         updatedOrder.type === OrderType.PICKUP

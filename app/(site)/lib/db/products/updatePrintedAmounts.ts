@@ -10,15 +10,15 @@ export default async function updatePrintedAmounts({
   return await prisma.$transaction(async (tx) => {
     const order = await tx.order.findUnique({
       where: { id: orderId },
-      select: { state: true },
+      select: { status: true },
     });
 
-    if (!order || order.state !== "ACTIVE") {
+    if (!order || order.status !== "ACTIVE") {
       return [];
     }
 
     const products = await tx.productInOrder.findMany({
-      where: { order_id: orderId, state: "IN_ORDER", quantity: { gt: 0 } },
+      where: { order_id: orderId, status: "IN_ORDER", quantity: { gt: 0 } },
       include: { ...productInOrderInclude },
     });
 

@@ -36,7 +36,7 @@ export default function CustomerAddresses({
       return toastError("Tutti gli indirizzi devono avere almeno un civico e via validi");
     }
 
-    fetchRequest<CustomerWithDetails>("PATCH", "/api/customers", "updateAddressesOfCustomer", {
+    fetchRequest<CustomerWithDetails>("PATCH", "/api/customers", "updateCustomerAddresses", {
       addresses: currentAddresses,
       customerId,
     }).then((updatedCustomer) => {

@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { PaymentScope, PaymentType } from "@prisma/client";
+import { OrderStatus, PaymentScope, PaymentType } from "@prisma/client";
 import { DEFAULT_PAYMENT, Payment } from "../../context/OrderPaymentContext";
 import { useOrderContext } from "../../context/OrderContext";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";
@@ -83,7 +83,7 @@ export default function useOrderPayment({
       onOrderPaid();
 
       if (stage == "FINAL") {
-        updateOrder({ state: "PAID" });
+        updateOrder({ status: OrderStatus.PAID });
         return;
       }
 
@@ -94,7 +94,7 @@ export default function useOrderPayment({
       });
 
       updateOrder({
-        state: updatedOrder.state,
+        status: updatedOrder.status,
         products: updatedProducts,
       });
     });

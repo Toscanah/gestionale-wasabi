@@ -2,14 +2,14 @@ import { ProductWithStats, OptionStats } from "../../shared/types/ProductWithSta
 import prisma from "../db";
 import { categoryInclude, optionsInclude } from "../includes";
 import TimeScopeFilter from "../../../components/filters/shift/TimeScope";
-import { GetProductsWithStatsInput } from "../../shared";
-import { OrderState, ProductInOrderState } from "@prisma/client";
+import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
 import orderMatchesShift from "../../services/order-management/shift/orderMatchesShift";
 import { ShiftType } from "../../shared/enums/Shift";
+import { ProductSchemaInputs } from "../../shared";
 
 export default async function getProductsWithStats({
   filters,
-}: GetProductsWithStatsInput): Promise<ProductWithStats[]> {
+}: ProductSchemaInputs["GetProductsWithStatsInput"]): Promise<ProductWithStats[]> {
   const { time, shift, categoryId } = filters;
   const { timeScope, from, to } = time;
 
@@ -71,13 +71,13 @@ export default async function getProductsWithStats({
       const filteredOrders = product.orders.filter((productInOrder) => {
         const order = productInOrder.order;
 
-        const isOrderPaid = order.state === OrderState.PAID;
+        const isOrderPaid = order.status === OrderStatus.PAID;
         const isWithinDate =
           !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
-        const isValidState = productInOrder.state === ProductInOrderState.IN_ORDER;
+        const isValidStatus = productInOrder.status === ProductInOrderStatus.IN_ORDER;
         const isInShift = orderMatchesShift(order, shift as ShiftType);
 
-        return isValidState && isOrderPaid && isWithinDate && isInShift;
+        return isValidStatus && isOrderPaid && isWithinDate && isInShift;
       });
 
       if (filteredOrders.length > 0) {
@@ -92,7 +92,7 @@ export default async function getProductsWithStats({
     const stats = product.orders.reduce(
       (acc, productInOrder) => {
         if (
-          productInOrder.state === ProductInOrderState.IN_ORDER &&
+          productInOrder.status === ProductInOrderStatus.IN_ORDER &&
           productInOrder.paid_quantity > 0
         ) {
           const paidQty = Math.min(productInOrder.paid_quantity, productInOrder.quantity);
