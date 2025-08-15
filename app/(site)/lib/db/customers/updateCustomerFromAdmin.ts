@@ -26,6 +26,7 @@ export default async function updateCustomerFromAdmin({
       email: customerData.email,
       preferences: customerData.preferences,
       order_notes: customerData.order_notes,
+      origin: customerData.origin,
     },
     include: {
       phone: true,

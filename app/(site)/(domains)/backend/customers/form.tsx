@@ -2,6 +2,8 @@ import { z } from "zod";
 import getZodField from "../../../lib/utils/getZodField";
 import { FormFieldType } from "../FormFields";
 import { Textarea } from "@/components/ui/textarea";
+import { ControllerRenderProps } from "react-hook-form";
+import CustomerOriginSelection from "./CustomerOriginSelection";
 
 
 export const formSchema = z.object({
@@ -12,7 +14,8 @@ export const formSchema = z.object({
   preferences: getZodField("string", false),
   order_notes: getZodField("string", false),
   phone_id: getZodField("any", false),
-  active: getZodField("boolean", false)
+  active: getZodField("boolean", false),
+  origin: getZodField("string", false),
 });
 
 export function getCustomerFields(): FormFieldType[] {
@@ -44,6 +47,14 @@ export function getCustomerFields(): FormFieldType[] {
       label: "Note degli ordini",
       children: <Textarea className="resize-none" />,
     },
+    {name: "origin", label: "Origine", unique: true, children: ({ field }: { field: ControllerRenderProps }) => {
+        return (
+          <div className="space-y-2 text-center">
+            <CustomerOriginSelection field={field} />
+          </div>
+        );
+      },},
+    // lasciare questo per ultimo
     { name: "phone_id", label: "phone_id" },
 
     // {

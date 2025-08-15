@@ -15,6 +15,8 @@ export default async function updateCustomerFromOrder({
       surname: customer.surname,
       email: customer.email,
       preferences: customer.preferences,
+      order_notes: customer.order_notes,
+      origin: customer.origin,
     },
   });
 }

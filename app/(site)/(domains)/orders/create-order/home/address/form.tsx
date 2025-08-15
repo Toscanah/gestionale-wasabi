@@ -13,6 +13,7 @@ const formSchema = z.object({
   order_notes: getZodField("string", false),
   contact_phone: getZodField("string", false),
   preferences: getZodField("string", false),
+  origin: getZodField("string", false),
 });
 
 export default formSchema;

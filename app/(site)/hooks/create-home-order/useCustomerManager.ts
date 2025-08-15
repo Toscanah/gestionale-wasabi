@@ -80,6 +80,7 @@ export default function useCustomerManager({
 
     const customerContent: CreateCustomerInput = {
       order_notes: values.order_notes,
+      origin: values.origin,
       name: values.name,
       surname: values.surname,
       preferences: values.preferences,
@@ -88,11 +89,11 @@ export default function useCustomerManager({
     };
 
     const addressContent: Omit<CreateAddressInput, "customer_id"> = {
+      street,
       civic,
       doorbell: values.doorbell,
       floor: values.floor,
       stair: values.stair,
-      street,
       street_info: values.street_info,
       temporary: selectedOption === "temp",
     };

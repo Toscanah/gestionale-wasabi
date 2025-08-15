@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
 import OrderHistory from "../../../components/order-history/OrderHistory";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared"
-;
+import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 import joinItemsWithComma from "../../../lib/formatting-parsing/joinItemsWithComma";
+import { CUSTOMER_ORIGIN_LABELS } from "./CustomerOriginSelection";
 
 const columns = (
   customers: CustomerWithDetails[],
@@ -43,6 +43,11 @@ const columns = (
   TableColumn({
     accessorKey: "order_notes",
     header: "Note degli ordini",
+  }),
+
+  TableColumn({
+    header: "Origine",
+    cellContent: (row) => CUSTOMER_ORIGIN_LABELS[row.original.origin],
   }),
 
   TableColumn({

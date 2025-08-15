@@ -1,10 +1,14 @@
 import { KeyboardEvent, RefObject, useEffect } from "react";
-import { Form } from "@/components/ui/form";
+import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import FormField from "@/app/(site)/components/ui/FormField";
 import getForm from "@/app/(site)/lib/utils/getForm";
 import formSchema from "./form";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
+import { CustomerOrigin } from "@prisma/client";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { FormField as RawFormField } from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface AddressFormProps {
   formRef: RefObject<HTMLFormElement>;
@@ -33,12 +37,15 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
       doorbell: selectedAddress?.doorbell || "",
       email: customer?.email || "",
       preferences: customer?.preferences || "",
+      origin: customer?.origin || CustomerOrigin.UNKNOWN,
     });
 
     form.clearErrors();
   };
 
   useEffect(resetForm, [selectedAddress, customer, phone]);
+
+  console.log(form.getValues())
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
@@ -48,6 +55,49 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full flex flex-col justify-between h-full"
         >
+          <RawFormField
+            control={form.control}
+            name="origin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Origine cliente</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    value={field.value as CustomerOrigin}
+                    onValueChange={field.onChange}
+                    className="w-full flex gap-8 items-center"
+                  >
+                    <FormItem className="flex items-center gap-2">
+                      <FormControl>
+                        <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.UNKNOWN}/>
+                      </FormControl>
+                      <FormLabel className="!mt-0 text-2xl">Ignoto</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center gap-2">
+                      <FormControl>
+                        <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.WEBSITE}/>
+                      </FormControl>
+                      <FormLabel className="!mt-0 text-2xl">Sito</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center gap-2">
+                      <FormControl>
+                        <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.COUPON}/>
+                      </FormControl>
+                      <FormLabel className="!mt-0 text-2xl">Coupon</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center gap-2">
+                      <FormControl>
+                        <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.REFFERAL}/>
+                      </FormControl>
+                      <FormLabel className="!mt-0 text-2xl">Passaparola</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="street"

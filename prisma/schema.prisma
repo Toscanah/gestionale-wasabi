@@ -114,16 +114,17 @@ model Engagement {
 }
 
 model Customer {
-    id            Int           @id @default(autoincrement())
+    id            Int            @id @default(autoincrement())
     name          String?
     surname       String?
     email         String?
     preferences   String?
-    active        Boolean       @default(true)
-    phone_id      Int           @unique
+    active        Boolean        @default(true)
     order_notes   String?
+    origin        CustomerOrigin @default(UNKNOWN)
+    phone_id      Int            @unique
     addresses     Address[]
-    phone         Phone         @relation(fields: [phone_id], references: [id], onDelete: Cascade)
+    phone         Phone          @relation(fields: [phone_id], references: [id], onDelete: Cascade)
     engagements   Engagement[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
@@ -304,4 +305,11 @@ enum ProductInOrderStatus {
     IN_ORDER
     DELETED_COOKED
     DELETED_UNCOOKED
+}
+
+enum CustomerOrigin {
+    UNKNOWN
+    WEBSITE
+    COUPON
+    REFFERAL
 }
