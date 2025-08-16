@@ -1,16 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableColumn from "../../../components/table/TableColumn";
-import { OptionWithCategories } from "@/app/(site)/lib/shared"
-;
-import joinItemsWithComma from "../../../lib/formatting-parsing/joinItemsWithComma";
+import { OptionWithCategories } from "@/app/(site)/lib/shared";
+import { FieldColumn, JoinColumn } from "@/app/(site)/components/table/tableColumns";
 
 const columns: ColumnDef<OptionWithCategories>[] = [
-  TableColumn({
-    accessorKey: "option_name",
+  FieldColumn({
+    key: "option_name",
     header: "Opzione",
   }),
 
-  TableColumn({ joinOptions: { key: "categories" }, header: "Usata in" }),
+  JoinColumn({ options: { key: "categories" }, header: "Usata in" }),
 ];
 
 export default columns;

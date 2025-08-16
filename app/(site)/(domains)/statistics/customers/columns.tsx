@@ -1,66 +1,69 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableColumn from "../../../components/table/TableColumn";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared"
-;
 import { format } from "date-fns"; // Ensure date-fns is installed
 import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
-import ScoreDialog from "./ScoreDialog";
-import joinItemsWithComma from "../../../lib/formatting-parsing/joinItemsWithComma";
-import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
+
 import { CustomerWithStats } from "../../../lib/shared/types/CustomerWithStats";
 import OrderHistory from "../../../components/order-history/OrderHistory";
+import {
+  ActionColumn,
+  FieldColumn,
+  JoinColumn,
+  ValueColumn,
+} from "@/app/(site)/components/table/tableColumns";
 
 const columns: ColumnDef<CustomerWithStats>[] = [
-  TableColumn({
-    accessorKey: "phone.phone",
+  FieldColumn({
+    key: "phone.phone",
     header: "Telefono",
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Chi",
-    cellContent: (row) => {
+    value: (row) => {
       const { name, surname } = row.original;
       return [name, surname].filter(Boolean).join(" ") || "";
     },
+    accessor: (customer) => `${customer.name} ${customer.surname}`,
   }),
 
-  TableColumn({
+  JoinColumn({
     header: "Campanelli",
-    joinOptions: {
+    options: {
       key: "doorbells",
       wrapper: ({ children }) => <div className="max-w-36">{children}</div>,
     },
   }),
 
-  TableColumn({
-    accessorKey: "averageOrdersWeek",
+  FieldColumn({
+    key: "averageOrdersWeek",
     header: "Media a settimana",
   }),
 
-  TableColumn({
-    accessorKey: "averageOrdersMonth",
+  FieldColumn({
+    key: "averageOrdersMonth",
     header: "Media al mese",
   }),
 
-  TableColumn({
-    accessorKey: "averageOrdersYear",
+  FieldColumn({
+    key: "averageOrdersYear",
     header: "Media all'anno",
   }),
 
-  TableColumn({
-    accessorKey: "averageSpending",
+  FieldColumn({
+    key: "averageSpending",
     header: "Spesa media",
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Ultimo ordine",
-    cellContent: (row) =>
+    value: (row) =>
       row.original.lastOrder ? format(row.original.lastOrder, "dd-MM-yyyy") : "",
+    accessor: (customer) => customer.lastOrder,
   }),
 
-  TableColumn({
-    accessorKey: "totalSpending",
+  FieldColumn({
+    key: "totalSpending",
     header: "Spesa totale",
   }),
 
@@ -75,9 +78,9 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   //   cellContent: (row) => <ScoreDialog customer={row.original} />,
   // }),
 
-  TableColumn({
+  ActionColumn({
     header: "Storico ordini",
-    cellContent: (row) => {
+    action: (row) => {
       const customer = row.original;
 
       return (

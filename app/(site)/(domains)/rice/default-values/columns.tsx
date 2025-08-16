@@ -1,6 +1,6 @@
 "use client";
 
-import TableColumn from "@/app/(site)/components/table/TableColumn";
+import { ActionColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash } from "@phosphor-icons/react";
@@ -14,14 +14,11 @@ const columns = ({
   debouncedUpdateBatch: (batchId: number, field: keyof Omit<RiceBatch, "id">, value: any) => void;
   removeRiceBatch: (batchId: number) => Promise<void>;
 }): ColumnDef<RiceBatch>[] => [
-  TableColumn({
-    header: "#",
-    isRowIndex: true,
-  }),
+  IndexColumn({}),
 
-  TableColumn<RiceBatch>({
+  ValueColumn({
     header: "Etichetta",
-    cellContent: (row) => {
+    value: (row) => {
       const batch = row.original;
 
       return (
@@ -33,11 +30,12 @@ const columns = ({
         />
       );
     },
+    accessor: (batch) => batch.label,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Valore",
-    cellContent: (row) => {
+    value: (row) => {
       const batch = row.original;
 
       return (
@@ -51,11 +49,12 @@ const columns = ({
         />
       );
     },
+    accessor: (batch) => batch.amount,
   }),
 
-  TableColumn({
+  ActionColumn({
     header: "Elimina",
-    cellContent: (row) => (
+    action: (row) => (
       <Button className="group w-full" onClick={() => removeRiceBatch(row.original.id)}>
         <Trash
           size={24}

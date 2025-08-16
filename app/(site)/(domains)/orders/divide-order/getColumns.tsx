@@ -1,31 +1,32 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableColumn from "../../../components/table/TableColumn";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
+import { FieldColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {
   return [
-    TableColumn<ProductInOrder>({
-      accessorKey: "product.code",
+    FieldColumn<ProductInOrder>({
+      key: "product.code",
       header: "Codice",
     }),
 
-    TableColumn<ProductInOrder>({
-      accessorKey: "quantity",
+    FieldColumn<ProductInOrder>({
+      key: "quantity",
       header: "Quantità",
     }),
 
-    TableColumn<ProductInOrder>({
+    ValueColumn<ProductInOrder>({
       header: "Descrizione",
-      cellContent: (row) => (
+      value: (row) => (
         <div className="flex items-center justify-start overflow-hidden text-ellipsis w-full text-2xl">
           {row.original.product?.desc}
         </div>
       ),
+      accessor: (pio) => pio.product?.desc,
     }),
 
-    TableColumn({
-      joinOptions: {
+    JoinColumn({
+      options: {
         key: "options",
         wrapper: ({ children }) => (
           <div className="space-y-2 max-h-20 overflow-auto">{children}</div>
@@ -33,15 +34,16 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[]
       },
     }),
 
-    TableColumn<ProductInOrder>({
+    ValueColumn<ProductInOrder>({
       header: "Unità",
-      cellContent: (row) => (
+      value: (row) => (
         <>
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
             : `€ ${row.original.frozen_price}`}
         </>
       ),
+      accessor: (pio) => pio.frozen_price,
     }),
 
     // TableColumn<ProductInOrder>({

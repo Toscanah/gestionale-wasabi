@@ -23,13 +23,13 @@ interface FormFieldsProps<T> {
   defaultValues?: DefaultValues<T>;
   formFields: FormFieldType[];
   handleSubmit: (values: Partial<T>) => void;
-  footerName: string;
+  submitLabel: string;
   layout: { fieldsPerRow: number }[];
 }
 
 export default function FormFields<T extends Partial<T>>({
   handleSubmit,
-  footerName,
+  submitLabel,
   formSchema,
   defaultValues,
   formFields,
@@ -110,7 +110,7 @@ export default function FormFields<T extends Partial<T>>({
           <div className="flex w-full">
             <DialogFooter className="w-full">
               <Button type="submit" className="w-full">
-                {footerName}
+                {submitLabel}
               </Button>
             </DialogFooter>
           </div>

@@ -1,23 +1,22 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Product } from "@/app/(site)/lib/shared"
-;
-import TableColumn from "../../../components/table/TableColumn";
+import { Product } from "@/app/(site)/lib/shared";
 import { KitchenType } from "@prisma/client";
+import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
 
 const columns: ColumnDef<Product>[] = [
-  TableColumn({
-    accessorKey: "code",
+  FieldColumn({
+    key: "code",
     header: "Codice",
   }),
 
-  TableColumn({
-    accessorKey: "desc",
+  FieldColumn({
+    key: "desc",
     header: "Descrizione",
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Tipo di cucina",
-    cellContent: (row) => {
+    value: (row) => {
       let kitchen = "Nessuna";
 
       if (row.original.kitchen == KitchenType.COLD) {
@@ -32,31 +31,35 @@ const columns: ColumnDef<Product>[] = [
 
       return kitchen;
     },
+    accessor: (product) => product.kitchen,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "In loco",
-    cellContent: (row) => {
+    value: (row) => {
       return "€ " + row.original.site_price;
     },
+    accessor: (product) => product.site_price,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Asporto",
-    cellContent: (row) => {
+    value: (row) => {
       return "€ " + row.original.home_price;
     },
+    accessor: (product) => product.home_price,
   }),
 
-  TableColumn({
-    accessorKey: "rice",
+  FieldColumn({
+    key: "rice",
     header: "Riso (g)",
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Categoria",
-    cellContent: (row) =>
+    value: (row) =>
       row.original.category == null ? "Nessuna" : row.original.category?.category,
+    accessor: (product) => product.category?.category,
   }),
 ];
 

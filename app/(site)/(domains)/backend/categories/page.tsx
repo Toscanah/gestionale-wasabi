@@ -3,14 +3,17 @@
 import { useEffect, useState } from "react";
 import fetchRequest from "../../../lib/api/fetchRequest";
 import columns from "./columns";
-import Manager from "../Manager";
+import Manager, { FormFieldsProps } from "../Manager";
 import GoBack from "../../../components/ui/misc/GoBack";
 import FormFields from "../FormFields";
 import { formSchema, getCategoryFields } from "./form";
-import { CategoryWithOptions } from "@/app/(site)/lib/shared"
-;
+import { CategoryWithOptions } from "@/app/(site)/lib/shared";
 import { Option } from "@/prisma/generated/zod";
-import RandomSpinner from "../../../components/ui/misc/RandomSpinner";
+import dynamic from "next/dynamic";
+
+const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
+  ssr: false,
+});
 
 type FormValues = Partial<CategoryWithOptions>;
 
@@ -34,18 +37,10 @@ export default function CategoryDashboard() {
     );
   }, []);
 
-  const Fields = ({
-    handleSubmit,
-    object,
-    footerName,
-  }: {
-    handleSubmit: (values: FormValues) => void;
-    object?: CategoryWithOptions;
-    footerName: string;
-  }) => (
+  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<CategoryWithOptions>) => (
     <FormFields<CategoryWithOptions>
       handleSubmit={handleSubmit}
-      footerName={footerName}
+      submitLabel={submitLabel}
       defaultValues={{ ...object }}
       layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
       formFields={getCategoryFields(options)}

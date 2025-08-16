@@ -14,6 +14,7 @@ import Footer from "./Footer";
 import SettingsSection from "./sections/SettingsSection";
 import { Fragment } from "react";
 import EngagementSection from "./sections/EngagementSection";
+import RfmSection from "./sections/RfmSection";
 
 type SidebarSection = {
   label: string;
@@ -27,7 +28,7 @@ const sidebarSections: SidebarSection[] = [
   },
   {
     label: "Marketing",
-    components: [EngagementSection],
+    components: [EngagementSection, RfmSection],
   },
   {
     label: "Riso",

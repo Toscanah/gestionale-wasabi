@@ -1,5 +1,5 @@
 import Table from "@/app/(site)/components/table/Table";
-import TableColumn from "@/app/(site)/components/table/TableColumn";
+import { FieldColumn, IndexColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import RandomSpinner from "@/app/(site)/components/ui/misc/RandomSpinner";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
@@ -16,32 +16,31 @@ interface TopCustomersProps {
 type TopCustomer = CustomerWithDetails & { productCount: number };
 
 const columns: ColumnDef<TopCustomer>[] = [
-  TableColumn({
-    isRowIndex: true,
-    header: "#",
-  }),
+  IndexColumn({}),
 
-  TableColumn({
+  ValueColumn({
     header: "Telefono",
-    cellContent: (row) => row.original.phone?.phone ?? "–",
+    value: (row) => row.original.phone?.phone ?? "–",
+    accessor: (customer) => customer.phone?.phone ?? "–",
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Nome",
-    cellContent: (row) => (
+    value: (row) => (
       <>
         {row.original.name ?? ""} {row.original.surname ?? ""}
       </>
     ),
+    accessor: (customer) => `${customer.name ?? ""} ${customer.surname ?? ""}`,
   }),
 
-  TableColumn({
-    joinOptions: { key: "addresses" },
+  JoinColumn({
+    options: { key: "addresses" },
     header: "Indirizzi",
   }),
 
-  TableColumn({
-    accessorKey: "productCount",
+  FieldColumn({
+    key: "productCount",
     header: "Qtà",
   }),
 ];

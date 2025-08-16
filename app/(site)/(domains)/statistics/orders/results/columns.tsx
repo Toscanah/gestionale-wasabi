@@ -1,53 +1,66 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ResultRecord } from "./SectionResults";
-import TableColumn from "@/app/(site)/components/table/TableColumn";
+import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
 import formatRice from "@/app/(site)/lib/formatting-parsing/formatRice";
 
 export default function columns(): ColumnDef<ResultRecord>[] {
   return [
-    TableColumn({
+    FieldColumn({
       header: "Tipo ordine",
-      accessorKey: "title",
+      key: "title",
     }),
-    TableColumn({
+
+    FieldColumn({
       header: "Ordini",
-      accessorKey: "orders",
+      key: "orders",
     }),
-    TableColumn({
+
+    FieldColumn({
       header: "% Ordini",
-      accessorKey: "ordersPct",
+      key: "ordersPct",
     }),
-    TableColumn({
+
+    ValueColumn({
       header: "Incasso",
-      cellContent: (row) => `€ ${row.original.revenue}`,
+      value: (row) => `€ ${row.original.revenue}`,
+      accessor: (stats) => stats.revenue,
     }),
-    TableColumn({
+
+    FieldColumn({
       header: "% Incasso",
-      accessorKey: "revenuePct",
+      key: "revenuePct",
     }),
-    TableColumn({
+
+    ValueColumn({
       header: "Scontrino medio",
-      cellContent: (row) => `€ ${row.original.avg}`,
+      value: (row) => `€ ${row.original.avg}`,
+      accessor: (stats) => stats.avg,
     }),
-    TableColumn({
+
+    FieldColumn({
       header: "Prodotti",
-      accessorKey: "products",
+      key: "products",
     }),
-    TableColumn({
+    
+    FieldColumn({
       header: "Zuppe",
-      accessorKey: "soups",
+      key: "soups",
     }),
-    TableColumn({
+
+    FieldColumn({
       header: "Porzioni riso",
-      accessorKey: "rices",
+      key: "rices",
     }),
-    TableColumn({
+
+    FieldColumn({
       header: "Insalate",
-      accessorKey: "salads",
+      key: "salads",
     }),
-    TableColumn({
+    
+    ValueColumn({
       header: "Riso cucinato",
-      cellContent: (row) => formatRice(row.original.riceMass),
+      value: (row) => formatRice(row.original.riceMass),
+      accessor: (stats) => formatRice(stats.riceMass),
     }),
   ];
 }

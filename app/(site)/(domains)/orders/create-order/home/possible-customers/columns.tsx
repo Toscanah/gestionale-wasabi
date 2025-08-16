@@ -1,8 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared"
-;
-import TableColumn from "@/app/(site)/components/table/TableColumn";
-import joinItemsWithComma from "@/app/(site)/lib/formatting-parsing/joinItemsWithComma";
+import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import {
+  ActionColumn,
+  FieldColumn,
+  JoinColumn,
+} from "@/app/(site)/components/table/tableColumns";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
@@ -11,15 +13,15 @@ import { Dispatch, SetStateAction } from "react";
 const columns = (
   setPossibleCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>
 ): ColumnDef<CustomerWithDetails>[] => [
-  TableColumn({
-    accessorKey: "phone.phone",
+  FieldColumn({
+    key: "phone.phone",
     header: "Num. di telefono",
   }),
 
-  TableColumn({ joinOptions: { key: "doorbells" } }),
+  JoinColumn({ options: { key: "doorbells" } }),
 
-  TableColumn({
-    joinOptions: {
+  JoinColumn({
+    options: {
       key: "addresses",
       wrapper: ({ children }) => <div className="max-w-64">{children}</div>,
     },
@@ -40,14 +42,14 @@ const columns = (
   //   header: "Email",
   // }),
 
-  TableColumn({
-    accessorKey: "preferences",
+  FieldColumn({
+    key: "preferences",
     header: "Preferenze",
   }),
 
-  TableColumn({
+  ActionColumn({
     header: "Azioni",
-    cellContent: (row) => (
+    action: (row) => (
       <DialogWrapper
         variant="delete"
         size="small"

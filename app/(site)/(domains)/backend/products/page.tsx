@@ -1,21 +1,23 @@
 "use client";
 
 import GoBack from "../../../components/ui/misc/GoBack";
-import { Product } from "@/app/(site)/lib/shared"
-;
+import { Product } from "@/app/(site)/lib/shared";
 import fetchRequest from "../../../lib/api/fetchRequest";
-import Manager from "../Manager";
+import Manager, { FormFieldsProps } from "../Manager";
 import columns from "./columns";
 import { useEffect, useState } from "react";
 import FormFields from "../FormFields";
-import { CategoryWithOptions } from "@/app/(site)/lib/shared"
-;
+import { CategoryWithOptions } from "@/app/(site)/lib/shared";
 import { formSchema } from "./form";
 import { getProductFields } from "./form";
 import SelectWrapper from "../../../components/ui/select/SelectWrapper";
 import { Category } from "@prisma/client";
 import { ALL_CATEGORIES } from "../../../hooks/statistics/useProductsStats";
-import RandomSpinner from "../../../components/ui/misc/RandomSpinner";
+import dynamic from "next/dynamic";
+
+const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
+  ssr: false,
+});
 
 type FormValues = Partial<Product>;
 
@@ -54,18 +56,10 @@ export default function ProductDashboard() {
     });
   }, []);
 
-  const Fields = ({
-    handleSubmit,
-    object,
-    footerName,
-  }: {
-    handleSubmit: (values: FormValues) => void;
-    object?: Product;
-    footerName: string;
-  }) => (
+  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<Product>) => (
     <FormFields
       handleSubmit={handleSubmit}
-      footerName={footerName}
+      submitLabel={submitLabel}
       defaultValues={{
         ...object,
         category_id: object?.category_id ? Number(object?.category_id) : undefined,
@@ -94,7 +88,7 @@ export default function ProductDashboard() {
           <RandomSpinner isLoading={loading} />
         ) : (
           <Manager<Product>
-            addionalFilters={[
+            additionalFilters={[
               <SelectWrapper
                 defaultValue="all"
                 value={selectedCategory.id.toString()}

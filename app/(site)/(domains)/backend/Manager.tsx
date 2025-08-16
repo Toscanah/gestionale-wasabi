@@ -4,7 +4,9 @@ import {
   ComponentType,
   ReactNode,
   useMemo,
-  useCallback
+  useCallback,
+  useState,
+  useEffect
 } from "react";
 import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -22,7 +24,7 @@ import useManager from "../../hooks/backend/useManager";
 
 export type BaseEntity = { id: number; active: boolean };
 
-interface FormFieldsProps<T extends BaseEntity> {
+export interface FormFieldsProps<T extends BaseEntity> {
   handleSubmit: (values: Partial<T>) => void;
   submitLabel: string;
   object?: T;
@@ -128,7 +130,7 @@ export default function Manager<T extends BaseEntity>({
         size="small"
         title={MANAGER_LABELS.confirmToggleTitle}
         trigger={
-          <Button type="button" variant="secondary">
+          <Button type="button" variant="default">
             {object.active ? "Disattiva" : "Attiva"}
           </Button>
         }

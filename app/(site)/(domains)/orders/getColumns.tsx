@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
-import TableColumn from "../../components/table/TableColumn";
+import { ActionColumn, FieldColumn, ValueColumn } from "../../components/table/tableColumns";
 import getDiscountedTotal from "../../lib/services/order-management/getDiscountedTotal";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import { useWasabiContext } from "../../context/WasabiContext";
@@ -34,21 +34,22 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
     //     }
     //   },
     // },
-    TableColumn<AnyOrder>({
-      accessorKey: "selection",
+    FieldColumn<AnyOrder>({
+      key: "selection",
       header: "",
-      sortable: false,
+      sort: false,
     }),
 
-    TableColumn<AnyOrder>({
+    ValueColumn<AnyOrder>({
       header: "Ora",
-      cellContent: (row) => format(new Date(row.original.created_at), "HH:mm", { locale: it }),
+      value: (row) => format(new Date(row.original.created_at), "HH:mm", { locale: it }),
+      accessor: (order) => order.created_at,
     }),
 
-    TableColumn<AnyOrder>({
+    ValueColumn<AnyOrder>({
       header:
         type === OrderType.TABLE ? "Tavolo" : type === OrderType.PICKUP ? "Cliente" : "Campanello",
-      cellContent: (row) => {
+      value: (row) => {
         switch (type) {
           case OrderType.TABLE: {
             const parsedRow = row.original as TableOrder;
@@ -69,44 +70,70 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
           }
         }
       },
+      accessor: (order) => {
+        switch (type) {
+          case OrderType.TABLE:
+            return (order as TableOrder).table_order?.table;
+          case OrderType.PICKUP:
+            return (
+              (order as PickupOrder).pickup_order?.customer?.surname ||
+              (order as PickupOrder).pickup_order?.name ||
+              ""
+            );
+          case OrderType.HOME:
+            return (order as HomeOrder).home_order?.address?.doorbell || "";
+        }
+      },
     }),
   ];
 
   switch (type) {
     case OrderType.HOME:
       columns.push(
-        TableColumn<HomeOrder>({
-          accessorKey: "home_order.customer.phone.phone",
+        FieldColumn<HomeOrder>({
+          key: "home_order.customer.phone.phone",
           header: "Telefono",
-          // cellContent:(row) => row.original.home_order?.customer?.phone?.phone ?? "",
         }),
 
-        TableColumn<HomeOrder>({
+        ValueColumn<HomeOrder>({
           header: "Indirizzo",
-          cellContent: (row) => (
+          value: (row) => (
             <div className="w-52 max-w-52">{`${(
               row.original.home_order?.address?.street ?? ""
             ).toUpperCase()} ${(
               row.original.home_order?.address?.civic ?? ""
             ).toUpperCase()}`}</div>
           ),
+          accessor: (order) => {
+            return (
+              (order as HomeOrder).home_order?.address?.street?.toUpperCase() +
+              " " +
+              (order as HomeOrder).home_order?.address?.civic?.toUpperCase()
+            );
+          },
         }),
 
-        TableColumn<HomeOrder>({
+        ValueColumn<HomeOrder>({
           header: "Quando",
-          cellContent: (row) =>
+          value: (row) =>
             row.original.home_order?.when == "immediate" ? "Subito" : row.original.home_order?.when,
+          accessor: (order) => {
+            return (order as HomeOrder).home_order?.when;
+          },
         })
       );
       break;
     case OrderType.PICKUP:
       columns.push(
-        TableColumn<PickupOrder>({
+        ValueColumn<PickupOrder>({
           header: "Quando",
-          cellContent: (row) =>
+          value: (row) =>
             row.original.pickup_order?.when == "immediate"
               ? "Subito"
               : row.original.pickup_order?.when,
+          accessor: (order) => {
+            return (order as PickupOrder).pickup_order?.when;
+          },
         })
       );
       break;
@@ -124,18 +151,19 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
   }
 
   columns.push(
-    TableColumn<AnyOrder>({
+    ValueColumn<AnyOrder>({
       header: "Totale",
-      cellContent: (row) =>
+      value: (row) =>
         `€ ${roundToTwo(getOrderTotal({ order: row.original, applyDiscount: true }))}`,
+      accessor: (order) => `€ ${roundToTwo(getOrderTotal({ order, applyDiscount: true }))}`,
     })
   );
 
   if (type === OrderType.HOME && useWhatsapp) {
     columns.push(
-      TableColumn<HomeOrder>({
+      ActionColumn<HomeOrder>({
         header: "Messaggi",
-        cellContent: (row) => <MetaLogs order={row.original} />,
+        action: (row) => <MetaLogs order={row.original} />,
       })
     );
   }

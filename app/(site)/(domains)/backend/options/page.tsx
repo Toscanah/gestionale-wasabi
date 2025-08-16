@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from "react";
 import fetchRequest from "../../../lib/api/fetchRequest";
-import Manager from "../Manager";
+import Manager, { FormFieldsProps } from "../Manager";
 import GoBack from "../../../components/ui/misc/GoBack";
-import { OptionWithCategories } from "@/app/(site)/lib/shared"
-;
+import { OptionWithCategories } from "@/app/(site)/lib/shared";
 import columns from "./columns";
 import FormFields from "../FormFields";
 import { formSchema, getOptionFields } from "./form";
-import RandomSpinner from "../../../components/ui/misc/RandomSpinner";
+import dynamic from "next/dynamic";
+
+const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
+  ssr: false,
+});
 
 type FormValues = Partial<OptionWithCategories>;
 
@@ -28,18 +31,10 @@ export default function OptionsDashboard() {
     });
   }, []);
 
-  const Fields = ({
-    handleSubmit,
-    object,
-    footerName,
-  }: {
-    handleSubmit: (values: FormValues) => void;
-    object?: OptionWithCategories;
-    footerName: string;
-  }) => (
+  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<OptionWithCategories>) => (
     <FormFields
       handleSubmit={handleSubmit}
-      footerName={footerName}
+      submitLabel={submitLabel}
       defaultValues={{ ...object }}
       layout={[{ fieldsPerRow: 1 }]}
       formFields={getOptionFields()}

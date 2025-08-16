@@ -1,8 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Input } from "@/components/ui/input";
-import { OrderType } from "@prisma/client";
-import TableColumn from "../../../components/table/TableColumn";
+import { ActionColumn, HybridColumn, ValueColumn } from "../../../components/table/tableColumns";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import useGridFocus, { FocussableInput } from "../../../hooks/focus/useGridFocus";
@@ -28,7 +27,8 @@ export default function getColumns(
   );
 
   const debouncedVariationChange = debounce(
-    (variation: string, productInOrderId: number) => updateProductVariation(variation, productInOrderId),
+    (variation: string, productInOrderId: number) =>
+      updateProductVariation(variation, productInOrderId),
     1500
   );
 
@@ -45,10 +45,9 @@ export default function getColumns(
   };
 
   return [
-    TableColumn<ProductInOrder>({
+    ActionColumn<ProductInOrder>({
       header: "",
-      sortable: false,
-      cellContent: (row) =>
+      action: (row) =>
         row.original.product_id !== -1 && (
           <div className="flex justify-center items-center">
             <Checkbox
@@ -61,10 +60,10 @@ export default function getColumns(
         ),
     }),
 
-    TableColumn<ProductInOrder>({
+    ValueColumn<ProductInOrder>({
       header: "Codice",
-      sortable: false,
-      cellContent: (row) => (
+      sort: false,
+      value: (row) => (
         <Input
           disabled={!interactionReady}
           onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 0 })}
@@ -94,12 +93,13 @@ export default function getColumns(
           }}
         />
       ),
+      accessor: (pio) => pio.product?.code,
     }),
 
-    TableColumn<ProductInOrder>({
+    HybridColumn<ProductInOrder>({
       header: "Quantità",
-      sortable: false,
-      cellContent: (row) => (
+      sort: false,
+      value: (row) => (
         <div className="flex gap-2 items-center">
           <Button
             disabled={!interactionReady}
@@ -142,22 +142,24 @@ export default function getColumns(
           </Button>
         </div>
       ),
+      accessor: (pio) => pio.quantity,
     }),
 
-    TableColumn<ProductInOrder>({
+    ValueColumn<ProductInOrder>({
       header: "Descrizione",
-      sortable: false,
-      cellContent: (row) => (
+      sort: false,
+      value: (row) => (
         <div className="flex items-center justify-start overflow-hidden text-ellipsis w-full text-2xl">
           {row.original.product?.desc}
         </div>
       ),
+      accessor: (pio) => pio.product?.desc,
     }),
 
-    TableColumn<ProductInOrder>({
+    HybridColumn<ProductInOrder>({
       header: "Opzioni",
-      sortable: false,
-      cellContent: (row) => {
+      sort: false,
+      value: (row) => {
         if (row.original.product_id == -1) return <></>;
 
         const avalOptions = row.original.product?.category?.options ?? [];
@@ -196,24 +198,32 @@ export default function getColumns(
           </div>
         );
       },
+      accessor: (pio) =>
+        pio.variation +
+        " " +
+        pio.options
+          .sort((a, b) => a.option.option_name.localeCompare(b.option.option_name))
+          .map((el) => el.option.option_name)
+          .join(", "),
     }),
 
-    TableColumn<ProductInOrder>({
+    ValueColumn<ProductInOrder>({
       header: "Unità",
-      sortable: false,
-      cellContent: (row) => (
+      sort: false,
+      value: (row) => (
         <span className="text-2xl">
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
             : `€ ${roundToTwo(row.original.frozen_price)}`}
         </span>
       ),
+      accessor: (pio) => pio.frozen_price,
     }),
 
-    TableColumn<ProductInOrder>({
+    ValueColumn<ProductInOrder>({
       header: "Totale",
-      sortable: false,
-      cellContent: (row) => {
+      sort: false,
+      value: (row) => {
         const product = row.original;
         const productTotal = product.frozen_price * product.quantity;
 
@@ -222,6 +232,10 @@ export default function getColumns(
             {productTotal == 0 ? "" : `€ ${roundToTwo(productTotal)}`}
           </span>
         );
+      },
+      accessor: (pio) => {
+        const productTotal = pio.frozen_price * pio.quantity;
+        return productTotal == 0 ? "" : `€ ${roundToTwo(productTotal)}`;
       },
     }),
   ];

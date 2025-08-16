@@ -14,8 +14,7 @@ import { Button } from "@/components/ui/button";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared"
-;
+import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 import { toastError } from "@/app/(site)/lib/utils/toast";
 
 interface CustomerAddressesProps {

@@ -1,4 +1,3 @@
-import TableColumn from "@/app/(site)/components/table/TableColumn";
 import { Input } from "@/components/ui/input";
 import { ColumnDef } from "@tanstack/react-table";
 import useGridFocus from "@/app/(site)/hooks/focus/useGridFocus";
@@ -6,6 +5,7 @@ import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { PaymentCalculation } from "@/app/(site)/context/OrderPaymentContext";
 import { X } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction } from "react";
+import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
 
 export default function getColumns(
   handleFieldChange: (key: keyof PaymentCalculation, value: number, rowIndex: number) => void,
@@ -17,9 +17,9 @@ export default function getColumns(
   );
 
   return [
-    TableColumn({
+    ValueColumn({
       header: "Quantità",
-      cellContent: (row) => {
+      value: (row) => {
         const focussableInput = { rowIndex: row.index, colIndex: 0 };
 
         return (
@@ -38,11 +38,12 @@ export default function getColumns(
           />
         );
       },
+      accessor: (pay) => pay.quantity,
     }),
 
-    TableColumn({
+    ValueColumn({
       header: "Ammontare",
-      cellContent: (row) => {
+      value: (row) => {
         const focussableInput = { rowIndex: row.index, colIndex: 1 };
 
         return (
@@ -60,17 +61,18 @@ export default function getColumns(
           />
         );
       },
+      accessor: (pay) => pay.amount,
     }),
 
-    TableColumn({
+    ValueColumn({
       header: "Totale",
-      cellContent: (row) => <span>{roundToTwo(row.original.total)}</span>,
+      value: (row) => <span>{roundToTwo(row.original.total)}</span>,
+      accessor: (pay) => pay.total,
     }),
 
-    TableColumn({
+    ActionColumn({
       header: "",
-      sortable: false,
-      cellContent: (row) =>
+      action: (row) =>
         row.original.total !== 0 && (
           <X
             size={24}

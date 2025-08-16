@@ -1,5 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableColumn from "../../../components/table/TableColumn";
+import {
+  ActionColumn,
+  FieldColumn,
+  JoinColumn,
+  ValueColumn,
+} from "../../../components/table/tableColumns";
 import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
@@ -13,46 +18,47 @@ const columns = (
   customers: CustomerWithDetails[],
   setCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>
 ): ColumnDef<CustomerWithDetails>[] => [
-  TableColumn({
-    accessorKey: "phone.phone",
+  FieldColumn({
+    key: "phone.phone",
     header: "Num. di telefono",
   }),
 
-  TableColumn({ joinOptions: { key: "doorbells" } }),
+  JoinColumn({ options: { key: "doorbells" } }),
 
-  TableColumn({
-    accessorKey: "name",
+  FieldColumn({
+    key: "name",
     header: "Nome",
   }),
 
-  TableColumn({
-    accessorKey: "surname",
+  FieldColumn({
+    key: "surname",
     header: "Cognome",
   }),
 
-  TableColumn({
-    accessorKey: "email",
+  FieldColumn({
+    key: "email",
     header: "Email",
   }),
 
-  TableColumn({
-    accessorKey: "preferences",
+  FieldColumn({
+    key: "preferences",
     header: "Preferenze",
   }),
 
-  TableColumn({
-    accessorKey: "order_notes",
+  FieldColumn({
+    key: "order_notes",
     header: "Note degli ordini",
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Origine",
-    cellContent: (row) => CUSTOMER_ORIGIN_LABELS[row.original.origin],
+    value: (row) => CUSTOMER_ORIGIN_LABELS[row.original.origin],
+    accessor: (customer) => customer.origin,
   }),
 
-  TableColumn({
+  ActionColumn({
     header: "Storico ordini",
-    cellContent: (row) => {
+    action: (row) => {
       const customer = row.original;
 
       return (
@@ -71,9 +77,9 @@ const columns = (
     },
   }),
 
-  TableColumn({
+  ActionColumn({
     header: "Indirizzi",
-    cellContent: (row) => {
+    action: (row) => {
       const customerId = row.original.id;
       const customer = customers.find((customer) => customer.id === customerId);
 

@@ -21,6 +21,7 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
     count: 5,
   },
   useWhatsApp: true,
+  
 };
 
 export default function useSettings() {

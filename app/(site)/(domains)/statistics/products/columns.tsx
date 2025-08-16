@@ -1,5 +1,4 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableColumn from "../../../components/table/TableColumn";
 import { ProductWithStats } from "../../../lib/shared/types/ProductWithStats";
 import formatRice from "../../../lib/formatting-parsing/formatRice";
 import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
@@ -7,37 +6,39 @@ import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import TopOptions from "./dialogs/TopOptions";
 import TopCustomers from "./dialogs/TopCustomers";
+import { ActionColumn, FieldColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
 
 const columns: ColumnDef<ProductWithStats>[] = [
-  TableColumn({
-    accessorKey: "code",
+  FieldColumn({
+    key: "code",
     header: "Codice",
   }),
 
-  TableColumn({
-    accessorKey: "desc",
+  FieldColumn({
+    key: "desc",
     header: "Descrizione",
   }),
 
-  TableColumn({
-    accessorKey: "quantity",
+  FieldColumn({
+    key: "quantity",
     header: "Quantitativo",
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Totale",
-    cellContent: (row) => "€ " + roundToTwo(row.original.total),
+    value: (row) => "€ " + roundToTwo(row.original.total),
+    accessor: (stats) => stats.total,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Totale riso",
-    cellContent: (row) => formatRice(row.original.quantity * row.original.rice),
+    value: (row) => formatRice(row.original.quantity * row.original.rice),
+    accessor: (stats) => formatRice(stats.quantity * stats.rice),
   }),
 
-  TableColumn({
+  ActionColumn({
     header: "Altro",
-    sortable: false,
-    cellContent: (row) => (
+    action: (row) => (
       <div className="flex items-center gap-2">
         {(row.original.category?.options || []).length > 0 && <TopOptions product={row.original} />}
         <TopCustomers product={{ id: row.original.id, name: row.original.desc }} />

@@ -49,7 +49,25 @@ import { GlobalSettings } from "../../lib/shared/types/Settings";
 export type PrintContent = () => ReactNode;
 const PRINTER_MODEL: PrinterType = "epson";
 
-export default async function print(...content: PrintContent[]) {
+/**
+ * Prints content to a thermal printer using a serial port connection.
+ *
+ * This function handles the entire printing process, including:
+ * - Retrieving printer settings from local storage
+ * - Detecting and selecting a serial port
+ * - Rendering the content for printing
+ * - Sending the rendered data to the printer
+ *
+ * It also includes special handling for development mode.
+ *
+ * @param {...PrintContent} content - An array of functions that return ReactNodes representing the content to be printed.
+ * @returns {Promise<boolean>} A promise that resolves to:
+ *   - `true` if printing was successful or if in development mode and printing was simulated.
+ *   - `false` if there was an error in the printing process or if no serial port was selected.
+ *
+ * @throws Will log errors to the console but doesn't throw exceptions.
+ */
+export default async function print(...content: PrintContent[]): Promise<boolean> {
   const SELECTED_PRINTER: SelectedPrinter = (
     JSON.parse(
       localStorage.getItem("settings") || JSON.stringify(DEFAULT_SETTINGS)

@@ -1,5 +1,4 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableColumn from "../../../components/table/TableColumn";
 import { AnyOrder, HomeOrder, OrderWithPayments } from "@/app/(site)/lib/shared";
 import { Badge } from "@/components/ui/badge";
 import { OrderType, PlannedPayment } from "@prisma/client";
@@ -8,11 +7,12 @@ import fetchRequest from "../../../lib/api/fetchRequest";
 import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
+import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
-  TableColumn({
+  ValueColumn({
     header: "Tipo di ordine",
-    cellContent: (row) => {
+    value: (row) => {
       return (
         <Badge>
           {row.original.type == OrderType.HOME
@@ -23,11 +23,12 @@ const columns: ColumnDef<OrderWithPayments>[] = [
         </Badge>
       );
     },
+    accessor: (order) => order.type,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Chi",
-    cellContent: (row) => {
+    value: (row) => {
       const order = row.original;
 
       return (
@@ -38,11 +39,12 @@ const columns: ColumnDef<OrderWithPayments>[] = [
           : order.home_order?.address.doorbell) || ""
       ).toLocaleUpperCase();
     },
+    accessor: (order) => order.type,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Quando",
-    cellContent: (row) => {
+    value: (row) => {
       const order = row.original;
       const date = new Date(order.created_at);
       const options: Intl.DateTimeFormatOptions = {
@@ -61,31 +63,36 @@ const columns: ColumnDef<OrderWithPayments>[] = [
 
       return `${datePart.charAt(0).toUpperCase() + datePart.substring(1)}, alle ${timePart}`;
     },
+    accessor: (order) => order.created_at,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Totale contanti",
-    cellContent: (row) => roundToTwo(row.original.totalCash),
+    value: (row) => roundToTwo(row.original.totalCash),
+    accessor: (order) => order.totalCash,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Totale carta",
-    cellContent: (row) => roundToTwo(row.original.totalCard),
+    value: (row) => roundToTwo(row.original.totalCard),
+    accessor: (order) => order.totalCard,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Totale buoni",
-    cellContent: (row) => roundToTwo(row.original.totalVouch),
+    value: (row) => roundToTwo(row.original.totalVouch),
+    accessor: (order) => order.totalVouch,
   }),
 
-  TableColumn({
+  ValueColumn({
     header: "Totale ordine",
-    cellContent: (row) => getOrderTotal({ order: row.original, applyDiscount: true, round: true }),
+    value: (row) => getOrderTotal({ order: row.original, applyDiscount: true, round: true }),
+    accessor: (order) => getOrderTotal({ order, applyDiscount: true, round: true }),
   }),
 
-  TableColumn({
+  ActionColumn({
     header: "Ristampa",
-    cellContent: (row) => <ReprintCell orderId={row.original.id} />,
+    action: (row) => <ReprintCell orderId={row.original.id} />,
   }),
 
   // TableColumn({

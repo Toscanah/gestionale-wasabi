@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 import fetchRequest from "../../../lib/api/fetchRequest";
 import FormFields from "../FormFields";
 import { formSchema, getCustomerFields } from "./form";
-import Manager from "../Manager";
+import Manager, { FormFieldsProps } from "../Manager";
 import columns from "./columns";
 import GoBack from "../../../components/ui/misc/GoBack";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared"
-;
-import RandomSpinner from "../../../components/ui/misc/RandomSpinner";
+import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import dynamic from "next/dynamic";
+
+const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
+  ssr: false,
+});
 
 type FormValues = Partial<CustomerWithDetails>;
 
@@ -27,25 +30,23 @@ export default function CustomersDashboard() {
     );
   }, []);
 
-  const Fields = ({
-    handleSubmit,
-    object,
-    footerName,
-  }: {
-    handleSubmit: (values: FormValues) => void;
-    object?: CustomerWithDetails;
-    footerName: string;
-  }) => (
+  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<CustomerWithDetails>) => (
     <FormFields
       handleSubmit={handleSubmit}
-      footerName={footerName}
+      submitLabel={submitLabel}
       defaultValues={{
         ...object,
         phone: (object?.phone?.phone ?? "") as any,
         email: object?.email ?? "",
         preferences: object?.preferences ?? "",
       }}
-      layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 2 }, { fieldsPerRow: 1 }, { fieldsPerRow: 2 },  { fieldsPerRow: 1 }]}
+      layout={[
+        { fieldsPerRow: 1 },
+        { fieldsPerRow: 2 },
+        { fieldsPerRow: 1 },
+        { fieldsPerRow: 2 },
+        { fieldsPerRow: 1 },
+      ]}
       formFields={getCustomerFields()}
       formSchema={formSchema}
     />
@@ -69,7 +70,7 @@ export default function CustomersDashboard() {
               add: "createCustomer",
               toggle: "toggleCustomer",
               update: "updateCustomerFromAdmin",
-              delete: "deleteCustomerById"
+              delete: "deleteCustomerById",
             }}
           />
         )}
