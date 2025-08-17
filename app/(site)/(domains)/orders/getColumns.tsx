@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
-import { ActionColumn, FieldColumn, ValueColumn } from "../../components/table/tableColumns";
+import { ActionColumn, FieldColumn, ValueColumn } from "../../components/table/TableColumns";
 import getDiscountedTotal from "../../lib/services/order-management/getDiscountedTotal";
 import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
 import { useWasabiContext } from "../../context/WasabiContext";
@@ -37,7 +37,7 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
     FieldColumn<AnyOrder>({
       key: "selection",
       header: "",
-      sort: false,
+      sortable: false,
     }),
 
     ValueColumn<AnyOrder>({

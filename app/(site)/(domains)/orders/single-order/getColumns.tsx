@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Input } from "@/components/ui/input";
-import { ActionColumn, HybridColumn, ValueColumn } from "../../../components/table/tableColumns";
+import { ActionColumn, HybridColumn, ValueColumn } from "../../../components/table/TableColumns";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import useGridFocus, { FocussableInput } from "../../../hooks/focus/useGridFocus";
@@ -46,7 +46,6 @@ export default function getColumns(
 
   return [
     ActionColumn<ProductInOrder>({
-      header: "",
       action: (row) =>
         row.original.product_id !== -1 && (
           <div className="flex justify-center items-center">
@@ -62,7 +61,7 @@ export default function getColumns(
 
     ValueColumn<ProductInOrder>({
       header: "Codice",
-      sort: false,
+      sortable: false,
       value: (row) => (
         <Input
           disabled={!interactionReady}
@@ -98,7 +97,7 @@ export default function getColumns(
 
     HybridColumn<ProductInOrder>({
       header: "Quantità",
-      sort: false,
+      sortable: false,
       value: (row) => (
         <div className="flex gap-2 items-center">
           <Button
@@ -147,7 +146,7 @@ export default function getColumns(
 
     ValueColumn<ProductInOrder>({
       header: "Descrizione",
-      sort: false,
+      sortable: false,
       value: (row) => (
         <div className="flex items-center justify-start overflow-hidden text-ellipsis w-full text-2xl">
           {row.original.product?.desc}
@@ -158,7 +157,7 @@ export default function getColumns(
 
     HybridColumn<ProductInOrder>({
       header: "Opzioni",
-      sort: false,
+      sortable: false,
       value: (row) => {
         if (row.original.product_id == -1) return <></>;
 
@@ -209,7 +208,7 @@ export default function getColumns(
 
     ValueColumn<ProductInOrder>({
       header: "Unità",
-      sort: false,
+      sortable: false,
       value: (row) => (
         <span className="text-2xl">
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
@@ -222,7 +221,7 @@ export default function getColumns(
 
     ValueColumn<ProductInOrder>({
       header: "Totale",
-      sort: false,
+      sortable: false,
       value: (row) => {
         const product = row.original;
         const productTotal = product.frozen_price * product.quantity;

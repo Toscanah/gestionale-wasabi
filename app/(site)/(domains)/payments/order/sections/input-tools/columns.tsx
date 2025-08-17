@@ -5,7 +5,7 @@ import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 import { PaymentCalculation } from "@/app/(site)/context/OrderPaymentContext";
 import { X } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction } from "react";
-import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
+import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 
 export default function getColumns(
   handleFieldChange: (key: keyof PaymentCalculation, value: number, rowIndex: number) => void,

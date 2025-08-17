@@ -1,5 +1,11 @@
+import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
 import Table from "@/app/(site)/components/table/Table";
-import { FieldColumn, IndexColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
+import {
+  FieldColumn,
+  IndexColumn,
+  JoinColumn,
+  ValueColumn,
+} from "@/app/(site)/components/table/TableColumns";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import RandomSpinner from "@/app/(site)/components/ui/misc/RandomSpinner";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
@@ -24,15 +30,7 @@ const columns: ColumnDef<TopCustomer>[] = [
     accessor: (customer) => customer.phone?.phone ?? "–",
   }),
 
-  ValueColumn({
-    header: "Nome",
-    value: (row) => (
-      <>
-        {row.original.name ?? ""} {row.original.surname ?? ""}
-      </>
-    ),
-    accessor: (customer) => `${customer.name ?? ""} ${customer.surname ?? ""}`,
-  }),
+  FullNameColumn({}),
 
   JoinColumn({
     options: { key: "addresses" },

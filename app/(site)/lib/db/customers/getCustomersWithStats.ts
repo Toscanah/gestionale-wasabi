@@ -3,6 +3,8 @@ import { CustomerWithStats } from "../../shared/types/CustomerWithStats";
 import roundToTwo from "../../formatting-parsing/roundToTwo";
 import getCustomersWithDetails from "./getCustomersWithDetails";
 import { getOrderTotal } from "../../services/order-management/getOrderTotal";
+import { CustomerSchemaInputs } from "../../shared";
+import { calculateRfmScore } from "../../services/rfm/calculateRfmScore";
 
 const calculateAverageOrders = (allOrders: Order[]) => {
   if (allOrders.length === 0) {
@@ -32,18 +34,17 @@ const calculateAverageOrders = (allOrders: Order[]) => {
 export default async function getCustomersWithStats({
   from,
   to,
-}: {
-  from?: Date;
-  to?: Date;
-}): Promise<CustomerWithStats[]> {
+}: CustomerSchemaInputs["GetCustomersWithStatsInput"]): Promise<CustomerWithStats[]> {
   const customers = (await getCustomersWithDetails()).filter((customer) => customer.active);
 
   const customersWithStats = customers.map((customer) => {
-    let allOrders = [
+    const lifetimeOrders = [
       ...customer.home_orders.map((homeOrder) => homeOrder.order),
       ...customer.pickup_orders.map((pickupOrder) => pickupOrder.order),
     ];
 
+    // apply filtering only for frequency/monetary
+    let allOrders = lifetimeOrders;
     if (from && to) {
       const parsedStartDate = new Date(from);
       const parsedEndDate = new Date(to);
@@ -64,13 +65,14 @@ export default async function getCustomersWithStats({
 
     const totalSpending = allOrders.reduce((sum, order) => sum + getOrderTotal({ order }), 0);
 
-    const lastOrderDate =
-      allOrders.length > 0
-        ? allOrders.reduce((latest, order) => {
+    const lastOrderDateLifetime =
+      lifetimeOrders.length > 0
+        ? lifetimeOrders.reduce((latest, order) => {
             const date = order.created_at;
             return date > latest ? date : latest;
           }, new Date(0))
         : undefined;
+
     const firstOrderDate =
       allOrders.length > 0
         ? allOrders.reduce((earliest, order) => {
@@ -87,16 +89,36 @@ export default async function getCustomersWithStats({
       averageOrdersYear = 0,
     } = calculateAverageOrders(allOrders);
 
+    // // RFM
+    const recency = lastOrderDateLifetime
+      ? Math.floor((Date.now() - lastOrderDateLifetime.getTime()) / (1000 * 60 * 60 * 24))
+      : Infinity;
+
+    const frequency = allOrders.length; // filtered by window if provided
+    const monetary = averageSpending; // filtered by window if provided
+
+    const rfm = { recency, frequency, monetary };
+    // const score = calculateRfmScore(rfm, rfmRules).finalScore;
+
     return {
       ...customer,
       totalSpending: parseFloat(roundToTwo(totalSpending)),
-      lastOrder: lastOrderDate,
+      lastOrder: lastOrderDateLifetime,
       firstOrder: firstOrderDate,
       averageSpending: parseFloat(roundToTwo(averageSpending)),
       averageOrdersWeek: parseFloat(roundToTwo(averageOrdersWeek)),
       averageOrdersMonth: parseFloat(roundToTwo(averageOrdersMonth)),
       averageOrdersYear: parseFloat(roundToTwo(averageOrdersYear)),
-    };
+      rfm: {
+        score: {
+          recency,
+          frequency,
+          monetary,
+          finalScore: 0,
+        },
+        rank: "none"
+      }
+    } as CustomerWithStats;
   });
 
   return customersWithStats;

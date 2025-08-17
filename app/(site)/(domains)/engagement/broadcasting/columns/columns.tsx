@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
-import { FieldColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
+import { FieldColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
+import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
 
 export default function columns({
   isRightTable,
@@ -8,42 +9,24 @@ export default function columns({
   isRightTable: boolean;
 }): ColumnDef<CustomerWithDetails>[] {
   const columns: ColumnDef<CustomerWithDetails>[] = [
-    ValueColumn({
-      header: "Chi",
-      value: (row) => {
-        const name = row.original.name?.trim();
-        const surname = row.original.surname?.trim();
-
-        if (name && surname) {
-          return `${name} ${surname}`;
-        } else if (name) {
-          return name;
-        } else if (surname) {
-          return surname;
-        } else {
-          return "";
-        }
-      },
-      sort: false,
-      accessor: (customer) => `${customer.name || ""} ${customer.surname || ""}`.trim(),
-    }),
+    FullNameColumn({}),
 
     ValueColumn({
       header: "Telefono",
       value: (row) => row.original.phone?.phone || "",
       accessor: (customer) => customer.phone?.phone || "",
-      sort: false,
+      sortable: false,
     }),
 
     FieldColumn({
       key: "email",
       header: "Email",
-      sort: false,
+      sortable: false,
     }),
 
     JoinColumn({
       options: { key: "addresses" },
-      sort: false,
+      sortable: false,
     }),
   ];
 

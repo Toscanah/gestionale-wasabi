@@ -2,7 +2,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns"; // Ensure date-fns is installed
 import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
-
 import { CustomerWithStats } from "../../../lib/shared/types/CustomerWithStats";
 import OrderHistory from "../../../components/order-history/OrderHistory";
 import {
@@ -10,7 +9,9 @@ import {
   FieldColumn,
   JoinColumn,
   ValueColumn,
-} from "@/app/(site)/components/table/tableColumns";
+} from "@/app/(site)/components/table/TableColumns";
+import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
+import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
 
 const columns: ColumnDef<CustomerWithStats>[] = [
   FieldColumn({
@@ -18,14 +19,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
     header: "Telefono",
   }),
 
-  ValueColumn({
-    header: "Chi",
-    value: (row) => {
-      const { name, surname } = row.original;
-      return [name, surname].filter(Boolean).join(" ") || "";
-    },
-    accessor: (customer) => `${customer.name} ${customer.surname}`,
-  }),
+  FullNameColumn({}),
 
   JoinColumn({
     header: "Campanelli",
@@ -35,20 +29,20 @@ const columns: ColumnDef<CustomerWithStats>[] = [
     },
   }),
 
-  FieldColumn({
-    key: "averageOrdersWeek",
-    header: "Media a settimana",
-  }),
+  // FieldColumn({
+  //   key: "averageOrdersWeek",
+  //   header: "Media a settimana",
+  // }),
 
-  FieldColumn({
-    key: "averageOrdersMonth",
-    header: "Media al mese",
-  }),
+  // FieldColumn({
+  //   key: "averageOrdersMonth",
+  //   header: "Media al mese",
+  // }),
 
-  FieldColumn({
-    key: "averageOrdersYear",
-    header: "Media all'anno",
-  }),
+  // FieldColumn({
+  //   key: "averageOrdersYear",
+  //   header: "Media all'anno",
+  // }),
 
   FieldColumn({
     key: "averageSpending",
@@ -56,9 +50,14 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   ValueColumn({
+    header: "RFM",
+    value: (row) => roundToTwo(row.original.rfm.score.finalScore),
+    accessor: (customer) => customer.rfm.score.finalScore,
+  }),
+
+  ValueColumn({
     header: "Ultimo ordine",
-    value: (row) =>
-      row.original.lastOrder ? format(row.original.lastOrder, "dd-MM-yyyy") : "",
+    value: (row) => (row.original.lastOrder ? format(row.original.lastOrder, "dd-MM-yyyy") : ""),
     accessor: (customer) => customer.lastOrder,
   }),
 

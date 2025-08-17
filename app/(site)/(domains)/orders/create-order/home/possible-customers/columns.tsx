@@ -4,7 +4,7 @@ import {
   ActionColumn,
   FieldColumn,
   JoinColumn,
-} from "@/app/(site)/components/table/tableColumns";
+} from "@/app/(site)/components/table/TableColumns";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";

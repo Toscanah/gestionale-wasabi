@@ -4,7 +4,7 @@ import {
   FieldColumn,
   JoinColumn,
   ValueColumn,
-} from "../../../components/table/tableColumns";
+} from "../../../components/table/TableColumns";
 import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";

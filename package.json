@@ -85,7 +85,7 @@
     "node-gyp-build": "^4.8.2",
     "punycode": "^2.3.1",
     "re-resizable": "^6.9.17",
-    "react": "^18",
+    "react": "^18.3.1",
     "react-clock": "^5.0.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
@@ -99,6 +99,7 @@
     "react-spinners": "^0.16.1",
     "react-tabindex": "^1.0.3",
     "react-thermal-printer": "^0.18.1",
+    "scheduler": "^0.26.0",
     "server-only": "^0.0.1",
     "sharp": "^0.33.5",
     "socket.io-client": "^4.8.1",
@@ -108,11 +109,13 @@
     "tailwindcss-animate": "^1.0.7",
     "tough-cookie": "^5.1.0",
     "usb": "^2.14.0",
+    "use-context-selector": "^2.0.0",
     "uuid": "^10.0.0",
     "vaul": "^0.9.1",
     "xml2js": "^0.6.2",
     "zod": "^3.24.1",
-    "zod-prisma-types": "^3.2.1"
+    "zod-prisma-types": "^3.2.1",
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.5",

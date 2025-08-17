@@ -6,7 +6,7 @@ import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import TopOptions from "./dialogs/TopOptions";
 import TopCustomers from "./dialogs/TopCustomers";
-import { ActionColumn, FieldColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
+import { ActionColumn, FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 
 const columns: ColumnDef<ProductWithStats>[] = [
   FieldColumn({

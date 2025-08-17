@@ -2,6 +2,7 @@ import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
 import { createInputSchema, NoContentSchema, ToggleDeleteObjectSchema, wrapSchema } from "./common";
 import { SchemaInputs } from "../types/SchemaInputs";
+import { RFMSRuleschema } from "../models/RFM";
 
 export const GetCustomerByPhoneSchema = z.object({ phone: z.string() });
 

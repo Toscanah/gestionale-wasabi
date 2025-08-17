@@ -4,6 +4,11 @@ import { endOfYear, startOfYear, subDays, startOfDay, endOfMonth, startOfMonth }
 import { CustomerWithStats } from "@/app/(site)/lib/shared/types/CustomerWithStats";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { DatePreset } from "../../lib/shared/enums/DatePreset";
+import useRfmRules from "../rfm/useRfmRules";
+import { calculateRfmScore } from "../../lib/services/rfm/calculateRfmScore";
+import calculateRfmCategory from "../../lib/services/rfm/calculateRfmCategory";
+import useRfmRanks from "../rfm/useRfmRanks";
+import { RFMRankRule, RFMRules } from "../../lib/shared/types/RFM";
 
 const today = new Date();
 const defaultDate: DateRange = {
@@ -17,6 +22,8 @@ export function useCustomersStats() {
   const [filteredCustomers, setFilteredCustomers] = useState<CustomerWithStats[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<DateRange | undefined>(defaultDate);
+  const { rfmRules } = useRfmRules();
+  const { categories: categoriesRules } = useRfmRanks();
 
   useEffect(() => {
     setIsLoading(true);
@@ -29,14 +36,37 @@ export function useCustomersStats() {
     }
   }, [dateFilter]);
 
+  const updateCustomersWithRFM = (
+    customers: CustomerWithStats[],
+    rfmRules: RFMRules,
+    categoriesRules: RFMRankRule[]
+  ): CustomerWithStats[] => {
+    return customers.map((customer) => {
+      const { frequency, monetary, recency } = customer.rfm.score;
+
+      const rfmScore = calculateRfmScore({ frequency, monetary, recency }, rfmRules);
+      const rfmCategory = calculateRfmCategory(rfmScore, categoriesRules);
+
+      return {
+        ...customer,
+        rfm: {
+          ...customer.rfm,
+          score: rfmScore,
+          category: rfmCategory,
+        },
+      };
+    });
+  };
+
   const fetchInitialCustomers = () =>
-    fetchRequest<CustomerWithStats[]>("GET", "/api/customers", "getCustomersWithStats", {
+    fetchRequest<CustomerWithStats[]>("POST", "/api/customers", "getCustomersWithStats", {
       ...dateFilter,
     }).then((customers) => {
-      setCustomers(customers);
+      const updatedCustomers = updateCustomersWithRFM(customers, rfmRules, categoriesRules);
+      setCustomers(updatedCustomers);
 
       setDateFilter({
-        from: customers
+        from: updatedCustomers
           .map((customer) => (customer?.firstOrder ? new Date(customer.firstOrder) : new Date()))
           .reduce((earliest, date) => (date < earliest ? date : earliest), new Date()),
         to: new Date(),
@@ -44,11 +74,12 @@ export function useCustomersStats() {
     });
 
   const fetchCustomersWithFilter = (value: DateRange) =>
-    fetchRequest<CustomerWithStats[]>("GET", "/api/customers", "getCustomersWithStats", {
+    fetchRequest<CustomerWithStats[]>("POST", "/api/customers", "getCustomersWithStats", {
       ...value,
     }).then((filteredCustomers) => {
-      setFilteredCustomers(filteredCustomers);
-      applyFilter(selectedFilter, filteredCustomers);
+      const updatedCustomers = updateCustomersWithRFM(filteredCustomers, rfmRules, categoriesRules);
+      setFilteredCustomers(updatedCustomers);
+      applyFilter(selectedFilter, updatedCustomers);
     });
 
   const sortByMetric = (customers: CustomerWithStats[], metric: keyof CustomerWithStats) =>
@@ -177,6 +208,6 @@ export function useCustomersStats() {
     handlePresetSelect,
     applyFilter,
     handleReset,
-    isLoading
+    isLoading,
   };
 }

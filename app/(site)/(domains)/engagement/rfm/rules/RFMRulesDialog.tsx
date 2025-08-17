@@ -6,32 +6,30 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
+import { SidebarMenuButton, SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { HashStraight } from "@phosphor-icons/react";
-import { RFM } from "@/app/(site)/lib/shared/types/RFM";
-import RFMDimensionEditor from "./edit/RFMDimensionEditor";
+import { RFMRules } from "@/app/(site)/lib/shared/types/RFM";
+import RFMDimensionEditor from "./RFMDimensionEditor";
+import useRfmRules from "@/app/(site)/hooks/rfm/useRfmRules";
 
-export const RFM_LABELS: { key: keyof RFM; label: string }[] = [
+export const RFM_DIM_LABELS: { key: keyof RFMRules; label: string }[] = [
   { key: "recency", label: "Recenza" },
   { key: "frequency", label: "Frequenza" },
   { key: "monetary", label: "Monetario" },
 ];
 
-export default function RFMDialog() {
-  const { rfmRules, updateDimensionRules, updateWeight } = useWasabiContext();
+export default function RFMRulesDialog() {
+  const { rfmRules, updateDimensionRules, updateWeight } = useRfmRules();
 
   return (
     <DialogWrapper
+      title="Regole RFM"
       autoFocus={false}
-      trigger={
-        <SidebarMenuButton className="hover:cursor-pointer">
-          <HashStraight /> Indice RFM
-        </SidebarMenuButton>
-      }
+      trigger={<SidebarMenuSubButton className="hover:cursor-pointer">Regole</SidebarMenuSubButton>}
     >
-      <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
-        {RFM_LABELS.map((item) => (
-          <AccordionItem key={item.key} value={`${item.key}`}>
+      <Accordion type="single" collapsible className="w-full">
+        {RFM_DIM_LABELS.map((item) => (
+          <AccordionItem key={item.key} value={item.key}>
             <AccordionTrigger className="flex items-center">
               <span>
                 <strong>{item.label[0].toUpperCase()}</strong>

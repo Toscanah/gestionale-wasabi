@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/app/(site)/lib/shared";
 import { KitchenType } from "@prisma/client";
-import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
+import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 
 const columns: ColumnDef<Product>[] = [
   FieldColumn({

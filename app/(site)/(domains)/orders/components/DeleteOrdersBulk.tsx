@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import fetchRequest from "../../../lib/api/fetchRequest";
 import OrderDeletionDialog from "../single-order/overview/OrderDeletionDialog";
-import { AnyOrder } from "@/app/(site)/lib/shared";
 import { CancelOrdersInBulkResponse } from "../../../lib/db/orders/cancelOrdersInBulk";
 
 export default function DeleteOrdersBulk() {

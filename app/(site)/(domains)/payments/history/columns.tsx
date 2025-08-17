@@ -7,7 +7,7 @@ import fetchRequest from "../../../lib/api/fetchRequest";
 import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
-import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/tableColumns";
+import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 
 const columns: ColumnDef<OrderWithPayments>[] = [
   ValueColumn({

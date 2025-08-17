@@ -71,7 +71,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
                       <FormControl>
                         <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.UNKNOWN}/>
                       </FormControl>
-                      <FormLabel className="!mt-0 text-2xl">Ignoto</FormLabel>
+                      <FormLabel className="!mt-0 text-2xl">Sconosciuto</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center gap-2">
                       <FormControl>

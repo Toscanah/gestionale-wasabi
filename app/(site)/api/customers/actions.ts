@@ -15,6 +15,10 @@ import updateCustomerOrderNotes from "../../lib/db/customers/updateCustomerOrder
 
 const POST_ACTIONS = new Map([
   ["createCustomer", { func: createCustomer, schema: CUSTOMER_SCHEMAS.createCustomer }],
+  [
+    "getCustomersWithStats",
+    { func: getCustomersWithStats, schema: CUSTOMER_SCHEMAS.getCustomersWithStats },
+  ],
 ]);
 
 const PATCH_ACTIONS = new Map([
@@ -54,10 +58,6 @@ const GET_ACTIONS = new Map([
   [
     "getCustomersByDoorbell",
     { func: getCustomersByDoorbell, schema: CUSTOMER_SCHEMAS.getCustomersByDoorbell },
-  ],
-  [
-    "getCustomersWithStats",
-    { func: getCustomersWithStats, schema: CUSTOMER_SCHEMAS.getCustomersWithStats },
   ],
 ]);
 

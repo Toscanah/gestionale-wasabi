@@ -2,7 +2,7 @@ import React, { ComponentType } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { ActionColumn, ValueColumn } from "../../components/table/tableColumns";
+import { ActionColumn, ValueColumn } from "../../components/table/TableColumns";
 
 export default function getColumns<T extends { id: number; active: boolean }>(
   columns: ColumnDef<T>[],

@@ -5,7 +5,7 @@ import { ControllerRenderProps } from "react-hook-form";
 
 
 export const CUSTOMER_ORIGIN_LABELS: Record<CustomerOrigin, string> = {
-  [CustomerOrigin.UNKNOWN]: "Ignoto",
+  [CustomerOrigin.UNKNOWN]: "Sconosciuto",
   [CustomerOrigin.WEBSITE]: "Sito",
   [CustomerOrigin.COUPON]: "Coupon",
   [CustomerOrigin.REFFERAL]: "Passaparola",

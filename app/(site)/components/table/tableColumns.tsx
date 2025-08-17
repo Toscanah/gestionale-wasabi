@@ -4,12 +4,18 @@ import { ColumnDef, Row, TableMeta } from "@tanstack/react-table";
 import { Fragment, ReactNode } from "react";
 import getNestedValue from "../../lib/utils/getNestedValue";
 import joinItemsWithComma, {
+  /**
+   * JoinItemType represents the type of items that can be joined in a table column.
+   */
   JoinItemType,
 } from "@/app/(site)/lib/formatting-parsing/joinItemsWithComma";
 import { uniqueId } from "lodash";
 
 type Primitive = string | number | boolean | Date | null | undefined;
 
+/**
+ * Primitive types allowed in table columns.
+ */
 type JoinOptions = {
   key: JoinItemType;
   wrapper?: React.ComponentType<{ children: React.ReactNode }>;
@@ -22,6 +28,11 @@ const JOIN_HEADERS: Record<JoinItemType, string> = {
   options: "Opzioni",
 };
 
+/**
+ * Builds a table column header with optional sorting button.
+ * @param title - The column title.
+ * @param sort - Whether the column is sortable.
+ */
 function buildHeader<T>(title: string = "", sort: boolean): ColumnDef<T>["header"] {
   return ({ column }) =>
     sort ? (
@@ -34,20 +45,30 @@ function buildHeader<T>(title: string = "", sort: boolean): ColumnDef<T>["header
     );
 }
 
-type BaseProps = {
+/**
+ * Base props for all table columns.
+ * @property header - The column header label.
+ * @property sortable - Whether the column is sortable.
+ */
+export type BaseColumnProps = {
   header?: string;
-  sort?: boolean;
+  sortable?: boolean;
 };
 
 /* ------------------------------------------------------
  *  1. IndexColumn
  * ---------------------------------------------------- */
-type IndexColumn = BaseProps;
+type IndexColumn = BaseColumnProps;
 
-export function IndexColumn<T>({ header = "#", sort = true }: IndexColumn): ColumnDef<T> {
+/**
+ * Returns a column definition for a row index column (auto-incrementing number).
+ * @param header - The column header label (default: "#").
+ * @param sortable - Whether the column is sortable (default: true).
+ */
+export function IndexColumn<T>({ header = "#", sortable = true }: IndexColumn): ColumnDef<T> {
   return {
     id: header,
-    header: buildHeader<T>(header, sort),
+    header: buildHeader<T>(header, sortable),
     cell: ({ row, table }) =>
       (table.getSortedRowModel()?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) ?? 0) + 1,
   };
@@ -56,15 +77,21 @@ export function IndexColumn<T>({ header = "#", sort = true }: IndexColumn): Colu
 /* ------------------------------------------------------
  *  2. FieldColumn
  * ---------------------------------------------------- */
-type FieldColumn = BaseProps & {
+type FieldColumn = BaseColumnProps & {
   key: string;
 };
 
-export function FieldColumn<T>({ key, header, sort = true }: FieldColumn): ColumnDef<T> {
+/**
+ * Returns a column definition for a field value (simple accessor).
+ * @param key - The key of the field to display.
+ * @param header - The column header label.
+ * @param sortable - Whether the column is sortable (default: true).
+ */
+export function FieldColumn<T>({ key, header, sortable = true }: FieldColumn): ColumnDef<T> {
   return {
     id: key,
     accessorFn: (original) => getNestedValue<T>(original, key),
-    header: buildHeader<T>(header, sort),
+    header: buildHeader<T>(header, sortable),
     sortingFn: "alphanumeric",
     cell: ({ getValue }) => <>{String(getValue())}</>, // reuse accessorFn output
   };
@@ -73,15 +100,21 @@ export function FieldColumn<T>({ key, header, sort = true }: FieldColumn): Colum
 /* ------------------------------------------------------
  *  3. JoinColumn
  * ---------------------------------------------------- */
-type JoinColumn = BaseProps & {
+type JoinColumn = BaseColumnProps & {
   options: JoinOptions;
 };
 
-export function JoinColumn<T>({ options, header, sort = true }: JoinColumn): ColumnDef<T> {
+/**
+ * Returns a column definition for joining array fields into a single cell.
+ * @param options - Join options for the array field.
+ * @param header - The column header label.
+ * @param sortable - Whether the column is sortable (default: true).
+ */
+export function JoinColumn<T>({ options, header, sortable = true }: JoinColumn): ColumnDef<T> {
   return {
     id: options.key,
     accessorFn: (original) => joinItemsWithComma(original, options.key),
-    header: buildHeader(header ?? JOIN_HEADERS[options.key], sort),
+    header: buildHeader(header ?? JOIN_HEADERS[options.key], sortable),
     sortingFn: "alphanumeric",
     cell: ({ row }) => {
       const Wrapper = options.wrapper || Fragment;
@@ -93,21 +126,32 @@ export function JoinColumn<T>({ options, header, sort = true }: JoinColumn): Col
 /* ------------------------------------------------------
  *  4. ValueColumn (sortable/filterable, accessor required)
  * ---------------------------------------------------- */
-type ValueColumn<T> = BaseProps & {
+type ValueColumn<T> = BaseColumnProps & {
   value: (row: Row<T>, meta: TableMeta<T> | undefined) => ReactNode;
   accessor: (row: T) => Primitive;
 };
 
+/**
+ * Returns a column definition for a value column with custom rendering and accessor.
+ * @param accessor - Function to access the value from the row data.
+ * @param value - Function to render the cell value.
+ * @param header - The column header label.
+ * @param sortable - Whether the column is sortable (default: true).
+ */
 export function ValueColumn<T>({
   accessor,
   value,
   header,
-  sort = true,
+  sortable = true,
 }: ValueColumn<T>): ColumnDef<T> {
+  if (header && header.trim() === "") {
+    throw new Error("ValueColumn: 'header' must be a non-empty string.");
+  }
+
   return {
     id: header ?? uniqueId(),
     accessorFn: (original) => accessor(original),
-    header: buildHeader(header, sort),
+    header: buildHeader(header, sortable),
     sortingFn: "alphanumeric",
     cell: ({ row, table }) => value(row, table.options.meta),
   };
@@ -116,11 +160,20 @@ export function ValueColumn<T>({
 /* ------------------------------------------------------
  *  5. ActionColumn (pure actions, no accessor/sorting/filtering)
  * ---------------------------------------------------- */
-type ActionColumn<T> = Pick<BaseProps, "header"> & {
+type ActionColumn<T> = Pick<BaseColumnProps, "header"> & {
   action: (row: Row<T>, meta: TableMeta<T> | undefined) => ReactNode;
 };
 
+/**
+ * Returns a column definition for an action column (e.g., buttons, icons).
+ * @param action - Function to render the action cell content.
+ * @param header - The column header label.
+ */
 export function ActionColumn<T>({ action, header }: ActionColumn<T>): ColumnDef<T> {
+  if (header && header.trim() === "") {
+    throw new Error("ActionColumn: 'header' must be a non-empty string.");
+  }
+
   return {
     id: header ?? uniqueId(),
     header: buildHeader(header, false),
@@ -134,3 +187,7 @@ export function ActionColumn<T>({ action, header }: ActionColumn<T>): ColumnDef<
  *  5. HybridColumn (hybrid, same as ValueColumn)
  * ---------------------------------------------------- */
 export const HybridColumn = ValueColumn;
+
+/**
+ * HybridColumn is an alias for ValueColumn, supporting both accessor and custom rendering.
+ */
