@@ -1,0 +1,87 @@
+[33ma16b2d4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Refactor table columns import paths and update customer origin labels for migration preparation.
+[33m8599757[m Refactor RFM backend and restructure table columns for improved functionality.
+[33m2ccb6e3[m Refactor Manager component and add CustomerOriginSelection for improved customer management.
+[33mad7a318[m Add nullable columns for planned payment and prepaid in multiple tables.
+[33m513f3f6[m Refactor database schema and update order handling, payment status, and engagement templates.
+[33m48cdfa5[m Refactor ExtraItems component to use ManualExtras state for better state management.
+[33m9db0e0d[m Refactor print function to handle serial port selection and improve error handling.
+[33m525da8b[m Refactor template loading condition in NormalActions component for WhatsApp integration.
+[33m1fa3b2e[m Refactor variable names for clarity in RiceSummary component calculations.
+[33m89851b6[m Fix calculation for remaining rice based on consumed lunch and dinner.
+[33m0e005d5[m Refactor API routes to use centralized action handlers for better maintainability.
+[33m5cb2e9f[m Remove unused imports from WasabiContext and useRice files.
+[33ma0856c5[m Refactor rice update logic and improve dialog component properties for clarity.
+[33m15463d1[m Add loading spinner to various pages during data fetching operations.
+[33m21112b6[m Refactor TemplateWrapper to use Textarea and update dialog titles for orders.
+[33mcde0751[m Refactor RiceDialog and RiceDefaultValues for improved layout and table integration.
+[33mad39781[m Refactor RiceDefaultValues and related files; improve structure and state management.
+[33mf747eed[m Refactor rice management: split into lunch/dinner, added shift toggling functionality.
+[33mf8cec6d[m Add TopOptions and TopCustomers components for enhanced product statistics display.
+[33m2b46993[m Refactor RiceSummary to include lunch and dinner filters; update NormalActions logic.
+[33mc07ead7[m Add interaction readiness state to OrderTable for improved user experience.
+[33mc545ee0[m Refactor button_text to button_url across multiple components and update related logic.
+[33m43fb383[m Update NormalActions to include new URLs for body and button text.
+[33m6440345[m Integrate WhatsApp settings into OrdersTable column configuration.
+[33m1a631b3[m Add WhatsApp messaging feature and update settings across components.
+[33mdfcdccc[m Refactor message templates and integrate WhatsApp messaging functionality.
+[33m0d1a36d[m Refactor file structure and update fetchRequest imports to use new API path.
+[33mcb649f0[m Refactor imports to use new domain structure across the application.
+[33m7202ce2[m Refactor project structure: move SQL files to lib/db and update import paths.
+[33m39a627d[m Add condition to disable action for HOME order type in NormalActions.
+[33m526aab8[m Refactor parameter names and improve bulk order cancellation response types.
+[33mef7307d[m Delete payments when the respective order is canceled.
+[33mf9de58d[m Update order engagements after fetching order data in Engagement component.
+[33mb71869e[m Fix incorrect index calculation for Roman payments in order payment logic.
+[33mc0d2d02[m Enhance focus handling and debounce input updates in RomanStyle component.
+[33mcf3c976[m Add focus handling on table and people inputs in TableUpdate component.
+[33m3ad3917[m Refactor Discount and TableChange components; rename TableChange to TableUpdate.
+[33m762d23f[m Merge branch 'main' of https://github.com/Toscanah/gestionale-wasabi
+[33maf76424[m Format total from products to two decimal places in SectionResults component.
+[33maecc9b6[m Implement date range filtering for payments history functionality.
+[33mf779de1[m Remove unused useEffect import from HomePage component.
+[33ma9eb34d[m Refactor MarketingTemplates component and update Prisma dependencies to version 6.10.1.
+[33m19e1761[m Refactor imports and filter active customers in order creation process.
+[33m1c5dbbe[m Refactor pricing logic to use frozen_price instead of getProductPrice across components.
+[33ma1df8e9[m Refactor order statistics calculations and enhance receipt text sanitization.
+[33m2ac70e4[m Implement frozen price feature in product management and order handling.
+[33m9db4325[m Refactor EngagementSection and remove unused EngagementDialog component.
+[33mfe15150[m Refactor EngagementSection to improve message and QR code rendering logic.
+[33m625cb78[m Replace Input with Textarea in Message component for better user experience.
+[33m73b3d05[m Add line breaks in EngagementSection and enable engagements on order cancellation.
+[33mc8a4102[m Refactor engagement handling and improve template management in various components.
+[33mb64a16a[m Add toggle engagement functionality and update marketing templates handling.
+[33m74b666a[m Refactor timeout duration for kitchen print and import order total function.
+[33m49e3487[m Reduce timeout duration for printing kitchen receipt from 1000ms to 750ms.
+[33m8008fb2[m Refactor DivideOrder component to remove sub-order creation state management.
+[33m7592553[m Refactor order management to remove timeout and improve sub-order creation handling.
+[33mb3004f3[m Add delay for order updates and simplify kitchen receipt printing logic.
+[33m599f5dd[m Refactor order handling logic and improve readability in HomePage components.
+[33m2538d47[m Remove debug log from DailySummary component in payments history.
+[33m436272b[m Add console log for parsed cents difference and update conditional rendering check.
+[33m1423fce[m Add centsDifference to DailySummary and improve rendering logic in the table.
+[33m4d372c1[m Refactor Header and HomePage components; clean up unused imports and code.
+[33m62c2898[m Update activeOrders state to enable HOME and PICKUP order types.
+[33m0907ef1[m Update HomePage order states and refactor updateGlobalState logic for better handling.
+[33mfc1be53[m Remove commented-out Button component in HomePage.tsx for cleaner code.
+[33m25289a7[m Refactor payment amount handling to round values to two decimal places.
+[33m6f0f8b4[m Refactor payment confirmation to use debounced payment submission.
+[33m78d629f[m Refactor payment processing to include cents rounding and apply payment scopes logic.
+[33md6e6fd9[m Refactor sidebar sections and update quantity handling in product orders.
+[33m4b141f8[m Refactor engagement templates and update state management for better clarity and functionality.
+[33m87a45aa[m Add BMP support for image uploads and implement payment scope analysis functionality.
+[33m0503efc[m Refactor imports and clean up code formatting across multiple files.
+[33mb959119[m Refactor product management functions and rename deleteProductsFromOrder to removeProductsFromOrder.
+[33mec75dc9[m Add return types to functions and improve error handling in utilities.
+[33mab72d85[m Refactor order total calculation for improved readability and maintainability.
+[33m8a4c92e[m Add guards for edge cases in statistics when orders are deleted after payment.
+[33m23452ad[m Refactor OrderPaymentContext and related components for improved payment handling and calculations.
+[33m1f538db[m Filter products by state before calculating order total.
+[33ma105948[m Add payment summary data structure and calculations to payments history hook.
+[33me94757c[m Update receipt labels and adjust text sizes for better readability.
+[33m99acba8[m Refactor product pricing logic and add raw total amount to summary data.
+[33m05d2ae5[m Refactor PrintSummary to filter paid orders and improve readability.
+[33m7df0f23[m Refactor order state check to use OrderState.PAID instead of ProductInOrderState.IN_ORDER.
+[33mbbf3e08[m Add ProductInOrderState check to filter orders in getProductsWithStats function.
+[33m0022db1[m Change roundToTwo to return string; update usages to parseFloat where necessary.
+[33mafa4f09[m Remove order total from database and update related calculations.
+[33mbe2f7da[m Refactor HomePage to use useMemo for performanc

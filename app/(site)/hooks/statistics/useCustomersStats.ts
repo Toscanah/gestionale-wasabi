@@ -9,6 +9,7 @@ import { calculateRfmScore } from "../../lib/services/rfm/calculateRfmScore";
 import calculateRfmCategory from "../../lib/services/rfm/calculateRfmCategory";
 import useRfmRanks from "../rfm/useRfmRanks";
 import { RFMRankRule, RFMRules } from "../../lib/shared/types/RFM";
+import updateCustomersWithRFM from "../../lib/services/rfm/updateCustomersWithRFM";
 
 const today = new Date();
 const defaultDate: DateRange = {
@@ -23,7 +24,7 @@ export function useCustomersStats() {
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<DateRange | undefined>(defaultDate);
   const { rfmRules } = useRfmRules();
-  const { categories: categoriesRules } = useRfmRanks();
+  const { ranks } = useRfmRanks();
 
   useEffect(() => {
     setIsLoading(true);
@@ -36,33 +37,13 @@ export function useCustomersStats() {
     }
   }, [dateFilter]);
 
-  const updateCustomersWithRFM = (
-    customers: CustomerWithStats[],
-    rfmRules: RFMRules,
-    categoriesRules: RFMRankRule[]
-  ): CustomerWithStats[] => {
-    return customers.map((customer) => {
-      const { frequency, monetary, recency } = customer.rfm.score;
 
-      const rfmScore = calculateRfmScore({ frequency, monetary, recency }, rfmRules);
-      const rfmCategory = calculateRfmCategory(rfmScore, categoriesRules);
-
-      return {
-        ...customer,
-        rfm: {
-          ...customer.rfm,
-          score: rfmScore,
-          category: rfmCategory,
-        },
-      };
-    });
-  };
 
   const fetchInitialCustomers = () =>
     fetchRequest<CustomerWithStats[]>("POST", "/api/customers", "getCustomersWithStats", {
       ...dateFilter,
     }).then((customers) => {
-      const updatedCustomers = updateCustomersWithRFM(customers, rfmRules, categoriesRules);
+      const updatedCustomers = updateCustomersWithRFM(customers, rfmRules, ranks);
       setCustomers(updatedCustomers);
 
       setDateFilter({
@@ -77,7 +58,7 @@ export function useCustomersStats() {
     fetchRequest<CustomerWithStats[]>("POST", "/api/customers", "getCustomersWithStats", {
       ...value,
     }).then((filteredCustomers) => {
-      const updatedCustomers = updateCustomersWithRFM(filteredCustomers, rfmRules, categoriesRules);
+      const updatedCustomers = updateCustomersWithRFM(filteredCustomers, rfmRules, ranks);
       setFilteredCustomers(updatedCustomers);
       applyFilter(selectedFilter, updatedCustomers);
     });
