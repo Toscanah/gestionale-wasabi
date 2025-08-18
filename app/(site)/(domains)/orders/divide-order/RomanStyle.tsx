@@ -8,9 +8,9 @@ import { TableOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "../../../context/OrderContext";
 import fetchRequest from "../../../lib/api/fetchRequest";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
-import roundToCents from "../../../lib/utils/roundToCents";
+import roundToCents from "../../../lib/utils/global/number/roundToCents";
 import { debounce } from "lodash";
-import { toastSuccess } from "../../../lib/utils/toast";
+import { toastSuccess } from "../../../lib/utils/global/toast";
 import useFocusOnClick from "../../../hooks/focus/useFocusOnClick";
 
 interface RomanStyleProps {

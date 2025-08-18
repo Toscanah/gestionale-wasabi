@@ -1,7 +1,7 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
 import getDiscountedTotal from "./getDiscountedTotal";
-import roundToTwo from "../../formatting-parsing/roundToTwo";
+import roundToTwo from "../../utils/global/number/roundToTwo";
 import filterDeletedProducts from "../../services/product-management/filterDeletedProducts";
 
 type BaseOrderInput = {
@@ -13,7 +13,7 @@ type OrderInputWithDiscount = BaseOrderInput & {
   discount: number;
 };
 
-type OrderInputWithoutDiscount = BaseOrderInput & {
+export type OrderInputWithoutDiscount = BaseOrderInput & {
   discount?: number;
 };
 

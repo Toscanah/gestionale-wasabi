@@ -1,6 +1,6 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
-import joinItemsWithComma from "../../formatting-parsing/joinItemsWithComma";
+import joinItemsWithComma from "../../utils/global/string/joinItemsWithComma";
 
 export default function aggregateProducts(
   products: ProductInOrder[],

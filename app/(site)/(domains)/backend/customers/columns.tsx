@@ -11,7 +11,6 @@ import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
 import OrderHistory from "../../../components/order-history/OrderHistory";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
-import joinItemsWithComma from "../../../lib/formatting-parsing/joinItemsWithComma";
 import { CUSTOMER_ORIGIN_LABELS } from "./CustomerOriginSelection";
 
 const columns = (

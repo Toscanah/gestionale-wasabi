@@ -5,7 +5,7 @@ import { useWasabiContext } from "../../context/WasabiContext";
 import generateDummyProduct from "../../lib/services/product-management/generateDummyProduct";
 import fetchRequest from "../../lib/api/fetchRequest";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";
-import { toastError, toastSuccess } from "../../lib/utils/toast";
+import { toastError, toastSuccess } from "../../lib/utils/global/toast";
 import { OrderStatus } from "@prisma/client";
 
 export type RecursivePartial<T> = {

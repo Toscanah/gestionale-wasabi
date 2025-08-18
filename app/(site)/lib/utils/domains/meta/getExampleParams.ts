@@ -1,4 +1,4 @@
-import { TemplateBodyExample, TemplateHeaderTextExample } from "../../shared";
+import { TemplateBodyExample, TemplateHeaderTextExample } from "../../../shared";
 
 type ExampleType = "header_text" | "body_text";
 

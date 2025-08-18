@@ -2,9 +2,9 @@ import { Br, Text } from "react-thermal-printer";
 import TimeSection from "./TimeSection";
 import { GlobalSettings } from "../../../lib/shared/types/Settings";
 import { DEFAULT_SETTINGS } from "../../../hooks/useSettings";
-import sanitazeReceiptText from "../../../lib/formatting-parsing/printing/sanitazeReceiptText";
+import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
 import { BIG_PRINT, SMALL_PRINT } from "../constants";
-import fitReceiptText from "@/app/(site)/lib/formatting-parsing/printing/fitReceiptText";
+import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
 
 // import logo from "../../../../public/logo.png";
 

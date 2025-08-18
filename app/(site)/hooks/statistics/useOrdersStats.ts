@@ -4,12 +4,12 @@ import { OrderType, ProductInOrderStatus, WorkingShift } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import sectionReducer, { initialState } from "./sectionReducer";
 import { isSameDay } from "date-fns";
-import timeToDecimal from "../../lib/utils/time/timeToDecimal";
 import {
   getEffectiveOrderShift,
   parseOrderTime,
 } from "../../lib/services/order-management/shift/getEffectiveOrderShift";
 import getPioRice from "../../lib/services/product-management/getPioRice";
+import timeToDecimal from "../../lib/utils/global/time/timeToDecimal";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",

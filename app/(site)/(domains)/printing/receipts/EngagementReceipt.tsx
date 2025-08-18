@@ -1,5 +1,4 @@
-import sanitizeReceiptText from "@/app/(site)/lib/formatting-parsing/printing/sanitazeReceiptText";
-import wrapTextCentered from "@/app/(site)/lib/formatting-parsing/printing/wrapTextCentered";
+import sanitizeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import {
   CommonPayload,
   EngagementWithDetails,
@@ -11,6 +10,7 @@ import { Fragment } from "react";
 import { Br, Image, QRCode, Text } from "react-thermal-printer";
 import { BIG_PRINT, SMALL_PRINT } from "../constants";
 import { EngagementType } from "@prisma/client";
+import wrapTextCentered from "@/app/(site)/lib/utils/domains/printing/wrapTextCentered";
 
 export interface EngagementReceiptProps {
   engagements: EngagementWithDetails[];

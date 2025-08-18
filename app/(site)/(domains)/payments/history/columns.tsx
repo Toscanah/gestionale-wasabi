@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { OrderType, PlannedPayment } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import fetchRequest from "../../../lib/api/fetchRequest";
-import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
+import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";

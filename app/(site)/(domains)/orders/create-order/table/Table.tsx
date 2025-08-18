@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { AnyOrder, TableOrder } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import fetchRequest from "../../../../lib/api/fetchRequest";
-import { toastError, toastSuccess } from "../../../../lib/utils/toast";
+import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import { cn } from "@/lib/utils";

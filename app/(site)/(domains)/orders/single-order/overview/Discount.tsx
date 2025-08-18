@@ -3,7 +3,7 @@ import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { Input } from "@/components/ui/input";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
-import { toastSuccess } from "@/app/(site)/lib/utils/toast";
+import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 

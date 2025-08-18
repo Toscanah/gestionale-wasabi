@@ -5,7 +5,7 @@ import { isToday } from "date-fns";
 import { RiceLogType } from "@prisma/client";
 import { ShiftType } from "../../lib/shared/enums/Shift";
 import useRiceState from "./useRiceState";
-import { toastSuccess } from "../../lib/utils/toast";
+import { toastSuccess } from "../../lib/utils/global/toast";
 
 export type UpdateRiceInput =
   | {

@@ -1,5 +1,5 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
+import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 
 export default function Total() {

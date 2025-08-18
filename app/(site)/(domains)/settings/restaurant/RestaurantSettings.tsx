@@ -12,18 +12,18 @@ export default function RestaurantSettings() {
   const [logoPath, setLogoPath] = useState<string | null>("/receipt-logo.png");
   useFocusOnClick(["street", "civic", "cap", "city", "name", "slogan", "tel", "cell"]);
 
-  useEffect(() => {
-    fetch("/api/settings", { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.logoPath) {
-          setLogoPath(`${data.logoPath}?timestamp=${new Date().getTime()}`);
-        } else {
-          setLogoPath(null);
-        }
-      })
-      .catch(() => setLogoPath(null));
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/settings", { method: "GET" })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data.logoPath) {
+  //         setLogoPath(`${data.logoPath}?timestamp=${new Date().getTime()}`);
+  //       } else {
+  //         setLogoPath(null);
+  //       }
+  //     })
+  //     .catch(() => setLogoPath(null));
+  // }, []);
 
   const handleLogoUpload = async () => {
     const [fileHandle] = await window.showOpenFilePicker({

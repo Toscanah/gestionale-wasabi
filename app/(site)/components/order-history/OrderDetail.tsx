@@ -1,7 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
-import joinItemsWithComma from "../../lib/formatting-parsing/joinItemsWithComma";
+import roundToTwo from "../../lib/utils/global/number/roundToTwo";
+import joinItemsWithComma from "../../lib/utils/global/string/joinItemsWithComma";
 
 interface OrderDetailProps {
   sortedProducts: ProductInOrder[];

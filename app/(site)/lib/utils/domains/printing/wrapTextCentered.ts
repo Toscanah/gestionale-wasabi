@@ -1,4 +1,4 @@
-import splitIntoLines from "../splitIntoLines";
+import splitIntoLines from "../../global/string/splitIntoLines";
 
 export default function wrapTextCentered(text: string, maxChars: number): string[] {
   const words = text.split(/\s+/);

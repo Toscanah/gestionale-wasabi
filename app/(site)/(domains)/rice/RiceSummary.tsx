@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { cn } from "@/lib/utils";
 import { ShiftType } from "../../lib/shared/enums/Shift";
-import formatRice from "../../lib/formatting-parsing/formatRice";
+import formatRice from "../../lib/utils/domains/rice/formatRice";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
@@ -47,8 +47,8 @@ export default function RiceSummary() {
   ];
 
   const shiftOptions = [
-    { label: "Pranzo", value: ShiftType.LUNCH, id: "lunch" },
-    { label: "Cena", value: ShiftType.DINNER, id: "dinner" },
+    { label: "Solo pranzo", value: ShiftType.LUNCH, id: "lunch" },
+    { label: "Solo cena", value: ShiftType.DINNER, id: "dinner" },
     { label: "Pranzo + cena", value: ShiftType.ALL, id: "all" },
   ];
 
@@ -57,7 +57,7 @@ export default function RiceSummary() {
       <RadioGroup
         value={filter}
         onValueChange={(val) => setFilter(val as ShiftType)}
-        className="w-full flex gap-16 justify-end items-center"
+        className="w-full flex gap-8 justify-end items-center"
       >
         {shiftOptions.map(({ label, value, id }) => (
           <div key={id} className="flex gap-2 items-center">

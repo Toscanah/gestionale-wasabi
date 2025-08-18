@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductWithStats } from "../../../lib/shared/types/ProductWithStats";
-import formatRice from "../../../lib/formatting-parsing/formatRice";
-import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
+import formatRice from "../../../lib/utils/domains/rice/formatRice";
+import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Button } from "@/components/ui/button";
 import TopOptions from "./dialogs/TopOptions";

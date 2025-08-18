@@ -5,7 +5,7 @@ import {
   DEFAULT_CALCULATIONS,
   useOrderPaymentContext,
 } from "@/app/(site)/context/OrderPaymentContext";
-import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
+import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 

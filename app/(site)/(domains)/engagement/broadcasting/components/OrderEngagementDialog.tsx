@@ -3,7 +3,7 @@ import { OrderEngagementTabs } from "./EngagementTabs";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import DialogWrapper, { DialogWrapperProps } from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import useHandleEngagement from "@/app/(site)/hooks/engagement/useHandleEngagement";
-import { toastSuccess } from "@/app/(site)/lib/utils/toast";
+import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 
 type OrderEngagementDialogProps = {
   trigger: DialogWrapperProps["trigger"];

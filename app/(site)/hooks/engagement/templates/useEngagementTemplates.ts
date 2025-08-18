@@ -1,6 +1,6 @@
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import uploadImage from "@/app/(site)/lib/integrations/images/uploadImage";
-import { toastSuccess } from "@/app/(site)/lib/utils/toast";
+import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import {
   ParsedEngagementTemplate,
   ParsedEngagementPayload,

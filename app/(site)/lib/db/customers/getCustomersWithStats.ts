@@ -1,6 +1,6 @@
 import { Order } from "@prisma/client";
 import { CustomerWithStats } from "../../shared/types/CustomerWithStats";
-import roundToTwo from "../../formatting-parsing/roundToTwo";
+import roundToTwo from "../../utils/global/number/roundToTwo";
 import getCustomersWithDetails from "./getCustomersWithDetails";
 import { getOrderTotal } from "../../services/order-management/getOrderTotal";
 import { CustomerSchemaInputs } from "../../shared";

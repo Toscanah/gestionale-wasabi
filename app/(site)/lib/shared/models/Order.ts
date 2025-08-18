@@ -73,3 +73,6 @@ export type TableOrder = z.infer<typeof TableOrderInOrderSchema>;
 export type HomeOrder = z.infer<typeof HomeOrderInOrderSchema>;
 export type PickupOrder = z.infer<typeof PickupOrderInOrderSchema>;
 export type AnyOrder = z.infer<typeof AnyOrderSchema>;
+export type TableOrderWithOrder = z.infer<typeof TableOrderWithOrderSchema>;
+export type HomeOrderWithOrder = z.infer<typeof HomeOrderWithOrderSchema>;
+export type PickupOrderWithOrder = z.infer<typeof PickupOrderWithOrderSchema>;

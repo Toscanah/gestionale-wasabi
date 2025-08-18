@@ -1,4 +1,4 @@
-import sanitizeReceiptText from "@/app/(site)/lib/formatting-parsing/printing/sanitazeReceiptText";
+import sanitizeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import { PlannedPayment } from "@prisma/client";
 import { Text } from "react-thermal-printer";
 import { SMALL_PRINT } from "../constants";

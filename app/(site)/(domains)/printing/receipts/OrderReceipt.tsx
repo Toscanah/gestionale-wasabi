@@ -5,7 +5,7 @@ import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/info/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
 import { OrderType, PlannedPayment } from "@prisma/client";
-import sanitazeReceiptText from "../../../lib/formatting-parsing/printing/sanitazeReceiptText";
+import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
 import { BIG_PRINT } from "../constants";
 
 export interface OrderReceiptProps {

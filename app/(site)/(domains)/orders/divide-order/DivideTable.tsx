@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import Table from "../../../components/table/Table";
-import getTable from "../../../lib/utils/getTable";
+import getTable from "../../../lib/utils/global/getTable";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
-import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
+import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 
 interface DivideTableProps {

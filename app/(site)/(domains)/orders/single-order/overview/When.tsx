@@ -2,7 +2,7 @@ import WhenSelector from "@/app/(site)/components/ui/time/WhenSelector";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { toastSuccess } from "@/app/(site)/lib/utils/toast";
+import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 

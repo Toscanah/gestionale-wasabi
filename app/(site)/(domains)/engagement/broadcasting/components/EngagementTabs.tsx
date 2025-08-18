@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { patchOrderEngagements } from "../../../../lib/services/order-management/patchOrderEngagements";
 import { Checkbox } from "@/components/ui/checkbox";
 import TemplateContentView from "../../templates/components/content/TemplateContentView";
-import { toastSuccess } from "@/app/(site)/lib/utils/toast";
+import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { Trash } from "@phosphor-icons/react";
 
 type OrderEngagementTabsProps = {

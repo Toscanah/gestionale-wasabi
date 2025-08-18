@@ -1,9 +1,9 @@
 import { Address, Customer } from "@prisma/client";
 import fetchRequest from "../../lib/api/fetchRequest";
-import parseAddress from "../../lib/formatting-parsing/parseAddress";
+import parseAddress from "../../lib/utils/domains/address/parseAddress";
 import { FormValues } from "../../(domains)/orders/create-order/home/address/form";
 import { ExtraInfo } from "../../context/CreateHomeOrderContext";
-import { toastSuccess } from "../../lib/utils/toast";
+import { toastSuccess } from "../../lib/utils/global/toast";
 import { Dispatch, SetStateAction } from "react";
 import { AddressSchemaInputs, CustomerSchemaInputs } from "../../lib/shared";
 

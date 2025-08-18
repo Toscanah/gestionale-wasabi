@@ -6,7 +6,7 @@ import {
   pickupOrderInclude,
   productInOrderInclude,
 } from "../includes";
-import normalizeTemplatePayload from "../../formatting-parsing/engagement/normalizeTemplatePayload";
+import normalizeTemplatePayload from "../../services/engagement/normalizeTemplatePayload";
 
 export default async function getOrderById({
   orderId,

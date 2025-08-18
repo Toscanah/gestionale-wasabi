@@ -1,4 +1,4 @@
-import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
+import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { PaymentsSummaryData } from "../../../hooks/usePaymentsHistory";
 
 export default function PaymentsSummary({ summaryData }: { summaryData: PaymentsSummaryData }) {

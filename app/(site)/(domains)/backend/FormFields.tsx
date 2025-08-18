@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import getForm from "../../lib/utils/getForm";
+import getForm from "../../lib/utils/global/form/getForm";
 import { ControllerRenderProps, DefaultValues } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import React, { ComponentType, HTMLInputTypeAttribute, ReactElement } from "react";

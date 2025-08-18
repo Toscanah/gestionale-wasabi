@@ -8,8 +8,8 @@ import useGridFocus, { FocussableInput } from "../../../hooks/focus/useGridFocus
 import { Button } from "@/components/ui/button";
 import { debounce } from "lodash";
 import { useOrderContext } from "../../../context/OrderContext";
-import capitalizeFirstLetter from "../../../lib/formatting-parsing/capitalizeFirstLetter";
-import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
+import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
+import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 
 export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,

@@ -3,7 +3,7 @@ import { OrderWithPayments } from "@/app/(site)/lib/shared";
 import fetchRequest from "../lib/api/fetchRequest";
 import { OrderType, PaymentType } from "@prisma/client";
 import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
-import roundToCents from "../lib/utils/roundToCents";
+import roundToCents from "../lib/utils/global/number/roundToCents";
 import { ShiftType } from "../lib/shared/enums/Shift";
 import orderMatchesShift from "../lib/services/order-management/shift/orderMatchesShift";
 import { DateRange } from "react-day-picker";

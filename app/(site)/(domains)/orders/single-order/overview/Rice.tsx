@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import formatRice from "../../../../lib/formatting-parsing/formatRice";
+import formatRice from "../../../../lib/utils/domains/rice/formatRice";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";

@@ -1,12 +1,13 @@
 import { AccordionContent } from "@/components/ui/accordion";
-import { OrderStats } from "./OrderHistory";
-import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
+import roundToTwo from "../../lib/utils/global/number/roundToTwo";
 import { useState, useMemo } from "react";
 import SelectWrapper from "../ui/select/SelectWrapper";
+import useHistoryStats, {
+  CustomerOrdersStats,
+  UseHistoryStatsParams,
+} from "../../hooks/order/history/useHistoryStats";
 
-interface HistoryStatsProps {
-  stats: OrderStats;
-}
+type HistoryStatsProps = UseHistoryStatsParams;
 
 const mesiItaliani = [
   { value: "00", name: "Tutti i mesi" },
@@ -24,10 +25,12 @@ const mesiItaliani = [
   { value: "12", name: "Dicembre" },
 ];
 
-export default function HistoryStats({ stats }: HistoryStatsProps) {
+export default function HistoryStats({ allOrders }: HistoryStatsProps) {
   const currentYear = new Date().getFullYear();
   const [month, setMonth] = useState<string>("00"); // "Tutti i mesi"
   const [year, setYear] = useState<string>(currentYear.toString());
+
+  const { stats } = useHistoryStats({ allOrders });
 
   const yearOptions = useMemo(() => {
     if (!stats.ordersCount.length) return [];
@@ -93,6 +96,14 @@ export default function HistoryStats({ stats }: HistoryStatsProps) {
           <tr>
             <td className="text-lg">Spesa totale</td>
             <td className="text-lg">€ {roundToTwo(stats.totalSpent)}</td>
+          </tr>
+          <tr>
+            <td className="text-lg">Giorno della settimana più comune</td>
+            <td className="text-lg">{stats.mostCommonDayOfWeek || "Nessun giorno comune"}</td>
+          </tr>
+          <tr>
+            <td className="text-lg">Orario più comune</td>
+            <td className="text-lg">{stats.mostCommonTime || "Nessuna orario comune"}</td>
           </tr>
           <tr>
             <td className="text-lg">Numero di ordini</td>

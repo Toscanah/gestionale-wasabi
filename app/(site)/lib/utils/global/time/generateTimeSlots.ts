@@ -1,4 +1,4 @@
-import { useWasabiContext } from "../../../context/WasabiContext";
+import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 
 export default function generateTimeSlots(
   startHour: number,

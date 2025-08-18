@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
 import { Badge } from "@/components/ui/badge";
-import { AnyOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
 import { OrderWithPayments } from "@/app/(site)/lib/shared";
-import roundToTwo from "../../../lib/formatting-parsing/roundToTwo";
-import joinItemsWithComma from "../../../lib/formatting-parsing/joinItemsWithComma";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
+import joinItemsWithComma from "@/app/(site)/lib/utils/global/string/joinItemsWithComma";
 
 interface OrderSummaryProps {
   order: OrderWithPayments;

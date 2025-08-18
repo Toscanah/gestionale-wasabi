@@ -1,5 +1,5 @@
 import { PaymentScope } from "@prisma/client";
-import roundToTwo from "../../formatting-parsing/roundToTwo";
+import roundToTwo from "../../utils/global/number/roundToTwo";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
 import { AnyOrder, PaymentSchemaInputs } from "@/app/(site)/lib/shared";

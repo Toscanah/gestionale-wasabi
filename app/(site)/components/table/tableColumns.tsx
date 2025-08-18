@@ -2,14 +2,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
 import { ColumnDef, Row, TableMeta } from "@tanstack/react-table";
 import { Fragment, ReactNode } from "react";
-import getNestedValue from "../../lib/utils/getNestedValue";
-import joinItemsWithComma, {
-  /**
-   * JoinItemType represents the type of items that can be joined in a table column.
-   */
-  JoinItemType,
-} from "@/app/(site)/lib/formatting-parsing/joinItemsWithComma";
+import getNestedValue from "../../lib/utils/global/getNestedValue";
 import { uniqueId } from "lodash";
+import joinItemsWithComma, { JoinItemType } from "../../lib/utils/global/string/joinItemsWithComma";
 
 type Primitive = string | number | boolean | Date | null | undefined;
 

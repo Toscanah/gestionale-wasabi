@@ -9,7 +9,7 @@ import { AnyOrder } from "@/app/(site)/lib/shared"
 ;
 import { HandPalm } from "@phosphor-icons/react";
 import Home from "./Home";
-import { toastError } from "@/app/(site)/lib/utils/toast";
+import { toastError } from "@/app/(site)/lib/utils/global/toast";
 import generateEmptyOrder from "@/app/(site)/lib/services/order-management/generateEmptyOrder";
 import { OrderType } from "@prisma/client";
 import { CreateHomeOrderProvider } from "@/app/(site)/context/CreateHomeOrderContext";

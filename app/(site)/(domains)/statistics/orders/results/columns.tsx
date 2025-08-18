@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ResultRecord } from "./SectionResults";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import formatRice from "@/app/(site)/lib/formatting-parsing/formatRice";
+import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
 
 export default function columns(): ColumnDef<ResultRecord>[] {
   return [

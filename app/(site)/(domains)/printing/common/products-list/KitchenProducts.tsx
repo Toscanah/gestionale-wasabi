@@ -1,11 +1,11 @@
-import fitReceiptText from "@/app/(site)/lib/formatting-parsing/printing/fitReceiptText";
+import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
 import { Fragment } from "react";
 import { Line, Text } from "react-thermal-printer";
 import { uniqueId } from "lodash";
-import splitOptionsIntoLines from "@/app/(site)/lib/formatting-parsing/printing/splitOptionsIntoLines";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
-import sanitazeReceiptText from "@/app/(site)/lib/formatting-parsing/printing/sanitazeReceiptText";
+import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import { BIG_PRINT, SMALL_PRINT } from "../../constants";
+import splitOptionsInLines from "@/app/(site)/lib/utils/domains/printing/splitOptionsIntoLines";
 
 interface KitchenProductsProps {
   groupedProducts: GroupedProductsByOptions;
@@ -61,7 +61,7 @@ export default function KitchenProducts({ groupedProducts }: KitchenProductsProp
           <Fragment key={`group-${idx}`}>
             {products.map((product) => ProductLine({ product }))}
 
-            {splitOptionsIntoLines(optionsKey, 48, 4).map((line, lineIdx) => (
+            {splitOptionsInLines(optionsKey, 48, 4).map((line, lineIdx) => (
               <Text bold size={SMALL_PRINT} key={`options-${idx}-${lineIdx}`}>
                 {line}
               </Text>

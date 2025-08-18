@@ -68,7 +68,7 @@ export default function ApplicationSettings() {
 
       <div className="space-y-2 w-full">
         <Label htmlFor="use-whatsapp" className="cursor-pointer">
-          Messaggi Whatsapp
+          Integrazione WhatsApp - Meta
         </Label>
 
         <div className="w-full flex items-center gap-2">
@@ -78,7 +78,7 @@ export default function ApplicationSettings() {
             onCheckedChange={(checked) => updateSettings("useWhatsApp", Boolean(checked))}
           />
           <Label htmlFor="use-whatsapp" className="cursor-pointer">
-            Attiva invio messaggi WhatsApp
+            Attiva invio messaggi WhatsApp automatici
           </Label>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { OrderType } from "@prisma/client";
 import { Cell } from "@tanstack/react-table";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import Order from "./single-order/Order";
-import getTable from "../../lib/utils/getTable";
+import getTable from "../../lib/utils/global/getTable";
 import Table from "../../components/table/Table";
 import { cn } from "@/lib/utils";
 import { useWasabiContext } from "../../context/WasabiContext";

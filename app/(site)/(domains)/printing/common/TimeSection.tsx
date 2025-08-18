@@ -1,5 +1,5 @@
 import { Row, Text } from "react-thermal-printer";
-import capitalizeFirstLetter from "../../../lib/formatting-parsing/capitalizeFirstLetter";
+import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
 import { DATE_FORMAT_OPTIONS } from "../constants";
 
 interface TimeSectionProps {

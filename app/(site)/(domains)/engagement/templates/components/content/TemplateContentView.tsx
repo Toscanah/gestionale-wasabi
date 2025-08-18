@@ -1,7 +1,7 @@
 import { ParsedEngagementTemplate } from "@/app/(site)/lib/shared";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import TemplateWrapper from "../TemplateWrapper";
-import getTemplateName from "@/app/(site)/lib/formatting-parsing/engagement/getTemplateName";
+import getTemplateName from "@/app/(site)/lib/utils/domains/engagement/getTemplateName";
 import { Button } from "@/components/ui/button";
 import { Trash } from "@phosphor-icons/react";
 import renderByType from "../../types/renderByType";

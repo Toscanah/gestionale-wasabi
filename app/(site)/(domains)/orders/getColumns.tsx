@@ -5,7 +5,7 @@ import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import { ActionColumn, FieldColumn, ValueColumn } from "../../components/table/TableColumns";
 import getDiscountedTotal from "../../lib/services/order-management/getDiscountedTotal";
-import roundToTwo from "../../lib/formatting-parsing/roundToTwo";
+import roundToTwo from "../../lib/utils/global/number/roundToTwo";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OrdersTableProps } from "./OrdersTable";

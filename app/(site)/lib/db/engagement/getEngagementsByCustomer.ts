@@ -1,4 +1,4 @@
-import normalizeTemplatePayload from "../../formatting-parsing/engagement/normalizeTemplatePayload";
+import normalizeTemplatePayload from "../../services/engagement/normalizeTemplatePayload";
 import { EngagementSchemaInputs, EngagementWithDetails } from "../../shared";
 import prisma from "../db";
 

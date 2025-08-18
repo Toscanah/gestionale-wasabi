@@ -11,7 +11,7 @@ import {
   ValueColumn,
 } from "@/app/(site)/components/table/TableColumns";
 import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
-import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
+import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 
 const columns: ColumnDef<CustomerWithStats>[] = [
   FieldColumn({

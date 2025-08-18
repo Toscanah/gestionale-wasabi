@@ -8,7 +8,7 @@ import WhenSelector from "../../../../components/ui/time/WhenSelector";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import useFocusCycle from "../../../../hooks/focus/useFocusCycle";
 import fetchRequest from "../../../../lib/api/fetchRequest";
-import { toastError, toastSuccess } from "../../../../lib/utils/toast";
+import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Plus, Question } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";

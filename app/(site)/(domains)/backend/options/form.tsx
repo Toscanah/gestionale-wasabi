@@ -1,5 +1,5 @@
 import { z } from "zod";
-import getZodField from "../../../lib/utils/getZodField";
+import getZodField from "../../../lib/utils/global/form/getZodField";
 import { FormFieldType } from "../FormFields";
 
 export const formSchema = z.object({

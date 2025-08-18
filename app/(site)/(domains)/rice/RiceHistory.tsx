@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { format, isToday } from "date-fns";
 import { RiceLog } from "../../lib/shared/models/Rice";
 import fetchRequest from "../../lib/api/fetchRequest";
-import formatRice from "../../lib/formatting-parsing/formatRice";
+import formatRice from "../../lib/utils/domains/rice/formatRice";
 import { RiceLogType } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 

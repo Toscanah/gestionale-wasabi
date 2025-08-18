@@ -3,7 +3,7 @@ import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/app/(site)/lib
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "@phosphor-icons/react";
-import getTable from "@/app/(site)/lib/utils/getTable";
+import getTable from "@/app/(site)/lib/utils/global/getTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
 import { useMemo } from "react";

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AnyOrder, MetaTemplate } from "../../lib/shared";
 import { useWasabiContext } from "../../context/WasabiContext";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { toastError, toastSuccess } from "../../lib/utils/toast";
+import { toastError, toastSuccess } from "../../lib/utils/global/toast";
 import { TemplateParamsMap } from "./useTemplatesParams";
 
 type UseMetaTemplatesParams = {

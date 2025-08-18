@@ -1,7 +1,7 @@
 import { OrderType, WorkingShift } from "@prisma/client";
-import timeToDecimal from "../../../utils/time/timeToDecimal";
 import { ShiftEvaluableOrder } from "@/app/(site)/lib/shared/types/ShiftEvaluableOrder";
 import { ShiftTime } from "../../../shared/enums/Shift";
+import timeToDecimal from "../../../utils/global/time/timeToDecimal";
 
 function normalizeWhen(when?: string): string | "immediate" {
   return when?.toLowerCase() ?? "immediate";

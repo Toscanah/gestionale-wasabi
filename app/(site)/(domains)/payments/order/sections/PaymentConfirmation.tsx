@@ -1,5 +1,5 @@
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
-import roundToTwo from "@/app/(site)/lib/formatting-parsing/roundToTwo";
+import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { Button } from "@/components/ui/button";
 import { debounce } from "lodash";
 import { useRef, useState } from "react";

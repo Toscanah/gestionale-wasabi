@@ -1,6 +1,6 @@
 import { BackendActionsMap, BaseEntity, EntityType, MANAGER_LABELS } from "../../(domains)/backend/Manager";
 import fetchRequest, { PathType } from "../../lib/api/fetchRequest";
-import { toastError, toastSuccess } from "../../lib/utils/toast";
+import { toastError, toastSuccess } from "../../lib/utils/global/toast";
 
 interface UseActionsParams<T extends BaseEntity> {
   setData: React.Dispatch<React.SetStateAction<T[]>>;

@@ -5,14 +5,11 @@ import { CustomerWithStats } from "@/app/(site)/lib/shared/types/CustomerWithSta
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { DatePreset } from "../../lib/shared/enums/DatePreset";
 import useRfmRules from "../rfm/useRfmRules";
-import { calculateRfmScore } from "../../lib/services/rfm/calculateRfmScore";
-import calculateRfmCategory from "../../lib/services/rfm/calculateRfmCategory";
 import useRfmRanks from "../rfm/useRfmRanks";
-import { RFMRankRule, RFMRules } from "../../lib/shared/types/RFM";
 import updateCustomersWithRFM from "../../lib/services/rfm/updateCustomersWithRFM";
 
 const today = new Date();
-const defaultDate: DateRange = {
+const DEFAULT_DATE: DateRange = {
   from: startOfYear(today),
   to: endOfYear(today),
 };
@@ -22,7 +19,7 @@ export function useCustomersStats() {
   const [customers, setCustomers] = useState<CustomerWithStats[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<CustomerWithStats[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
-  const [dateFilter, setDateFilter] = useState<DateRange | undefined>(defaultDate);
+  const [dateFilter, setDateFilter] = useState<DateRange | undefined>(DEFAULT_DATE);
   const { rfmRules } = useRfmRules();
   const { ranks } = useRfmRanks();
 
@@ -36,8 +33,6 @@ export function useCustomersStats() {
       fetchCustomersWithFilter(dateFilter);
     }
   }, [dateFilter]);
-
-
 
   const fetchInitialCustomers = () =>
     fetchRequest<CustomerWithStats[]>("POST", "/api/customers", "getCustomersWithStats", {

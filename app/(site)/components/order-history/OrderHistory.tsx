@@ -12,23 +12,13 @@ import { ProductInOrder } from "@/app/(site)/lib/shared";
 import getDiscountedTotal from "../../lib/services/order-management/getDiscountedTotal";
 import HistoryStats from "./HistoryStats";
 import OrderDetail from "./OrderDetail";
-import capitalizeFirstLetter from "../../lib/formatting-parsing/capitalizeFirstLetter";
+import capitalizeFirstLetter from "../../lib/utils/global/string/capitalizeFirstLetter";
 import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 import filterDeletedProducts from "../../lib/services/product-management/filterDeletedProducts";
 import { OrderStatus } from "@prisma/client";
-
-type ProductStats = {
-  desc: string;
-  quantity: number;
-};
-
-export type OrderStats = {
-  mostBoughtProduct: ProductStats | undefined;
-  leastBoughtProduct: ProductStats | undefined;
-  totalSpent: number;
-  avgOrderCost: number;
-  ordersCount: Date[];
-};
+import useRecreateOrder from "../../hooks/order/history/useRecreateOrder";
+import useOrderHistory from "../../hooks/order/history/useOrderHistory";
+import { formatDateWithDay } from "./helpers";
 
 interface OrderHistoryProps {
   customer: CustomerWithDetails;
@@ -36,106 +26,13 @@ interface OrderHistoryProps {
   noStatistics?: boolean;
 }
 
+
+
 export default function OrderHistory({ customer, onCreate, noStatistics }: OrderHistoryProps) {
-  const [selectedProducts, setSelectedProducts] = useState<ProductInOrder[]>([]);
-  const orderTypes = useMemo(
-    () => [
-      {
-        type: "Domicilio",
-        orders: customer.home_orders.filter(
-          (order) =>
-            getOrderTotal({ order: order.order }) > 0 && order.order.status === OrderStatus.PAID
-        ),
-      },
-      {
-        type: "Asporto",
-        orders: customer.pickup_orders.filter(
-          (order) =>
-            getOrderTotal({ order: order.order }) > 0 && order.order.status === OrderStatus.PAID
-        ),
-      },
-    ],
-    [customer]
-  );
+  const { selectedProducts, resetProductSelection, updateProductSelection, getRecreatedProducts } =
+    useRecreateOrder();
 
-  const [stats, setStats] = useState<OrderStats>({
-    mostBoughtProduct: undefined,
-    leastBoughtProduct: undefined,
-    totalSpent: 0,
-    avgOrderCost: 0,
-    ordersCount: [],
-  });
-
-  const allOrders = useMemo(
-    () =>
-      [...customer.home_orders, ...customer.pickup_orders].filter(
-        (order) =>
-          getOrderTotal({ order: order.order }) > 0 && order.order.status === OrderStatus.PAID
-      ),
-    [customer.home_orders, customer.pickup_orders]
-  );
-
-  useEffect(() => {
-    if (!allOrders.length) return;
-
-    const productQuantities = allOrders.flatMap((order) =>
-      order.order.products.map((product) => ({
-        id: product.product.id,
-        desc: product.product.desc,
-        quantity: product.quantity,
-      }))
-    );
-
-    const productStats: Record<string, ProductStats> = productQuantities.reduce(
-      (acc, { id, desc, quantity }) => {
-        if (!acc[id]) {
-          acc[id] = { desc, quantity: 0 };
-        }
-        acc[id].quantity += quantity;
-        return acc;
-      },
-      {} as Record<string, ProductStats>
-    );
-
-    const sortedProducts = Object.values(productStats).sort((a, b) => b.quantity - a.quantity);
-    const mostBoughtProduct = sortedProducts[0];
-    const leastBoughtProduct = sortedProducts[sortedProducts.length - 1];
-
-    const totalSpent = allOrders.reduce(
-      (sum, order) => sum + getOrderTotal({ order: order.order, applyDiscount: true }),
-      0
-    );
-    const avgOrderCost = totalSpent / allOrders.length;
-    const ordersCount = allOrders.map((order) => new Date(order.order.created_at));
-
-    setStats({
-      mostBoughtProduct,
-      leastBoughtProduct,
-      totalSpent,
-      avgOrderCost,
-      ordersCount,
-    });
-  }, [allOrders]);
-
-  const formatDateWithDay = (dateString: Date) => {
-    const formattedDate = new Intl.DateTimeFormat("it-IT", {
-      weekday: "long",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }).format(new Date(dateString));
-
-    return capitalizeFirstLetter(formattedDate);
-  };
-
-  const handleCheckboxChange = (product: ProductInOrder) =>
-    setSelectedProducts((prevSelected) =>
-      prevSelected.some((p) => p.id === product.id)
-        ? prevSelected.filter((p) => p.id !== product.id)
-        : [...prevSelected, product]
-    );
-
-  const handleRecreate = () => onCreate?.(filterDeletedProducts(selectedProducts));
+  const { allOrders, orderTypes } = useOrderHistory({ customer });
 
   if (!orderTypes.some(({ orders }) => orders && orders.length > 0)) {
     return <p className="text-2xl text-center">Nessun ordine registrato</p>;
@@ -145,7 +42,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
     <div className="w-full h-full flex flex-col gap-4">
       <Accordion
         onValueChange={(e) => {
-          if (!e) return setSelectedProducts([]);
+          if (!e) return resetProductSelection();
 
           const [orderType, orderIdString] = e.split("-");
           const selectedOrderType = orderTypes.find((type) => type.type === orderType);
@@ -153,7 +50,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
             (order) => order.id === Number(orderIdString)
           );
 
-          setSelectedProducts(selectedOrder?.order.products || []);
+          (selectedOrder?.order.products || []).map(updateProductSelection);
         }}
         type="single"
         collapsible
@@ -162,7 +59,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
         {!noStatistics && (
           <AccordionItem value={"stats"} key={"stats"}>
             <AccordionTrigger className="text-2xl">Vedi statistiche</AccordionTrigger>
-            <HistoryStats stats={stats} />
+            <HistoryStats allOrders={allOrders} />
           </AccordionItem>
         )}
 
@@ -186,7 +83,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4">
                   <OrderDetail
-                    onCheckboxChange={handleCheckboxChange}
+                    onCheckboxChange={updateProductSelection}
                     type={type}
                     onCreate={onCreate}
                     sortedProducts={filterDeletedProducts(
@@ -197,7 +94,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
                   {onCreate && (
                     <Button
                       className="w-full"
-                      onClick={handleRecreate}
+                      onClick={() => onCreate?.(getRecreatedProducts())}
                       disabled={selectedProducts.length === 0}
                     >
                       Ricrea questo ordine

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import RandomSpinner from "../../../../components/ui/misc/RandomSpinner";
 import { Results } from "../../../../hooks/statistics/useOrdersStats";
-import roundToTwo from "../../../../lib/formatting-parsing/roundToTwo";
-import getTable from "@/app/(site)/lib/utils/getTable";
+import roundToTwo from "../../../../lib/utils/global/number/roundToTwo";
+import getTable from "@/app/(site)/lib/utils/global/getTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
 

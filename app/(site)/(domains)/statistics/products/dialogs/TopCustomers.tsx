@@ -10,7 +10,7 @@ import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import RandomSpinner from "@/app/(site)/components/ui/misc/RandomSpinner";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
-import getTable from "@/app/(site)/lib/utils/getTable";
+import getTable from "@/app/(site)/lib/utils/global/getTable";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";

@@ -1,4 +1,4 @@
-import splitIntoLines from "../splitIntoLines";
+import splitIntoLines from "../../global/string/splitIntoLines";
 
 export default function splitOptionsInLines(
   text: string,
