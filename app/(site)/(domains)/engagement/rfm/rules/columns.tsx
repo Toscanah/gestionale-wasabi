@@ -17,8 +17,8 @@ export default function columns(dimension: RFMDimension): ColumnDef<RFMRangeRule
     IndexColumn({}),
 
     ValueColumn({
-      header: "Minimo",
-      accessor: (rule) => rule.min,
+      header: "Regola",
+      accessor: (rule) => rule.min + " " + rule.max,
       value: (row, meta) => {
         const label = RFM_LABELS[dimension];
 
