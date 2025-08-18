@@ -7,6 +7,7 @@ import { toastError, toastSuccess } from "../../lib/utils/global/toast";
 import { Table } from "@tanstack/react-table";
 import { RecursivePartial } from "./useOrderManager";
 import { UpdateProductInOrderResponse } from "../../lib/db/products/product-in-order/updateProductInOrder";
+import { ProductInOrderStatus } from "@prisma/client";
 
 export function useProductsManager(
   order: AnyOrder,
@@ -185,7 +186,9 @@ export function useProductsManager(
       .filter(
         (product) =>
           !deletedProducts.some((deleted) => deleted.id === product.id) &&
-          !["DELETED_COOKED", "DELETED_UNCOOKED"].includes(product.status)
+          ![ProductInOrderStatus.DELETED_COOKED, ProductInOrderStatus.DELETED_UNCOOKED].includes(
+            product.status
+          )
       )
       .filter((product) => product.id !== -1)
       .map((product) => {

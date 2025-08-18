@@ -1,6 +1,7 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
+import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
 
 export default async function updatePrintedAmounts({
   orderId,
@@ -13,12 +14,12 @@ export default async function updatePrintedAmounts({
       select: { status: true },
     });
 
-    if (!order || order.status !== "ACTIVE") {
+    if (!order || order.status !== OrderStatus.ACTIVE) {
       return [];
     }
 
     const products = await tx.productInOrder.findMany({
-      where: { order_id: orderId, status: "IN_ORDER", quantity: { gt: 0 } },
+      where: { order_id: orderId, status: ProductInOrderStatus.IN_ORDER, quantity: { gt: 0 } },
       include: { ...productInOrderInclude },
     });
 

@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
 import { AnyOrder, OrderSchemaInputs, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import prisma from "../../db";
 import createPickupOrder from "../pickup/createPickupOrder";
@@ -17,7 +17,7 @@ export default async function createSubOrder({
     where: {
       suborder_of: parentOrder.id,
       status: {
-        in: ["ACTIVE", "PAID"],
+        in: [OrderStatus.ACTIVE, OrderStatus.PAID],
       },
     },
   });
@@ -94,7 +94,7 @@ export default async function createSubOrder({
         await prisma.productInOrder.update({
           where: { id: productInOrder.id },
           data: {
-            status: "DELETED_COOKED",
+            status: ProductInOrderStatus.DELETED_COOKED,
           },
         });
       }

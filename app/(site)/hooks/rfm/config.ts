@@ -1,5 +1,3 @@
-// lib/shared/rfmConfig.ts
-
 import { RFMRankRule, RFMConfig, RFMRules } from "../../lib/shared/types/RFM";
 
 export const DEFAULT_RULES: RFMRules = {

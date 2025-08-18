@@ -3,6 +3,7 @@ import { setHours, setMinutes, setSeconds, setMilliseconds } from "date-fns";
 import { RiceSchemaInputs } from "../../shared";
 import { ShiftEvaluableOrder } from "@/app/(site)/lib/shared/types/ShiftEvaluableOrder";
 import orderMatchesShift from "../../services/order-management/shift/orderMatchesShift";
+import { ProductInOrderStatus } from "@prisma/client";
 
 export default async function getDailyRiceUsage({
   shift,
@@ -13,7 +14,7 @@ export default async function getDailyRiceUsage({
   const productOrders = await prisma.productInOrder.findMany({
     where: {
       status: {
-        in: ["IN_ORDER", "DELETED_COOKED"],
+        in: [ProductInOrderStatus.IN_ORDER, ProductInOrderStatus.DELETED_COOKED],
       },
       order: {
         created_at: {

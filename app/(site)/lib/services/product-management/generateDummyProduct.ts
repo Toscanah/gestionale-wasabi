@@ -1,10 +1,11 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductInOrderStatus } from "@prisma/client";
 
 export default function generateDummyProduct(): ProductInOrder {
   return {
     created_at: new Date(Date.now() + 60 * 1000),
     variation: "",
-    status: "IN_ORDER",
+    status: ProductInOrderStatus.IN_ORDER,
     printed_amount: -1,
     frozen_price: 0,
     product: {

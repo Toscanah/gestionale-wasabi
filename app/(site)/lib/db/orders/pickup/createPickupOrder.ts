@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderStatus, OrderType } from "@prisma/client";
 import prisma from "../../db";
 import { PickupOrder } from "@/app/(site)/lib/shared";
 import { engagementsInclude, productsInOrderInclude } from "../../includes";
@@ -56,7 +56,7 @@ export default async function createPickupOrder({
       where: {
         type: OrderType.PICKUP,
         pickup_order: { name },
-        status: "ACTIVE",
+        status: OrderStatus.ACTIVE,
       },
       include: {
         payments: true,

@@ -1,4 +1,4 @@
-import { PaymentScope } from "@prisma/client";
+import { PaymentScope, ProductInOrderStatus } from "@prisma/client";
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
@@ -47,7 +47,7 @@ export default async function payOrder({
     const allProducts = await tx.productInOrder.findMany({
       where: {
         order_id: orderId,
-        status: "IN_ORDER",
+        status: ProductInOrderStatus.IN_ORDER,
       },
       select: {
         quantity: true,
