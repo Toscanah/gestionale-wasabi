@@ -1,10 +1,8 @@
 import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared"
-;
+import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
-import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared"
-;
+import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -41,7 +39,7 @@ export default function OldOrders() {
           (homeOrder) => homeOrder.id !== order.id
         );
       }
-      
+
       if (order.type === OrderType.PICKUP) {
         filteredCustomer.pickup_orders = customer.pickup_orders.filter(
           (pickupOrder) => pickupOrder.id !== order.id
@@ -52,18 +50,23 @@ export default function OldOrders() {
     });
   }, []);
 
+  if (!customer) return <></>;
+
+  const hasOrders =
+    customer.home_orders.length > 0 || customer.pickup_orders.length > 0;
+
+  if (!hasOrders) return <></>;
+
   return (
-    customer && (
-      <DialogWrapper
-        size="medium"
-        trigger={
-          <Button type="button" variant={"outline"} className="h-12 text-xl">
-            Vedi ordini precedenti 购买记录
-          </Button>
-        }
-      >
-        <OrderHistory customer={customer} onCreate={addProducts} />
-      </DialogWrapper>
-    )
+    <DialogWrapper
+      size="mediumPlus"
+      trigger={
+        <Button type="button" variant={"outline"} className="h-12 text-xl">
+          Ordini precedenti 购买记录
+        </Button>
+      }
+    >
+      <OrderHistory customer={customer} onCreate={addProducts} />
+    </DialogWrapper>
   );
 }
