@@ -47,6 +47,10 @@ export default function TemplateContentCreate({
     onChange({ label: value });
   };
 
+  const handleRedeemableChange = (value: boolean) => {
+    onChange({ redeemable: value });
+  };
+
   const handleTemplateComponentChange = (
     patch: Partial<ParsedEngagementPayload> | { selectedImage: File | null }
   ) => {
@@ -80,6 +84,7 @@ export default function TemplateContentCreate({
           textBelow={payload.textBelow}
           onTextAboveChange={(val) => updateField("textAbove", val)}
           onTextBelowChange={(val) => updateField("textBelow", val)}
+          onRedeemableChange={handleRedeemableChange}
           onSubmit={() => onCreate(draftTemplate)}
           templateComponent={renderByType(type, payload, handleTemplateComponentChange)}
         />

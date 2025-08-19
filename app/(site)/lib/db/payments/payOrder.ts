@@ -1,4 +1,9 @@
-import { PaymentScope, ProductInOrderStatus } from "@prisma/client";
+import {
+  EngagementLedgerStatus,
+  OrderStatus,
+  PaymentScope,
+  ProductInOrderStatus,
+} from "@prisma/client";
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
@@ -61,13 +66,28 @@ export default async function payOrder({
     if (allPaid) {
       await tx.order.update({
         where: { id: orderId },
-        data: { status: "PAID" },
+        data: { status: OrderStatus.PAID },
       });
 
-      await tx.engagement.updateMany({
+      const engagements = await tx.engagement.findMany({
         where: { order_id: orderId },
-        data: { enabled: true },
+        select: { ledgers: true, id: true },
       });
+
+      console.log(engagements)
+
+      const reEnableIds = engagements
+        .filter((e) => e.ledgers.every((l) => l.status !== EngagementLedgerStatus.ISSUED))
+        .map((e) => e.id);
+
+        console.log(reEnableIds)
+
+      if (reEnableIds.length > 0) {
+        await tx.engagement.updateMany({
+          where: { id: { in: reEnableIds } },
+          data: { enabled: true },
+        });
+      }
     }
 
     // 6. Reset receipt printed flag

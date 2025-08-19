@@ -4,17 +4,22 @@ import { AnyOrder } from "@/app/(site)/lib/shared";
 import DialogWrapper, { DialogWrapperProps } from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import useHandleEngagement from "@/app/(site)/hooks/engagement/useHandleEngagement";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
+import { Dispatch, SetStateAction } from "react";
 
 type OrderEngagementDialogProps = {
   trigger: DialogWrapperProps["trigger"];
   order: AnyOrder;
   onSuccess: (engagements: EngagementWithDetails[]) => void;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function OrderEngagementDialog({
   trigger,
   order,
   onSuccess,
+  open,
+  setOpen,
 }: OrderEngagementDialogProps) {
   const {
     createEngagements,
@@ -34,7 +39,13 @@ export default function OrderEngagementDialog({
   const handleToggleEngagement = toggleEngagement;
 
   return (
-    <DialogWrapper title="Marketing per ordine" trigger={trigger}>
+    <DialogWrapper
+      title="Marketing per ordine"
+      trigger={trigger}
+      size="mediumPlus"
+      open={open}
+      onOpenChange={setOpen}
+    >
       <OrderEngagementTabs
         order={order}
         onToggleEngagement={handleToggleEngagement}

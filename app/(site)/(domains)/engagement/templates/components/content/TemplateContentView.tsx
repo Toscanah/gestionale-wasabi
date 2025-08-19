@@ -12,7 +12,7 @@ type ViewModeProps = {
 };
 
 export default function TemplateContentView({ index, template }: ViewModeProps) {
-  const { type, label, payload } = template;
+  const { type, label, payload, redeemable: isRedeemable } = template;
 
   return (
     <>
@@ -27,6 +27,7 @@ export default function TemplateContentView({ index, template }: ViewModeProps) 
           <TemplateWrapper
             textAbove={payload.textAbove}
             textBelow={payload.textBelow}
+            isRedeemable={isRedeemable}
             disabled
             templateComponent={renderByType(type, payload, () => {}, true)}
           />

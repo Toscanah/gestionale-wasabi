@@ -5,13 +5,36 @@ import { EngagementTemplate } from "@prisma/client";
 export default async function updateEngagementTemplate({
   id,
   label,
+  redeemable,
   payload,
 }: EngagementSchemaInputs["UpdateEngagementTemplateInput"]): Promise<EngagementTemplate> {
-  return await prisma.engagementTemplate.update({
+  const prev = await prisma.engagementTemplate.findUnique({
     where: { id },
-    data: {
-      label,
-      payload: payload as any,
-    },
+    select: { redeemable: true },
   });
+
+  if (!prev) throw new Error(`EngagementTemplate ${id} not found`);
+
+  const updated = await prisma.$transaction(async (tx) => {
+    const tpl = await tx.engagementTemplate.update({
+      where: { id },
+      data: {
+        label,
+        payload: payload as any,
+        redeemable, 
+      },
+    });
+
+    if (prev.redeemable === true && redeemable === false) {
+      await tx.engagementLedger.deleteMany({
+        where: {
+          engagement: { template_id: id },
+        },
+      });
+    }
+
+    return tpl;
+  });
+
+  return updated;
 }

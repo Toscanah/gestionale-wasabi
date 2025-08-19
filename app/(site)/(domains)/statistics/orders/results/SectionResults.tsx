@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import RandomSpinner from "../../../../components/ui/misc/RandomSpinner";
+import RandomSpinner from "../../../../components/ui/misc/loader/RandomSpinner";
 import { Results } from "../../../../hooks/statistics/useOrdersStats";
 import roundToTwo from "../../../../lib/utils/global/number/roundToTwo";
 import getTable from "@/app/(site)/lib/utils/global/getTable";

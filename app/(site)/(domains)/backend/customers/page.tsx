@@ -10,7 +10,7 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 import dynamic from "next/dynamic";
 
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
+const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
   ssr: false,
 });
 

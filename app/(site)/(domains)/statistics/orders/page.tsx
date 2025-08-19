@@ -13,7 +13,7 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import dynamic from "next/dynamic";
 import { OrderStatus } from "@prisma/client";
 
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
+const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
   ssr: false,
 });
 

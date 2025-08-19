@@ -22,31 +22,31 @@ import {
   SyncLoader,
 } from "react-spinners";
 
-type SpinnerProps = {
+export type RandomSpinnerProps = {
   isLoading: boolean;
   size?: number;
   color?: string;
 };
 
 const SPINNERS = [
-  BounceLoader,
-  BarLoader,
-  BeatLoader,
+  // BounceLoader,
+  // BarLoader,
+  // BeatLoader,
   CircleLoader,
-  ClipLoader,
+  // ClipLoader,
   // ClimbingBoxLoader,
-  DotLoader,
-  FadeLoader,
-  GridLoader,
-  HashLoader,
-  MoonLoader,
-  PacmanLoader,
-  PuffLoader,
-  RingLoader,
-  RiseLoader,
-  RotateLoader,
-  ScaleLoader,
-  SyncLoader,
+  // DotLoader,
+  // FadeLoader,
+  // GridLoader,
+  // HashLoader,
+  // MoonLoader,
+  // PacmanLoader,
+  // PuffLoader,
+  // RingLoader,
+  // RiseLoader,
+  // RotateLoader,
+  // ScaleLoader,
+  // SyncLoader,
 ];
 
 const SUSHI_PHRASES = [
@@ -62,7 +62,7 @@ const SUSHI_PHRASES = [
   "Calma, precisione, sushi. 🎯",
 ];
 
-export default function RandomSpinner({ isLoading, size = 50, color = "#ff0000" }: SpinnerProps) {
+export default function RandomSpinner({ isLoading, size = 50, color = "#ff0000" }: RandomSpinnerProps) {
   const [selectedSpinner, setSelectedSpinner] = useState(
     () => SPINNERS[Math.floor(Math.random() * SPINNERS.length)]
   );
@@ -86,7 +86,7 @@ export default function RandomSpinner({ isLoading, size = 50, color = "#ff0000" 
   return (
     <div className="flex flex-col gap-12 items-center justify-center w-full h-full">
       <SpinnerComponent loading={isLoading} size={size} color={color} />
-      <p className="text-muted-foreground text-lg italic">{phrase}</p>
+      {/* <p className="text-muted-foreground text-lg italic">{phrase}</p> */}
     </div>
   );
 }

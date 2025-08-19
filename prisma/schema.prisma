@@ -21,25 +21,26 @@ model Rider {
 }
 
 model Order {
-    id                 Int              @id @default(autoincrement())
-    created_at         DateTime         @default(now())
-    updated_at         DateTime         @default(now()) @updatedAt
-    discount           Float            @default(0)
-    type               OrderType
-    is_receipt_printed Boolean          @default(false)
-    suborder_of        Int?
-    rices              Int?
-    salads             Int?
-    soups              Int?
-    shift              WorkingShift     @default(UNSPECIFIED)
-    status             OrderStatus      @default(ACTIVE)
-    engagements        Engagement[]
-    payments           Payment[]
-    products           ProductInOrder[]
-    //
-    home_order         HomeOrder?
-    pickup_order       PickupOrder?
-    table_order        TableOrder?
+    id                          Int                @id @default(autoincrement())
+    created_at                  DateTime           @default(now())
+    updated_at                  DateTime           @default(now()) @updatedAt
+    discount                    Float              @default(0)
+    type                        OrderType
+    is_receipt_printed          Boolean            @default(false)
+    suborder_of                 Int?
+    rices                       Int?
+    salads                      Int?
+    soups                       Int?
+    shift                       WorkingShift       @default(UNSPECIFIED)
+    status                      OrderStatus        @default(ACTIVE)
+    engagements                 Engagement[]
+    payments                    Payment[]
+    products                    ProductInOrder[]
+    home_order                  HomeOrder?
+    pickup_order                PickupOrder?
+    table_order                 TableOrder?
+    issued_engagement_ledgers   EngagementLedger[] @relation("ledger_issued_on_order")
+    redeemed_engagement_ledgers EngagementLedger[] @relation("ledger_redeemed_on_order")
 }
 
 model TableOrder {
@@ -97,6 +98,7 @@ model EngagementTemplate {
     label       String?
     type        EngagementType
     payload     Json
+    redeemable  Boolean        @default(false)
     created_at  DateTime       @default(now())
     engagements Engagement[]
 }
@@ -111,6 +113,35 @@ model Engagement {
     customer    Customer?          @relation(fields: [customer_id], references: [id], onDelete: Cascade)
     order       Order?             @relation(fields: [order_id], references: [id])
     template    EngagementTemplate @relation(fields: [template_id], references: [id])
+    ledgers     EngagementLedger[]
+}
+
+model EngagementLedger {
+    id Int @id @default(autoincrement())
+
+    // Link to the permanent attachment (atomic Engagement)
+    engagement_id Int
+    engagement    Engagement @relation(fields: [engagement_id], references: [id], onDelete: Cascade)
+
+    // Order where it was printed
+    issued_on_order_id Int
+    issued_on_order    Order    @relation("ledger_issued_on_order", fields: [issued_on_order_id], references: [id])
+    issued_at          DateTime @default(now())
+
+    // Redemption info (nullable until redeemed)
+    redeemed_on_order_id Int?
+    redeemed_on_order    Order?    @relation("ledger_redeemed_on_order", fields: [redeemed_on_order_id], references: [id])
+    redeemed_at          DateTime?
+
+    // Status lifecycle: ISSUED → REDEEMED or VOID
+    status EngagementLedgerStatus @default(ISSUED)
+
+    // Voiding info (optional, for operator error cases)
+    voided_at DateTime?
+
+    @@index([engagement_id])
+    @@index([issued_on_order_id])
+    @@index([redeemed_on_order_id])
 }
 
 model Customer {
@@ -269,6 +300,12 @@ enum EngagementType {
     QR_CODE
     IMAGE
     MESSAGE
+}
+
+enum EngagementLedgerStatus {
+    ISSUED
+    REDEEMED
+    VOID
 }
 
 enum RiceLogType {

@@ -1,4 +1,4 @@
-import { EngagementType } from "@prisma/client";
+import { EngagementLedgerStatus, EngagementType } from "@prisma/client";
 import { z } from "zod";
 import { ParsedEngagementTemplateSchema } from "../models/Engagement";
 import { NoContentSchema, wrapSchema } from "./common";
@@ -16,6 +16,7 @@ export type TemplatePayloadDraft = z.infer<typeof TemplatePayloadDraftSchema>;
 export const CreateEngagementTemplateSchema = z.object({
   label: z.string().optional(),
   type: z.nativeEnum(EngagementType),
+  redeemable: z.boolean(),
   payload: z.record(z.any()),
 });
 
@@ -50,6 +51,19 @@ export const DeleteEngagementByIdSchema = wrapSchema("engagementId", z.number())
 
 export const ToggleEngagementByIdSchema = wrapSchema("engagementId", z.number());
 
+//
+
+export const GetEngagementsLedgersByCustomerSchema = z.object({
+  customerId: z.number(),
+});
+
+export const IssueLedgers = wrapSchema("orderId", z.number());
+
+export const UpdateLedgerStatus = z.object({
+  ledgerId: z.number(),
+  status: z.nativeEnum(EngagementLedgerStatus),
+});
+
 // Schema Registry
 //
 export const ENGAGEMENT_SCHEMAS = {
@@ -61,6 +75,9 @@ export const ENGAGEMENT_SCHEMAS = {
   deleteTemplateById: DeleteTemplateByIdSchema,
   deleteEngagementById: DeleteEngagementByIdSchema,
   toggleEngagementById: ToggleEngagementByIdSchema,
+  getEngagementsLedgersByCustomer: GetEngagementsLedgersByCustomerSchema,
+  issueLedgers: IssueLedgers,
+  updateLedgerStatus: UpdateLedgerStatus,
 };
 
 export type EngagementSchemaInputs = SchemaInputs<typeof ENGAGEMENT_SCHEMAS>;

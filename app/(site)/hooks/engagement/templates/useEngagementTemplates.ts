@@ -21,20 +21,20 @@ const createEmptyDraft = (type: EngagementType): TemplatePayloadDraft => ({
   label: "",
   payload: EMPTY_PAYLOADS[type],
   selectedImage: type === EngagementType.IMAGE ? null : undefined,
+  redeemable: false,
 });
 
 export default function useEngagementTemplates() {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [templates, setTemplates] = useState<ParsedEngagementTemplate[]>([]);
   const [draftTemplate, setDraftTemplate] = useState<TemplatePayloadDraft>(() =>
     createEmptyDraft(EngagementType.QR_CODE)
   );
 
   const fetchTemplates = () =>
-    fetchRequest<ParsedEngagementTemplate[]>(
-      "GET",
-      "/api/engagements",
-      "getEngagementTemplates"
-    ).then(setTemplates);
+    fetchRequest<ParsedEngagementTemplate[]>("GET", "/api/engagements", "getEngagementTemplates")
+      .then(setTemplates)
+      .then(() => setIsLoading(false));
 
   const maybeUploadImage = async (
     payload: ParsedEngagementPayload,
@@ -48,7 +48,9 @@ export default function useEngagementTemplates() {
     return payload;
   };
 
-  const updateTemplate = async (template: EngagementSchemaInputs["UpdateEngagementTemplateInput"]) => {
+  const updateTemplate = async (
+    template: EngagementSchemaInputs["UpdateEngagementTemplateInput"]
+  ) => {
     const payload = await maybeUploadImage(template.payload, template.selectedImage);
 
     fetchRequest<ParsedEngagementTemplate>(
@@ -58,6 +60,7 @@ export default function useEngagementTemplates() {
       {
         id: template.id,
         label: template.label,
+        redeemable: template.redeemable,
         payload,
       }
     ).then((updated) => {
@@ -73,6 +76,7 @@ export default function useEngagementTemplates() {
       type: draft.type,
       label: draft.label ?? "",
       payload: finalPayload as ParsedEngagementPayload,
+      redeemable: draft.redeemable,
     } as EngagementSchemaInputs["CreateEngagementTemplateInput"];
 
     fetchRequest<ParsedEngagementTemplate>("POST", "/api/engagements", "createEngagementTemplate", {
@@ -97,6 +101,7 @@ export default function useEngagementTemplates() {
   }, []);
 
   return {
+    isLoading,
     templates,
     setTemplates,
     updateTemplate,

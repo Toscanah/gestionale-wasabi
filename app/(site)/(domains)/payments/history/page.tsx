@@ -11,7 +11,7 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
 import columns from "./columns";
-import RandomSpinner from "../../../components/ui/misc/RandomSpinner";
+import RandomSpinner from "../../../components/ui/misc/loader/RandomSpinner";
 import usePaymentsHistory from "../../../hooks/usePaymentsHistory";
 import useGlobalFilter from "../../../hooks/useGlobalFilter";
 import ShiftFilterSelector from "../../../components/filters/shift/ShiftFilterSelector";

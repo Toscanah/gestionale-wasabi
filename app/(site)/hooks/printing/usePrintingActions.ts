@@ -7,13 +7,15 @@ import EngagementReceipt from "../../(domains)/printing/receipts/EngagementRecei
 import print, { PrintContent } from "../../(domains)/printing/print";
 import { useOrderContext } from "../../context/OrderContext";
 import usePrinter from "./usePrinter";
+import fetchRequest from "../../lib/api/fetchRequest";
 
 interface UsePrintingActionsParams {
   maybeSendConfirmation?: (order: AnyOrder) => Promise<void>;
 }
 
 export default function usePrintingActions({ maybeSendConfirmation }: UsePrintingActionsParams) {
-  const { updateUnprintedProducts, toggleDialog, updatePrintedFlag } = useOrderContext();
+  const { updateUnprintedProducts, toggleDialog, updatePrintedFlag, issueLedgers } =
+    useOrderContext();
   const { printKitchen, printOrder, printRider, printEngagements } = usePrinter();
 
   async function buildPrintContent(
@@ -48,7 +50,7 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
   // ---------- High-level orchestrated actions ----------
 
   async function handleKitchenRePrint(order: AnyOrder) {
-    await printKitchen({order});
+    await printKitchen({ order });
   }
 
   async function handleOrderRePrint(order: AnyOrder, plannedPayment: PlannedPayment) {
@@ -81,6 +83,7 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
   async function handlePrint(order: AnyOrder, plannedPayment: PlannedPayment) {
     await updatePrintedFlag();
     const content = await buildPrintContent(order, plannedPayment, false);
+    await issueLedgers(order);
     await print(...content).then(() => toggleDialog(false));
     await maybeSendConfirmation?.(order);
   }

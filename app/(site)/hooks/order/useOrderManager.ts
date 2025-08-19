@@ -6,7 +6,7 @@ import generateDummyProduct from "../../lib/services/product-management/generate
 import fetchRequest from "../../lib/api/fetchRequest";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";
 import { toastError, toastSuccess } from "../../lib/utils/global/toast";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus, OrderType } from "@prisma/client";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -112,5 +112,15 @@ export function useOrderManager(
     }
   }, [dialogOpen]);
 
-  return { updateOrder, updatePrintedFlag, cancelOrder, createSubOrder, joinTableOrders };
+  const issueLedgers = async (order: AnyOrder) => {
+    const redeemables = order.engagements?.filter((e) => e.enabled && e.template?.redeemable) ?? [];
+
+    if (redeemables.length > 0 && order.type !== OrderType.TABLE) {
+      fetchRequest("POST", "/api/engagements", "issueLedgers", {
+        orderId,
+      });
+    }
+  };
+
+  return { updateOrder, updatePrintedFlag, cancelOrder, createSubOrder, joinTableOrders, issueLedgers };
 }

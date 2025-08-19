@@ -1,4 +1,4 @@
-import { EngagementSchema, EngagementTemplateSchema } from "@/prisma/generated/zod";
+import { EngagementLedgerSchema, EngagementSchema, EngagementTemplateSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
 
 const CommonPayloadSchema = z.object({
@@ -49,3 +49,9 @@ export const ParsedEngagementTemplateSchema = EngagementTemplateSchema.omit({
 });
 
 export type ParsedEngagementTemplate = z.infer<typeof ParsedEngagementTemplateSchema>;
+
+export const EngagementLedgerWithDetailsSchema = EngagementLedgerSchema.extend({
+  engagement: EngagementWithDetailsSchema,
+});
+
+export type EngagementLedgerWithDetails = z.infer<typeof EngagementLedgerWithDetailsSchema>;

@@ -39,6 +39,7 @@ interface OrderContextType {
   updatePrintedFlag: () => Promise<void>;
   joinTableOrders: (tableToJoin: string) => void;
   updateProductVariation: (variation: string, productInOrderId: number) => void;
+  issueLedgers: (order: AnyOrder) => Promise<void>;
 }
 
 export const OrderProvider = ({
@@ -57,8 +58,14 @@ export const OrderProvider = ({
 
   const toggleDialog = (dialogOpen: boolean) => setDialogOpen(dialogOpen);
 
-  const { updateOrder, updatePrintedFlag, cancelOrder, createSubOrder, joinTableOrders } =
-    useOrderManager(order.id, setOrder, dialogOpen);
+  const {
+    updateOrder,
+    updatePrintedFlag,
+    cancelOrder,
+    createSubOrder,
+    joinTableOrders,
+    issueLedgers,
+  } = useOrderManager(order.id, setOrder, dialogOpen);
 
   const {
     addProduct,
@@ -95,6 +102,7 @@ export const OrderProvider = ({
         updateOrder,
         updatePrintedFlag,
         updateProductVariation,
+        issueLedgers,
       }}
     >
       {children}

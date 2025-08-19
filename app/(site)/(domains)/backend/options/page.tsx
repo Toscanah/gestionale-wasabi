@@ -10,7 +10,7 @@ import FormFields from "../FormFields";
 import { formSchema, getOptionFields } from "./form";
 import dynamic from "next/dynamic";
 
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
+const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
   ssr: false,
 });
 

@@ -11,7 +11,7 @@ import { useCustomersStats } from "../../../hooks/statistics/useCustomersStats";
 import { TablePagination } from "../../../components/table/TablePagination";
 import { DATE_PRESETS, DatePreset } from "../../../lib/shared/enums/DatePreset";
 import Calendar from "../../../components/ui/calendar/Calendar";
-import RandomSpinner from "@/app/(site)/components/ui/misc/RandomSpinner";
+import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 
 export default function CustomersStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Trash } from "@phosphor-icons/react";
 import renderByType from "../../types/renderByType";
 import { EngagementType } from "@prisma/client";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type EditModeProps = {
   index: number;
@@ -28,7 +29,7 @@ export default function TemplateContentEdit({
   onSave,
   onDelete,
 }: EditModeProps) {
-  const { id, type, label, payload } = template;
+  const { id, type, label, payload, redeemable: isRedeemable } = template;
 
   const updatePayload = (updates: Partial<ParsedEngagementPayload>) => {
     onChange({
@@ -38,6 +39,10 @@ export default function TemplateContentEdit({
 
   const handleLabelChange = (value: string) => {
     onChange({ label: value });
+  };
+
+  const handleRedeemableChange = (value: boolean) => {
+    onChange({ redeemable: value });
   };
 
   const handleComponentChange = (
@@ -72,6 +77,8 @@ export default function TemplateContentEdit({
           <TemplateWrapper
             textAbove={payload.textAbove}
             textBelow={payload.textBelow}
+            isRedeemable={isRedeemable}
+            onRedeemableChange={handleRedeemableChange}
             onTextAboveChange={(val) => updatePayload({ textAbove: val })}
             onTextBelowChange={(val) => updatePayload({ textBelow: val })}
             onSubmit={() => onSave(template)}

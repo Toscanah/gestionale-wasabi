@@ -50,7 +50,6 @@ export default async function createHomeOrder({
           id: { in: customerEngagements.map((e) => e.id) },
         },
         data: {
-          enabled: true,
           order_id: order.id,
         },
       });

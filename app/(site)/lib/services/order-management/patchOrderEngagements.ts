@@ -13,6 +13,7 @@ interface PatchEngagementsParams {
   removeTemplateIds?: number[];
   updateTemplates?: ParsedEngagementTemplate[];
   updateEngagements?: Partial<EngagementWithDetails>[];
+  replaceEngagements?: EngagementWithDetails[];
 }
 
 export function patchOrderEngagements({
@@ -21,10 +22,14 @@ export function patchOrderEngagements({
   removeTemplateIds = [],
   updateTemplates = [],
   updateEngagements = [],
+  replaceEngagements
+  ,
 }: PatchEngagementsParams): AnyOrder {
   const patchEngagementList = (
     existing: EngagementWithDetails[] | undefined
   ): EngagementWithDetails[] => {
+    if (replaceEngagements) return replaceEngagements;
+
     let patched = existing ?? [];
 
     // Remove unwanted templates (by engagement ID)

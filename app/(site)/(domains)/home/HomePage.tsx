@@ -16,7 +16,7 @@ import getOverdrawnOrderIds from "../../lib/services/order-management/getOverdra
 import { BuildOrderState } from "./page";
 import dynamic from "next/dynamic";
 
-const RandomSpinner = dynamic(() => import("../../components/ui/misc/RandomSpinner"), {
+const RandomSpinner = dynamic(() => import("../../components/ui/misc/loader/RandomSpinner"), {
   ssr: false,
 });
 

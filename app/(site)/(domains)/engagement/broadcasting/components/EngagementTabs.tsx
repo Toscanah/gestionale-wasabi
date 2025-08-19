@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import TemplateContentView from "../../templates/components/content/TemplateContentView";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { Trash } from "@phosphor-icons/react";
+import EngagementHistory from "./history/EngagementHistory";
 
 type OrderEngagementTabsProps = {
   order: AnyOrder;
@@ -47,6 +48,11 @@ export function OrderEngagementTabs({
   const { updateOrder } = useOrderContext();
   const [engagements, setEngagements] = useState<EngagementWithDetails[]>([]);
 
+  const customerId =
+    order.type == OrderType.HOME
+      ? (order as HomeOrder).home_order?.customer?.id
+      : (order as PickupOrder).pickup_order?.customer?.id;
+
   useEffect(() => {
     const all = [
       ...(order.engagements ?? []),
@@ -57,8 +63,9 @@ export function OrderEngagementTabs({
         ? (order as PickupOrder).pickup_order?.customer?.engagements ?? []
         : []),
     ];
+    console.log("dio", order);
     setEngagements(dedupeEngagements(all));
-  }, [order]);
+  }, [order.engagements]);
 
   const handleEngagementDelete = async (engagementId: number) => {
     await onDeleteEngagement(engagementId)
@@ -114,6 +121,9 @@ export function OrderEngagementTabs({
         <TabsTrigger value="existing" className="w-full">
           Marketing applicati
         </TabsTrigger>
+        <TabsTrigger value="history" className="w-full">
+          Storico utilizzi
+        </TabsTrigger>
         <TabsTrigger value="templates-list" className="w-full">
           Lista modelli
         </TabsTrigger>
@@ -159,17 +169,24 @@ export function OrderEngagementTabs({
           filterFn={(template) => !engagements.some((e) => e.template.id === template.id)}
         />
 
-        <Button
-          className="w-full"
-          onClick={() => {
-            onCreateEngagement();
-            selectedTemplates.map(onSelectTemplate);
-          }}
-          disabled={selectedTemplates.length === 0}
-        >
-          Vai
-        </Button>
+        {selectedTemplates.length !== 0 && (
+          <Button
+            className="w-full"
+            onClick={() => {
+              onCreateEngagement();
+              selectedTemplates.map(onSelectTemplate);
+            }}
+          >
+            Vai
+          </Button>
+        )}
       </TabsContent>
+
+      {order.type !== OrderType.TABLE && customerId && (
+        <TabsContent value="history">
+          <EngagementHistory customerId={customerId} orderId={order.id} />
+        </TabsContent>
+      )}
     </Tabs>
   );
 }

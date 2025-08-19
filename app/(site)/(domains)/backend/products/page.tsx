@@ -15,7 +15,7 @@ import { Category } from "@prisma/client";
 import { ALL_CATEGORIES } from "../../../hooks/statistics/useProductsStats";
 import dynamic from "next/dynamic";
 
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/RandomSpinner"), {
+const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
   ssr: false,
 });
 

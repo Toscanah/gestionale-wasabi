@@ -12,7 +12,7 @@ import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import Calendar from "../../../components/ui/calendar/Calendar";
 import ShiftFilterSelector from "../../../components/filters/shift/ShiftFilterSelector";
 import TimeScopeFilter from "../../../components/filters/shift/TimeScope";
-import RandomSpinner from "../../../components/ui/misc/RandomSpinner";
+import RandomSpinner from "../../../components/ui/misc/loader/RandomSpinner";
 
 export default function ProductsStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();

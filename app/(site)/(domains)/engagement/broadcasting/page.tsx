@@ -12,7 +12,7 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";
 import useGlobalFilter from "../../../hooks/useGlobalFilter";
 import { Input } from "@/components/ui/input";
-import RandomSpinner from "@/app/(site)/components/ui/misc/RandomSpinner";
+import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 
 export default function EngagementPage() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
