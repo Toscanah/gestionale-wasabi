@@ -1,6 +1,7 @@
 import { Product } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { categoryInclude } from "../includes";
+import { KitchenType } from "@prisma/client";
 
 export default async function createNewProduct({
   product,
@@ -20,7 +21,7 @@ export default async function createNewProduct({
   const newProduct = await prisma.product.create({
     data: {
       active: true,
-      kitchen: product.kitchen ?? "NONE",
+      kitchen: product.kitchen ?? KitchenType.NONE,
       code: product.code,
       desc: product.desc,
       rices: product.rices,

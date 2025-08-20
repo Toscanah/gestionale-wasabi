@@ -186,9 +186,8 @@ export function useProductsManager(
       .filter(
         (product) =>
           !deletedProducts.some((deleted) => deleted.id === product.id) &&
-          ![ProductInOrderStatus.DELETED_COOKED, ProductInOrderStatus.DELETED_UNCOOKED].includes(
-            product.status
-          )
+          product.status !== ProductInOrderStatus.DELETED_COOKED &&
+          product.status !== ProductInOrderStatus.DELETED_UNCOOKED
       )
       .filter((product) => product.id !== -1)
       .map((product) => {

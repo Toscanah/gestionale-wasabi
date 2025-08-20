@@ -14,7 +14,7 @@ export default async function addRiceLog({
     data: {
       rice_batch_id: riceBatchId,
       manual_value: manualValue,
-      type: type ? type : riceBatchId ? "BATCH" : manualValue ? "MANUAL" : "RESET",
+      type: type ? type : riceBatchId ? RiceLogType.BATCH : manualValue ? RiceLogType.MANUAL : RiceLogType.RESET,
     },
   });
 }

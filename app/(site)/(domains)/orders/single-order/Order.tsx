@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
+import { OrderType } from "@prisma/client";
 
 interface OrderProps {
   cell: Cell<AnyOrder, unknown>;
@@ -31,7 +32,7 @@ export default function Order({ cell, className, isOverdrawn }: OrderProps) {
   return (
     <DialogWrapper
       open={open}
-      double={cell.row.original.type !== "TABLE"}
+      double={cell.row.original.type !== OrderType.TABLE}
       onOpenChange={setOpen}
       size="large"
       contentClassName={cn("h-[95vh] flex", isOverdrawn && "!border !border-2 !border-red-500")}

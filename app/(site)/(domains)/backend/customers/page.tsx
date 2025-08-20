@@ -19,7 +19,6 @@ type FormValues = Partial<CustomerWithDetails>;
 export default function CustomersDashboard() {
   const [customers, setCustomers] = useState<CustomerWithDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     fetchRequest<CustomerWithDetails[]>("GET", "/api/customers/", "getCustomersWithDetails").then(

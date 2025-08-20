@@ -6,6 +6,7 @@ import {
   pickupOrderInclude,
   productsInOrderInclude,
 } from "../includes";
+import { PaymentType } from "@prisma/client";
 
 export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPayments[]> {
   const orders = await prisma.order.findMany({
@@ -41,16 +42,16 @@ export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPayments
 
         // Calculate the totals based on this payment
         switch (payment.type) {
-          case "CARD":
+          case PaymentType.CARD:
             paymentTotals.totalCard = payment.amount;
             break;
-          case "CASH":
+          case PaymentType.CASH:
             paymentTotals.totalCash = payment.amount;
             break;
-          case "CREDIT":
+          case PaymentType.CREDIT:
             paymentTotals.totalCredit = payment.amount;
             break;
-          case "VOUCH":
+          case PaymentType.VOUCH:
             paymentTotals.totalVouch = payment.amount;
             break;
           default:
@@ -75,16 +76,16 @@ export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPayments
 
       order.payments.forEach((payment) => {
         switch (payment.type) {
-          case "CARD":
+          case PaymentType.CARD:
             paymentTotals.totalCard = payment.amount;
             break;
-          case "CASH":
+          case PaymentType.CASH:
             paymentTotals.totalCash = payment.amount;
             break;
-          case "CREDIT":
+          case PaymentType.CREDIT:
             paymentTotals.totalCredit = payment.amount;
             break;
-          case "VOUCH":
+          case PaymentType.VOUCH:
             paymentTotals.totalVouch = payment.amount;
             break;
           default:

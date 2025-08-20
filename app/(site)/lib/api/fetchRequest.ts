@@ -47,13 +47,13 @@ type ContentType = z.infer<(typeof schemas)[ValidActionKeys]>;
 type ExcludeEmptyObject<T> = T extends {} ? (keyof T extends never ? never : T) : T;
 type NonEmptyContentType = ExcludeEmptyObject<ContentType>;
 
-export default async function fetchRequest<ReturnType>(
+export default async function fetchRequest<R>(
   method: HTTPMethod,
   path: PathType,
   action: ValidActionKeys,
   content?: NonEmptyContentType
-): Promise<ReturnType> {
-  let url: URL;
+): Promise<R> {
+  const url = new URL(path, window.location.origin);
   let requestOptions: RequestInit = {
     method: method,
     headers: {
@@ -64,7 +64,6 @@ export default async function fetchRequest<ReturnType>(
   try {
     switch (method) {
       case "GET":
-        url = new URL(path, window.location.origin);
         url.searchParams.append("action", action);
 
         if (content) {
@@ -77,7 +76,6 @@ export default async function fetchRequest<ReturnType>(
       case "PATCH":
       case "POST":
       case "DELETE":
-        url = new URL(path, window.location.origin);
         requestOptions.body = JSON.stringify({
           action,
           content: content == undefined ? {} : content,
@@ -91,14 +89,13 @@ export default async function fetchRequest<ReturnType>(
     const response = await fetch(url.toString(), requestOptions);
 
     if (!response.ok) {
-      const errorBody = await response.json();
-
-      const errorMessage = errorBody.message || "An error occurred";
-      const errorDetails = errorBody.details || "No further details available";
-      const errorError = errorBody.error || "Unknown error";
-
+      const {
+        message = "An error occurred",
+        details = "No further details",
+        error = "Unknown error",
+      } = (await response.json()) || {};
       throw new Error(
-        `HTTP Error: Status ${response.status}\nMessage: ${errorMessage}\nError: ${errorError}\nDetails: ${errorDetails}`
+        `HTTP ${response.status}\nMessage: ${message}\nError: ${error}\nDetails: ${details}`
       );
     }
 

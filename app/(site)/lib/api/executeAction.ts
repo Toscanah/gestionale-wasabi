@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { ZodSchema } from "zod";
-import { ActionEntry, ActionsMap } from "./handleRequest";
+import { ActionEntry } from "./handleRequest";
 
 export default async function executeAction(
   actionEntry: ActionEntry | undefined,

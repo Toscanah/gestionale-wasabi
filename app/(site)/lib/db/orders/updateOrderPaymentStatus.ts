@@ -1,3 +1,4 @@
+import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 import { AnyOrder, OrderSchemaInputs } from "@/app/(site)/lib/shared";
@@ -24,12 +25,12 @@ export default async function updateOrderPaymentStatus({
   }
 
   // Update corresponding sub-order table
-  if (order.type === "HOME") {
+  if (order.type === OrderType.HOME) {
     await prisma.homeOrder.update({
       where: { id: orderId },
       data: { planned_payment: plannedPayment, prepaid },
     });
-  } else if (order.type === "PICKUP") {
+  } else if (order.type === OrderType.PICKUP) {
     await prisma.pickupOrder.update({
       where: { id: orderId },
       data: { planned_payment: plannedPayment, prepaid },

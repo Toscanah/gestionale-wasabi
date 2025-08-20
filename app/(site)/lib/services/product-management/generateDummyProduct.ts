@@ -1,5 +1,5 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import { ProductInOrderStatus } from "@prisma/client";
+import { KitchenType, ProductInOrderStatus } from "@prisma/client";
 
 export default function generateDummyProduct(): ProductInOrder {
   return {
@@ -9,7 +9,7 @@ export default function generateDummyProduct(): ProductInOrder {
     printed_amount: -1,
     frozen_price: 0,
     product: {
-      kitchen: "NONE",
+      kitchen: KitchenType.NONE,
       active: true,
       salads: 0,
       soups: 0,
