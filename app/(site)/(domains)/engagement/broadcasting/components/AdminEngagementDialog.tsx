@@ -4,6 +4,7 @@ import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { EngagementWithDetails } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import MarketingTemplates from "../../templates/MarketingTemplates";
+import { useState } from "react";
 
 type AdminEngagementDialogProps = {
   trigger: DialogWrapperProps["trigger"];
@@ -16,6 +17,8 @@ export default function AdminEngagementDialog({
   customerIds,
   onSuccess,
 }: AdminEngagementDialogProps) {
+  const [open, setOpen] = useState(false);
+
   const { createEngagements, selectedTemplates, onSelectTemplate } = useHandleEngagement({
     customerIds,
   });
@@ -24,11 +27,20 @@ export default function AdminEngagementDialog({
     if (!selectedTemplates.length) return;
     await createEngagements()
       .then(onSuccess)
-      .finally(() => toastSuccess("Marketing creato con successo"));
+      .finally(() => {
+        setOpen(false);
+        toastSuccess("Marketing creato con successo");
+      });
   };
 
   return (
-    <DialogWrapper title="Marketing clienti" trigger={trigger}>
+    <DialogWrapper
+      title="Marketing clienti"
+      trigger={trigger}
+      putUpperBorder
+      open={open}
+      onOpenChange={setOpen}
+    >
       <div className="space-y-4">
         <MarketingTemplates
           selection

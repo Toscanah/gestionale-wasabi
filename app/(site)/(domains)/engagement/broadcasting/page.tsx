@@ -27,6 +27,7 @@ export default function EngagementPage() {
     onRightTableRowClick,
     setActiveTypes,
     isLoading,
+    setFilteredRightCustomers,
   } = useEngagement();
 
   const leftTable = getTable({
@@ -81,7 +82,7 @@ export default function EngagementPage() {
 
         <div className="flex gap-4 w-full items-center justify-center">
           <AdminEngagementDialog
-            onSuccess={() => window.location.reload()} // TODO: implement smth better here -> setState that updates customers with new eng.
+            onSuccess={() => setFilteredRightCustomers([])} // TODO: implement smth better here -> setState that updates customers with new eng.
             customerIds={filteredRightCustomers.map((c) => c.id)}
             trigger={
               <Button

@@ -39,9 +39,6 @@ export const RFMRankRuleSchema = z.object({
   maxFrequency: z.number().optional(),
   minMonetary: z.number().optional(),
   maxMonetary: z.number().optional(),
-  minFinalScore: z.number().optional(),
-  maxFinalScore: z.number().optional(),
-  priority: z.number().default(0), // in case multiple match
 });
 
 // Configurable set of category rules

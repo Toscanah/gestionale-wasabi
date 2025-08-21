@@ -80,5 +80,6 @@ export default function useEngagement() {
     onLeftTableRowClick,
     onRightTableRowClick,
     isLoading,
+    setFilteredRightCustomers
   };
 }

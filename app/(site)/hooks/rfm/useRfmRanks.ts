@@ -7,6 +7,7 @@ export default function useRfmRanks() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
     const stored = localStorage.getItem("rfmConfig");
     if (stored) {
       try {
@@ -18,7 +19,10 @@ export default function useRfmRanks() {
     } else {
       localStorage.setItem(
         "rfmConfig",
-        JSON.stringify({ rules: DEFAULT_RFM_CONFIG.rules, ranks: DEFAULT_RFM_CONFIG.ranks })
+        JSON.stringify({
+          rules: DEFAULT_RFM_CONFIG.rules,
+          ranks: DEFAULT_RFM_CONFIG.ranks,
+        })
       );
       setRanks(DEFAULT_RFM_CONFIG.ranks);
     }
@@ -29,7 +33,10 @@ export default function useRfmRanks() {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("rfmConfig");
       const parsed = stored ? JSON.parse(stored) : {};
-      localStorage.setItem("rfmConfig", JSON.stringify({ ...parsed, ranks: newRanks }));
+      localStorage.setItem(
+        "rfmConfig",
+        JSON.stringify({ ...parsed, ranks: newRanks })
+      );
     }
   }, []);
 
@@ -39,11 +46,22 @@ export default function useRfmRanks() {
     save(newRanks);
   };
 
-  const addRankRule = (rule: RFMRankRule) => save([...ranks, rule]);
+  const addRankRule = (rule: RFMRankRule) => {
+    const newRanks = [...ranks, rule];
+    save(newRanks);
+  };
 
-  const removeRankRule = (index: number) => save(ranks.filter((_, i) => i !== index));
+  const removeRankRule = (index: number) => {
+    save(ranks.filter((_, i) => i !== index));
+  };
 
   const resetRanks = () => save(DEFAULT_RFM_CONFIG.ranks);
 
-  return { ranks, updateRankRule, addRankRule, removeRankRule, resetRanks };
+  return {
+    ranks,
+    updateRankRule,
+    addRankRule,
+    removeRankRule,
+    resetRanks,
+  };
 }

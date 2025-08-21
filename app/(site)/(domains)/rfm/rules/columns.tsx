@@ -88,7 +88,6 @@ export default function columns(dimension: RFMDimension): ColumnDef<RFMRangeRule
           variant="destructive"
           size="icon"
           onClick={() => (meta as RFMTableMeta).removeRule(row.index)}
-          className="w-16"
         >
           <Trash size={24} />
         </Button>

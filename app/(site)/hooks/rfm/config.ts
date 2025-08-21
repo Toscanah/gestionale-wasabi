@@ -34,11 +34,32 @@ export const DEFAULT_RULES: RFMRules = {
   },
 };
 
+export const DEFAULT_RANK_RULE: Omit<RFMRankRule, "rank"> = {
+  minRecency: 0,
+  maxRecency: 0,
+  minFrequency: 0,
+  maxFrequency: 0,
+  minMonetary: 0,
+  maxMonetary: 0,
+};
+
 export const DEFAULT_RANKS: RFMRankRule[] = [
-  { rank: "Perso", maxRecency: 0, priority: 100 },
-  { rank: "Inattivo", maxRecency: 2, priority: 90 },
-  { rank: "VIP", minRecency: 4, minFrequency: 4, minMonetary: 4, priority: 80 },
-  { rank: "regolare", minFinalScore: 7, priority: 10 },
+  // {
+  //   rank: "Perso",
+  //   ...DEFAULT_RANK_RULE,
+  // },
+  // {
+  //   rank: "Inattivo",
+  //   ...DEFAULT_RANK_RULE,
+  // },
+  // {
+  //   rank: "VIP",
+  //   ...DEFAULT_RANK_RULE,
+  // },
+  // {
+  //   rank: "regolare",
+  //   ...DEFAULT_RANK_RULE,
+  // },
 ];
 
 export const DEFAULT_RFM_CONFIG: RFMConfig = {

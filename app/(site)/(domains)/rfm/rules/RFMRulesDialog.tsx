@@ -24,7 +24,8 @@ export default function RFMRulesDialog() {
   return (
     <DialogWrapper
       title="Regole RFM"
-      autoFocus={false}
+      putSeparator
+      putUpperBorder
       trigger={<SidebarMenuSubButton className="hover:cursor-pointer">Regole</SidebarMenuSubButton>}
     >
       <Accordion type="single" collapsible className="w-full">

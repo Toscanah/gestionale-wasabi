@@ -1,7 +1,7 @@
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
 import { HashStraight } from "@phosphor-icons/react";
-import RFMRanksDialog from "@/app/(site)/(domains)/engagement/rfm/ranks/RFMRanksDialog";
-import RFMRulesDialog from "@/app/(site)/(domains)/engagement/rfm/rules/RFMRulesDialog";
+import RFMRanksDialog from "@/app/(site)/(domains)/rfm/ranks/RFMRanksDialog";
+import RFMRulesDialog from "@/app/(site)/(domains)/rfm/rules/RFMRulesDialog";
 
 export default function RfmSection() {
   const rfmItems: SidebarMenuGroupItem[] = [
