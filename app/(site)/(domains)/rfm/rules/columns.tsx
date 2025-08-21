@@ -6,10 +6,17 @@ import { Trash } from "@phosphor-icons/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { RFMTableMeta } from "./RFMDimensionEditor";
 
-const RFM_LABELS: Record<RFMDimension, string> = {
-  recency: "giorno/i",
-  frequency: "volta/e al mese",
-  monetary: "euro",
+const getRfmLabel = (dimension: RFMDimension, value: number | null | undefined) => {
+  switch (dimension) {
+    case "recency":
+      return value === 1 ? "giorno" : "giorni";
+    case "frequency":
+      return value === 1 ? "volta al mese" : "volte al mese";
+    case "monetary":
+      return value === 1 ? "euro" : "euro"; // euro is invariant
+    default:
+      return "";
+  }
 };
 
 export default function columns(dimension: RFMDimension): ColumnDef<RFMRangeRule>[] {
@@ -20,7 +27,7 @@ export default function columns(dimension: RFMDimension): ColumnDef<RFMRangeRule
       header: "Regola",
       accessor: (rule) => rule.min + " " + rule.max,
       value: (row, meta) => {
-        const label = RFM_LABELS[dimension];
+        const label = getRfmLabel(dimension, row.original.max ?? row.original.min);
 
         return (
           <div className="flex gap-4 items-center w-full">

@@ -1,5 +1,6 @@
 import SelectWrapper from "@/app/(site)/components/ui/select/SelectWrapper";
 import { RFMDimension, RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
+import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -20,11 +21,12 @@ interface RFMFieldEditorProps {
 }
 
 function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProps) {
-  const minKey = `min${dimension[0].toUpperCase()}${dimension.slice(1)}` as keyof Omit<
+  const parsedDimension = capitalizeFirstLetter(dimension);
+  const minKey = `min${parsedDimension}` as keyof Omit<
     RFMRankRule,
     "rank"
   >;
-  const maxKey = `max${dimension[0].toUpperCase()}${dimension.slice(1)}` as keyof Omit<
+  const maxKey = `max${parsedDimension}` as keyof Omit<
     RFMRankRule,
     "rank"
   >;
@@ -73,8 +75,8 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
   const handleModeChange = (newMode: Mode) => {
     setMode(newMode);
     const updated: RFMRankRule = { ...rank };
-    delete (updated as any)[minKey];
-    delete (updated as any)[maxKey];
+    delete updated[minKey];
+    delete updated[maxKey];
 
     if (newMode === "eq" && minValue !== "") {
       const num = Number(minValue);
@@ -151,7 +153,7 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
     </div>
   );
 }
-//
+
 
 export default function RFMRankForm({ rank, onChange }: RFMRankEditorProps) {
   return (
