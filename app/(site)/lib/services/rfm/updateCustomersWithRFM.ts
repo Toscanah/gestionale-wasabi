@@ -21,17 +21,21 @@ export default function updateCustomersWithRFM(
     const rfmScore = calculateRfmScore({ frequency, monetary, recency }, rfmRules);
     const rfmRank = calculateRfmRank(rfmScore, rankRules);
 
+    if (customer.phone.phone == "123") {
+      console.log(rfmScore)
+    }
+
     if (!rfmRank) {
       unrankedStats.total++;
       unrankedStats.recency.push(rfmScore.recency);
       unrankedStats.frequency.push(rfmScore.frequency);
       unrankedStats.monetary.push(rfmScore.monetary);
 
-      console.log("❌ Unranked customer:", {
-        id: customer.id,
-        phone: customer.phone.phone,
-        score: rfmScore,
-      });
+      // console.log("❌ Unranked customer:", {
+      //   id: customer.id,
+      //   phone: customer.phone.phone,
+      //   score: rfmScore,
+      // });
     }
 
     return {

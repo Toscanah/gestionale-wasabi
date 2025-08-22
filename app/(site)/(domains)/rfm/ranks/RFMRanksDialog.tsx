@@ -10,14 +10,25 @@ import { Button } from "@/components/ui/button";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RFMRankForm from "./RFMRankForm";
 import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DEFAULT_RANK_RULE } from "@/app/(site)/hooks/rfm/config";
 import { Trash } from "@phosphor-icons/react";
 import { toastError, toastSuccess } from "@/app/(site)/lib/utils/global/toast";
+import clsx from "clsx";
 
 export default function RFMRanksDialog() {
   const { ranks, updateRankRule, addRankRule, removeRankRule, resetRanks } = useRfmRanks();
   const [newRank, setNewRank] = useState<RFMRankRule>({ rank: "", ...DEFAULT_RANK_RULE });
+
+  const ref = useRef<HTMLDivElement>(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+
+  useEffect(() => {
+    if (ref.current) {
+      const el = ref.current;
+      setHasOverflow(el.scrollHeight > el.clientHeight);
+    }
+  }, []);
 
   return (
     <DialogWrapper
@@ -26,7 +37,12 @@ export default function RFMRanksDialog() {
       putUpperBorder
       trigger={<SidebarMenuSubButton className="hover:cursor-pointer">Rank</SidebarMenuSubButton>}
     >
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion
+        type="single"
+        collapsible
+        className={clsx("w-full max-h-80 overflow-y-auto", hasOverflow && "pr-4")}
+        ref={ref}
+      >
         <AccordionItem key="create" value="create">
           <AccordionTrigger className="flex items-center">
             <span>Crea nuovo rank</span>

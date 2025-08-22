@@ -158,13 +158,24 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
 export default function RFMRankForm({ rank, onChange }: RFMRankEditorProps) {
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="space-y-2">
-        <Label htmlFor="rank-name">Nome del rank</Label>
-        <Input
-          id="rank-name"
-          value={rank.rank}
-          onChange={(e) => onChange({ ...rank, rank: e.target.value })}
-        />
+      <div className="flex w-full items-center gap-4">
+        <div className="space-y-2 w-full">
+          <Label htmlFor="rank-name">Nome del rank</Label>
+          <Input
+            id="rank-name"
+            value={rank.rank}
+            onChange={(e) => onChange({ ...rank, rank: e.target.value })}
+          />
+        </div>
+
+        <div className="space-y-2 w-full">
+          <Label htmlFor="priority">Priorità</Label>
+          <Input
+            id="priority"
+            value={rank.priority}
+            onChange={(e) => onChange({ ...rank, priority: Number(e.target.value) })}
+          />
+        </div>
       </div>
 
       <Separator className="w-full" />

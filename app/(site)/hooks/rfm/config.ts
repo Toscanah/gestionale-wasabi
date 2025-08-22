@@ -49,7 +49,7 @@ export const DEFAULT_RANK_RULE: Omit<RFMRankRule, "rank"> = {
 
 export const DEFAULT_RANKS: RFMRankRule[] = [
   {
-    rank: "No Data", // never purchased, no activity
+    rank: "//", // never purchased, no activity
     priority: 0,
     minRecency: 0,
     maxRecency: 0,
@@ -58,6 +58,7 @@ export const DEFAULT_RANKS: RFMRankRule[] = [
     minMonetary: 0,
     maxMonetary: 0,
   },
+
   {
     rank: "VIP", // best in all three dimensions
     priority: 100,
@@ -69,6 +70,16 @@ export const DEFAULT_RANKS: RFMRankRule[] = [
     maxMonetary: 5,
   },
   {
+    rank: "Premium", // or "Loyal", "Premium"
+    priority: 90,
+    minRecency: 4,
+    maxRecency: 5,
+    minFrequency: 4,
+    maxFrequency: 5,
+    minMonetary: 1, // 👈 allows lower monetary than VIP
+    maxMonetary: 3, // 👈 caps it before "big spenders"
+  },
+  {
     rank: "Regolare", // solid customers, active & decent spend
     priority: 80,
     minRecency: 3,
@@ -78,6 +89,17 @@ export const DEFAULT_RANKS: RFMRankRule[] = [
     minMonetary: 2,
     maxMonetary: 5,
   },
+  {
+    rank: "Promettente",
+    priority: 70,
+    minRecency: 4,
+    maxRecency: 5,
+    minFrequency: 1,
+    maxFrequency: 3,
+    minMonetary: 1,
+    maxMonetary: 3,
+  },
+
   {
     rank: "Nuovo", // recently active but low frequency/spend
     priority: 60,
@@ -99,6 +121,17 @@ export const DEFAULT_RANKS: RFMRankRule[] = [
     maxMonetary: 5,
   },
   {
+    rank: "In calo",
+    priority: 45,
+    minRecency: 2,
+    maxRecency: 3,
+    minFrequency: 1,
+    maxFrequency: 3,
+    minMonetary: 1,
+    maxMonetary: 3,
+  },
+
+  {
     rank: "Valore basso", // consistently low contribution
     priority: 40,
     minRecency: 2,
@@ -108,6 +141,17 @@ export const DEFAULT_RANKS: RFMRankRule[] = [
     minMonetary: 0,
     maxMonetary: 2,
   },
+  {
+    rank: "Perso",
+    priority: 30,
+    minRecency: 0,
+    maxRecency: 1,
+    minFrequency: 0,
+    maxFrequency: 1,
+    minMonetary: 0,
+    maxMonetary: 2,
+  },
+
   {
     rank: "Inattivo",
     priority: 20,
