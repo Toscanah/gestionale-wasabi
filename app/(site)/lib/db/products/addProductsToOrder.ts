@@ -1,17 +1,14 @@
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductInOrder, ProductSchemaInputs } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 import { getProductPrice } from "../../services/product-management/getProductPrice";
 
 export default async function addProductsToOrder({
-  targetOrderId,
+  orderId,
   products,
-}: {
-  targetOrderId: number;
-  products: ProductInOrder[];
-}): Promise<ProductInOrder[]> {
+}: ProductSchemaInputs["AddProductsToOrderInput"]): Promise<ProductInOrder[]> {
   const targetOrder = await prisma.order.findUnique({
-    where: { id: targetOrderId },
+    where: { id: orderId },
     select: { type: true },
   });
 
@@ -24,7 +21,7 @@ export default async function addProductsToOrder({
       async (productInOrder) =>
         await prisma.productInOrder.create({
           data: {
-            order_id: targetOrderId,
+            order_id: orderId,
             product_id: productInOrder.product.id,
             quantity: productInOrder.quantity,
             variation: productInOrder.variation,
@@ -52,7 +49,7 @@ export default async function addProductsToOrder({
 
   await prisma.order.update({
     where: {
-      id: targetOrderId,
+      id: orderId,
     },
     data: {
       is_receipt_printed: false,

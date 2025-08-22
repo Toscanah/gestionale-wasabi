@@ -46,12 +46,14 @@ export default function DetailAccordionItem({
   const orderTotal = getOrderTotal({ order, applyDiscount: true });
   const orderDiscount = order.discount !== 0 ? <> (sconto {order.discount}%)</> : <></>;
 
+  console.log(getRecreatedProducts())
+
   const OrderRecreation = () =>
     onCreate && (
       <Button
         className="w-full"
         onClick={() => onCreate?.(getRecreatedProducts())}
-        disabled={canCreate}
+        disabled={!canCreate}
       >
         Ricrea questo ordine
       </Button>
@@ -75,6 +77,7 @@ export default function DetailAccordionItem({
           type={type}
           onCreate={onCreate}
           sortedProducts={inOrderProducts}
+          selectedProducts={getRecreatedProducts()}
         />
 
         <OrderRecreation />

@@ -12,6 +12,8 @@ import {
 } from "@/app/(site)/components/table/TableColumns";
 import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
+import { CustomerStatsTableMeta } from "./page";
+import chroma from "chroma-js";
 
 const columns: ColumnDef<CustomerWithStats>[] = [
   FieldColumn({
@@ -44,11 +46,6 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   //   header: "Media all'anno",
   // }),
 
-  FieldColumn({
-    key: "averageSpending",
-    header: "Spesa media",
-  }),
-
   ValueColumn({
     header: "RFM",
     value: (row) => roundToTwo(row.original.rfm.score.finalScore),
@@ -56,9 +53,37 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   ValueColumn({
+    header: "Rank",
+    value: (row, meta) => {
+      const { ranks, theme } = meta as CustomerStatsTableMeta;
+
+      const colorArray =
+        theme === "dark" ? ["#00FF00", "#FFFF00", "#FF0000"] : ["#009688", "#FF9800", "#795548"];
+
+      const sorted = [...ranks].sort((a, b) => b.priority - a.priority);
+
+      const currentRank = row.original.rfm.rank;
+      const index = sorted.findIndex((r) => r.rank === currentRank);
+
+      if (index === -1) return "-";
+
+      const scale = chroma.scale(colorArray).colors(sorted.length);
+      const color = scale[index];
+
+      return <span style={{ color, fontWeight: 600 }}>{currentRank}</span>;
+    },
+    accessor: (customer) => customer.rfm.rank,
+  }),
+
+  ValueColumn({
     header: "Ultimo ordine",
     value: (row) => (row.original.lastOrder ? format(row.original.lastOrder, "dd-MM-yyyy") : ""),
     accessor: (customer) => customer.lastOrder,
+  }),
+
+  FieldColumn({
+    key: "averageSpending",
+    header: "Spesa media",
   }),
 
   FieldColumn({

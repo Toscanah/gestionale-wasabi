@@ -12,6 +12,13 @@ import { TablePagination } from "../../../components/table/TablePagination";
 import { DATE_PRESETS, DatePreset } from "../../../lib/shared/enums/DatePreset";
 import Calendar from "../../../components/ui/calendar/Calendar";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
+import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
+import { useTheme } from "next-themes";
+
+export type CustomerStatsTableMeta = {
+  ranks: RFMRankRule[];
+  theme: string;
+};
 
 export default function CustomersStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
@@ -25,7 +32,9 @@ export default function CustomersStats() {
     handleReset,
     applyFilter,
     isLoading,
+    ranks,
   } = useCustomersStats();
+  const { theme } = useTheme();
 
   const table = getTable({
     data: filteredCustomers,
@@ -33,6 +42,10 @@ export default function CustomersStats() {
     globalFilter,
     setGlobalFilter,
     pagination: { putPagination: true, pageSize: 10 },
+    meta: {
+      ranks,
+      theme: theme ?? "light",
+    },
   });
 
   return (

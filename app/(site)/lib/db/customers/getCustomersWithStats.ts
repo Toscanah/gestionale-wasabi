@@ -98,7 +98,6 @@ export default async function getCustomersWithStats({
     const monetary = averageSpending; // filtered by window if provided
 
     const rfm = { recency, frequency, monetary };
-    // const score = calculateRfmScore(rfm, rfmRules).finalScore;
 
     return {
       ...customer,
@@ -111,9 +110,7 @@ export default async function getCustomersWithStats({
       averageOrdersYear: parseFloat(roundToTwo(averageOrdersYear)),
       rfm: {
         score: {
-          recency,
-          frequency,
-          monetary,
+          ...rfm,
           finalScore: 0,
         },
         rank: "none"

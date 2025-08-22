@@ -8,6 +8,7 @@ interface OrderDetailProps {
   type: string;
   onCreate?: (newProducts: ProductInOrder[]) => void;
   onCheckboxChange: (product: ProductInOrder) => void;
+  selectedProducts: ProductInOrder[];
 }
 
 export default function OrderDetail({
@@ -15,6 +16,7 @@ export default function OrderDetail({
   type,
   onCreate,
   onCheckboxChange,
+  selectedProducts,
 }: OrderDetailProps) {
   return sortedProducts.length > 0 ? (
     <ul className="list-disc list-inside">
@@ -22,7 +24,10 @@ export default function OrderDetail({
         <li key={product.id} className="text-xl flex justify-between items-center">
           <span className="flex items-center gap-2 ">
             {onCreate && (
-              <Checkbox defaultChecked={true} onCheckedChange={() => onCheckboxChange(product)} />
+              <Checkbox
+                checked={selectedProducts.some((p) => p.id === product.id)}
+                onCheckedChange={() => onCheckboxChange(product)}
+              />
             )}
             {product.quantity} x <b>{product.product.desc}</b>
             {product.options.length > 0 && <span>({joinItemsWithComma(product, "options")})</span>}

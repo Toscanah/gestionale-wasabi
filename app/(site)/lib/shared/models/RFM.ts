@@ -33,6 +33,7 @@ export const RFMRank = z.string()
 export const RFMRankRuleSchema = z.object({
   rank: RFMRank,
   // optional conditions to define the category
+  priority: z.number(), 
   minRecency: z.number().optional(),
   maxRecency: z.number().optional(),
   minFrequency: z.number().optional(),

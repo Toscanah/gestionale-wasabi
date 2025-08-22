@@ -18,7 +18,7 @@ export function useCustomersStats() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [customers, setCustomers] = useState<CustomerWithStats[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<CustomerWithStats[]>([]);
-  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [rankFilter, setRankFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<DateRange | undefined>(DEFAULT_DATE);
   const { rfmRules } = useRfmRules();
   const { ranks } = useRfmRanks();
@@ -55,14 +55,14 @@ export function useCustomersStats() {
     }).then((filteredCustomers) => {
       const updatedCustomers = updateCustomersWithRFM(filteredCustomers, rfmRules, ranks);
       setFilteredCustomers(updatedCustomers);
-      applyFilter(selectedFilter, updatedCustomers);
+      applyFilter(rankFilter, updatedCustomers);
     });
 
   const sortByMetric = (customers: CustomerWithStats[], metric: keyof CustomerWithStats) =>
     [...customers].sort((a, b) => (b[metric] as number) - (a[metric] as number));
 
   const applyFilter = (filter: string, customersOverride?: CustomerWithStats[]) => {
-    setSelectedFilter(filter);
+    setRankFilter(filter);
 
     const sourceCustomers = customersOverride || filteredCustomers;
 
@@ -171,7 +171,7 @@ export function useCustomersStats() {
   };
 
   const handleReset = () => {
-    setSelectedFilter("all");
+    setRankFilter("all");
     fetchInitialCustomers();
   };
 
@@ -179,11 +179,12 @@ export function useCustomersStats() {
     customers,
     filteredCustomers,
     dateFilter,
-    selectedFilter,
+    selectedFilter: rankFilter,
     setDateFilter,
     handlePresetSelect,
     applyFilter,
     handleReset,
     isLoading,
+    ranks,
   };
 }
