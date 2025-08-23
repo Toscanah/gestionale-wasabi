@@ -45,7 +45,13 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
 
   useEffect(resetForm, [selectedAddress, customer, phone]);
 
-  console.log(form.getValues())
+  const ORIGINS: { value: CustomerOrigin; label: string }[] = [
+    { value: CustomerOrigin.PHONE, label: "Telefono" },
+    { value: CustomerOrigin.WEB, label: "Web" },
+    { value: CustomerOrigin.COUPON, label: "Coupon" },
+    { value: CustomerOrigin.REFERRAL, label: "Passaparola" },
+    { value: CustomerOrigin.UNKNOWN, label: "Sconosciuta" },
+  ];
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
@@ -67,30 +73,14 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
                     onValueChange={field.onChange}
                     className="w-full flex gap-8 items-center"
                   >
-                    <FormItem className="flex items-center gap-2">
-                      <FormControl>
-                        <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.UNKNOWN}/>
-                      </FormControl>
-                      <FormLabel className="!mt-0 text-2xl">Sconosciuta</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center gap-2">
-                      <FormControl>
-                        <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.WEBSITE}/>
-                      </FormControl>
-                      <FormLabel className="!mt-0 text-2xl">Sito</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center gap-2">
-                      <FormControl>
-                        <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.COUPON}/>
-                      </FormControl>
-                      <FormLabel className="!mt-0 text-2xl">Coupon</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center gap-2">
-                      <FormControl>
-                        <RadioGroupItem className="h-5 w-5" value={CustomerOrigin.REFFERAL}/>
-                      </FormControl>
-                      <FormLabel className="!mt-0 text-2xl">Passaparola</FormLabel>
-                    </FormItem>
+                    {ORIGINS.map((origin) => (
+                      <FormItem key={origin.value} className="flex items-center gap-2">
+                        <FormControl>
+                          <RadioGroupItem className="h-5 w-5" value={origin.value} />
+                        </FormControl>
+                        <FormLabel className="!mt-0 text-2xl">{origin.label}</FormLabel>
+                      </FormItem>
+                    ))}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />

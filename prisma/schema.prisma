@@ -346,7 +346,8 @@ enum ProductInOrderStatus {
 
 enum CustomerOrigin {
     UNKNOWN
-    WEBSITE
+    PHONE
+    WEB
     COUPON
-    REFFERAL
+    REFERRAL
 }
