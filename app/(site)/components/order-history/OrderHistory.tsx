@@ -81,10 +81,10 @@ import {
 } from "@/app/(site)/lib/shared";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import StatsAccordionItem from "./StatsAccordionItem";
+import StatsAccordionItem from "./stats/StatsAccordionItem";
 import useRecreateOrder from "../../hooks/order/history/useRecreateOrder";
 import useOrderHistory from "../../hooks/order/history/useOrderHistory";
-import DetailAccordionItem from "./DetailAccordionItem";
+import DetailAccordionItem from "./detail/DetailAccordionItem";
 
 interface OrderHistoryProps {
   customer: CustomerWithDetails;
@@ -145,13 +145,18 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
 
     (selectedOrder?.order.products || []).map(updateProductSelection);
   };
-  
+
   const [currentTab, setCurrentTab] = useState("orders");
-  
+
   return (
     <div className="w-full h-full flex flex-col gap-4">
-      <Tabs defaultValue={"orders"} className="w-full h-full" onValueChange={setCurrentTab}>
-        <TabsList className="w-full grid grid-cols-2">
+      <Tabs
+        defaultValue={"orders"}
+        value={currentTab}
+        onValueChange={setCurrentTab}
+        className="w-full h-full"
+      >
+        <TabsList className="w-full grid grid-cols-2 mb-4">
           <TabsTrigger value="orders">Ordini</TabsTrigger>
           <TabsTrigger value="stats" disabled={noStatistics}>
             Statistiche
@@ -160,7 +165,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
 
         {/* Animated Orders tab */}
         <AnimatedTabsContent value="orders" currentValue={currentTab}>
-          <div className="max-h-[450px] overflow-y-auto">
+          <div className="max-h-[35rem] overflow-y-auto px-4 pb-4">
             {orderTypes.map(({ type, orders }) =>
               orders
                 .sort(
@@ -186,7 +191,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
         {/* Animated Stats tab */}
         {!noStatistics && (
           <AnimatedTabsContent value="stats" currentValue={currentTab}>
-            <div className="max-h-[450px] overflow-y-auto">
+            <div className="max-h-[35rem] overflow-y-auto px-4 pb-4">
               <StatsAccordionItem allOrders={allOrders} />
             </div>
           </AnimatedTabsContent>

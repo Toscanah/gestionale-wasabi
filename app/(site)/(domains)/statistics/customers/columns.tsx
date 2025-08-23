@@ -128,7 +128,8 @@ const columns: ColumnDef<CustomerWithStats>[] = [
       return (
         <DialogWrapper
           size="mediumPlus"
-          title="Storico ordini"
+          title="Storico cliente"
+          putUpperBorder
           trigger={
             <Button type="button" variant={"outline"}>
               Vedi ordini precedenti

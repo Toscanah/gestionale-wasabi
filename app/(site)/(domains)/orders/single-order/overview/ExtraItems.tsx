@@ -92,7 +92,7 @@ export default function ExtraItems() {
   } = calculateExtraItems(order);
 
   useFocusOnClick(["Zuppe", "Insalate", "Riso"]);
-  useLocalExtraItems();
+  // useLocalExtraItems();
 
   const [manualExtras, setManualExtras] = useState<ManualExtras>({
     soups: 0,
@@ -113,14 +113,13 @@ export default function ExtraItems() {
       const { soupsFromProducts, saladsFromProducts, ricesFromProducts } =
         calculateExtraItems(order);
 
-      const updates: Partial<ManualExtras> = {};
+      const updates: Partial<Record<ExtraItems, number | null>> = {};
 
-      if (extras.soups !== soupsFromProducts)
-        updates.soups = extras.soups === soupsFromProducts ? undefined : extras.soups;
-      if (extras.salads !== saladsFromProducts)
-        updates.salads = extras.salads === saladsFromProducts ? undefined : extras.salads;
-      if (extras.rices !== ricesFromProducts)
-        updates.rices = extras.rices === ricesFromProducts ? undefined : extras.rices;
+      updates.soups = extras.soups === soupsFromProducts ? null : extras.soups;
+      updates.salads = extras.salads === saladsFromProducts ? null : extras.salads;
+      updates.rices = extras.rices === ricesFromProducts ? null : extras.rices;
+
+      console.log("Updating extras:", updates);
 
       const updatePromises = Object.entries(updates).map(([key, value]) =>
         fetchRequest("PATCH", "/api/orders/", "updateOrderExtraItems", {

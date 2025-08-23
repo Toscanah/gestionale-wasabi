@@ -5,12 +5,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
+import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import OrderDetail from "./OrderDetail";
 import { Button } from "@/components/ui/button";
-import capitalizeFirstLetter from "../../lib/utils/global/string/capitalizeFirstLetter";
-import { BaseOrder, ProductInOrder } from "../../lib/shared";
-import filterDeletedProducts from "../../lib/services/product-management/filterDeletedProducts";
+import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
+import { BaseOrder, ProductInOrder } from "../../../lib/shared";
+import filterDeletedProducts from "../../../lib/services/product-management/filterDeletedProducts";
 
 type OrderAccordionItemProps = {
   type: string;
@@ -50,8 +50,6 @@ export default function DetailAccordionItem({
   const orderDate = formatDateWithDay(order.created_at);
   const orderTotal = getOrderTotal({ order, applyDiscount: true });
   const orderDiscount = order.discount !== 0 ? <> (sconto {order.discount}%)</> : <></>;
-
-  console.log(getRecreatedProducts());
 
   const OrderRecreation = () =>
     onCreate && (

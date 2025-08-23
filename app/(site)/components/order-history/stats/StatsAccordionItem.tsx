@@ -1,8 +1,11 @@
-import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import roundToTwo from "../../lib/utils/global/number/roundToTwo";
+import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { useState, useMemo } from "react";
-import SelectWrapper from "../ui/select/SelectWrapper";
-import useHistoryStats, { UseHistoryStatsParams } from "../../hooks/order/history/useHistoryStats";
+import SelectWrapper from "../../ui/select/SelectWrapper";
+import useHistoryStats, {
+  UseHistoryStatsParams,
+} from "../../../hooks/order/history/useHistoryStats";
+import { Separator } from "@/components/ui/separator";
+import AllProductsDialog from "./AllProductsDialog";
 
 type HistoryStatsProps = UseHistoryStatsParams;
 
@@ -44,18 +47,17 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
   }, [stats.ordersCount]);
 
   const filteredOrders = useMemo(() => {
-    if (!stats.ordersCount.length) return [];
+    if (!allOrders.length) return [];
 
-    if (!year) return stats.ordersCount;
-
-    return stats.ordersCount.filter((dateStr) => {
-      const date = new Date(dateStr);
+    return allOrders.filter((wrapper) => {
+      const date = new Date(wrapper.order.created_at);
       const orderMonth = String(date.getMonth() + 1).padStart(2, "0");
       const orderYear = String(date.getFullYear());
+
       if (month === "00") return orderYear === year;
       return orderYear === year && orderMonth === month;
     });
-  }, [stats.ordersCount, month, year]);
+  }, [allOrders, month, year]);
 
   const statsRows = [
     {
@@ -71,7 +73,10 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
       value: stats.mostCommonDaysOfWeek.length
         ? stats.mostCommonDaysOfWeek
             .slice(0, 3) // top 3
-            .map(({ day, count }, index) => `${index + 1}. ${day} (${formatCountLabel(count)})`)
+            .map(
+              ({ day, count }, index) =>
+                `${index + 1}. ${day.slice(0, 3)} (${formatCountLabel(count)})`
+            )
             .join(" | ")
         : "Nessun giorno comune",
     },
@@ -105,7 +110,7 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
   ];
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       {/* Filters */}
       <div className="flex gap-4 items-center w-full">
         <SelectWrapper
@@ -122,23 +127,27 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
         />
       </div>
 
+      <Separator />
+
       {/* Stats */}
-      <table className="table-auto w-full text-left border-separate border-spacing-y-2">
+      <table className="table-auto w-full text-left border-separate ">
         <tbody className="space-y-2">
           <tr key="amount" className="w-full flex gap-2">
-            <td className="text-lg font-medium pr-4 w-full">Numero di ordini</td>
+            <td className="text-lg font-medium w-full">Numero di ordini</td>
             <td className="text-lg w-full">
               {filteredOrders.length > 0 ? filteredOrders.length : "Nessun ordine"}
             </td>
           </tr>
           {statsRows.map(({ label, value }) => (
             <tr key={label} className="w-full flex gap-2">
-              <td className="text-lg font-medium pr-4 w-full">{label}</td>
+              <td className="text-lg font-medium w-full">{label}</td>
               <td className="text-lg w-full">{value}</td>
             </tr>
           ))}
         </tbody>
       </table>
-    </>
+
+      <AllProductsDialog allProducts={allOrders.map((order) => order.order.products).flat()} />
+    </div>
   );
 }

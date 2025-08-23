@@ -52,14 +52,15 @@ export default function OldOrders() {
 
   if (!customer) return <></>;
 
-  const hasOrders =
-    customer.home_orders.length > 0 || customer.pickup_orders.length > 0;
+  const hasOrders = customer.home_orders.length > 0 || customer.pickup_orders.length > 0;
 
   if (!hasOrders) return <></>;
 
   return (
     <DialogWrapper
       size="mediumPlus"
+      putUpperBorder
+      title="Storico cliente"
       trigger={
         <Button type="button" variant={"outline"} className="h-12 text-xl">
           Ordini precedenti 购买记录
