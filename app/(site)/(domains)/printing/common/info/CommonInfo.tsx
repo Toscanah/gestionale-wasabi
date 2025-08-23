@@ -44,7 +44,7 @@ export default function CommonInfo({
               <Text bold inline size={SMALL_PRINT}>
                 Note ordine:{" "}
               </Text>
-              <Text size={SMALL_PRINT}>{fitReceiptText(sanitazeReceiptText(orderNotes), 40)}</Text>
+              <Text size={SMALL_PRINT}>{fitReceiptText(sanitazeReceiptText(orderNotes), 35)}</Text>
             </>
           )}
 
