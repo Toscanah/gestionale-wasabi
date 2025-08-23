@@ -1,7 +1,7 @@
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import { PlannedPayment } from "@prisma/client";
 import ExtraItemsSection from "../ExtraItemsSection";
-import { Text } from "react-thermal-printer";
+import { Line, Text } from "react-thermal-printer";
 import { SMALL_PRINT } from "../../constants";
 import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import PaymentNotesSection from "../PaymentNotesSection";
@@ -50,6 +50,8 @@ export default function CommonInfo({
 
           {plannedPayment !== PlannedPayment.UNKNOWN &&
             PaymentNotesSection({ plannedPayment, prepaid })}
+
+            <Line />
         </>
       )}
     </>

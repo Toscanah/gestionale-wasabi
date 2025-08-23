@@ -7,7 +7,7 @@ import {
   QrPayload,
 } from "@/app/(site)/lib/shared";
 import { Fragment } from "react";
-import { Br, Image, QRCode, Text } from "react-thermal-printer";
+import { Br, Cut, Image, QRCode, Text } from "react-thermal-printer";
 import { BIG_PRINT, SMALL_PRINT } from "../constants";
 import { EngagementType } from "@prisma/client";
 import wrapTextCentered from "@/app/(site)/lib/utils/domains/printing/wrapTextCentered";
@@ -80,6 +80,8 @@ export default function EngagementReceipt({ engagements }: EngagementReceiptProp
               ))}
 
             {textBelow && <Br />}
+
+            <Cut />
           </Fragment>
         );
       })}
