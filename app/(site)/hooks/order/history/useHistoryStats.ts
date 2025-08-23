@@ -22,7 +22,7 @@ export type CustomerOrdersStats = {
   totalSpent: number;
   avgCost: number;
   ordersCount: Date[];
-  mostCommonDayOfWeek: string | undefined;
+  mostCommonDaysOfWeek: { day: string; count: number }[]; // 👈 array with counts
   typicalTime: {
     lunch: string | undefined;
     dinner: string | undefined;
@@ -32,6 +32,8 @@ export type CustomerOrdersStats = {
 
 export type UseHistoryStatsParams = {
   allOrders: PossibleOrder[];
+  year?: string; // "2025", "2024", etc.
+  month?: string; // "00" (all months), "01".."12"
 };
 
 /* ----------------- Helpers ----------------- */
@@ -77,18 +79,15 @@ function calculateProductsStats(productStats: Record<string, ProductStats>) {
   return { mostBoughtProduct, leastBoughtProduct };
 }
 
-function calculateMostCommonDay(dayStats: Record<number, number>) {
+function calculateMostCommonDays(dayStats: Record<number, number>) {
   const days = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
-  let mostCommonDayOfWeek: string | undefined;
-  let maxDayCount = 0;
 
-  for (const [day, count] of Object.entries(dayStats)) {
-    if (count > maxDayCount) {
-      maxDayCount = count;
-      mostCommonDayOfWeek = days[Number(day)];
-    }
-  }
-  return mostCommonDayOfWeek;
+  return Object.entries(dayStats)
+    .map(([day, count]) => ({
+      day: days[Number(day)],
+      count,
+    }))
+    .sort((a, b) => b.count - a.count); // highest first
 }
 
 function getTimeSlot(decimalHour: number): "lunch" | "dinner" | "other" {
@@ -104,7 +103,6 @@ function calculateTypicalTimeBySlot(times: number[]) {
   const sorted = [...times].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
   const median = sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
-
   const avgDeviation = sorted.reduce((acc, t) => acc + Math.abs(t - median), 0) / sorted.length;
 
   const medianDate = decimalToTime(median);
@@ -143,7 +141,7 @@ const DEFAULT_STATS: CustomerOrdersStats = {
   totalSpent: 0,
   avgCost: 0,
   ordersCount: [],
-  mostCommonDayOfWeek: undefined,
+  mostCommonDaysOfWeek: [],
   typicalTime: {
     lunch: undefined,
     dinner: undefined,
@@ -151,35 +149,48 @@ const DEFAULT_STATS: CustomerOrdersStats = {
   },
 };
 
-export default function useHistoryStats({ allOrders }: UseHistoryStatsParams) {
+export default function useHistoryStats({ allOrders, year, month }: UseHistoryStatsParams) {
   const [stats, setStats] = useState<CustomerOrdersStats>(DEFAULT_STATS);
 
   useEffect(() => {
     if (!allOrders.length) return;
 
+    // 1. Filter orders by year/month before computing stats
+    const filtered = allOrders.filter((wrapper) => {
+      if (!year) return true; // no filter
+      const orderYear = new Date(wrapper.order.created_at).getFullYear().toString();
+      if (orderYear !== year) return false;
+
+      if (month === "00") return true; // all months
+      const orderMonth = String(new Date(wrapper.order.created_at).getMonth() + 1).padStart(2, "0");
+      return orderMonth === month;
+    });
+
+    if (!filtered.length) {
+      setStats(DEFAULT_STATS);
+      return;
+    }
+
+    // 2. Compute stats
     let totalSpent = 0;
     const ordersCount: Date[] = [];
     const productStats: Record<string, ProductStats> = {};
     const dayStats: Record<number, number> = {};
     const times: number[] = [];
 
-    for (const wrapper of allOrders) {
+    for (const wrapper of filtered) {
       const { order } = wrapper;
 
-      // spent
       totalSpent += getOrderTotal({ order, applyDiscount: true });
 
-      // date + weekday
       const date = new Date(order.created_at);
       ordersCount.push(date);
       const day = date.getDay();
       dayStats[day] = (dayStats[day] ?? 0) + 1;
 
-      // time bucket
       const decimalTime = parseOrderTime(toShiftEvaluableOrder(wrapper));
       times.push(decimalTime);
 
-      // products
       for (const product of order.products) {
         const id = product.product.id;
         if (!productStats[id]) {
@@ -190,19 +201,19 @@ export default function useHistoryStats({ allOrders }: UseHistoryStatsParams) {
     }
 
     const { mostBoughtProduct, leastBoughtProduct } = calculateProductsStats(productStats);
-    const mostCommonDayOfWeek = calculateMostCommonDay(dayStats);
+    const mostCommonDaysOfWeek = calculateMostCommonDays(dayStats);
     const typicalTime = calculateTypicalTime(times);
 
     setStats({
       mostBoughtProduct,
       leastBoughtProduct,
       totalSpent,
-      avgCost: totalSpent / allOrders.length,
+      avgCost: totalSpent / filtered.length,
       ordersCount,
-      mostCommonDayOfWeek,
+      mostCommonDaysOfWeek,
       typicalTime,
     });
-  }, [allOrders]);
+  }, [allOrders, year, month]);
 
   return { stats };
 }

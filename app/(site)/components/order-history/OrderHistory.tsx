@@ -1,9 +1,85 @@
+// import {
+//   CustomerWithDetails,
+//   HomeOrderWithOrder,
+//   PickupOrderWithOrder,
+// } from "@/app/(site)/lib/shared";
+// import { Accordion } from "@/components/ui/accordion";
+// import { ProductInOrder } from "@/app/(site)/lib/shared";
+// import StatsAccordionItem from "./StatsAccordionItem";
+// import useRecreateOrder from "../../hooks/order/history/useRecreateOrder";
+// import useOrderHistory from "../../hooks/order/history/useOrderHistory";
+// import DetailAccordionItem from "./DetailAccordionItem";
+
+// interface OrderHistoryProps {
+//   customer: CustomerWithDetails;
+//   onCreate?: (newProducts: ProductInOrder[]) => void;
+//   noStatistics?: boolean;
+// }
+
+// export type PossibleOrder = HomeOrderWithOrder | PickupOrderWithOrder;
+
+// export default function OrderHistory({ customer, onCreate, noStatistics }: OrderHistoryProps) {
+//   const { selectedProducts, resetProductSelection, updateProductSelection, getRecreatedProducts } =
+//     useRecreateOrder();
+
+//   const { allOrders, orderTypes } = useOrderHistory({ customer });
+
+//   if (!orderTypes.some(({ orders }) => orders && orders.length > 0)) {
+//     return <p className="text-2xl text-center">Nessun ordine registrato</p>;
+//   }
+
+//   const onAccordionChange = (value: string) => {
+//     if (!value) return resetProductSelection();
+
+//     const [orderType, orderIdString] = value.split("-");
+//     const selectedOrderType = orderTypes.find((type) => type.type === orderType);
+//     const selectedOrder = selectedOrderType?.orders.find(
+//       (order) => order.id === Number(orderIdString)
+//     );
+
+//     (selectedOrder?.order.products || []).map(updateProductSelection);
+//   };
+
+//   return (
+//     <div className="w-full h-full flex flex-col gap-4">
+//       <Accordion
+//         onValueChange={onAccordionChange}
+//         type="single"
+//         collapsible
+//         className="max-h-[450px] overflow-y-auto overflow-x-hidden pr-4"
+//       >
+//         {!noStatistics && <StatsAccordionItem allOrders={allOrders} />}
+
+//         {orderTypes.map(({ type, orders }) =>
+//           orders
+//             .sort(
+//               (a, b) =>
+//                 new Date(b.order.created_at).getTime() - new Date(a.order.created_at).getTime()
+//             )
+//             .map(({ id, order }) => (
+//               <DetailAccordionItem
+//                 key={id}
+//                 type={type}
+//                 id={id}
+//                 order={order}
+//                 onCheckboxChange={updateProductSelection}
+//                 onCreate={onCreate}
+//                 selectedProducts={selectedProducts}
+//                 getRecreatedProducts={getRecreatedProducts}
+//               />
+//             ))
+//         )}
+//       </Accordion>
+//     </div>
+//   );
+// }
+
 import {
   CustomerWithDetails,
   HomeOrderWithOrder,
   PickupOrderWithOrder,
 } from "@/app/(site)/lib/shared";
-import { Accordion } from "@/components/ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import StatsAccordionItem from "./StatsAccordionItem";
 import useRecreateOrder from "../../hooks/order/history/useRecreateOrder";
@@ -14,6 +90,36 @@ interface OrderHistoryProps {
   customer: CustomerWithDetails;
   onCreate?: (newProducts: ProductInOrder[]) => void;
   noStatistics?: boolean;
+}
+
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+
+function AnimatedTabsContent({
+  value,
+  currentValue,
+  children,
+}: {
+  value: string;
+  currentValue: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <AnimatePresence mode="wait">
+      {currentValue === value && (
+        <motion.div
+          key={value}
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="overflow-hidden"
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }
 
 export type PossibleOrder = HomeOrderWithOrder | PickupOrderWithOrder;
@@ -39,37 +145,53 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
 
     (selectedOrder?.order.products || []).map(updateProductSelection);
   };
-
+  
+  const [currentTab, setCurrentTab] = useState("orders");
+  
   return (
     <div className="w-full h-full flex flex-col gap-4">
-      <Accordion
-        onValueChange={onAccordionChange}
-        type="single"
-        collapsible
-        className="max-h-[450px] overflow-y-auto overflow-x-hidden pr-4"
-      >
-        {!noStatistics && <StatsAccordionItem allOrders={allOrders} />}
+      <Tabs defaultValue={"orders"} className="w-full h-full" onValueChange={setCurrentTab}>
+        <TabsList className="w-full grid grid-cols-2">
+          <TabsTrigger value="orders">Ordini</TabsTrigger>
+          <TabsTrigger value="stats" disabled={noStatistics}>
+            Statistiche
+          </TabsTrigger>
+        </TabsList>
 
-        {orderTypes.map(({ type, orders }) =>
-          orders
-            .sort(
-              (a, b) =>
-                new Date(b.order.created_at).getTime() - new Date(a.order.created_at).getTime()
-            )
-            .map(({ id, order }) => (
-              <DetailAccordionItem
-                key={id}
-                type={type}
-                id={id}
-                order={order}
-                onCheckboxChange={updateProductSelection}
-                onCreate={onCreate}
-                selectedProducts={selectedProducts}
-                getRecreatedProducts={getRecreatedProducts}
-              />
-            ))
+        {/* Animated Orders tab */}
+        <AnimatedTabsContent value="orders" currentValue={currentTab}>
+          <div className="max-h-[450px] overflow-y-auto">
+            {orderTypes.map(({ type, orders }) =>
+              orders
+                .sort(
+                  (a, b) =>
+                    new Date(b.order.created_at).getTime() - new Date(a.order.created_at).getTime()
+                )
+                .map(({ id, order }) => (
+                  <DetailAccordionItem
+                    key={id}
+                    type={type}
+                    id={id}
+                    order={order}
+                    onCheckboxChange={updateProductSelection}
+                    onCreate={onCreate}
+                    selectedProducts={selectedProducts}
+                    getRecreatedProducts={getRecreatedProducts}
+                  />
+                ))
+            )}
+          </div>
+        </AnimatedTabsContent>
+
+        {/* Animated Stats tab */}
+        {!noStatistics && (
+          <AnimatedTabsContent value="stats" currentValue={currentTab}>
+            <div className="max-h-[450px] overflow-y-auto">
+              <StatsAccordionItem allOrders={allOrders} />
+            </div>
+          </AnimatedTabsContent>
         )}
-      </Accordion>
+      </Tabs>
     </div>
   );
 }

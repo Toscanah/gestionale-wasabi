@@ -30,11 +30,10 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
   const [month, setMonth] = useState<string>("00");
   const [year, setYear] = useState<string>(currentYear.toString());
 
-  const { stats } = useHistoryStats({ allOrders });
+  const { stats } = useHistoryStats({ allOrders, year, month });
 
   const yearOptions = useMemo(() => {
     if (!stats.ordersCount.length) return [];
-
     const years = stats.ordersCount.map((d) => new Date(d).getFullYear());
     const minYear = Math.min(...years);
 
@@ -47,13 +46,12 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
   const filteredOrders = useMemo(() => {
     if (!stats.ordersCount.length) return [];
 
-    if (!year) return stats.ordersCount; // only month set → all orders
+    if (!year) return stats.ordersCount;
 
     return stats.ordersCount.filter((dateStr) => {
       const date = new Date(dateStr);
       const orderMonth = String(date.getMonth() + 1).padStart(2, "0");
       const orderYear = String(date.getFullYear());
-
       if (month === "00") return orderYear === year;
       return orderYear === year && orderMonth === month;
     });
@@ -61,30 +59,21 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
 
   const statsRows = [
     {
-      label: "Prodotto più acquistato",
-      value: stats.mostBoughtProduct
-        ? `${stats.mostBoughtProduct.desc} (${formatCountLabel(stats.mostBoughtProduct.quantity)})`
-        : "Nessun prodotto",
-    },
-    {
-      label: "Prodotto meno acquistato",
-      value: stats.leastBoughtProduct
-        ? `${stats.leastBoughtProduct.desc} (${formatCountLabel(
-            stats.leastBoughtProduct.quantity
-          )})`
-        : "Nessun prodotto",
+      label: "Spesa totale",
+      value: `€ ${roundToTwo(stats.totalSpent)}`,
     },
     {
       label: "Costo medio ordine",
       value: `€ ${roundToTwo(stats.avgCost)}`,
     },
     {
-      label: "Spesa totale",
-      value: `€ ${roundToTwo(stats.totalSpent)}`,
-    },
-    {
-      label: "Giorno della settimana più comune",
-      value: stats.mostCommonDayOfWeek || "Nessun giorno comune",
+      label: "Giorni della settimana più comuni",
+      value: stats.mostCommonDaysOfWeek.length
+        ? stats.mostCommonDaysOfWeek
+            .slice(0, 3) // top 3
+            .map(({ day, count }, index) => `${index + 1}. ${day} (${formatCountLabel(count)})`)
+            .join(" | ")
+        : "Nessun giorno comune",
     },
     {
       label: "Orario tipico",
@@ -99,45 +88,57 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
               .join(" | ")
           : "Nessun orario tipico",
     },
+    {
+      label: "Prodotto più acquistato",
+      value: stats.mostBoughtProduct
+        ? `${stats.mostBoughtProduct.desc} (${formatCountLabel(stats.mostBoughtProduct.quantity)})`
+        : "Nessun prodotto",
+    },
+    {
+      label: "Prodotto meno acquistato",
+      value: stats.leastBoughtProduct
+        ? `${stats.leastBoughtProduct.desc} (${formatCountLabel(
+            stats.leastBoughtProduct.quantity
+          )})`
+        : "Nessun prodotto",
+    },
   ];
 
   return (
-    <AccordionItem value="stats" key="stats">
-      <AccordionTrigger className="text-2xl">Vedi statistiche</AccordionTrigger>
+    <>
+      {/* Filters */}
+      <div className="flex gap-4 items-center w-full">
+        <SelectWrapper
+          className="h-10 w-full"
+          defaultValue={currentYear.toString()}
+          groups={[{ label: "Anno", items: yearOptions }]}
+          onValueChange={setYear}
+        />
+        <SelectWrapper
+          className="h-10 w-full"
+          defaultValue="00"
+          groups={[{ label: "Mese", items: ITALIAN_MONTHS }]}
+          onValueChange={setMonth}
+        />
+      </div>
 
-      <AccordionContent className="space-y-4">
-        <table className="table-auto w-full text-left">
-          <tbody>
-            {statsRows.map(({ label, value }) => (
-              <tr key={label}>
-                <td className="text-lg">{label}</td>
-                <td className="text-lg">{value}</td>
-              </tr>
-            ))}
-
-            <tr>
-              <td className="text-lg">Numero di ordini</td>
-              <td className="text-lg flex gap-4 items-center">
-                {filteredOrders.length > 0 ? filteredOrders.length : "Nessun ordine"}
-
-                <SelectWrapper
-                  className="h-10 w-36"
-                  defaultValue={currentYear.toString()}
-                  groups={[{ label: "Anno", items: yearOptions }]}
-                  onValueChange={setYear}
-                />
-
-                <SelectWrapper
-                  className="h-10 w-36"
-                  defaultValue="00"
-                  groups={[{ label: "Mese", items: ITALIAN_MONTHS }]}
-                  onValueChange={setMonth}
-                />
-              </td>
+      {/* Stats */}
+      <table className="table-auto w-full text-left border-separate border-spacing-y-2">
+        <tbody className="space-y-2">
+          <tr key="amount" className="w-full flex gap-2">
+            <td className="text-lg font-medium pr-4 w-full">Numero di ordini</td>
+            <td className="text-lg w-full">
+              {filteredOrders.length > 0 ? filteredOrders.length : "Nessun ordine"}
+            </td>
+          </tr>
+          {statsRows.map(({ label, value }) => (
+            <tr key={label} className="w-full flex gap-2">
+              <td className="text-lg font-medium pr-4 w-full">{label}</td>
+              <td className="text-lg w-full">{value}</td>
             </tr>
-          </tbody>
-        </table>
-      </AccordionContent>
-    </AccordionItem>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
-import { ColumnDef, Row, TableMeta } from "@tanstack/react-table";
+import { ColumnDef, Row, SortingFnOption, TableMeta } from "@tanstack/react-table";
 import { Fragment, ReactNode } from "react";
 import getNestedValue from "../../lib/utils/global/getNestedValue";
 import { uniqueId } from "lodash";
@@ -124,6 +124,7 @@ export function JoinColumn<T>({ options, header, sortable = true }: JoinColumn):
 type ValueColumn<T> = BaseColumnProps & {
   value: (row: Row<T>, meta: TableMeta<T> | undefined) => ReactNode;
   accessor: (row: T) => Primitive;
+  sortingFn?: SortingFnOption<T>;
 };
 
 /**
@@ -132,24 +133,33 @@ type ValueColumn<T> = BaseColumnProps & {
  * @param value - Function to render the cell value.
  * @param header - The column header label.
  * @param sortable - Whether the column is sortable (default: true).
+ * @param sortingFn - Function to filter the column values.
  */
 export function ValueColumn<T>({
   accessor,
   value,
   header,
   sortable = true,
+  sortingFn = "alphanumeric",
 }: ValueColumn<T>): ColumnDef<T> {
   if (header && header.trim() === "") {
     throw new Error("ValueColumn: 'header' must be a non-empty string.");
   }
 
-  return {
+  const col: ColumnDef<T> = {
     id: header ?? uniqueId(),
     accessorFn: (original) => accessor(original),
-    header: buildHeader(header, sortable),
-    sortingFn: "alphanumeric",
+    header: buildHeader<T>(header, sortable),
     cell: ({ row, table }) => value(row, table.options.meta),
+    enableSorting: sortable,
   };
+
+  if (sortable) {
+    // Pass through either the string key or the custom function
+    col.sortingFn = sortingFn;
+  }
+
+  return col;
 }
 
 /* ------------------------------------------------------

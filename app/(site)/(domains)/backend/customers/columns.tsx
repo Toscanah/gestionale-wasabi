@@ -55,26 +55,26 @@ const columns = (
     accessor: (customer) => customer.origin,
   }),
 
-  ActionColumn({
-    header: "Storico ordini",
-    action: (row) => {
-      const customer = row.original;
+  // ActionColumn({
+  //   header: "Storico ordini",
+  //   action: (row) => {
+  //     const customer = row.original;
 
-      return (
-        <DialogWrapper
-          size="medium"
-          title="Storico ordini"
-          trigger={
-            <Button type="button" variant={"outline"}>
-              Vedi ordini precedenti
-            </Button>
-          }
-        >
-          <OrderHistory customer={customer} />
-        </DialogWrapper>
-      );
-    },
-  }),
+  //     return (
+  //       <DialogWrapper
+  //         size="mediumPlus"
+  //         title="Storico ordini"
+  //         trigger={
+  //           <Button type="button" variant={"outline"}>
+  //             Vedi ordini precedenti
+  //           </Button>
+  //         }
+  //       >
+  //         <OrderHistory customer={customer} />
+  //       </DialogWrapper>
+  //     );
+  //   },
+  // }),
 
   ActionColumn({
     header: "Indirizzi",

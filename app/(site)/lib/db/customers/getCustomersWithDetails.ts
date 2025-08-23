@@ -13,5 +13,5 @@ export default async function getCustomersWithDetails(): Promise<CustomerWithDet
     },
   });
 
-  return customers.map(filterInactiveProducts)
+  return customers.map(filterInactiveProducts).slice(1, 50)
 }

@@ -73,6 +73,24 @@ const columns: ColumnDef<CustomerWithStats>[] = [
       return <span style={{ color, fontWeight: 600 }}>{currentRank}</span>;
     },
     accessor: (customer) => customer.rfm.rank,
+    sortingFn: (rowA, rowB, columnId) => {
+      const meta = (rowA.getAllCells().at(0)?.getContext().table.options.meta as CustomerStatsTableMeta) ?? {};
+
+      const ranks = meta.ranks ?? [];
+      // build lookup map (rank → priority)
+      const map = new Map(ranks.map((r) => [r.rank, r.priority]));
+
+      // values from the rows
+      const aRank = rowA.getValue<string>(columnId);
+      const bRank = rowB.getValue<string>(columnId);
+
+      // priorities (fallback to -Infinity if not found)
+      const aP = map.get(aRank) ?? -Infinity;
+      const bP = map.get(bRank) ?? -Infinity;
+
+      // higher priority first
+      return bP - aP;
+    },
   }),
 
   ValueColumn({
@@ -109,7 +127,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
       return (
         <DialogWrapper
-          size="medium"
+          size="mediumPlus"
           title="Storico ordini"
           trigger={
             <Button type="button" variant={"outline"}>

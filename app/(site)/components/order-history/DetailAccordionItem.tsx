@@ -1,4 +1,9 @@
-import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 import OrderDetail from "./OrderDetail";
@@ -46,7 +51,7 @@ export default function DetailAccordionItem({
   const orderTotal = getOrderTotal({ order, applyDiscount: true });
   const orderDiscount = order.discount !== 0 ? <> (sconto {order.discount}%)</> : <></>;
 
-  console.log(getRecreatedProducts())
+  console.log(getRecreatedProducts());
 
   const OrderRecreation = () =>
     onCreate && (
@@ -60,28 +65,30 @@ export default function DetailAccordionItem({
     );
 
   return (
-    <AccordionItem value={`${type}-${id}`} key={`${type}-${id}`}>
-      <AccordionTrigger className="text-2xl">
-        <div className="flex gap-4 items-center justify-between">
-          <span className="flex items-center gap-2">
-            <Badge className="text-base">{type}</Badge>
-            {orderDate} - {"€ " + orderTotal}
-            {orderDiscount}
-          </span>
-        </div>
-      </AccordionTrigger>
+    <Accordion type="single" collapsible>
+      <AccordionItem value={`${type}-${id}`} key={`${type}-${id}`}>
+        <AccordionTrigger className="text-2xl">
+          <div className="flex gap-4 items-center justify-between">
+            <span className="flex items-center gap-2">
+              <Badge className="text-base">{type}</Badge>
+              {orderDate} - {"€ " + orderTotal}
+              {orderDiscount}
+            </span>
+          </div>
+        </AccordionTrigger>
 
-      <AccordionContent className="space-y-4">
-        <OrderDetail
-          onCheckboxChange={onCheckboxChange}
-          type={type}
-          onCreate={onCreate}
-          sortedProducts={inOrderProducts}
-          selectedProducts={getRecreatedProducts()}
-        />
+        <AccordionContent className="space-y-4">
+          <OrderDetail
+            onCheckboxChange={onCheckboxChange}
+            type={type}
+            onCreate={onCreate}
+            sortedProducts={inOrderProducts}
+            selectedProducts={getRecreatedProducts()}
+          />
 
-        <OrderRecreation />
-      </AccordionContent>
-    </AccordionItem>
+          <OrderRecreation />
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

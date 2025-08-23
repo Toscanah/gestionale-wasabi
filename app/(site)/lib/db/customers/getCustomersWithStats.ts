@@ -35,7 +35,7 @@ export default async function getCustomersWithStats({
   from,
   to,
 }: CustomerSchemaInputs["GetCustomersWithStatsInput"]): Promise<CustomerWithStats[]> {
-  const customers = (await getCustomersWithDetails()).filter((customer) => customer.active);
+  const customers = await getCustomersWithDetails();
 
   const customersWithStats = customers.map((customer) => {
     const lifetimeOrders = [
@@ -113,8 +113,8 @@ export default async function getCustomersWithStats({
           ...rfm,
           finalScore: 0,
         },
-        rank: "none"
-      }
+        rank: "none",
+      },
     } as CustomerWithStats;
   });
 
