@@ -15,8 +15,8 @@ export default function EngagementReceipt({ engagements }: EngagementReceiptProp
       {activeEngagements.map((engagement, index) => (
         <Fragment key={index}>{SingleEngagement({ engagement })}</Fragment>
       ))}
-      
-      <Cut />
+
+      {activeEngagements.length > 0 && <Cut />}
     </>
   );
 }

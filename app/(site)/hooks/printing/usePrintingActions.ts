@@ -43,7 +43,9 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
     }
 
     const redeemableEngagements = order.engagements.filter((e) => e.template.redeemable);
-    content.push(() => EngagementReceipt({ engagements: redeemableEngagements }));
+    if (redeemableEngagements.length > 0) {
+      content.push(() => EngagementReceipt({ engagements: redeemableEngagements }));
+    }
 
     return content;
   }
