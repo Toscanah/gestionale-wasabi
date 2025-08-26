@@ -31,9 +31,9 @@ export default function OrderReceipt<T extends AnyOrder>({
 
   const unredemableEngagements = engagements.filter((e) => !e.template.redeemable);
 
-  console.log(pickupOrder, putInfo)
+  console.log(homeOrder, pickupOrder, putInfo);
 
-    return (
+  return (
     <>
       {HeaderSection({ orderDate: new Date(order.created_at) })}
 
@@ -52,7 +52,17 @@ export default function OrderReceipt<T extends AnyOrder>({
         <>
           <Br />
 
-          <Text align="right">{sanitazeReceiptText(pickupOrder.name)}</Text>
+          <Text align="right">
+            {sanitazeReceiptText(
+              pickupOrder.name
+                ? pickupOrder.name
+                : pickupOrder.customer?.name
+                ? pickupOrder.customer.name
+                : pickupOrder.customer?.phone.phone
+                ? pickupOrder.customer.phone.phone
+                : ""
+            )}
+          </Text>
           <Text align="right" size={BIG_PRINT}>
             {pickupOrder.when == "immediate" ? "PRIMA POSSIBILE" : pickupOrder.when}
           </Text>

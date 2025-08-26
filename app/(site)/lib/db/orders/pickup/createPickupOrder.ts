@@ -36,8 +36,6 @@ export default async function createPickupOrder({
 
         const newCustomer = await tx.customer.create({
           data: {
-            name: name,
-            surname: "",
             phone: {
               connect: { id: newPhone.id },
             },
