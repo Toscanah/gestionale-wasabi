@@ -35,7 +35,7 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
     }
 
     content.push(() =>
-      OrderReceipt({ order, plannedPayment, putInfo: order.type === OrderType.HOME })
+      OrderReceipt({ order, plannedPayment, putInfo: order.type !== OrderType.TABLE })
     );
 
     if (order.type === OrderType.HOME) {
