@@ -1,19 +1,24 @@
 "use client";
 
-import getTable from "../../../lib/utils/global/getTable";
+import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import columns from "./columns";
 import TableControls from "../../../components/table/TableControls";
-import useGlobalFilter from "../../../hooks/useGlobalFilter";
+import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
 import SelectWrapper from "../../../components/ui/select/SelectWrapper";
 import GoBack from "../../../components/ui/misc/GoBack";
-import { useCustomersStats } from "../../../hooks/statistics/useCustomersStats";
-import { TablePagination } from "../../../components/table/TablePagination";
 import { DATE_PRESETS, DatePreset } from "../../../lib/shared/enums/DatePreset";
 import Calendar from "../../../components/ui/calendar/Calendar";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
 import { useTheme } from "next-themes";
+import useCustomersStats from "@/app/(site)/hooks/statistics/useCustomersStats";
+import TablePagination from "@/app/(site)/components/table/TablePagination";
+import usePagination from "@/app/(site)/hooks/table/usePagination";
+import { Skeleton } from "@/components/ui/skeleton";
+import React from "react";
+import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];
@@ -22,88 +27,110 @@ export type CustomerStatsTableMeta = {
 
 export default function CustomersStats() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
+  const { page, pageSize, setPage, setPageSize, resetPagination } = usePagination({});
   const {
     customers,
-    filteredCustomers,
     dateFilter,
-    selectedFilter,
+    rankFilter,
+    setRankFilter,
     setDateFilter,
     handlePresetSelect,
     handleReset,
-    applyFilter,
     isLoading,
     ranks,
-  } = useCustomersStats();
+    totalCount,
+  } = useCustomersStats({ page, pageSize, search: globalFilter });
   const { theme } = useTheme();
 
-  const table = getTable({
-    data: filteredCustomers,
+  const { tableData, tableColumns } = useSkeletonTable({
+    isLoading,
+    data: customers,
     columns,
+    pageSize,
+  });
+
+  const table = useTable({
+    data: tableData,
+    columns: tableColumns,
     globalFilter,
     setGlobalFilter,
-    pagination: { putPagination: true, pageSize: 10 },
+    pagination: {
+      mode: "server",
+      pageSize,
+      pageIndex: page,
+      pageCount: Math.ceil((totalCount || 0) / pageSize),
+      onPaginationChange: (updater) => {
+        const newState =
+          typeof updater === "function" ? updater({ pageIndex: page, pageSize }) : updater;
+
+        setPage(newState.pageIndex);
+        setPageSize(newState.pageSize);
+      },
+    },
     meta: {
       ranks,
       theme: theme ?? "light",
     },
   });
 
+  const ranksItems = [
+    {
+      value: "all",
+      name: "Tutti i rank",
+    },
+    ...ranks.map((rank) => ({
+      value: rank.rank,
+      name: rank.rank,
+    })),
+  ];
+
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
-        {isLoading ? (
-          <RandomSpinner isLoading={isLoading} />
-        ) : (
-          <>
-            <TableControls
-              table={table}
-              globalFilter={globalFilter}
-              setGlobalFilter={(filter) => {
-                setGlobalFilter(filter);
-                table.setPageIndex(0);
-              }}
-              onReset={handleReset}
-            >
-              {/* <SelectWrapper
-                className="h-10"
-                onValueChange={(value) => applyFilter(value, customers)}
-                value={selectedFilter ?? "all"}
-                groups={[
-                  {
-                    items: [
-                      { name: "Tutti", value: "all" },
-                      { name: "Chi chiama da 1 a 2 volta alla settimana", value: "1-week" },
-                      { name: "Chi chiama da 2 a 3 volte alla settimana", value: "2-week" },
-                      { name: "Chi chiama da 3 a 4 volte alla settimana", value: "3-week" },
-                      { name: "Chi chiama più volte alla settimana", value: "more-week" },
-                      { name: "Chi chiama almeno 1 volta ogni 2 settimane", value: "1-2-weeks" },
-                      { name: "Chi chiama almeno 1 volta ogni 3 settimane", value: "1-3-weeks" },
-                      { name: "Chi chiama almeno 1 volta al mese", value: "1-month" },
-                      { name: "Cliente con spesa maggiore", value: "highest-spending" },
-                    ],
-                  },
-                ]}
-              /> */}
+        <TableControls
+          table={table}
+          globalFilter={globalFilter}
+          setGlobalFilter={(filter) => {
+            setGlobalFilter(filter);
+            // table.setPageIndex(0);
+          }}
+          onReset={() => {
+            handleReset();
+            resetPagination();
+          }}
+        >
+          <SelectWrapper
+            className="h-10"
+            value={rankFilter}
+            onValueChange={(rank) => setRankFilter(rank)}
+            groups={[
+              {
+                items: ranksItems,
+              },
+            ]}
+          />
+          <Calendar
+            dateFilter={dateFilter}
+            presets={DATE_PRESETS}
+            mode="range"
+            handlePresetSelection={(value) => handlePresetSelect(value as DatePreset)}
+            handleDateFilter={setDateFilter}
+          />
+        </TableControls>
 
-              <Calendar
-                dateFilter={dateFilter}
-                presets={DATE_PRESETS}
-                mode="range"
-                handlePresetSelection={(value) => handlePresetSelect(value as DatePreset)}
-                handleDateFilter={setDateFilter}
-              />
-            </TableControls>
+        <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />
 
-            <Table table={table} tableClassName="max-h-max" />
+        <TablePagination
+          table={table}
+          page={page}
+          pageSize={pageSize}
+          pageCount={Math.ceil(totalCount / pageSize)}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+          totalCount={`${totalCount} clienti totali`}
+        />
 
-            <TablePagination
-              table={table}
-              totalCount={table.getFilteredRowModel().rows.length + " clienti totali"}
-            />
-
-            <GoBack path="/home" />
-          </>
-        )}
+        <GoBack path="/home" />
       </div>
     </div>
   );

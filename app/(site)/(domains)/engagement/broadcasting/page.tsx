@@ -6,11 +6,11 @@ import WeekFilter from "./filters/WeekFilter";
 import { Button } from "@/components/ui/button";
 import EngagementFilter from "./filters/EngagementFilter";
 import useEngagement from "../../../hooks/engagement/useEngagement";
-import getTable from "../../../lib/utils/global/getTable";
+import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import GoBack from "../../../components/ui/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";
-import useGlobalFilter from "../../../hooks/useGlobalFilter";
+import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
 import { Input } from "@/components/ui/input";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 
@@ -30,14 +30,14 @@ export default function EngagementPage() {
     setFilteredRightCustomers,
   } = useEngagement();
 
-  const leftTable = getTable({
+  const leftTable = useTable({
     data: filteredLeftCustomers,
     columns: columns({ isRightTable: false }),
     globalFilter,
     setGlobalFilter,
   });
 
-  const rightTable = getTable({
+  const rightTable = useTable({
     data: filteredRightCustomers,
     columns: columns({ isRightTable: true }),
   });

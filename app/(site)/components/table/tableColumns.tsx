@@ -175,12 +175,8 @@ type ActionColumn<T> = Pick<BaseColumnProps, "header"> & {
  * @param header - The column header label.
  */
 export function ActionColumn<T>({ action, header }: ActionColumn<T>): ColumnDef<T> {
-  if (header && header.trim() === "") {
-    throw new Error("ActionColumn: 'header' must be a non-empty string.");
-  }
-
   return {
-    id: header ?? uniqueId(),
+    id: (header && header.trim() !== "" ? header : uniqueId()),
     header: buildHeader(header, false),
     enableSorting: false,
     enableColumnFilter: false,

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Table from "../../../components/table/Table";
-import getTable from "../../../lib/utils/global/getTable";
+import useTable from "../../../hooks/table/useTable";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
@@ -23,7 +23,7 @@ export default function DivideTable({
   disabled,
 }: DivideTableProps) {
   const columns = getColumns(orderType);
-  const table = getTable({ data: products, columns });
+  const table = useTable({ data: products, columns });
 
   return (
     <div className="flex flex-col gap-8 w-full h-full">

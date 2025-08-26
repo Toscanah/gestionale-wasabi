@@ -5,7 +5,7 @@ import { OrderType } from "@prisma/client";
 import { Cell } from "@tanstack/react-table";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import Order from "./single-order/Order";
-import getTable from "../../lib/utils/global/getTable";
+import useTable from "../../hooks/table/useTable";
 import Table from "../../components/table/Table";
 import { cn } from "@/lib/utils";
 import { useWasabiContext } from "../../context/WasabiContext";
@@ -24,7 +24,7 @@ interface CustomCellProps {
 export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTableProps) {
   const {settings} = useWasabiContext()
   const columns = getColumns(type, settings.useWhatsApp);
-  const table = getTable<any>({ data, columns });
+  const table = useTable<any>({ data, columns });
 
   const CustomCell = ({ cell, className }: CustomCellProps) => {
     const orderId = cell.row.original.id;

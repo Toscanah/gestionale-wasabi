@@ -1,8 +1,7 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import DialogWrapper from "../../ui/dialog/DialogWrapper";
-import ProductLine from "../common/ProductLine";
 import { Button } from "@/components/ui/button";
-import getTable from "@/app/(site)/lib/utils/global/getTable";
+import useTable from "@/app/(site)/hooks/table/useTable";
 import productColumns from "../common/productColumns";
 import Table from "../../table/Table";
 
@@ -30,7 +29,7 @@ function groupProducts(allProducts: ProductInOrder[]): ProductInOrder[] {
 export default function AllProductsDialog({ allProducts }: AllProductsDialogProps) {
   const groupedProducts = groupProducts(allProducts).sort((a, b) => b.quantity - a.quantity);
 
-  const table = getTable({ data: groupedProducts, columns: productColumns(false) });
+  const table = useTable({ data: groupedProducts, columns: productColumns(false) });
 
   return (
     <DialogWrapper

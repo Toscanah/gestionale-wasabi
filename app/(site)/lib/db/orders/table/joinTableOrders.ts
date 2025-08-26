@@ -28,7 +28,7 @@ export default async function joinTableOrders({
   const orderToJoinId = possibleOrdersToJoin[0];
   const orderToJoin = await getOrderById({ orderId: orderToJoinId.id });
 
-  await addProductsToOrder({ targetOrderId: originalOrderId, products: orderToJoin.products });
+  await addProductsToOrder({ orderId: originalOrderId, products: orderToJoin.products });
 
   await Promise.all(
     orderToJoin.products.map((product) =>

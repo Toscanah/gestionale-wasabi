@@ -7,13 +7,15 @@ import analyzePaymentScopes from "../../lib/db/analyzePaymentScopes";
 import applyPaymentScopes from "../../lib/db/applyPaymentScopes";
 import { PAYMENT_SCHEMAS } from "../../lib/shared/schemas/payment";
 
-const POST_ACTIONS = new Map([["payOrder", { func: payOrder, schema: PAYMENT_SCHEMAS.payOrder }]]);
-
-const GET_ACTIONS = new Map([
+const POST_ACTIONS = new Map([
+  ["payOrder", { func: payOrder, schema: PAYMENT_SCHEMAS.payOrder }],
   [
     "getOrdersWithPayments",
     { func: getOrdersWithPayments, schema: PAYMENT_SCHEMAS.getOrdersWithPayments },
   ],
+]);
+
+const GET_ACTIONS = new Map([
   [
     "getOrdersWithPaymentsSplitted",
     { func: getOrdersWithPaymentsSplitted, schema: PAYMENT_SCHEMAS.getOrdersWithPaymentsSplitted },

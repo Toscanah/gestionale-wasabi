@@ -1,8 +1,9 @@
 "use client";
 
-import { isSameDay } from "date-fns";
 import { OrderType } from "@prisma/client";
-import getTable from "../../../lib/utils/global/getTable";
+import { isSameDay } from "date-fns";
+import React from "react";
+import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import TableControls from "../../../components/table/TableControls";
 import Calendar from "../../../components/ui/calendar/Calendar";
@@ -11,38 +12,62 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
 import columns from "./columns";
-import RandomSpinner from "../../../components/ui/misc/loader/RandomSpinner";
-import usePaymentsHistory from "../../../hooks/usePaymentsHistory";
-import useGlobalFilter from "../../../hooks/useGlobalFilter";
+import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
+import usePagination from "@/app/(site)/hooks/table/usePagination";
+import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import ShiftFilterSelector from "../../../components/filters/shift/ShiftFilterSelector";
+import usePaymentsHistory from "@/app/(site)/hooks/payments/usePaymentsHistory";
+import TablePagination from "@/app/(site)/components/table/TablePagination";
 
 export default function PaymentsTable() {
   const [globalFilter, setGlobalFilter] = useGlobalFilter();
+  const { page, pageSize, setPage, setPageSize, resetPagination } = usePagination({});
+
   const {
-    filteredOrders,
+    orders,
+    totalCount,
     isLoading,
-    allOrders,
-    singleDate,
-    resetFilters,
-    setSingleDate,
-    setTypeFilter,
     typeFilter,
+    setTypeFilter,
     shiftFilter,
     setShiftFilter,
-    summaryData,
     timeScope,
     setTimeScope,
+    singleDate,
+    setSingleDate,
     rangeDate,
     setRangeDate,
-  } = usePaymentsHistory();
+    handleReset,
+    summaryData,
+  } = usePaymentsHistory({ page, pageSize });
 
-  const table = getTable({
-    data: filteredOrders.sort(
+  const { tableData, tableColumns } = useSkeletonTable({
+    isLoading,
+    data: orders.sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     ),
     columns,
+    pageSize,
+  });
+
+  const table = useTable({
+    data: tableData,
+    columns: tableColumns,
     globalFilter,
     setGlobalFilter,
+    pagination: {
+      mode: "server",
+      pageSize,
+      pageIndex: page,
+      pageCount: Math.ceil((totalCount || 0) / pageSize),
+      onPaginationChange: (updater) => {
+        const newState =
+          typeof updater === "function" ? updater({ pageIndex: page, pageSize }) : updater;
+
+        setPage(newState.pageIndex);
+        setPageSize(newState.pageSize);
+      },
+    },
   });
 
   const OrderTypeSelector = () => (
@@ -61,7 +86,7 @@ export default function PaymentsTable() {
       ]}
       value={typeFilter}
       defaultValue="all"
-      onValueChange={setTypeFilter}
+      onValueChange={(newType) => setTypeFilter(newType as OrderType | "all")}
     />
   );
 
@@ -72,8 +97,14 @@ export default function PaymentsTable() {
           title={<span className="text-2xl h-full flex items-end">Pagamenti</span>}
           table={table}
           globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          onReset={resetFilters}
+          setGlobalFilter={(filter) => {
+            setGlobalFilter(filter);
+            // table.setPageIndex(0);
+          }}
+          onReset={() => {
+            handleReset();
+            resetPagination();
+          }}
           resetDisabled={isLoading}
           searchBarDisabled={isLoading}
         >
@@ -100,7 +131,7 @@ export default function PaymentsTable() {
             ]}
           />
 
-          {timeScope == "single" ? (
+          {timeScope === "single" ? (
             <Calendar
               mode="single"
               dateFilter={singleDate}
@@ -117,7 +148,17 @@ export default function PaymentsTable() {
           )}
         </TableControls>
 
-        {isLoading ? <RandomSpinner isLoading={isLoading} /> : <Table table={table} />}
+        <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />
+
+        <TablePagination
+          table={table}
+          page={page}
+          pageSize={pageSize}
+          pageCount={Math.ceil(totalCount / pageSize)}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+          totalCount={`${totalCount} pagamenti`}
+        />
 
         <div className="mt-auto flex justify-between">
           <PaymentsSummary summaryData={summaryData} />
@@ -125,14 +166,14 @@ export default function PaymentsTable() {
             summaryData={summaryData}
             firstOrderDate={
               (singleDate
-                ? allOrders.filter((order) => isSameDay(new Date(order.created_at), singleDate))
-                : allOrders)[0]?.created_at
+                ? orders.filter((order) => isSameDay(new Date(order.created_at), singleDate))
+                : orders)[0]?.created_at
             }
           />
         </div>
-      </div>
 
-      <GoBack path="/home" />
+        <GoBack path="/home" />
+      </div>
     </div>
   );
 }

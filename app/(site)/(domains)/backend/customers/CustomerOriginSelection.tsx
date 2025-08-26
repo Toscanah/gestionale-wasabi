@@ -3,12 +3,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { CustomerOrigin } from "@prisma/client";
 import { ControllerRenderProps } from "react-hook-form";
 
-
 export const CUSTOMER_ORIGIN_LABELS: Record<CustomerOrigin, string> = {
-  [CustomerOrigin.UNKNOWN]: "Sconosciuto",
-  [CustomerOrigin.WEBSITE]: "Sito",
+  [CustomerOrigin.PHONE]: "Telefono",
+  [CustomerOrigin.WEB]: "Web",
+  [CustomerOrigin.REFERRAL]: "Passaparola",
   [CustomerOrigin.COUPON]: "Coupon",
-  [CustomerOrigin.REFFERAL]: "Passaparola",
+  [CustomerOrigin.UNKNOWN]: "Sconosciuto",
 };
 
 export default function CustomerOriginSelection({ field }: { field: ControllerRenderProps }) {

@@ -78,7 +78,6 @@ export default function DetailAccordionItem({
         <AccordionContent className="space-y-4">
           <OrderDetail
             onCheckboxChange={onCheckboxChange}
-            type={type}
             onCreate={onCreate}
             sortedProducts={inOrderProducts}
             selectedProducts={getRecreatedProducts()}

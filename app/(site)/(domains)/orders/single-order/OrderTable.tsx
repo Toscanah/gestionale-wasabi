@@ -2,7 +2,7 @@ import getColumns from "./getColumns";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useEffect, useState } from "react";
 import Table from "../../../components/table/Table";
-import getTable from "../../../lib/utils/global/getTable";
+import useTable from "../../../hooks/table/useTable";
 import OrderOverview from "./overview/OrderOverview";
 import OrderPayment from "../../payments/order/OrderPayment";
 import DivideOrder from "../divide-order/DivideOrder";
@@ -70,7 +70,7 @@ export default function OrderTable() {
     colIndex: 0,
   });
 
-  const table = getTable<ProductInOrder>({
+  const table = useTable<ProductInOrder>({
     data: order.products.sort(
       (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
     ),

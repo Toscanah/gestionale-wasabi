@@ -1,5 +1,10 @@
 import { z, ZodBoolean, ZodNumber, ZodObject, ZodRawShape, ZodTypeAny } from "zod";
 
+export const PaginationSchema = z.object({
+  page: z.number().default(0),
+  pageSize: z.number().default(10),
+});
+
 export const ToggleDeleteObjectSchema = z.object({
   id: z.number(),
 });

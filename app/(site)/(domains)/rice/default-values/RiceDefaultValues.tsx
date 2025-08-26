@@ -11,7 +11,7 @@ import { toastSuccess } from "../../../lib/utils/global/toast";
 import fetchRequest from "../../../lib/api/fetchRequest";
 import { RiceBatch } from "@prisma/client";
 import { debounce } from "lodash";
-import getTable from "@/app/(site)/lib/utils/global/getTable";
+import useTable from "@/app/(site)/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
 import { Label } from "@/components/ui/label";
@@ -68,7 +68,7 @@ export default function RiceDefaultValues() {
     []
   );
 
-  const table = getTable({
+  const table = useTable({
     data: riceBatches,
     columns: columns({ debouncedUpdateBatch, removeRiceBatch }),
   });

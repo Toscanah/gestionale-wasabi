@@ -55,6 +55,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   ValueColumn({
     header: "Rank",
     value: (row, meta) => {
+      console.log(row.original.rfm.rank)
       const { ranks, theme } = meta as CustomerStatsTableMeta;
 
       const colorArray =
@@ -72,7 +73,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
       return <span style={{ color, fontWeight: 600 }}>{currentRank}</span>;
     },
-    accessor: (customer) => customer.rfm.rank,
+    accessor: (customer) => JSON.stringify(customer.rfm),
     sortingFn: (rowA, rowB, columnId) => {
       const meta = (rowA.getAllCells().at(0)?.getContext().table.options.meta as CustomerStatsTableMeta) ?? {};
 

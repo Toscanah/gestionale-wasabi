@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import RandomSpinner from "../../../../components/ui/misc/loader/RandomSpinner";
 import { Results } from "../../../../hooks/statistics/useOrdersStats";
 import roundToTwo from "../../../../lib/utils/global/number/roundToTwo";
-import getTable from "@/app/(site)/lib/utils/global/getTable";
+import useTable from "@/app/(site)/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
 
@@ -120,7 +120,7 @@ export default function SectionResults({
     },
   ];
 
-  const table = getTable({ data: sections, columns: columns() });
+  const table = useTable({ data: sections, columns: columns() });
 
   return (
     <>

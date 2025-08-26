@@ -7,6 +7,7 @@ import FooterSection from "../common/FooterSection";
 import { OrderType, PlannedPayment } from "@prisma/client";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
 import { BIG_PRINT } from "../constants";
+import SingleEngagement from "../common/SingleEngagement";
 
 export interface OrderReceiptProps {
   order: AnyOrder;
@@ -19,13 +20,15 @@ export default function OrderReceipt<T extends AnyOrder>({
   order,
   plannedPayment,
   putInfo = true,
-  forceCut = false
+  forceCut = false,
 }: OrderReceiptProps) {
   const tableOrder = (order as TableOrder).table_order;
   const homeOrder = (order as HomeOrder).home_order;
   const pickupOrder = (order as PickupOrder).pickup_order;
 
-  const { products, type, discount } = order;
+  const { products, type, discount, engagements } = order;
+
+  const unredemableEngagements = engagements.filter((e) => !e.template.redeemable);
 
   return (
     <>
@@ -67,6 +70,9 @@ export default function OrderReceipt<T extends AnyOrder>({
           <Line />
         </>
       )}
+
+      {unredemableEngagements.length > 0 &&
+        unredemableEngagements.map((e, i) => <SingleEngagement key={i} engagement={e} />)}
 
       {FooterSection({ orderId: order.id })}
       {(forceCut || order.type !== OrderType.HOME) && <Cut />}

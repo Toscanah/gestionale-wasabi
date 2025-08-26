@@ -9,15 +9,16 @@ import getCustomerWithDetails from "../../lib/db/customers/getCustomerWithDetail
 import updateCustomerFromAdmin from "../../lib/db/customers/updateCustomerFromAdmin";
 import getCustomersByDoorbell from "../../lib/db/customers/getCustomersByDoorbell";
 import deleteCustomerById from "../../lib/db/customers/deleteCustomerById";
-import getCustomersWithStats from "../../lib/db/customers/getCustomersWithStats";
+import computeCustomersStats from "../../lib/db/customers/computeCustomersStats";
 import { CUSTOMER_SCHEMAS } from "../../lib/shared";
 import updateCustomerOrderNotes from "../../lib/db/customers/updateCustomerOrderNotes";
+import updateCustomersRFM from "../../lib/db/customers/updateCustomerRFM";
 
 const POST_ACTIONS = new Map([
   ["createCustomer", { func: createCustomer, schema: CUSTOMER_SCHEMAS.createCustomer }],
   [
-    "getCustomersWithStats",
-    { func: getCustomersWithStats, schema: CUSTOMER_SCHEMAS.getCustomersWithStats },
+    "computeCustomersStats",
+    { func: computeCustomersStats, schema: CUSTOMER_SCHEMAS.computeCustomersStats },
   ],
 ]);
 

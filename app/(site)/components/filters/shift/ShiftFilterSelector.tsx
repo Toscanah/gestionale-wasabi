@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { ShiftType } from "@/app/(site)/lib/shared/enums/Shift";
 
 interface ShiftFilterSelectorProps {
-  shiftFilter: ShiftType;
-  onShiftChange: (value: ShiftType) => void;
+  shiftFilter: ShiftType | "all";
+  onShiftChange: (value: ShiftType | "all") => void;
   disabled?: boolean;
 }
 
@@ -21,7 +21,7 @@ export default function ShiftFilterSelector({
     <div className="flex items-center justify-center w-full gap-4">
       <TooltipProvider delayDuration={0}>
         <Tooltip>
-          <TooltipTrigger asChild className={cn(shiftFilter === ShiftType.ALL && "hidden")}>
+          <TooltipTrigger asChild className={cn(shiftFilter === "all" && "hidden")}>
             <Warning size={24} color="red" />
           </TooltipTrigger>
           <TooltipContent side="bottom" className="w-[250px]">
@@ -43,7 +43,7 @@ export default function ShiftFilterSelector({
             items: [
               {
                 name: "Pranzo + cena",
-                value: ShiftType.ALL,
+                value: "all",
               },
               {
                 name: "Pranzo",

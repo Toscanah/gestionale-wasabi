@@ -1,5 +1,4 @@
 export enum ShiftType {
-  ALL = "all",
   LUNCH = "lunch",
   DINNER = "dinner",
 }

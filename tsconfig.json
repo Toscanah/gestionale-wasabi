@@ -35,7 +35,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/(site)/(domains)/backend/categories/.CategoryDialog.tsx",
-    "build/types/**/*.ts"
-, "app/(site)/(domains)/engagement/templates/components/CreateTemplate.tsx.disabled", "app/(site)/(domains)/engagement/broadcasting/components/EngagementDialog.tsx.disabled"  ],
+    "build/types/**/*.ts",
+    "app/(site)/lib/shared/types/**/*.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

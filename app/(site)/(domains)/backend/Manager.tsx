@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ComponentType,
-  ReactNode,
-  useMemo,
-  useCallback,
-  useState,
-  useEffect
-} from "react";
+import { ComponentType, ReactNode, useMemo, useCallback, useState, useEffect } from "react";
 import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import TableControls from "../../components/table/TableControls";
@@ -15,12 +8,12 @@ import Table from "../../components/table/Table";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
 import { ColumnDef } from "@tanstack/react-table";
 import getColumns from "./getColumns";
-import getTable from "../../lib/utils/global/getTable";
+import useTable from "../../hooks/table/useTable";
 import { PathType, ValidActionKeys } from "../../lib/api/fetchRequest";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TablePagination } from "../../components/table/TablePagination";
 import useManager from "../../hooks/backend/useManager";
+import TablePagination from "../../components/table/TablePagination";
 
 export type BaseEntity = { id: number; active: boolean };
 
@@ -178,18 +171,19 @@ export default function Manager<T extends BaseEntity>({
   );
 
   const tableColumns = useMemo(
-    () => getColumns<T>(columns, EditAction, ToggleAction, deleteAction ? deleteActionFn : undefined),
+    () =>
+      getColumns<T>(columns, EditAction, ToggleAction, deleteAction ? deleteActionFn : undefined),
     [columns, EditAction, ToggleAction, deleteAction, deleteActionFn]
   );
 
   const table = useMemo(
     () =>
-      getTable({
+      useTable({
         data: filteredData,
         columns: tableColumns,
         globalFilter,
         setGlobalFilter,
-        pagination: pagination ? { putPagination: pagination, pageSize: 10 } : undefined,
+        pagination: pagination ? { mode: "client", pageSize: 10 } : undefined,
       }),
     [filteredData, tableColumns, globalFilter, setGlobalFilter, pagination]
   );
@@ -210,9 +204,7 @@ export default function Manager<T extends BaseEntity>({
             checked={showOnlyActive}
             onCheckedChange={() => setShowOnlyActive(!showOnlyActive)}
           />
-          <Label className="text-xl flex flex-1 items-center h-10 w-full">
-            Solo attivi?
-          </Label>
+          <Label className="text-xl flex flex-1 items-center h-10 w-full">Solo attivi?</Label>
         </div>
       </TableControls>
 

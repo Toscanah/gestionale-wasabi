@@ -13,7 +13,7 @@ export const RFMDimensionConfigSchema = z.object({
   weight: z.number(),
 });
 
-export const RFMSRuleschema = z.object({
+export const RFMRuleschema = z.object({
   recency: RFMDimensionConfigSchema,
   frequency: RFMDimensionConfigSchema,
   monetary: RFMDimensionConfigSchema,
@@ -52,6 +52,6 @@ export const RFMCustomerSegmentSchema = z.object({
 });
 
 export const RFMConfigSchema = z.object({
-  rules: RFMSRuleschema,
+  rules: RFMRuleschema,
   ranks: RFMRankConfigSchema,
 });

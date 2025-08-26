@@ -2,6 +2,10 @@ generator client {
     provider = "prisma-client-js"
 }
 
+generator json {
+    provider = "prisma-json-types-generator"
+}
+
 generator zod {
     provider         = "zod-prisma-types"
     createInputTypes = "false"
@@ -154,6 +158,9 @@ model Customer {
     order_notes   String?
     origin        CustomerOrigin @default(UNKNOWN)
     phone_id      Int            @unique
+    
+    /// [RFMCustomerSegment]
+    rfm           Json           @default("{}")
     addresses     Address[]
     phone         Phone          @relation(fields: [phone_id], references: [id], onDelete: Cascade)
     engagements   Engagement[]

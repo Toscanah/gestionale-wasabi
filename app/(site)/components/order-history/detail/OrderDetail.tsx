@@ -1,9 +1,5 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import joinItemsWithComma from "../../../lib/utils/global/string/joinItemsWithComma";
-import ProductLine from "../common/ProductLine";
-import getTable from "../../../lib/utils/global/getTable";
+import useTable from "../../../hooks/table/useTable";
 import productColumns from "../common/productColumns";
 import Table from "../../table/Table";
 
@@ -22,14 +18,11 @@ export type OrderDetailTableMeta = {
 
 export default function OrderDetail({
   sortedProducts,
-  type,
   onCreate,
   onCheckboxChange,
   selectedProducts,
 }: OrderDetailProps) {
-  console.log(!!onCreate);
-
-  const table = getTable({
+  const table = useTable({
     columns: productColumns(!!onCreate),
     data: sortedProducts,
     meta: { selectedProducts, onCheckboxChange } as OrderDetailTableMeta,

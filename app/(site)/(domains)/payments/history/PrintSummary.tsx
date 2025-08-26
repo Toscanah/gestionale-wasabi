@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { PaymentsSummaryData } from "../../../hooks/usePaymentsHistory";
+import { PaymentsSummaryData } from "../../../hooks/a";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 
 interface PrintSummaryProps {

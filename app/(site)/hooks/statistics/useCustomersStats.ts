@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { endOfYear, startOfYear, subDays, startOfDay, endOfMonth, startOfMonth } from "date-fns";
-import { CustomerWithStats } from "@/app/(site)/lib/shared/types/CustomerWithStats";
+import { startOfYear, endOfYear, subDays, startOfDay, startOfMonth, endOfMonth } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
+import { GetCustomersWithStatsResponse } from "@/app/(site)/lib/shared/types/responses/customer";
+import { CustomerWithStats } from "@/app/(site)/lib/shared/types/CustomerWithStats";
 import { DatePreset } from "../../lib/shared/enums/DatePreset";
 import useRfmRules from "../rfm/useRfmRules";
 import useRfmRanks from "../rfm/useRfmRanks";
-import updateCustomersWithRFM from "../../lib/services/rfm/updateCustomersWithRFM";
+import React, { useEffect } from "react";
 
 const today = new Date();
 const DEFAULT_DATE: DateRange = {
@@ -14,124 +15,60 @@ const DEFAULT_DATE: DateRange = {
   to: endOfYear(today),
 };
 
-export function useCustomersStats() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [customers, setCustomers] = useState<CustomerWithStats[]>([]);
-  const [filteredCustomers, setFilteredCustomers] = useState<CustomerWithStats[]>([]);
-  const [rankFilter, setRankFilter] = useState<string>("all");
-  const [dateFilter, setDateFilter] = useState<DateRange | undefined>(DEFAULT_DATE);
+type UseCustomersStatsParams = {
+  page: number;
+  pageSize: number;
+  search: string;
+};
+
+export default function useCustomersStats({ page, pageSize, search }: UseCustomersStatsParams) {
   const { rfmRules } = useRfmRules();
   const { ranks } = useRfmRanks();
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetchInitialCustomers().then(() => setIsLoading(false));
-  }, []);
+  const [dateFilter, setDateFilter] = React.useState<DateRange | undefined>(DEFAULT_DATE);
+  const [rankFilter, setRankFilter] = React.useState<string>("all");
 
-  useEffect(() => {
-    if (dateFilter && dateFilter.from && dateFilter.to) {
-      fetchCustomersWithFilter(dateFilter);
-    }
-  }, [dateFilter]);
+  const query = useQuery({
+    queryKey: ["customers", { page, pageSize, search, dateFilter, rankFilter }],
+    queryFn: async (): Promise<GetCustomersWithStatsResponse> =>
+      await fetchRequest<GetCustomersWithStatsResponse>(
+        "POST",
+        "/api/customers",
+        "computeCustomersStats",
+        {
+          filters: {
+            from: dateFilter?.from,
+            to: dateFilter?.to,
+            search,
+            rank: rankFilter,
+          },
+          page,
+          pageSize,
+          rfmConfig: { ranks, rules: rfmRules },
+        }
+      ),
+    staleTime: 1000 * 60 * 60, // data is "fresh" for 1h
+  });
 
-  const fetchInitialCustomers = () =>
-    fetchRequest<CustomerWithStats[]>("POST", "/api/customers", "getCustomersWithStats", {
-      ...dateFilter,
-    }).then((customers) => {
-      const updatedCustomers = updateCustomersWithRFM(customers, rfmRules, ranks);
-      setCustomers(updatedCustomers);
+  // useEffect(() => {
+  //   if (!query.data) return;
+  //   if (page === 0 && pageSize >= 50) {
+  //     const { customers, totalCount } = query.data;
+  //     const base = { search, dateFilter, rankFilter };
 
-      setDateFilter({
-        from: updatedCustomers
-          .map((customer) => (customer?.firstOrder ? new Date(customer.firstOrder) : new Date()))
-          .reduce((earliest, date) => (date < earliest ? date : earliest), new Date()),
-        to: new Date(),
-      });
-    });
-
-  const fetchCustomersWithFilter = (value: DateRange) =>
-    fetchRequest<CustomerWithStats[]>("POST", "/api/customers", "getCustomersWithStats", {
-      ...value,
-    }).then((filteredCustomers) => {
-      const updatedCustomers = updateCustomersWithRFM(filteredCustomers, rfmRules, ranks);
-      setFilteredCustomers(updatedCustomers);
-      applyFilter(rankFilter, updatedCustomers);
-    });
-
-  const sortByMetric = (customers: CustomerWithStats[], metric: keyof CustomerWithStats) =>
-    [...customers].sort((a, b) => (b[metric] as number) - (a[metric] as number));
-
-  const applyFilter = (filter: string, customersOverride?: CustomerWithStats[]) => {
-    setRankFilter(filter);
-
-    const sourceCustomers = customersOverride || filteredCustomers;
-
-    if (!filter || filter === "all") {
-      setFilteredCustomers(sourceCustomers);
-      return;
-    }
-
-    let filtered = [...sourceCustomers];
-
-    switch (filter) {
-      case "1-week":
-        filtered = sortByMetric(
-          filtered.filter(
-            (customer) => customer.averageOrdersWeek >= 1 && customer.averageOrdersWeek < 2
-          ),
-          "averageOrdersWeek"
-        );
-        break;
-      case "2-week":
-        filtered = sortByMetric(
-          filtered.filter(
-            (customer) => customer.averageOrdersWeek >= 2 && customer.averageOrdersWeek < 3
-          ),
-          "averageOrdersWeek"
-        );
-        break;
-      case "3-week":
-        filtered = sortByMetric(
-          filtered.filter(
-            (customer) => customer.averageOrdersWeek >= 3 && customer.averageOrdersWeek < 4
-          ),
-          "averageOrdersWeek"
-        );
-        break;
-      case "more-week":
-        filtered = sortByMetric(
-          filtered.filter((customer) => customer.averageOrdersWeek >= 4),
-          "averageOrdersWeek"
-        );
-        break;
-      case "1-2-weeks":
-        filtered = sortByMetric(
-          filtered.filter((customer) => customer.averageOrdersWeek >= 0.5),
-          "averageOrdersWeek"
-        );
-        break;
-      case "1-3-weeks":
-        filtered = sortByMetric(
-          filtered.filter((customer) => customer.averageOrdersWeek >= 0.33),
-          "averageOrdersWeek"
-        );
-        break;
-      case "1-month":
-        filtered = sortByMetric(
-          filtered.filter((customer) => customer.averageOrdersMonth >= 1),
-          "averageOrdersMonth"
-        );
-        break;
-      case "highest-spending":
-        const highestSpending = Math.max(...filtered.map((customer) => customer.totalSpending));
-        filtered = filtered.filter((customer) => customer.totalSpending === highestSpending);
-        break;
-      default:
-        break;
-    }
-
-    setFilteredCustomers(filtered);
-  };
+  //     // hydrate smaller page sizes
+  //     [10, 20, 30, 40, 50].forEach((s) => {
+  //       if (s >= pageSize) return;
+  //       const pagesAvailable = Math.min(Math.ceil(customers.length / s), 10);
+  //       for (let p = 0; p < pagesAvailable; p++) {
+  //         queryClient.setQueryData(["customers", { page: p, pageSize: s, ...base }], {
+  //           customers: customers.slice(p * s, (p + 1) * s),
+  //           totalCount,
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, [query.data, page, pageSize, search, dateFilter, rankFilter, queryClient]);
 
   const handlePresetSelect = (value: DatePreset) => {
     switch (value) {
@@ -140,10 +77,7 @@ export function useCustomersStats() {
         break;
       case DatePreset.YESTERDAY:
         const yesterday = subDays(today, 1);
-        setDateFilter({
-          from: startOfDay(yesterday),
-          to: startOfDay(yesterday),
-        });
+        setDateFilter({ from: startOfDay(yesterday), to: startOfDay(yesterday) });
         break;
       case DatePreset.LAST7:
         const last7 = subDays(today, 6);
@@ -154,37 +88,29 @@ export function useCustomersStats() {
         setDateFilter({ from: startOfDay(last30), to: startOfDay(today) });
         break;
       case DatePreset.THIS_MONTH:
-        setDateFilter({
-          from: startOfMonth(today),
-          to: endOfMonth(today),
-        });
+        setDateFilter({ from: startOfMonth(today), to: endOfMonth(today) });
         break;
       case DatePreset.THIS_YEAR:
-        setDateFilter({
-          from: startOfYear(today),
-          to: endOfYear(today),
-        });
-        break;
-      default:
+        setDateFilter({ from: startOfYear(today), to: endOfYear(today) });
         break;
     }
   };
 
   const handleReset = () => {
     setRankFilter("all");
-    fetchInitialCustomers();
+    setDateFilter(DEFAULT_DATE);
   };
 
   return {
-    customers,
-    filteredCustomers,
+    customers: query.data?.customers ?? [],
+    totalCount: query.data?.totalCount ?? 0,
+    isLoading: query.isLoading,
     dateFilter,
-    selectedFilter: rankFilter,
+    rankFilter,
+    setRankFilter,
     setDateFilter,
     handlePresetSelect,
-    applyFilter,
     handleReset,
-    isLoading,
     ranks,
   };
 }

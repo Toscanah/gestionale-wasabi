@@ -42,7 +42,8 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
       content.push(() => RiderReceipt({ order: order as HomeOrder, plannedPayment }));
     }
 
-    content.push(() => EngagementReceipt({ engagements: order.engagements }));
+    const redeemableEngagements = order.engagements.filter((e) => e.template.redeemable);
+    content.push(() => EngagementReceipt({ engagements: redeemableEngagements }));
 
     return content;
   }

@@ -10,7 +10,7 @@ import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
-import getTable from "@/app/(site)/lib/utils/global/getTable";
+import useTable from "@/app/(site)/hooks/table/useTable";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -48,7 +48,7 @@ export default function TopCustomers({ product }: TopCustomersProps) {
   const [loading, setLoading] = useState(true);
   const [customers, setCustomers] = useState<TopCustomer[]>([]);
 
-  const table = getTable({ data: customers, columns });
+  const table = useTable({ data: customers, columns });
 
   useEffect(() => {
     if (!open) return;

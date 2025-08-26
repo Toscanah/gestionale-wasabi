@@ -7,6 +7,7 @@ import {
 import { z } from "zod";
 import { HomeOrderWithOrderSchema, PickupOrderWithOrderSchema } from "./Order";
 import { EngagementWithDetailsSchema } from "./Engagement";
+import { RFMCustomerSegmentSchema } from "./RFM";
 
 export const CustomerWithAddressesAndOrdersSchema = CustomerSchema.extend({
   addresses: z.array(AddressSchema),
@@ -17,7 +18,9 @@ export const CustomerWithAddressesAndOrdersSchema = CustomerSchema.extend({
 
 export const CustomerWithEngagementSchema = CustomerWithAddressesAndOrdersSchema.extend({
   engagements: z.array(EngagementWithDetailsSchema),
-});
+})
+  .omit({ rfm: true })
+  .extend({ rfm: RFMCustomerSegmentSchema });
 
 export const CustomerWithPhoneSchema = CustomerSchema.extend({
   phone: PhoneSchema,

@@ -101,7 +101,7 @@ export default async function createSubOrder({
     }
   }
 
-  await addProductsToOrder({ targetOrderId: newSubOrder.id, products });
+  await addProductsToOrder({ orderId: newSubOrder.id, products });
 
   await prisma.order.update({
     where: { id: newSubOrder.id },

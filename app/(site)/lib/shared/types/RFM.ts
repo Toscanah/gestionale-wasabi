@@ -7,7 +7,7 @@ import {
   RFMDimensionConfigSchema,
   RFMDimensionSchema,
   RFMRangeRuleSchema,
-  RFMSRuleschema,
+  RFMRuleschema,
   RFMScoreSchema,
 } from "../models/RFM";
 
@@ -17,7 +17,7 @@ export type RFMDimension = z.infer<typeof RFMDimensionSchema>;
 
 export type RFMDimensionConfig = z.infer<typeof RFMDimensionConfigSchema>;
 
-export type RFMRules = z.infer<typeof RFMSRuleschema>;
+export type RFMRules = z.infer<typeof RFMRuleschema>;
 
 export type RFMScore = z.infer<typeof RFMScoreSchema>;
 

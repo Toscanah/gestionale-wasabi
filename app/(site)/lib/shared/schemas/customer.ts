@@ -1,8 +1,16 @@
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
-import { createInputSchema, NoContentSchema, ToggleDeleteObjectSchema, wrapSchema } from "./common";
+import {
+  createInputSchema,
+  NoContentSchema,
+  PaginationSchema,
+  ToggleDeleteObjectSchema,
+  wrapSchema,
+} from "./common";
 import { SchemaInputs } from "../types/SchemaInputs";
-import { RFMSRuleschema } from "../models/RFM";
+import { RFMConfigSchema, RFMRuleschema } from "../models/RFM";
+import { Seal } from "@phosphor-icons/react";
+import { CustomerWithEngagementSchema } from "../models/Customer";
 
 export const GetCustomerByPhoneSchema = z.object({ phone: z.string() });
 
@@ -20,6 +28,7 @@ export const UpdateCustomerFromOrderSchema = wrapSchema("customer", CustomerSche
 export const CreateCustomerInputSchema = createInputSchema(CustomerSchema)
   .omit({
     phone_id: true,
+    rfm: true,
   })
   .extend({
     phone: z.string(),
@@ -34,20 +43,42 @@ export const UpdateCustomerAddressesSchema = z.object({
   customerId: z.number(),
 });
 
-export const GetCustomersWithStatsSchema = z.object({
-  from: z.coerce.date().optional(),
-  to: z.coerce.date().optional(),
-});
-
 export const UpdateCustomerOrderNotesSchema = z.object({
   orderId: z.number(),
   notes: z.string(),
 });
 
+export const GetCustomersWithDetailsSchema = PaginationSchema.partial().extend({
+  filters: z
+    .object({
+      rank: z.string().optional(),
+      search: z.string().optional(),
+    })
+    .optional(),
+});
+
+export const ComputeCustomersStatsSchema = PaginationSchema.extend({
+  filters: z
+    .object({
+      from: z.coerce.date(),
+      to: z.coerce.date(),
+      rank: z.string(),
+      search: z.string(),
+    })
+    .partial()
+    .optional(),
+  rfmConfig: RFMConfigSchema,
+});
+
+export const UpdateCustomerRFMSchema = z.object({
+  rfmConfig: RFMConfigSchema,
+  customer: CustomerWithEngagementSchema,
+});
+
 export const CUSTOMER_SCHEMAS = {
   getCustomerByPhone: GetCustomerByPhoneSchema,
   getCustomerWithDetails: GetCustomerWithDetailsSchema,
-  getCustomersWithDetails: NoContentSchema,
+  getCustomersWithDetails: GetCustomersWithDetailsSchema,
   getCustomersByDoorbell: GetCustomersByDoorbellSchema,
   updateCustomerFromAdmin: UpdateCustomerFromAdminSchema,
   updateCustomerFromOrder: UpdateCustomerFromOrderSchema,
@@ -56,8 +87,9 @@ export const CUSTOMER_SCHEMAS = {
   toggleCustomer: ToggleDeleteObjectSchema,
   updateCustomerAddresses: UpdateCustomerAddressesSchema,
   deleteCustomerById: ToggleDeleteObjectSchema,
-  getCustomersWithStats: GetCustomersWithStatsSchema,
+  computeCustomersStats: ComputeCustomersStatsSchema,
   getCustomersWithMarketing: NoContentSchema,
+  updateCustomerRFM: UpdateCustomerRFMSchema,
 };
 
 export type CustomerSchemaInputs = SchemaInputs<typeof CUSTOMER_SCHEMAS>;

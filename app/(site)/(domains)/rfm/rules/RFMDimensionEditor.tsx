@@ -3,7 +3,7 @@ import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/app/(site)/lib
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "@phosphor-icons/react";
-import getTable from "@/app/(site)/lib/utils/global/getTable";
+import useTable from "@/app/(site)/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
 import { useMemo } from "react";
@@ -56,7 +56,7 @@ export default function RFMDimensionEditor({
 
   const cols = useMemo(() => columns(dimensionKey), [dimensionKey]);
 
-  const table = getTable<RFMRangeRule, RFMTableMeta>({
+  const table = useTable<RFMRangeRule, RFMTableMeta>({
     data: config.rules,
     columns: cols,
     meta: {

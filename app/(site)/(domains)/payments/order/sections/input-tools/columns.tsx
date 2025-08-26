@@ -71,7 +71,6 @@ export default function getColumns(
     }),
 
     ActionColumn({
-      header: "",
       action: (row) =>
         row.original.total !== 0 && (
           <X

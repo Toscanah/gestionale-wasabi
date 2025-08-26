@@ -3,11 +3,11 @@
 import Table from "../../../components/table/Table";
 import SelectWrapper from "../../../components/ui/select/SelectWrapper";
 import GoBack from "../../../components/ui/misc/GoBack";
-import getTable from "../../../lib/utils/global/getTable";
+import useTable from "../../../hooks/table/useTable";
 import columns from "./columns";
 import useProductsStats, { ALL_CATEGORIES } from "../../../hooks/statistics/useProductsStats";
 import TableControls from "../../../components/table/TableControls";
-import useGlobalFilter from "../../../hooks/useGlobalFilter";
+import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import Calendar from "../../../components/ui/calendar/Calendar";
 import ShiftFilterSelector from "../../../components/filters/shift/ShiftFilterSelector";
@@ -32,7 +32,7 @@ export default function ProductsStats() {
     isLoading,
   } = useProductsStats();
 
-  const table = getTable({
+  const table = useTable({
     data: filteredProducts,
     columns,
     globalFilter,

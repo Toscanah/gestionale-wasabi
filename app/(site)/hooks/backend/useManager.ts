@@ -5,7 +5,7 @@ import {
   EntityType,
   MANAGER_LABELS,
 } from "../../(domains)/backend/Manager";
-import useGlobalFilter from "../useGlobalFilter";
+import useGlobalFilter from "../table/useGlobalFilter";
 import useManagerActions from "./useManagerActions";
 import { PathType } from "../../lib/api/fetchRequest";
 

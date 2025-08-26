@@ -1,4 +1,4 @@
-import getTable from "@/app/(site)/lib/utils/global/getTable";
+import useTable from "@/app/(site)/hooks/table/useTable";
 import { useState } from "react";
 import getColumns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
@@ -30,7 +30,7 @@ export default function CalculationTable() {
     });
 
   const columns = getColumns(handleFieldChange, setPaymentCalculations);
-  const table = getTable({ data: paymentCalculations, columns });
+  const table = useTable({ data: paymentCalculations, columns });
 
   return (
     <div className="w-full flex max-h-[500px] items-center flex-col gap-4 justify-between">

@@ -1,5 +1,5 @@
 import useEngagementsLedgers from "@/app/(site)/hooks/engagement/history/useEngagementsLedgers";
-import getTable from "@/app/(site)/lib/utils/global/getTable";
+import useTable from "@/app/(site)/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
 import { EngagementLedgerStatus } from "@prisma/client";
@@ -18,7 +18,7 @@ export type EngagementHistoryTableMeta = {
 export default function EngagementHistory({ customerId, orderId }: EngagementHistoryProps) {
   const { ledgers, updateLedgerStatus, isLoading } = useEngagementsLedgers({ customerId });
 
-  const table = getTable({ data: ledgers, columns, meta: { updateLedgerStatus, orderId } });
+  const table = useTable({ data: ledgers, columns, meta: { updateLedgerStatus, orderId } });
 
   return (
     <Loader isLoading={isLoading}>

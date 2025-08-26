@@ -13,34 +13,61 @@ import { ReactNode } from "react";
 interface TablePaginationProps<TData> {
   table: Table<TData>;
   totalCount?: ReactNode;
+  page?: number;
+  pageSize?: number;
+  pageCount?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
 }
 
-export function TablePagination<TData>({ table, totalCount }: TablePaginationProps<TData>) {
+export default function TablePagination<TData>({
+  table,
+  totalCount,
+  page,
+  pageSize,
+  pageCount,
+  onPageChange,
+  onPageSizeChange,
+}: TablePaginationProps<TData>) {
+  const currentPage = page ?? table.getState().pagination.pageIndex;
+  const currentPageSize = pageSize ?? table.getState().pagination.pageSize;
+  const totalPages = pageCount ?? table.getPageCount();
+
+  const handlePageChange = (newPage: number) => {
+    if (onPageChange) onPageChange(newPage);
+    else table.setPageIndex(newPage);
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    if (onPageSizeChange) onPageSizeChange(newSize);
+    else table.setPageSize(newSize);
+  };
+
   return (
     <div className="flex w-full items-center gap-x-6 px-2">
+      {/* Rows per page */}
       <div className="flex items-center space-x-2">
         <p className="text-sm font-medium">Righe per pagina</p>
         <Select
-          value={`${table.getState().pagination.pageSize}`}
-          onValueChange={(value) => {
-            table.setPageSize(Number(value));
-          }}
+          value={`${currentPageSize}`}
+          onValueChange={(value) => handlePageSizeChange(Number(value))}
         >
           <SelectTrigger className="h-8 w-[70px]">
-            <SelectValue placeholder={table.getState().pagination.pageSize} />
+            <SelectValue placeholder={`${currentPageSize}`} />
           </SelectTrigger>
           <SelectContent side="top">
-            {[10, 20, 30, 40, 50, 100].map((pageSize) => (
-              <SelectItem key={pageSize} value={`${pageSize}`}>
-                {pageSize}
+            {[10, 20, 30, 40, 50, 100].map((size) => (
+              <SelectItem key={size} value={`${size}`}>
+                {size}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
+      {/* Current page info */}
       <div className="flex w-[400px] items-center text-sm font-medium">
-        Pagina {table.getState().pagination.pageIndex + 1} di {table.getPageCount()}
+        Pagina {currentPage + 1} di {totalPages}
         {totalCount && (
           <>
             &nbsp;
@@ -53,22 +80,23 @@ export function TablePagination<TData>({ table, totalCount }: TablePaginationPro
         )}
       </div>
 
+      {/* Navigation buttons */}
       <div className="flex items-center ml-auto space-x-2">
         <Button
           variant="outline"
           className="hidden h-8 w-8 p-0 lg:flex"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
+          onClick={() => handlePageChange(0)}
+          disabled={currentPage === 0}
         >
           <span className="sr-only">Go to first page</span>
           <ChevronsLeft />
         </Button>
-        
+
         <Button
           variant="outline"
           className="h-8 w-8 p-0"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 0}
         >
           <span className="sr-only">Go to previous page</span>
           <ChevronLeft />
@@ -77,8 +105,8 @@ export function TablePagination<TData>({ table, totalCount }: TablePaginationPro
         <Button
           variant="outline"
           className="h-8 w-8 p-0"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage + 1 >= totalPages}
         >
           <span className="sr-only">Go to next page</span>
           <ChevronRight />
@@ -87,8 +115,8 @@ export function TablePagination<TData>({ table, totalCount }: TablePaginationPro
         <Button
           variant="outline"
           className="hidden h-8 w-8 p-0 lg:flex"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
+          onClick={() => handlePageChange(totalPages - 1)}
+          disabled={currentPage + 1 >= totalPages}
         >
           <span className="sr-only">Go to last page</span>
           <ChevronsRight />

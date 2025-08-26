@@ -1,7 +1,7 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
-import { PaymentsSummaryData } from "../../../hooks/usePaymentsHistory";
+import { PaymentsSummaryData } from "../../../hooks/a";
 import { SMALL_PRINT } from "../constants";
 
 export interface PaymentSummaryReceiptProps {
