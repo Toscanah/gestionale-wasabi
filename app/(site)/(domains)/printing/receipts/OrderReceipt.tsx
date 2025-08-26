@@ -8,6 +8,7 @@ import { OrderType, PlannedPayment } from "@prisma/client";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
 import { BIG_PRINT } from "../constants";
 import SingleEngagement from "../common/SingleEngagement";
+import { Fragment } from "react";
 
 export interface OrderReceiptProps {
   order: AnyOrder;
@@ -72,7 +73,9 @@ export default function OrderReceipt<T extends AnyOrder>({
       )}
 
       {unredemableEngagements.length > 0 &&
-        unredemableEngagements.map((e, i) => <SingleEngagement key={i} engagement={e} />)}
+        unredemableEngagements.map((e, i) => (
+          <Fragment key={i}>{SingleEngagement({ engagement: e })}</Fragment>
+        ))}
 
       {FooterSection({ orderId: order.id })}
       {(forceCut || order.type !== OrderType.HOME) && <Cut />}
