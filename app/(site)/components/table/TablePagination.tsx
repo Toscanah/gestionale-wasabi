@@ -18,6 +18,7 @@ interface TablePaginationProps<TData> {
   pageCount?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
+  disabled?: boolean;
 }
 
 export default function TablePagination<TData>({
@@ -28,6 +29,7 @@ export default function TablePagination<TData>({
   pageCount,
   onPageChange,
   onPageSizeChange,
+  disabled
 }: TablePaginationProps<TData>) {
   const currentPage = page ?? table.getState().pagination.pageIndex;
   const currentPageSize = pageSize ?? table.getState().pagination.pageSize;
@@ -52,7 +54,7 @@ export default function TablePagination<TData>({
           value={`${currentPageSize}`}
           onValueChange={(value) => handlePageSizeChange(Number(value))}
         >
-          <SelectTrigger className="h-8 w-[70px]">
+          <SelectTrigger className="h-8 w-[70px]" disabled={disabled}>
             <SelectValue placeholder={`${currentPageSize}`} />
           </SelectTrigger>
           <SelectContent side="top">
@@ -86,7 +88,7 @@ export default function TablePagination<TData>({
           variant="outline"
           className="hidden h-8 w-8 p-0 lg:flex"
           onClick={() => handlePageChange(0)}
-          disabled={currentPage === 0}
+          disabled={currentPage === 0 || disabled}
         >
           <span className="sr-only">Go to first page</span>
           <ChevronsLeft />
@@ -96,7 +98,7 @@ export default function TablePagination<TData>({
           variant="outline"
           className="h-8 w-8 p-0"
           onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 0}
+          disabled={currentPage === 0 || disabled}
         >
           <span className="sr-only">Go to previous page</span>
           <ChevronLeft />
@@ -106,7 +108,7 @@ export default function TablePagination<TData>({
           variant="outline"
           className="h-8 w-8 p-0"
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage + 1 >= totalPages}
+          disabled={currentPage + 1 >= totalPages || disabled}
         >
           <span className="sr-only">Go to next page</span>
           <ChevronRight />
@@ -116,7 +118,7 @@ export default function TablePagination<TData>({
           variant="outline"
           className="hidden h-8 w-8 p-0 lg:flex"
           onClick={() => handlePageChange(totalPages - 1)}
-          disabled={currentPage + 1 >= totalPages}
+          disabled={currentPage + 1 >= totalPages || disabled}
         >
           <span className="sr-only">Go to last page</span>
           <ChevronsRight />

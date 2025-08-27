@@ -1,6 +1,6 @@
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { Label } from "@/components/ui/label";
-import SelectWrapper from "../../../components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 
 export type Printer = {
   name: "Stampante bianca" | "Stampante nera";
@@ -18,7 +18,7 @@ export default function PrinterChoice() {
   return (
     <>
       <Label htmlFor="printer" className="cursor-pointer">Stampante</Label>
-      <SelectWrapper
+      <WasabiSingleSelect
         id="printer"
         className="h-10"
         value={settings.selectedPrinter.name}

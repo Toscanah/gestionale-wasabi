@@ -39,31 +39,33 @@ export default function TableControls({
   };
 
   return (
-    <div className={cn("flex gap-4 items-center")}>
-      {title}
-      {AddComponent}
-
-      {searchBar && (
-        <Input
-          placeholder="Cerca"
-          disabled={searchBarDisabled}
-          value={globalFilter ?? ""}
-          onChange={(e) => {
-            setGlobalFilter(e.target.value);
-          }}
-          className="max-w-sm"
-        />
-      )}
-
-      {children}
+    <div className={cn("w-full flex gap-4 items-center justify-between")}>
+      <div className="w-full flex gap-4 items-center">
+        {title}
+        {AddComponent}
+  
+        {searchBar && (
+          <Input
+            placeholder="Cerca..."
+            disabled={searchBarDisabled}
+            value={globalFilter ?? ""}
+            onChange={(e) => {
+              setGlobalFilter(e.target.value);
+            }}
+            className="w-60 h-8"
+          />
+        )}
+  
+        {children}
+      </div>
 
       <Button
-        variant={"outline"}
+        variant="outline"
         onClick={handleReset}
-        className={resetClassName}
+        className={resetClassName ?? "h-8"}
         disabled={resetDisabled}
       >
-        Reimposta filtri
+        Reset filtri
       </Button>
     </div>
   );

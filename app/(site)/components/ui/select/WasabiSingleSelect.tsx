@@ -30,7 +30,7 @@ interface SelectWrapperProps {
   labelClassName?: string;
 }
 
-const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
+const WasabiSingleSelect = forwardRef<HTMLButtonElement, SelectWrapperProps>(
   (
     {
       field,
@@ -97,4 +97,4 @@ const SelectWrapper = forwardRef<HTMLButtonElement, SelectWrapperProps>(
   )
 );
 
-export default SelectWrapper;
+export default WasabiSingleSelect;

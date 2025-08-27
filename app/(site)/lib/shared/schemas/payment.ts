@@ -21,11 +21,13 @@ export const GetOrderWithPaymentsSchema = PaginationSchema.extend({
     shift: z.nativeEnum(ShiftType).optional(),
     timeScope: z.enum(["single", "range"]),
     singleDate: z.coerce.date().optional(),
-    rangeDate: z.object({
-      from: z.coerce.date(),
-      to: z.coerce.date(),
-    }).optional(),
-    search: z.string(),
+    rangeDate: z
+      .object({
+        from: z.coerce.date(),
+        to: z.coerce.date(),
+      })
+      .optional(),
+    search: z.string().optional(),
   }),
   summary: z.boolean().optional(),
 });

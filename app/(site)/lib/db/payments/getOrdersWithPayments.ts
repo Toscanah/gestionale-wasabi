@@ -20,10 +20,14 @@ export default async function getOrdersWithPayments({
   orders: OrderWithPayments[];
   totalCount: number;
 }> {
-  const { type, shift, timeScope, singleDate, rangeDate, search } = filters;
+  const { type, shift, timeScope, singleDate, rangeDate, search = "" } = filters;
 
-  let dateWhere: Prisma.OrderWhereInput = {};
-  if (search) {
+  let where: Prisma.OrderWhereInput = {
+    payments: { some: {} },
+  };
+
+  if (search && search.trim() !== "") {
+    let dateWhere: Prisma.OrderWhereInput = {};
     try {
       const parsed = parse(search, "d MMMM yyyy", new Date(), { locale: it });
       if (!isNaN(parsed.getTime())) {
@@ -34,14 +38,9 @@ export default async function getOrdersWithPayments({
           },
         };
       }
-    } catch {
-      // ignore invalid parse
-    }
-  }
+    } catch {}
 
-  let where: Prisma.OrderWhereInput = {
-    payments: { some: {} },
-    OR: [
+    where.OR = [
       {
         type: {
           equals:
@@ -80,10 +79,9 @@ export default async function getOrdersWithPayments({
           },
         },
       },
-      // ✅ add the dateWhere if valid
       dateWhere,
-    ],
-  };
+    ];
+  }
 
   if (type && Object.values(OrderType).includes(type)) {
     where.type = type;

@@ -1,4 +1,4 @@
-import SelectWrapper from "@/app/(site)/components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "@/app/(site)/components/ui/select/WasabiSingleSelect";
 import { SelectionProps, WeekdaysSelection } from "../Section";
 
 export default function YearSelection({ selection, dispatch }: SelectionProps<WeekdaysSelection>) {
@@ -9,7 +9,7 @@ export default function YearSelection({ selection, dispatch }: SelectionProps<We
   }));
 
   return (
-    <SelectWrapper
+    <WasabiSingleSelect
       className="h-10"
       groups={[{ items: years }]}
       value={selection.type == "year" ? selection.year : undefined}

@@ -16,12 +16,14 @@ export default async function computeCustomersStats({
 }: CustomerSchemaInputs["ComputeCustomersStatsInput"]): Promise<GetCustomersWithStatsResponse> {
   const { from, to, ...otherFilters } = filters || {};
 
+  console.log(from, to)
+
   const totalCount = await countCustomers({ ...otherFilters });
   const customers = await getCustomersWithDetails({ page, pageSize, filters: otherFilters });
 
   const customersWithStats = await Promise.all(
     customers.map(async (customer) => {
-      const { lifetimeOrders, dateFilteredOrders } = extractCustomerOrders(customer);
+      const { lifetimeOrders, dateFilteredOrders } = extractCustomerOrders(customer, from, to);
       const { dateFilteredOrdersCount, lastOrderDateLifetime, averageSpendingFiltered } =
         prepareRFMInputs(dateFilteredOrders, lifetimeOrders);
 

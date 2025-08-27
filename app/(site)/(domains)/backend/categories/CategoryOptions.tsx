@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
-import SelectWrapper from "../../../components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 import { Button } from "@/components/ui/button";
 import { X } from "@phosphor-icons/react";
 import { Option } from "@prisma/client";
@@ -59,7 +59,7 @@ export default function CategoryOptions({ field, options }: CategoryOptionsProps
         )}
       </div>
 
-      <SelectWrapper
+      <WasabiSingleSelect
         className="h-10"
         placeholder="Aggiungi una opzione"
         onValueChange={(e) => handleAddOption(Number(e))}

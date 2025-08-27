@@ -6,7 +6,7 @@ import { RiceBatch, RiceLogType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
-import SelectWrapper from "../../components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "../../components/ui/select/WasabiSingleSelect";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
 import fetchRequest from "../../lib/api/fetchRequest";
@@ -137,7 +137,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <Label htmlFor="rice" className="text-xl">
             Valori di base
           </Label>
-          <SelectWrapper
+          <WasabiSingleSelect
             disabled={riceBatches.length === 0}
             className="h-10 text-xl"
             value={selectedRiceBatchId !== null ? String(selectedRiceBatchId) : undefined}

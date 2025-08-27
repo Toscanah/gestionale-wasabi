@@ -1,4 +1,4 @@
-import Calendar from "@/app/(site)/components/ui/calendar/Calendar";
+import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
 import { SelectionProps } from "../Section";
 
 export default function SpecificDatePicker({
@@ -6,7 +6,7 @@ export default function SpecificDatePicker({
   dispatch,
 }: SelectionProps<Date | undefined>) {
   return (
-    <Calendar
+    <CalendarFilter
       mode="single"
       dateFilter={specificDate}
       handleDateFilter={(newDate) =>

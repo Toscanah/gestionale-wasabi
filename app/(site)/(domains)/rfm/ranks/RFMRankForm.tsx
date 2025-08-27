@@ -1,4 +1,4 @@
-import SelectWrapper from "@/app/(site)/components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "@/app/(site)/components/ui/select/WasabiSingleSelect";
 import { RFMDimension, RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { Input } from "@/components/ui/input";
@@ -97,7 +97,7 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
       <strong className="w-4">{label}</strong>
 
       <div className="w-full flex gap-4 justify-start items-center">
-        <SelectWrapper
+        <WasabiSingleSelect
           id={`dim-${label.toLowerCase()}`}
           value={mode}
           onValueChange={(v) => handleModeChange(v as Mode)}

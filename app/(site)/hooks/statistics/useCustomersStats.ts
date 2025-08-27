@@ -11,8 +11,8 @@ import React, { useEffect } from "react";
 
 const today = new Date();
 const DEFAULT_DATE: DateRange = {
-  from: startOfYear(today),
-  to: endOfYear(today),
+  from: undefined,
+  to: undefined,
 };
 
 type UseCustomersStatsParams = {
@@ -47,7 +47,7 @@ export default function useCustomersStats({ page, pageSize, search }: UseCustome
           rfmConfig: { ranks, rules: rfmRules },
         }
       ),
-    staleTime: 1000 * 60 * 60, // data is "fresh" for 1h
+    staleTime: 1000 * 60 * 60, 
   });
 
   // useEffect(() => {
@@ -79,14 +79,17 @@ export default function useCustomersStats({ page, pageSize, search }: UseCustome
         const yesterday = subDays(today, 1);
         setDateFilter({ from: startOfDay(yesterday), to: startOfDay(yesterday) });
         break;
-      case DatePreset.LAST7:
+      case DatePreset.LAST_7:
         const last7 = subDays(today, 6);
         setDateFilter({ from: startOfDay(last7), to: startOfDay(today) });
         break;
-      case DatePreset.LAST30:
+      case DatePreset.LAST_30:
         const last30 = subDays(today, 29);
         setDateFilter({ from: startOfDay(last30), to: startOfDay(today) });
         break;
+      case DatePreset.LAST_MONTH:
+        const lastMonth = subDays(today, 30);
+        setDateFilter({ from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) });
       case DatePreset.THIS_MONTH:
         setDateFilter({ from: startOfMonth(today), to: endOfMonth(today) });
         break;

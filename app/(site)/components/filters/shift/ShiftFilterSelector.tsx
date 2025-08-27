@@ -1,7 +1,7 @@
 "use client";
 
 import { Warning } from "@phosphor-icons/react";
-import SelectWrapper from "../../ui/select/SelectWrapper";
+import WasabiSingleSelect from "../../ui/select/WasabiSingleSelect";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { ShiftType } from "@/app/(site)/lib/shared/enums/Shift";
@@ -33,7 +33,7 @@ export default function ShiftFilterSelector({
         </Tooltip>
       </TooltipProvider>
 
-      <SelectWrapper
+      <WasabiSingleSelect
         className="h-10"
         value={shiftFilter}
         disabled={disabled}

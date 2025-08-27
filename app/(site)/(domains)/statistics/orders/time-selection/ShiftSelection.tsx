@@ -1,9 +1,9 @@
-import SelectWrapper from "@/app/(site)/components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "@/app/(site)/components/ui/select/WasabiSingleSelect";
 import { SelectionProps, Time, Shift } from "../Section";
 
 export default function ShiftSelection({ selection, dispatch }: SelectionProps<Time>) {
   return (
-    <SelectWrapper
+    <WasabiSingleSelect
       className="h-10 w-40"
       value={selection.type == "shift" ? selection.shift : undefined}
       onValueChange={(newShift) =>

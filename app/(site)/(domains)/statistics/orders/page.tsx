@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import fetchRequest from "../../../lib/api/fetchRequest";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { uniqueId } from "lodash";
 import Section from "./Section";
@@ -10,36 +8,14 @@ import { Flipper, Flipped, spring } from "react-flip-toolkit";
 import { Plus, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import GoBack from "../../../components/ui/misc/GoBack";
-import dynamic from "next/dynamic";
-import { OrderStatus } from "@prisma/client";
-
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
-  ssr: false,
-});
 
 export default function OrdersStats() {
-  const [orders, setOrders] = useState<AnyOrder[]>([]);
   const [sections, setSections] = useState<{ id: string }[]>([{ id: uniqueId() }]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const addSection = () => setSections((prev) => [...prev, { id: uniqueId() }]);
 
   const removeSection = (id: string) =>
     setSections((prev) => prev.filter((section) => section.id !== id));
-
-  const clearSections = () =>
-    sections.forEach((_, i) =>
-      setTimeout(() => setSections((prev) => prev.filter((_, index) => index !== 0)), i * 500)
-    );
-
-  const fetchOrders = () =>
-    fetchRequest<AnyOrder[]>("GET", "/api/payments/", "getOrdersWithPayments")
-      .then((orders) => setOrders(orders.filter((order) => order.status !== OrderStatus.CANCELLED)))
-      .finally(() => setIsLoading(false));
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
 
   const onElementAppear = (el: any, index: number) =>
     spring({
@@ -47,11 +23,7 @@ export default function OrdersStats() {
       delay: index * 50,
     });
 
-  return isLoading ? (
-    <div className="w-screen h-screen">
-      <RandomSpinner isLoading={isLoading} />
-    </div>
-  ) : (
+  return (
     <div className="flex flex-col w-screen h-screen gap-4 items-center">
       <h1 className="text-3xl mt-4">Statistiche ordini</h1>
 
@@ -61,24 +33,7 @@ export default function OrdersStats() {
             <Plus className="mr-2 h-4 w-4" />
             Aggiungi sezione
           </Button>
-
-          {/* <Button
-            onClick={() =>
-              fetchRequest("PATCH", "/api/orders", "fixOrdersShift").then(() => location.reload())
-            }
-            variant="outline"
-          >
-            Aggiusta turni degli ordini
-          </Button> */}
         </div>
-
-        {/* <Button
-          onClick={clearSections}
-          variant={"link"}
-          className={sections.length > 1 ? "block" : "invisible"}
-        >
-          Cancella tutte
-        </Button> */}
       </div>
 
       <Flipper
@@ -100,7 +55,7 @@ export default function OrdersStats() {
                   maxWidth: shouldStretch ? "100%" : "calc(50% - 0.25rem)",
                 }}
               >
-                <Section id={section.id} orders={orders} />
+                <Section id={section.id} />
                 <X
                   onClick={() => removeSection(section.id)}
                   size={32}

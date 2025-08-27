@@ -1,7 +1,7 @@
 "use client";
 
 import Table from "../../../components/table/Table";
-import SelectWrapper from "../../../components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 import GoBack from "../../../components/ui/misc/GoBack";
 import useTable from "../../../hooks/table/useTable";
 import columns from "./columns";
@@ -9,7 +9,7 @@ import useProductsStats, { ALL_CATEGORIES } from "../../../hooks/statistics/useP
 import TableControls from "../../../components/table/TableControls";
 import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import Calendar from "../../../components/ui/calendar/Calendar";
+import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
 import ShiftFilterSelector from "../../../components/filters/shift/ShiftFilterSelector";
 import TimeScopeFilter from "../../../components/filters/shift/TimeScope";
 import RandomSpinner from "../../../components/ui/misc/loader/RandomSpinner";
@@ -40,7 +40,7 @@ export default function ProductsStats() {
   });
 
   const CategoryFilter = () => (
-    <SelectWrapper
+    <WasabiSingleSelect
       disabled={isLoading}
       defaultValue="all"
       value={selectedCategory.id.toString()}
@@ -63,7 +63,7 @@ export default function ProductsStats() {
   );
 
   const TimeScope = () => (
-    <SelectWrapper
+    <WasabiSingleSelect
       disabled={isLoading}
       value={timeScopeFilter}
       className="h-10"
@@ -101,7 +101,7 @@ export default function ProductsStats() {
           <TimeScope />
 
           {timeScopeFilter === TimeScopeFilter.CUSTOM_RANGE && (
-            <Calendar
+            <CalendarFilter
               dateFilter={dateFilter}
               handleDateFilter={setDateFilter}
               mode="range"

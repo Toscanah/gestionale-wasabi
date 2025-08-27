@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ChangeTheme } from "./(site)/components/ui/ChangeTheme";
+import { ChangeTheme } from "./(site)/components/ui/misc/ChangeTheme";
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { type ThemeProviderProps } from "next-themes/dist/types";
@@ -33,7 +33,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <SidebarProvider defaultOpen={false} className="overflow-x-hidden">
               {children}
-              <ReactQueryDevtools initialIsOpen={false} position="left" buttonPosition="bottom-left"/>
+              {/* <ReactQueryDevtools initialIsOpen={false} position="left" buttonPosition="bottom-left"/> */}
               <Toaster richColors position="bottom-center" duration={1500} />
               <div className="fixed bottom-4 right-4 hover:cursor-pointer">
                 <ChangeTheme />

@@ -1,11 +1,9 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
 import WeekdaysOrDateToggle from "./weekdays-or-date/WeekdaysOrDateToggle";
 import WeekdaysSelection from "./weekdays-or-date/WeekdaysSelection";
 import WeekdaysFilterTypeSelection from "./weekdays-or-date/WeekdaysFilterTypeSelection";
 import { DateRange } from "react-day-picker";
 import SpecificDatePicker from "./weekdays-or-date/SpecificDatePicker";
 import TimeSelectionToggle from "./time-selection/TimeSelectionToggle";
-import TimePicker from "../../../components/ui/time/TimePicker";
 import ShiftSelection from "./time-selection/ShiftSelection";
 import SectionResults from "./results/SectionResults";
 import useOrdersStats from "../../../hooks/statistics/useOrdersStats";
@@ -13,7 +11,6 @@ import { ReducerActions } from "../../../hooks/statistics/sectionReducer";
 import HoursIntervalFilter from "./time-selection/HoursIntervalFilter";
 
 interface SectionProps {
-  orders: AnyOrder[];
   id: string;
 }
 
@@ -41,8 +38,8 @@ export type SelectionProps<T> = {
   dispatch: React.Dispatch<ReducerActions>;
 };
 
-export default function Section({ orders }: SectionProps) {
-  const { dispatch, filteredResults, isFiltersValid, state } = useOrdersStats(orders);
+export default function Section({ id }: SectionProps) {
+  const { dispatch, filteredResults, isFiltersValid, state } = useOrdersStats();
 
   const isWeekdaysSelected = state.mainChoice === "weekdays";
   const isSpecificDateSelected = state.mainChoice === "date";

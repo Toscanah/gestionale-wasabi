@@ -5,7 +5,7 @@ import { FormFieldType } from "../FormFields";
 import { ControllerRenderProps } from "react-hook-form";
 import { CategoryWithOptions } from "@/app/(site)/lib/shared"
 ;
-import SelectWrapper from "../../../components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 import KitchenType from "./KitchenType";
 
 export const formSchema = z.object({
@@ -52,7 +52,7 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
       children: ({ field }: { field: ControllerRenderProps }) => {
         return (
           <div className="space-y-2 space-x-2 text-center">
-            <SelectWrapper
+            <WasabiSingleSelect
               className="h-10"
               field={field}
               groups={[

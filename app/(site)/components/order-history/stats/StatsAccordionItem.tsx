@@ -1,11 +1,11 @@
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { useState, useMemo } from "react";
-import SelectWrapper from "../../ui/select/SelectWrapper";
 import useHistoryStats, {
   UseHistoryStatsParams,
 } from "../../../hooks/order/history/useHistoryStats";
 import { Separator } from "@/components/ui/separator";
 import AllProductsDialog from "./AllProductsDialog";
+import SelectFilter from "../../ui/filters/SelectFilter";
 
 type HistoryStatsProps = UseHistoryStatsParams;
 
@@ -30,10 +30,10 @@ const formatCountLabel = (quantity: number) => `${quantity} ${quantity > 1 ? "vo
 
 export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
   const currentYear = new Date().getFullYear();
-  const [month, setMonth] = useState<string>("00");
-  const [year, setYear] = useState<string>(currentYear.toString());
+  const [monthsFilter, setMonthsFilter] = useState<string[]>(["00"]);
+  const [yearsFilter, setYearsFilter] = useState<string[]>(["all"]);
 
-  const { stats } = useHistoryStats({ allOrders, year, month });
+  const { stats } = useHistoryStats({ allOrders, yearsFilter, monthsFilter });
 
   const yearOptions = useMemo(() => {
     if (!stats.ordersCount.length) return [];
@@ -51,13 +51,20 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
 
     return allOrders.filter((wrapper) => {
       const date = new Date(wrapper.order.created_at);
-      const orderMonth = String(date.getMonth() + 1).padStart(2, "0");
       const orderYear = String(date.getFullYear());
+      const orderMonth = String(date.getMonth() + 1).padStart(2, "0");
 
-      if (month === "00") return orderYear === year;
-      return orderYear === year && orderMonth === month;
+      const yearMatch =
+        yearsFilter.includes("all") || yearsFilter.length === 0 || yearsFilter.includes(orderYear);
+
+      const monthMatch =
+        monthsFilter.includes("00") ||
+        monthsFilter.length === 0 ||
+        monthsFilter.includes(orderMonth);
+
+      return yearMatch && monthMatch;
     });
-  }, [allOrders, month, year]);
+  }, [allOrders, yearsFilter, monthsFilter]);
 
   const statsRows = [
     {
@@ -113,17 +120,41 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
     <div className="flex flex-col gap-4">
       {/* Filters */}
       <div className="flex gap-4 items-center w-full">
-        <SelectWrapper
-          className="h-10 w-full"
-          defaultValue={currentYear.toString()}
-          groups={[{ label: "Anno", items: yearOptions }]}
-          onValueChange={setYear}
+        <SelectFilter
+          mode="multi"
+          triggerClassName="w-full"
+          selectedValues={yearsFilter}
+          onChange={(next) => {
+            if (next.includes("all") && next.length > 1) {
+              setYearsFilter(next.filter((y) => y !== "all"));
+            } else {
+              setYearsFilter(next);
+            }
+          }}
+          title="Anno"
+          groups={[
+            {
+              options: [
+                { value: "all", label: "Tutti gli anni" },
+                ...yearOptions.map((y) => ({ value: y.value, label: y.name })),
+              ],
+            },
+          ]}
         />
-        <SelectWrapper
-          className="h-10 w-full"
-          defaultValue="00"
-          groups={[{ label: "Mese", items: ITALIAN_MONTHS }]}
-          onValueChange={setMonth}
+
+        <SelectFilter
+          mode="multi"
+          triggerClassName="w-full"
+          selectedValues={monthsFilter}
+          onChange={(next) => {
+            if (next.includes("00") && next.length > 1) {
+              setMonthsFilter(next.filter((m) => m !== "00"));
+            } else {
+              setMonthsFilter(next);
+            }
+          }}
+          title="Mese"
+          groups={[{ options: ITALIAN_MONTHS.map((m) => ({ value: m.value, label: m.name })) }]}
         />
       </div>
 

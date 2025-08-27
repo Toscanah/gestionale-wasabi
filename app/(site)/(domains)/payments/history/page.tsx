@@ -6,8 +6,8 @@ import React from "react";
 import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import TableControls from "../../../components/table/TableControls";
-import Calendar from "../../../components/ui/calendar/Calendar";
-import SelectWrapper from "../../../components/ui/select/SelectWrapper";
+import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
+import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 import GoBack from "../../../components/ui/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
@@ -71,7 +71,7 @@ export default function PaymentsTable() {
   });
 
   const OrderTypeSelector = () => (
-    <SelectWrapper
+    <WasabiSingleSelect
       disabled={isLoading}
       className="h-10 max-w-sm"
       groups={[
@@ -116,7 +116,7 @@ export default function PaymentsTable() {
 
           <OrderTypeSelector />
 
-          <SelectWrapper
+          <WasabiSingleSelect
             className="h-10"
             value={timeScope}
             disabled={isLoading}
@@ -132,14 +132,14 @@ export default function PaymentsTable() {
           />
 
           {timeScope === "single" ? (
-            <Calendar
+            <CalendarFilter
               mode="single"
               dateFilter={singleDate}
               handleDateFilter={setSingleDate}
               disabled={isLoading}
             />
           ) : (
-            <Calendar
+            <CalendarFilter
               mode="range"
               dateFilter={rangeDate}
               handleDateFilter={setRangeDate}

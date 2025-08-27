@@ -5,10 +5,10 @@ import Table from "../../../components/table/Table";
 import columns from "./columns";
 import TableControls from "../../../components/table/TableControls";
 import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
-import SelectWrapper from "../../../components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 import GoBack from "../../../components/ui/misc/GoBack";
 import { DATE_PRESETS, DatePreset } from "../../../lib/shared/enums/DatePreset";
-import Calendar from "../../../components/ui/calendar/Calendar";
+import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
 import { useTheme } from "next-themes";
@@ -19,6 +19,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import WasabiPopover from "@/app/(site)/components/ui/popover/WasabiPopover";
+import SelectFilter from "@/app/(site)/components/ui/filters/SelectFilter";
+import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
+import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];
@@ -87,36 +91,39 @@ export default function CustomersStats() {
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
-        <TableControls
-          table={table}
-          globalFilter={globalFilter}
-          setGlobalFilter={(filter) => {
-            setGlobalFilter(filter);
-            // table.setPageIndex(0);
-          }}
-          onReset={() => {
-            handleReset();
-            resetPagination();
-          }}
-        >
-          <SelectWrapper
-            className="h-10"
-            value={rankFilter}
-            onValueChange={(rank) => setRankFilter(rank)}
+        <div className="w-full flex gap-4 items-center">
+          <SearchBar disabled={isLoading} filter={globalFilter} onChange={setGlobalFilter} />
+
+          <SelectFilter
+            title="Rank"
+            mode="single"
+            disabled={isLoading}
+            inputPlaceholder="Cerca rank..."
+            onChange={(value) => setRankFilter(value ?? "all")}
             groups={[
               {
-                items: ranksItems,
+                options: ranksItems.map((item) => ({
+                  label: item.name,
+                  value: item.value,
+                })),
               },
             ]}
+            selectedValue={rankFilter}
           />
-          <Calendar
+
+          <CalendarFilter
+            disabled={isLoading}
             dateFilter={dateFilter}
             presets={DATE_PRESETS}
             mode="range"
             handlePresetSelection={(value) => handlePresetSelect(value as DatePreset)}
             handleDateFilter={setDateFilter}
           />
-        </TableControls>
+
+          {(rankFilter !== "all" || !!dateFilter?.from || !!dateFilter?.to) && (
+            <ResetFiltersButton onReset={handleReset} />
+          )}
+        </div>
 
         <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />
 

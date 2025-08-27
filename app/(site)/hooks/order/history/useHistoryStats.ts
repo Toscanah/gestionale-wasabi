@@ -22,7 +22,7 @@ export type CustomerOrdersStats = {
   totalSpent: number;
   avgCost: number;
   ordersCount: Date[];
-  mostCommonDaysOfWeek: { day: string; count: number }[]; // 👈 array with counts
+  mostCommonDaysOfWeek: { day: string; count: number }[];
   typicalTime: {
     lunch: string | undefined;
     dinner: string | undefined;
@@ -32,8 +32,8 @@ export type CustomerOrdersStats = {
 
 export type UseHistoryStatsParams = {
   allOrders: PossibleOrder[];
-  year?: string; // "2025", "2024", etc.
-  month?: string; // "00" (all months), "01".."12"
+  yearsFilter?: string[]; // e.g. ["2024", "2025"]
+  monthsFilter?: string[]; // e.g. ["01","02"] or ["00"] for all months
 };
 
 /* ----------------- Helpers ----------------- */
@@ -87,7 +87,7 @@ function calculateMostCommonDays(dayStats: Record<number, number>) {
       day: days[Number(day)],
       count,
     }))
-    .sort((a, b) => b.count - a.count); // highest first
+    .sort((a, b) => b.count - a.count);
 }
 
 function getTimeSlot(decimalHour: number): "lunch" | "dinner" | "other" {
@@ -99,7 +99,6 @@ function getTimeSlot(decimalHour: number): "lunch" | "dinner" | "other" {
 function calculateTypicalTimeBySlot(times: number[]) {
   if (!times.length) return undefined;
 
-  // sort and median
   const sorted = [...times].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
   const median = sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
@@ -149,21 +148,38 @@ const DEFAULT_STATS: CustomerOrdersStats = {
   },
 };
 
-export default function useHistoryStats({ allOrders, year, month }: UseHistoryStatsParams) {
+export default function useHistoryStats({
+  allOrders,
+  yearsFilter,
+  monthsFilter,
+}: UseHistoryStatsParams) {
   const [stats, setStats] = useState<CustomerOrdersStats>(DEFAULT_STATS);
 
   useEffect(() => {
     if (!allOrders.length) return;
 
-    // 1. Filter orders by year/month before computing stats
+    // 1. Filter orders by years/months before computing stats
     const filtered = allOrders.filter((wrapper) => {
-      if (!year) return true; // no filter
-      const orderYear = new Date(wrapper.order.created_at).getFullYear().toString();
-      if (orderYear !== year) return false;
+      const orderDate = new Date(wrapper.order.created_at);
+      const orderYear = orderDate.getFullYear().toString();
+      const orderMonth = String(orderDate.getMonth() + 1).padStart(2, "0");
 
-      if (month === "00") return true; // all months
-      const orderMonth = String(new Date(wrapper.order.created_at).getMonth() + 1).padStart(2, "0");
-      return orderMonth === month;
+      // year filtering
+      if (yearsFilter && yearsFilter.length > 0) {
+        if (!yearsFilter.includes("all") && !yearsFilter.includes(orderYear)) {
+          return false;
+        }
+      }
+
+      // month filtering
+      if (monthsFilter && monthsFilter.length > 0) {
+        if (monthsFilter.includes("00")) {
+          return true; // "00" means all months
+        }
+        return monthsFilter.includes(orderMonth);
+      }
+
+      return true;
     });
 
     if (!filtered.length) {
@@ -213,7 +229,7 @@ export default function useHistoryStats({ allOrders, year, month }: UseHistorySt
       mostCommonDaysOfWeek,
       typicalTime,
     });
-  }, [allOrders, year, month]);
+  }, [allOrders, yearsFilter, monthsFilter]);
 
   return { stats };
 }

@@ -1,4 +1,4 @@
-import SelectWrapper from "@/app/(site)/components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "@/app/(site)/components/ui/select/WasabiSingleSelect";
 import { WeekFilterEnum } from "@/app/(site)/hooks/engagement/useEngagementFilters";
 
 interface WeekFilterProps {
@@ -8,7 +8,7 @@ interface WeekFilterProps {
 
 export default function WeekFilter({ weekFilter, onWeekFilterChange }: WeekFilterProps) {
   return (
-    <SelectWrapper
+    <WasabiSingleSelect
       itemClassName="text-sm"
       className="h-10"
       value={weekFilter}

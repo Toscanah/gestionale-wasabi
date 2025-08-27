@@ -10,7 +10,7 @@ import FormFields from "../FormFields";
 import { CategoryWithOptions } from "@/app/(site)/lib/shared";
 import { formSchema } from "./form";
 import { getProductFields } from "./form";
-import SelectWrapper from "../../../components/ui/select/SelectWrapper";
+import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 import { Category } from "@prisma/client";
 import { ALL_CATEGORIES } from "../../../hooks/statistics/useProductsStats";
 import dynamic from "next/dynamic";
@@ -89,7 +89,7 @@ export default function ProductDashboard() {
         ) : (
           <Manager<Product>
             additionalFilters={[
-              <SelectWrapper
+              <WasabiSingleSelect
                 defaultValue="all"
                 value={selectedCategory.id.toString()}
                 className="h-10 w-64"

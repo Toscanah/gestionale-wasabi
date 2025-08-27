@@ -1,8 +1,9 @@
 export enum DatePreset {
   TODAY = "today",
   YESTERDAY = "yesterday",
-  LAST7 = "last7",
-  LAST30 = "last30",
+  LAST_7 = "last7",
+  LAST_30 = "last30",
+  LAST_MONTH = "lastMonth",
   THIS_MONTH = "thisMonth",
   THIS_YEAR = "thisYear",
 }
@@ -12,8 +13,9 @@ const presetsName = [
   "Ieri",
   "Ultimi 7 giorni",
   "Ultimi 30 giorni",
+  "Mese scorso",
   "Questo mese",
-  "Questo anno",
+  "Quest'anno",
 ] as const;
 
 export const DATE_PRESETS: { name: (typeof presetsName)[number]; value: DatePreset }[] =

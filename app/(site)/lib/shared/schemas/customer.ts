@@ -70,9 +70,9 @@ export const ComputeCustomersStatsSchema = PaginationSchema.extend({
   rfmConfig: RFMConfigSchema,
 });
 
-export const UpdateCustomerRFMSchema = z.object({
+export const UpdateCustomersRFMSchema = z.object({
   rfmConfig: RFMConfigSchema,
-  customer: CustomerWithEngagementSchema,
+  customers: z.array(CustomerWithEngagementSchema),
 });
 
 export const CUSTOMER_SCHEMAS = {
@@ -89,7 +89,7 @@ export const CUSTOMER_SCHEMAS = {
   deleteCustomerById: ToggleDeleteObjectSchema,
   computeCustomersStats: ComputeCustomersStatsSchema,
   getCustomersWithMarketing: NoContentSchema,
-  updateCustomerRFM: UpdateCustomerRFMSchema,
+  updateCustomersRFM: UpdateCustomersRFMSchema,
 };
 
 export type CustomerSchemaInputs = SchemaInputs<typeof CUSTOMER_SCHEMAS>;

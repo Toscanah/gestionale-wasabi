@@ -2,7 +2,7 @@ import { DateRange } from "react-day-picker";
 import { SelectionProps, WeekdaysSelection } from "../Section";
 import { DATE_PRESETS, DatePreset } from "@/app/(site)/lib/shared/enums/DatePreset";
 import { endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, subDays } from "date-fns";
-import Calendar from "@/app/(site)/components/ui/calendar/Calendar";
+import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
 
 export default function RangeSelection({ selection, dispatch }: SelectionProps<WeekdaysSelection>) {
   const handlePresetSelect = (value: DatePreset) => {
@@ -17,10 +17,10 @@ export default function RangeSelection({ selection, dispatch }: SelectionProps<W
         const yesterday = subDays(today, 1);
         newRange = { from: startOfDay(yesterday), to: startOfDay(yesterday) };
         break;
-      case DatePreset.LAST7:
+      case DatePreset.LAST_7:
         newRange = { from: startOfDay(subDays(today, 6)), to: startOfDay(today) };
         break;
-      case DatePreset.LAST30:
+      case DatePreset.LAST_30:
         newRange = { from: startOfDay(subDays(today, 29)), to: startOfDay(today) };
         break;
       case DatePreset.THIS_MONTH:
@@ -40,7 +40,7 @@ export default function RangeSelection({ selection, dispatch }: SelectionProps<W
   };
 
   return (
-    <Calendar
+    <CalendarFilter
       mode="range"
       dateFilter={selection.type == "range" ? selection.range : undefined}
       presets={DATE_PRESETS}

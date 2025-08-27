@@ -1,22 +1,41 @@
+import { endOfDay, startOfDay } from "date-fns";
 import { CustomerWithDetails } from "../../shared";
 
-export default function extractCustomerOrders(customer: CustomerWithDetails, from?: string, to?: string) {
+export default function extractCustomerOrders(
+  customer: CustomerWithDetails,
+  from?: Date,
+  to?: Date
+) {
   const lifetimeOrders = [
     ...customer.home_orders.map((h) => h.order),
     ...customer.pickup_orders.map((p) => p.order),
   ];
 
   let dateFilteredOrders = lifetimeOrders;
-  if (from && to) {
-    const parsedStartDate = new Date(from);
-    const parsedEndDate = new Date(to);
+  if (from || to) {
+    const startDate = from ? new Date(from) : undefined;
+    const endDate = to ? new Date(to) : undefined;
 
-    parsedStartDate.setHours(0, 0, 0, 0);
-    parsedEndDate.setHours(23, 59, 59, 999);
+    if (startDate) startOfDay(startDate);
+    if (endDate) endOfDay(endDate);
 
-    dateFilteredOrders = dateFilteredOrders.filter(
-      (order) => order.created_at >= parsedStartDate && order.created_at <= parsedEndDate
-    );
+    dateFilteredOrders = dateFilteredOrders.filter((order) => {
+      const createdAt = order.created_at;
+
+      if (startDate && endDate) {
+        return createdAt >= startDate && createdAt <= endDate;
+      }
+
+      if (startDate) {
+        return createdAt >= startDate;
+      }
+
+      if (endDate) {
+        return createdAt <= endDate;
+      }
+
+      return true;
+    });
   }
 
   return { lifetimeOrders, dateFilteredOrders };

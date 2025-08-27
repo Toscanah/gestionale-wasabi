@@ -40,6 +40,7 @@ const PATCH_ACTIONS = new Map([
     "updateCustomerOrderNotes",
     { func: updateCustomerOrderNotes, schema: CUSTOMER_SCHEMAS.updateCustomerOrderNotes },
   ],
+  ["updateCustomersRFM", { func: updateCustomersRFM, schema: CUSTOMER_SCHEMAS.updateCustomersRFM }],
 ]);
 
 const DELETE_ACTIONS = new Map([
