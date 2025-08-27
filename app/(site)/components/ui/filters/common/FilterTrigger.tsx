@@ -28,14 +28,15 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
     },
     ref
   ) => {
-    const count = labels.length;
+    const parsedLabels = labels.filter(Boolean);
+    const count = parsedLabels.length;
 
     return (
       <Button
         disabled={disabled}
         ref={ref}
         variant="outline"
-        className={cn("h-8 flex gap-2 items-center px-2", dashed && "border-dashed", className)}
+        className={cn("h-10 flex gap-2 items-center px-2", dashed && "border-dashed", className)}
         {...props}
       >
         {count > 0 ? (
@@ -66,7 +67,7 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
                   {count} selezionati
                 </Badge>
               ) : (
-                labels.map((label) => (
+                parsedLabels.map((label) => (
                   <Badge variant="secondary" key={label} className="px-1 rounded-lg">
                     {label}
                   </Badge>

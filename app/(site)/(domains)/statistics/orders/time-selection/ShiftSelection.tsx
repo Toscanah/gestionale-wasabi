@@ -1,20 +1,20 @@
 import WasabiSingleSelect from "@/app/(site)/components/ui/select/WasabiSingleSelect";
 import { SelectionProps, Time, Shift } from "../Section";
+import SelectFilter from "@/app/(site)/components/ui/filters/SelectFilter";
 
 export default function ShiftSelection({ selection, dispatch }: SelectionProps<Time>) {
   return (
-    <WasabiSingleSelect
-      className="h-10 w-40"
-      value={selection.type == "shift" ? selection.shift : undefined}
-      onValueChange={(newShift) =>
-        dispatch({ type: "SET_TIME", payload: { shift: newShift as Shift } })
-      }
+    <SelectFilter
+      mode="single"
+      title="Turno"
+      selectedValue={selection.type == "shift" ? selection.shift : null}
+      onChange={(newShift) => dispatch({ type: "SET_TIME", payload: { shift: newShift as Shift } })}
       groups={[
         {
-          items: [
-            { name: "Pranzo + cena", value: "all" },
-            { name: "Pranzo", value: "lunch" },
-            { name: "Cena", value: "dinner" },
+          options: [
+            { label: "Pranzo + cena", value: "all" },
+            { label: "Pranzo", value: "lunch" },
+            { label: "Cena", value: "dinner" },
           ],
         },
       ]}

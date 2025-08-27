@@ -68,7 +68,8 @@ export default function useOrdersStats() {
     } else if (
       state.mainChoice === "weekdays" &&
       state.weekdaysSelection?.type === "range" &&
-      state.weekdaysSelection.range
+      state.weekdaysSelection.range?.from &&
+      state.weekdaysSelection.range?.to
     ) {
       timeScope = "range";
       rangeDate = {
@@ -108,18 +109,18 @@ export default function useOrdersStats() {
     isError,
   } = useQuery({
     queryKey: ["orders", filters],
-    queryFn: async (): Promise<any> =>
-      await fetchRequest<any>("GET", "/api/payments", "getOrdersWithPayments", {
-        filters,
-      }),
+    queryFn: async (): Promise<any> => {}
+      // await fetchRequest<any>("GET", "/api/payments", "getOrdersWithPayments", {
+      //   filters,
+      // }),
   });
 
-  const filteredResults = useMemo(() => calculateResults(orders), [orders]);
+  // const filteredResults = useMemo(() => calculateResults(orders), [orders]);
 
   return {
     state,
     dispatch,
-    filteredResults,
+    // filteredResults,
     isLoading,
     isError,
   };

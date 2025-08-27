@@ -56,7 +56,7 @@ const WasabiSingleSelect = forwardRef<HTMLButtonElement, SelectWrapperProps>(
       value={value ? value : fixedValue ? "" : undefined}
     >
       <SelectTrigger
-        className={cn(className ? className : "w-full text-3xl h-16")}
+        className={cn(className ? className : "w-full text-sm h-10")}
         ref={ref}
         onKeyDown={(e) => {
           if (onKeyDown) {
@@ -75,7 +75,7 @@ const WasabiSingleSelect = forwardRef<HTMLButtonElement, SelectWrapperProps>(
           .map((group, groupIndex) => (
             <SelectGroup key={groupIndex}>
               {group.label && (
-                <SelectLabel className={cn("text-xl space-y-2", labelClassName)}>
+                <SelectLabel className={cn("text-sm space-y-2", labelClassName)}>
                   <Separator orientation="horizontal" />
                   <div>{group.label}</div>
                 </SelectLabel>
@@ -85,7 +85,7 @@ const WasabiSingleSelect = forwardRef<HTMLButtonElement, SelectWrapperProps>(
                 <SelectItem
                   key={itemIndex}
                   value={typeof item == "string" ? item : item.value}
-                  className={cn("text-xl", itemClassName)}
+                  className={cn("h-10 text-sm", itemClassName)}
                 >
                   {typeof item == "string" ? item : item.name}
                 </SelectItem>

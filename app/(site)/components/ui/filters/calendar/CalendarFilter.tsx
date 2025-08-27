@@ -58,7 +58,7 @@ export default function CalendarFilter({
 }: CalendarProps) {
   const formatDateButtonText = () => {
     if (mode === "single") {
-      return dateFilter ? format(dateFilter as Date, "PPP", { locale: it }) : "Da sempre";
+      return dateFilter ? format(dateFilter as Date, "PPP", { locale: it }) : null;
     } else {
       const range = dateFilter as DateRange;
       return range?.from
@@ -77,9 +77,9 @@ export default function CalendarFilter({
       trigger={
         <FilterTrigger
           disabled={disabled}
-          title="Intervallo date"
+          title={mode === "single" ? "Data" : "Intervallo"}
           onClear={() => handleDateFilter(undefined)}
-          labels={[formatDateButtonText()]}
+          labels={[formatDateButtonText()].filter(Boolean) as string[]}
         />
       }
     >

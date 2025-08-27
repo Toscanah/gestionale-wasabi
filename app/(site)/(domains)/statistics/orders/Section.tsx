@@ -9,6 +9,7 @@ import SectionResults from "./results/SectionResults";
 import useOrdersStats from "../../../hooks/statistics/useOrdersStats";
 import { ReducerActions } from "../../../hooks/statistics/sectionReducer";
 import HoursIntervalFilter from "./time-selection/HoursIntervalFilter";
+import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
 
 interface SectionProps {
   id: string;
@@ -39,7 +40,7 @@ export type SelectionProps<T> = {
 };
 
 export default function Section({ id }: SectionProps) {
-  const { dispatch, filteredResults, isFiltersValid, state } = useOrdersStats();
+  const { dispatch, state } = useOrdersStats();
 
   const isWeekdaysSelected = state.mainChoice === "weekdays";
   const isSpecificDateSelected = state.mainChoice === "date";
@@ -54,11 +55,13 @@ export default function Section({ id }: SectionProps) {
   return (
     <div className="flex flex-col gap-12 w-full p-4 items-center h-full">
       <div className="flex flex-col gap-4 items-center">
-        <WeekdaysOrDateToggle selection={state.mainChoice} dispatch={dispatch} />
-        {isWeekdaysSelected && <WeekdaysSelection selection={state.weekdays} dispatch={dispatch} />}
-        {isSpecificDateSelected && (
-          <SpecificDatePicker selection={state.specificDate} dispatch={dispatch} />
-        )}
+        <CalendarFilter
+          mode="single"
+          dateFilter={state.specificDate}
+          handleDateFilter={(newDate) =>
+            dispatch({ type: "SET_SPECIFIC_DATE", payload: newDate as Date })
+          }
+        />
       </div>
 
       {isWeekdaysSelected && hasValidWeekdays && (
@@ -80,7 +83,7 @@ export default function Section({ id }: SectionProps) {
         )}
       </div>
 
-      {isFiltersValid() && <SectionResults results={filteredResults} />}
+      {/* {isFiltersValid() && <SectionResults results={filteredResults} />} */}
     </div>
   );
 }
