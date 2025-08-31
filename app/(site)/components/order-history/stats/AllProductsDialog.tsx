@@ -1,5 +1,5 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import DialogWrapper from "../../ui/dialog/DialogWrapper";
+import WasabiDialog from "../../ui/dialog/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import useTable from "@/app/(site)/hooks/table/useTable";
 import productColumns from "../common/productColumns";
@@ -32,7 +32,7 @@ export default function AllProductsDialog({ allProducts }: AllProductsDialogProp
   const table = useTable({ data: groupedProducts, columns: productColumns(false) });
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       title="Tutti i prodotti ordinati"
       putSeparator
       size="mediumPlus"
@@ -47,6 +47,6 @@ export default function AllProductsDialog({ allProducts }: AllProductsDialogProp
           <p className="text-xl">Nessun prodotto in questo ordine</p>
         )}
       </div>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

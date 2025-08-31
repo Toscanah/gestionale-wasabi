@@ -1,29 +1,29 @@
 import { useState } from "react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { cn } from "@/lib/utils";
-import { ShiftType } from "../../lib/shared/enums/Shift";
 import formatRice from "../../lib/utils/domains/rice/formatRice";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { SHIFT_LABELS, ShiftFilterValue } from "../../lib/shared";
 
 export default function RiceSummary() {
   const { rice } = useWasabiContext();
-  const [filter, setFilter] = useState<ShiftType>(ShiftType.ALL);
+  const [filter, setFilter] = useState<ShiftFilterValue>(ShiftFilterValue.ALL);
 
   const consumedLunch = rice.total - rice.remainingLunch;
   const consumedDinner = rice.total - rice.remainingDinner;
 
   const calculatedRemaining =
-    filter === ShiftType.ALL
+    filter === "ALL"
       ? rice.remainingLunch + rice.remainingDinner - rice.total
-      : filter === ShiftType.LUNCH
+      : filter === ShiftFilterValue.LUNCH
       ? rice.remainingLunch
       : rice.total - consumedLunch - consumedDinner;
 
   const calculatedConsumed =
-    filter === ShiftType.ALL
+    filter === "ALL"
       ? consumedLunch + consumedDinner
-      : filter === ShiftType.LUNCH
+      : filter === ShiftFilterValue.LUNCH
       ? consumedLunch
       : consumedDinner;
 
@@ -31,32 +31,32 @@ export default function RiceSummary() {
     {
       label: "Riso consumato",
       value: calculatedConsumed,
-      condition: filter === ShiftType.ALL && calculatedConsumed > rice.total,
+      condition: filter === "ALL" && calculatedConsumed > rice.total,
     },
     {
       label: "Riso rimanente",
       value: calculatedRemaining,
-      condition: filter === ShiftType.ALL && rice.total > 0 && calculatedRemaining < rice.threshold,
+      condition: filter === "ALL" && rice.total > 0 && calculatedRemaining < rice.threshold,
     },
     {
       label: "Fino alla soglia",
       value: rice.total === 0 ? 0 : calculatedRemaining - rice.threshold,
-      condition: filter === ShiftType.ALL && rice.total > 0 && calculatedRemaining - rice.threshold <= 0,
-      shouldStrike: filter !== ShiftType.ALL,
+      condition: filter === "ALL" && rice.total > 0 && calculatedRemaining - rice.threshold <= 0,
+      shouldStrike: filter !== "ALL",
     },
   ];
 
-  const shiftOptions = [
-    { label: "Solo pranzo", value: ShiftType.LUNCH, id: "lunch" },
-    { label: "Solo cena", value: ShiftType.DINNER, id: "dinner" },
-    { label: "Pranzo + cena", value: ShiftType.ALL, id: "all" },
-  ];
+  const shiftOptions = Object.entries(SHIFT_LABELS).map(([value, label]) => ({
+    label,
+    value,
+    id: value.toLowerCase().replace(" ", "-"),
+  }));
 
   return (
     <div className="flex flex-col gap-4">
       <RadioGroup
         value={filter}
-        onValueChange={(val) => setFilter(val as ShiftType)}
+        onValueChange={(val) => setFilter(val as ShiftFilterValue)}
         className="w-full flex gap-8 justify-end items-center"
       >
         {shiftOptions.map(({ label, value, id }) => (

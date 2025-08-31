@@ -1,15 +1,15 @@
 import prisma from "../db";
-import { setHours, setMinutes, setSeconds, setMilliseconds } from "date-fns";
-import { RiceSchemaInputs } from "../../shared";
-import { ShiftEvaluableOrder } from "@/app/(site)/lib/shared/types/ShiftEvaluableOrder";
+import { RiceContract } from "../../shared";
+import { ShiftEvaluableOrder } from "@/app/(site)/lib/shared/types/shift-evaluable-order";
 import orderMatchesShift from "../../services/order-management/shift/orderMatchesShift";
 import { ProductInOrderStatus } from "@prisma/client";
+import { startOfDay, endOfDay } from "date-fns";
 
 export default async function getDailyRiceUsage({
   shift,
-}: RiceSchemaInputs["GetDailyRiceUsageInput"]): Promise<number> {
-  const todayStart = setMilliseconds(setSeconds(setMinutes(setHours(new Date(), 0), 0), 0), 0);
-  const todayEnd = setMilliseconds(setSeconds(setMinutes(setHours(new Date(), 23), 59), 59), 999);
+}: RiceContract["Requests"]["GetDailyRiceUsage"]): Promise<number> {
+  const todayStart = startOfDay(new Date());
+  const todayEnd = endOfDay(new Date());
 
   const productOrders = await prisma.productInOrder.findMany({
     where: {

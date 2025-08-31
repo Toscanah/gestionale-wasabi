@@ -5,7 +5,7 @@ import { FormValues } from "../../(domains)/orders/create-order/home/address/for
 import { ExtraInfo } from "../../context/CreateHomeOrderContext";
 import { toastSuccess } from "../../lib/utils/global/toast";
 import { Dispatch, SetStateAction } from "react";
-import { AddressSchemaInputs, CustomerSchemaInputs } from "../../lib/shared";
+import { AddressContract, CustomerContract } from "../../lib/shared";
 
 function getActionType(object: object | undefined): string {
   return object === undefined ? "create" : "update";
@@ -22,9 +22,9 @@ interface UseCustomerManageParams {
   setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>;
 }
 
-type CreateCustomerInput = CustomerSchemaInputs["CreateCustomerInput"]["customer"];
-type CreateAddressInput = AddressSchemaInputs["CreateAddressInput"]["address"];
-type UpdateAddressInput = AddressSchemaInputs["UpdateAddressInput"]["address"];
+type CreateCustomerInput = CustomerContract["Requests"]["CreateCustomer"]["customer"];
+type CreateAddressInput = AddressContract["Requests"]["CreateAddress"]["address"];
+type UpdateAddressInput = AddressContract["Requests"]["UpdateAddress"]["address"];
 
 export default function useCustomerManager({
   phone,

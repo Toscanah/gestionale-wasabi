@@ -11,47 +11,47 @@ import toggleProduct from "../../lib/db/products/toggleProduct";
 import updatePrintedAmounts from "../../lib/db/products/updatePrintedAmounts";
 import updateProductVariationInOrder from "../../lib/db/products/updateProductVariationInOrder";
 import getProductsWithStats from "../../lib/db/products/getProductsWithStats";
-import { PRODUCT_SCHEMAS } from "../../lib/shared/schemas/product";
+import { PRODUCT_REQUESTS } from "../../lib/shared/schemas/product";
 
 const POST_ACTIONS = new Map([
-  ["createNewProduct", { func: createNewProduct, schema: PRODUCT_SCHEMAS.createNewProduct }],
-  ["addProductToOrder", { func: addProductToOrder, schema: PRODUCT_SCHEMAS.addProductToOrder }],
-  ["addProductsToOrder", { func: addProductsToOrder, schema: PRODUCT_SCHEMAS.addProductsToOrder }],
+  ["createNewProduct", { func: createNewProduct, schema: PRODUCT_REQUESTS.createNewProduct }],
+  ["addProductToOrder", { func: addProductToOrder, schema: PRODUCT_REQUESTS.addProductToOrder }],
+  ["addProductsToOrder", { func: addProductsToOrder, schema: PRODUCT_REQUESTS.addProductsToOrder }],
   [
     "getProductsWithStats",
-    { func: getProductsWithStats, schema: PRODUCT_SCHEMAS.getProductsWithStats },
+    { func: getProductsWithStats, schema: PRODUCT_REQUESTS.getProductsWithStats },
   ],
 ]);
 
 const PATCH_ACTIONS = new Map([
-  ["updateProduct", { func: updateProduct, schema: PRODUCT_SCHEMAS.updateProduct }],
+  ["updateProduct", { func: updateProduct, schema: PRODUCT_REQUESTS.updateProduct }],
   [
     "updateProductVariationInOrder",
-    { func: updateProductVariationInOrder, schema: PRODUCT_SCHEMAS.updateProductVariationInOrder },
+    { func: updateProductVariationInOrder, schema: PRODUCT_REQUESTS.updateProductVariationInOrder },
   ],
   [
     "updateProductInOrder",
-    { func: updateProductInOrder, schema: PRODUCT_SCHEMAS.updateProductInOrder },
+    { func: updateProductInOrder, schema: PRODUCT_REQUESTS.updateProductInOrder },
   ],
   [
     "updateProductOptionsInOrder",
-    { func: updateProductOptionsInOrder, schema: PRODUCT_SCHEMAS.updateProductOptionsInOrder },
+    { func: updateProductOptionsInOrder, schema: PRODUCT_REQUESTS.updateProductOptionsInOrder },
   ],
-  ["toggleProduct", { func: toggleProduct, schema: PRODUCT_SCHEMAS.toggleProduct }],
+  ["toggleProduct", { func: toggleProduct, schema: PRODUCT_REQUESTS.toggleProduct }],
   [
     "updatePrintedAmounts",
-    { func: updatePrintedAmounts, schema: PRODUCT_SCHEMAS.updatePrintedAmounts },
+    { func: updatePrintedAmounts, schema: PRODUCT_REQUESTS.updatePrintedAmounts },
   ],
 ]);
 
 const GET_ACTIONS = new Map([
-  ["getProducts", { func: getProducts, schema: PRODUCT_SCHEMAS.getProducts }],
+  ["getProducts", { func: getProducts, schema: PRODUCT_REQUESTS.getProducts }],
 ]);
 
 const DELETE_ACTIONS = new Map([
   [
     "deleteProductsFromOrder",
-    { func: removeProductsFromOrder, schema: PRODUCT_SCHEMAS.deleteProductsFromOrder },
+    { func: removeProductsFromOrder, schema: PRODUCT_REQUESTS.deleteProductsFromOrder },
   ],
 ]);
 

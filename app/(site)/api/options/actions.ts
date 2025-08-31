@@ -4,22 +4,22 @@ import getAllOptionsWithCategories from "../../lib/db/options/getAllOptionsWithC
 import updateOption from "../../lib/db/options/updateOption";
 import toggleOption from "../../lib/db/options/toggleOption";
 import createNewOption from "../../lib/db/options/createNewOption";
-import { OPTION_SCHEMAS } from "../../lib/shared/schemas/option";
+import { OPTION_REQUESTS } from "../../lib/shared/schemas/option";
 
 const POST_ACTIONS = new Map([
-  ["createNewOption", { func: createNewOption, schema: OPTION_SCHEMAS.createNewOption }],
+  ["createNewOption", { func: createNewOption, schema: OPTION_REQUESTS.createNewOption }],
 ]);
 
 const PATCH_ACTIONS = new Map([
-  ["updateOption", { func: updateOption, schema: OPTION_SCHEMAS.updateOption }],
-  ["toggleOption", { func: toggleOption, schema: OPTION_SCHEMAS.toggleOption }],
+  ["updateOption", { func: updateOption, schema: OPTION_REQUESTS.updateOption }],
+  ["toggleOption", { func: toggleOption, schema: OPTION_REQUESTS.toggleOption }],
 ]);
 
 const GET_ACTIONS = new Map([
-  ["getAllOptions", { func: getAllOptions, schema: OPTION_SCHEMAS.getAllOptions }],
+  ["getAllOptions", { func: getAllOptions, schema: OPTION_REQUESTS.getAllOptions }],
   [
     "getAllOptionsWithCategories",
-    { func: getAllOptionsWithCategories, schema: OPTION_SCHEMAS.getAllOptionsWithCategories },
+    { func: getAllOptionsWithCategories, schema: OPTION_REQUESTS.getAllOptionsWithCategories },
   ],
 ]);
 

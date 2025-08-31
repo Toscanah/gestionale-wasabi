@@ -1,73 +1,60 @@
-import { DAYS_OF_WEEK, Time, WeekdaysOrDateChoice, WeekdaysSelection } from "./useOrdersStats";
+import { DateRange } from "react-day-picker";
+import { ShiftFilterValue } from "../../lib/shared/enums/shift";
+import { OrderType } from "@prisma/client";
+import { ALL_WEEKDAYS, Weekday } from "../../components/ui/filters/select/WeekdaysFilter";
+import { FULL_DAY_RANGE, TimeWindow } from "../../components/ui/filters/time/TimeWindowFilter";
 
-type SectionState = {
-  /** Determines whether selection is based on weekdays or a specific date */
-  mainChoice: WeekdaysOrDateChoice;
+export interface OrderFilters {
+  // date selection
+  period: DateRange; // always a range (single = same from/to)
 
-  /** If `mainChoice === "weekdays"` → these are required, otherwise `undefined` */
-  weekdays?: DAYS_OF_WEEK[];
-  weekdaysSelection?: WeekdaysSelection;
+  // optional refinements
+  weekdays: Weekday[]; // limit to specific days of week
+  shift: ShiftFilterValue;
+  timeWindow: TimeWindow; // "HH:mm"
 
-  /** If `mainChoice === "date"` → this is required, otherwise `undefined` */
-  specificDate?: Date;
+  orderTypes: OrderType[];
+}
 
-  /** Defines the selected time range */
-  time: Time;
-};
+// the reducer state is simply the filters
+export type SectionState = OrderFilters;
 
+// action types
 export type ReducerActions =
-  | { type: "SET_MAIN_CHOICE"; payload: Partial<WeekdaysOrDateChoice> }
-  | { type: "SET_WEEKDAYS"; payload: Partial<DAYS_OF_WEEK[]> }
-  | { type: "SET_WEEKDAYS_SELECTION"; payload: Partial<WeekdaysSelection> }
-  | { type: "SET_SPECIFIC_DATE"; payload: Partial<Date | undefined> }
-  | { type: "SET_TIME"; payload: Partial<Time> };
+  | { type: "SET_PERIOD"; payload: DateRange }
+  | { type: "SET_WEEKDAYS"; payload: Weekday[] }
+  | { type: "SET_SHIFT"; payload: ShiftFilterValue }
+  | { type: "SET_TIME_WINDOW"; payload: TimeWindow }
+  | { type: "SET_ORDER_TYPES"; payload: OrderType[] }
+  | { type: "RESET" };
 
-export const initialState: SectionState = {
-  mainChoice: "date",
-  specificDate: undefined,
-  weekdaysSelection: { type: "range", range: undefined },
-  time: { type: "shift", shift: "all" },
+// sensible defaults
+export const INITIAL_STATE: SectionState = {
+  period: { from: undefined, to: undefined },
+  shift: ShiftFilterValue.ALL,
+  weekdays: ALL_WEEKDAYS, // no weekday restriction
+  timeWindow: FULL_DAY_RANGE, // no custom time
+  orderTypes: [...Object.values(OrderType)],
 };
 
-type UpdateFunction = (state: SectionState, payload: any) => SectionState;
-type UpdateFunctions = {
-  [key in ReducerActions["type"]]: UpdateFunction;
+// reducer implementation
+const sectionReducer = (state: SectionState, action: ReducerActions): SectionState => {
+  switch (action.type) {
+    case "SET_PERIOD":
+      return { ...state, period: action.payload };
+    case "SET_WEEKDAYS":
+      return { ...state, weekdays: action.payload };
+    case "SET_SHIFT":
+      return { ...state, shift: action.payload };
+    case "SET_TIME_WINDOW":
+      return { ...state, timeWindow: action.payload };
+    case "SET_ORDER_TYPES":
+      return { ...state, orderTypes: action.payload };
+    case "RESET":
+      return INITIAL_STATE;
+    default:
+      return state;
+  }
 };
-
-const updateFunctions: UpdateFunctions = {
-  SET_MAIN_CHOICE: (state, payload) => ({
-    ...state,
-    mainChoice: payload,
-  }),
-
-  SET_WEEKDAYS: (state, payload) => ({
-    ...state,
-    weekdays: payload,
-  }),
-
-  SET_WEEKDAYS_SELECTION: (state, payload) => ({
-    ...state,
-    weekdaysSelection: {
-      ...state.weekdaysSelection,
-      ...payload,
-    },
-  }),
-
-  SET_SPECIFIC_DATE: (state, payload) => ({
-    ...state,
-    specificDate: payload,
-  }),
-
-  SET_TIME: (state, payload) => ({
-    ...state,
-    time: {
-      ...state.time,
-      ...payload,
-    },
-  }),
-};
-
-const sectionReducer = (state: SectionState, action: ReducerActions) =>
-  updateFunctions[action.type]?.(state, action.payload) ?? state;
 
 export default sectionReducer;

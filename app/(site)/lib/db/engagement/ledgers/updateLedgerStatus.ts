@@ -1,11 +1,11 @@
-import { EngagementSchemaInputs } from "../../../shared";
+import { EngagementContract } from "../../../shared";
 import prisma from "../../db";
 import { EngagementLedgerStatus } from "@prisma/client";
 
 export default async function updateLedgerStatus({
   ledgerId,
   status,
-}: EngagementSchemaInputs["UpdateLedgerStatusInput"]) {
+}: EngagementContract["Requests"]["UpdateLedgerStatus"]) {
   const ledger = await prisma.engagementLedger.findUnique({
     where: { id: ledgerId },
     select: {

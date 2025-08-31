@@ -1,9 +1,9 @@
 import prisma from "../../db";
-import { EngagementSchemaInputs } from "@/app/(site)/lib/shared";
+import { EngagementContract } from "@/app/(site)/lib/shared";
 
 export default async function deleteTemplateById({
   templateId,
-}: EngagementSchemaInputs["DeleteTemplateByIdInput"]) {
+}: EngagementContract["Requests"]["DeleteTemplateById"]) {
   await prisma.$transaction(async (tx) => {
     // Step 1: Delete all engagements using the template
     await tx.engagement.deleteMany({

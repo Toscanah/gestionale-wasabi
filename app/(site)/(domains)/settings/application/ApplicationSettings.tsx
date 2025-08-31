@@ -3,7 +3,7 @@ import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import PrinterChoice from "./PrinterChoice";
-import TimePicker from "../../../components/ui/time/TimePicker";
+import TimeWindowFilter from "../../../components/ui/filters/time/TimeWindowFilter";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ApplicationSettings() {

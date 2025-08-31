@@ -6,7 +6,7 @@ import {
   PickupOrderWithOrder,
   ShiftEvaluableOrder,
 } from "@/app/(site)/lib/shared";
-import { ShiftTime } from "@/app/(site)/lib/shared/enums/Shift";
+import { ShiftBoundaries } from "@/app/(site)/lib/shared/enums/shift";
 import decimalToTime from "@/app/(site)/lib/utils/global/time/decimalToTime";
 import { OrderType } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -91,8 +91,8 @@ function calculateMostCommonDays(dayStats: Record<number, number>) {
 }
 
 function getTimeSlot(decimalHour: number): "lunch" | "dinner" | "other" {
-  if (decimalHour >= ShiftTime.LUNCH_FROM && decimalHour <= ShiftTime.LUNCH_TO) return "lunch";
-  if (decimalHour >= ShiftTime.DINNER_FROM && decimalHour <= ShiftTime.DINNER_TO) return "dinner";
+  if (decimalHour >= ShiftBoundaries.LUNCH_FROM && decimalHour <= ShiftBoundaries.LUNCH_TO) return "lunch";
+  if (decimalHour >= ShiftBoundaries.DINNER_FROM && decimalHour <= ShiftBoundaries.DINNER_TO) return "dinner";
   return "other";
 }
 

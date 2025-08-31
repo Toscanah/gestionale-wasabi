@@ -1,7 +1,7 @@
 import { TableCell } from "@/components/ui/table";
 import { Cell, flexRender } from "@tanstack/react-table";
 import OrderTable from "./OrderTable";
-import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import { FormEvent, useState } from "react";
 import { OrderProvider } from "../../../context/OrderContext";
@@ -30,7 +30,7 @@ export default function Order({ cell, className, isOverdrawn }: OrderProps) {
   };
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       open={open}
       double={cell.row.original.type !== OrderType.TABLE}
       onOpenChange={setOpen}
@@ -72,6 +72,6 @@ export default function Order({ cell, className, isOverdrawn }: OrderProps) {
       <OrderProvider order={cell.row.original} dialogOpen={open} setDialogOpen={setOpen}>
         <OrderTable />
       </OrderProvider>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

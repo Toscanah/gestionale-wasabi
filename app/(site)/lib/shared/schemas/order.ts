@@ -1,8 +1,16 @@
 import { OrderType, PlannedPayment, WorkingShift } from "@prisma/client";
 import { z } from "zod";
-import { NoContentSchema, wrapSchema } from "./common";
-import { AnyOrderSchema, ProductInOrderWithOptionsSchema } from "../models/_index";
-import { SchemaInputs } from "../types/SchemaInputs";
+import {
+  AnyOrderSchema,
+  OrderWithPaymentsAndTotalsSchema,
+  ProductInOrderWithOptionsSchema,
+} from "../models/_index";
+import { ApiContract } from "../types/api-contract";
+import { NoContentRequestSchema } from "./common/no-content";
+import { wrapSchema } from "./common/utils";
+import { PaginationRequestSchema, PaginationResponseSchema } from "./common/pagination";
+import { ShiftFilterValue } from "../enums/shift";
+import { PeriodRequestSchema } from "./common/period";
 
 export const GetOrderByIdSchema = z.object({
   orderId: z.number(),
@@ -89,7 +97,26 @@ export const UpdateOrderTablePplSchema = z.object({
   people: z.number(),
 });
 
-export const ORDER_SCHEMAS = {
+export const GetOrdersWithPaymentsRequestSchema = z
+  .object({
+    filters: z.object({
+      orderTypes: z.array(z.nativeEnum(OrderType)).optional(), // optional = ALL types
+      shift: z.nativeEnum(ShiftFilterValue).optional(), // LUNCH, DINNER, undefined = ALL shifts
+      period: PeriodRequestSchema, // undefined = since forever. If from=to, single date
+      weekdays: z.array(z.number()).optional(), // 0–6, undefined = all
+      timeWindow: z
+        .object({
+          from: z.string(), // "HH:mm"
+          to: z.string(),
+        })
+        .optional(), // undefined = all day
+      query: z.string().optional(),
+    }),
+    summary: z.boolean().optional(),
+  })
+  .merge(PaginationRequestSchema.partial());
+
+export const ORDER_REQUESTS = {
   getOrderById: GetOrderByIdSchema,
   getOrdersByType: GetOrdersByTypeSchema,
   updateOrderDiscount: UpdateOrderDiscountSchema,
@@ -102,13 +129,24 @@ export const ORDER_SCHEMAS = {
   createSubOrder: CreateSubOrderSchema,
   updateOrderPrintedFlag: UpdateOrderPrintedFlagSchema,
   cancelOrdersInBulk: CancelOrdersInBulkSchema,
-  deleteEverything: NoContentSchema,
+  deleteEverything: NoContentRequestSchema,
   joinTableOrders: JoinTableOrdersSchema,
   updateOrderTable: UpdateOrderTableSchema,
   updateOrderExtraItems: UpdateOrderExtraItemsSchema,
   updateOrderShift: UpdateOrderShiftSchema,
-  fixOrdersShift: NoContentSchema,
+  fixOrdersShift: NoContentRequestSchema,
   updateOrderTablePpl: UpdateOrderTablePplSchema,
+  getOrdersWithPayments: GetOrdersWithPaymentsRequestSchema,
 };
 
-export type OrderSchemaInputs = SchemaInputs<typeof ORDER_SCHEMAS>;
+export const GetOrdersWithPaymentsResponseSchema = z
+  .object({
+    orders: z.array(OrderWithPaymentsAndTotalsSchema),
+  })
+  .merge(PaginationResponseSchema);
+
+export const ORDER_RESPONSES = {
+  getOrdersWithPayments: GetOrdersWithPaymentsResponseSchema,
+};
+
+export type OrderContract = ApiContract<typeof ORDER_REQUESTS, typeof ORDER_RESPONSES>;

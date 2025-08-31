@@ -9,9 +9,9 @@ import {
   TableOrderSchema,
 } from "@/prisma/generated/zod";
 import { z } from "zod";
-import { ProductInOrderWithOptionsSchema } from "./Product";
-import { CustomerWithPhoneSchema, CustomerWithPhoneAndEngagementSchema } from "./Customer";
-import { EngagementWithDetailsSchema } from "./Engagement";
+import { ProductInOrderWithOptionsSchema } from "./product";
+import { CustomerWithPhoneSchema, CustomerWithPhoneAndEngagementSchema } from "./customer";
+import { EngagementWithDetailsSchema } from "./engagement";
 
 export const BaseOrderSchema = OrderSchema.extend({
   products: z.array(z.lazy(() => ProductInOrderWithOptionsSchema)),
@@ -68,7 +68,7 @@ export const AnyOrderSchema = z.union([
   PickupOrderInOrderSchema,
 ]);
 
-export type OrderWithPayments = z.infer<typeof OrderWithPaymentsAndTotalsSchema>;
+export type OrderWithPaymentsAndTotals = z.infer<typeof OrderWithPaymentsAndTotalsSchema>;
 export type TableOrder = z.infer<typeof TableOrderInOrderSchema>;
 export type HomeOrder = z.infer<typeof HomeOrderInOrderSchema>;
 export type PickupOrder = z.infer<typeof PickupOrderInOrderSchema>;

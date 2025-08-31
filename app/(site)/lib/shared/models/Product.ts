@@ -1,7 +1,7 @@
 import { ProductInOrderSchema, ProductSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
-import { OptionInProductOrderWithOptionSchema } from "./Option";
-import { CategoryWithOptionsSchema } from "./Category";
+import { CategoryWithOptionsSchema } from "./category";
+import { OptionInProductOrderWithOptionSchema } from "./option";
 
 export const ProductWithCategorySchema = ProductSchema.extend({
   category: CategoryWithOptionsSchema.nullable(),

@@ -1,13 +1,13 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
-import { AnyOrder, OrderSchemaInputs } from "@/app/(site)/lib/shared";
+import { AnyOrder, OrderContract } from "@/app/(site)/lib/shared";
 
 export default async function updateOrderPaymentStatus({
   prepaid,
   orderId,
   plannedPayment,
-}: OrderSchemaInputs["UpdateOrderPaymentStatusInput"]): Promise<AnyOrder> {
+}: OrderContract["Requests"]["UpdateOrderPaymentStatus"]): Promise<AnyOrder> {
   // Always reset printed flag first
   await prisma.order.update({
     where: { id: orderId },

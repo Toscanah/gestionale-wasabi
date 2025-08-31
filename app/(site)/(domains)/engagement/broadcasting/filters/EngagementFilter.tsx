@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ interface EngagementFilterProps {
 
 export default function EngagementFilter({ activeTypes, setActiveTypes }: EngagementFilterProps) {
   return (
-    <DialogWrapper
+    <WasabiDialog
       putSeparator
       size="small"
       title="Seleziona filtri marketing"
@@ -44,6 +44,6 @@ export default function EngagementFilter({ activeTypes, setActiveTypes }: Engage
             </div>
           ))}
       </div>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

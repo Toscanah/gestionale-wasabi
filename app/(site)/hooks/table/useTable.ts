@@ -15,7 +15,7 @@ const noop = () => {};
 
 interface ClientPagination {
   mode: "client";
-  pageSize: number;
+  pageSize?: number;
 }
 
 interface ServerPagination {
@@ -31,8 +31,8 @@ type TablePagination = ClientPagination | ServerPagination | undefined;
 interface TableProps<T, M extends TableMeta<T> = TableMeta<T>> {
   data: T[];
   columns: ColumnDef<T>[];
-  globalFilter?: string;
-  setGlobalFilter?: Dispatch<SetStateAction<string>>;
+  query?: string; // 👈 debounced query
+  setQuery?: Dispatch<SetStateAction<string>>; // 👈 updates raw inputQuery
   rowSelection?: Record<string, boolean>;
   setRowSelection?: Dispatch<SetStateAction<Record<string, boolean>>>;
   pagination?: TablePagination;
@@ -42,8 +42,8 @@ interface TableProps<T, M extends TableMeta<T> = TableMeta<T>> {
 export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
   data,
   columns,
-  globalFilter = "",
-  setGlobalFilter = noop,
+  query = "",
+  setQuery = noop,
   rowSelection = {},
   setRowSelection = noop,
   pagination,
@@ -54,7 +54,7 @@ export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
     columns,
     meta,
     state: {
-      globalFilter,
+      globalFilter: query,
       rowSelection,
       ...(pagination && pagination.mode === "server"
         ? {
@@ -65,7 +65,7 @@ export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
           }
         : {}),
     },
-    onGlobalFilterChange: setGlobalFilter,
+    onGlobalFilterChange: setQuery,
     getRowId: (_row: any, index: number) => String(index),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -87,8 +87,9 @@ export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
     return useReactTable({
       ...commonConfig,
       getPaginationRowModel: getPaginationRowModel(),
+      getFilteredRowModel: getFilteredRowModel(),
       initialState: {
-        pagination: { pageSize: pagination.pageSize },
+        pagination: { pageSize: pagination.pageSize || DEFAULT_PAGE_SIZE, pageIndex: 0 },
       },
     });
   }
@@ -96,7 +97,7 @@ export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
   return useReactTable({
     ...commonConfig,
     initialState: {
-      pagination: { pageSize: DEFAULT_PAGE_SIZE },
+      pagination: { pageSize: DEFAULT_PAGE_SIZE, pageIndex: 0 },
     },
   });
 }

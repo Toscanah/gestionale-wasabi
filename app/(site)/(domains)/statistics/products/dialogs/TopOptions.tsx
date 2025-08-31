@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import { ProductWithStats } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 
@@ -8,7 +8,7 @@ interface TopOptionsProps {
 
 export default function TopOptions({ product }: TopOptionsProps) {
   return (
-    <DialogWrapper
+    <WasabiDialog
       size="small"
       trigger={<Button className="w-40" variant="default">Vedi opzioni usate</Button>}
       title="Opzioni più utilizzate"
@@ -29,6 +29,6 @@ export default function TopOptions({ product }: TopOptionsProps) {
           </p>
         )}
       </div>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

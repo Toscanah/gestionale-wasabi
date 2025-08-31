@@ -5,7 +5,7 @@ import {
   EntityType,
   MANAGER_LABELS,
 } from "../../(domains)/backend/Manager";
-import useGlobalFilter from "../table/useGlobalFilter";
+import useQueryFilter from "../table/useGlobalFilter";
 import useManagerActions from "./useManagerActions";
 import { PathType } from "../../lib/api/fetchRequest";
 
@@ -24,7 +24,7 @@ export default function useManager<T extends BaseEntity>({
 }: UseManagerParams<T>) {
   const [data, setData] = useState<T[]>(receivedData);
   const [showOnlyActive, setShowOnlyActive] = useState(true);
-  const [globalFilter, setGlobalFilter] = useGlobalFilter();
+  const { debouncedQuery, inputQuery, setInputQuery } = useQueryFilter();
 
   useEffect(() => setData(receivedData), [receivedData]);
 
@@ -43,8 +43,9 @@ export default function useManager<T extends BaseEntity>({
 
   return {
     filteredData,
-    globalFilter,
-    setGlobalFilter,
+    debouncedQuery,
+    inputQuery,
+    setInputQuery,
     showOnlyActive,
     setShowOnlyActive,
     actions,

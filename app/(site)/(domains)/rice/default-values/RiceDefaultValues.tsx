@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,7 +74,7 @@ export default function RiceDefaultValues() {
   });
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       size="medium"
       title="Valori di default del riso"
       desc="I valori si salvano automaticamente"
@@ -138,6 +138,6 @@ export default function RiceDefaultValues() {
           <Plus size={24} />
         </Button>
       </div>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

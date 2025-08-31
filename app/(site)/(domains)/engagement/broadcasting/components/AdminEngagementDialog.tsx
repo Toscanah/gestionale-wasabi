@@ -1,4 +1,4 @@
-import DialogWrapper, { DialogWrapperProps } from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog, { WasabiDialogProps } from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import useHandleEngagement from "@/app/(site)/hooks/engagement/useHandleEngagement";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { EngagementWithDetails } from "@/app/(site)/lib/shared";
@@ -7,7 +7,7 @@ import MarketingTemplates from "../../templates/MarketingTemplates";
 import { useState } from "react";
 
 type AdminEngagementDialogProps = {
-  trigger: DialogWrapperProps["trigger"];
+  trigger: WasabiDialogProps["trigger"];
   customerIds: number[];
   onSuccess: (engagements: EngagementWithDetails[]) => void;
 };
@@ -34,7 +34,7 @@ export default function AdminEngagementDialog({
   };
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       title="Marketing clienti"
       trigger={trigger}
       putUpperBorder
@@ -55,6 +55,6 @@ export default function AdminEngagementDialog({
           Crea marketing
         </Button>
       </div>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

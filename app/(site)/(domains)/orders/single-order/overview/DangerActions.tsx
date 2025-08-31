@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import OrderDeletionDialog from "@/app/(site)/(domains)/orders/single-order/overview/OrderDeletionDialog";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ export default function DangerActions({ table }: DangerActionsProps) {
         }
       />
 
-      <DialogWrapper
+      <WasabiDialog
         size="small"
         variant="delete"
         trigger={
@@ -54,7 +54,7 @@ export default function DangerActions({ table }: DangerActionsProps) {
             />
           </div>
         </div>
-      </DialogWrapper>
+      </WasabiDialog>
     </div>
   );
 }

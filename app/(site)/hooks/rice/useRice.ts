@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { RiceLog } from "../../lib/shared/models/Rice";
+import { RiceLog } from "../../lib/shared/models/rice";
 import { isToday } from "date-fns";
 import { RiceLogType } from "@prisma/client";
-import { ShiftType } from "../../lib/shared/enums/Shift";
 import useRiceState from "./useRiceState";
 import { toastSuccess } from "../../lib/utils/global/toast";
+import { ShiftFilterValue } from "../../lib/shared";
 
 export type UpdateRiceInput =
   | {
@@ -32,13 +32,13 @@ export default function useRice() {
   const sumLogAmount = (log: RiceLog): number =>
     log.rice_batch_id ? log.rice_batch.amount : log.manual_value ?? 0;
 
-  const fetchDailyRiceUsage = async (shift: ShiftType): Promise<number> =>
+  const fetchDailyRiceUsage = async (shift: ShiftFilterValue): Promise<number> =>
     fetchRequest<number>("GET", "/api/rice", "getDailyRiceUsage", { shift });
 
   const updateRemainingRice = async (total = rice.total) => {
     const [lunch, dinner] = await Promise.all([
-      fetchDailyRiceUsage(ShiftType.LUNCH),
-      fetchDailyRiceUsage(ShiftType.DINNER),
+      fetchDailyRiceUsage(ShiftFilterValue.LUNCH),
+      fetchDailyRiceUsage(ShiftFilterValue.DINNER),
     ]);
 
     save((prev) => ({

@@ -8,7 +8,7 @@ interface UsePaginationParams {
 export default function usePagination({
   initialPage = 0,
   initialPageSize = 10,
-}: UsePaginationParams) {
+}: UsePaginationParams = {}) {
   const [page, setPage] = useState<number>(initialPage);
   const [pageSize, setPageSize] = useState<number>(initialPageSize);
 

@@ -1,11 +1,11 @@
-import { OrderSchemaInputs, TableOrder } from "@/app/(site)/lib/shared";
+import { OrderContract, TableOrder } from "@/app/(site)/lib/shared";
 import prisma from "../../db";
 import getOrderById from "../getOrderById";
 
 export default async function updateOrderTablePpl({
   orderId,
   people,
-}: OrderSchemaInputs["UpdateOrderTablePplInput"]): Promise<TableOrder> {
+}: OrderContract["Requests"]["UpdateOrderTablePpl"]): Promise<TableOrder> {
   await prisma.tableOrder.update({
     where: { id: orderId },
     data: { people },

@@ -5,7 +5,7 @@ import {
   ParsedEngagementTemplate,
   ParsedEngagementPayload,
   TemplatePayloadDraft,
-  EngagementSchemaInputs,
+  EngagementContract,
 } from "@/app/(site)/lib/shared";
 import { EngagementType } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -49,7 +49,7 @@ export default function useEngagementTemplates() {
   };
 
   const updateTemplate = async (
-    template: EngagementSchemaInputs["UpdateEngagementTemplateInput"]
+    template: EngagementContract["Requests"]["UpdateEngagementTemplate"]
   ) => {
     const payload = await maybeUploadImage(template.payload, template.selectedImage);
 
@@ -72,12 +72,12 @@ export default function useEngagementTemplates() {
   const createTemplate = async (draft: TemplatePayloadDraft) => {
     const finalPayload = await maybeUploadImage(draft.payload, draft.selectedImage);
 
-    const newTemplate: EngagementSchemaInputs["CreateEngagementTemplateInput"] = {
+    const newTemplate: EngagementContract["Requests"]["CreateEngagementTemplate"] = {
       type: draft.type,
       label: draft.label ?? "",
       payload: finalPayload as ParsedEngagementPayload,
       redeemable: draft.redeemable,
-    } as EngagementSchemaInputs["CreateEngagementTemplateInput"];
+    } as EngagementContract["Requests"]["CreateEngagementTemplate"];
 
     fetchRequest<ParsedEngagementTemplate>("POST", "/api/engagements", "createEngagementTemplate", {
       ...newTemplate,

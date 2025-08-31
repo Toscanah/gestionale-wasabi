@@ -5,7 +5,7 @@ import useHistoryStats, {
 } from "../../../hooks/order/history/useHistoryStats";
 import { Separator } from "@/components/ui/separator";
 import AllProductsDialog from "./AllProductsDialog";
-import SelectFilter from "../../ui/filters/SelectFilter";
+import SelectFilter from "../../ui/filters/select/SelectFilter";
 
 type HistoryStatsProps = UseHistoryStatsParams;
 
@@ -124,11 +124,11 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
           mode="multi"
           triggerClassName="w-full"
           selectedValues={yearsFilter}
-          onChange={(next) => {
-            if (next.includes("all") && next.length > 1) {
-              setYearsFilter(next.filter((y) => y !== "all"));
+          onChange={(updatedValues) => {
+            if (updatedValues.includes("all") && updatedValues.length > 1) {
+              setYearsFilter(updatedValues.filter((y) => y !== "all"));
             } else {
-              setYearsFilter(next);
+              setYearsFilter(updatedValues);
             }
           }}
           title="Anno"

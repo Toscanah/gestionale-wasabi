@@ -1,9 +1,9 @@
-import { CustomerSchemaInputs } from "../../../shared";
+import { CustomerContract } from "../../../shared";
 import prisma from "../../db";
 import buildCustomerWhere from "./buildCustomerWhere";
 
 export default async function countCustomers(
-  filters?: CustomerSchemaInputs["GetCustomersWithDetailsInput"]["filters"]
+  filters?: CustomerContract["Requests"]["GetCustomersWithDetails"]["filters"]
 ): Promise<number> {
   return await prisma.customer.count({ where: buildCustomerWhere(filters) });
 }

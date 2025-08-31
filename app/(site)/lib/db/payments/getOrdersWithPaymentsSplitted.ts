@@ -1,4 +1,4 @@
-import { OrderWithPayments } from "@/app/(site)/lib/shared";
+import { OrderWithPaymentsAndTotals } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import {
   engagementsInclude,
@@ -8,7 +8,7 @@ import {
 } from "../includes";
 import { PaymentType } from "@prisma/client";
 
-export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPayments[]> {
+export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPaymentsAndTotals[]> {
   const orders = await prisma.order.findMany({
     where: {
       payments: {
@@ -26,7 +26,7 @@ export async function getOrdersWithPaymentsSplitted(): Promise<OrderWithPayments
   });
 
   // This array will hold the new orders with split payments
-  const ordersWithSplitPayments: OrderWithPayments[] = [];
+  const ordersWithSplitPayments: OrderWithPaymentsAndTotals[] = [];
 
   // Iterate through all orders
   orders.forEach((order) => {

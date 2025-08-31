@@ -1,102 +1,146 @@
 "use client";
 
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
-import { addDays, format } from "date-fns";
+import { startOfYear, endOfYear } from "date-fns";
 import { it } from "date-fns/locale";
-import WasabiSingleSelect from "../../select/WasabiSingleSelect";
 import { DateRange } from "react-day-picker";
 import WasabiPopover from "../../popover/WasabiPopover";
-import SelectFilter from "../SelectFilter";
-import { Lightning, Minus, Plus } from "@phosphor-icons/react";
+import { CalendarBlank, Lightning } from "@phosphor-icons/react";
 import FilterTrigger from "../common/FilterTrigger";
 import DateShiftButton from "./DateShiftButton";
-
-export type CalendarRangePreset = {
-  name: string;
-  value: string;
-};
-
-type NoPresets = {
-  presets?: never;
-  handlePresetSelection?: never;
-};
-
-type WithPresets = {
-  presets: CalendarRangePreset[];
-  handlePresetSelection: (value: string) => void;
-};
-
-type CalendarBaseProps = {
-  disabled?: boolean;
-} & (NoPresets | WithPresets);
+import SelectFilter from "../select/SelectFilter";
+import { DATE_FILTERING_PRESETS, DatePreset } from "@/app/(site)/lib/shared/enums/date-preset";
+import getDateRangeFromPreset from "@/app/(site)/lib/utils/global/date/getDateRangeForPreset";
+import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
 
 type SingleModeProps = {
   mode: "single";
   dateFilter: Date | undefined;
   handleDateFilter: (range: Date | undefined) => void;
+  usePresets: never;
+  years?: never;
+  defaultValue?: Date | undefined;
 };
 
 type RangeModeProps = {
   mode: "range";
   dateFilter: DateRange | undefined;
   handleDateFilter: (range: DateRange | undefined) => void;
+  years?: number[];
+  usePresets?: boolean;
+  defaultValue?: DateRange | undefined;
 };
 
-type CalendarProps = CalendarBaseProps & (SingleModeProps | RangeModeProps);
-
+type CalendarProps = {
+  disabled?: boolean;
+} & (SingleModeProps | RangeModeProps);
 export default function CalendarFilter({
   dateFilter,
   handleDateFilter,
   mode,
-  presets,
-  handlePresetSelection,
+  years,
   disabled = false,
+  usePresets = true,
+  defaultValue,
 }: CalendarProps) {
-  const formatDateButtonText = () => {
-    if (mode === "single") {
-      return dateFilter ? format(dateFilter as Date, "PPP", { locale: it }) : null;
-    } else {
-      const range = dateFilter as DateRange;
-      return range?.from
-        ? range.to
-          ? `${format(range.from, "PPP", { locale: it })} - ${format(range.to, "PPP", {
-              locale: it,
-            })}`
-          : format(range.from, "PPP", { locale: it })
-        : "Da sempre";
+  const label = formatDateFilter(mode, dateFilter);
+  const values = label ? [label] : [];
+
+  function normalizeDateFilter(val: Date | DateRange | undefined): [number?, number?] | undefined {
+    if (!val) return undefined;
+    if (val instanceof Date) {
+      const t = val.getTime();
+      return [t, t];
     }
-  };
+    if (!val.from && !val.to) return undefined; // treat empty range as undefined
+    return [val.from?.getTime(), val.to?.getTime()];
+  }
+
+  function isEqualDateFilter(a: Date | DateRange | undefined, b: Date | DateRange | undefined) {
+    const na = normalizeDateFilter(a);
+    const nb = normalizeDateFilter(b);
+
+    if (!na && !nb) return true;
+    if (!na || !nb) return false;
+
+    return na[0] === nb[0] && na[1] === nb[1];
+  }
+
+  const onClear =
+    mode === "single"
+      ? isEqualDateFilter(dateFilter, defaultValue)
+        ? undefined
+        : () => handleDateFilter(defaultValue as Date | undefined)
+      : isEqualDateFilter(dateFilter, defaultValue)
+      ? undefined
+      : () =>
+          handleDateFilter(
+            defaultValue == undefined
+              ? { from: undefined, to: undefined }
+              : (defaultValue as DateRange)
+          );
 
   return (
     <WasabiPopover
       contentClassName="flex flex-col gap-2 p-2"
       trigger={
         <FilterTrigger
+          triggerIcon={CalendarBlank}
           disabled={disabled}
           title={mode === "single" ? "Data" : "Intervallo"}
-          onClear={() => handleDateFilter(undefined)}
-          labels={[formatDateButtonText()].filter(Boolean) as string[]}
+          onClear={onClear}
+          values={values}
         />
       }
     >
-      {presets && handlePresetSelection && (
-        <SelectFilter
-          triggerIcon={Lightning}
-          showInput={false}
-          mode="transient"
-          triggerClassName="w-full border-solid"
-          title="Scelte rapide"
-          onChange={(value) => value !== null && handlePresetSelection(value)}
-          groups={[
-            { options: presets.map((preset) => ({ label: preset.name, value: preset.value })) },
-          ]}
-        />
-      )}
+      {/* Presets */}
+      <div className="w-full flex gap-2 items-center">
+        {usePresets && mode === "range" && (
+          <SelectFilter
+            triggerIcon={Lightning}
+            mode="transient"
+            triggerClassName="w-full border-solid"
+            title="Date pronte"
+            onChange={(updatedValue) =>
+              handleDateFilter(getDateRangeFromPreset(updatedValue as DatePreset))
+            }
+            groups={[
+              {
+                options: DATE_FILTERING_PRESETS.map((preset) => ({
+                  label: preset.name,
+                  value: preset.value,
+                })),
+              },
+            ]}
+          />
+        )}
 
+        {/* Years */}
+        {years && mode === "range" && (
+          <SelectFilter
+            triggerIcon={CalendarBlank}
+            mode="transient"
+            triggerClassName="w-full border-solid"
+            title="Anni"
+            onChange={(val) => {
+              const y = parseInt(val, 10);
+              handleDateFilter({
+                from: startOfYear(new Date(y, 0, 1)),
+                to: endOfYear(new Date(y, 11, 31)),
+              });
+            }}
+            groups={[
+              {
+                options: [...(years ?? [])]
+                  .sort((a, b) => a - b)
+                  .map((y) => ({ label: String(y), value: String(y) })),
+              },
+            ]}
+          />
+        )}
+      </div>
+
+      {/* Calendar UI */}
       <div className="rounded-md border">
         <ShadCalendar
           locale={it}
@@ -123,6 +167,7 @@ export default function CalendarFilter({
         />
       </div>
 
+      {/* Shift buttons */}
       <div className="flex gap-2 text-xs">
         {mode === "single" ? (
           <>

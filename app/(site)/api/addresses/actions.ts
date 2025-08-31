@@ -2,25 +2,25 @@ import createAddress from "../../lib/db/addresses/createAddress";
 import updateAddress from "../../lib/db/addresses/updateAddress";
 import getAddressesByCustomer from "../../lib/db/addresses/getAddressesByCustomer";
 import getLastAddressOfCustomer from "../../lib/db/addresses/getLastAddressOfCustomer";
-import { ADDRESS_SCHEMAS } from "../../lib/shared";
+import { ADDRESS_REQUESTS } from "../../lib/shared";
 import { ActionsMapRecord } from "../../lib/api/createHandler";
 
 const POST_ACTIONS = new Map([
-  ["createAddress", { func: createAddress, schema: ADDRESS_SCHEMAS.createAddress }],
+  ["createAddress", { func: createAddress, schema: ADDRESS_REQUESTS.createAddress }],
 ]);
 
 const PATCH_ACTIONS = new Map([
-  ["updateAddress", { func: updateAddress, schema: ADDRESS_SCHEMAS.updateAddress }],
+  ["updateAddress", { func: updateAddress, schema: ADDRESS_REQUESTS.updateAddress }],
 ]);
 
 const GET_ACTIONS = new Map([
   [
     "getAddressesByCustomer",
-    { func: getAddressesByCustomer, schema: ADDRESS_SCHEMAS.getAddressesByCustomer },
+    { func: getAddressesByCustomer, schema: ADDRESS_REQUESTS.getAddressesByCustomer },
   ],
   [
     "getLastAddressOfCustomer",
-    { func: getLastAddressOfCustomer, schema: ADDRESS_SCHEMAS.getLastAddressOfCustomer },
+    { func: getLastAddressOfCustomer, schema: ADDRESS_REQUESTS.getLastAddressOfCustomer },
   ],
 ]);
 

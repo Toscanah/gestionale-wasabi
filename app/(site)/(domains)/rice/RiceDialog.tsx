@@ -5,7 +5,7 @@ import { Gear } from "@phosphor-icons/react";
 import { RiceBatch, RiceLogType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { useEffect, useState } from "react";
-import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
 import WasabiSingleSelect from "../../components/ui/select/WasabiSingleSelect";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
@@ -93,7 +93,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   }, [rice.threshold]);
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       size="medium"
       autoFocus={false}
       onOpenChange={resetForm}
@@ -113,7 +113,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
       }
       footer={
         <>
-          <DialogWrapper
+          <WasabiDialog
             size="small"
             variant="delete"
             onDelete={handleReset}
@@ -124,7 +124,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             }
           >
             Stai per azzerare il riso, sei sicuro?
-          </DialogWrapper>
+          </WasabiDialog>
 
           <Button type="submit" onClick={handleSave} className="w-full text-xl">
             Salva
@@ -217,6 +217,6 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           </div>
         </div>
       </div>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

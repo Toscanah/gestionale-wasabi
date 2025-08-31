@@ -18,7 +18,7 @@ const presetsName = [
   "Quest'anno",
 ] as const;
 
-export const DATE_PRESETS: { name: (typeof presetsName)[number]; value: DatePreset }[] =
+export const DATE_FILTERING_PRESETS: { name: (typeof presetsName)[number]; value: DatePreset }[] =
   presetsName.map((name, index) => ({
     name,
     value: Object.values(DatePreset)[index] as DatePreset,

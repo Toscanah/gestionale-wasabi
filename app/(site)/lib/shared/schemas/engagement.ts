@@ -1,8 +1,9 @@
 import { EngagementLedgerStatus, EngagementType } from "@prisma/client";
 import { z } from "zod";
-import { ParsedEngagementTemplateSchema } from "../models/Engagement";
-import { NoContentSchema, wrapSchema } from "./common";
-import { SchemaInputs } from "../types/SchemaInputs";
+import { ParsedEngagementTemplateSchema } from "../models/engagement";
+import { wrapSchema } from "./common/utils";
+import { NoContentRequestSchema } from "./common/no-content";
+import { ApiContract } from "../types/api-contract";
 
 export const TemplatePayloadDraftSchema = ParsedEngagementTemplateSchema.omit({
   id: true,
@@ -66,10 +67,10 @@ export const UpdateLedgerStatus = z.object({
 
 // Schema Registry
 //
-export const ENGAGEMENT_SCHEMAS = {
+export const ENGAGEMENT_REQUESTS = {
   createEngagement: CreateEngagementSchema,
   getEngagementsByCustomer: GetEngagementsByCustomerSchema,
-  getEngagementTemplates: NoContentSchema,
+  getEngagementTemplates: NoContentRequestSchema,
   createEngagementTemplate: CreateEngagementTemplateSchema,
   updateEngagementTemplate: UpdateEngagementTemplateSchema,
   deleteTemplateById: DeleteTemplateByIdSchema,
@@ -80,4 +81,4 @@ export const ENGAGEMENT_SCHEMAS = {
   updateLedgerStatus: UpdateLedgerStatus,
 };
 
-export type EngagementSchemaInputs = SchemaInputs<typeof ENGAGEMENT_SCHEMAS>;
+export type EngagementContract = ApiContract<typeof ENGAGEMENT_REQUESTS>;

@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ProductWithStats } from "../../../lib/shared/types/ProductWithStats";
+import { ProductWithStats } from "../../../lib/shared/types/product-with-stats";
 import formatRice from "../../../lib/utils/domains/rice/formatRice";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import TopOptions from "./dialogs/TopOptions";
 import TopCustomers from "./dialogs/TopCustomers";
@@ -27,13 +27,14 @@ const columns: ColumnDef<ProductWithStats>[] = [
   ValueColumn({
     header: "Totale",
     value: (row) => "€ " + roundToTwo(row.original.total),
-    accessor: (stats) => stats.total,
+    accessor: (product) => product.total,
   }),
 
   ValueColumn({
     header: "Totale riso",
-    value: (row) => formatRice(row.original.quantity * row.original.rice),
-    accessor: (stats) => formatRice(stats.quantity * stats.rice),
+    value: (row) =>
+      row.original.rice > 0 ? formatRice(row.original.quantity * row.original.rice) : "",
+    accessor: (product) => (product.rice > 0 ? formatRice(product.quantity * product.rice) : 0),
   }),
 
   ActionColumn({

@@ -1,31 +1,28 @@
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
-import {
-  createInputSchema,
-  NoContentSchema,
-  PaginationSchema,
-  ToggleDeleteObjectSchema,
-  wrapSchema,
-} from "./common";
-import { SchemaInputs } from "../types/SchemaInputs";
-import { RFMConfigSchema, RFMRuleschema } from "../models/RFM";
-import { Seal } from "@phosphor-icons/react";
-import { CustomerWithEngagementSchema } from "../models/Customer";
+import { ApiContract } from "../types/api-contract";
+import { RFMConfigSchema } from "../models/rfm";
+import { CustomerWithEngagementSchema, CustomerWithStatsSchema } from "../models/customer";
+import { createInputSchema, wrapSchema } from "./common/utils";
+import { PaginationRequestSchema, PaginationResponseSchema } from "./common/pagination";
+import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
+import { NoContentRequestSchema } from "./common/no-content";
+import { PeriodRequestSchema } from "./common/period";
 
-export const GetCustomerByPhoneSchema = z.object({ phone: z.string() });
+export const GetCustomerByPhoneRequestSchema = z.object({ phone: z.string() });
 
-export const GetCustomerWithDetailsSchema = z.object({ customerId: z.number() });
+export const GetCustomerWithDetailsRequestSchema = z.object({ customerId: z.number() });
 
-export const GetCustomersByDoorbellSchema = z.object({ doorbell: z.string() });
+export const GetCustomersByDoorbellRequestSchema = z.object({ doorbell: z.string() });
 
-export const UpdateCustomerFromAdminSchema = wrapSchema(
+export const UpdateCustomerFromAdminRequestSchema = wrapSchema(
   "customer",
   CustomerSchema.extend({ phone: z.string() })
 );
 
-export const UpdateCustomerFromOrderSchema = wrapSchema("customer", CustomerSchema);
+export const UpdateCustomerFromOrderRequestSchema = wrapSchema("customer", CustomerSchema);
 
-export const CreateCustomerInputSchema = createInputSchema(CustomerSchema)
+export const CreateCustomerInputRequestSchema = createInputSchema(CustomerSchema)
   .omit({
     phone_id: true,
     rfm: true,
@@ -36,60 +33,64 @@ export const CreateCustomerInputSchema = createInputSchema(CustomerSchema)
     surname: z.string().nullable(),
   });
 
-export const CreateCustomerSchema = wrapSchema("customer", CreateCustomerInputSchema);
+export const CreateCustomerRequestSchema = wrapSchema("customer", CreateCustomerInputRequestSchema);
 
-export const UpdateCustomerAddressesSchema = z.object({
+export const UpdateCustomerAddressesRequestSchema = z.object({
   addresses: z.array(AddressSchema),
   customerId: z.number(),
 });
 
-export const UpdateCustomerOrderNotesSchema = z.object({
+export const UpdateCustomerOrderNotesRequestSchema = z.object({
   orderId: z.number(),
   notes: z.string(),
 });
 
-export const GetCustomersWithDetailsSchema = PaginationSchema.partial().extend({
+export const GetCustomerDetailsRequestSchema = PaginationRequestSchema.partial().extend({
   filters: z
     .object({
-      rank: z.string().optional(),
+      ranks: z.array(z.string()).optional(),
       search: z.string().optional(),
     })
     .optional(),
 });
 
-export const ComputeCustomersStatsSchema = PaginationSchema.extend({
-  filters: z
-    .object({
-      from: z.coerce.date(),
-      to: z.coerce.date(),
-      rank: z.string(),
-      search: z.string(),
-    })
-    .partial()
-    .optional(),
+export const ComputeCustomersStatsRequestSchema = PaginationRequestSchema.extend({
+  filters: z.object({
+    period: PeriodRequestSchema,
+    ranks: z.array(z.string()).optional(),
+    query: z.string().optional(),
+  }),
+});
+
+export const UpdateCustomersRFMRequestSchema = z.object({
   rfmConfig: RFMConfigSchema,
 });
 
-export const UpdateCustomersRFMSchema = z.object({
-  rfmConfig: RFMConfigSchema,
-  customers: z.array(CustomerWithEngagementSchema),
-});
-
-export const CUSTOMER_SCHEMAS = {
-  getCustomerByPhone: GetCustomerByPhoneSchema,
-  getCustomerWithDetails: GetCustomerWithDetailsSchema,
-  getCustomersWithDetails: GetCustomersWithDetailsSchema,
-  getCustomersByDoorbell: GetCustomersByDoorbellSchema,
-  updateCustomerFromAdmin: UpdateCustomerFromAdminSchema,
-  updateCustomerFromOrder: UpdateCustomerFromOrderSchema,
-  updateCustomerOrderNotes: UpdateCustomerOrderNotesSchema,
-  createCustomer: CreateCustomerSchema,
-  toggleCustomer: ToggleDeleteObjectSchema,
-  updateCustomerAddresses: UpdateCustomerAddressesSchema,
-  deleteCustomerById: ToggleDeleteObjectSchema,
-  computeCustomersStats: ComputeCustomersStatsSchema,
-  getCustomersWithMarketing: NoContentSchema,
-  updateCustomersRFM: UpdateCustomersRFMSchema,
+export const CUSTOMER_REQUESTS = {
+  getCustomerByPhone: GetCustomerByPhoneRequestSchema,
+  getCustomerWithDetails: GetCustomerWithDetailsRequestSchema,
+  getCustomersWithDetails: GetCustomerDetailsRequestSchema,
+  getCustomersByDoorbell: GetCustomersByDoorbellRequestSchema,
+  updateCustomerFromAdmin: UpdateCustomerFromAdminRequestSchema,
+  updateCustomerFromOrder: UpdateCustomerFromOrderRequestSchema,
+  updateCustomerOrderNotes: UpdateCustomerOrderNotesRequestSchema,
+  createCustomer: CreateCustomerRequestSchema,
+  toggleCustomer: ToggleDeleteEntityRequestSchema,
+  updateCustomerAddresses: UpdateCustomerAddressesRequestSchema,
+  deleteCustomerById: ToggleDeleteEntityRequestSchema,
+  computeCustomersStats: ComputeCustomersStatsRequestSchema,
+  getCustomersWithMarketing: NoContentRequestSchema,
+  updateCustomersRFM: UpdateCustomersRFMRequestSchema,
 };
 
-export type CustomerSchemaInputs = SchemaInputs<typeof CUSTOMER_SCHEMAS>;
+export const ComputeCustomerStatsResponseSchema = z
+  .object({
+    customers: z.array(CustomerWithStatsSchema),
+  })
+  .merge(PaginationResponseSchema);
+
+export const CUSTOMER_RESPONSES = {
+  computeCustomersStats: ComputeCustomerStatsResponseSchema,
+};
+
+export type CustomerContract = ApiContract<typeof CUSTOMER_REQUESTS, typeof CUSTOMER_RESPONSES>;

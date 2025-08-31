@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
@@ -57,7 +57,7 @@ export default function OldOrders() {
   if (!hasOrders) return <></>;
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       size="mediumPlus"
       putUpperBorder
       title="Storico cliente"
@@ -68,6 +68,6 @@ export default function OldOrders() {
       }
     >
       <OrderHistory customer={customer} onCreate={addProducts} />
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

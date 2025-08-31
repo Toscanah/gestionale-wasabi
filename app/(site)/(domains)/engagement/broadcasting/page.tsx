@@ -10,12 +10,12 @@ import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import GoBack from "../../../components/ui/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";
-import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
+import useQueryFilter from "../../../hooks/table/useGlobalFilter";
 import { Input } from "@/components/ui/input";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 
 export default function EngagementPage() {
-  const [globalFilter, setGlobalFilter] = useGlobalFilter();
+  const {debouncedQuery, inputQuery, setInputQuery} = useQueryFilter();
 
   const {
     activeTypes,
@@ -33,8 +33,8 @@ export default function EngagementPage() {
   const leftTable = useTable({
     data: filteredLeftCustomers,
     columns: columns({ isRightTable: false }),
-    globalFilter,
-    setGlobalFilter,
+    query: debouncedQuery,
+    setQuery: setInputQuery,
   });
 
   const rightTable = useTable({
@@ -47,10 +47,10 @@ export default function EngagementPage() {
       <div className="min-w-w-[47.5%] w-[47.5%] h-full p-4 flex flex-col">
         <div className="flex w-full gap-4 items-center mb-4">
           <Input
-            value={globalFilter}
+            defaultValue={inputQuery}
             type="text"
             placeholder="Cerca..."
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            onChange={(e) => setInputQuery(e.target.value)}
           />
           <WeekFilter onWeekFilterChange={onWeekFilterChange} weekFilter={weekFilter} />
         </div>

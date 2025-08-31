@@ -5,20 +5,21 @@ import { Badge } from "@/components/ui/badge";
 import { XCircle, PlusCircle } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
-interface FilterTriggerProps extends React.ComponentProps<typeof Button> {
+interface FilterTriggerProps {
   title: string;
-  labels?: string[];
+  values?: string[];
   onClear?: () => void;
   dashed?: boolean;
-  triggerIcon?: ElementType; // Customizable PlusCircle icon
+  triggerIcon?: ElementType; 
   disabled?: boolean;
+  className?: string;
 }
 
 const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
   (
     {
       title,
-      labels = [],
+      values = [],
       onClear,
       dashed = true,
       className,
@@ -28,8 +29,8 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
     },
     ref
   ) => {
-    const parsedLabels = labels.filter(Boolean);
-    const count = parsedLabels.length;
+    const parsedValues = values.filter(Boolean);
+    const valuesCount = parsedValues.length;
 
     return (
       <Button
@@ -39,7 +40,7 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
         className={cn("h-10 flex gap-2 items-center px-2", dashed && "border-dashed", className)}
         {...props}
       >
-        {count > 0 ? (
+        {valuesCount > 0 && onClear ? (
           <XCircle
             onClick={(e) => {
               e.stopPropagation();
@@ -53,21 +54,21 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
 
         {title}
 
-        {count > 0 && (
+        {valuesCount > 0 && (
           <>
             <Separator orientation="vertical" className="mx-0.5" />
-            {count > 1 && (
+            {/* {count > 1 && (
               <Badge variant="secondary" className="px-1 rounded-lg">
                 {count}
               </Badge>
-            )}
+            )} */}
             <div className="flex items-center gap-1">
-              {count > 2 ? (
+              {valuesCount > 2 ? (
                 <Badge variant="secondary" className="px-1 rounded-lg">
-                  {count} selezionati
+                  {valuesCount} selezionati
                 </Badge>
               ) : (
-                parsedLabels.map((label) => (
+                parsedValues.map((label) => (
                   <Badge variant="secondary" key={label} className="px-1 rounded-lg">
                     {label}
                   </Badge>

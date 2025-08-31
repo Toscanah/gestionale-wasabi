@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { NoContentSchema } from "./common";
-import { SchemaInputs } from "../types/SchemaInputs";
+import { NoContentRequestSchema } from "./common/no-content";
+import { ApiContract } from "../types/api-contract";
 
-export const GetMetaTemplatesSchema = NoContentSchema;
+export const GetMetaTemplatesSchema = NoContentRequestSchema;
 
 export const SendMetaMessageSchema = z.object({
   template: z.object({
@@ -17,9 +17,9 @@ export const SendMetaMessageSchema = z.object({
   }),
 });
 
-export const META_SCHEMAS = {
+export const META_REQUESTS = {
   getMetaTemplates: GetMetaTemplatesSchema,
   sendMetaMessage: SendMetaMessageSchema,
 };
 
-export type MetaSchemaInputs = SchemaInputs<typeof META_SCHEMAS>;
+export type MetaContract = ApiContract<typeof META_REQUESTS>;

@@ -1,5 +1,5 @@
 import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
-import { AnyOrder, OrderSchemaInputs, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder, OrderContract, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import prisma from "../../db";
 import createPickupOrder from "../pickup/createPickupOrder";
 import createTableOrder from "../table/createTableOrder";
@@ -10,7 +10,7 @@ export default async function createSubOrder({
   parentOrder,
   products,
   isReceiptPrinted,
-}: OrderSchemaInputs["CreateSubOrderInput"]) {
+}: OrderContract["Requests"]["CreateSubOrder"]) {
   let newSubOrder: AnyOrder | undefined;
 
   const suborderCount = await prisma.order.count({

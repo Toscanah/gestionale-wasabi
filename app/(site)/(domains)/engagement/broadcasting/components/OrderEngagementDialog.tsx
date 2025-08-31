@@ -1,13 +1,13 @@
 import { EngagementWithDetails } from "@/app/(site)/lib/shared";
 import { OrderEngagementTabs } from "./EngagementTabs";
 import { AnyOrder } from "@/app/(site)/lib/shared";
-import DialogWrapper, { DialogWrapperProps } from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog, { WasabiDialogProps } from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import useHandleEngagement from "@/app/(site)/hooks/engagement/useHandleEngagement";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { Dispatch, SetStateAction } from "react";
 
 type OrderEngagementDialogProps = {
-  trigger: DialogWrapperProps["trigger"];
+  trigger: WasabiDialogProps["trigger"];
   order: AnyOrder;
   onSuccess: (engagements: EngagementWithDetails[]) => void;
   open: boolean;
@@ -39,7 +39,7 @@ export default function OrderEngagementDialog({
   const handleToggleEngagement = toggleEngagement;
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       title="Marketing per ordine"
       trigger={trigger}
       size="mediumPlus"
@@ -56,6 +56,6 @@ export default function OrderEngagementDialog({
           deleteEngagement(engagementId);
         }}
       />
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

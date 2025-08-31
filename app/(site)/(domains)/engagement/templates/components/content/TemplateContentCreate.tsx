@@ -4,14 +4,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import TemplateWrapper from "../TemplateWrapper";
 import {
-  EngagementSchemaInputs,
+  EngagementContract,
   ParsedEngagementPayload,
   TemplatePayloadDraft,
 } from "@/app/(site)/lib/shared";
 import renderByType from "../../types/renderByType";
 import { EngagementType } from "@prisma/client";
 
-type CreateTemplateWithImage = EngagementSchemaInputs["CreateEngagementTemplateInput"] & {
+type CreateTemplateWithImage = EngagementContract["Requests"]["CreateEngagementTemplate"] & {
   selectedImage?: TemplatePayloadDraft["selectedImage"];
 };
 

@@ -1,4 +1,4 @@
-import WhenSelector from "@/app/(site)/components/ui/time/WhenSelector";
+import WhenSelector from "@/app/(site)/components/ui/filters/time/WhenSelector";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";

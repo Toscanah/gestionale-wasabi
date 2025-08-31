@@ -5,13 +5,13 @@ import {
   JoinColumn,
   ValueColumn,
 } from "../../../components/table/TableColumns";
-import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
 import OrderHistory from "../../../components/order-history/OrderHistory";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
-import { CUSTOMER_ORIGIN_LABELS } from "./CustomerOriginSelection";
+import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 
 const columns = (
   customers: CustomerWithDetails[],
@@ -83,7 +83,7 @@ const columns = (
       const customer = customers.find((customer) => customer.id === customerId);
 
       return (
-        <DialogWrapper
+        <WasabiDialog
           size="medium"
           title="Gestisci indirizzi"
           trigger={
@@ -99,7 +99,7 @@ const columns = (
             customerId={customerId}
             setCustomers={setCustomers}
           />
-        </DialogWrapper>
+        </WasabiDialog>
       );
     },
   }),

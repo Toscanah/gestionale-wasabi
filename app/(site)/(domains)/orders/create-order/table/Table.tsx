@@ -7,7 +7,7 @@ import { useWasabiContext } from "../../../../context/WasabiContext";
 import fetchRequest from "../../../../lib/api/fetchRequest";
 import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import { cn } from "@/lib/utils";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
@@ -61,7 +61,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
   };
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       title={order.id !== -1 ? "" : "Ordine al tavolo"}
       size={order.id !== -1 ? "large" : "medium"}
       open={open}
@@ -146,6 +146,6 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
           <OrderTable />
         </OrderProvider>
       )}
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

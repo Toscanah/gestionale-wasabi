@@ -8,7 +8,7 @@ import { OrderType, PaymentScope, PlannedPayment } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 import useMetaTemplates from "@/app/(site)/hooks/meta/useMetaTemplates";
 import { useTemplatesParams } from "@/app/(site)/hooks/meta/useTemplatesParams";
@@ -130,7 +130,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
   const hasProducts = order.products.filter((product) => product.id !== -1).length > 0;
 
   const RePrintButton = () => (
-    <DialogWrapper
+    <WasabiDialog
       open={rePrintDialog}
       onOpenChange={setRePrintDialog}
       title="Cosa vuoi re-stampare?"
@@ -164,7 +164,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
           Ordine 客人
         </Button>
       </div>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 
   return (

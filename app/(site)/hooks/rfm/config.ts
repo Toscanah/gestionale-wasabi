@@ -1,4 +1,4 @@
-import { RFMRankRule, RFMConfig, RFMRules } from "../../lib/shared/types/RFM";
+import { RFMRankRule, RFMConfig, RFMRules } from "../../lib/shared/types/rfm";
 
 export const DEFAULT_RULES: RFMRules = {
   recency: {
@@ -48,17 +48,6 @@ export const DEFAULT_RANK_RULE: Omit<RFMRankRule, "rank"> = {
 };
 
 export const DEFAULT_RANKS: RFMRankRule[] = [
-  {
-    rank: "//", // never purchased, no activity
-    priority: 0,
-    minRecency: 0,
-    maxRecency: 0,
-    minFrequency: 0,
-    maxFrequency: 0,
-    minMonetary: 0,
-    maxMonetary: 0,
-  },
-
   {
     rank: "VIP", // best in all three dimensions
     priority: 100,

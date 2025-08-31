@@ -1,4 +1,4 @@
-import { ProductInOrder, ProductSchemaInputs } from "@/app/(site)/lib/shared";
+import { ProductInOrder, ProductContract } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 import { getProductPrice } from "../../services/product-management/getProductPrice";
@@ -6,7 +6,7 @@ import { getProductPrice } from "../../services/product-management/getProductPri
 export default async function addProductsToOrder({
   orderId,
   products,
-}: ProductSchemaInputs["AddProductsToOrderInput"]): Promise<ProductInOrder[]> {
+}: ProductContract["Requests"]["AddProductsToOrder"]): Promise<ProductInOrder[]> {
   const targetOrder = await prisma.order.findUnique({
     where: { id: orderId },
     select: { type: true },

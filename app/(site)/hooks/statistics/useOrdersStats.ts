@@ -1,10 +1,12 @@
 import { useMemo, useReducer } from "react";
-import { DateRange } from "react-day-picker";
-import sectionReducer, { initialState } from "./sectionReducer";
+import sectionReducer, { INITIAL_STATE, SectionState } from "./sectionReducer";
 import { useQuery } from "@tanstack/react-query";
 import fetchRequest from "../../lib/api/fetchRequest";
-import { PaymentSchemaInputs } from "../../lib/shared";
-import { ShiftType } from "../../lib/shared/enums/Shift";
+import { isSameDay } from "date-fns";
+import calculateResults from "../../lib/services/order-management/calculateOrderStats";
+import { ALL_WEEKDAYS } from "../../components/ui/filters/select/WeekdaysFilter";
+import { FULL_DAY_RANGE } from "../../components/ui/filters/time/TimeWindowFilter";
+import { OrderContract } from "../../lib/shared";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -15,17 +17,7 @@ export enum DAYS_OF_WEEK {
   SUNDAY = "Domenica",
 }
 
-export type WeekdaysOrDateChoice = "weekdays" | "date";
-
-export type WeekdaysSelection =
-  | { type: "year"; year: string }
-  | { type: "range"; range: DateRange | undefined };
-
-export type Shift = "lunch" | "dinner" | "all";
-
-export type Time = { type: "shift"; shift: Shift } | { type: "range"; from: string; to: string };
-
-export type Results = {
+export type OrderStatsResults = {
   // Home orders
   homeOrders: number;
   homeRevenue: number;
@@ -55,73 +47,99 @@ export type Results = {
 };
 
 export default function useOrdersStats() {
-  const [state, dispatch] = useReducer(sectionReducer, initialState);
+  const [state, dispatch] = useReducer(sectionReducer, INITIAL_STATE);
 
-  const filters: PaymentSchemaInputs["GetOrdersWithPaymentsInput"]["filters"] = useMemo(() => {
-    let timeScope: "single" | "range" = "single";
-    let singleDate: Date | undefined;
-    let rangeDate: { from: Date; to: Date } | undefined;
+  // TODO: decidere dove mettere sta roba nel posto giusto
+  function getDisabledFlags(state: SectionState) {
+    const { period, shift } = state;
 
-    if (state.mainChoice === "date" && state.specificDate) {
-      timeScope = "single";
-      singleDate = state.specificDate;
-    } else if (
-      state.mainChoice === "weekdays" &&
-      state.weekdaysSelection?.type === "range" &&
-      state.weekdaysSelection.range?.from &&
-      state.weekdaysSelection.range?.to
-    ) {
-      timeScope = "range";
-      rangeDate = {
-        from: state.weekdaysSelection.range.from,
-        to: state.weekdaysSelection.range.to,
-      };
-    } else if (state.mainChoice === "weekdays" && state.weekdaysSelection?.type === "year") {
-      // could be modeled as a range covering the whole year
-      const year = Number(state.weekdaysSelection.year);
-      timeScope = "range";
-      rangeDate = {
-        from: new Date(year, 0, 1),
-        to: new Date(year, 11, 31, 23, 59, 59),
-      };
+    // ----- WEEKDAYS
+    let disableWeekdays = false;
+    if (period?.from && period?.to) {
+      if (isSameDay(period.from, period.to)) {
+        disableWeekdays = true; // single day
+      }
+    } else if (!period?.from && !period?.to) {
+      disableWeekdays = false; // "Da sempre"
+    } else if (period?.from && !period?.to) {
+      disableWeekdays = true; // single day
     }
 
-    // map shift / time range
-    let shift: ShiftType | undefined;
-    if (state.time?.type === "shift") {
-      if (state.time.shift === "lunch") shift = ShiftType.LUNCH;
-      if (state.time.shift === "dinner") shift = ShiftType.DINNER;
-    }
-    // if it's a range, you’d need to decide how/if that maps to backend — maybe extend schema later
+    // ----- TIME RANGE
+    const disableTimeWindow = shift !== "ALL";
 
     return {
-      timeScope,
-      singleDate,
-      rangeDate,
+      weekdays: disableWeekdays,
+      shift: false,
+      timeWindow: disableTimeWindow,
+      type: false,
+      search: false,
+      reset: false,
+    };
+  }
+
+  const filters: OrderContract["Requests"]["GetOrdersWithPayments"]["filters"] = useMemo(() => {
+    let period: { from: Date; to: Date } | undefined = undefined;
+    if (state.period.from && (state.period.to || state.period.from)) {
+      // If only from is set, use it for both from and to
+      period = { from: state.period.from, to: state.period.to ?? state.period.from };
+    }
+
+    // Weekdays
+    const weekdays = state.weekdays.length === ALL_WEEKDAYS.length ? undefined : state.weekdays;
+
+    // Shift
+    const shift = state.shift === "ALL" ? undefined : state.shift;
+
+    // TimeRange
+    const timeWindow =
+      state.timeWindow.from === FULL_DAY_RANGE.from && state.timeWindow.to === FULL_DAY_RANGE.to
+        ? undefined
+        : state.timeWindow;
+
+    return {
+      period,
+      weekdays,
       shift,
-      search: "", // not used in stats
+      timeWindow,
     };
   }, [state]);
 
-  const {
-    data: orders = [],
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["orders", filters],
-    queryFn: async (): Promise<any> => {}
-      // await fetchRequest<any>("GET", "/api/payments", "getOrdersWithPayments", {
-      //   filters,
-      // }),
+    queryFn: async (): Promise<OrderContract["Responses"]["GetOrdersWithPayments"]> =>
+      fetchRequest("POST", "/api/orders", "getOrdersWithPayments", {
+        filters,
+        summary: true,
+      }),
+    select: (res) => calculateResults(res.orders),
   });
 
-  // const filteredResults = useMemo(() => calculateResults(orders), [orders]);
+  function isDefaultState(state: SectionState): boolean {
+    const d = INITIAL_STATE;
+
+    const sameRange =
+      (state.period.from?.getTime?.() ?? undefined) === (d.period.from?.getTime?.() ?? undefined) &&
+      (state.period.to?.getTime?.() ?? undefined) === (d.period.to?.getTime?.() ?? undefined);
+
+    const sameShift = state.shift === d.shift;
+    const sameWeekdays =
+      state.weekdays.length === d.weekdays.length &&
+      state.weekdays.every((w) => d.weekdays.includes(w));
+
+    const sameTimeRange =
+      state.timeWindow.from === d.timeWindow.from && state.timeWindow.to === d.timeWindow.to;
+
+    return sameRange && sameShift && sameWeekdays && sameTimeRange;
+  }
 
   return {
     state,
+    showReset: !isDefaultState(state),
     dispatch,
-    // filteredResults,
+    filteredResults: data ?? ({} as OrderStatsResults),
     isLoading,
     isError,
+    disabledFlags: getDisabledFlags(state),
   };
 }

@@ -1,4 +1,4 @@
-import { EngagementSchemaInputs } from "../../../shared";
+import { EngagementContract } from "../../../shared";
 import prisma from "../../db";
 import { EngagementTemplate } from "@prisma/client";
 
@@ -7,7 +7,7 @@ export default async function updateEngagementTemplate({
   label,
   redeemable,
   payload,
-}: EngagementSchemaInputs["UpdateEngagementTemplateInput"]): Promise<EngagementTemplate> {
+}: EngagementContract["Requests"]["UpdateEngagementTemplate"]): Promise<EngagementTemplate> {
   const prev = await prisma.engagementTemplate.findUnique({
     where: { id },
     select: { redeemable: true },

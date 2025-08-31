@@ -5,7 +5,7 @@ import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import TableControls from "../../components/table/TableControls";
 import Table from "../../components/table/Table";
-import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
 import { ColumnDef } from "@tanstack/react-table";
 import getColumns from "./getColumns";
 import useTable from "../../hooks/table/useTable";
@@ -79,8 +79,9 @@ export default function Manager<T extends BaseEntity>({
 }: ManagerProps<T>) {
   const {
     filteredData,
-    globalFilter,
-    setGlobalFilter,
+    debouncedQuery,
+    inputQuery,
+    setInputQuery,
     actions,
     showOnlyActive,
     setShowOnlyActive,
@@ -102,7 +103,7 @@ export default function Manager<T extends BaseEntity>({
   // Use callbacks for components that depend on props
   const EditAction = useCallback(
     ({ object }: { object: T }) => (
-      <DialogWrapper
+      <WasabiDialog
         size="medium"
         title={`${MANAGER_LABELS.edit} elemento`}
         trigger={<Button type="button">{ActionIcons.edit}</Button>}
@@ -112,14 +113,14 @@ export default function Manager<T extends BaseEntity>({
           handleSubmit={(v) => handleUpdate(v, object)}
           submitLabel={MANAGER_LABELS.edit}
         />
-      </DialogWrapper>
+      </WasabiDialog>
     ),
     [handleUpdate]
   );
 
   const ToggleAction = useCallback(
     ({ object }: { object: T }) => (
-      <DialogWrapper
+      <WasabiDialog
         size="small"
         title={MANAGER_LABELS.confirmToggleTitle}
         trigger={
@@ -133,7 +134,7 @@ export default function Manager<T extends BaseEntity>({
         <div>
           Stai per <b>{object.active ? "disattivare" : "attivare"}</b> questo elemento. Sei sicuro?
         </div>
-      </DialogWrapper>
+      </WasabiDialog>
     ),
     [handleToggle]
   );
@@ -141,7 +142,7 @@ export default function Manager<T extends BaseEntity>({
   const deleteActionFn = useCallback(
     ({ object }: { object: T }) =>
       deleteAction ? (
-        <DialogWrapper
+        <WasabiDialog
           variant="delete"
           title={MANAGER_LABELS.confirmDeleteTitle}
           trigger={
@@ -152,20 +153,20 @@ export default function Manager<T extends BaseEntity>({
           onDelete={() => handleDelete(object)}
         >
           {MANAGER_LABELS.confirmDeleteMsg}
-        </DialogWrapper>
+        </WasabiDialog>
       ) : null,
     [handleDelete, deleteAction]
   );
 
   const AddAction = useMemo(
     () => (
-      <DialogWrapper
+      <WasabiDialog
         size="medium"
         title={`${MANAGER_LABELS.add} elemento`}
         trigger={<Button type="button">{ActionIcons.add}</Button>}
       >
         <FormFields handleSubmit={handleAdd} submitLabel={MANAGER_LABELS.add} />
-      </DialogWrapper>
+      </WasabiDialog>
     ),
     [handleAdd]
   );
@@ -181,11 +182,11 @@ export default function Manager<T extends BaseEntity>({
       useTable({
         data: filteredData,
         columns: tableColumns,
-        globalFilter,
-        setGlobalFilter,
+        query: inputQuery,
+        setQuery: setInputQuery,
         pagination: pagination ? { mode: "client", pageSize: 10 } : undefined,
       }),
-    [filteredData, tableColumns, globalFilter, setGlobalFilter, pagination]
+    [filteredData, tableColumns, inputQuery, setInputQuery, pagination]
   );
 
   return (
@@ -194,8 +195,8 @@ export default function Manager<T extends BaseEntity>({
         resetClassName="ml-auto"
         table={table}
         AddComponent={AddAction}
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
+        globalFilter={inputQuery}
+        setGlobalFilter={setInputQuery}
         onReset={() => setShowOnlyActive(true)}
       >
         <div className="space-x-4 flex items-center ">

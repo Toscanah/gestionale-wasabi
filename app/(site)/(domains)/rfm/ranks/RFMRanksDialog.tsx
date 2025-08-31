@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import useRfmRanks from "@/app/(site)/hooks/rfm/useRfmRanks";
 import {
   Accordion,
@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RFMRankForm from "./RFMRankForm";
-import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
+import { RFMRankRule } from "@/app/(site)/lib/shared/types/rfm";
 import { useEffect, useRef, useState } from "react";
 import { DEFAULT_RANK_RULE } from "@/app/(site)/hooks/rfm/config";
 import { Trash } from "@phosphor-icons/react";
@@ -31,7 +31,7 @@ export default function RFMRanksDialog() {
   }, []);
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       title="Rank RFM"
       putSeparator
       putUpperBorder
@@ -90,6 +90,6 @@ export default function RFMRanksDialog() {
           </div>
         ))}
       </Accordion>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

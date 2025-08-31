@@ -12,7 +12,6 @@ import { formSchema } from "./form";
 import { getProductFields } from "./form";
 import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 import { Category } from "@prisma/client";
-import { ALL_CATEGORIES } from "../../../hooks/statistics/useProductsStats";
 import dynamic from "next/dynamic";
 
 const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
@@ -21,11 +20,11 @@ const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/R
 
 type FormValues = Partial<Product>;
 
-// const allCategories: Category = {
-//   id: -1,
-//   category: "all",
-//   active: true,
-// };
+const ALL_CATEGORIES: Category = {
+  id: -1,
+  category: "all",
+  active: true,
+};
 
 export default function ProductDashboard() {
   const [loading, setLoading] = useState<boolean>(true);

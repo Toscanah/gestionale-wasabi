@@ -6,25 +6,25 @@ import addRiceBatch from "../../lib/db/rice/addRiceBatch";
 import addRiceLog from "../../lib/db/rice/addRiceLog";
 import updateRiceBatch from "../../lib/db/rice/updateRiceBatch";
 import deleteRiceBatch from "../../lib/db/rice/deleteRiceBatch";
-import { RICE_SCHEMAS } from "../../lib/shared/schemas/rice";
+import { RICE_REQUESTS } from "../../lib/shared/schemas/rice";
 
 const POST_ACTIONS = new Map([
-  ["addRiceBatch", { func: addRiceBatch, schema: RICE_SCHEMAS.addRiceBatch }],
-  ["addRiceLog", { func: addRiceLog, schema: RICE_SCHEMAS.addRiceLog }],
+  ["addRiceBatch", { func: addRiceBatch, schema: RICE_REQUESTS.addRiceBatch }],
+  ["addRiceLog", { func: addRiceLog, schema: RICE_REQUESTS.addRiceLog }],
 ]);
 
 const PATCH_ACTIONS = new Map([
-  ["updateRiceBatch", { func: updateRiceBatch, schema: RICE_SCHEMAS.updateRiceBatch }],
+  ["updateRiceBatch", { func: updateRiceBatch, schema: RICE_REQUESTS.updateRiceBatch }],
 ]);
 
 const GET_ACTIONS = new Map([
-  ["getDailyRiceUsage", { func: getDailyRiceUsage, schema: RICE_SCHEMAS.getDailyRiceUsage }],
-  ["getRiceBatches", { func: getRiceBatches, schema: RICE_SCHEMAS.getRiceBatches }],
-  ["getRiceLogs", { func: getRiceLogs, schema: RICE_SCHEMAS.getRiceLogs }],
+  ["getDailyRiceUsage", { func: getDailyRiceUsage, schema: RICE_REQUESTS.getDailyRiceUsage }],
+  ["getRiceBatches", { func: getRiceBatches, schema: RICE_REQUESTS.getRiceBatches }],
+  ["getRiceLogs", { func: getRiceLogs, schema: RICE_REQUESTS.getRiceLogs }],
 ]);
 
 const DELETE_ACTIONS = new Map([
-  ["deleteRiceBatch", { func: deleteRiceBatch, schema: RICE_SCHEMAS.deleteRiceBatch }],
+  ["deleteRiceBatch", { func: deleteRiceBatch, schema: RICE_REQUESTS.deleteRiceBatch }],
 ]);
 
 export const RICE_ACTIONS: ActionsMapRecord = {

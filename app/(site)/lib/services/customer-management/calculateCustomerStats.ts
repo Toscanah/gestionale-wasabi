@@ -30,7 +30,6 @@ function calculateAverageOrders(orders: BaseOrder[]) {
 
 export default function calculateCustomerStats(
   dateFilteredOrders: BaseOrder[],
-  lifetimeOrders: BaseOrder[],
   dateFilteredOrdersCount: number,
   lastOrderDateLifetime: Date | undefined,
   averageSpendingFiltered: number

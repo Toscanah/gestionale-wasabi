@@ -4,7 +4,7 @@ import { AnyOrder, PickupOrder } from "@/app/(site)/lib/shared"
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import WhenSelector from "../../../../components/ui/time/WhenSelector";
+import WhenSelector from "../../../../components/ui/filters/time/WhenSelector";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import useFocusCycle from "../../../../hooks/focus/useFocusCycle";
 import fetchRequest from "../../../../lib/api/fetchRequest";
@@ -12,7 +12,7 @@ import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Plus, Question } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
 import { cn } from "@/lib/utils";
@@ -55,7 +55,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
   };
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       title={order.id !== -1 ? "" : "Ordine per asporto"}
       size={order.id !== -1 ? "large" : "medium"}
       open={open}
@@ -185,6 +185,6 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
           <OrderTable />
         </OrderProvider>
       )}
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

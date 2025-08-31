@@ -2,7 +2,7 @@ import calculateRFM from "../../services/rfm/calculateRFM";
 import { calculateRfmRank } from "../../services/rfm/calculateRfmRank";
 import { calculateRfmScore } from "../../services/rfm/calculateRfmScore";
 import { CustomerWithDetails } from "../../shared";
-import { RFMConfig } from "../../shared/types/RFM";
+import { RFMConfig } from "../../shared/types/rfm";
 import prisma from "../db";
 
 export default async function updateCustomerRFM({

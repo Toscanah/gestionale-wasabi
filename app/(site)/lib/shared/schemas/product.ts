@@ -1,16 +1,13 @@
 import { z } from "zod";
-import {
-  createInputSchema,
-  NoContentSchema,
-  ToggleDeleteObjectSchema,
-  updateInputSchema,
-  wrapSchema,
-} from "./common";
+
 import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
-import { ProductInOrderWithOptionsSchema } from "../models/Product";
-import TimeScopeFilter from "../../../components/filters/shift/TimeScope";
-import { ShiftType } from "../enums/Shift";
-import { SchemaInputs } from "../types/SchemaInputs";
+import { ProductInOrderWithOptionsSchema } from "../models/product";
+import { ShiftFilterValue } from "../enums/shift";
+import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
+import { NoContentRequestSchema } from "./common/no-content";
+import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
+import { ApiContract } from "../types/api-contract";
+import { PeriodRequestSchema } from "./common/period";
 
 export const CreateProductInputSchema = createInputSchema(ProductSchema).partial({
   category_id: true,
@@ -27,17 +24,9 @@ export const UpdateProductSchema = wrapSchema("product", UpdateProductInputSchem
 
 export const GetProductsWithStatsSchema = z.object({
   filters: z.object({
-    time: z.object({
-      timeScope: z.nativeEnum(TimeScopeFilter),
-      from: z
-        .preprocess((arg) => (typeof arg === "string" ? new Date(arg) : arg), z.date())
-        .optional(),
-      to: z
-        .preprocess((arg) => (typeof arg === "string" ? new Date(arg) : arg), z.date())
-        .optional(),
-    }),
-    shift: z.nativeEnum(ShiftType),
-    categoryId: z.number().optional(),
+    period: PeriodRequestSchema,
+    shift: z.nativeEnum(ShiftFilterValue).optional(),
+    categoryIds: z.array(z.number()).optional(),
   }),
 });
 
@@ -77,8 +66,8 @@ export const DeleteProductsFromOrderSchema = z.object({
   cooked: z.boolean().default(false),
 });
 
-export const PRODUCT_SCHEMAS = {
-  getProducts: NoContentSchema,
+export const PRODUCT_REQUESTS = {
+  getProducts: NoContentRequestSchema,
   updateProductVariationInOrder: UpdateProductVariationInOrderSchema,
   createNewProduct: CreateProductSchema,
   updateProduct: UpdateProductSchema,
@@ -86,10 +75,12 @@ export const PRODUCT_SCHEMAS = {
   updateProductInOrder: UpdateProductInOrderSchema,
   addProductsToOrder: AddProductsToOrderSchema,
   updateProductOptionsInOrder: UpdateProductOptionsInOrderSchema,
-  toggleProduct: ToggleDeleteObjectSchema,
+  toggleProduct: ToggleDeleteEntityRequestSchema,
   updatePrintedAmounts: UpdatePrintedAmountsSchema,
   deleteProductsFromOrder: DeleteProductsFromOrderSchema,
   getProductsWithStats: GetProductsWithStatsSchema,
 };
 
-export type ProductSchemaInputs = SchemaInputs<typeof PRODUCT_SCHEMAS>;
+export const PRODUCT_RESPONSES = {};
+
+export type ProductContract = ApiContract<typeof PRODUCT_REQUESTS, typeof PRODUCT_RESPONSES>;

@@ -1,111 +1,90 @@
-import { useCallback, useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Category } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { ProductWithStats } from "@/app/(site)/lib/shared/types/ProductWithStats";
-import TimeScopeFilter from "../../components/filters/shift/TimeScope";
-import { ShiftType } from "../../lib/shared/enums/Shift";
-
-const DEFAULT_START_DATE = new Date(new Date().setHours(0, 0, 0, 0));
-const DEFAULT_END_DATE = new Date(new Date().setHours(23, 59, 59, 999));
-const DEFAULT_DATE: DateRange = {
-  from: DEFAULT_START_DATE,
-  to: DEFAULT_END_DATE,
-};
-
-export const ALL_CATEGORIES = {
-  id: -1,
-  category: "all",
-  active: true,
-};
+import { ProductWithStats } from "@/app/(site)/lib/shared/types/product-with-stats";
+import { CategoryContract, ProductContract, ShiftFilterValue } from "@/app/(site)/lib/shared"; // same enum used elsewhere
+import { startOfDay, endOfDay } from "date-fns";
+import TODAY_PERIOD from "../../lib/shared/constants/today-period";
 
 export default function useProductsStats() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [period, setPeriod] = useState<DateRange | undefined>(TODAY_PERIOD);
+  const [shift, setShift] = useState<ShiftFilterValue>(ShiftFilterValue.ALL);
+  const [categoryIds, setCategoryIds] = useState<number[]>([]);
 
-  const [products, setProducts] = useState<ProductWithStats[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductWithStats[]>([]);
+  const { data: allCategories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () =>
+      (
+        await fetchRequest<CategoryContract["Responses"]["GetCategories"]>(
+          "GET",
+          "/api/categories",
+          "getCategories"
+        )
+      ).filter((c) => c.active),
+    staleTime: 1000 * 60 * 10,
+  });
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Category>(ALL_CATEGORIES);
+  const filters: ProductContract["Requests"]["GetProductsWithStats"]["filters"] = useMemo(() => {
+    const periodFilter = period?.from
+      ? { from: period.from, to: period.to ?? period.from }
+      : undefined;
 
-  const [timeScopeFilter, setTimeScopeFilter] = useState<TimeScopeFilter>(TimeScopeFilter.ALL_TIME);
-  const [dateFilter, setDateFilter] = useState<DateRange | undefined>(DEFAULT_DATE);
-  const [shiftFilter, setShiftFilter] = useState<ShiftType>(ShiftType.ALL);
+    const shiftFilter = shift === ShiftFilterValue.ALL ? undefined : shift;
 
-  useEffect(() => {
-    fetchInitialProducts();
-    fetchCategories();
-  }, []);
+    const categoryFilter =
+      categoryIds.length === 0 || categoryIds.length === allCategories.length
+        ? undefined
+        : categoryIds;
 
-  useEffect(() => {
-    const isCustom = timeScopeFilter === TimeScopeFilter.CUSTOM_RANGE;
-    const hasValidDates = dateFilter?.from && dateFilter?.to;
+    return {
+      period: periodFilter,
+      shift: shiftFilter,
+      categoryIds: categoryFilter,
+    };
+  }, [period, shift, categoryIds, allCategories]);
 
-    if (isCustom && !hasValidDates) {
-      setFilteredProducts([]);
-      return;
-    }
+  // ---- products query ----
+  const { data: filteredProducts = [], isLoading } = useQuery({
+    queryKey: ["products-stats", { filters }],
+    queryFn: async (): Promise<ProductWithStats[]> => {
+      return await fetchRequest<ProductWithStats[]>(
+        "POST",
+        "/api/products",
+        "getProductsWithStats",
+        { filters }
+      );
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
-    fetchProductsWithFilter();
-  }, [timeScopeFilter, dateFilter, shiftFilter, selectedCategory]);
-
-  const fetchCategories = () =>
-    fetchRequest<Category[]>("GET", "/api/categories/", "getCategories").then((fetchedCategories) =>
-      setCategories(fetchedCategories.filter((c) => c.active))
-    );
-
-  const fetchInitialProducts = () => {
-    setIsLoading(true);
-
-    fetchRequest<ProductWithStats[]>("POST", "/api/products", "getProductsWithStats", {
-      filters: {
-        time: {
-          timeScope: TimeScopeFilter.ALL_TIME,
-        },
-        shift: ShiftType.ALL,
-      },
-    })
-      .then(setProducts)
-      .finally(() => setIsLoading(false));
-  };
-
-  const fetchProductsWithFilter = useCallback(() => {
-    setIsLoading(true);
-    fetchRequest<ProductWithStats[]>("POST", "/api/products", "getProductsWithStats", {
-      filters: {
-        time: {
-          timeScope: timeScopeFilter,
-          from: dateFilter?.from ? new Date(dateFilter.from) : undefined,
-          to: dateFilter?.to ? new Date(dateFilter.to) : undefined,
-        },
-        shift: shiftFilter,
-        categoryId: selectedCategory.id === -1 ? undefined : selectedCategory.id,
-      },
-    })
-      .then(setFilteredProducts)
-      .finally(() => setIsLoading(false));
-  }, [timeScopeFilter, dateFilter, shiftFilter, selectedCategory]);
-
+  // ---- reset ----
   const handleReset = () => {
-    setTimeScopeFilter(TimeScopeFilter.ALL_TIME);
-    setDateFilter(DEFAULT_DATE);
-    setSelectedCategory(ALL_CATEGORIES);
-    setShiftFilter(ShiftType.ALL);
-    fetchInitialProducts();
+    setPeriod(TODAY_PERIOD);
+    setShift(ShiftFilterValue.ALL);
+    setCategoryIds(allCategories.map((c) => c.id)); // default = all categories
   };
+
+  const showReset =
+    shift !== ShiftFilterValue.ALL ||
+    categoryIds.length !== allCategories.length ||
+    !(
+      period?.from?.getTime() === TODAY_PERIOD.from?.getTime() &&
+      period?.to?.getTime() === TODAY_PERIOD.to?.getTime()
+    );
 
   return {
     filteredProducts,
-    categories,
-    selectedCategory,
-    setSelectedCategory,
-    timeScopeFilter,
-    setTimeScopeFilter,
-    dateFilter,
-    setDateFilter,
-    shiftFilter,
-    setShiftFilter,
+    allCategories,
+    categoryIds,
+    setCategoryIds,
+    shift,
+    setShift,
+    period,
+    setPeriod,
     handleReset,
-    isLoading,
+    showReset,
+    isLoading: isLoading,
   };
 }

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import TimePicker from "../../../components/ui/time/TimePicker";
+import TimeWindowFilter from "../../../components/ui/filters/time/TimeWindowFilter";
 
 export default function RestaurantSettings() {
   const { settings, updateSettings } = useWasabiContext();

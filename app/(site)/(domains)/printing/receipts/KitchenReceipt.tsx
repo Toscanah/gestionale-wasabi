@@ -4,7 +4,7 @@ import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType } from "@prisma/client";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
-import { GlobalSettings } from "../../../lib/shared/types/Settings";
+import { GlobalSettings } from "../../../lib/shared/types/settings";
 import { BIG_PRINT, SMALL_PRINT } from "../constants";
 
 const calculateAdjustedTime = (originalTime: string) => {

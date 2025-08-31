@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GlobalSettings } from "../lib/shared/types/Settings";
+import { GlobalSettings } from "../lib/shared/types/settings";
 import { PREDEFINED_PRINTERS } from "../(domains)/settings/application/PrinterChoice";
 
 export const DEFAULT_SETTINGS: GlobalSettings = {

@@ -1,49 +1,52 @@
 "use client";
 
 import { OrderType } from "@prisma/client";
-import { isSameDay } from "date-fns";
+import { endOfDay, isSameDay, startOfDay } from "date-fns";
 import React from "react";
 import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import TableControls from "../../../components/table/TableControls";
-import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
 import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
 import GoBack from "../../../components/ui/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
 import columns from "./columns";
-import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
+import useQueryFilter from "../../../hooks/table/useGlobalFilter";
 import usePagination from "@/app/(site)/hooks/table/usePagination";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import ShiftFilterSelector from "../../../components/filters/shift/ShiftFilterSelector";
 import usePaymentsHistory from "@/app/(site)/hooks/payments/usePaymentsHistory";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
+import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
+import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
+import OrderTypesFilter from "@/app/(site)/components/ui/filters/select/OrderTypesFilter";
+import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
+import { debounce } from "lodash";
+import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
 
 export default function PaymentsTable() {
-  const [globalFilter, setGlobalFilter] = useGlobalFilter();
-  const { page, pageSize, setPage, setPageSize, resetPagination } = usePagination({});
+  const { page, pageSize, setPage, setPageSize } = usePagination({});
 
   const {
-    orders,
+    filteredOrders,
     totalCount,
     isLoading,
-    typeFilter,
-    setTypeFilter,
-    shiftFilter,
-    setShiftFilter,
-    timeScope,
-    setTimeScope,
-    singleDate,
-    setSingleDate,
-    rangeDate,
-    setRangeDate,
+    orderTypes,
+    setOrderTypes,
+    shift,
+    setShift,
+    period,
+    setPeriod,
     handleReset,
     summaryData,
+    showReset,
+    debouncedQuery,
+    inputQuery,
+    setInputQuery,
   } = usePaymentsHistory({ page, pageSize });
 
   const { tableData, tableColumns } = useSkeletonTable({
     isLoading,
-    data: orders.sort(
+    data: filteredOrders.sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     ),
     columns,
@@ -53,8 +56,8 @@ export default function PaymentsTable() {
   const table = useTable({
     data: tableData,
     columns: tableColumns,
-    globalFilter,
-    setGlobalFilter,
+    query: debouncedQuery,
+    setQuery: setInputQuery,
     pagination: {
       mode: "server",
       pageSize,
@@ -70,87 +73,46 @@ export default function PaymentsTable() {
     },
   });
 
-  const OrderTypeSelector = () => (
-    <WasabiSingleSelect
-      disabled={isLoading}
-      className="h-10 max-w-sm"
-      groups={[
-        {
-          items: [
-            { name: "Tutti i tipi di ordine", value: "all" },
-            { name: "Tavolo", value: OrderType.TABLE },
-            { name: "Domicilio", value: OrderType.HOME },
-            { name: "Asporto", value: OrderType.PICKUP },
-          ],
-        },
-      ]}
-      value={typeFilter}
-      defaultValue="all"
-      onValueChange={(newType) => setTypeFilter(newType as OrderType | "all")}
-    />
-  );
+  const isSummaryEmpty = Object.values(summaryData.totals).every(({ total }) => total === 0);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col gap-4 max-h-[90%]">
-        <TableControls
-          title={<span className="text-2xl h-full flex items-end">Pagamenti</span>}
-          table={table}
-          globalFilter={globalFilter}
-          setGlobalFilter={(filter) => {
-            setGlobalFilter(filter);
-            // table.setPageIndex(0);
-          }}
-          onReset={() => {
-            handleReset();
-            resetPagination();
-          }}
-          resetDisabled={isLoading}
-          searchBarDisabled={isLoading}
-        >
-          <ShiftFilterSelector
+        <div className="w-full flex items-center gap-4">
+          <span className="font-bold text-xl">Pagamenti</span>
+
+          <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
+
+          <CalendarFilter
+            mode="range"
+            defaultValue={{
+              from: startOfDay(new Date()),
+              to: endOfDay(new Date()),
+            }}
+            dateFilter={period}
+            handleDateFilter={setPeriod}
             disabled={isLoading}
-            shiftFilter={shiftFilter}
-            onShiftChange={setShiftFilter}
           />
 
-          <OrderTypeSelector />
+          <ShiftFilter disabled={isLoading} selectedShift={shift} onShiftChange={setShift} />
 
-          <WasabiSingleSelect
-            className="h-10"
-            value={timeScope}
+          <OrderTypesFilter
+            selectedTypes={orderTypes}
+            onTypesChange={setOrderTypes}
             disabled={isLoading}
-            onValueChange={(newScope) => setTimeScope(newScope as any)}
-            groups={[
-              {
-                items: [
-                  { name: "Giorno specifico", value: "single" },
-                  { name: "Arco temporale", value: "range" },
-                ],
-              },
-            ]}
           />
 
-          {timeScope === "single" ? (
-            <CalendarFilter
-              mode="single"
-              dateFilter={singleDate}
-              handleDateFilter={setSingleDate}
-              disabled={isLoading}
-            />
-          ) : (
-            <CalendarFilter
-              mode="range"
-              dateFilter={rangeDate}
-              handleDateFilter={setRangeDate}
-              disabled={isLoading}
-            />
-          )}
-        </TableControls>
+          <ResetFiltersButton
+            onReset={handleReset}
+            className="ml-auto"
+            show={!isLoading && showReset}
+          />
+        </div>
 
         <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />
 
         <TablePagination
+          disabled={isLoading}
           table={table}
           page={page}
           pageSize={pageSize}
@@ -161,15 +123,8 @@ export default function PaymentsTable() {
         />
 
         <div className="mt-auto flex justify-between">
-          <PaymentsSummary summaryData={summaryData} />
-          <PrintSummary
-            summaryData={summaryData}
-            firstOrderDate={
-              (singleDate
-                ? orders.filter((order) => isSameDay(new Date(order.created_at), singleDate))
-                : orders)[0]?.created_at
-            }
-          />
+          <PaymentsSummary summaryData={summaryData} disabled={isSummaryEmpty} />
+          <PrintSummary summaryData={summaryData} period={period} disabled={isSummaryEmpty} />
         </div>
 
         <GoBack path="/home" />

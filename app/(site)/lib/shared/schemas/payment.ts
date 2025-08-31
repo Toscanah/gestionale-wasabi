@@ -1,43 +1,29 @@
 import { PaymentSchema } from "@/prisma/generated/zod";
-import { NoContentSchema, PaginationSchema } from "./common";
 import { z } from "zod";
-import { ProductInOrderWithOptionsSchema } from "../models/Product";
-import { SchemaInputs } from "../types/SchemaInputs";
+import { ProductInOrderWithOptionsSchema } from "../models/product";
+import { ApiContract } from "../types/api-contract";
 import { OrderType } from "@prisma/client";
-import { ShiftType } from "../enums/Shift";
+import { ShiftFilterValue } from "../enums/shift";
+import { NoContentRequestSchema } from "./common/no-content";
+import { OrderWithPaymentsAndTotalsSchema } from "../models/order";
+import { PaginationRequestSchema, PaginationResponseSchema } from "./common/pagination";
 
-export const PayOrderSchema = z.object({
+export const PayOrderRequestSchema = z.object({
   payments: z.array(PaymentSchema.omit({ id: true, created_at: true, payment_group_code: true })),
   productsToPay: z.array(ProductInOrderWithOptionsSchema),
 });
 
-export const GetRomanPaymentsByOrderSchema = z.object({
+export const GetRomanPaymentsByOrderRequestSchema = z.object({
   orderId: z.number(),
 });
 
-export const GetOrderWithPaymentsSchema = PaginationSchema.extend({
-  filters: z.object({
-    type: z.nativeEnum(OrderType).optional(),
-    shift: z.nativeEnum(ShiftType).optional(),
-    timeScope: z.enum(["single", "range"]),
-    singleDate: z.coerce.date().optional(),
-    rangeDate: z
-      .object({
-        from: z.coerce.date(),
-        to: z.coerce.date(),
-      })
-      .optional(),
-    search: z.string().optional(),
-  }),
-  summary: z.boolean().optional(),
-});
-
-export const PAYMENT_SCHEMAS = {
-  payOrder: PayOrderSchema,
-  getOrdersWithPayments: GetOrderWithPaymentsSchema,
-  getOrdersWithPaymentsSplitted: NoContentSchema,
-  getRomanPaymentsByOrder: GetRomanPaymentsByOrderSchema,
-  analyzePaymentScopes: NoContentSchema,
+export const PAYMENT_REQUESTS = {
+  payOrder: PayOrderRequestSchema,
+  getOrdersWithPaymentsSplitted: NoContentRequestSchema,
+  getRomanPaymentsByOrder: GetRomanPaymentsByOrderRequestSchema,
+  analyzePaymentScopes: NoContentRequestSchema,
 };
 
-export type PaymentSchemaInputs = SchemaInputs<typeof PAYMENT_SCHEMAS>;
+export const PAYMENT_RESPONSES = {};
+
+export type PaymentContract = ApiContract<typeof PAYMENT_REQUESTS, typeof PAYMENT_RESPONSES>;

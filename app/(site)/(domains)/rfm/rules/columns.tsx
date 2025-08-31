@@ -1,5 +1,5 @@
 import { ActionColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import { RFMDimension, RFMRangeRule } from "@/app/(site)/lib/shared/types/RFM";
+import { RFMDimension, RFMRangeRule } from "@/app/(site)/lib/shared/types/rfm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash } from "@phosphor-icons/react";

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import DialogWrapper from "../../../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../../../components/ui/dialog/WasabiDialog";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ReactNode, useState } from "react";
@@ -36,7 +36,7 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
   );
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       size="medium"
       variant="delete"
       triggerClassName="flex-1"
@@ -44,6 +44,6 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
       onDelete={() => onDelete(productsCooked)}
     >
       <DialogContent />
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

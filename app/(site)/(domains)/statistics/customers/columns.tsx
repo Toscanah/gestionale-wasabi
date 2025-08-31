@@ -1,8 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns"; // Ensure date-fns is installed
-import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
 import { Button } from "@/components/ui/button";
-import { CustomerWithStats } from "../../../lib/shared/types/CustomerWithStats";
 import OrderHistory from "../../../components/order-history/OrderHistory";
 import {
   ActionColumn,
@@ -14,6 +13,24 @@ import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn"
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { CustomerStatsTableMeta } from "./page";
 import chroma from "chroma-js";
+import { CustomerWithStats } from "@/app/(site)/lib/shared";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Warning } from "@phosphor-icons/react";
+
+const QuickTooltip = ({ title, label }: { title: string; label: string }) => (
+  <Tooltip delayDuration={0}>
+    <TooltipTrigger className="flex gap-2 items-center">
+      <Warning color={"yellow"} className="h-4 w-4" />
+      {title}
+    </TooltipTrigger>
+    <TooltipContent side="bottom">
+      <p className="w-60 whitespace-normal break-words">
+        {label} è calcolato sull'intera storia degli ordini del cliente e non è influenzato dai
+        filtri per data.
+      </p>
+    </TooltipContent>
+  </Tooltip>
+);
 
 const columns: ColumnDef<CustomerWithStats>[] = [
   FieldColumn({
@@ -47,15 +64,14 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   // }),
 
   ValueColumn({
-    header: "RFM",
+    header: <QuickTooltip title="RFM" label="L'indice RFM" />,
     value: (row) => roundToTwo(row.original.rfm.score.finalScore),
     accessor: (customer) => customer.rfm.score.finalScore,
   }),
 
   ValueColumn({
-    header: "Rank",
+    header: <QuickTooltip title="Rank" label="Il rank RFM" />,
     value: (row, meta) => {
-      console.log(row.original.rfm.rank)
       const { ranks, theme } = meta as CustomerStatsTableMeta;
 
       const colorArray =
@@ -64,7 +80,9 @@ const columns: ColumnDef<CustomerWithStats>[] = [
       const sorted = [...ranks].sort((a, b) => b.priority - a.priority);
 
       const currentRank = row.original.rfm.rank;
-      const index = sorted.findIndex((r) => r.rank === currentRank);
+      const index = sorted.findIndex(
+        (r) => r.rank.trim().toLowerCase() === currentRank.trim().toLowerCase()
+      );
 
       if (index === -1) return "-";
 
@@ -75,7 +93,8 @@ const columns: ColumnDef<CustomerWithStats>[] = [
     },
     accessor: (customer) => JSON.stringify(customer.rfm),
     sortingFn: (rowA, rowB, columnId) => {
-      const meta = (rowA.getAllCells().at(0)?.getContext().table.options.meta as CustomerStatsTableMeta) ?? {};
+      const meta =
+        (rowA.getAllCells().at(0)?.getContext().table.options.meta as CustomerStatsTableMeta) ?? {};
 
       const ranks = meta.ranks ?? [];
       // build lookup map (rank → priority)
@@ -127,7 +146,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
       const customer = row.original;
 
       return (
-        <DialogWrapper
+        <WasabiDialog
           size="mediumPlus"
           title="Storico cliente"
           putUpperBorder
@@ -138,7 +157,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
           }
         >
           <OrderHistory customer={customer} />
-        </DialogWrapper>
+        </WasabiDialog>
       );
     },
   }),

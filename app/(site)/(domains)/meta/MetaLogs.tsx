@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
 import { AnyOrder, HomeOrder } from "../../lib/shared";
 import {
   Accordion,
@@ -29,7 +29,7 @@ export default function MetaLogs({ order }: MetaLogsProps) {
   const messages = parsedOrder.home_order?.messages;
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       title="Messaggi inviati/ricevuti"
       trigger={<Button className="!text-background">Vedi</Button>}
     >
@@ -82,6 +82,6 @@ export default function MetaLogs({ order }: MetaLogsProps) {
       <Button className="text-2xl h-24" onClick={openWhatsAppChat}>
         Apri Chat Whatsapp
       </Button>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

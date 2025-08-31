@@ -1,9 +1,9 @@
-import { AddressSchemaInputs } from "../../shared";
+import { AddressContract } from "../../shared";
 import prisma from "../db";
 
 export default async function updateAddress({
   address,
-}: AddressSchemaInputs["UpdateAddressInput"]) {
+}: AddressContract["Requests"]["UpdateAddress"]) {
   return await prisma.address.update({
     data: {
       civic: address.civic,

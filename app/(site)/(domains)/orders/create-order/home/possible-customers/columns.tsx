@@ -5,7 +5,7 @@ import {
   FieldColumn,
   JoinColumn,
 } from "@/app/(site)/components/table/TableColumns";
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { Dispatch, SetStateAction } from "react";
@@ -50,7 +50,7 @@ const columns = (
   ActionColumn({
     header: "Azioni",
     action: (row) => (
-      <DialogWrapper
+      <WasabiDialog
         variant="delete"
         size="small"
         trigger={<Button variant={"destructive"}>Elimina</Button>}
@@ -66,7 +66,7 @@ const columns = (
       >
         Stai per eliminare il seguente cliente con tutti i suoi dati correlati. Questa azione è
         definitiva e irriversibile
-      </DialogWrapper>
+      </WasabiDialog>
     ),
   }),
 ];

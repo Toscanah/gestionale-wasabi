@@ -1,5 +1,5 @@
 import {
-  EngagementSchemaInputs,
+  EngagementContract,
   ParsedEngagementPayload,
   ParsedEngagementTemplate,
 } from "@/app/(site)/lib/shared";
@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 type EditModeProps = {
   index: number;
   template: ParsedEngagementTemplate;
-  onChange: (updates: Partial<EngagementSchemaInputs["UpdateEngagementTemplateInput"]>) => void;
+  onChange: (updates: Partial<EngagementContract["Requests"]["UpdateEngagementTemplate"]>) => void;
   onDelete: (templateId: number) => Promise<void>;
   onSave: (template: ParsedEngagementTemplate) => Promise<void>;
 };

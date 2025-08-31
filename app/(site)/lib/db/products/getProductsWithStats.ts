@@ -1,44 +1,55 @@
-import { ProductWithStats, OptionStats } from "../../shared/types/ProductWithStats";
+import { ProductWithStats, OptionStats } from "../../shared/types/product-with-stats";
 import prisma from "../db";
 import { categoryInclude, optionsInclude } from "../includes";
-import TimeScopeFilter from "../../../components/filters/shift/TimeScope";
 import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
 import orderMatchesShift from "../../services/order-management/shift/orderMatchesShift";
-import { ShiftType } from "../../shared/enums/Shift";
-import { ProductSchemaInputs } from "../../shared";
+import { ProductContract, ShiftFilterValue } from "../../shared";
+import { endOfDay, startOfDay } from "date-fns";
+import normalizePeriod from "../../utils/global/date/normalizePeriod";
 
 export default async function getProductsWithStats({
   filters,
-}: ProductSchemaInputs["GetProductsWithStatsInput"]): Promise<ProductWithStats[]> {
-  const { time, shift, categoryId } = filters;
-  const { timeScope, from, to } = time;
+}: ProductContract["Requests"]["GetProductsWithStats"]): Promise<ProductWithStats[]> {
+  const { categoryIds, period, shift } = filters;
 
-  let startDate: Date | undefined;
-  let endDate: Date | undefined;
+  let dateFilter: { gte?: Date; lte?: Date } | undefined;
+  const normalizedPeriod = normalizePeriod(period);
 
-  if (timeScope == TimeScopeFilter.CUSTOM_RANGE && from && to) {
-    const parsedStartDate = new Date(from);
-    const parsedEndDate = new Date(to);
-
-    if (!isNaN(parsedStartDate.getTime()) && !isNaN(parsedEndDate.getTime())) {
-      parsedStartDate.setHours(0, 0, 0, 0);
-      parsedEndDate.setHours(23, 59, 59, 999);
-
-      startDate = new Date(parsedStartDate.getTime() - parsedStartDate.getTimezoneOffset() * 60000);
-      endDate = new Date(parsedEndDate.getTime() - parsedEndDate.getTimezoneOffset() * 60000);
+  if (normalizedPeriod && normalizedPeriod.from) {
+    if (normalizedPeriod.to) {
+      dateFilter = {
+        gte: startOfDay(new Date(normalizedPeriod.from)),
+        lte: endOfDay(new Date(normalizedPeriod.to)),
+      };
+    } else {
+      dateFilter = { gte: startOfDay(new Date(normalizedPeriod.from)) };
     }
+  } else {
+    dateFilter = undefined; // no restrictions
   }
-
-  const dateFilter = startDate && endDate ? { gte: startDate, lte: endDate } : undefined;
 
   const products = await prisma.product.findMany({
     where: {
       active: true,
-      category_id: categoryId ?? undefined,
+      ...(categoryIds && categoryIds.length > 0 ? { category_id: { in: categoryIds } } : {}),
     },
     include: {
       ...categoryInclude,
       orders: {
+        where: {
+          status: ProductInOrderStatus.IN_ORDER,
+          order: {
+            status: OrderStatus.PAID,
+            ...(dateFilter
+              ? {
+                  created_at: {
+                    ...(dateFilter.gte ? { gte: dateFilter.gte } : {}),
+                    ...(dateFilter.lte ? { lte: dateFilter.lte } : {}),
+                  },
+                }
+              : {}),
+          },
+        },
         include: {
           product: {
             select: {
@@ -48,16 +59,8 @@ export default async function getProductsWithStats({
           },
           order: {
             include: {
-              home_order: {
-                select: {
-                  when: true,
-                },
-              },
-              pickup_order: {
-                select: {
-                  when: true,
-                },
-              },
+              home_order: { select: { when: true } },
+              pickup_order: { select: { when: true } },
             },
           },
           ...optionsInclude,
@@ -68,22 +71,13 @@ export default async function getProductsWithStats({
 
   const filteredProducts = products
     .map((product) => {
-      const filteredOrders = product.orders.filter((productInOrder) => {
-        const order = productInOrder.order;
-
-        const isOrderPaid = order.status === OrderStatus.PAID;
-        const isWithinDate =
-          !dateFilter || (order.created_at >= dateFilter.gte && order.created_at <= dateFilter.lte);
-        const isValidStatus = productInOrder.status === ProductInOrderStatus.IN_ORDER;
-        const isInShift = orderMatchesShift(order, shift as ShiftType);
-
-        return isValidStatus && isOrderPaid && isWithinDate && isInShift;
-      });
+      const filteredOrders = product.orders.filter((productInOrder) =>
+        orderMatchesShift(productInOrder.order, shift as ShiftFilterValue)
+      );
 
       if (filteredOrders.length > 0) {
         return { ...product, orders: filteredOrders };
       }
-
       return null;
     })
     .filter(Boolean) as typeof products;

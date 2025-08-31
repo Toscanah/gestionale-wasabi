@@ -93,8 +93,8 @@ export default function Table<T>({
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows?.length > 0 &&
-              table.getRowModel().rows?.map((row, rowIndex) => {
+            {table.getRowModel().rows?.length > 0 ? (
+              table.getRowModel().rows.map((row, rowIndex) => {
                 const shouldStick = rowIndex === stickyRowIndex;
 
                 return (
@@ -129,7 +129,17 @@ export default function Table<T>({
                     ))}
                   </TableRow>
                 );
-              })}
+              })
+            ) : (
+              <TableRow className="h-max">
+                <TableCell
+                  colSpan={table.getAllColumns().length}
+                  className="h-max text-center text-muted-foreground"
+                >
+                  Nessun risultato
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </DataTable>
       )}

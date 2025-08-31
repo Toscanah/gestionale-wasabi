@@ -28,7 +28,7 @@ const JOIN_HEADERS: Record<JoinItemType, string> = {
  * @param title - The column title.
  * @param sort - Whether the column is sortable.
  */
-function buildHeader<T>(title: string = "", sort: boolean): ColumnDef<T>["header"] {
+function buildHeader<T>(title: ReactNode = "", sort: boolean): ColumnDef<T>["header"] {
   return ({ column }) =>
     sort ? (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
@@ -46,7 +46,7 @@ function buildHeader<T>(title: string = "", sort: boolean): ColumnDef<T>["header
  * @property sortable - Whether the column is sortable.
  */
 export type BaseColumnProps = {
-  header?: string;
+  header?: ReactNode;
   sortable?: boolean;
 };
 
@@ -62,7 +62,7 @@ type IndexColumn = BaseColumnProps;
  */
 export function IndexColumn<T>({ header = "#", sortable = true }: IndexColumn): ColumnDef<T> {
   return {
-    id: header,
+    id: typeof header === "string" ? header : "#",
     header: buildHeader<T>(header, sortable),
     cell: ({ row, table }) =>
       (table.getSortedRowModel()?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) ?? 0) + 1,
@@ -142,12 +142,12 @@ export function ValueColumn<T>({
   sortable = true,
   sortingFn = "alphanumeric",
 }: ValueColumn<T>): ColumnDef<T> {
-  if (header && header.trim() === "") {
+  if (typeof header === "string" && header.trim() === "") {
     throw new Error("ValueColumn: 'header' must be a non-empty string.");
   }
 
   const col: ColumnDef<T> = {
-    id: header ?? uniqueId(),
+    id: typeof header === "string" ? header : header !== undefined ? String(header) : uniqueId(),
     accessorFn: (original) => accessor(original),
     header: buildHeader<T>(header, sortable),
     cell: ({ row, table }) => value(row, table.options.meta),
@@ -176,7 +176,7 @@ type ActionColumn<T> = Pick<BaseColumnProps, "header"> & {
  */
 export function ActionColumn<T>({ action, header }: ActionColumn<T>): ColumnDef<T> {
   return {
-    id: (header && header.trim() !== "" ? header : uniqueId()),
+    id: typeof header === "string" && header.trim() !== "" ? header : uniqueId(),
     header: buildHeader(header, false),
     enableSorting: false,
     enableColumnFilter: false,

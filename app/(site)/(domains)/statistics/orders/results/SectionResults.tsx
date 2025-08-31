@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import RandomSpinner from "../../../../components/ui/misc/loader/RandomSpinner";
-import { Results } from "../../../../hooks/statistics/useOrdersStats";
+import { OrderStatsResults } from "../../../../hooks/statistics/useOrdersStats";
 import roundToTwo from "../../../../lib/utils/global/number/roundToTwo";
 import useTable from "@/app/(site)/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
+import { Button } from "@/components/ui/button";
+import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 
 interface SectionResultsProps {
-  results: Results;
+  results: OrderStatsResults;
+  isLoading: boolean;
 }
 
 export type ResultRecord = {
@@ -49,9 +52,8 @@ export default function SectionResults({
     pickupProducts,
     tableProducts,
   },
+  isLoading,
 }: SectionResultsProps) {
-  const [isLoading, setIsLoading] = useState(false);
-
   const totalOrders = homeOrders + pickupOrders + tableOrders;
   const totalRevenue = homeRevenue + pickupRevenue + tableRevenue;
   const totalSoups = homeSoups + pickupSoups + tableSoups;
@@ -120,19 +122,40 @@ export default function SectionResults({
     },
   ];
 
-  const table = useTable({ data: sections, columns: columns() });
+  const { tableData, tableColumns } = useSkeletonTable({
+    isLoading,
+    data: sections,
+    columns: columns(),
+    pageSize: sections.length, // or a fixed number of skeleton rows
+  });
+
+  const table = useTable({ data: tableData, columns: tableColumns });
+
+  function downloadCSV(data: ResultRecord[]) {
+    const headers = Object.keys(data[0]).join(",");
+    const rows = data.map((row) => Object.values(row).join(",")).join("\n");
+    const csv = [headers, rows].join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "statistiche_ordini.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
   return (
-    <>
-      <Separator orientation="horizontal" />
-
-      {isLoading ? (
-        <RandomSpinner isLoading={isLoading} />
-      ) : (
-        <div className="flex flex-col gap-8 w-full">
-          <Table table={table} />
-        </div>
-      )}
-    </>
+    <div className="flex flex-col gap-4 w-full">
+      <Table table={table} cellClassName={() => "h-20 max-h-20"} />
+      <Button
+        onClick={() => downloadCSV(sections)}
+        className="ml-auto px-3 py-1 text-sm border rounded hover:bg-muted"
+      >
+        (funzione IN_PROGRESS) Scarica CSV
+      </Button>
+    </div>
   );
 }

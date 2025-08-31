@@ -7,13 +7,13 @@ import {
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
-import { AnyOrder, PaymentSchemaInputs } from "@/app/(site)/lib/shared";
+import { AnyOrder, PaymentContract } from "@/app/(site)/lib/shared";
 import { randomUUID } from "crypto";
 
 export default async function payOrder({
   payments,
   productsToPay,
-}: PaymentSchemaInputs["PayOrderInput"]): Promise<AnyOrder> {
+}: PaymentContract["Requests"]["PayOrder"]): Promise<AnyOrder> {
   if (payments.length === 0) {
     throw new Error("No payments passed");
   }

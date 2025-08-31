@@ -16,7 +16,7 @@ export default async function executeAction(
     );
   }
 
-  const { func, schema } = actionEntry;
+  const { func, schema: schema } = actionEntry;
 
   try {
     const parsedContent = schema.safeParse(content);

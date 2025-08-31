@@ -11,8 +11,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import WasabiPopover from "../popover/WasabiPopover";
-import FilterTrigger from "./common/FilterTrigger";
+import WasabiPopover from "../../popover/WasabiPopover";
+import FilterTrigger from "../common/FilterTrigger";
 
 type CommandOption = {
   icon?: React.FC<React.SVGProps<SVGSVGElement>>;
@@ -29,18 +29,18 @@ type CommandGroupType = {
 interface WasabiSelectPropsMulti {
   mode: "multi";
   selectedValues: string[];
-  onChange: (next: string[]) => void;
+  onChange: (updatedValues: string[]) => void;
 }
 
 interface WasabiSelectPropsTransient {
   mode: "transient";
-  onChange: (next: string | null) => void;
+  onChange: (updatedValue: string) => void;
 }
 
 interface WasabiSelectPropsSingle {
   mode: "single";
-  selectedValue: string | null;
-  onChange: (next: string | null) => void;
+  selectedValue: string;
+  onChange: (updatedValue: string) => void;
 }
 
 type WasabiSelectProps = (
@@ -56,6 +56,8 @@ type WasabiSelectProps = (
   triggerClassName?: string;
   triggerIcon?: ElementType;
   disabled?: boolean;
+  shouldClear?: boolean;
+  allLabel?: string;
 };
 
 export default function SelectFilter(props: WasabiSelectProps) {
@@ -69,6 +71,8 @@ export default function SelectFilter(props: WasabiSelectProps) {
     showInput = true,
     triggerIcon,
     disabled,
+    shouldClear = true,
+    allLabel,
   } = props;
 
   const normalizedSelection = (
@@ -84,33 +88,36 @@ export default function SelectFilter(props: WasabiSelectProps) {
     }
 
     const current = props.selectedValues;
-    const next = current.includes(option.value)
+    const updatedValues = current.includes(option.value)
       ? current.filter((v) => v !== option.value)
       : [...current, option.value];
 
-    props.onChange(next);
+    props.onChange(updatedValues);
   };
 
   const handleReset = () => {
     if (mode === "single" || mode === "transient") {
-      props.onChange(null);
+      props.onChange("");
     } else {
       props.onChange([]);
     }
   };
 
-  const selectedLabels = allOptions.filter((o) => normalizedSelection.includes(o.value));
+  const selectedLabels =
+    mode === "multi" && props.allLabel && normalizedSelection.length === allOptions.length
+      ? [{ label: props.allLabel, value: "ALL" }]
+      : allOptions.filter((o) => normalizedSelection.includes(o.value));
 
   return (
     <WasabiPopover
       contentClassName={`p-0 ${contentClassName || ""}`}
       trigger={
         <FilterTrigger
-          onClear={handleReset}
+          onClear={mode == "transient" ? undefined : shouldClear ? handleReset : undefined}
           disabled={disabled}
           triggerIcon={triggerIcon}
           title={title}
-          labels={selectedLabels.map((o) => o.label)}
+          values={selectedLabels.map((o) => o.label)}
           className={triggerClassName}
         />
       }

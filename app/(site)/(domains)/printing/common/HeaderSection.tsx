@@ -1,6 +1,6 @@
 import { Br, Text } from "react-thermal-printer";
 import TimeSection from "./TimeSection";
-import { GlobalSettings } from "../../../lib/shared/types/Settings";
+import { GlobalSettings } from "../../../lib/shared/types/settings";
 import { DEFAULT_SETTINGS } from "../../../hooks/useSettings";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
 import { BIG_PRINT, SMALL_PRINT } from "../constants";

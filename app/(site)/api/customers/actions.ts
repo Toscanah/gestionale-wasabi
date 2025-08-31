@@ -10,56 +10,56 @@ import updateCustomerFromAdmin from "../../lib/db/customers/updateCustomerFromAd
 import getCustomersByDoorbell from "../../lib/db/customers/getCustomersByDoorbell";
 import deleteCustomerById from "../../lib/db/customers/deleteCustomerById";
 import computeCustomersStats from "../../lib/db/customers/computeCustomersStats";
-import { CUSTOMER_SCHEMAS } from "../../lib/shared";
+import { CUSTOMER_REQUESTS } from "../../lib/shared";
 import updateCustomerOrderNotes from "../../lib/db/customers/updateCustomerOrderNotes";
-import updateCustomersRFM from "../../lib/db/customers/updateCustomerRFM";
+import updateCustomersRFM from "../../lib/db/customers/updateCustomersRFM";
 
 const POST_ACTIONS = new Map([
-  ["createCustomer", { func: createCustomer, schema: CUSTOMER_SCHEMAS.createCustomer }],
+  ["createCustomer", { func: createCustomer, schema: CUSTOMER_REQUESTS.createCustomer }],
   [
     "computeCustomersStats",
-    { func: computeCustomersStats, schema: CUSTOMER_SCHEMAS.computeCustomersStats },
+    { func: computeCustomersStats, schema: CUSTOMER_REQUESTS.computeCustomersStats },
   ],
 ]);
 
 const PATCH_ACTIONS = new Map([
   [
     "updateCustomerFromAdmin",
-    { func: updateCustomerFromAdmin, schema: CUSTOMER_SCHEMAS.updateCustomerFromAdmin },
+    { func: updateCustomerFromAdmin, schema: CUSTOMER_REQUESTS.updateCustomerFromAdmin },
   ],
   [
     "updateCustomerFromOrder",
-    { func: updateCustomerFromOrder, schema: CUSTOMER_SCHEMAS.updateCustomerFromOrder },
+    { func: updateCustomerFromOrder, schema: CUSTOMER_REQUESTS.updateCustomerFromOrder },
   ],
-  ["toggleCustomer", { func: toggleCustomer, schema: CUSTOMER_SCHEMAS.toggleCustomer }],
+  ["toggleCustomer", { func: toggleCustomer, schema: CUSTOMER_REQUESTS.toggleCustomer }],
   [
     "updateCustomerAddresses",
-    { func: updateCustomerAddresses, schema: CUSTOMER_SCHEMAS.updateCustomerAddresses },
+    { func: updateCustomerAddresses, schema: CUSTOMER_REQUESTS.updateCustomerAddresses },
   ],
   [
     "updateCustomerOrderNotes",
-    { func: updateCustomerOrderNotes, schema: CUSTOMER_SCHEMAS.updateCustomerOrderNotes },
+    { func: updateCustomerOrderNotes, schema: CUSTOMER_REQUESTS.updateCustomerOrderNotes },
   ],
-  ["updateCustomersRFM", { func: updateCustomersRFM, schema: CUSTOMER_SCHEMAS.updateCustomersRFM }],
+  ["updateCustomersRFM", { func: updateCustomersRFM, schema: CUSTOMER_REQUESTS.updateCustomersRFM }],
 ]);
 
 const DELETE_ACTIONS = new Map([
-  ["deleteCustomerById", { func: deleteCustomerById, schema: CUSTOMER_SCHEMAS.deleteCustomerById }],
+  ["deleteCustomerById", { func: deleteCustomerById, schema: CUSTOMER_REQUESTS.deleteCustomerById }],
 ]);
 
 const GET_ACTIONS = new Map([
-  ["getCustomerByPhone", { func: getCustomerByPhone, schema: CUSTOMER_SCHEMAS.getCustomerByPhone }],
+  ["getCustomerByPhone", { func: getCustomerByPhone, schema: CUSTOMER_REQUESTS.getCustomerByPhone }],
   [
     "getCustomersWithDetails",
-    { func: getCustomersWithDetails, schema: CUSTOMER_SCHEMAS.getCustomersWithDetails },
+    { func: getCustomersWithDetails, schema: CUSTOMER_REQUESTS.getCustomersWithDetails },
   ],
   [
     "getCustomerWithDetails",
-    { func: getCustomerWithDetails, schema: CUSTOMER_SCHEMAS.getCustomerWithDetails },
+    { func: getCustomerWithDetails, schema: CUSTOMER_REQUESTS.getCustomerWithDetails },
   ],
   [
     "getCustomersByDoorbell",
-    { func: getCustomersByDoorbell, schema: CUSTOMER_SCHEMAS.getCustomersByDoorbell },
+    { func: getCustomersByDoorbell, schema: CUSTOMER_REQUESTS.getCustomersByDoorbell },
   ],
 ]);
 

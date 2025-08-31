@@ -1,23 +1,18 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
-import { PaymentsSummaryData } from "../../../hooks/a";
 import { SMALL_PRINT } from "../constants";
+import { PaymentsSummaryData } from "@/app/(site)/lib/services/payments/calculatePaymentsSummary";
+import { DateRange } from "react-day-picker";
+import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
+import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
 
 export interface PaymentSummaryReceiptProps {
   summaryData: PaymentsSummaryData;
-  date: Date;
+  period: string;
 }
 
-export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSummaryReceiptProps) {
-  const formattedDate = sanitazeReceiptText(
-    new Intl.DateTimeFormat("it-IT", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    }).format(date)
-  );
-
+export default function PaymentSummaryReceipt({ summaryData, period }: PaymentSummaryReceiptProps) {
   const {
     totals,
     homeOrdersAmount,
@@ -34,8 +29,10 @@ export default function PaymentSummaryReceipt({ summaryData, date }: PaymentSumm
 
   return (
     <>
-      <Text inline>Recapito del giorno</Text>
-      <Text bold> {formattedDate}</Text>
+      <Row
+        left={<Text size={SMALL_PRINT}>Periodo</Text>}
+        right={<Text size={SMALL_PRINT}>{fitReceiptText(sanitazeReceiptText(period), 35)}</Text>}
+      />
 
       <Br />
       <Line />

@@ -1,5 +1,5 @@
 import { OrderStatus } from "@prisma/client";
-import { EngagementSchemaInputs, EngagementWithDetails } from "../../shared";
+import { EngagementContract, EngagementWithDetails } from "../../shared";
 import prisma from "../db";
 import normalizeTemplatePayload from "@/app/(site)/lib/services/engagement/normalizeTemplatePayload";
 
@@ -7,7 +7,7 @@ export default async function createEngagement({
   templateId,
   customerId,
   orderId,
-}: EngagementSchemaInputs["CreateEngagementInput"]): Promise<EngagementWithDetails | null> {
+}: EngagementContract["Requests"]["CreateEngagement"]): Promise<EngagementWithDetails | null> {
   let finalOrderId = orderId;
 
   // If only customerId is provided, try to find their first active order

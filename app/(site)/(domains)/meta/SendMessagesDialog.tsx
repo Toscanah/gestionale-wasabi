@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
 import { useState } from "react";
 import {
   Accordion,
@@ -13,7 +13,7 @@ import useMetaTemplates from "../../hooks/meta/useMetaTemplates";
 import { useTemplatesParams } from "../../hooks/meta/useTemplatesParams";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { TemplateStatus } from "../../lib/shared/enums/Meta";
+import { TemplateStatus } from "../../lib/shared/enums/meta";
 import { MetaTemplate } from "../../lib/shared";
 import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "../../lib/integrations/meta/constants";
 
@@ -38,7 +38,7 @@ export default function SendMessagesDialog() {
   // const filteredTemplates = templates.filter((template) => template.name !== "conferma_ordine");
 
   return (
-    <DialogWrapper trigger={<Button>Manda messaggi</Button>} open={open} onOpenChange={setOpen}>
+    <WasabiDialog trigger={<Button>Manda messaggi</Button>} open={open} onOpenChange={setOpen}>
       <Accordion type="single" collapsible className="w-full">
         {templates.map((template, index) => (
           <div key={template.id} className="flex gap-6 w-full items-center">
@@ -94,6 +94,6 @@ export default function SendMessagesDialog() {
             : "Manda messaggio"
           : "Seleziona almeno un template"}
       </Button>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

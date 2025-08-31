@@ -1,4 +1,4 @@
-import { EngagementSchemaInputs } from "../../../shared";
+import { EngagementContract } from "../../../shared";
 import prisma from "../../db";
 import { EngagementTemplate } from "@prisma/client";
 
@@ -6,7 +6,7 @@ export default async function createEngagementTemplate({
   type,
   payload,
   label,
-}: EngagementSchemaInputs["CreateEngagementTemplateInput"]): Promise<EngagementTemplate> {
+}: EngagementContract["Requests"]["CreateEngagementTemplate"]): Promise<EngagementTemplate> {
   return await prisma.engagementTemplate.create({
     data: {
       type,

@@ -1,4 +1,4 @@
-import { OrderWithPayments } from "@/app/(site)/lib/shared";
+import { OrderWithPaymentsAndTotals } from "@/app/(site)/lib/shared";
 import { OrderType, PaymentType } from "@prisma/client";
 import { getOrderTotal } from "../order-management/getOrderTotal";
 import roundToCents from "../../utils/global/number/roundToCents";
@@ -44,7 +44,7 @@ export const DEFAULT_SUMMARY_DATA: PaymentsSummaryData = {
   centsDifference: 0,
 };
 
-export default function calculatePaymentsSummary(orders: OrderWithPayments[]): PaymentsSummaryData {
+export default function calculatePaymentsSummary(orders: OrderWithPaymentsAndTotals[]): PaymentsSummaryData {
   if (orders.length === 0) return DEFAULT_SUMMARY_DATA;
 
   let rawTotalAmount = 0;

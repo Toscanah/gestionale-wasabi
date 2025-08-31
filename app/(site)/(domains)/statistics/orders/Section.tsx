@@ -1,89 +1,91 @@
-import WeekdaysOrDateToggle from "./weekdays-or-date/WeekdaysOrDateToggle";
-import WeekdaysSelection from "./weekdays-or-date/WeekdaysSelection";
-import WeekdaysFilterTypeSelection from "./weekdays-or-date/WeekdaysFilterTypeSelection";
 import { DateRange } from "react-day-picker";
-import SpecificDatePicker from "./weekdays-or-date/SpecificDatePicker";
-import TimeSelectionToggle from "./time-selection/TimeSelectionToggle";
-import ShiftSelection from "./time-selection/ShiftSelection";
-import SectionResults from "./results/SectionResults";
 import useOrdersStats from "../../../hooks/statistics/useOrdersStats";
 import { ReducerActions } from "../../../hooks/statistics/sectionReducer";
-import HoursIntervalFilter from "./time-selection/HoursIntervalFilter";
 import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
+import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
+import WeekdaysFilter from "../../../components/ui/filters/select/WeekdaysFilter";
+import OrderTypesFilter from "../../../components/ui/filters/select/OrderTypesFilter";
+import TimeWindowFilter from "@/app/(site)/components/ui/filters/time/TimeWindowFilter";
+import SectionResults from "./results/SectionResults";
+import { Separator } from "@/components/ui/separator";
+import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
 
 interface SectionProps {
   id: string;
 }
-
-export enum DAYS_OF_WEEK {
-  TUESDAY = "Martedì",
-  WEDNESDAY = "Mercoledì",
-  THURSDAY = "Giovedì",
-  FRIDAY = "Venerdì",
-  SATURDAY = "Sabato",
-  SUNDAY = "Domenica",
-}
-
-export type WeekdaysOrDateChoice = "weekdays" | "date";
-
-export type WeekdaysSelection =
-  | { type: "year"; year: string }
-  | { type: "range"; range: DateRange | undefined };
-
-export type Shift = "lunch" | "dinner" | "all";
-
-export type Time = { type: "shift"; shift: Shift } | { type: "range"; from: string; to: string };
 
 export type SelectionProps<T> = {
   selection: T;
   dispatch: React.Dispatch<ReducerActions>;
 };
 
-export default function Section({ id }: SectionProps) {
-  const { dispatch, state } = useOrdersStats();
+export default function Section({}: SectionProps) {
+  const { dispatch, state, disabledFlags, filteredResults, showReset, isLoading } =
+    useOrdersStats();
 
-  const isWeekdaysSelected = state.mainChoice === "weekdays";
-  const isSpecificDateSelected = state.mainChoice === "date";
-  const hasValidWeekdays = isWeekdaysSelected && !!state.weekdays?.length;
-  const hasValidWeekdaysSelection =
-    hasValidWeekdays &&
-    ((state.weekdaysSelection?.type === "range" && state.weekdaysSelection.range) ||
-      (state.weekdaysSelection?.type === "year" && state.weekdaysSelection.year));
-  const hasValidSpecificDate = isSpecificDateSelected && state.specificDate;
-  const shouldShowTimeSelection = hasValidWeekdaysSelection || hasValidSpecificDate;
+  const years = Array.from({ length: new Date().getFullYear() - 2025 + 1 }, (_, i) => 2025 + i);
 
   return (
-    <div className="flex flex-col gap-12 w-full p-4 items-center h-full">
-      <div className="flex flex-col gap-4 items-center">
+    <div className="flex flex-col gap-4 w-full p-4 h-full">
+      <div className="w-full flex gap-4">
         <CalendarFilter
-          mode="single"
-          dateFilter={state.specificDate}
+          usePresets
+          years={years}
+          mode="range"
+          dateFilter={state.period}
           handleDateFilter={(newDate) =>
-            dispatch({ type: "SET_SPECIFIC_DATE", payload: newDate as Date })
+            dispatch({ type: "SET_PERIOD", payload: newDate as DateRange })
           }
         />
+
+        <WeekdaysFilter
+          weekdays={state.weekdays}
+          onWeekdaysChange={(updatedWeekdays) =>
+            dispatch({
+              type: "SET_WEEKDAYS",
+              payload: updatedWeekdays,
+            })
+          }
+          disabled={disabledFlags.weekdays}
+        />
+
+        <ShiftFilter
+          selectedShift={state.shift}
+          onShiftChange={(updatedShift) =>
+            dispatch({
+              type: "SET_SHIFT",
+              payload: updatedShift,
+            })
+          }
+        />
+
+        {/* <OrderTypesFilter
+          selectedTypes={state.orderTypes}
+          onTypesChange={(updatedTypes) =>
+            dispatch({
+              type: "SET_ORDER_TYPES",
+              payload: updatedTypes,
+            })
+          }
+        /> */}
+
+        <TimeWindowFilter
+          window={state.timeWindow}
+          disabled={disabledFlags.timeWindow}
+          onWindowChange={(updatedWindow) =>
+            dispatch({
+              type: "SET_TIME_WINDOW",
+              payload: updatedWindow,
+            })
+          }
+        />
+
+        <ResetFiltersButton show={showReset} onReset={() => dispatch({ type: "RESET" })} />
       </div>
 
-      {isWeekdaysSelected && hasValidWeekdays && (
-        <WeekdaysFilterTypeSelection selection={state.weekdaysSelection} dispatch={dispatch} />
-      )}
+      {/* <Separator className="w-full"/> */}
 
-      <div className="flex flex-col gap-4 items-center">
-        {shouldShowTimeSelection && (
-          <>
-            <TimeSelectionToggle selection={state.time} dispatch={dispatch} />
-
-            {state.time.type === "range" && (
-              <HoursIntervalFilter selection={state.time} dispatch={dispatch} />
-            )}
-            {state.time.type === "shift" && (
-              <ShiftSelection selection={state.time} dispatch={dispatch} />
-            )}
-          </>
-        )}
-      </div>
-
-      {/* {isFiltersValid() && <SectionResults results={filteredResults} />} */}
+      <SectionResults results={filteredResults} isLoading={isLoading} />
     </div>
   );
 }

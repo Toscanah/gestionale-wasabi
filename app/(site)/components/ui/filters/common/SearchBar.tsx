@@ -13,8 +13,8 @@ export default function SearchBar({ filter, onChange, disabled, className }: Sea
     <Input
       placeholder="Cerca..."
       disabled={disabled}
-      value={filter ?? ""}
-      className={cn("w-60 h-8", className)}
+      defaultValue={filter ?? ""}
+      className={cn("w-60 h-10", className)}
       onChange={(e) => onChange(e.target.value)}
     />
   );

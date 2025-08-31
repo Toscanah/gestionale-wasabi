@@ -1,15 +1,12 @@
 import { DateRange } from "react-day-picker";
-import { startOfYear, endOfYear, subDays, startOfDay, startOfMonth, endOfMonth } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { GetCustomersWithStatsResponse } from "@/app/(site)/lib/shared/types/responses/customer";
-import { CustomerWithStats } from "@/app/(site)/lib/shared/types/CustomerWithStats";
-import { DatePreset } from "../../lib/shared/enums/DatePreset";
 import useRfmRules from "../rfm/useRfmRules";
 import useRfmRanks from "../rfm/useRfmRanks";
-import React, { useEffect } from "react";
+import { useMemo, useState } from "react";
+import { CustomerContract } from "../../lib/shared";
+import useQueryFilter from "../table/useGlobalFilter";
 
-const today = new Date();
 const DEFAULT_DATE: DateRange = {
   from: undefined,
   to: undefined,
@@ -18,36 +15,64 @@ const DEFAULT_DATE: DateRange = {
 type UseCustomersStatsParams = {
   page: number;
   pageSize: number;
-  search: string;
 };
 
-export default function useCustomersStats({ page, pageSize, search }: UseCustomersStatsParams) {
+export default function useCustomersStats({ page, pageSize }: UseCustomersStatsParams) {
   const { rfmRules } = useRfmRules();
-  const { ranks } = useRfmRanks();
+  const { ranks: rfmRanks } = useRfmRanks();
 
-  const [dateFilter, setDateFilter] = React.useState<DateRange | undefined>(DEFAULT_DATE);
-  const [rankFilter, setRankFilter] = React.useState<string>("all");
+  const ALL_RANKS = rfmRanks.map((r) => r.rank);
+
+  const { debouncedQuery, inputQuery, setInputQuery } = useQueryFilter();
+  const [period, setPeriod] = useState<DateRange | undefined>(DEFAULT_DATE);
+  const [ranks, setRanks] = useState<string[]>(ALL_RANKS);
+
+  const rfmConfig = { ranks: rfmRanks, rules: rfmRules };
+
+  const filters: CustomerContract["Requests"]["ComputeCustomersStats"]["filters"] = useMemo(() => {
+    // Normalize period
+    let normalizedPeriod: { from: Date; to: Date } | undefined = undefined;
+    if (period?.from) {
+      normalizedPeriod = {
+        from: period.from,
+        to: period.to ?? period.from, // if only "from" → use same for "to"
+      };
+    }
+
+    // Rank: treat "all" as undefined (so it doesn't filter)
+    const ranksFilter = ranks.length === rfmRanks.length ? undefined : ranks;
+
+    // Search query
+    const search = debouncedQuery && debouncedQuery.trim() !== "" ? debouncedQuery : undefined;
+
+    return {
+      period: normalizedPeriod,
+      ranks: ranksFilter,
+      query: search,
+    };
+  }, [period, ranks, debouncedQuery]);
+
+  const { data: backfill } = useQuery({
+    queryKey: ["rfmBackfill"],
+    queryFn: () => fetchRequest("PATCH", "/api/customers", "updateCustomersRFM", { rfmConfig }),
+    staleTime: Infinity,
+  });
 
   const query = useQuery({
-    queryKey: ["customers", { page, pageSize, search, dateFilter, rankFilter }],
-    queryFn: async (): Promise<GetCustomersWithStatsResponse> =>
-      await fetchRequest<GetCustomersWithStatsResponse>(
+    queryKey: ["customers", { page, pageSize, filters }],
+    queryFn: async () =>
+      await fetchRequest<CustomerContract["Responses"]["ComputeCustomersStats"]>(
         "POST",
         "/api/customers",
         "computeCustomersStats",
         {
-          filters: {
-            from: dateFilter?.from,
-            to: dateFilter?.to,
-            search,
-            rank: rankFilter,
-          },
+          filters,
           page,
           pageSize,
-          rfmConfig: { ranks, rules: rfmRules },
         }
       ),
-    staleTime: 1000 * 60 * 60, 
+    enabled: !!backfill,
+    staleTime: 1000 * 60 * 60,
   });
 
   // useEffect(() => {
@@ -70,50 +95,24 @@ export default function useCustomersStats({ page, pageSize, search }: UseCustome
   //   }
   // }, [query.data, page, pageSize, search, dateFilter, rankFilter, queryClient]);
 
-  const handlePresetSelect = (value: DatePreset) => {
-    switch (value) {
-      case DatePreset.TODAY:
-        setDateFilter({ from: startOfDay(today), to: startOfDay(today) });
-        break;
-      case DatePreset.YESTERDAY:
-        const yesterday = subDays(today, 1);
-        setDateFilter({ from: startOfDay(yesterday), to: startOfDay(yesterday) });
-        break;
-      case DatePreset.LAST_7:
-        const last7 = subDays(today, 6);
-        setDateFilter({ from: startOfDay(last7), to: startOfDay(today) });
-        break;
-      case DatePreset.LAST_30:
-        const last30 = subDays(today, 29);
-        setDateFilter({ from: startOfDay(last30), to: startOfDay(today) });
-        break;
-      case DatePreset.LAST_MONTH:
-        const lastMonth = subDays(today, 30);
-        setDateFilter({ from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) });
-      case DatePreset.THIS_MONTH:
-        setDateFilter({ from: startOfMonth(today), to: endOfMonth(today) });
-        break;
-      case DatePreset.THIS_YEAR:
-        setDateFilter({ from: startOfYear(today), to: endOfYear(today) });
-        break;
-    }
-  };
-
   const handleReset = () => {
-    setRankFilter("all");
-    setDateFilter(DEFAULT_DATE);
+    setRanks(ALL_RANKS);
+    setPeriod(DEFAULT_DATE);
   };
 
   return {
     customers: query.data?.customers ?? [],
     totalCount: query.data?.totalCount ?? 0,
     isLoading: query.isLoading,
-    dateFilter,
-    rankFilter,
-    setRankFilter,
-    setDateFilter,
-    handlePresetSelect,
-    handleReset,
+    period,
     ranks,
+    setRanks,
+    setPeriod,
+    debouncedQuery,
+    inputQuery,
+    setInputQuery,
+    handleReset,
+    allRanks: ALL_RANKS,
+    rfmRanks,
   };
 }

@@ -1,5 +1,5 @@
 import WasabiSingleSelect from "@/app/(site)/components/ui/select/WasabiSingleSelect";
-import { RFMDimension, RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
+import { RFMDimension, RFMRankRule } from "@/app/(site)/lib/shared/types/rfm";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

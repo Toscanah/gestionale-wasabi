@@ -1,13 +1,9 @@
 import { CategorySchema, OptionSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
-import {
-  createInputSchema,
-  NoContentSchema,
-  ToggleDeleteObjectSchema,
-  updateInputSchema,
-  wrapSchema,
-} from "./common";
-import { SchemaInputs } from "../types/SchemaInputs";
+import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
+import { NoContentRequestSchema } from "./common/no-content";
+import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
+import { ApiContract } from "../types/api-contract";
 
 export const UpdateOptionsOfCategorySchema = z.object({
   category: CategorySchema,
@@ -17,13 +13,15 @@ export const UpdateOptionsOfCategorySchema = z.object({
 export const UpdateOptionSchema = wrapSchema("option", updateInputSchema(OptionSchema));
 export const CreateOptionSchema = wrapSchema("option", createInputSchema(OptionSchema));
 
-export const OPTION_SCHEMAS = {
-  getAllOptions: NoContentSchema,
-  getAllOptionsWithCategories: NoContentSchema,
+export const OPTION_REQUESTS = {
+  getAllOptions: NoContentRequestSchema,
+  getAllOptionsWithCategories: NoContentRequestSchema,
   updateOptionsOfCategory: UpdateOptionsOfCategorySchema,
   updateOption: UpdateOptionSchema,
   createNewOption: CreateOptionSchema,
-  toggleOption: ToggleDeleteObjectSchema,
+  toggleOption: ToggleDeleteEntityRequestSchema,
 };
 
-export type OptionSchemaInputs = SchemaInputs<typeof OPTION_SCHEMAS>;
+export const OPTION_RESPONSES = {};
+
+export type OptionContract = ApiContract<typeof OPTION_REQUESTS, typeof OPTION_RESPONSES>;

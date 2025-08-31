@@ -1,5 +1,5 @@
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
 import { Gear } from "@phosphor-icons/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RestaurantSettings from "./restaurant/RestaurantSettings";
@@ -20,7 +20,7 @@ export default function SettingsDialog() {
   ];
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       title={"Impostazioni"}
       desc="Tutti i dati vengono salvati automaticamente"
       autoFocus={false}
@@ -51,6 +51,6 @@ export default function SettingsDialog() {
           </TabsContent>
         ))}
       </Tabs>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

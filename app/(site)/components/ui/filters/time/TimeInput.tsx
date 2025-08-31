@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { TimeValue } from "./TimePicker";
+import { TimeValue } from "./TimeWindowFilter";
 import { Input } from "@/components/ui/input";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 
@@ -22,7 +22,7 @@ export default function TimeInput({ label, value, onChange }: TimeInputProps) {
         id={label + "-h"}
         type="text"
         maxLength={2}
-        value={value.h}
+        defaultValue={value.h}
         onChange={handleChange("h")}
         className="w-14 text-center"
         placeholder="ore"
@@ -34,7 +34,7 @@ export default function TimeInput({ label, value, onChange }: TimeInputProps) {
         id={label + "-m"}
         type="text"
         maxLength={2}
-        value={value.m}
+        defaultValue={value.m}
         onChange={handleChange("m")}
         className="w-14 text-center"
         placeholder="min"

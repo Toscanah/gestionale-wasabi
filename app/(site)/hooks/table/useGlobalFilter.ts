@@ -1,6 +1,23 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState, useMemo, useEffect } from "react";
+import debounce from "lodash/debounce";
 
-export default function useGlobalFilter(): [string, Dispatch<SetStateAction<string>>] {
-  const [globalFilter, setGlobalFilter] = useState<string>("");
-  return [globalFilter, setGlobalFilter];
+export default function useQueryFilter(delay: number = 500) {
+  const [inputQuery, setInputQuery] = useState<string>("");
+  const [debouncedQuery, setDebouncedQuery] = useState<string>("");
+
+  const debouncedUpdate = useMemo(
+    () => debounce((val: string) => setDebouncedQuery(val), delay),
+    [delay]
+  );
+
+  useEffect(() => {
+    debouncedUpdate(inputQuery);
+    return () => debouncedUpdate.cancel();
+  }, [inputQuery, debouncedUpdate]);
+
+  return {
+    debouncedQuery,
+    inputQuery,
+    setInputQuery,
+  };
 }

@@ -3,26 +3,20 @@
 import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import columns from "./columns";
-import TableControls from "../../../components/table/TableControls";
-import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
-import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
+import useQueryFilter from "../../../hooks/table/useGlobalFilter";
 import GoBack from "../../../components/ui/misc/GoBack";
-import { DATE_PRESETS, DatePreset } from "../../../lib/shared/enums/DatePreset";
 import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
-import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
-import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
+import { RFMRankRule } from "@/app/(site)/lib/shared/types/rfm";
 import { useTheme } from "next-themes";
 import useCustomersStats from "@/app/(site)/hooks/statistics/useCustomersStats";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
 import usePagination from "@/app/(site)/hooks/table/usePagination";
-import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import WasabiPopover from "@/app/(site)/components/ui/popover/WasabiPopover";
-import SelectFilter from "@/app/(site)/components/ui/filters/SelectFilter";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
+import SelectFilter from "@/app/(site)/components/ui/filters/select/SelectFilter";
+import RankFilter from "@/app/(site)/components/ui/filters/select/RankFilter";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];
@@ -30,20 +24,22 @@ export type CustomerStatsTableMeta = {
 };
 
 export default function CustomersStats() {
-  const [globalFilter, setGlobalFilter] = useGlobalFilter();
-  const { page, pageSize, setPage, setPageSize, resetPagination } = usePagination({});
+  const { page, pageSize, setPage, setPageSize } = usePagination();
   const {
     customers,
-    dateFilter,
-    rankFilter,
-    setRankFilter,
-    setDateFilter,
-    handlePresetSelect,
-    handleReset,
-    isLoading,
-    ranks,
     totalCount,
-  } = useCustomersStats({ page, pageSize, search: globalFilter });
+    isLoading,
+    period,
+    ranks,
+    setRanks,
+    setPeriod,
+    debouncedQuery,
+    inputQuery,
+    setInputQuery,
+    handleReset,
+    allRanks,
+    rfmRanks,
+  } = useCustomersStats({ page, pageSize });
   const { theme } = useTheme();
 
   const { tableData, tableColumns } = useSkeletonTable({
@@ -56,8 +52,8 @@ export default function CustomersStats() {
   const table = useTable({
     data: tableData,
     columns: tableColumns,
-    globalFilter,
-    setGlobalFilter,
+    query: debouncedQuery,
+    setQuery: setInputQuery,
     pagination: {
       mode: "server",
       pageSize,
@@ -72,57 +68,36 @@ export default function CustomersStats() {
       },
     },
     meta: {
-      ranks,
+      ranks: rfmRanks,
       theme: theme ?? "light",
     },
   });
-
-  const ranksItems = [
-    {
-      value: "all",
-      name: "Tutti i rank",
-    },
-    ...ranks.map((rank) => ({
-      value: rank.rank,
-      name: rank.rank,
-    })),
-  ];
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
         <div className="w-full flex gap-4 items-center">
-          <SearchBar disabled={isLoading} filter={globalFilter} onChange={setGlobalFilter} />
-
-          <SelectFilter
-            title="Rank"
-            mode="single"
-            disabled={isLoading}
-            inputPlaceholder="Cerca rank..."
-            onChange={(value) => setRankFilter(value ?? "all")}
-            groups={[
-              {
-                options: ranksItems.map((item) => ({
-                  label: item.name,
-                  value: item.value,
-                })),
-              },
-            ]}
-            selectedValue={rankFilter}
-          />
+          <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
 
           <CalendarFilter
+            usePresets
             disabled={isLoading}
-            dateFilter={dateFilter}
-            presets={DATE_PRESETS}
+            dateFilter={period}
             mode="range"
-            handlePresetSelection={(value) => handlePresetSelect(value as DatePreset)}
-            handleDateFilter={setDateFilter}
+            handleDateFilter={setPeriod}
+          />
+          
+          <RankFilter
+            ranks={ranks}
+            onRanksChange={setRanks}
+            allRanks={allRanks}
+            disabled={isLoading}
           />
 
-          {(rankFilter !== "all" || !!dateFilter?.from || !!dateFilter?.to) && (
-            <ResetFiltersButton onReset={handleReset} />
-          )}
+          <ResetFiltersButton
+            onReset={handleReset}
+            show={ranks.length !== allRanks.length || !!period?.from || !!period?.to}
+          />
         </div>
 
         <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />

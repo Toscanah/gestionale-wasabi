@@ -1,4 +1,3 @@
-// hooks/table/useSkeletonTable.ts
 import * as React from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,10 +8,10 @@ type Options<T> = {
   isLoading: boolean;
   data: T[];
   columns: ColumnDef<T, any>[];
-  pageSize: number;
+  pageSize?: number | undefined;
 };
 
-export default function useSkeletonTable<T>({ isLoading, data, columns, pageSize }: Options<T>) {
+export default function useSkeletonTable<T>({ isLoading, data, columns, pageSize = 10 }: Options<T>) {
   const tableData = React.useMemo<T[]>(
     () => (isLoading ? (Array(pageSize).fill({}) as T[]) : data),
     [isLoading, data, pageSize]

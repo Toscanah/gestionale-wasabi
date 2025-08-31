@@ -1,108 +1,108 @@
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { DateRange } from "react-day-picker";
-import { useState } from "react";
-import { OrderWithPayments } from "@/app/(site)/lib/shared";
+import { ShiftFilterValue, OrderContract } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
-import { ShiftType } from "../../lib/shared/enums/Shift";
 import fetchRequest from "../../lib/api/fetchRequest";
 import calculatePaymentsSummary, {
   DEFAULT_SUMMARY_DATA,
   PaymentsSummaryData,
 } from "../../lib/services/payments/calculatePaymentsSummary";
+import useQueryFilter from "../table/useGlobalFilter";
+import TODAY_PERIOD from "../../lib/shared/constants/today-period";
+import { PaginationRequest } from "../../lib/shared/schemas/common/pagination";
 
-type UsePaymentsHistoryParams = {
-  page: number;
-  pageSize: number;
-};
+type UsePaymentsHistoryParams = PaginationRequest;
 
 export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistoryParams) {
-  const [typeFilter, setTypeFilter] = useState<OrderType | "all">("all");
-  const [shiftFilter, setShiftFilter] = useState<ShiftType | "all">("all");
+  const { debouncedQuery, inputQuery, setInputQuery } = useQueryFilter();
+  const [shift, setShift] = useState<ShiftFilterValue>(ShiftFilterValue.ALL);
+  const [period, setPeriod] = useState<DateRange | undefined>(TODAY_PERIOD);
+  const [orderTypes, setOrderTypes] = useState<OrderType[]>([
+    OrderType.HOME,
+    OrderType.PICKUP,
+    OrderType.TABLE,
+  ]);
 
-  const [timeScope, setTimeScope] = useState<"single" | "range">("single");
-  const [singleDate, setSingleDate] = useState<Date | undefined>(new Date());
-  const [rangeDate, setRangeDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
-  });
+  const filters: OrderContract["Requests"]["GetOrdersWithPayments"]["filters"] = useMemo(() => {
+    const periodFilter = period?.from ? { from: period.from, to: period.to } : undefined;
+    const typeFilter = orderTypes.length === Object.keys(OrderType).length ? undefined : orderTypes;
 
-  // --- paginated query (table) ---
+    const shiftFilter = shift === ShiftFilterValue.ALL ? undefined : shift;
+
+    return {
+      period: periodFilter,
+      orderTypes: typeFilter,
+      shift: shiftFilter,
+      query: debouncedQuery.trim() || undefined,
+    };
+  }, [period, orderTypes, shift, debouncedQuery]);
+
+  type Res = OrderContract["Responses"]["GetOrdersWithPayments"];
+
   const paginatedQuery = useQuery({
-    queryKey: [
-      "payments",
-      { page, pageSize, typeFilter, shiftFilter, timeScope, singleDate, rangeDate },
-    ],
-    queryFn: async (): Promise<{ orders: OrderWithPayments[]; totalCount: number }> =>
-      await fetchRequest("POST", "/api/payments", "getOrdersWithPayments", {
-        filters: {
-          type: typeFilter === "all" ? undefined : (typeFilter as OrderType),
-          shift: shiftFilter === "all" ? undefined : (shiftFilter as ShiftType),
-          timeScope,
-          singleDate,
-          rangeDate:
-            rangeDate?.from && rangeDate?.to
-              ? { from: rangeDate.from, to: rangeDate.to }
-              : undefined,
-        },
+    queryKey: ["payments", { page, pageSize, filters }],
+    queryFn: async (): Promise<Res> =>
+      await fetchRequest("POST", "/api/orders", "getOrdersWithPayments", {
+        filters,
         page,
         pageSize,
       }),
     staleTime: 1000 * 60 * 10,
   });
 
-  // --- summary query (ignores pagination) ---
   const summaryQuery = useQuery({
-    queryKey: ["payments-summary", { typeFilter, shiftFilter, timeScope, singleDate, rangeDate }],
+    queryKey: ["payments-summary", { filters }],
     queryFn: async (): Promise<PaymentsSummaryData> => {
-      const res = await fetchRequest<{ orders: OrderWithPayments[]; totalCount: number }>(
-        "POST",
-        "/api/payments",
-        "getOrdersWithPayments",
-        {
-          filters: {
-            type: typeFilter === "all" ? undefined : (typeFilter as OrderType),
-            shift: shiftFilter === "all" ? undefined : (shiftFilter as ShiftType),
-            timeScope,
-            singleDate,
-            rangeDate:
-              rangeDate?.from && rangeDate?.to
-                ? { from: rangeDate.from, to: rangeDate.to }
-                : undefined,
-          },
-          page: 0,
-          pageSize: 0,
-          summary: true,
-        }
-      );
+      const res = await fetchRequest<Res>("POST", "/api/orders", "getOrdersWithPayments", {
+        filters,
+        page: 0,
+        pageSize: 0,
+        summary: true,
+      });
       return calculatePaymentsSummary(res.orders);
     },
     staleTime: 1000 * 60 * 10,
   });
 
+  // ---- reset ----
   const handleReset = () => {
-    setTypeFilter("all");
-    setShiftFilter("all");
-    setTimeScope("single");
-    setSingleDate(new Date());
-    setRangeDate(undefined);
+    setOrderTypes([OrderType.HOME, OrderType.PICKUP, OrderType.TABLE]);
+    setShift(ShiftFilterValue.ALL);
+    setPeriod(TODAY_PERIOD);
   };
 
+  const isDefaultOrderTypes = (orderTypes: OrderType[]) =>
+    orderTypes.length === Object.keys(OrderType).length;
+
+  const isDefaultShift = (shift: ShiftFilterValue) => shift === ShiftFilterValue.ALL;
+
+  const isDefaultPeriod = (period: DateRange | undefined, defaultPeriod: DateRange) =>
+    period?.from?.getTime() === defaultPeriod?.from?.getTime() &&
+    period?.to?.getTime() === defaultPeriod?.to?.getTime();
+
   return {
-    orders: paginatedQuery.data?.orders ?? [],
+    // table
+    filteredOrders: paginatedQuery.data?.orders ?? [],
     totalCount: paginatedQuery.data?.totalCount ?? 0,
     isLoading: paginatedQuery.isLoading,
-    typeFilter,
-    setTypeFilter,
-    shiftFilter,
-    setShiftFilter,
-    timeScope,
-    setTimeScope,
-    singleDate,
-    setSingleDate,
-    rangeDate,
-    setRangeDate,
-    handleReset,
 
+    // filters state
+    orderTypes,
+    setOrderTypes,
+    shift,
+    setShift,
+    period,
+    setPeriod,
+    handleReset,
+    debouncedQuery,
+    inputQuery,
+    setInputQuery,
+    showReset: !(
+      isDefaultOrderTypes(orderTypes) &&
+      isDefaultShift(shift) &&
+      isDefaultPeriod(period, TODAY_PERIOD)
+    ),
     // summary
     summaryData: summaryQuery.data ?? DEFAULT_SUMMARY_DATA,
   };

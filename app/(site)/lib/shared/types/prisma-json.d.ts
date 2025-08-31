@@ -1,5 +1,4 @@
-// prisma-json.d.ts
-import type { RFMCustomerSegment as RFMType } from "./RFM";
+import type { RFMCustomerSegment as RFMType } from "./rfm";
 
 declare global {
   namespace PrismaJson {

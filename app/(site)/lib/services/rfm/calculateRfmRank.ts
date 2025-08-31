@@ -1,4 +1,4 @@
-import { RFMRankRule, RFMScore } from "../../shared/types/RFM";
+import { RFMRankRule, RFMScore } from "../../shared/types/rfm";
 
 export function calculateRfmRank(
   score: RFMScore,

@@ -24,8 +24,8 @@ export default function usePrinter() {
     await print(() => EngagementReceipt({ engagements }));
   }
 
-  async function printPaymentSummary({ summaryData, date }: PaymentSummaryReceiptProps) {
-    await print(() => PaymentSummaryReceipt({ summaryData, date }));
+  async function printPaymentSummary({ summaryData, period }: PaymentSummaryReceiptProps) {
+    await print(() => PaymentSummaryReceipt({ summaryData, period }));
   }
 
   return {

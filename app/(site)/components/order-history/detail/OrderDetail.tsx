@@ -5,7 +5,6 @@ import Table from "../../table/Table";
 
 interface OrderDetailProps {
   sortedProducts: ProductInOrder[];
-  type: string;
   onCreate?: (newProducts: ProductInOrder[]) => void;
   onCheckboxChange: (product: ProductInOrder) => void;
   selectedProducts: ProductInOrder[];

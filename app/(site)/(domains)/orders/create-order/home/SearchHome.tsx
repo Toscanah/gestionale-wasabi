@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import { Button } from "@/components/ui/button";
@@ -106,7 +106,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
         Vai {children}
       </Button>
 
-      <DialogWrapper
+      <WasabiDialog
         autoFocus={false}
         size="large"
         open={open}
@@ -128,7 +128,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
             <OrderTable />
           </OrderProvider>
         )}
-      </DialogWrapper>
+      </WasabiDialog>
     </div>
   );
 }

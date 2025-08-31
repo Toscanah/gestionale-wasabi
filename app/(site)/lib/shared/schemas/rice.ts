@@ -1,9 +1,11 @@
 import { z } from "zod";
-import { NoContentSchema, ToggleDeleteObjectSchema, wrapSchema } from "./common";
 import { RiceBatchSchema } from "@/prisma/generated/zod";
 import { RiceLogType } from "@prisma/client";
-import { ShiftType } from "../enums/Shift";
-import { SchemaInputs } from "../types/SchemaInputs";
+import { ShiftFilterValue } from "../enums/shift";
+import { NoContentRequestSchema } from "./common/no-content";
+import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
+import { wrapSchema } from "./common/utils";
+import { ApiContract } from "../types/api-contract";
 
 export const AddRiceBatchSchema = wrapSchema("batch", RiceBatchSchema.omit({ id: true }));
 
@@ -20,17 +22,19 @@ export const AddRiceLogSchema = z.object({
 });
 
 export const GetDailyRiceUsageSchema = z.object({
-  shift: z.nativeEnum(ShiftType),
+  shift: z.nativeEnum(ShiftFilterValue),
 });
 
-export const RICE_SCHEMAS = {
+export const RICE_REQUESTS = {
   getDailyRiceUsage: GetDailyRiceUsageSchema,
-  getRiceBatches: NoContentSchema,
+  getRiceBatches: NoContentRequestSchema,
   addRiceBatch: AddRiceBatchSchema,
-  deleteRiceBatch: ToggleDeleteObjectSchema,
+  deleteRiceBatch: ToggleDeleteEntityRequestSchema,
   updateRiceBatch: UpdateRiceBatchSchema,
-  getRiceLogs: NoContentSchema,
+  getRiceLogs: NoContentRequestSchema,
   addRiceLog: AddRiceLogSchema,
 };
 
-export type RiceSchemaInputs = SchemaInputs<typeof RICE_SCHEMAS>;
+export const RICE_RESPONSES = {};
+
+export type RiceContract = ApiContract<typeof RICE_REQUESTS, typeof RICE_RESPONSES>;

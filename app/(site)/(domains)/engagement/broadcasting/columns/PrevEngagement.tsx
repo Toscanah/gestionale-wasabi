@@ -1,4 +1,4 @@
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import ImageViewer from "@/app/(site)/components/ui/misc/ImageViewer";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import getTemplateName from "@/app/(site)/lib/utils/domains/engagement/getTemplateName";
@@ -38,7 +38,7 @@ const DeleteEngagementDialog = ({
   engagement: Engagement;
   onDelete: () => void;
 }) => (
-  <DialogWrapper
+  <WasabiDialog
     trigger={
       <Button variant="ghost" size="icon">
         <Trash size={20} />
@@ -51,7 +51,7 @@ const DeleteEngagementDialog = ({
     <span>
       Sei sicuro di eliminare questa azione di marketing? Questa operazione è irreversibile.
     </span>
-  </DialogWrapper>
+  </WasabiDialog>
 );
 
 const EngagementContent = ({ engagement }: { engagement: EngagementWithDetails }) => (
@@ -98,7 +98,7 @@ export default function PrevEngagement({ engagements }: { engagements: Engagemen
   };
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       trigger={
         <Button data-no-row-click onClick={(e) => e.stopPropagation()}>
           Vedi
@@ -134,6 +134,6 @@ export default function PrevEngagement({ engagements }: { engagements: Engagemen
           </div>
         )}
       </Accordion>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

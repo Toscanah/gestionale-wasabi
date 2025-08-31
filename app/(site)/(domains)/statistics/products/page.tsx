@@ -5,116 +5,72 @@ import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect
 import GoBack from "../../../components/ui/misc/GoBack";
 import useTable from "../../../hooks/table/useTable";
 import columns from "./columns";
-import useProductsStats, { ALL_CATEGORIES } from "../../../hooks/statistics/useProductsStats";
 import TableControls from "../../../components/table/TableControls";
-import useGlobalFilter from "../../../hooks/table/useGlobalFilter";
+import useQueryFilter from "../../../hooks/table/useGlobalFilter";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
-import ShiftFilterSelector from "../../../components/filters/shift/ShiftFilterSelector";
-import TimeScopeFilter from "../../../components/filters/shift/TimeScope";
 import RandomSpinner from "../../../components/ui/misc/loader/RandomSpinner";
+import CategoryFilter from "@/app/(site)/components/ui/filters/select/CategoryFilter";
+import useProductsStats from "@/app/(site)/hooks/statistics/useProductsStats";
+import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
+import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
+import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 
 export default function ProductsStats() {
-  const [globalFilter, setGlobalFilter] = useGlobalFilter();
+  const { inputQuery, setInputQuery } = useQueryFilter();
 
   const {
     filteredProducts,
-    categories,
-    selectedCategory,
-    setSelectedCategory,
-    timeScopeFilter,
-    setTimeScopeFilter,
-    dateFilter,
-    setDateFilter,
-    shiftFilter,
-    setShiftFilter,
+    allCategories,
+    categoryIds,
+    setCategoryIds,
+    shift,
+    setShift,
+    period,
+    setPeriod,
     handleReset,
+    showReset,
     isLoading,
   } = useProductsStats();
 
-  const table = useTable({
+  const { tableData, tableColumns } = useSkeletonTable({
+    isLoading,
     data: filteredProducts,
     columns,
-    globalFilter,
-    setGlobalFilter,
   });
 
-  const CategoryFilter = () => (
-    <WasabiSingleSelect
-      disabled={isLoading}
-      defaultValue="all"
-      value={selectedCategory.id.toString()}
-      className="h-10"
-      onValueChange={(value) =>
-        setSelectedCategory(categories.find((c) => c.id.toString() === value) || ALL_CATEGORIES)
-      }
-      groups={[
-        {
-          items: [
-            { name: "Tutte le categorie", value: "-1" },
-            ...categories.map((category) => ({
-              name: category.category,
-              value: category.id.toString(),
-            })),
-          ],
-        },
-      ]}
-    />
-  );
-
-  const TimeScope = () => (
-    <WasabiSingleSelect
-      disabled={isLoading}
-      value={timeScopeFilter}
-      className="h-10"
-      onValueChange={(value) => setTimeScopeFilter(value as TimeScopeFilter)}
-      groups={[
-        {
-          items: [
-            { name: "Da sempre", value: TimeScopeFilter.ALL_TIME },
-            { name: "Arco temporale", value: TimeScopeFilter.CUSTOM_RANGE },
-          ],
-        },
-      ]}
-    />
-  );
+  const table = useTable({
+    data: tableData,
+    columns: tableColumns,
+    query: inputQuery,
+    setQuery: setInputQuery,
+    pagination: { mode: "client" },
+  });
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
-        <TableControls
-          table={table}
-          searchBarDisabled={isLoading}
-          resetDisabled={isLoading}
-          onReset={handleReset}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        >
-          <ShiftFilterSelector
-            shiftFilter={shiftFilter}
-            onShiftChange={setShiftFilter}
-            disabled={isLoading}
+        <div className="w-full flex items-center gap-4">
+          <span className="font-bold text-xl">Pagamenti</span>
+          <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
+
+          <ShiftFilter selectedShift={shift} onShiftChange={setShift} disabled={isLoading} />
+
+          <CategoryFilter
+            selectedCategoryIds={categoryIds}
+            onCategoryIdsChange={setCategoryIds}
+            allCategories={allCategories}
           />
 
-          <CategoryFilter />
+          <CalendarFilter
+            mode="range"
+            dateFilter={period}
+            handleDateFilter={setPeriod}
+            disabled={isLoading}
+          />
+        </div>
 
-          <TimeScope />
-
-          {timeScopeFilter === TimeScopeFilter.CUSTOM_RANGE && (
-            <CalendarFilter
-              dateFilter={dateFilter}
-              handleDateFilter={setDateFilter}
-              mode="range"
-              disabled={isLoading}
-            />
-          )}
-        </TableControls>
-
-        {isLoading ? (
-          <RandomSpinner isLoading={isLoading} />
-        ) : (
-          <Table table={table} tableClassName="max-h-max" />
-        )}
+        <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />
 
         <span>
           Totale:{" "}

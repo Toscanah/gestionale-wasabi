@@ -6,7 +6,7 @@ import {
   JoinColumn,
   ValueColumn,
 } from "@/app/(site)/components/table/TableColumns";
-import DialogWrapper from "@/app/(site)/components/ui/dialog/DialogWrapper";
+import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";
@@ -96,7 +96,7 @@ export default function TopCustomers({ product }: TopCustomersProps) {
   }, [open, product.id]);
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       open={open}
       onOpenChange={setOpen}
       title="Top clienti"
@@ -137,6 +137,6 @@ export default function TopCustomers({ product }: TopCustomersProps) {
         //   </table>
         // </div>
       )}
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

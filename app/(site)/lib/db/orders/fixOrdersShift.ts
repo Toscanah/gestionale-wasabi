@@ -1,5 +1,5 @@
 import { PrismaClient, WorkingShift } from "@prisma/client";
-import { ShiftTime } from "../../shared/enums/Shift";
+import { ShiftBoundaries } from "../../shared/enums/shift";
 
 const prisma = new PrismaClient();
 
@@ -13,8 +13,8 @@ const inferShiftFromWhen = (when: string | null | undefined): WorkingShift => {
 
   try {
     const time = timeToDecimal(when);
-    if (time >= ShiftTime.LUNCH_FROM && time <= ShiftTime.LUNCH_TO) return WorkingShift.LUNCH;
-    if (time > ShiftTime.LUNCH_TO && time <= ShiftTime.DINNER_TO) return WorkingShift.DINNER;
+    if (time >= ShiftBoundaries.LUNCH_FROM && time <= ShiftBoundaries.LUNCH_TO) return WorkingShift.LUNCH;
+    if (time > ShiftBoundaries.LUNCH_TO && time <= ShiftBoundaries.DINNER_TO) return WorkingShift.DINNER;
     return WorkingShift.UNSPECIFIED;
   } catch {
     return WorkingShift.UNSPECIFIED;

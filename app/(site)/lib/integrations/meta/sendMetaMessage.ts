@@ -1,6 +1,6 @@
 import axios from "axios";
 import prisma from "../../db/db";
-import { AnyOrder, MetaSchemaInputs } from "../../shared";
+import { AnyOrder, MetaContract } from "../../shared";
 import getOrderById from "../../db/orders/getOrderById";
 import { MessageDirection } from "@prisma/client";
 import getMetaSecrets from "../../services/meta/getMetaSecrets";
@@ -9,7 +9,7 @@ export default async function sendMetaMessage({
   template,
   params,
   orderId,
-}: MetaSchemaInputs["SendMetaMessageInput"]): Promise<AnyOrder | undefined> {
+}: MetaContract["Requests"]["SendMetaMessage"]): Promise<AnyOrder | undefined> {
   const { WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN } = getMetaSecrets();
   const API_URL = `https://graph.facebook.com/v18.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
 

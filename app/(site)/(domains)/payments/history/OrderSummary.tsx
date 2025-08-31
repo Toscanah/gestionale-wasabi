@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
-import DialogWrapper from "../../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
 import { Badge } from "@/components/ui/badge";
 import { OrderType } from "@prisma/client";
-import { OrderWithPayments } from "@/app/(site)/lib/shared";
+import { OrderWithPaymentsAndTotals } from "@/app/(site)/lib/shared";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import joinItemsWithComma from "@/app/(site)/lib/utils/global/string/joinItemsWithComma";
 
 interface OrderSummaryProps {
-  order: OrderWithPayments;
+  order: OrderWithPaymentsAndTotals;
 }
 
 export default function OrderSummary({ order }: OrderSummaryProps) {
   return (
-    <DialogWrapper
+    <WasabiDialog
       size="medium"
       trigger={<Button type="button">Vedi ordine</Button>}
       title={
@@ -44,6 +44,6 @@ export default function OrderSummary({ order }: OrderSummaryProps) {
           ))}
         </div>
       </div>
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

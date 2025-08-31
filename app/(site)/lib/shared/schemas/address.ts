@@ -1,7 +1,7 @@
 import { AddressSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
-import { createInputSchema, updateInputSchema, wrapSchema } from "./common";
-import { SchemaInputs } from "../types/SchemaInputs";
+import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
+import { ApiContract } from "../types/api-contract";
 
 export const CreateAddressInputSchema = createInputSchema(AddressSchema);
 
@@ -15,11 +15,11 @@ export const GetAddressesByCustomerSchema = wrapSchema("customerId", z.number())
 
 export const GetLastAddressOfCustomerSchema = wrapSchema("phone", z.string());
 
-export const ADDRESS_SCHEMAS = {
+export const ADDRESS_REQUESTS = {
   createAddress: CreateAddressSchema,
   updateAddress: UpdateAddressSchema,
   getAddressesByCustomer: GetAddressesByCustomerSchema,
   getLastAddressOfCustomer: GetLastAddressOfCustomerSchema,
 };
 
-export type AddressSchemaInputs = SchemaInputs<typeof ADDRESS_SCHEMAS>;
+export type AddressContract = ApiContract<typeof ADDRESS_REQUESTS>;

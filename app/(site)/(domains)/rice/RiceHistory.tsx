@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import DialogWrapper from "../../components/ui/dialog/DialogWrapper";
+import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
 import { useEffect, useState } from "react";
 import { format, isToday } from "date-fns";
-import { RiceLog } from "../../lib/shared/models/Rice";
+import { RiceLog } from "../../lib/shared/models/rice";
 import fetchRequest from "../../lib/api/fetchRequest";
 import formatRice from "../../lib/utils/domains/rice/formatRice";
 import { RiceLogType } from "@prisma/client";
@@ -47,7 +47,7 @@ export default function RiceHistory() {
   );
 
   return (
-    <DialogWrapper
+    <WasabiDialog
       putUpperBorder
       putSeparator
       trigger={<Button variant={"outline"}>Storico</Button>}
@@ -100,6 +100,6 @@ export default function RiceHistory() {
       ) : (
         <div className="w-full text-center text-xl">Nessuno storico presente per oggi</div>
       )}
-    </DialogWrapper>
+    </WasabiDialog>
   );
 }

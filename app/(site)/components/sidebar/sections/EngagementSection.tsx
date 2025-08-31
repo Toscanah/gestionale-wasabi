@@ -2,11 +2,11 @@ import { Megaphone } from "@phosphor-icons/react";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
 import MarketingTemplates from "@/app/(site)/(domains)/engagement/templates/MarketingTemplates";
-import DialogWrapper from "../../ui/dialog/DialogWrapper";
+import WasabiDialog from "../../ui/dialog/WasabiDialog";
 
 export default function EngagementSection() {
   const EngagementModels = () => (
-    <DialogWrapper
+    <WasabiDialog
       // onOpenChange={(open) => {
       //   if (!open) {
       //     window.location.reload();
@@ -20,7 +20,7 @@ export default function EngagementSection() {
       }
     >
       <MarketingTemplates />
-    </DialogWrapper>
+    </WasabiDialog>
   );
 
   const engagementItems: SidebarMenuGroupItem[] = [

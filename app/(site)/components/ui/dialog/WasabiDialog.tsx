@@ -22,7 +22,7 @@ const sizes = {
   large: "max-w-[97.5vw] w-[97.5vw]",
 };
 
-export type DialogWrapperProps = {
+export type WasabiDialogProps = {
   putUpperBorder?: boolean;
   double?: boolean;
   autoFocus?: boolean;
@@ -44,7 +44,7 @@ export type DialogWrapperProps = {
   | { title?: never; desc?: never }
 );
 
-export default function DialogWrapper({
+export default function WasabiDialog({
   putUpperBorder = false,
   double = false,
   children,
@@ -62,7 +62,7 @@ export default function DialogWrapper({
   onDelete,
   onOpenChange,
   size = "medium",
-}: DialogWrapperProps) {
+}: WasabiDialogProps) {
   // const [interactionReady, setInteractionReady] = useState(false);
 
   const isDeleteVariant = variant === "delete";

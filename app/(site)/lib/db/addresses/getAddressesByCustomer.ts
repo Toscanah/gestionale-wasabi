@@ -1,11 +1,10 @@
 import { Address } from "@prisma/client";
 import prisma from "../db";
+import { AddressContract } from "../../shared";
 
 export default async function getAddressesByCustomer({
   customerId,
-}: {
-  customerId: number;
-}): Promise<Address[]> {
+}: AddressContract["Requests"]["GetAddressesByCustomer"]): Promise<Address[]> {
   return await prisma.address.findMany({
     where: {
       customer: {

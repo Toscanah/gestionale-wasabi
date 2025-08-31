@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { AnyOrder, HomeOrder, OrderWithPayments } from "@/app/(site)/lib/shared";
+import { AnyOrder, HomeOrder, OrderWithPaymentsAndTotals } from "@/app/(site)/lib/shared";
 import { Badge } from "@/components/ui/badge";
 import { OrderType, PlannedPayment } from "@prisma/client";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { getOrderTotal } from "../../../lib/services/order-management/getOrderTo
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 
-const columns: ColumnDef<OrderWithPayments>[] = [
+const columns: ColumnDef<OrderWithPaymentsAndTotals>[] = [
   ValueColumn({
     header: "Tipo di ordine",
     value: (row) => {

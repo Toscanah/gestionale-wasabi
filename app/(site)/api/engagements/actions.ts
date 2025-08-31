@@ -6,7 +6,7 @@ import createEngagementTemplate from "../../lib/db/engagement/templates/createEn
 import deleteTemplateById from "../../lib/db/engagement/templates/deleteTemplateById";
 import deleteEngagementById from "../../lib/db/engagement/deleteEngagementById";
 import toggleEngagementById from "../../lib/db/engagement/toggleEngagementById";
-import { ENGAGEMENT_SCHEMAS } from "../../lib/shared";
+import { ENGAGEMENT_REQUESTS } from "../../lib/shared";
 import getEngagementsLedgersByCustomer from "../../lib/db/engagement/ledgers/getEngagementsLedgersByCustomer";
 import issueLedgers from "../../lib/db/engagement/ledgers/issueLedgers";
 import updateLedgerStatus from "../../lib/db/engagement/ledgers/updateLedgerStatus";
@@ -14,49 +14,49 @@ import updateLedgerStatus from "../../lib/db/engagement/ledgers/updateLedgerStat
 const GET_ACTIONS = new Map([
   [
     "getEngagementTemplates",
-    { func: getEngagementTemplates, schema: ENGAGEMENT_SCHEMAS.getEngagementTemplates },
+    { func: getEngagementTemplates, schema: ENGAGEMENT_REQUESTS.getEngagementTemplates },
   ],
   [
     "getEngagementsLedgersByCustomer",
     {
       func: getEngagementsLedgersByCustomer,
-      schema: ENGAGEMENT_SCHEMAS.getEngagementsLedgersByCustomer,
+      schema: ENGAGEMENT_REQUESTS.getEngagementsLedgersByCustomer,
     },
   ],
 ]);
 
 const POST_ACTIONS = new Map([
-  ["createEngagement", { func: createEngagement, schema: ENGAGEMENT_SCHEMAS.createEngagement }],
+  ["createEngagement", { func: createEngagement, schema: ENGAGEMENT_REQUESTS.createEngagement }],
   [
     "createEngagementTemplate",
-    { func: createEngagementTemplate, schema: ENGAGEMENT_SCHEMAS.createEngagementTemplate },
+    { func: createEngagementTemplate, schema: ENGAGEMENT_REQUESTS.createEngagementTemplate },
   ],
-  ["issueLedgers", { func: issueLedgers, schema: ENGAGEMENT_SCHEMAS.issueLedgers }],
+  ["issueLedgers", { func: issueLedgers, schema: ENGAGEMENT_REQUESTS.issueLedgers }],
 ]);
 
 const PATCH_ACTIONS = new Map([
   [
     "updateEngagementTemplate",
-    { func: updateEngagementTemplate, schema: ENGAGEMENT_SCHEMAS.updateEngagementTemplate },
+    { func: updateEngagementTemplate, schema: ENGAGEMENT_REQUESTS.updateEngagementTemplate },
   ],
   [
     "toggleEngagementById",
-    { func: toggleEngagementById, schema: ENGAGEMENT_SCHEMAS.toggleEngagementById },
+    { func: toggleEngagementById, schema: ENGAGEMENT_REQUESTS.toggleEngagementById },
   ],
   [
     "updateLedgerStatus",
-    { func: updateLedgerStatus, schema: ENGAGEMENT_SCHEMAS.updateLedgerStatus },
+    { func: updateLedgerStatus, schema: ENGAGEMENT_REQUESTS.updateLedgerStatus },
   ],
 ]);
 
 const DELETE_ACTIONS = new Map([
   [
     "deleteTemplateById",
-    { func: deleteTemplateById, schema: ENGAGEMENT_SCHEMAS.deleteTemplateById },
+    { func: deleteTemplateById, schema: ENGAGEMENT_REQUESTS.deleteTemplateById },
   ],
   [
     "deleteEngagementById",
-    { func: deleteEngagementById, schema: ENGAGEMENT_SCHEMAS.deleteEngagementById },
+    { func: deleteEngagementById, schema: ENGAGEMENT_REQUESTS.deleteEngagementById },
   ],
 ]);
 

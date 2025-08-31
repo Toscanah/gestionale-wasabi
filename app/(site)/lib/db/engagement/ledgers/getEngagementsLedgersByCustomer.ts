@@ -1,9 +1,9 @@
-import { EngagementLedgerWithDetails, EngagementSchemaInputs } from "../../../shared";
+import { EngagementLedgerWithDetails, EngagementContract } from "../../../shared";
 import prisma from "../../db";
 
 export default async function getEngagementsLedgersByCustomer({
   customerId,
-}: EngagementSchemaInputs["GetEngagementsLedgersByCustomerInput"]): Promise<
+}: EngagementContract["Requests"]["GetEngagementsLedgersByCustomer"]): Promise<
   EngagementLedgerWithDetails[]
 > {
   return await prisma.engagementLedger.findMany({

@@ -1,10 +1,10 @@
 import { EngagementLedgerStatus, OrderType } from "@prisma/client";
 import prisma from "../../db";
-import { EngagementSchemaInputs } from "../../../shared";
+import { EngagementContract } from "../../../shared";
 
 export default async function issueLedgers({
   orderId,
-}: EngagementSchemaInputs["IssueLedgersInput"]) {
+}: EngagementContract["Requests"]["IssueLedgers"]) {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     select: {
