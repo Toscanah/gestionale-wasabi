@@ -22,7 +22,7 @@ interface CustomCellProps {
 }
 
 export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTableProps) {
-  const {settings} = useWasabiContext()
+  const { settings } = useWasabiContext();
   const columns = getColumns(type, settings.useWhatsApp);
   const table = useTable<any>({ data, columns });
 
@@ -36,12 +36,13 @@ export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTab
   return (
     <div className="w-full h-full ">
       <Table
+        showNoResult={false}
         table={table}
         tableClassName="max-h-[100%] h-[100%] rounded-none"
         rowClassName={(row) => {
           const isOverdrawn = overdrawnOrderIds.has(row.original.id);
           return cn(
-            "hover:cursor-pointer w-full h-16 max-h-16 text-xl",
+            "hover:cursor-pointer w-full h-16 max-h-16 text-xl"
             // isOverdrawn && "!border !border-2 !border-red-500"
           );
         }}

@@ -26,6 +26,7 @@ export default function CategoryFilter({
       allLabel="Tutte"
       title="Categorie"
       mode="multi"
+      shouldClear={selectedCategoryIds.length!== allCategories.length}
       groups={[
         {
           options: allCategories.map((c) => ({

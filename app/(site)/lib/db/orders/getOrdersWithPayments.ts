@@ -6,11 +6,10 @@ import {
   productsInOrderInclude,
 } from "../includes";
 import { OrderType, PaymentType, Prisma } from "@prisma/client";
-import orderMatchesShift from "@/app/(site)/lib/services/order-management/shift/orderMatchesShift";
 import { addDays, endOfDay, parse, startOfDay } from "date-fns";
 import { it } from "date-fns/locale";
 import { ORDER_TYPE_LABELS } from "../../shared/constants/order-labels";
-import { OrderContract } from "../../shared";
+import { OrderContract, ShiftFilterValue } from "../../shared";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
 
 export default async function getOrdersWithPayments({
@@ -22,14 +21,12 @@ export default async function getOrdersWithPayments({
   OrderContract["Responses"]["GetOrdersWithPayments"]
 > {
   const { orderTypes, shift, period, weekdays, timeWindow, query } = filters;
-
   const normalizedPeriod = normalizePeriod(period);
 
   let where: Prisma.OrderWhereInput = {
     payments: { some: {} },
   };
 
-  // 🔎 Full-text-ish search
   if (query && query.trim() !== "") {
     let dateWhere: Prisma.OrderWhereInput = {};
 
@@ -79,14 +76,14 @@ export default async function getOrdersWithPayments({
     ];
   }
 
-  // 🎯 Order types filter
   if (orderTypes && orderTypes.length > 0) {
     where.type = { in: orderTypes };
   }
 
-  // 📅 Date range filter
+  if (shift && shift !== ShiftFilterValue.ALL) {
+    where.shift = shift;
+  }
 
-  // If no period → use Jan 1st 2025 until today
   const baseFrom = normalizedPeriod?.from ?? startOfDay(new Date(2025, 0, 1));
   const baseTo = normalizedPeriod?.to ?? endOfDay(new Date());
 
@@ -136,13 +133,7 @@ export default async function getOrdersWithPayments({
     take: canPaginate ? pageSize : undefined,
   });
 
-  // 🕑 Apply filters that require post-processing
   let filteredOrders = rawOrders;
-
-  // shift filter (lunch/dinner via helper)
-  if (shift) {
-    filteredOrders = filteredOrders.filter((order) => orderMatchesShift(order, shift));
-  }
 
   // weekdays filter
   // if (weekdays && weekdays.length > 0) {

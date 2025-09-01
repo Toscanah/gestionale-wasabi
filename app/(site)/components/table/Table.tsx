@@ -27,6 +27,7 @@ interface TableProps<T> {
   onRowClick?: (original: T) => void;
   double?: boolean;
   stickyRowIndex?: number;
+  showNoResult?: boolean;
 }
 
 export default function Table<T>({
@@ -40,6 +41,7 @@ export default function Table<T>({
   stickyRowIndex,
   double = false,
   forceRowClick = false,
+  showNoResult = true,
 }: TableProps<T>) {
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -130,7 +132,7 @@ export default function Table<T>({
                   </TableRow>
                 );
               })
-            ) : (
+            ) : showNoResult ? (
               <TableRow className="h-max">
                 <TableCell
                   colSpan={table.getAllColumns().length}
@@ -139,7 +141,7 @@ export default function Table<T>({
                   Nessun risultato
                 </TableCell>
               </TableRow>
-            )}
+            ) : null}
           </TableBody>
         </DataTable>
       )}

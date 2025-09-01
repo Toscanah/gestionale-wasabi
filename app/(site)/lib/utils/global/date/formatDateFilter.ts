@@ -17,7 +17,7 @@ export default function formatDateFilter(
       ? `${format(range.from, "PPP", { locale })} - ${format(range.to, "PPP", {
           locale,
         })}`
-      : format(range.from, "PPP", { locale });
+      : `dal ${format(range.from, "PPP", { locale })}`;
   }
 
   return "Da sempre";

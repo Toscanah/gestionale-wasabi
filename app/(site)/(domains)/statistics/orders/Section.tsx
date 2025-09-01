@@ -9,6 +9,7 @@ import TimeWindowFilter from "@/app/(site)/components/ui/filters/time/TimeWindow
 import SectionResults from "./results/SectionResults";
 import { Separator } from "@/components/ui/separator";
 import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
+import useCsvExport from "@/app/(site)/hooks/useCsvExport";
 
 interface SectionProps {
   id: string;
@@ -85,7 +86,7 @@ export default function Section({}: SectionProps) {
 
       {/* <Separator className="w-full"/> */}
 
-      <SectionResults results={filteredResults} isLoading={isLoading} />
+      <SectionResults filters={state} results={filteredResults} isLoading={isLoading} />
     </div>
   );
 }

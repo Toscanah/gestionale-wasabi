@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { cn } from "@/lib/utils";
 import formatRice from "../../lib/utils/domains/rice/formatRice";
@@ -6,9 +6,24 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { SHIFT_LABELS, ShiftFilterValue } from "../../lib/shared";
 
+const STORAGE_KEY = "rice-summary-filter";
+
 export default function RiceSummary() {
   const { rice } = useWasabiContext();
   const [filter, setFilter] = useState<ShiftFilterValue>(ShiftFilterValue.ALL);
+
+  // Load stored value on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY) as ShiftFilterValue | null;
+    if (stored && Object.values(ShiftFilterValue).includes(stored)) {
+      setFilter(stored);
+    }
+  }, []);
+
+  // Save whenever filter changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, filter);
+  }, [filter]);
 
   const consumedLunch = rice.total - rice.remainingLunch;
   const consumedDinner = rice.total - rice.remainingDinner;

@@ -39,6 +39,7 @@ export default async function getProductsWithStats({
         where: {
           status: ProductInOrderStatus.IN_ORDER,
           order: {
+            ...(shift && shift !== ShiftFilterValue.ALL ? { shift } : {}),
             status: OrderStatus.PAID,
             ...(dateFilter
               ? {
@@ -69,20 +70,7 @@ export default async function getProductsWithStats({
     },
   });
 
-  const filteredProducts = products
-    .map((product) => {
-      const filteredOrders = product.orders.filter((productInOrder) =>
-        orderMatchesShift(productInOrder.order, shift as ShiftFilterValue)
-      );
-
-      if (filteredOrders.length > 0) {
-        return { ...product, orders: filteredOrders };
-      }
-      return null;
-    })
-    .filter(Boolean) as typeof products;
-
-  return filteredProducts.map((product) => {
+  return products.map((product) => {
     const stats = product.orders.reduce(
       (acc, productInOrder) => {
         if (

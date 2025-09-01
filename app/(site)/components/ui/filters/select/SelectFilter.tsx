@@ -72,7 +72,6 @@ export default function SelectFilter(props: WasabiSelectProps) {
     triggerIcon,
     disabled,
     shouldClear = true,
-    allLabel,
   } = props;
 
   const normalizedSelection = (

@@ -21,29 +21,47 @@ export type OrderStatsResults = {
   // Home orders
   homeOrders: number;
   homeRevenue: number;
+  homeProducts: number;
   homeSoups: number;
   homeRices: number; // count of "rice" dishes
   homeSalads: number;
   homeRice: number; // total rice mass (e.g., grams) consumed
-  homeProducts: number;
 
   // Pickup orders
   pickupOrders: number;
   pickupRevenue: number;
+  pickupProducts: number;
   pickupSoups: number;
   pickupRices: number;
   pickupSalads: number;
   pickupRice: number;
-  pickupProducts: number;
 
   // Table orders
   tableOrders: number;
   tableRevenue: number;
+  tableProducts: number;
   tableSoups: number;
   tableRices: number;
   tableSalads: number;
   tableRice: number;
-  tableProducts: number;
+
+  // Per day stats
+  homeOrdersPerDay: number;
+  homeRevenuePerDay: number;
+  homeProductsPerDay: number;
+
+  pickupOrdersPerDay: number;
+  pickupRevenuePerDay: number;
+  pickupProductsPerDay: number;
+
+  tableOrdersPerDay: number;
+  tableRevenuePerDay: number;
+  tableProductsPerDay: number;
+
+  // Averages per order
+  homeRevenuePerOrder: number;
+  pickupRevenuePerOrder: number;
+  tableRevenuePerOrder: number;
 };
 
 export default function useOrdersStats() {
@@ -105,13 +123,20 @@ export default function useOrdersStats() {
     };
   }, [state]);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data: shiftBackfill, isLoading: isShiftBackfillLoading } = useQuery({
+    queryKey: ["shiftBackfill"],
+    queryFn: () => fetchRequest("PATCH", "/api/orders", "updateOrdersShift"),
+    staleTime: Infinity,
+  });
+
+  const { data, isLoading: isOrdersLoading } = useQuery({
     queryKey: ["orders", filters],
     queryFn: async (): Promise<OrderContract["Responses"]["GetOrdersWithPayments"]> =>
       fetchRequest("POST", "/api/orders", "getOrdersWithPayments", {
         filters,
         summary: true,
       }),
+    enabled: !!shiftBackfill,
     select: (res) => calculateResults(res.orders),
   });
 
@@ -137,9 +162,8 @@ export default function useOrdersStats() {
     state,
     showReset: !isDefaultState(state),
     dispatch,
-    filteredResults: data ?? ({} as OrderStatsResults),
-    isLoading,
-    isError,
+    filteredResults: data ?? null,
+    isLoading: isOrdersLoading || isShiftBackfillLoading,
     disabledFlags: getDisabledFlags(state),
   };
 }

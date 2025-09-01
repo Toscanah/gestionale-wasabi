@@ -20,6 +20,7 @@ import joinTableOrders from "../../lib/db/orders/table/joinTableOrders";
 import updateOrderTable from "../../lib/db/orders/table/updateOrderTable";
 import updateOrderTablePpl from "../../lib/db/orders/table/updateOrderTablePpl";
 import getOrdersWithPayments from "../../lib/db/orders/getOrdersWithPayments";
+import updateOrdersShift from "../../lib/db/orders/updateOrdersShift";
 
 const GET_ACTIONS = new Map([
   ["getOrdersByType", { func: getOrdersByType, schema: ORDER_REQUESTS.getOrdersByType }],
@@ -53,6 +54,7 @@ const PATCH_ACTIONS = new Map([
     { func: updateOrderPaymentStatus, schema: ORDER_REQUESTS.updateOrderPaymentStatus },
   ],
   ["updateOrderShift", { func: updateOrderShift, schema: ORDER_REQUESTS.updateOrderShift }],
+  ["updateOrdersShift", { func: updateOrdersShift, schema: ORDER_REQUESTS.updateOrdersShift }],
   [
     "updateOrderExtraItems",
     { func: updateOrderExtraItems, schema: ORDER_REQUESTS.updateOrderExtraItems },

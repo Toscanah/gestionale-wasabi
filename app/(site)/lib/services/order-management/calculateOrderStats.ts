@@ -2,8 +2,13 @@ import { OrderStatsResults } from "@/app/(site)/hooks/statistics/useOrdersStats"
 import { AnyOrder, ProductInOrder } from "../../shared";
 import { OrderType, ProductInOrderStatus } from "@prisma/client";
 import getPioRice from "../product-management/getPioRice";
+import { DateRange } from "react-day-picker";
+import { differenceInCalendarDays, endOfDay, startOfDay } from "date-fns";
 
-export default function calculateResults(orders: AnyOrder[]): OrderStatsResults {
+export default function calculateResults(
+  orders: AnyOrder[],
+  period?: DateRange
+): OrderStatsResults {
   // Accumulators
   let homeOrders = 0,
     pickupOrders = 0,
@@ -138,6 +143,13 @@ export default function calculateResults(orders: AnyOrder[]): OrderStatsResults 
     }
   }
 
+  let numDays = 1; // fallback = 1 day (avoid division by zero)
+
+  const from = period?.from ? new Date(period.from) : startOfDay(new Date(2025, 0, 1));
+  const to = period?.to ? new Date(period.to) : endOfDay(new Date());
+
+  numDays = differenceInCalendarDays(to, from) + 1;
+
   return {
     // Home
     homeOrders,
@@ -165,5 +177,23 @@ export default function calculateResults(orders: AnyOrder[]): OrderStatsResults 
     tableSalads,
     tableRice,
     tableProducts,
+
+    // ---- Averages per day ----
+    homeOrdersPerDay: homeOrders / numDays,
+    homeRevenuePerDay: homeRevenue / numDays,
+    homeProductsPerDay: homeProducts / numDays,
+
+    pickupOrdersPerDay: pickupOrders / numDays,
+    pickupRevenuePerDay: pickupRevenue / numDays,
+    pickupProductsPerDay: pickupProducts / numDays,
+
+    tableOrdersPerDay: tableOrders / numDays,
+    tableRevenuePerDay: tableRevenue / numDays,
+    tableProductsPerDay: tableProducts / numDays,
+
+    // ---- Averages per order ----
+    homeRevenuePerOrder: homeOrders > 0 ? homeRevenue / homeOrders : 0,
+    pickupRevenuePerOrder: pickupOrders > 0 ? pickupRevenue / pickupOrders : 0,
+    tableRevenuePerOrder: tableOrders > 0 ? tableRevenue / tableOrders : 0,
   };
 }

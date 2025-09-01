@@ -54,19 +54,19 @@ export default function ProductsStats() {
           <span className="font-bold text-xl">Pagamenti</span>
           <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
 
+          <CalendarFilter
+            mode="range"
+            dateFilter={period}
+            handleDateFilter={setPeriod}
+            disabled={isLoading}
+          />
+
           <ShiftFilter selectedShift={shift} onShiftChange={setShift} disabled={isLoading} />
 
           <CategoryFilter
             selectedCategoryIds={categoryIds}
             onCategoryIdsChange={setCategoryIds}
             allCategories={allCategories}
-          />
-
-          <CalendarFilter
-            mode="range"
-            dateFilter={period}
-            handleDateFilter={setPeriod}
-            disabled={isLoading}
           />
         </div>
 

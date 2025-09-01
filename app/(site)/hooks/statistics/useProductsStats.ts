@@ -1,11 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "@prisma/client";
 import { DateRange } from "react-day-picker";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { ProductWithStats } from "@/app/(site)/lib/shared/types/product-with-stats";
 import { CategoryContract, ProductContract, ShiftFilterValue } from "@/app/(site)/lib/shared"; // same enum used elsewhere
-import { startOfDay, endOfDay } from "date-fns";
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";
 
 export default function useProductsStats() {
@@ -23,7 +22,7 @@ export default function useProductsStats() {
           "getCategories"
         )
       ).filter((c) => c.active),
-    staleTime: 1000 * 60 * 10,
+    staleTime: Infinity,
   });
 
   const filters: ProductContract["Requests"]["GetProductsWithStats"]["filters"] = useMemo(() => {
@@ -45,7 +44,19 @@ export default function useProductsStats() {
     };
   }, [period, shift, categoryIds, allCategories]);
 
-  // ---- products query ----
+  useEffect(() => {
+    if (allCategories.length > 0 && categoryIds.length === 0) {
+      setCategoryIds(allCategories.map((c) => c.id));
+    }
+  }, [allCategories, categoryIds.length]);
+
+  const { data: shiftBackfill } = useQuery({
+    queryKey: ["shiftBackfill"],
+    queryFn: () => fetchRequest("PATCH", "/api/orders", "updateOrdersShift"),
+    staleTime: Infinity,
+    enabled: Array.isArray(allCategories) && allCategories.length > 0,
+  });
+
   const { data: filteredProducts = [], isLoading } = useQuery({
     queryKey: ["products-stats", { filters }],
     queryFn: async (): Promise<ProductWithStats[]> => {
@@ -56,14 +67,14 @@ export default function useProductsStats() {
         { filters }
       );
     },
+    enabled: !!shiftBackfill,
     staleTime: 1000 * 60 * 5,
   });
 
-  // ---- reset ----
   const handleReset = () => {
     setPeriod(TODAY_PERIOD);
     setShift(ShiftFilterValue.ALL);
-    setCategoryIds(allCategories.map((c) => c.id)); // default = all categories
+    setCategoryIds(allCategories.map((c) => c.id));
   };
 
   const showReset =
@@ -85,6 +96,6 @@ export default function useProductsStats() {
     setPeriod,
     handleReset,
     showReset,
-    isLoading: isLoading,
+    isLoading,
   };
 }

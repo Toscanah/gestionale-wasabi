@@ -1,5 +1,6 @@
 generator client {
     provider = "prisma-client-js"
+    // previewFeatures = ["typedSql"]
 }
 
 generator json {
@@ -45,6 +46,13 @@ model Order {
     table_order                 TableOrder?
     issued_engagement_ledgers   EngagementLedger[] @relation("ledger_issued_on_order")
     redeemed_engagement_ledgers EngagementLedger[] @relation("ledger_redeemed_on_order")
+
+    @@index([created_at])
+    @@index([status, created_at])
+    @@index([type, created_at])
+    @@index([shift, created_at])
+    @@index([suborder_of])
+    @@index([is_receipt_printed])
 }
 
 model TableOrder {
@@ -53,6 +61,9 @@ model TableOrder {
     res_name String?
     people   Int
     order    Order   @relation(fields: [id], references: [id], onDelete: Cascade)
+
+    @@index([table])
+    @@index([res_name])
 }
 
 model HomeOrder {
@@ -69,6 +80,13 @@ model HomeOrder {
     customer        Customer         @relation(fields: [customer_id], references: [id])
     order           Order            @relation(fields: [id], references: [id], onDelete: Cascade)
     messages        MetaMessageLog[]
+
+    @@index([customer_id])
+    @@index([address_id])
+    @@index([last_reply_at])
+    @@index([reply_seen_at])
+    @@index([planned_payment])
+    @@index([prepaid])
 }
 
 model PickupOrder {
@@ -80,6 +98,10 @@ model PickupOrder {
     prepaid         Boolean        @default(false)
     customer        Customer?      @relation(fields: [customer_id], references: [id])
     order           Order          @relation(fields: [id], references: [id], onDelete: Cascade)
+
+    @@index([customer_id])
+    @@index([planned_payment])
+    @@index([prepaid])
 }
 
 model Address {
@@ -95,6 +117,9 @@ model Address {
     temporary   Boolean     @default(false)
     customer    Customer    @relation(fields: [customer_id], references: [id])
     home_orders HomeOrder[]
+
+    @@index([customer_id])
+    @@index([active, temporary])
 }
 
 model EngagementTemplate {
@@ -105,6 +130,9 @@ model EngagementTemplate {
     redeemable  Boolean        @default(false)
     created_at  DateTime       @default(now())
     engagements Engagement[]
+
+    @@index([type])
+    @@index([redeemable])
 }
 
 model Engagement {
@@ -118,6 +146,13 @@ model Engagement {
     order       Order?             @relation(fields: [order_id], references: [id])
     template    EngagementTemplate @relation(fields: [template_id], references: [id])
     ledgers     EngagementLedger[]
+
+    @@index([customer_id])
+    @@index([order_id])
+    @@index([template_id])
+    @@index([enabled])
+    @@index([order_id, enabled])
+    @@index([customer_id, enabled])
 }
 
 model EngagementLedger {
@@ -158,7 +193,6 @@ model Customer {
     order_notes   String?
     origin        CustomerOrigin @default(UNKNOWN)
     phone_id      Int            @unique
-    
     /// [RFMCustomerSegment]
     rfm           Json           @default("{}")
     addresses     Address[]
@@ -166,6 +200,10 @@ model Customer {
     engagements   Engagement[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
+
+    @@index([active])
+    @@index([origin])
+    @@index([email])
 }
 
 model Phone {
@@ -183,6 +221,13 @@ model Payment {
     scope              PaymentScope @default(UNKNOWN)
     payment_group_code String?
     order              Order        @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+    @@index([order_id])
+    @@index([created_at])
+    @@index([payment_group_code])
+    @@index([type])
+    @@index([scope])
+    @@index([order_id, created_at])
 }
 
 model RiceLog {
@@ -192,6 +237,10 @@ model RiceLog {
     manual_value  Float?
     type          RiceLogType
     rice_batch    RiceBatch?  @relation(fields: [rice_batch_id], references: [id])
+
+    @@index([rice_batch_id])
+    @@index([created_at])
+    @@index([type])
 }
 
 model RiceBatch {
@@ -199,6 +248,8 @@ model RiceBatch {
     amount   Float     @default(0)
     label    String?
     rice_log RiceLog[]
+
+    @@index([label])
 }
 
 model Product {
@@ -216,6 +267,13 @@ model Product {
     soups       Int              @default(0)
     category    Category?        @relation(fields: [category_id], references: [id])
     orders      ProductInOrder[]
+
+    @@unique([code])
+    @@index([category_id])
+    @@index([active])
+    @@index([kitchen])
+    @@index([code])
+    @@index([desc])
 }
 
 model ProductInOrder {
@@ -232,6 +290,13 @@ model ProductInOrder {
     options        OptionInProductOrder[]
     order          Order                  @relation(fields: [order_id], references: [id], onDelete: Cascade)
     product        Product                @relation(fields: [product_id], references: [id])
+
+    @@index([order_id])
+    @@index([product_id])
+    @@index([status])
+    @@index([created_at])
+    @@index([order_id, status])
+    @@index([order_id, created_at])
 }
 
 model Category {
@@ -240,6 +305,8 @@ model Category {
     active   Boolean            @default(true)
     options  CategoryOnOption[]
     products Product[]
+
+    @@index([active])
 }
 
 model CategoryOnOption {
@@ -248,6 +315,10 @@ model CategoryOnOption {
     option_id   Int
     category    Category @relation(fields: [category_id], references: [id])
     option      Option   @relation(fields: [option_id], references: [id])
+
+    @@unique([category_id, option_id])
+    @@index([category_id])
+    @@index([option_id])
 }
 
 model Option {
@@ -264,6 +335,9 @@ model OptionInProductOrder {
     option_id           Int
     option              Option         @relation(fields: [option_id], references: [id])
     product_in_order    ProductInOrder @relation(fields: [product_in_order_id], references: [id], onDelete: Cascade)
+
+    @@index([product_in_order_id])
+    @@index([option_id])
 }
 
 model MetaMessageLog {
@@ -274,6 +348,11 @@ model MetaMessageLog {
     created_at    DateTime         @default(now())
     direction     MessageDirection
     home_order    HomeOrder        @relation(fields: [home_order_id], references: [id], onDelete: Cascade)
+
+    @@index([home_order_id])
+    @@index([created_at])
+    @@index([home_order_id, created_at])
+    @@index([home_order_id, direction, created_at])
 }
 
 enum WorkingShift {

@@ -116,27 +116,30 @@ export const GetOrdersWithPaymentsRequestSchema = z
   })
   .merge(PaginationRequestSchema.partial());
 
+export const UpdateOrdersShiftSchema = NoContentRequestSchema;
+
 export const ORDER_REQUESTS = {
+  cancelOrder: CancelOrderSchema,
+  cancelOrdersInBulk: CancelOrdersInBulkSchema,
+  createHomeOrder: CreateHomeOrderSchema,
+  createPickupOrder: CreatePickupOrderSchema,
+  createSubOrder: CreateSubOrderSchema,
+  createTableOrder: CreateTableOrderSchema,
+  deleteEverything: NoContentRequestSchema,
+  fixOrdersShift: NoContentRequestSchema,
   getOrderById: GetOrderByIdSchema,
   getOrdersByType: GetOrdersByTypeSchema,
-  updateOrderDiscount: UpdateOrderDiscountSchema,
-  updateOrderPaymentStatus: UpdateOrderPaymentStatusSchema,
-  createTableOrder: CreateTableOrderSchema,
-  createPickupOrder: CreatePickupOrderSchema,
-  createHomeOrder: CreateHomeOrderSchema,
-  updateOrderTime: UpdateOrderTimeSchema,
-  cancelOrder: CancelOrderSchema,
-  createSubOrder: CreateSubOrderSchema,
-  updateOrderPrintedFlag: UpdateOrderPrintedFlagSchema,
-  cancelOrdersInBulk: CancelOrdersInBulkSchema,
-  deleteEverything: NoContentRequestSchema,
-  joinTableOrders: JoinTableOrdersSchema,
-  updateOrderTable: UpdateOrderTableSchema,
-  updateOrderExtraItems: UpdateOrderExtraItemsSchema,
-  updateOrderShift: UpdateOrderShiftSchema,
-  fixOrdersShift: NoContentRequestSchema,
-  updateOrderTablePpl: UpdateOrderTablePplSchema,
   getOrdersWithPayments: GetOrdersWithPaymentsRequestSchema,
+  joinTableOrders: JoinTableOrdersSchema,
+  updateOrderDiscount: UpdateOrderDiscountSchema,
+  updateOrderExtraItems: UpdateOrderExtraItemsSchema,
+  updateOrderPaymentStatus: UpdateOrderPaymentStatusSchema,
+  updateOrderPrintedFlag: UpdateOrderPrintedFlagSchema,
+  updateOrderShift: UpdateOrderShiftSchema,
+  updateOrdersShift: UpdateOrdersShiftSchema,
+  updateOrderTable: UpdateOrderTableSchema,
+  updateOrderTablePpl: UpdateOrderTablePplSchema,
+  updateOrderTime: UpdateOrderTimeSchema,
 };
 
 export const GetOrdersWithPaymentsResponseSchema = z

@@ -37,10 +37,13 @@ function inferShift(time: number): WorkingShift {
   return WorkingShift.UNSPECIFIED;
 }
 
-export function getEffectiveOrderShift(order: ShiftEvaluableOrder): {
+export function getEffectiveOrderShift(
+  order: ShiftEvaluableOrder,
+  forceInfer = false
+): {
   effectiveShift: WorkingShift;
 } {
-  if (order.shift && order.shift !== WorkingShift.UNSPECIFIED) {
+  if (!forceInfer && order.shift && order.shift !== WorkingShift.UNSPECIFIED) {
     return { effectiveShift: order.shift };
   }
 

@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ResultRecord } from "./SectionResults";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
+import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 
 export default function columns(): ColumnDef<ResultRecord>[] {
   return [
@@ -15,6 +16,12 @@ export default function columns(): ColumnDef<ResultRecord>[] {
       key: "orders",
     }),
 
+    ValueColumn({
+      header: "Ordini/giorno",
+      value: (row) => row.original.ordersPerDay,
+      accessor: (stats) => stats.ordersPerDay,
+    }),
+
     FieldColumn({
       header: "% Ordini",
       key: "ordersPct",
@@ -26,6 +33,12 @@ export default function columns(): ColumnDef<ResultRecord>[] {
       accessor: (stats) => stats.revenue,
     }),
 
+    ValueColumn({
+      header: "Incasso/giorno",
+      value: (row) => `€ ${row.original.revenuePerDay}`,
+      accessor: (stats) => stats.revenuePerDay,
+    }),
+
     FieldColumn({
       header: "% Incasso",
       key: "revenuePct",
@@ -33,15 +46,21 @@ export default function columns(): ColumnDef<ResultRecord>[] {
 
     ValueColumn({
       header: "Scontrino medio",
-      value: (row) => `€ ${row.original.avg}`,
-      accessor: (stats) => stats.avg,
+      value: (row) => `€ ${row.original.avgPerOrder}`,
+      accessor: (stats) => stats.avgPerOrder,
     }),
 
     FieldColumn({
       header: "Prodotti",
       key: "products",
     }),
-    
+
+    ValueColumn({
+      header: "Prodotti/giorno",
+      value: (row) => row.original.productsPerDay,
+      accessor: (stats) => stats.productsPerDay,
+    }),
+
     FieldColumn({
       header: "Zuppe",
       key: "soups",
@@ -56,11 +75,11 @@ export default function columns(): ColumnDef<ResultRecord>[] {
       header: "Insalate",
       key: "salads",
     }),
-    
+
     ValueColumn({
       header: "Riso cucinato",
-      value: (row) => formatRice(row.original.riceMass),
-      accessor: (stats) => formatRice(stats.riceMass),
+      value: (row) => row.original.riceMass,
+      accessor: (stats) => stats.riceMass,
     }),
   ];
 }

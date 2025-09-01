@@ -52,7 +52,7 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     };
   }, [period, ranks, debouncedQuery]);
 
-  const { data: backfill } = useQuery({
+  const { data: RFMbackfill } = useQuery({
     queryKey: ["rfmBackfill"],
     queryFn: () => fetchRequest("PATCH", "/api/customers", "updateCustomersRFM", { rfmConfig }),
     staleTime: Infinity,
@@ -71,7 +71,7 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
           pageSize,
         }
       ),
-    enabled: !!backfill,
+    enabled: !!RFMbackfill,
     staleTime: 1000 * 60 * 60,
   });
 
