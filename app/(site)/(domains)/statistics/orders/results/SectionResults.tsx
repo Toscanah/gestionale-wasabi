@@ -211,12 +211,14 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <Table table={table} cellClassName={() => "h-20 max-h-20"} />
-      {sections.length > 0 && (
-        <Button onClick={() => downloadCsv("statistiche_ordini.csv")} className="ml-auto">
-          Scarica dati
-        </Button>
-      )}
+      <Table table={table} cellClassName={() => "h-20 max-h-20"} fixedColumnIndex={0} />
+      <Button
+        onClick={() => downloadCsv("statistiche_ordini.csv")}
+        className="ml-auto"
+        disabled={isLoading || sections.length === 0}
+      >
+        Scarica dati
+      </Button>
     </div>
   );
 }

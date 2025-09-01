@@ -24,14 +24,12 @@ export default function Section({}: SectionProps) {
   const { dispatch, state, disabledFlags, filteredResults, showReset, isLoading } =
     useOrdersStats();
 
-  const years = Array.from({ length: new Date().getFullYear() - 2025 + 1 }, (_, i) => 2025 + i);
-
   return (
     <div className="flex flex-col gap-4 w-full p-4 h-full">
-      <div className="w-full flex gap-4">
+      <div className="w-full flex flex-wrap gap-4">
         <CalendarFilter
           usePresets
-          years={years}
+          useYears
           mode="range"
           dateFilter={state.period}
           handleDateFilter={(newDate) =>
@@ -63,10 +61,10 @@ export default function Section({}: SectionProps) {
         {/* <OrderTypesFilter
           selectedTypes={state.orderTypes}
           onTypesChange={(updatedTypes) =>
-            dispatch({
-              type: "SET_ORDER_TYPES",
-              payload: updatedTypes,
-            })
+        dispatch({
+          type: "SET_ORDER_TYPES",
+          payload: updatedTypes,
+        })
           }
         /> */}
 

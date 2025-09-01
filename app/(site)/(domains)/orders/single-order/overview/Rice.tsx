@@ -11,10 +11,6 @@ export default function Rice() {
   const [usedRice, setUsedRice] = useState<number>(0);
 
   useEffect(() => {
-  console.log("Rice mounted");
-}, []);
-
-  useEffect(() => {
     const currentUsedRice = order.products.reduce(
       (total, product) => total + getPioRice(product),
       0

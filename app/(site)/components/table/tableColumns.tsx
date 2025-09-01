@@ -5,6 +5,7 @@ import { Fragment, ReactNode } from "react";
 import getNestedValue from "../../lib/utils/global/getNestedValue";
 import { uniqueId } from "lodash";
 import joinItemsWithComma, { JoinItemType } from "../../lib/utils/global/string/joinItemsWithComma";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type Primitive = string | number | boolean | Date | null | undefined;
 
@@ -192,3 +193,32 @@ export const HybridColumn = ValueColumn;
 /**
  * HybridColumn is an alias for ValueColumn, supporting both accessor and custom rendering.
  */
+
+// type SelectColumn<T> = {
+//   action: (row: Row<T>, meta: TableMeta<T> | undefined) => ReactNode;
+// };
+
+export function SelectColumn<T>(): ColumnDef<T> {
+  return {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    size: 32,
+    enableSorting: false,
+    enableHiding: false,
+  };
+}

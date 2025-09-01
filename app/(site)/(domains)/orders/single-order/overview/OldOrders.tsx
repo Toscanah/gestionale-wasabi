@@ -1,60 +1,58 @@
 import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import { CustomerWithDetails, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
-import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import { useQuery } from "@tanstack/react-query";
 
 export default function OldOrders() {
-  const [customer, setCustomer] = useState<CustomerWithDetails | undefined>(undefined);
   const { order, addProducts } = useOrderContext();
 
-  useEffect(() => {
-    if (
-      order.type === OrderType.TABLE ||
-      (order.type === OrderType.PICKUP && !(order as PickupOrder).pickup_order?.customer_id)
-    ) {
-      return;
-    }
+  // ---- Extract customerId (or undefined if not applicable)
+  const customerId =
+    order.type === OrderType.PICKUP
+      ? (order as PickupOrder).pickup_order?.customer_id
+      : order.type === OrderType.HOME
+      ? (order as HomeOrder).home_order?.customer_id
+      : undefined;
 
-    const customerId =
-      order.type === OrderType.PICKUP
-        ? (order as PickupOrder).pickup_order?.customer_id
-        : (order as HomeOrder).home_order?.customer_id;
+  // ---- Query for customer
+  const { data: customer } = useQuery({
+    queryKey: ["customerWithDetails", customerId, order.id],
+    queryFn: async () => {
+      if (!customerId) return undefined;
 
-    if (!customerId) return;
+      const customer = await fetchRequest<CustomerWithDetails>(
+        "GET",
+        "/api/customers/",
+        "getCustomerWithDetails",
+        { customerId }
+      );
 
-    fetchRequest<CustomerWithDetails>("GET", "/api/customers/", "getCustomerWithDetails", {
-      customerId,
-    }).then((customer) => {
-      if (!customer) return;
+      if (!customer) return undefined;
 
-      let filteredCustomer = { ...customer };
-
+      // Filter out the current order from history
+      const filtered = { ...customer };
       if (order.type === OrderType.HOME) {
-        filteredCustomer.home_orders = customer.home_orders.filter(
-          (homeOrder) => homeOrder.id !== order.id
-        );
+        filtered.home_orders = customer.home_orders.filter((h) => h.id !== order.id);
       }
-
       if (order.type === OrderType.PICKUP) {
-        filteredCustomer.pickup_orders = customer.pickup_orders.filter(
-          (pickupOrder) => pickupOrder.id !== order.id
-        );
+        filtered.pickup_orders = customer.pickup_orders.filter((p) => p.id !== order.id);
       }
 
-      setCustomer(filteredCustomer);
-    });
-  }, []);
+      return filtered;
+    },
+    enabled: !!customerId && order.type !== OrderType.TABLE, // only fetch when relevant
+    staleTime: Infinity
+  });
 
-  if (!customer) return <></>;
+  // ---- Guard clauses
+  if (!customer) return null;
 
   const hasOrders = customer.home_orders.length > 0 || customer.pickup_orders.length > 0;
-
-  if (!hasOrders) return <></>;
+  if (!hasOrders) return null;
 
   return (
     <WasabiDialog

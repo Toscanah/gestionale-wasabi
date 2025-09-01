@@ -137,7 +137,7 @@ export default function useOrdersStats() {
         summary: true,
       }),
     enabled: !!shiftBackfill,
-    select: (res) => calculateResults(res.orders),
+    select: (res) => calculateResults(res.orders, state.period),
   });
 
   function isDefaultState(state: SectionState): boolean {

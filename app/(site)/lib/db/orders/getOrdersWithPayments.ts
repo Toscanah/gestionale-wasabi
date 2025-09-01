@@ -5,7 +5,7 @@ import {
   pickupOrderInclude,
   productsInOrderInclude,
 } from "../includes";
-import { OrderType, PaymentType, Prisma } from "@prisma/client";
+import { OrderType, PaymentType, Prisma, WorkingShift } from "@prisma/client";
 import { addDays, endOfDay, parse, startOfDay } from "date-fns";
 import { it } from "date-fns/locale";
 import { ORDER_TYPE_LABELS } from "../../shared/constants/order-labels";
@@ -22,6 +22,8 @@ export default async function getOrdersWithPayments({
 > {
   const { orderTypes, shift, period, weekdays, timeWindow, query } = filters;
   const normalizedPeriod = normalizePeriod(period);
+
+  console.log(shift);
 
   let where: Prisma.OrderWhereInput = {
     payments: { some: {} },
@@ -81,7 +83,7 @@ export default async function getOrdersWithPayments({
   }
 
   if (shift && shift !== ShiftFilterValue.ALL) {
-    where.shift = shift;
+    where.shift = { equals: shift };
   }
 
   const baseFrom = normalizedPeriod?.from ?? startOfDay(new Date(2025, 0, 1));
@@ -134,29 +136,6 @@ export default async function getOrdersWithPayments({
   });
 
   let filteredOrders = rawOrders;
-
-  // weekdays filter
-  // if (weekdays && weekdays.length > 0) {
-  //   filteredOrders = filteredOrders.filter((order) => {
-  //     const day = order.created_at.getDay(); // 0 = Sunday
-  //     return weekdays.includes(day);
-  //   });
-  // }
-
-  // // time range filter
-  // if (timeRange) {
-  //   const [fromH, fromM] = timeRange.from.split(":").map(Number);
-  //   const [toH, toM] = timeRange.to.split(":").map(Number);
-
-  //   filteredOrders = filteredOrders.filter((order) => {
-  //     const h = order.created_at.getHours();
-  //     const m = order.created_at.getMinutes();
-  //     const orderMinutes = h * 60 + m;
-  //     const fromMinutes = fromH * 60 + fromM;
-  //     const toMinutes = toH * 60 + toM;
-  //     return orderMinutes >= fromMinutes && orderMinutes <= toMinutes;
-  //   });
-  // }
 
   // 💰 Add payment totals
   const ordersWithPaymentTotals = filteredOrders.map((order) => {

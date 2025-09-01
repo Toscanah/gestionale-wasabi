@@ -15,6 +15,7 @@ import useProductsStats from "@/app/(site)/hooks/statistics/useProductsStats";
 import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
+import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
 
 export default function ProductsStats() {
   const { inputQuery, setInputQuery } = useQueryFilter();
@@ -55,10 +56,12 @@ export default function ProductsStats() {
           <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
 
           <CalendarFilter
+            defaultValue={TODAY_PERIOD}
             mode="range"
             dateFilter={period}
             handleDateFilter={setPeriod}
             disabled={isLoading}
+            useYears
           />
 
           <ShiftFilter selectedShift={shift} onShiftChange={setShift} disabled={isLoading} />

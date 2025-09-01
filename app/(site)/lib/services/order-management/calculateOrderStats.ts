@@ -145,10 +145,14 @@ export default function calculateResults(
 
   let numDays = 1; // fallback = 1 day (avoid division by zero)
 
+  console.log(period)
+
   const from = period?.from ? new Date(period.from) : startOfDay(new Date(2025, 0, 1));
   const to = period?.to ? new Date(period.to) : endOfDay(new Date());
 
   numDays = differenceInCalendarDays(to, from) + 1;
+
+  console.log(numDays)
 
   return {
     // Home

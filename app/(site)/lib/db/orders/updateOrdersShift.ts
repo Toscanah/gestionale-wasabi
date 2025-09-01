@@ -5,7 +5,11 @@ import { getEffectiveOrderShift } from "../../services/order-management/shift/ge
 export default async function updateOrdersShift() {
   const orders = await prisma.order.findMany({
     where: {
-      OR: [{ home_order: { isNot: null } }, { pickup_order: { isNot: null } }],
+      OR: [
+        { home_order: { isNot: null } },
+        { pickup_order: { isNot: null } },
+        { table_order: { isNot: null } },
+      ],
     },
     select: {
       id: true,
@@ -26,11 +30,12 @@ export default async function updateOrdersShift() {
   });
 
   return await Promise.all(
-    orders.map((o) =>
-      updateOrderShift({
-        orderId: o.id,
-        shift: getEffectiveOrderShift(o, true).effectiveShift,
-      })
+    orders.map(
+      async (o) =>
+        await updateOrderShift({
+          orderId: o.id,
+          shift: getEffectiveOrderShift(o, true).effectiveShift,
+        })
     )
   );
 }

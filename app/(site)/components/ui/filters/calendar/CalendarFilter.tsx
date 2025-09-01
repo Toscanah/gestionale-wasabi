@@ -5,20 +5,22 @@ import { startOfYear, endOfYear } from "date-fns";
 import { it } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
 import WasabiPopover from "../../popover/WasabiPopover";
-import { CalendarBlank, Lightning } from "@phosphor-icons/react";
+import { CalendarBlank, HashStraight, Lightning } from "@phosphor-icons/react";
 import FilterTrigger from "../common/FilterTrigger";
 import DateShiftButton from "./DateShiftButton";
 import SelectFilter from "../select/SelectFilter";
 import { DATE_FILTERING_PRESETS, DatePreset } from "@/app/(site)/lib/shared/enums/date-preset";
 import getDateRangeFromPreset from "@/app/(site)/lib/utils/global/date/getDateRangeForPreset";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
+import { Separator } from "@/components/ui/separator";
+import { YEARS_SINCE_START } from "@/app/(site)/lib/shared/constants/years-since-start";
 
 type SingleModeProps = {
   mode: "single";
   dateFilter: Date | undefined;
   handleDateFilter: (range: Date | undefined) => void;
   usePresets: never;
-  years?: never;
+  useYears?: never;
   defaultValue?: Date | undefined;
 };
 
@@ -26,7 +28,7 @@ type RangeModeProps = {
   mode: "range";
   dateFilter: DateRange | undefined;
   handleDateFilter: (range: DateRange | undefined) => void;
-  years?: number[];
+  useYears?: boolean;
   usePresets?: boolean;
   defaultValue?: DateRange | undefined;
 };
@@ -34,11 +36,12 @@ type RangeModeProps = {
 type CalendarProps = {
   disabled?: boolean;
 } & (SingleModeProps | RangeModeProps);
+
 export default function CalendarFilter({
   dateFilter,
   handleDateFilter,
   mode,
-  years,
+  useYears,
   disabled = false,
   usePresets = true,
   defaultValue,
@@ -93,7 +96,6 @@ export default function CalendarFilter({
         />
       }
     >
-      {/* Presets */}
       <div className="w-full flex gap-2 items-center">
         {usePresets && mode === "range" && (
           <SelectFilter
@@ -115,10 +117,9 @@ export default function CalendarFilter({
           />
         )}
 
-        {/* Years */}
-        {years && mode === "range" && (
+        {useYears && mode === "range" && (
           <SelectFilter
-            triggerIcon={CalendarBlank}
+            triggerIcon={HashStraight}
             mode="transient"
             triggerClassName="w-full border-solid"
             title="Anni"
@@ -131,16 +132,16 @@ export default function CalendarFilter({
             }}
             groups={[
               {
-                options: [...(years ?? [])]
-                  .sort((a, b) => a - b)
-                  .map((y) => ({ label: String(y), value: String(y) })),
+                options: [...(YEARS_SINCE_START ?? [])].map((y) => ({
+                  label: String(y),
+                  value: String(y),
+                })),
               },
             ]}
           />
         )}
       </div>
 
-      {/* Calendar UI */}
       <div className="rounded-md border">
         <ShadCalendar
           locale={it}
@@ -163,12 +164,11 @@ export default function CalendarFilter({
               handleDateFilter(range as Date);
             }
           }}
-          numberOfMonths={mode === "range" ? 2 : 1}
+          numberOfMonths={3}
         />
       </div>
 
-      {/* Shift buttons */}
-      <div className="flex gap-2 text-xs">
+      <div className="flex gap-2">
         {mode === "single" ? (
           <>
             <DateShiftButton
@@ -197,6 +197,19 @@ export default function CalendarFilter({
               value={dateFilter}
               onChange={(next) => handleDateFilter(next as DateRange)}
               amount={-7}
+            />
+            <DateShiftButton
+              mode="range"
+              value={dateFilter}
+              onChange={(next) => handleDateFilter(next as DateRange)}
+              amount={-1}
+            />
+            <Separator className="h-8" orientation="vertical" />
+            <DateShiftButton
+              mode="range"
+              value={dateFilter}
+              onChange={(next) => handleDateFilter(next as DateRange)}
+              amount={+1}
             />
             <DateShiftButton
               mode="range"

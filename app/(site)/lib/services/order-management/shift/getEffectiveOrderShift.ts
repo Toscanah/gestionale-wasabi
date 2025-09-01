@@ -14,6 +14,8 @@ export function parseOrderTime(order: ShiftEvaluableOrder): number {
     when = order.home_order?.when;
   } else if (order.type === OrderType.PICKUP) {
     when = order.pickup_order?.when;
+  } else if (order.type === OrderType.TABLE) {
+    return timeToDecimal(new Date(order.created_at));
   }
 
   const normalizedWhen = normalizeWhen(when);

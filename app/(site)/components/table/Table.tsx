@@ -28,6 +28,7 @@ interface TableProps<T> {
   double?: boolean;
   stickyRowIndex?: number;
   showNoResult?: boolean;
+  fixedColumnIndex?: number;
 }
 
 export default function Table<T>({
@@ -42,6 +43,7 @@ export default function Table<T>({
   double = false,
   forceRowClick = false,
   showNoResult = true,
+  fixedColumnIndex,
 }: TableProps<T>) {
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -83,13 +85,23 @@ export default function Table<T>({
             {table.getRowModel().rows?.length > 0 &&
               table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className={headerClassName}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
+                  {headerGroup.headers.map((header, index) => {
+                    const isFixed = fixedColumnIndex === index;
+
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className={cn(
+                          headerClassName,
+                          isFixed && "sticky left-0 z-30 bg-foreground text-background"
+                        )}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
               ))}
           </TableHeader>
@@ -113,22 +125,32 @@ export default function Table<T>({
                     )}
                     data-state={row.getIsSelected() && "selected"}
                   >
-                    {row.getVisibleCells().map((cell, index) => (
-                      <Fragment key={cell.id}>
-                        {CustomCell ? (
-                          CustomCell({ cell, className: cellClassName ? cellClassName(index) : "" })
-                        ) : (
-                          <TableCell
-                            className={cn(
-                              "h-8 max-h-8 truncate max-w-80",
-                              cellClassName ? cellClassName(index) : ""
-                            )}
-                          >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </TableCell>
-                        )}
-                      </Fragment>
-                    ))}
+                    {row.getVisibleCells().map((cell, index) => {
+                      const isFixed = index === fixedColumnIndex; // first column fixed
+                      return (
+                        <Fragment key={cell.id}>
+                          {CustomCell ? (
+                            CustomCell({
+                              cell,
+                              className: cn(
+                                cellClassName ? cellClassName(index) : "",
+                                isFixed && "sticky left-0 z-20 bg-foreground text-background"
+                              ),
+                            })
+                          ) : (
+                            <TableCell
+                              className={cn(
+                                "h-8 max-h-8 truncate max-w-80",
+                                cellClassName ? cellClassName(index) : "",
+                                isFixed && "sticky left-0 z-20 bg-foreground text-background"
+                              )}
+                            >
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </TableCell>
+                          )}
+                        </Fragment>
+                      );
+                    })}
                   </TableRow>
                 );
               })

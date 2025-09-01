@@ -8,16 +8,9 @@ export async function updateOrderShift({
   orderId: number;
   shift: WorkingShift;
 }) {
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-  });
-
-  if (!order) {
-    throw new Error("Order not found");
-  }
-
-  return await prisma.order.update({
+  await prisma.order.update({
     where: { id: orderId },
     data: { shift },
+    select: { id: true },
   });
 }
