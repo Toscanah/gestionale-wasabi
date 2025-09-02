@@ -3,11 +3,13 @@ import { AnyOrder, ProductInOrder } from "../../shared";
 import { OrderType, ProductInOrderStatus } from "@prisma/client";
 import getPioRice from "../product-management/getPioRice";
 import { DateRange } from "react-day-picker";
-import { differenceInCalendarDays, endOfDay, startOfDay } from "date-fns";
+import { addDays, differenceInCalendarDays, endOfDay, startOfDay } from "date-fns";
+import { Weekday } from "@/app/(site)/components/ui/filters/select/WeekdaysFilter";
 
 export default function calculateResults(
   orders: AnyOrder[],
-  period?: DateRange
+  period?: DateRange,
+  weekdays?: Weekday[]
 ): OrderStatsResults {
   // Accumulators
   let homeOrders = 0,
@@ -148,7 +150,22 @@ export default function calculateResults(
   const from = period?.from ? new Date(period.from) : startOfDay(new Date(2025, 0, 1));
   const to = period?.to ? new Date(period.to) : endOfDay(new Date());
 
-  numDays = differenceInCalendarDays(to, from) + 1;
+  numDays = 0;
+  for (let day = startOfDay(from); day <= to; day = addDays(day, 1)) {
+    const dow = day.getDay(); // JS convention: 0=Sun, 1=Mon, ... 6=Sat
+
+    if (dow === 1) continue; // 🚫 always skip Mondays
+
+    if (weekdays && weekdays.length > 0 && !weekdays.includes(dow as Weekday)) {
+      continue; // apply selected weekdays filter
+    }
+
+    numDays++;
+  }
+
+  if (numDays === 0) numDays = 1; // safeguard (avoid division by zero)
+
+  console.log(numDays);
 
   return {
     // Home

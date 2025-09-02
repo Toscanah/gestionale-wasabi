@@ -23,8 +23,6 @@ export default async function getOrdersWithPayments({
   const { orderTypes, shift, period, weekdays, timeWindow, query } = filters;
   const normalizedPeriod = normalizePeriod(period);
 
-  console.log(period, "=>", normalizedPeriod);
-
   let where: Prisma.OrderWhereInput = {
     payments: { some: {} },
   };
@@ -98,6 +96,10 @@ export default async function getOrdersWithPayments({
     const end = endOfDay(baseTo);
 
     for (let day = startOfDay(baseFrom); day <= end; day = addDays(day, 1)) {
+      // 🚫 Always skip Mondays (getDay() === 1)
+      if (day.getDay() === 1) continue;
+
+      // Skip days not in selected weekdays
       if (weekdays && !weekdays.includes(day.getDay())) continue;
 
       const fromDate = new Date(day);

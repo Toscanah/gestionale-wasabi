@@ -77,6 +77,8 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
   const [showGeneral, setShowGeneral] = React.useState(true);
   const [showAverage, setShowAverage] = React.useState(false);
 
+  console.log(results)
+
   // ----- DATA SPLIT -----
   const { generalSections, averageSections } = React.useMemo(() => {
     if (!results) return { generalSections: [], averageSections: [] };
