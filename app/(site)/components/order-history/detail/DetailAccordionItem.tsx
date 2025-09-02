@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
 import { BaseOrder, ProductInOrder } from "../../../lib/shared";
 import filterDeletedProducts from "../../../lib/services/product-management/filterDeletedProducts";
+import { useEffect } from "react";
 
 type OrderAccordionItemProps = {
   type: string;
@@ -63,29 +64,27 @@ export default function DetailAccordionItem({
     );
 
   return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value={`${type}-${id}`} key={`${type}-${id}`}>
-        <AccordionTrigger className="text-2xl">
-          <div className="flex gap-4 items-center justify-between">
-            <span className="flex items-center gap-2">
-              <Badge className="text-base">{type}</Badge>
-              {orderDate} - {"€ " + orderTotal}
-              {orderDiscount}
-            </span>
-          </div>
-        </AccordionTrigger>
+    <AccordionItem value={`${type}-${id}`} key={`${type}-${id}`}>
+      <AccordionTrigger className="text-2xl">
+        <div className="flex gap-4 items-center justify-between">
+          <span className="flex items-center gap-2">
+            <Badge className="text-base">{type}</Badge>
+            {orderDate} - {"€ " + orderTotal}
+            {orderDiscount}
+          </span>
+        </div>
+      </AccordionTrigger>
 
-        <AccordionContent className="space-y-4">
-          <OrderDetail
-            onCheckboxChange={onCheckboxChange}
-            onCreate={onCreate}
-            sortedProducts={inOrderProducts}
-            selectedProducts={getRecreatedProducts()}
-          />
+      <AccordionContent className="space-y-4">
+        <OrderDetail
+          onCheckboxChange={onCheckboxChange}
+          onCreate={onCreate}
+          sortedProducts={inOrderProducts}
+          selectedProducts={getRecreatedProducts()}
+        />
 
-          <OrderRecreation />
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+        <OrderRecreation />
+      </AccordionContent>
+    </AccordionItem>
   );
 }

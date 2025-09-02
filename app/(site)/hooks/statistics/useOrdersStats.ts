@@ -98,7 +98,10 @@ export default function useOrdersStats() {
 
   const filters: OrderContract["Requests"]["GetOrdersWithPayments"]["filters"] = useMemo(() => {
     let period: { from: Date; to: Date } | undefined = undefined;
-    if (state.period.from && (state.period.to || state.period.from)) {
+
+    if (!period) {
+      period = undefined;
+    } else if (state.period.from && (state.period.to || state.period.from)) {
       // If only from is set, use it for both from and to
       period = { from: state.period.from, to: state.period.to ?? state.period.from };
     }
@@ -127,6 +130,7 @@ export default function useOrdersStats() {
     queryKey: ["shiftBackfill"],
     queryFn: () => fetchRequest("PATCH", "/api/orders", "updateOrdersShift"),
     staleTime: Infinity,
+    // enabled: false,
   });
 
   const { data, isLoading: isOrdersLoading } = useQuery({
@@ -137,6 +141,7 @@ export default function useOrdersStats() {
         summary: true,
       }),
     enabled: !!shiftBackfill,
+    // enabled: true,
     select: (res) => calculateResults(res.orders, state.period),
   });
 
@@ -144,8 +149,13 @@ export default function useOrdersStats() {
     const d = INITIAL_STATE;
 
     const sameRange =
-      (state.period.from?.getTime?.() ?? undefined) === (d.period.from?.getTime?.() ?? undefined) &&
-      (state.period.to?.getTime?.() ?? undefined) === (d.period.to?.getTime?.() ?? undefined);
+      state.period == undefined && d.period == undefined
+        ? true
+        : state.period != undefined &&
+          d.period != undefined &&
+          (state.period.from?.getTime?.() ?? undefined) ===
+            (d.period.from?.getTime?.() ?? undefined) &&
+          (state.period.to?.getTime?.() ?? undefined) === (d.period.to?.getTime?.() ?? undefined);
 
     const sameShift = state.shift === d.shift;
     const sameWeekdays =

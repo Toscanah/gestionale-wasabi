@@ -9,15 +9,15 @@ import StatsAccordionItem from "./stats/StatsAccordionItem";
 import useRecreateOrder from "../../hooks/order/history/useRecreateOrder";
 import useOrderHistory from "../../hooks/order/history/useOrderHistory";
 import DetailAccordionItem from "./detail/DetailAccordionItem";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { Accordion } from "@/components/ui/accordion";
 
 interface OrderHistoryProps {
   customer: CustomerWithDetails;
   onCreate?: (newProducts: ProductInOrder[]) => void;
   noStatistics?: boolean;
 }
-
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
 
 function AnimatedTabsContent({
   value,
@@ -58,7 +58,10 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
     return <p className="text-2xl text-center">Nessun ordine registrato</p>;
   }
 
-  const onAccordionChange = (value: string) => {
+  const [currentTab, setCurrentTab] = useState("orders");
+
+  const handleAccordionChange = (value: string) => {
+    console.log(value)
     if (!value) return resetProductSelection();
 
     const [orderType, orderIdString] = value.split("-");
@@ -69,8 +72,6 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
 
     (selectedOrder?.order.products || []).map(updateProductSelection);
   };
-
-  const [currentTab, setCurrentTab] = useState("orders");
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
@@ -89,7 +90,12 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
 
         {/* Animated Orders tab */}
         <AnimatedTabsContent value="orders" currentValue={currentTab}>
-          <div className="max-h-[35rem] overflow-y-auto px-4 pb-4">
+          <Accordion
+            onValueChange={handleAccordionChange}
+            type="single"
+            collapsible
+            className="max-h-[35rem] overflow-y-auto px-4 pb-4"
+          >
             {orderTypes.map(({ type, orders }) =>
               orders
                 .sort(
@@ -109,7 +115,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
                   />
                 ))
             )}
-          </div>
+          </Accordion>
         </AnimatedTabsContent>
 
         {/* Animated Stats tab */}

@@ -3,6 +3,7 @@ import { ShiftFilterValue } from "../../lib/shared/enums/shift";
 import { OrderType } from "@prisma/client";
 import { ALL_WEEKDAYS, Weekday } from "../../components/ui/filters/select/WeekdaysFilter";
 import { FULL_DAY_RANGE, TimeWindow } from "../../components/ui/filters/time/TimeWindowFilter";
+import TODAY_PERIOD from "../../lib/shared/constants/today-period";
 
 export interface OrderFilters {
   // date selection
@@ -30,7 +31,7 @@ export type ReducerActions =
 
 // sensible defaults
 export const INITIAL_STATE: SectionState = {
-  period: { from: undefined, to: undefined },
+  period: TODAY_PERIOD,
   shift: ShiftFilterValue.ALL,
   weekdays: ALL_WEEKDAYS, // no weekday restriction
   timeWindow: FULL_DAY_RANGE, // no custom time

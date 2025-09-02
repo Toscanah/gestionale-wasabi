@@ -10,6 +10,7 @@ import SectionResults from "./results/SectionResults";
 import { Separator } from "@/components/ui/separator";
 import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
 import useCsvExport from "@/app/(site)/hooks/useCsvExport";
+import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
 
 interface SectionProps {
   id: string;
@@ -30,6 +31,7 @@ export default function Section({}: SectionProps) {
         <CalendarFilter
           usePresets
           useYears
+          defaultValue={TODAY_PERIOD}
           mode="range"
           dateFilter={state.period}
           handleDateFilter={(newDate) =>
