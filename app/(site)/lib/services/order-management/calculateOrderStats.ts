@@ -145,14 +145,10 @@ export default function calculateResults(
 
   let numDays = 1; // fallback = 1 day (avoid division by zero)
 
-  console.log(period)
-
   const from = period?.from ? new Date(period.from) : startOfDay(new Date(2025, 0, 1));
   const to = period?.to ? new Date(period.to) : endOfDay(new Date());
 
   numDays = differenceInCalendarDays(to, from) + 1;
-
-  console.log(numDays)
 
   return {
     // Home
@@ -199,5 +195,21 @@ export default function calculateResults(
     homeRevenuePerOrder: homeOrders > 0 ? homeRevenue / homeOrders : 0,
     pickupRevenuePerOrder: pickupOrders > 0 ? pickupRevenue / pickupOrders : 0,
     tableRevenuePerOrder: tableOrders > 0 ? tableRevenue / tableOrders : 0,
+
+    // ---- Averages per day (extra categories) ----
+    homeSoupsPerDay: homeSoups / numDays,
+    homeRicesPerDay: homeRices / numDays,
+    homeSaladsPerDay: homeSalads / numDays,
+    homeRiceMassPerDay: homeRice / numDays,
+
+    pickupSoupsPerDay: pickupSoups / numDays,
+    pickupRicesPerDay: pickupRices / numDays,
+    pickupSaladsPerDay: pickupSalads / numDays,
+    pickupRiceMassPerDay: pickupRice / numDays,
+
+    tableSoupsPerDay: tableSoups / numDays,
+    tableRicesPerDay: tableRices / numDays,
+    tableSaladsPerDay: tableSalads / numDays,
+    tableRiceMassPerDay: tableRice / numDays,
   };
 }

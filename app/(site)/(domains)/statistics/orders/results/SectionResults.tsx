@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { OrderStatsResults } from "../../../../hooks/statistics/useOrdersStats";
 import roundToTwo from "../../../../lib/utils/global/number/roundToTwo";
 import useTable from "@/app/(site)/hooks/table/useTable";
-import columns from "./columns";
+import generalStatsColumns from "./generalStatsColumns";
 import Table from "@/app/(site)/components/table/Table";
 import { Button } from "@/components/ui/button";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
@@ -12,6 +12,9 @@ import { OrderFilters } from "@/app/(site)/hooks/statistics/sectionReducer";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
 import { SHIFT_LABELS, ShiftFilterValue } from "@/app/(site)/lib/shared";
 import { Weekday, WEEKDAY_LABELS } from "@/app/(site)/components/ui/filters/select/WeekdaysFilter";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import averageStatsColumns from "./averageStatsColumns";
 
 interface SectionResultsProps {
   results: OrderStatsResults | null;
@@ -34,6 +37,12 @@ export type ResultRecord = {
   rices: number;
   salads: number;
   riceMass: string;
+
+  // --- new per-day stats ---
+  soupsPerDay: string;
+  ricesPerDay: string;
+  saladsPerDay: string;
+  riceMassPerDay: string;
 };
 
 const CSV_HEADERS: Record<keyof ResultRecord, string> = {
@@ -51,6 +60,12 @@ const CSV_HEADERS: Record<keyof ResultRecord, string> = {
   rices: "Porzioni riso",
   salads: "Insalate",
   riceMass: "Riso cucinato",
+
+  // --- new per-day stats ---
+  soupsPerDay: "Zuppe/giorno",
+  ricesPerDay: "Porzioni riso/giorno",
+  saladsPerDay: "Insalate/giorno",
+  riceMassPerDay: "Riso cucinato/giorno",
 };
 
 // helper
@@ -59,9 +74,12 @@ function pct(part: number, total: number) {
 }
 
 export default function SectionResults({ results, isLoading, filters }: SectionResultsProps) {
-  // If no results yet → empty sections (so skeleton table takes over)
-  const sections: ResultRecord[] = React.useMemo(() => {
-    if (!results) return [];
+  const [showGeneral, setShowGeneral] = React.useState(true);
+  const [showAverage, setShowAverage] = React.useState(false);
+
+  // ----- DATA SPLIT -----
+  const { generalSections, averageSections } = React.useMemo(() => {
+    if (!results) return { generalSections: [], averageSections: [] };
 
     const {
       homeOrders,
@@ -97,6 +115,18 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
       homeRevenuePerOrder,
       pickupRevenuePerOrder,
       tableRevenuePerOrder,
+      homeRiceMassPerDay,
+      pickupRiceMassPerDay,
+      tableRiceMassPerDay,
+      homeRicesPerDay,
+      pickupRicesPerDay,
+      tableRicesPerDay,
+      homeSaladsPerDay,
+      pickupSaladsPerDay,
+      tableSaladsPerDay,
+      homeSoupsPerDay,
+      pickupSoupsPerDay,
+      tableSoupsPerDay,
     } = results;
 
     const totalOrders = homeOrders + pickupOrders + tableOrders;
@@ -107,17 +137,18 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
     const totalRiceMass = homeRice + pickupRice + tableRice;
     const totalProducts = homeProducts + pickupProducts + tableProducts;
 
-    return [
+    // helper for percentage
+    const pct = (part: number, total: number) =>
+      total > 0 ? `${roundToTwo((part / total) * 100)}%` : "0%";
+
+    // General stats
+    const generalSections: ResultRecord[] = [
       {
         title: "Tavoli",
         orders: tableOrders,
         ordersPct: pct(tableOrders, totalOrders),
         revenue: roundToTwo(tableRevenue),
         revenuePct: pct(tableRevenue, totalRevenue),
-        avgPerOrder: roundToTwo(tableRevenuePerOrder),
-        ordersPerDay: roundToTwo(tableOrdersPerDay),
-        revenuePerDay: roundToTwo(tableRevenuePerDay),
-        productsPerDay: roundToTwo(tableProductsPerDay),
         products: tableProducts,
         soups: tableSoups,
         rices: tableRices,
@@ -130,10 +161,6 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
         ordersPct: pct(pickupOrders, totalOrders),
         revenue: roundToTwo(pickupRevenue),
         revenuePct: pct(pickupRevenue, totalRevenue),
-        avgPerOrder: roundToTwo(pickupRevenuePerOrder),
-        ordersPerDay: roundToTwo(pickupOrdersPerDay),
-        revenuePerDay: roundToTwo(pickupRevenuePerDay),
-        productsPerDay: roundToTwo(pickupProductsPerDay),
         products: pickupProducts,
         soups: pickupSoups,
         rices: pickupRices,
@@ -146,10 +173,6 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
         ordersPct: pct(homeOrders, totalOrders),
         revenue: roundToTwo(homeRevenue),
         revenuePct: pct(homeRevenue, totalRevenue),
-        avgPerOrder: roundToTwo(homeRevenuePerOrder),
-        ordersPerDay: roundToTwo(homeOrdersPerDay),
-        revenuePerDay: roundToTwo(homeRevenuePerDay),
-        productsPerDay: roundToTwo(homeProductsPerDay),
         products: homeProducts,
         soups: homeSoups,
         rices: homeRices,
@@ -162,19 +185,66 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
         ordersPct: "100%",
         revenue: roundToTwo(totalRevenue),
         revenuePct: "100%",
-        avgPerOrder: roundToTwo(totalOrders > 0 ? totalRevenue / totalOrders : 0),
-        ordersPerDay: roundToTwo(homeOrdersPerDay + pickupOrdersPerDay + tableOrdersPerDay),
-        revenuePerDay: roundToTwo(homeRevenuePerDay + pickupRevenuePerDay + tableRevenuePerDay),
-        productsPerDay: roundToTwo(homeProductsPerDay + pickupProductsPerDay + tableProductsPerDay),
         products: totalProducts,
         soups: totalSoups,
         rices: totalRices,
         salads: totalSalads,
         riceMass: formatRice(totalRiceMass),
       },
-    ];
+    ] as any;
+
+    // Average stats
+    const averageSections: ResultRecord[] = [
+      {
+        title: "Tavoli",
+        avgPerOrder: roundToTwo(tableRevenuePerOrder),
+        ordersPerDay: roundToTwo(tableOrdersPerDay),
+        revenuePerDay: roundToTwo(tableRevenuePerDay),
+        productsPerDay: roundToTwo(tableProductsPerDay),
+        soupsPerDay: roundToTwo(tableSoupsPerDay),
+        ricesPerDay: roundToTwo(tableRicesPerDay),
+        saladsPerDay: roundToTwo(tableSaladsPerDay),
+        riceMassPerDay: roundToTwo(tableRiceMassPerDay),
+      },
+      {
+        title: "Asporto",
+        avgPerOrder: roundToTwo(pickupRevenuePerOrder),
+        ordersPerDay: roundToTwo(pickupOrdersPerDay),
+        revenuePerDay: roundToTwo(pickupRevenuePerDay),
+        productsPerDay: roundToTwo(pickupProductsPerDay),
+        soupsPerDay: roundToTwo(pickupSoupsPerDay),
+        ricesPerDay: roundToTwo(pickupRicesPerDay),
+        saladsPerDay: roundToTwo(pickupSaladsPerDay),
+        riceMassPerDay: roundToTwo(pickupRiceMassPerDay),
+      },
+      {
+        title: "Domicilio",
+        avgPerOrder: roundToTwo(homeRevenuePerOrder),
+        ordersPerDay: roundToTwo(homeOrdersPerDay),
+        revenuePerDay: roundToTwo(homeRevenuePerDay),
+        productsPerDay: roundToTwo(homeProductsPerDay),
+        soupsPerDay: roundToTwo(homeSoupsPerDay),
+        ricesPerDay: roundToTwo(homeRicesPerDay),
+        saladsPerDay: roundToTwo(homeSaladsPerDay),
+        riceMassPerDay: roundToTwo(homeRiceMassPerDay),
+      },
+      {
+        title: "Tutti",
+        avgPerOrder: roundToTwo(totalOrders > 0 ? totalRevenue / totalOrders : 0),
+        ordersPerDay: roundToTwo(homeOrdersPerDay + pickupOrdersPerDay + tableOrdersPerDay),
+        revenuePerDay: roundToTwo(homeRevenuePerDay + pickupRevenuePerDay + tableRevenuePerDay),
+        productsPerDay: roundToTwo(homeProductsPerDay + pickupProductsPerDay + tableProductsPerDay),
+        soupsPerDay: roundToTwo(homeSoupsPerDay + pickupSoupsPerDay + tableSoupsPerDay),
+        ricesPerDay: roundToTwo(homeRicesPerDay + pickupRicesPerDay + tableRicesPerDay),
+        saladsPerDay: roundToTwo(homeSaladsPerDay + pickupSaladsPerDay + tableSaladsPerDay),
+        riceMassPerDay: roundToTwo(homeRiceMassPerDay + pickupRiceMassPerDay + tableRiceMassPerDay),
+      },
+    ] as any;
+
+    return { generalSections, averageSections };
   }, [results]);
 
+  // filters just for CSV (still present but unused elsewhere)
   const parsedWeekdays =
     filters.weekdays.length >= 6
       ? "Tutti"
@@ -198,27 +268,67 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
     Orario: formatTimeWindow(filters.timeWindow),
   };
 
-  const { downloadCsv } = useCsvExport(sections, CSV_HEADERS, parsedFilters);
-
-  const { tableData, tableColumns } = useSkeletonTable({
+  // ----- TABLES -----
+  const { tableData: generalData, tableColumns: generalColumns } = useSkeletonTable({
     isLoading,
-    data: sections,
-    columns: columns(),
-    pageSize: sections.length || 4,
+    data: generalSections,
+    columns: generalStatsColumns,
+    pageSize: generalSections.length || 4,
   });
+  const generalTable = useTable({ data: generalData, columns: generalColumns });
 
-  const table = useTable({ data: tableData, columns: tableColumns });
+  const { tableData: averageData, tableColumns: averageColumns } = useSkeletonTable({
+    isLoading,
+    data: averageSections,
+    columns: averageStatsColumns,
+    pageSize: averageSections.length || 4,
+  });
+  const averageTable = useTable({ data: averageData, columns: averageColumns });
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <Table table={table} cellClassName={() => "h-20 max-h-20"} fixedColumnIndex={0} />
-      <Button
-        onClick={() => downloadCsv("statistiche_ordini.csv")}
-        className="ml-auto"
-        disabled={isLoading || sections.length === 0}
-      >
-        Scarica dati
-      </Button>
+      <div className="w-full flex gap-4 items-center">
+        {!showGeneral && !showAverage && (
+          <div className="w-full text-center text-muted-foreground items-center justify-center py-16">
+            Seleziona almeno un tipo di dato
+          </div>
+        )}
+
+        {showGeneral && (
+          <Table table={generalTable} fixedColumnIndex={0} cellClassName={() => "h-20 max-h-20"} />
+        )}
+        {showAverage && (
+          <Table table={averageTable} fixedColumnIndex={0} cellClassName={() => "h-20 max-h-20"} />
+        )}
+      </div>
+
+      <div className="flex gap-4">
+        <div className="flex gap-2 items-center">
+          <Checkbox
+            id="show-general"
+            checked={showGeneral}
+            onCheckedChange={() => setShowGeneral(!showGeneral)}
+          />
+          <Label className="flex items-center gap-2" htmlFor="show-general">
+            Dati generali
+          </Label>
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <Checkbox
+            id="show-average"
+            checked={showAverage}
+            onCheckedChange={() => setShowAverage(!showAverage)}
+          />
+          <Label className="flex items-center gap-2" htmlFor="show-average">
+            Medie
+          </Label>
+        </div>
+
+        <Button className="ml-auto" disabled={isLoading || (!showGeneral && !showAverage)}>
+          Scarica dati
+        </Button>
+      </div>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default async function getOrdersWithPayments({
   const { orderTypes, shift, period, weekdays, timeWindow, query } = filters;
   const normalizedPeriod = normalizePeriod(period);
 
-  console.log(shift);
+  console.log(period, "=>", normalizedPeriod);
 
   let where: Prisma.OrderWhereInput = {
     payments: { some: {} },

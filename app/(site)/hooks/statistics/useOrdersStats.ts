@@ -62,6 +62,22 @@ export type OrderStatsResults = {
   homeRevenuePerOrder: number;
   pickupRevenuePerOrder: number;
   tableRevenuePerOrder: number;
+
+  // ---- Averages per day (extra categories) ----
+  homeSoupsPerDay: number;
+  homeRicesPerDay: number;
+  homeSaladsPerDay: number;
+  homeRiceMassPerDay: number;
+
+  pickupSoupsPerDay: number;
+  pickupRicesPerDay: number;
+  pickupSaladsPerDay: number;
+  pickupRiceMassPerDay: number;
+
+  tableSoupsPerDay: number;
+  tableRicesPerDay: number;
+  tableSaladsPerDay: number;
+  tableRiceMassPerDay: number;
 };
 
 export default function useOrdersStats() {
@@ -99,7 +115,7 @@ export default function useOrdersStats() {
   const filters: OrderContract["Requests"]["GetOrdersWithPayments"]["filters"] = useMemo(() => {
     let period: { from: Date; to: Date } | undefined = undefined;
 
-    if (!period) {
+    if (!state.period) {
       period = undefined;
     } else if (state.period.from && (state.period.to || state.period.from)) {
       // If only from is set, use it for both from and to
@@ -146,24 +162,26 @@ export default function useOrdersStats() {
   });
 
   function isDefaultState(state: SectionState): boolean {
-    const d = INITIAL_STATE;
+    const init_state = INITIAL_STATE;
 
     const sameRange =
-      state.period == undefined && d.period == undefined
+      state.period == undefined && init_state.period == undefined
         ? true
         : state.period != undefined &&
-          d.period != undefined &&
+          init_state.period != undefined &&
           (state.period.from?.getTime?.() ?? undefined) ===
-            (d.period.from?.getTime?.() ?? undefined) &&
-          (state.period.to?.getTime?.() ?? undefined) === (d.period.to?.getTime?.() ?? undefined);
+            (init_state.period.from?.getTime?.() ?? undefined) &&
+          (state.period.to?.getTime?.() ?? undefined) ===
+            (init_state.period.to?.getTime?.() ?? undefined);
 
-    const sameShift = state.shift === d.shift;
+    const sameShift = state.shift === init_state.shift;
     const sameWeekdays =
-      state.weekdays.length === d.weekdays.length &&
-      state.weekdays.every((w) => d.weekdays.includes(w));
+      state.weekdays.length === init_state.weekdays.length &&
+      state.weekdays.every((w) => init_state.weekdays.includes(w));
 
     const sameTimeRange =
-      state.timeWindow.from === d.timeWindow.from && state.timeWindow.to === d.timeWindow.to;
+      state.timeWindow.from === init_state.timeWindow.from &&
+      state.timeWindow.to === init_state.timeWindow.to;
 
     return sameRange && sameShift && sameWeekdays && sameTimeRange;
   }
