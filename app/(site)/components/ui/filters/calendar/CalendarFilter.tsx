@@ -13,7 +13,7 @@ import { DATE_FILTERING_PRESETS, DatePreset } from "@/app/(site)/lib/shared/enum
 import getDateRangeFromPreset from "@/app/(site)/lib/utils/global/date/getDateRangeForPreset";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
 import { Separator } from "@/components/ui/separator";
-import { YEARS_SINCE_START } from "@/app/(site)/lib/shared/constants/years-since-start";
+import { YEARS_SINCE_START } from "@/app/(site)/lib/shared/constants/starting-periods";
 
 type SingleModeProps = {
   mode: "single";

@@ -102,7 +102,7 @@ const WhenSelector = forwardRef<HTMLDivElement, WhenSelectorProps>(
 
         <PopoverContent className="p-0">
           <Command>
-            <CommandInput placeholder="Cerca un orario" className="h-9" />
+            <CommandInput placeholder="Cerca un orario" className="h-9" autoFocus />
             <CommandList>
               <CommandEmpty>Nessun orario trovato</CommandEmpty>
 
