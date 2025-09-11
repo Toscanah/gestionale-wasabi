@@ -1,13 +1,9 @@
-import { ProductInOrder } from "@/app/(site)/lib/shared";
-import { OrderType } from "@prisma/client";
+import { MinimalOrder } from "@/app/(site)/lib/shared";
 import getDiscountedTotal from "./getDiscountedTotal";
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import filterDeletedProducts from "../../services/product-management/filterDeletedProducts";
 
-type BaseOrderInput = {
-  products: ProductInOrder[];
-  type: OrderType;
-};
+type BaseOrderInput = Pick<MinimalOrder, "products" | "type">;
 
 type OrderInputWithDiscount = BaseOrderInput & {
   discount: number;

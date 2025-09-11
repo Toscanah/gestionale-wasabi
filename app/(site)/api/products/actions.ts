@@ -8,7 +8,7 @@ import updateProduct from "../../lib/db/products/updateProduct";
 import updateProductOptionsInOrder from "../../lib/db/products/updateProductOptionsInOrder";
 import createNewProduct from "../../lib/db/products/createNewProduct";
 import toggleProduct from "../../lib/db/products/toggleProduct";
-import updatePrintedAmounts from "../../lib/db/products/updatePrintedAmounts";
+import updatePrintedProducts from "../../lib/db/products/updatePrintedProducts";
 import updateProductVariationInOrder from "../../lib/db/products/updateProductVariationInOrder";
 import getProductsWithStats from "../../lib/db/products/getProductsWithStats";
 import { PRODUCT_REQUESTS } from "../../lib/shared/schemas/product";
@@ -39,8 +39,8 @@ const PATCH_ACTIONS = new Map([
   ],
   ["toggleProduct", { func: toggleProduct, schema: PRODUCT_REQUESTS.toggleProduct }],
   [
-    "updatePrintedAmounts",
-    { func: updatePrintedAmounts, schema: PRODUCT_REQUESTS.updatePrintedAmounts },
+    "updatePrintedProducts",
+    { func: updatePrintedProducts, schema: PRODUCT_REQUESTS.updatePrintedProducts },
   ],
 ]);
 

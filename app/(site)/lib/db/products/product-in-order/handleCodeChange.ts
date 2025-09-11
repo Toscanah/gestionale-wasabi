@@ -31,7 +31,7 @@ export default async function handleProductCodeChange({
     where: { id: productInOrder.id },
     data: {
       product_id: newProduct.id,
-      printed_amount: 0,
+      last_printed_quantity: 0,
       frozen_price: getProductPrice({ product: newProduct }, currentOrder.type),
     },
     include: { ...productInOrderInclude },

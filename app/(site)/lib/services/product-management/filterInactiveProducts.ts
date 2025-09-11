@@ -1,6 +1,6 @@
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import { MinimalCustomer } from "@/app/(site)/lib/shared";
 
-export default function filterInactiveProducts(customer: CustomerWithDetails): CustomerWithDetails {
+export default function filterInactiveProducts<T extends MinimalCustomer>(customer: T): T {
   customer.home_orders.forEach((homeOrder) => {
     homeOrder.order.products = homeOrder.order.products.filter(
       (productInOrder) => productInOrder.product.active

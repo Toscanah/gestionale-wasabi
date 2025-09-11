@@ -1,4 +1,4 @@
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import ImageViewer from "@/app/(site)/components/ui/misc/ImageViewer";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import getTemplateName from "@/app/(site)/lib/utils/domains/engagement/getTemplateName";

@@ -2,6 +2,7 @@ import { OrderType } from "@prisma/client";
 import prisma from "../../db";
 import { engagementsInclude, homeOrderInclude, productsInOrderInclude } from "../../includes";
 import { HomeOrder } from "@/app/(site)/lib/shared";
+import { updateOrderShift } from "../updateOrderShift";
 
 export default async function createHomeOrder({
   customerId,
@@ -55,6 +56,7 @@ export default async function createHomeOrder({
       });
     }
 
-    return order;
+    const shift = await updateOrderShift({ orderId: order.id, tx });
+    return { ...order, shift };
   });
 }

@@ -6,7 +6,7 @@ import {
   JoinColumn,
   ValueColumn,
 } from "@/app/(site)/components/table/TableColumns";
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { CustomerWithDetails } from "@/app/(site)/lib/shared";

@@ -1,16 +1,18 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ResultRecord } from "./SectionResults";
+import { GeneralResultRecord } from "./SectionResults";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
+import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 
-const generalStatsColumns: ColumnDef<ResultRecord>[] = [
+const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
   FieldColumn({
     header: "Tipo ordine",
     key: "title",
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Ordini",
-    key: "orders",
+    value: (row) => roundToTwo(row.original.orders),
+    accessor: (stats) => stats.orders,
   }),
 
   FieldColumn({
@@ -29,30 +31,34 @@ const generalStatsColumns: ColumnDef<ResultRecord>[] = [
     key: "revenuePct",
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Prodotti",
-    key: "products",
+    value: (row) => roundToTwo(row.original.products),
+    accessor: (stats) => stats.products,
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Zuppe",
-    key: "soups",
+    value: (row) => roundToTwo(row.original.soups),
+    accessor: (stats) => stats.soups,
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Porzioni riso",
-    key: "rices",
+    value: (row) => roundToTwo(row.original.rices),
+    accessor: (stats) => stats.rices,
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Insalate",
-    key: "salads",
+    value: (row) => roundToTwo(row.original.salads),
+    accessor: (stats) => stats.salads,
   }),
 
   ValueColumn({
     header: "Riso cucinato",
-    value: (row) => row.original.riceMass,
-    accessor: (stats) => stats.riceMass,
+    value: (row) => roundToTwo(row.original.rice),
+    accessor: (stats) => stats.rice,
   }),
 ];
 

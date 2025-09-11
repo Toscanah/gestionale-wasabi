@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

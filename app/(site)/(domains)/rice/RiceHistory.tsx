@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
 import { useEffect, useState } from "react";
 import { format, isToday } from "date-fns";
 import { RiceLog } from "../../lib/shared/models/rice";

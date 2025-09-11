@@ -1,6 +1,6 @@
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { Label } from "@/components/ui/label";
-import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
+import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
 
 export type Printer = {
   name: "Stampante bianca" | "Stampante nera";

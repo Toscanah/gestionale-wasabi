@@ -14,7 +14,7 @@ export default async function getCustomersWithDetails(
   const customers: CustomerWithDetails[] = await prisma.customer.findMany({
     skip: page !== undefined && pageSize !== undefined ? page * pageSize : undefined,
     take: pageSize,
-    where: buildCustomerWhere(filters),
+    where: buildCustomerWhere({ query: filters?.query }),
     include: {
       addresses: true,
       phone: true,

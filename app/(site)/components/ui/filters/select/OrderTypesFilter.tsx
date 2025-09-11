@@ -1,5 +1,5 @@
 import { OrderType } from "@prisma/client";
-import SelectFilter from "./SelectFilter";
+import WasabiSelect from "./WasabiSelect";
 import { ORDER_TYPE_LABELS } from "@/app/(site)/lib/shared/constants/order-labels";
 
 interface OrderTypeFilterProps {
@@ -20,7 +20,7 @@ export default function OrderTypesFilter({ selectedTypes, onTypesChange, disable
   };
 
   return (
-    <SelectFilter
+    <WasabiSelect
       allLabel="Tutti"
       disabled={disabled}
       groups={[

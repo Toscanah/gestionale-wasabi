@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { RFMRules, RFMRangeRule } from "../../lib/shared/types/rfm";
-import { DEFAULT_RFM_CONFIG } from "./config";
+import { DEFAULT_RFM_CONFIG } from "../../lib/shared/constants/rfm-config";
 
 export default function useRfmRules() {
   const [rules, setRules] = useState<RFMRules>(DEFAULT_RFM_CONFIG.rules);

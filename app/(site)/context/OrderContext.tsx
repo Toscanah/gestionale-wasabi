@@ -34,7 +34,7 @@ interface OrderContextType {
   updateProductField: (key: string, value: any, index: number) => void;
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
   updateProductOption: (productInOrderId: number, optionId: number) => void;
-  updateUnprintedProducts: () => Promise<ProductInOrder[]>;
+  updatePrintedProducts: () => Promise<ProductInOrder[]>;
   updateOrder: (order: RecursivePartial<AnyOrder>) => void;
   updatePrintedFlag: () => Promise<void>;
   joinTableOrders: (tableToJoin: string) => void;
@@ -76,7 +76,7 @@ export const OrderProvider = ({
     updateProductField,
     deleteProducts,
     updateProductOption,
-    updateUnprintedProducts,
+    updatePrintedProducts,
     updateProductVariation,
   } = useProductsManager(order, updateOrder);
 
@@ -98,7 +98,7 @@ export const OrderProvider = ({
         updateProductField,
         deleteProducts,
         updateProductOption,
-        updateUnprintedProducts,
+        updatePrintedProducts,
         updateOrder,
         updatePrintedFlag,
         updateProductVariation,

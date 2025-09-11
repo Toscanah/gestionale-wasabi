@@ -1,13 +1,11 @@
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductContract, ProductInOrder } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { productInOrderInclude } from "../includes";
 import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
 
-export default async function updatePrintedAmounts({
+export default async function updatePrintedProducts({
   orderId,
-}: {
-  orderId: number;
-}): Promise<ProductInOrder[]> {
+}: ProductContract["Requests"]["UpdatePrintedProducts"]): Promise<ProductInOrder[]> {
   return await prisma.$transaction(async (tx) => {
     const order = await tx.order.findUnique({
       where: { id: orderId },
@@ -26,24 +24,24 @@ export default async function updatePrintedAmounts({
     if (products.length === 0) return [];
 
     const productsToUpdate = products.filter(
-      (product) => product.quantity > product.printed_amount
+      (product) => product.quantity > product.last_printed_quantity
     );
 
     if (productsToUpdate.length === 0) return [];
 
-    const updatePromises = productsToUpdate.map((product) =>
-      tx.productInOrder.update({
-        where: { id: product.id },
-        data: { printed_amount: product.quantity },
-      })
+    await Promise.all(
+      productsToUpdate.map((product) =>
+        tx.productInOrder.update({
+          where: { id: product.id },
+          data: { last_printed_quantity: product.quantity },
+        })
+      )
     );
-
-    await Promise.all(updatePromises);
 
     // used for printing later
     return productsToUpdate.map((product) => ({
       ...product,
-      printed_amount: product.quantity - product.printed_amount,
+      to_be_printed: product.quantity - product.last_printed_quantity,
     }));
   });
 }

@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { OrdersTableProps } from "./OrdersTable";
 import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 import MetaLogs from "../meta/MetaLogs";
+import formatWhenLabel from "../../lib/utils/domains/order/formatWhenLabel";
 
 export default function getColumns(type: OrderType, useWhatsapp: boolean): ColumnDef<any>[] {
   const columns: ColumnDef<any>[] = [
@@ -115,8 +116,7 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
 
         ValueColumn<HomeOrder>({
           header: "Quando",
-          value: (row) =>
-            row.original.home_order?.when == "immediate" ? "Subito" : row.original.home_order?.when,
+          value: (row) => formatWhenLabel(row.original.home_order?.when),
           accessor: (order) => {
             return (order as HomeOrder).home_order?.when;
           },
@@ -127,10 +127,7 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
       columns.push(
         ValueColumn<PickupOrder>({
           header: "Quando",
-          value: (row) =>
-            row.original.pickup_order?.when == "immediate"
-              ? "Subito"
-              : row.original.pickup_order?.when,
+          value: (row) => formatWhenLabel(row.original.pickup_order?.when),
           accessor: (order) => {
             return (order as PickupOrder).pickup_order?.when;
           },

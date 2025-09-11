@@ -9,17 +9,17 @@ import getCustomerWithDetails from "../../lib/db/customers/getCustomerWithDetail
 import updateCustomerFromAdmin from "../../lib/db/customers/updateCustomerFromAdmin";
 import getCustomersByDoorbell from "../../lib/db/customers/getCustomersByDoorbell";
 import deleteCustomerById from "../../lib/db/customers/deleteCustomerById";
-import computeCustomersStats from "../../lib/db/customers/computeCustomersStats";
 import { CUSTOMER_REQUESTS } from "../../lib/shared";
 import updateCustomerOrderNotes from "../../lib/db/customers/updateCustomerOrderNotes";
-import updateCustomersRFM from "../../lib/db/customers/updateCustomersRFM";
+import computeCustomersStats from "../../lib/db/customers/computeCustomersStats";
 
 const POST_ACTIONS = new Map([
   ["createCustomer", { func: createCustomer, schema: CUSTOMER_REQUESTS.createCustomer }],
-  [
-    "computeCustomersStats",
-    { func: computeCustomersStats, schema: CUSTOMER_REQUESTS.computeCustomersStats },
-  ],
+
+  // [
+  //   "getCustomersWithStats",
+  //   { func: getCustomerWithStats, schema: CUSTOMER_REQUESTS.computeCustomersWithStats },
+  // ],
 ]);
 
 const PATCH_ACTIONS = new Map([
@@ -40,15 +40,24 @@ const PATCH_ACTIONS = new Map([
     "updateCustomerOrderNotes",
     { func: updateCustomerOrderNotes, schema: CUSTOMER_REQUESTS.updateCustomerOrderNotes },
   ],
-  ["updateCustomersRFM", { func: updateCustomersRFM, schema: CUSTOMER_REQUESTS.updateCustomersRFM }],
+  [
+    "computeCustomersStats",
+    { func: computeCustomersStats, schema: CUSTOMER_REQUESTS.computeCustomersStats },
+  ],
 ]);
 
 const DELETE_ACTIONS = new Map([
-  ["deleteCustomerById", { func: deleteCustomerById, schema: CUSTOMER_REQUESTS.deleteCustomerById }],
+  [
+    "deleteCustomerById",
+    { func: deleteCustomerById, schema: CUSTOMER_REQUESTS.deleteCustomerById },
+  ],
 ]);
 
 const GET_ACTIONS = new Map([
-  ["getCustomerByPhone", { func: getCustomerByPhone, schema: CUSTOMER_REQUESTS.getCustomerByPhone }],
+  [
+    "getCustomerByPhone",
+    { func: getCustomerByPhone, schema: CUSTOMER_REQUESTS.getCustomerByPhone },
+  ],
   [
     "getCustomersWithDetails",
     { func: getCustomersWithDetails, schema: CUSTOMER_REQUESTS.getCustomersWithDetails },

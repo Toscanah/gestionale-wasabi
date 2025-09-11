@@ -1,4 +1,4 @@
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import {
   Accordion,

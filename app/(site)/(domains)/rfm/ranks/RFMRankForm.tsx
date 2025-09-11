@@ -1,4 +1,4 @@
-import WasabiSingleSelect from "@/app/(site)/components/ui/select/WasabiSingleSelect";
+import WasabiSingleSelect from "@/app/(site)/components/ui/wasabi/WasabiSingleSelect";
 import { RFMDimension, RFMRankRule } from "@/app/(site)/lib/shared/types/rfm";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { Input } from "@/components/ui/input";
@@ -105,8 +105,8 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
           groups={[
             {
               items: [
-                { name: "compreso tra", value: "between" },
-                { name: "uguale a", value: "eq" },
+                { label: "compreso tra", value: "between" },
+                { label: "uguale a", value: "eq" },
               ],
             },
           ]}

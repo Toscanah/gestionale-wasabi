@@ -14,6 +14,11 @@ import {
 import { Check } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import generateTimeSlots from "@/app/(site)/lib/utils/global/time/generateTimeSlots";
+import WasabiSelect from "./WasabiSelect";
+import {
+  DEFAULT_WHEN_LABEL,
+  DEFAULT_WHEN_VALUE,
+} from "@/app/(site)/lib/shared/constants/default-when";
 
 interface WhenSelectorProps {
   className?: string;
@@ -43,10 +48,35 @@ const WhenSelector = forwardRef<HTMLDivElement, WhenSelectorProps>(
 
     const options = [
       ...additionalOptions,
-      { label: "Subito", value: "immediate" },
+      { label: DEFAULT_WHEN_LABEL, value: DEFAULT_WHEN_VALUE },
       ...(lunchTimes.length > 0 ? lunchTimes.map((time) => ({ label: time, value: time })) : []),
       ...(dinnerTimes.length > 0 ? dinnerTimes.map((time) => ({ label: time, value: time })) : []),
     ];
+
+    return (
+      <WasabiSelect
+        title="Quando"
+        mode="single"
+        disabled={false}
+        inputPlaceholder="Cerca un orario..."
+        onChange={(value) => {
+          if (onValueChange) onValueChange(value);
+          if (field) field.onChange(value);
+        }}
+        allLabel="Tutti"
+        groups={[
+          {
+            options: options.map((option) => ({
+              label: option.label,
+              value: option.value,
+            })),
+          },
+        ]}
+        selectedValue={value || ""}
+      />
+    );
+
+    return <></>;
 
     const renderGroup = (groupOptions: any[], groupLabel?: string) =>
       groupOptions.length > 0 && (

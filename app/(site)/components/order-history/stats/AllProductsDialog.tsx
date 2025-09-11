@@ -1,5 +1,5 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import WasabiDialog from "../../ui/dialog/WasabiDialog";
+import WasabiDialog from "../../ui/wasabi/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import useTable from "@/app/(site)/hooks/table/useTable";
 import productColumns from "../common/productColumns";
@@ -7,6 +7,7 @@ import Table from "../../table/Table";
 
 interface AllProductsDialogProps {
   allProducts: ProductInOrder[];
+  owner: string;
 }
 
 function groupProducts(allProducts: ProductInOrder[]): ProductInOrder[] {
@@ -26,14 +27,14 @@ function groupProducts(allProducts: ProductInOrder[]): ProductInOrder[] {
   return Array.from(map.values());
 }
 
-export default function AllProductsDialog({ allProducts }: AllProductsDialogProps) {
+export default function AllProductsDialog({ allProducts, owner }: AllProductsDialogProps) {
   const groupedProducts = groupProducts(allProducts).sort((a, b) => b.quantity - a.quantity);
 
   const table = useTable({ data: groupedProducts, columns: productColumns(false) });
 
   return (
     <WasabiDialog
-      title="Tutti i prodotti ordinati"
+      title={"Tutti i prodotti ordinati di " + owner}
       putSeparator
       size="mediumPlus"
       putUpperBorder

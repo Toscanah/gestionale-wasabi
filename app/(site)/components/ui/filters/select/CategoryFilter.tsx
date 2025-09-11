@@ -1,5 +1,5 @@
 import { Category } from "@prisma/client";
-import SelectFilter from "./SelectFilter";
+import WasabiSelect from "./WasabiSelect";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 
 interface CategoryFilterProps {
@@ -22,7 +22,7 @@ export default function CategoryFilter({
   };
 
   return (
-    <SelectFilter
+    <WasabiSelect
       allLabel="Tutte"
       title="Categorie"
       mode="multi"

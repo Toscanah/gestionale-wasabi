@@ -1,6 +1,6 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType, ProductInOrderStatus } from "@prisma/client";
-import aggregateProducts from "../../../../lib/services/product-management/aggregateProducts";
+import aggregateProducts from "../../../../lib/services/product-management/printing/aggregateProducts";
 import CustomerProducts from "./CustomerProducts";
 import KitchenProducts from "./KitchenProducts";
 
@@ -28,8 +28,20 @@ export default function ProductsListSection({
     .sort((a, b) =>
       a.product.code.toLocaleUpperCase().localeCompare(b.product.code.toLocaleUpperCase())
     );
+  const groupedProducts: GroupedProductsByOptions = aggregateProducts(filteredProducts);
 
-  const groupedProducts: GroupedProductsByOptions = aggregateProducts(filteredProducts, orderType);
+  Object.entries(groupedProducts).forEach(([groupKey, products]) => {
+    console.table(
+      products.map((p) => ({
+        group: groupKey,
+        id: p.id,
+        to_be_printed: p.to_be_printed,
+        
+        code: p.product.code,
+        status: p.status,
+      }))
+    );
+  });
 
   return recipient == "customer"
     ? CustomerProducts({

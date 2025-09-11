@@ -2,6 +2,17 @@ import { CustomerWithDetails } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import getCustomerWithDetails from "./getCustomerWithDetails";
 
+/**
+ * Retrieves a list of customers whose addresses contain the specified doorbell string.
+ *
+ * This function searches for customers in the database whose addresses have a doorbell field
+ * that contains the provided `doorbell` substring (case-insensitive). For each matching customer,
+ * it fetches detailed customer information using `getCustomerWithDetails`.
+ *
+ * @param {Object} params - The parameters object.
+ * @param {string} params.doorbell - The doorbell substring to search for in customer addresses.
+ * @returns {Promise<CustomerWithDetails[]>} A promise that resolves to an array of customers with detailed information.
+ */
 export default async function getCustomersByDoorbell({
   doorbell,
 }: {

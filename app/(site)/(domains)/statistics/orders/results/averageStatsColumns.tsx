@@ -1,8 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ResultRecord } from "./SectionResults";
+import { AverageResultRecord } from "./SectionResults";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
+import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 
-const averageStatsColumns: ColumnDef<ResultRecord>[] = [
+const averageStatsColumns: ColumnDef<AverageResultRecord>[] = [
   FieldColumn({
     header: "Tipo ordine",
     key: "title",
@@ -10,7 +11,7 @@ const averageStatsColumns: ColumnDef<ResultRecord>[] = [
 
   ValueColumn({
     header: "Scontrino medio",
-    value: (row) => `€ ${row.original.avgPerOrder}`,
+    value: (row) => `€ ${roundToTwo(row.original.avgPerOrder)}`,
     accessor: (stats) => stats.avgPerOrder,
   }),
 
@@ -19,35 +20,41 @@ const averageStatsColumns: ColumnDef<ResultRecord>[] = [
     value: (row) => `€ ${row.original.revenuePerDay}`,
     accessor: (stats) => stats.revenuePerDay,
   }),
-  
-  FieldColumn({
+
+  ValueColumn({
     header: "Ordini/giorno",
-    key: "ordersPerDay",
+    value: (row) => roundToTwo(row.original.ordersPerDay),
+    accessor: (stats) => stats.ordersPerDay,
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Prodotti/giorno",
-    key: "productsPerDay",
+    value: (row) => roundToTwo(row.original.productsPerDay),
+    accessor: (stats) => stats.productsPerDay,
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Zuppe/giorno",
-    key: "soupsPerDay",
+    value: (row) => roundToTwo(row.original.soupsPerDay),
+    accessor: (stats) => stats.soupsPerDay,
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Risi/giorno",
-    key: "ricesPerDay",
+    value: (row) => roundToTwo(row.original.ricesPerDay),
+    accessor: (stats) => stats.ricesPerDay,
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Insalate/giorno",
-    key: "saladsPerDay",
+    value: (row) => roundToTwo(row.original.saladsPerDay),
+    accessor: (stats) => stats.saladsPerDay,
   }),
 
-  FieldColumn({
+  ValueColumn({
     header: "Riso cucinato/giorno",
-    key: "riceMassPerDay",
+    value: (row) => roundToTwo(row.original.ricePerDay),
+    accessor: (stats) => stats.ricePerDay,
   }),
 ];
 

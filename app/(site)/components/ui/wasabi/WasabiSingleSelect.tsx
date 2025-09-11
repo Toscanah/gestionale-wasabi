@@ -18,7 +18,7 @@ interface SelectWrapperProps {
   field?: ControllerRenderProps;
   defaultValue?: string;
   className?: string;
-  groups: { label?: string; items: { value: string; name: string }[] | string[] }[];
+  groups: { label?: string; items: { value: string; label: string }[] | string[] }[];
   placeholder?: string;
   fixedValue?: boolean;
   value?: string;
@@ -87,7 +87,7 @@ const WasabiSingleSelect = forwardRef<HTMLButtonElement, SelectWrapperProps>(
                   value={typeof item == "string" ? item : item.value}
                   className={cn("h-10 text-sm", itemClassName)}
                 >
-                  {typeof item == "string" ? item : item.name}
+                  {typeof item == "string" ? item : item.label}
                 </SelectItem>
               ))}
             </SelectGroup>

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { Badge } from "@/components/ui/badge";
 import { OrderType } from "@prisma/client";
 import { OrderWithPaymentsAndTotals } from "@/app/(site)/lib/shared";

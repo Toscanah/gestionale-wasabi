@@ -1,4 +1,4 @@
-import SelectFilter from "./SelectFilter";
+import WasabiSelect from "./WasabiSelect";
 import { OrderFilters } from "@/app/(site)/hooks/statistics/sectionReducer";
 import { SHIFT_LABELS, ShiftFilterValue } from "@/app/(site)/lib/shared";
 import { ForkKnife } from "@phosphor-icons/react";
@@ -11,7 +11,7 @@ interface ShiftFilterProps {
 
 export default function ShiftFilter({ selectedShift, onShiftChange, disabled }: ShiftFilterProps) {
   return (
-    <SelectFilter
+    <WasabiSelect
       mode="single"
       title="Turno"
       disabled={disabled}

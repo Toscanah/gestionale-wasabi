@@ -34,6 +34,6 @@
     "app/(site)/(domains)/backend/categories/.CategoryDialog.tsx",
     "build/types/**/*.ts",
     "app/(site)/lib/shared/types/**/*.d.ts"
-  ],
+, "app/(site)/components/order-history/stats/StatsHistoryItem"  ],
   "exclude": ["node_modules"]
 }

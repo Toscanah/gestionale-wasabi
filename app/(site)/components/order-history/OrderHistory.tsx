@@ -5,7 +5,7 @@ import {
 } from "@/app/(site)/lib/shared";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import StatsAccordionItem from "./stats/StatsAccordionItem";
+import StatsHistoryItem from "./stats/StatsHistoryItem";
 import useRecreateOrder from "../../hooks/order/history/useRecreateOrder";
 import useOrderHistory from "../../hooks/order/history/useOrderHistory";
 import DetailAccordionItem from "./detail/DetailAccordionItem";
@@ -29,26 +29,29 @@ function AnimatedTabsContent({
   children: React.ReactNode;
 }) {
   return (
-    <AnimatePresence mode="wait">
-      {currentValue === value && (
-        <motion.div
-          key={value}
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-          className="overflow-hidden"
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <TabsContent value={value} forceMount className="p-0">
+      <AnimatePresence mode="wait">
+        {currentValue === value && (
+          <motion.div
+            key={value}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </TabsContent>
   );
 }
 
 export type PossibleOrder = HomeOrderWithOrder | PickupOrderWithOrder;
 
 export default function OrderHistory({ customer, onCreate, noStatistics }: OrderHistoryProps) {
+  const [currentTab, setCurrentTab] = useState("orders");
   const { selectedProducts, resetProductSelection, updateProductSelection, getRecreatedProducts } =
     useRecreateOrder();
 
@@ -58,10 +61,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
     return <p className="text-2xl text-center">Nessun ordine registrato</p>;
   }
 
-  const [currentTab, setCurrentTab] = useState("orders");
-
   const handleAccordionChange = (value: string) => {
-    console.log(value)
     if (!value) return resetProductSelection();
 
     const [orderType, orderIdString] = value.split("-");
@@ -122,7 +122,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
         {!noStatistics && (
           <AnimatedTabsContent value="stats" currentValue={currentTab}>
             <div className="max-h-[35rem] overflow-y-auto px-4 pb-4">
-              <StatsAccordionItem allOrders={allOrders} />
+              <StatsHistoryItem allOrders={allOrders} owner={customer.phone.phone} />
             </div>
           </AnimatedTabsContent>
         )}

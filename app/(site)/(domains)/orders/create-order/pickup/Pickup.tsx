@@ -4,7 +4,7 @@ import { AnyOrder, PickupOrder } from "@/app/(site)/lib/shared"
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import WhenSelector from "../../../../components/ui/filters/time/WhenSelector";
+import WhenSelector from "../../../../components/ui/filters/select/WhenSelector";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import useFocusCycle from "../../../../hooks/focus/useFocusCycle";
 import fetchRequest from "../../../../lib/api/fetchRequest";
@@ -12,7 +12,7 @@ import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Plus, Question } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
 import { cn } from "@/lib/utils";

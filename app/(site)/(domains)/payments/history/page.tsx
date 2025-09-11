@@ -6,7 +6,7 @@ import React from "react";
 import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import TableControls from "../../../components/table/TableControls";
-import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
+import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
 import GoBack from "../../../components/ui/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";

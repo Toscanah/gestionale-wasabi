@@ -14,11 +14,15 @@ export default async function handleQuantityChange({
   newQuantity: number;
   productInOrder: ProductInOrder;
 }) {
-  const quantityDiff = newQuantity - productInOrder.quantity;
-
   if (Number(newQuantity) === 0) {
-    return await handleDeletion({ tx, currentOrderId: currentOrder.id, productInOrder });
+    return await handleDeletion({
+      tx,
+      currentOrderId: currentOrder.id,
+      productInOrder,
+    });
   }
+
+  const quantityDiff = newQuantity - productInOrder.quantity;
 
   const updatedProduct = await tx.productInOrder.update({
     where: { id: productInOrder.id },
@@ -26,9 +30,11 @@ export default async function handleQuantityChange({
       quantity: {
         increment: quantityDiff,
       },
-      printed_amount: {
-        increment: quantityDiff > 0 ? 0 : Math.max(quantityDiff, -productInOrder.printed_amount),
-      },
+      ...(quantityDiff < 0 && {
+        last_printed_quantity: {
+          set: Math.min(productInOrder.last_printed_quantity, newQuantity),
+        },
+      }),
     },
     include: { ...productInOrderInclude },
   });
@@ -44,6 +50,7 @@ export default async function handleQuantityChange({
     updatedProduct: {
       ...updatedProduct,
       quantity: updatedProduct.quantity - updatedProduct.paid_quantity,
+      to_be_printed: updatedProduct.quantity - updatedProduct.last_printed_quantity,
     },
   } as { updatedProduct: ProductInOrder };
 }

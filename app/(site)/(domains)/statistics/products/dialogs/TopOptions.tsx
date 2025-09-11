@@ -1,4 +1,4 @@
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { ProductWithStats } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 

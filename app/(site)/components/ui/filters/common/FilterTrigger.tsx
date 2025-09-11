@@ -10,7 +10,7 @@ interface FilterTriggerProps {
   values?: string[];
   onClear?: () => void;
   dashed?: boolean;
-  triggerIcon?: ElementType; 
+  triggerIcon?: ElementType;
   disabled?: boolean;
   className?: string;
 }
@@ -37,7 +37,12 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
         disabled={disabled}
         ref={ref}
         variant="outline"
-        className={cn("h-10 flex gap-2 items-center px-2", dashed && "border-dashed", className)}
+        className={cn(
+          "h-10 flex gap-2 items-center px-2",
+          dashed && "border-dashed",
+          disabled && "cursor-not-allowed",
+          className
+        )}
         {...props}
       >
         {valuesCount > 0 && onClear ? (

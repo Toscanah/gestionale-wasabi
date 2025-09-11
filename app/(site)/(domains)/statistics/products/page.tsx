@@ -1,7 +1,7 @@
 "use client";
 
 import Table from "../../../components/table/Table";
-import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
+import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
 import GoBack from "../../../components/ui/misc/GoBack";
 import useTable from "../../../hooks/table/useTable";
 import columns from "./columns";

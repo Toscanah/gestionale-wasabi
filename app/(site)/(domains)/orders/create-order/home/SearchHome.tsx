@@ -1,4 +1,4 @@
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import { Button } from "@/components/ui/button";

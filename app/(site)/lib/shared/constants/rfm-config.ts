@@ -1,4 +1,4 @@
-import { RFMRankRule, RFMConfig, RFMRules } from "../../lib/shared/types/rfm";
+import { RFMRankRule, RFMConfig, RFMRules } from "../types/rfm";
 
 export const DEFAULT_RULES: RFMRules = {
   recency: {

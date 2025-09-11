@@ -3,82 +3,85 @@ import { z } from "zod";
 import { ParsedEngagementTemplateSchema } from "../models/engagement";
 import { wrapSchema } from "./common/utils";
 import { NoContentRequestSchema } from "./common/no-content";
-import { ApiContract } from "../types/api-contract";
 
-export const TemplatePayloadDraftSchema = ParsedEngagementTemplateSchema.omit({
-  id: true,
-  created_at: true,
-}).extend({
-  selectedImage: z.instanceof(File).optional().nullable(),
-});
+export namespace EngagementContracts {
+  // Shared schemas
+  export const TemplatePayloadDraft = ParsedEngagementTemplateSchema.omit({
+    id: true,
+    created_at: true,
+  }).extend({
+    selectedImage: z.instanceof(File).optional().nullable(),
+  });
+  export type TemplatePayloadDraft = z.infer<typeof TemplatePayloadDraft>;
 
-export type TemplatePayloadDraft = z.infer<typeof TemplatePayloadDraftSchema>;
+  export namespace CreateTemplate {
+    export const Input = z.object({
+      label: z.string().optional(),
+      type: z.enum(EngagementType),
+      redeemable: z.boolean(),
+      payload: z.record(z.any(), z.any()),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CreateEngagementTemplateSchema = z.object({
-  label: z.string().optional(),
-  type: z.nativeEnum(EngagementType),
-  redeemable: z.boolean(),
-  payload: z.record(z.any()),
-});
+  export namespace UpdateTemplate {
+    export const Input = TemplatePayloadDraft.extend({
+      id: z.number(),
+    }).omit({ type: true });
+    export type Input = z.infer<typeof Input>;
+  }
 
-//
-// Update Schema — based on existing Prisma shape
-//
-export const UpdateEngagementTemplateSchema = TemplatePayloadDraftSchema.extend({
-  id: z.number(),
-}).omit({
-  type: true,
-});
+  export namespace DeleteTemplate {
+    export const Input = wrapSchema("templateId", z.number());
+    export type Input = z.infer<typeof Input>;
+  }
 
-//
-// Create Engagement instance from template
-//
-export const CreateEngagementSchema = z.object({
-  templateId: z.number(),
-  customerId: z.number().optional(),
-  orderId: z.number().optional(),
-});
+  export namespace Create {
+    export const Input = z.object({
+      templateId: z.number(),
+      customerId: z.number().optional(),
+      orderId: z.number().optional(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-//
-// Get Engagements by customer ID
-//
-export const GetEngagementsByCustomerSchema = wrapSchema("customerId", z.number());
+  export namespace GetByCustomer {
+    export const Input = wrapSchema("customerId", z.number());
+    export type Input = z.infer<typeof Input>;
+  }
 
-//
+  export namespace DeleteById {
+    export const Input = wrapSchema("engagementId", z.number());
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const DeleteTemplateByIdSchema = wrapSchema("templateId", z.number());
+  export namespace ToggleById {
+    export const Input = wrapSchema("engagementId", z.number());
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const DeleteEngagementByIdSchema = wrapSchema("engagementId", z.number());
+  export namespace GetLedgersByCustomer {
+    export const Input = z.object({
+      customerId: z.number(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const ToggleEngagementByIdSchema = wrapSchema("engagementId", z.number());
+  export namespace IssueLedgers {
+    export const Input = wrapSchema("orderId", z.number());
+    export type Input = z.infer<typeof Input>;
+  }
 
-//
+  export namespace UpdateLedgerStatus {
+    export const Input = z.object({
+      ledgerId: z.number(),
+      status: z.nativeEnum(EngagementLedgerStatus),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const GetEngagementsLedgersByCustomerSchema = z.object({
-  customerId: z.number(),
-});
-
-export const IssueLedgers = wrapSchema("orderId", z.number());
-
-export const UpdateLedgerStatus = z.object({
-  ledgerId: z.number(),
-  status: z.nativeEnum(EngagementLedgerStatus),
-});
-
-// Schema Registry
-//
-export const ENGAGEMENT_REQUESTS = {
-  createEngagement: CreateEngagementSchema,
-  getEngagementsByCustomer: GetEngagementsByCustomerSchema,
-  getEngagementTemplates: NoContentRequestSchema,
-  createEngagementTemplate: CreateEngagementTemplateSchema,
-  updateEngagementTemplate: UpdateEngagementTemplateSchema,
-  deleteTemplateById: DeleteTemplateByIdSchema,
-  deleteEngagementById: DeleteEngagementByIdSchema,
-  toggleEngagementById: ToggleEngagementByIdSchema,
-  getEngagementsLedgersByCustomer: GetEngagementsLedgersByCustomerSchema,
-  issueLedgers: IssueLedgers,
-  updateLedgerStatus: UpdateLedgerStatus,
-};
-
-export type EngagementContract = ApiContract<typeof ENGAGEMENT_REQUESTS>;
+  export namespace GetTemplates {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
+}

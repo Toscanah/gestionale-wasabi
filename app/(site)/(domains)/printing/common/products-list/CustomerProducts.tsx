@@ -76,11 +76,7 @@ const HEAD_PRODUCT_PADDING =
 /* --- ALTRO --- */
 const OPTIONS_START_PADDING = 4;
 
-const calculateDiscountAmount = (
-  products: ProductInOrder[],
-  discount: number,
-  orderType: OrderType
-) => {
+const calculateDiscountAmount = (products: ProductInOrder[], discount: number) => {
   const total = products.reduce((acc, product) => acc + product.quantity * product.frozen_price, 0);
   return total - getDiscountedTotal({ orderTotal: total, discountPercentage: discount });
 };
@@ -176,11 +172,7 @@ export default function CustomerProducts({
       {discount > 0 && (
         <Row
           left={<Text>- {discount}%</Text>}
-          right={
-            <Text>
-              - {roundToTwo(calculateDiscountAmount(originalProducts, discount, orderType))}
-            </Text>
-          }
+          right={<Text>- {roundToTwo(calculateDiscountAmount(originalProducts, discount))}</Text>}
         />
       )}
 

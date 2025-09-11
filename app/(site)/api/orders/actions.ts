@@ -4,7 +4,6 @@ import updateOrderTime from "../../lib/db/orders/updateOrderTime";
 import updateOrderPrintedFlag from "../../lib/db/orders/updateOrderPrintedFlag";
 import updateOrderPaymentStatus from "../../lib/db/orders/updateOrderPaymentStatus";
 import { updateOrderShift } from "../../lib/db/orders/updateOrderShift";
-import { fixOrdersShift } from "../../lib/db/orders/fixOrdersShift";
 import updateOrderExtraItems from "../../lib/db/orders/updateOrderExtraItems";
 import cancelOrder from "../../lib/db/orders/cancelOrder";
 import cancelOrdersInBulk from "../../lib/db/orders/cancelOrdersInBulk";
@@ -21,6 +20,7 @@ import updateOrderTable from "../../lib/db/orders/table/updateOrderTable";
 import updateOrderTablePpl from "../../lib/db/orders/table/updateOrderTablePpl";
 import getOrdersWithPayments from "../../lib/db/orders/getOrdersWithPayments";
 import updateOrdersShift from "../../lib/db/orders/updateOrdersShift";
+import computeOrdersStats from "../../lib/db/orders/computeOrdersStats";
 
 const GET_ACTIONS = new Map([
   ["getOrdersByType", { func: getOrdersByType, schema: ORDER_REQUESTS.getOrdersByType }],
@@ -36,6 +36,7 @@ const POST_ACTIONS = new Map([
     "getOrdersWithPayments",
     { func: getOrdersWithPayments, schema: ORDER_REQUESTS.getOrdersWithPayments },
   ],
+  ["computeOrdersStats", { func: computeOrdersStats, schema: ORDER_REQUESTS.computeOrdersStats }],
 ]);
 
 const PATCH_ACTIONS = new Map([
@@ -60,7 +61,6 @@ const PATCH_ACTIONS = new Map([
     { func: updateOrderExtraItems, schema: ORDER_REQUESTS.updateOrderExtraItems },
   ],
   ["joinTableOrders", { func: joinTableOrders, schema: ORDER_REQUESTS.joinTableOrders }],
-  ["fixOrdersShift", { func: fixOrdersShift, schema: ORDER_REQUESTS.fixOrdersShift }],
   [
     "updateOrderTablePpl",
     { func: updateOrderTablePpl, schema: ORDER_REQUESTS.updateOrderTablePpl },

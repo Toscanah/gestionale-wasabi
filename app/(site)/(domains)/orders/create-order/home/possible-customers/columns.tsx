@@ -5,7 +5,7 @@ import {
   FieldColumn,
   JoinColumn,
 } from "@/app/(site)/components/table/TableColumns";
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { Dispatch, SetStateAction } from "react";

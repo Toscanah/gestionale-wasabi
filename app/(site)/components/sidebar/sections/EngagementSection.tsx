@@ -2,7 +2,7 @@ import { Megaphone } from "@phosphor-icons/react";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
 import MarketingTemplates from "@/app/(site)/(domains)/engagement/templates/MarketingTemplates";
-import WasabiDialog from "../../ui/dialog/WasabiDialog";
+import WasabiDialog from "../../ui/wasabi/WasabiDialog";
 
 export default function EngagementSection() {
   const EngagementModels = () => (

@@ -1,6 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
-    // previewFeatures = ["typedSql"]
+    provider        = "prisma-client-js"
+    previewFeatures = ["typedSql"]
 }
 
 generator json {
@@ -39,13 +39,13 @@ model Order {
     shift                       WorkingShift       @default(UNSPECIFIED)
     status                      OrderStatus        @default(ACTIVE)
     engagements                 Engagement[]
-    payments                    Payment[]
-    products                    ProductInOrder[]
-    home_order                  HomeOrder?
-    pickup_order                PickupOrder?
-    table_order                 TableOrder?
     issued_engagement_ledgers   EngagementLedger[] @relation("ledger_issued_on_order")
     redeemed_engagement_ledgers EngagementLedger[] @relation("ledger_redeemed_on_order")
+    home_order                  HomeOrder?
+    payments                    Payment[]
+    pickup_order                PickupOrder?
+    products                    ProductInOrder[]
+    table_order                 TableOrder?
 
     @@index([created_at])
     @@index([status, created_at])
@@ -56,10 +56,10 @@ model Order {
 }
 
 model TableOrder {
-    id       Int     @id
     table    String
     res_name String?
     people   Int
+    id       Int     @id
     order    Order   @relation(fields: [id], references: [id], onDelete: Cascade)
 
     @@index([table])
@@ -67,15 +67,15 @@ model TableOrder {
 }
 
 model HomeOrder {
-    id              Int              @id
     address_id      Int
     customer_id     Int
     when            String           @default("immediate")
     contact_phone   String?
     last_reply_at   DateTime?
     reply_seen_at   DateTime?
-    prepaid         Boolean          @default(false)
     planned_payment PlannedPayment   @default(UNKNOWN)
+    id              Int              @id
+    prepaid         Boolean          @default(false)
     address         Address          @relation(fields: [address_id], references: [id])
     customer        Customer         @relation(fields: [customer_id], references: [id])
     order           Order            @relation(fields: [id], references: [id], onDelete: Cascade)
@@ -90,12 +90,12 @@ model HomeOrder {
 }
 
 model PickupOrder {
-    id              Int            @id
     customer_id     Int?
     when            String         @default("immediate")
     name            String
-    planned_payment PlannedPayment @default(UNKNOWN)
+    id              Int            @id
     prepaid         Boolean        @default(false)
+    planned_payment PlannedPayment @default(UNKNOWN)
     customer        Customer?      @relation(fields: [customer_id], references: [id])
     order           Order          @relation(fields: [id], references: [id], onDelete: Cascade)
 
@@ -127,8 +127,8 @@ model EngagementTemplate {
     label       String?
     type        EngagementType
     payload     Json
-    redeemable  Boolean        @default(false)
     created_at  DateTime       @default(now())
+    redeemable  Boolean        @default(false)
     engagements Engagement[]
 
     @@index([type])
@@ -156,27 +156,17 @@ model Engagement {
 }
 
 model EngagementLedger {
-    id Int @id @default(autoincrement())
-
-    // Link to the permanent attachment (atomic Engagement)
-    engagement_id Int
-    engagement    Engagement @relation(fields: [engagement_id], references: [id], onDelete: Cascade)
-
-    // Order where it was printed
-    issued_on_order_id Int
-    issued_on_order    Order    @relation("ledger_issued_on_order", fields: [issued_on_order_id], references: [id])
-    issued_at          DateTime @default(now())
-
-    // Redemption info (nullable until redeemed)
+    id                   Int                    @id @default(autoincrement())
+    engagement_id        Int
+    issued_on_order_id   Int
+    issued_at            DateTime               @default(now())
     redeemed_on_order_id Int?
-    redeemed_on_order    Order?    @relation("ledger_redeemed_on_order", fields: [redeemed_on_order_id], references: [id])
     redeemed_at          DateTime?
-
-    // Status lifecycle: ISSUED → REDEEMED or VOID
-    status EngagementLedgerStatus @default(ISSUED)
-
-    // Voiding info (optional, for operator error cases)
-    voided_at DateTime?
+    status               EngagementLedgerStatus @default(ISSUED)
+    voided_at            DateTime?
+    engagement           Engagement             @relation(fields: [engagement_id], references: [id], onDelete: Cascade)
+    issued_on_order      Order                  @relation("ledger_issued_on_order", fields: [issued_on_order_id], references: [id])
+    redeemed_on_order    Order?                 @relation("ledger_redeemed_on_order", fields: [redeemed_on_order_id], references: [id])
 
     @@index([engagement_id])
     @@index([issued_on_order_id])
@@ -190,20 +180,36 @@ model Customer {
     email         String?
     preferences   String?
     active        Boolean        @default(true)
+    phone_id      Int            @unique
     order_notes   String?
     origin        CustomerOrigin @default(UNKNOWN)
-    phone_id      Int            @unique
-    /// [RFMCustomerSegment]
-    rfm           Json           @default("{}")
     addresses     Address[]
     phone         Phone          @relation(fields: [phone_id], references: [id], onDelete: Cascade)
     engagements   Engagement[]
     home_orders   HomeOrder[]
     pickup_orders PickupOrder[]
+    stats         CustomerStats?
 
     @@index([active])
     @@index([origin])
     @@index([email])
+}
+
+model CustomerStats {
+    customer_id    Int       @id
+    total_orders   Int       @default(0)
+    total_spent    Float     @default(0)
+    average_order  Float     @default(0)
+    /// [RFMCustomerSegment]
+    rfm            Json      @default("{}")
+    last_order_at  DateTime?
+    first_order_at DateTime?
+    customer       Customer  @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+
+    @@index([total_orders])
+    @@index([total_spent])
+    @@index([average_order])
+    @@index([last_order_at])
 }
 
 model Phone {
@@ -255,7 +261,7 @@ model RiceBatch {
 model Product {
     id          Int              @id @default(autoincrement())
     category_id Int?
-    code        String
+    code        String           @unique
     desc        String
     site_price  Float            @default(0)
     home_price  Float            @default(0)
@@ -268,7 +274,6 @@ model Product {
     category    Category?        @relation(fields: [category_id], references: [id])
     orders      ProductInOrder[]
 
-    @@unique([code])
     @@index([category_id])
     @@index([active])
     @@index([kitchen])
@@ -277,19 +282,19 @@ model Product {
 }
 
 model ProductInOrder {
-    id             Int                    @id @default(autoincrement())
-    product_id     Int
-    order_id       Int
-    quantity       Int                    @default(0)
-    paid_quantity  Int                    @default(0)
-    printed_amount Int                    @default(0)
-    created_at     DateTime               @default(now())
-    frozen_price   Float                  @default(0)
-    status         ProductInOrderStatus   @default(IN_ORDER)
-    variation      String?
-    options        OptionInProductOrder[]
-    order          Order                  @relation(fields: [order_id], references: [id], onDelete: Cascade)
-    product        Product                @relation(fields: [product_id], references: [id])
+    id                    Int                    @id @default(autoincrement())
+    product_id            Int
+    order_id              Int
+    quantity              Int                    @default(0)
+    paid_quantity         Int                    @default(0)
+    created_at            DateTime               @default(now())
+    frozen_price          Float                  @default(0)
+    status                ProductInOrderStatus   @default(IN_ORDER)
+    variation             String?
+    last_printed_quantity Int                    @default(0)
+    options               OptionInProductOrder[]
+    order                 Order                  @relation(fields: [order_id], references: [id], onDelete: Cascade)
+    product               Product                @relation(fields: [product_id], references: [id])
 
     @@index([order_id])
     @@index([product_id])

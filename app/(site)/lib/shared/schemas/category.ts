@@ -1,30 +1,33 @@
 import { CategorySchema } from "@/prisma/generated/zod";
 import { CategoryWithOptionsSchema } from "../models/_index";
-import { ApiContract } from "../types/api-contract";
 import { NoContentRequestSchema } from "./common/no-content";
 import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
 import { createInputSchema, updateInputSchema } from "./common/utils";
 import { z } from "zod";
 
-export const CreateCategoryRequestSchema = createInputSchema(CategoryWithOptionsSchema).partial({
-  options: true,
-});
+export namespace CategoryContracts {
+  export namespace Create {
+    export const Input = createInputSchema(CategoryWithOptionsSchema).partial({
+      options: true,
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateCategoryRequestSchema = updateInputSchema(CategoryWithOptionsSchema);
+  export namespace Update {
+    export const Input = updateInputSchema(CategoryWithOptionsSchema);
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const ToggleCategoryRequestSchema = ToggleDeleteEntityRequestSchema;
+  export namespace Toggle {
+    export const Input = ToggleDeleteEntityRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CATEGORY_REQUESTS = {
-  createNewCategory: CreateCategoryRequestSchema,
-  updateCategory: UpdateCategoryRequestSchema,
-  toggleCategory: ToggleCategoryRequestSchema,
-  getCategories: NoContentRequestSchema,
-};
+  export namespace GetAll {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
 
-export const GetCategoriesResponseSchema = z.array(CategorySchema);
-
-export const CATEGORY_RESPONSES = {
-  getCategories: GetCategoriesResponseSchema,
-};
-
-export type CategoryContract = ApiContract<typeof CATEGORY_REQUESTS, typeof CATEGORY_RESPONSES>;
+    export const Output = z.array(CategorySchema);
+    export type Output = z.infer<typeof Output>;
+  }
+}

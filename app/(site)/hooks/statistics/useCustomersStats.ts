@@ -4,8 +4,14 @@ import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import useRfmRules from "../rfm/useRfmRules";
 import useRfmRanks from "../rfm/useRfmRanks";
 import { useMemo, useState } from "react";
-import { CustomerContract } from "../../lib/shared";
+import {
+  CustomerContract,
+  CustomerStatsSortField,
+  CustomerWithDetails,
+  CustomerWithStats,
+} from "../../lib/shared";
 import useQueryFilter from "../table/useGlobalFilter";
+import { SortField } from "../../components/ui/sorting/SortingMenu";
 
 const DEFAULT_DATE: DateRange = {
   from: undefined,
@@ -17,13 +23,24 @@ type UseCustomersStatsParams = {
   pageSize: number;
 };
 
+export const CUSTOMER_STATS_SORT_MAP: Record<string, CustomerStatsSortField> = {
+  "Spesa totale": "total_spent",
+  "Ultimo ordine": "last_order_at",
+  "Numero ordini": "total_orders",
+  "Primo ordine": "first_order_at",
+  "Punteggio RFM": "rfm.score.finalScore",
+  "Rank RFM": "rfm.rank",
+} as const;
+
 export default function useCustomersStats({ page, pageSize }: UseCustomersStatsParams) {
   const { rfmRules } = useRfmRules();
   const { ranks: rfmRanks } = useRfmRanks();
-
   const ALL_RANKS = rfmRanks.map((r) => r.rank);
 
   const { debouncedQuery, inputQuery, setInputQuery } = useQueryFilter();
+  const [activeSorts, setActiveSorts] = useState<SortField[]>([
+    // { field: "Spesa totale", direction: "asc", index: 0 },
+  ]);
   const [period, setPeriod] = useState<DateRange | undefined>(DEFAULT_DATE);
   const [ranks, setRanks] = useState<string[]>(ALL_RANKS);
 
@@ -52,48 +69,57 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     };
   }, [period, ranks, debouncedQuery]);
 
-  const { data: RFMbackfill } = useQuery({
-    queryKey: ["rfmBackfill"],
-    queryFn: () => fetchRequest("PATCH", "/api/customers", "updateCustomersRFM", { rfmConfig }),
+  const sorting = useMemo(() => {
+    return activeSorts.map((s) => ({
+      field: CUSTOMER_STATS_SORT_MAP[s.field as CustomerStatsSortField],
+      direction: s.direction,
+    }));
+  }, [activeSorts]);
+
+  const { data: baseCustomers } = useQuery({
+    queryKey: ["baseCustomers"],
+    queryFn: () =>
+      fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "getCustomersWithDetails", {}),
     staleTime: Infinity,
   });
 
   const query = useQuery({
-    queryKey: ["customers", { page, pageSize, filters }],
+    queryKey: ["customers", { page, pageSize, filters, sorting }],
     queryFn: async () =>
       await fetchRequest<CustomerContract["Responses"]["ComputeCustomersStats"]>(
-        "POST",
+        "PATCH",
         "/api/customers",
         "computeCustomersStats",
         {
           filters,
           page,
           pageSize,
+          sort: sorting,
+          rfmConfig,
         }
       ),
-    enabled: !!RFMbackfill,
+    placeholderData: (prev) => prev,
+    select: (data) => {
+      if (!baseCustomers) return { customers: [] as CustomerWithStats[], totalCount: 0 };
+
+      const baseMap = new Map(baseCustomers.map((c) => [c.id, c]));
+
+      return {
+        customers: data.customersStats
+          .flatMap((s) => {
+            const { customerId, ...stats } = s;
+            const base = baseMap.get(customerId);
+            if (!base) return null; // in case stats refer to a deleted customer
+
+            return { ...base, stats };
+          })
+          .filter(Boolean) as CustomerWithStats[], // remove nulls
+        totalCount: data.totalCount,
+      };
+    },
+    enabled: !!baseCustomers,
     staleTime: 1000 * 60 * 60,
   });
-
-  // useEffect(() => {
-  //   if (!query.data) return;
-  //   if (page === 0 && pageSize >= 50) {
-  //     const { customers, totalCount } = query.data;
-  //     const base = { search, dateFilter, rankFilter };
-
-  //     // hydrate smaller page sizes
-  //     [10, 20, 30, 40, 50].forEach((s) => {
-  //       if (s >= pageSize) return;
-  //       const pagesAvailable = Math.min(Math.ceil(customers.length / s), 10);
-  //       for (let p = 0; p < pagesAvailable; p++) {
-  //         queryClient.setQueryData(["customers", { page: p, pageSize: s, ...base }], {
-  //           customers: customers.slice(p * s, (p + 1) * s),
-  //           totalCount,
-  //         });
-  //       }
-  //     });
-  //   }
-  // }, [query.data, page, pageSize, search, dateFilter, rankFilter, queryClient]);
 
   const handleReset = () => {
     setRanks(ALL_RANKS);
@@ -103,7 +129,7 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
   return {
     customers: query.data?.customers ?? [],
     totalCount: query.data?.totalCount ?? 0,
-    isLoading: query.isLoading,
+    isLoading: query.isLoading || query.isFetching,
     period,
     ranks,
     setRanks,
@@ -114,5 +140,8 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     handleReset,
     allRanks: ALL_RANKS,
     rfmRanks,
+    sortingFields: CUSTOMER_STATS_SORT_MAP,
+    activeSorts,
+    setActiveSorts,
   };
 }

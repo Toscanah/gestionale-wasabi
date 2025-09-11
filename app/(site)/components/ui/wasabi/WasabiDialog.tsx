@@ -23,6 +23,7 @@ const sizes = {
 };
 
 export type WasabiDialogProps = {
+  modal?: boolean;
   putUpperBorder?: boolean;
   double?: boolean;
   autoFocus?: boolean;
@@ -62,6 +63,7 @@ export default function WasabiDialog({
   onDelete,
   onOpenChange,
   size = "medium",
+  modal = true,
 }: WasabiDialogProps) {
   // const [interactionReady, setInteractionReady] = useState(false);
 
@@ -89,7 +91,7 @@ export default function WasabiDialog({
   // }, [interactionReady]);
 
   return (
-    <Dialog onOpenChange={thisOnOpenChange} open={open}>
+    <Dialog onOpenChange={thisOnOpenChange} open={open} modal={true}>
       {trigger && (
         <DialogTrigger
           asChild

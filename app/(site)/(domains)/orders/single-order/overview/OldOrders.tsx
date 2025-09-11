@@ -1,4 +1,4 @@
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
 import { CustomerWithDetails, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";

@@ -1,8 +1,18 @@
 import { endOfDay, startOfDay } from "date-fns";
-import { CustomerWithDetails } from "../../shared";
+import { MinimalCustomer } from "../../shared";
 
+/**
+ * Extracts and filters all orders associated with a customer, optionally within a specified date range.
+ *
+ * @param customer - The customer object containing home and pickup orders.
+ * @param from - (Optional) The start date to filter orders from (inclusive).
+ * @param to - (Optional) The end date to filter orders to (inclusive).
+ * @returns An object containing:
+ *   - `lifetimeOrders`: All orders associated with the customer.
+ *   - `dateFilteredOrders`: Orders filtered by the provided date range.
+ */
 export default function extractCustomerOrders(
-  customer: CustomerWithDetails,
+  customer: MinimalCustomer,
   from?: Date,
   to?: Date
 ) {

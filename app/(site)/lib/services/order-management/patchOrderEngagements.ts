@@ -22,8 +22,7 @@ export function patchOrderEngagements({
   removeTemplateIds = [],
   updateTemplates = [],
   updateEngagements = [],
-  replaceEngagements
-  ,
+  replaceEngagements,
 }: PatchEngagementsParams): AnyOrder {
   const patchEngagementList = (
     existing: EngagementWithDetails[] | undefined

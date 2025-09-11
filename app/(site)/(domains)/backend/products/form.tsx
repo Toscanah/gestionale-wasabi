@@ -5,7 +5,7 @@ import { FormFieldType } from "../FormFields";
 import { ControllerRenderProps } from "react-hook-form";
 import { CategoryWithOptions } from "@/app/(site)/lib/shared"
 ;
-import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
+import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
 import KitchenType from "./KitchenType";
 
 export const formSchema = z.object({
@@ -58,7 +58,7 @@ export function getProductFields(categories: CategoryWithOptions[]): FormFieldTy
               groups={[
                 {
                   items: [
-                    { value: "-1", name: "Nessuna categoria" },
+                    { value: "-1", label: "Nessuna categoria" },
                     ...categories.map((cat) => ({
                       value: cat.id.toString(),
                       name: cat.category,

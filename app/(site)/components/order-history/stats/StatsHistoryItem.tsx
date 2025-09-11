@@ -1,16 +1,17 @@
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import useHistoryStats, {
   UseHistoryStatsParams,
 } from "../../../hooks/order/history/useHistoryStats";
 import { Separator } from "@/components/ui/separator";
 import AllProductsDialog from "./AllProductsDialog";
-import SelectFilter from "../../ui/filters/select/SelectFilter";
+import WasabiSelect from "../../ui/filters/select/WasabiSelect";
 
-type HistoryStatsProps = UseHistoryStatsParams;
+type HistoryStatsProps = UseHistoryStatsParams & {
+  owner: string;
+};
 
 const ITALIAN_MONTHS = [
-  { value: "00", name: "Tutti i mesi" },
   { value: "01", name: "Gennaio" },
   { value: "02", name: "Febbraio" },
   { value: "03", name: "Marzo" },
@@ -28,10 +29,10 @@ const ITALIAN_MONTHS = [
 // Small helper: format "1 volta" / "N volte"
 const formatCountLabel = (quantity: number) => `${quantity} ${quantity > 1 ? "volte" : "volta"}`;
 
-export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
+export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps) {
   const currentYear = new Date().getFullYear();
-  const [monthsFilter, setMonthsFilter] = useState<string[]>(["00"]);
-  const [yearsFilter, setYearsFilter] = useState<string[]>(["all"]);
+  const [monthsFilter, setMonthsFilter] = useState<string[]>([]);
+  const [yearsFilter, setYearsFilter] = useState<string[]>([]);
 
   const { stats } = useHistoryStats({ allOrders, yearsFilter, monthsFilter });
 
@@ -46,6 +47,18 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
     });
   }, [stats.ordersCount]);
 
+  useEffect(() => {
+    if (yearOptions.length > 0 && yearsFilter.length === 0) {
+      setYearsFilter(yearOptions.map((y) => y.value));
+    }
+  }, [yearOptions, yearsFilter.length]);
+
+  useEffect(() => {
+    if (monthsFilter.length === 0) {
+      setMonthsFilter(ITALIAN_MONTHS.map((m) => m.value));
+    }
+  }, [monthsFilter.length]);
+
   const filteredOrders = useMemo(() => {
     if (!allOrders.length) return [];
 
@@ -54,13 +67,8 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
       const orderYear = String(date.getFullYear());
       const orderMonth = String(date.getMonth() + 1).padStart(2, "0");
 
-      const yearMatch =
-        yearsFilter.includes("all") || yearsFilter.length === 0 || yearsFilter.includes(orderYear);
-
-      const monthMatch =
-        monthsFilter.includes("00") ||
-        monthsFilter.length === 0 ||
-        monthsFilter.includes(orderMonth);
+      const yearMatch = yearsFilter.includes(orderYear);
+      const monthMatch = monthsFilter.includes(orderMonth);
 
       return yearMatch && monthMatch;
     });
@@ -120,39 +128,28 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
     <div className="flex flex-col gap-4">
       {/* Filters */}
       <div className="flex gap-4 items-center w-full">
-        <SelectFilter
+        <WasabiSelect
+          shouldClear={yearsFilter.length !== yearOptions.length}
           mode="multi"
+          allLabel="Tutti gli anni"
           triggerClassName="w-full"
           selectedValues={yearsFilter}
-          onChange={(updatedValues) => {
-            if (updatedValues.includes("all") && updatedValues.length > 1) {
-              setYearsFilter(updatedValues.filter((y) => y !== "all"));
-            } else {
-              setYearsFilter(updatedValues);
-            }
-          }}
+          onChange={setYearsFilter}
           title="Anno"
           groups={[
             {
-              options: [
-                { value: "all", label: "Tutti gli anni" },
-                ...yearOptions.map((y) => ({ value: y.value, label: y.name })),
-              ],
+              options: [...yearOptions.map((y) => ({ value: y.value, label: y.name }))],
             },
           ]}
         />
 
-        <SelectFilter
+        <WasabiSelect
           mode="multi"
+          shouldClear={monthsFilter.length !== 12}
           triggerClassName="w-full"
           selectedValues={monthsFilter}
-          onChange={(next) => {
-            if (next.includes("00") && next.length > 1) {
-              setMonthsFilter(next.filter((m) => m !== "00"));
-            } else {
-              setMonthsFilter(next);
-            }
-          }}
+          allLabel="Tutti i mesi"
+          onChange={setMonthsFilter}
           title="Mese"
           groups={[{ options: ITALIAN_MONTHS.map((m) => ({ value: m.value, label: m.name })) }]}
         />
@@ -178,7 +175,10 @@ export default function StatsAccordionItem({ allOrders }: HistoryStatsProps) {
         </tbody>
       </table>
 
-      <AllProductsDialog allProducts={allOrders.map((order) => order.order.products).flat()} />
+      <AllProductsDialog
+        allProducts={allOrders.map((order) => order.order.products).flat()}
+        owner={owner}
+      />
     </div>
   );
 }

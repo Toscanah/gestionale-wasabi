@@ -1,4 +1,4 @@
-import SelectFilter from "./SelectFilter";
+import WasabiSelect from "./WasabiSelect";
 
 interface RankFilterProps {
   ranks: string[];
@@ -17,7 +17,7 @@ export default function RankFilter({ ranks, onRanksChange, allRanks, disabled }:
   };
 
   return (
-    <SelectFilter
+    <WasabiSelect
       title="Rank"
       mode="multi"
       disabled={disabled}

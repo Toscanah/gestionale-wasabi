@@ -1,8 +1,4 @@
-import {
-  RFMRangeRule,
-  RFMScore,
-  RFMRules,
-} from "@/app/(site)/lib/shared/types/rfm";
+import { RFMRangeRule, RFMScore, RFMRules } from "@/app/(site)/lib/shared/types/rfm";
 
 function getPointsFromRules(value: number, rules: RFMRangeRule[]): number {
   for (const rule of rules) {
@@ -12,23 +8,20 @@ function getPointsFromRules(value: number, rules: RFMRangeRule[]): number {
       return points;
     }
   }
-  return 0; // default if no rule matched
+  return 0;
 }
 
-export function calculateRfmScore(
-  rfm: Omit<RFMScore, "finalScore">,
-  configs: RFMRules
-): RFMScore {
-  // Extract raw stats
+/**
+ * Calculates the RFM (Recency, Frequency, Monetary) score for a given set of RFM values and configuration rules.
+ *
+ * @param rfm - An object containing the recency, frequency, and monetary values (excluding the final score).
+ * @param configs - The configuration object containing rules and weights for recency, frequency, and monetary calculations.
+ * @returns An object containing the calculated points for recency, frequency, monetary, and the weighted final score.
+ */
+export default function calculateRfmScore(rfm: Omit<RFMScore, "finalScore">, configs: RFMRules): RFMScore {
   const { recency, frequency, monetary } = rfm;
-
-  // Recency: lower is better → so rules are written in days
   const recencyPoints = getPointsFromRules(recency, configs.recency.rules);
-
-  // Frequency: higher is better
   const frequencyPoints = getPointsFromRules(frequency, configs.frequency.rules);
-
-  // Monetary: higher is better
   const monetaryPoints = getPointsFromRules(monetary, configs.monetary.rules);
 
   // Weighted score

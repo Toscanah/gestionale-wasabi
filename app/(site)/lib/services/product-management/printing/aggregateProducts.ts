@@ -1,10 +1,9 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
-import joinItemsWithComma from "../../utils/global/string/joinItemsWithComma";
+import joinItemsWithComma from "../../../utils/global/string/joinItemsWithComma";
 
 export default function aggregateProducts(
   products: ProductInOrder[],
-  orderType: OrderType
 ): Record<string, ProductInOrder[]> {
   const groupedProducts: Record<string, ProductInOrder[]> = {};
 
@@ -31,8 +30,10 @@ export default function aggregateProducts(
 
       // Aggregate quantities
       existingProduct.quantity += product.quantity;
-      existingProduct.printed_amount =
-        (existingProduct.printed_amount || 0) + product.printed_amount;
+
+      // Aggregate "to be printed"
+      existingProduct.to_be_printed =
+        (existingProduct.to_be_printed ?? 0) + (product.to_be_printed ?? 0);
     } else {
       // Add the product to the group as-is
       groupedProducts[optionsKey].push({ ...product });

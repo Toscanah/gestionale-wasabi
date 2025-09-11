@@ -31,8 +31,6 @@ export default function OrderReceipt<T extends AnyOrder>({
 
   const unredemableEngagements = engagements.filter((e) => !e.template.redeemable);
 
-  console.log(homeOrder, pickupOrder, putInfo);
-
   return (
     <>
       {HeaderSection({ orderDate: new Date(order.created_at) })}

@@ -1,4 +1,4 @@
-import WasabiSingleSelect from "@/app/(site)/components/ui/select/WasabiSingleSelect";
+import WasabiSingleSelect from "@/app/(site)/components/ui/wasabi/WasabiSingleSelect";
 import { WeekFilterEnum } from "@/app/(site)/hooks/engagement/useEngagementFilters";
 
 interface WeekFilterProps {
@@ -16,11 +16,11 @@ export default function WeekFilter({ weekFilter, onWeekFilterChange }: WeekFilte
       groups={[
         {
           items: [
-            { name: "Questa settimana", value: WeekFilterEnum.THIS_WEEK },
-            { name: "Ultima settimana", value: WeekFilterEnum.LAST_WEEK },
-            { name: "Due settimane fa", value: WeekFilterEnum.TWO_WEEKS_AGO },
-            { name: "Tre settimane fa", value: WeekFilterEnum.THREE_WEEKS_AGO },
-            { name: "Quattro settimane fa", value: WeekFilterEnum.FOUR_WEEKS_AGO },
+            { label: "Questa settimana", value: WeekFilterEnum.THIS_WEEK },
+            { label: "Ultima settimana", value: WeekFilterEnum.LAST_WEEK },
+            { label: "Due settimane fa", value: WeekFilterEnum.TWO_WEEKS_AGO },
+            { label: "Tre settimane fa", value: WeekFilterEnum.THREE_WEEKS_AGO },
+            { label: "Quattro settimane fa", value: WeekFilterEnum.FOUR_WEEKS_AGO },
           ],
         },
       ]}

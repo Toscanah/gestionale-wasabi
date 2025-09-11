@@ -2,6 +2,7 @@ import { OrderStatus, OrderType } from "@prisma/client";
 import prisma from "../../db";
 import { PickupOrder } from "@/app/(site)/lib/shared";
 import { engagementsInclude, productsInOrderInclude } from "../../includes";
+import { updateOrderShift } from "../updateOrderShift";
 
 export default async function createPickupOrder({
   name,
@@ -124,6 +125,7 @@ export default async function createPickupOrder({
       });
     }
 
-    return { order: createdOrder, isNewOrder: true };
+    const shift = await updateOrderShift({ orderId: createdOrder.id, tx });
+    return { order: { ...createdOrder, shift }, isNewOrder: true };
   });
 }

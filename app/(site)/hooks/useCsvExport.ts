@@ -3,7 +3,7 @@ import { useCallback } from "react";
 export default function useCsvExport<T>(
   data: T[],
   headers: Record<keyof T, string>,
-  filters: Record<string, string | number | null | undefined> = {}
+  filters: Record<string, string | number | null | undefined> = {},
 ) {
   const downloadCsv = useCallback(
     (fileName: string = "export.csv") => {

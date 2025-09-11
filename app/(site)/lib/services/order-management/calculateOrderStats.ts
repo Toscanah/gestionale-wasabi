@@ -1,4 +1,8 @@
-import { OrderStatsResults } from "@/app/(site)/hooks/statistics/useOrdersStats";
+import {
+  MetricsResult,
+  OrderStatsMetrics,
+  OrderStatsResults,
+} from "@/app/(site)/hooks/statistics/useOrdersStats";
 import { AnyOrder, ProductInOrder } from "../../shared";
 import { OrderType, ProductInOrderStatus } from "@prisma/client";
 import getPioRice from "../product-management/getPioRice";
@@ -11,33 +15,11 @@ export default function calculateResults(
   period?: DateRange,
   weekdays?: Weekday[]
 ): OrderStatsResults {
-  // Accumulators
-  let homeOrders = 0,
-    pickupOrders = 0,
-    tableOrders = 0;
-
-  let homeRevenue = 0,
-    pickupRevenue = 0,
-    tableRevenue = 0;
-
-  let homeSoups = 0,
-    homeRices = 0,
-    homeSalads = 0;
-  let pickupSoups = 0,
-    pickupRices = 0,
-    pickupSalads = 0;
-  let tableSoups = 0,
-    tableRices = 0,
-    tableSalads = 0;
-
-  let homeProducts = 0,
-    pickupProducts = 0,
-    tableProducts = 0;
-
-  // Total rice mass (e.g., grams) per order type
-  let homeRice = 0,
-    pickupRice = 0,
-    tableRice = 0;
+  const acc = {
+    home: { orders: 0, revenue: 0, products: 0, soups: 0, rices: 0, salads: 0, rice: 0 },
+    pickup: { orders: 0, revenue: 0, products: 0, soups: 0, rices: 0, salads: 0, rice: 0 },
+    table: { orders: 0, revenue: 0, products: 0, soups: 0, rices: 0, salads: 0, rice: 0 },
+  };
 
   // Helpers
   const computeLineRevenue = (pio: ProductInOrder) => {
@@ -46,10 +28,10 @@ export default function calculateResults(
     return paidQty > 0 ? paidQty * price : 0;
   };
 
-  const computeOrderRiceMass = (order: AnyOrder) => {
+  const computeOrderRice = (order: AnyOrder) => {
     if (!Array.isArray(order.products)) return 0;
 
-    let riceMass = 0;
+    let rice = 0;
 
     for (const pio of order.products) {
       const isCooked =
@@ -58,15 +40,14 @@ export default function calculateResults(
       const paidQty = pio.paid_quantity ?? 0;
 
       if (isCooked && paidQty > 0) {
-        riceMass += getPioRice(pio);
+        rice += getPioRice(pio);
       }
     }
 
-    return riceMass;
+    return rice;
   };
 
   const computeCategoryCountsFromPIOs = (order: AnyOrder) => {
-    // Derive counts from product definition * ordered quantity *
     if (!Array.isArray(order.products) || order.products.length === 0) {
       return { soups: 0, rices: 0, salads: 0 };
     }
@@ -87,146 +68,69 @@ export default function calculateResults(
   };
 
   for (const order of orders) {
-    // --- Revenue (paid items only) ---
     let orderRevenue = 0;
     let productCount = 0;
+
     if (Array.isArray(order.products)) {
       for (const pio of order.products) {
         orderRevenue += computeLineRevenue(pio);
         const qty = pio.paid_quantity ?? 0;
-        if (qty > 0) {
-          productCount += qty;
-        }
+        if (qty > 0) productCount += qty;
       }
     }
 
-    // --- Category counts (soups/rices/salads) ---
-    // Rule: if order-level value is present and != 0, use it; otherwise derive from PIOs.
     const derived = computeCategoryCountsFromPIOs(order);
 
     const orderSoups = order.soups && order.soups !== 0 ? order.soups : derived.soups;
     const orderRices = order.rices && order.rices !== 0 ? order.rices : derived.rices;
     const orderSalads = order.salads && order.salads !== 0 ? order.salads : derived.salads;
 
-    // --- Rice mass (grams) from cooked + paid lines ---
-    const orderRiceMass = computeOrderRiceMass(order);
+    const orderRice = computeOrderRice(order);
 
-    // --- Accumulate by type ---
-    switch (order.type as OrderType) {
-      case OrderType.HOME:
-        homeOrders += 1;
-        homeRevenue += orderRevenue;
-        homeSoups += orderSoups;
-        homeRices += orderRices;
-        homeSalads += orderSalads;
-        homeRice += orderRiceMass;
-        homeProducts += productCount;
-        break;
+    const kind = order.type.toLowerCase() as Lowercase<OrderType>;
+    const bucket = acc[kind];
 
-      case OrderType.PICKUP:
-        pickupOrders += 1;
-        pickupRevenue += orderRevenue;
-        pickupSoups += orderSoups;
-        pickupRices += orderRices;
-        pickupSalads += orderSalads;
-        pickupRice += orderRiceMass;
-        pickupProducts += productCount;
-        break;
-
-      case OrderType.TABLE:
-        tableOrders += 1;
-        tableRevenue += orderRevenue;
-        tableSoups += orderSoups;
-        tableRices += orderRices;
-        tableSalads += orderSalads;
-        tableRice += orderRiceMass;
-        tableProducts += productCount;
-        break;
-    }
+    bucket.orders += 1;
+    bucket.revenue += orderRevenue;
+    bucket.soups += orderSoups;
+    bucket.rices += orderRices;
+    bucket.salads += orderSalads;
+    bucket.rice += orderRice;
+    bucket.products += productCount;
   }
-
-  let numDays = 1; // fallback = 1 day (avoid division by zero)
 
   const from = period?.from ? new Date(period.from) : startOfDay(new Date(2025, 0, 1));
   const to = period?.to ? new Date(period.to) : endOfDay(new Date());
 
-  numDays = 0;
+  let numDays = 0;
   for (let day = startOfDay(from); day <= to; day = addDays(day, 1)) {
-    const dow = day.getDay(); // JS convention: 0=Sun, 1=Mon, ... 6=Sat
-
-    if (dow === 1) continue; // 🚫 always skip Mondays
-
+    const dow = day.getDay();
+    if (dow === 1) continue; // skip Mondays
     if (weekdays && weekdays.length > 0 && !weekdays.includes(dow as Weekday)) {
-      continue; // apply selected weekdays filter
+      continue;
     }
-
     numDays++;
   }
 
-  if (numDays === 0) numDays = 1; // safeguard (avoid division by zero)
+  if (numDays === 0) numDays = 1;
 
-  console.log(numDays);
+  const makeResult = (m: OrderStatsMetrics): MetricsResult => ({
+    ...m,
+    perDay: {
+      orders: m.orders / numDays,
+      revenue: m.revenue / numDays,
+      products: m.products / numDays,
+      soups: m.soups / numDays,
+      rices: m.rices / numDays,
+      salads: m.salads / numDays,
+      rice: m.rice / numDays,
+    },
+    revenuePerOrder: m.orders > 0 ? m.revenue / m.orders : 0,
+  });
 
   return {
-    // Home
-    homeOrders,
-    homeRevenue,
-    homeSoups,
-    homeRices,
-    homeSalads,
-    homeRice,
-    homeProducts,
-
-    // Pickup
-    pickupOrders,
-    pickupRevenue,
-    pickupSoups,
-    pickupRices,
-    pickupSalads,
-    pickupRice,
-    pickupProducts,
-
-    // Table
-    tableOrders,
-    tableRevenue,
-    tableSoups,
-    tableRices,
-    tableSalads,
-    tableRice,
-    tableProducts,
-
-    // ---- Averages per day ----
-    homeOrdersPerDay: homeOrders / numDays,
-    homeRevenuePerDay: homeRevenue / numDays,
-    homeProductsPerDay: homeProducts / numDays,
-
-    pickupOrdersPerDay: pickupOrders / numDays,
-    pickupRevenuePerDay: pickupRevenue / numDays,
-    pickupProductsPerDay: pickupProducts / numDays,
-
-    tableOrdersPerDay: tableOrders / numDays,
-    tableRevenuePerDay: tableRevenue / numDays,
-    tableProductsPerDay: tableProducts / numDays,
-
-    // ---- Averages per order ----
-    homeRevenuePerOrder: homeOrders > 0 ? homeRevenue / homeOrders : 0,
-    pickupRevenuePerOrder: pickupOrders > 0 ? pickupRevenue / pickupOrders : 0,
-    tableRevenuePerOrder: tableOrders > 0 ? tableRevenue / tableOrders : 0,
-
-    // ---- Averages per day (extra categories) ----
-    homeSoupsPerDay: homeSoups / numDays,
-    homeRicesPerDay: homeRices / numDays,
-    homeSaladsPerDay: homeSalads / numDays,
-    homeRiceMassPerDay: homeRice / numDays,
-
-    pickupSoupsPerDay: pickupSoups / numDays,
-    pickupRicesPerDay: pickupRices / numDays,
-    pickupSaladsPerDay: pickupSalads / numDays,
-    pickupRiceMassPerDay: pickupRice / numDays,
-
-    tableSoupsPerDay: tableSoups / numDays,
-    tableRicesPerDay: tableRices / numDays,
-    tableSaladsPerDay: tableSalads / numDays,
-    tableRiceMassPerDay: tableRice / numDays,
+    home: makeResult(acc.home),
+    pickup: makeResult(acc.pickup),
+    table: makeResult(acc.table),
   };
 }

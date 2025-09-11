@@ -10,7 +10,7 @@ import FormFields from "../FormFields";
 import { CategoryWithOptions } from "@/app/(site)/lib/shared";
 import { formSchema } from "./form";
 import { getProductFields } from "./form";
-import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
+import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
 import { Category } from "@prisma/client";
 import dynamic from "next/dynamic";
 
@@ -100,7 +100,7 @@ export default function ProductDashboard() {
                 groups={[
                   {
                     items: [
-                      { name: "Tutte le categorie", value: "-1" },
+                      { label: "Tutte le categorie", value: "-1" },
                       ...categories.map((category) => ({
                         name: category.category,
                         value: category.id.toString(),

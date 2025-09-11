@@ -29,7 +29,7 @@ export default function TablePagination<TData>({
   pageCount,
   onPageChange,
   onPageSizeChange,
-  disabled
+  disabled,
 }: TablePaginationProps<TData>) {
   const currentPage = page ?? table.getState().pagination.pageIndex;
   const currentPageSize = pageSize ?? table.getState().pagination.pageSize;
@@ -63,6 +63,9 @@ export default function TablePagination<TData>({
                 {size}
               </SelectItem>
             ))}
+            <SelectItem key={-1} value={`${totalCount ?? 0}`}>
+              Tutti
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>

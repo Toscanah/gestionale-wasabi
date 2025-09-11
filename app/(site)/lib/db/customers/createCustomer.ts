@@ -1,10 +1,11 @@
 import prisma from "../db";
 import { CustomerContract, CustomerWithDetails } from "@/app/(site)/lib/shared";
 import { engagementsInclude, homeAndPickupOrdersInclude } from "../includes";
+import { Customer } from "@prisma/client";
 
 export default async function createCustomer({
   customer,
-}: CustomerContract["Requests"]["CreateCustomer"]): Promise<CustomerWithDetails | null> {
+}: CustomerContract["Requests"]["CreateCustomer"]): Promise<Customer | null> {
   return await prisma.$transaction(async (tx) => {
     const { phone, ...customerData } = customer;
 
@@ -24,12 +25,6 @@ export default async function createCustomer({
       data: {
         ...customerData,
         phone_id: newPhone.id,
-      },
-      include: {
-        phone: true,
-        addresses: true,
-        ...homeAndPickupOrdersInclude,
-        ...engagementsInclude,
       },
     });
   });

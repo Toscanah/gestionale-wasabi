@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export const engagementsInclude = {
   engagements: {
     include: {
@@ -78,3 +80,11 @@ export const homeAndPickupOrdersInclude = {
     include: orderInclude,
   },
 };
+
+export const customerStatsInclude = {
+  stats: {
+    omit: {
+      customer_id: true,
+    },
+  },
+} satisfies Prisma.CustomerInclude;

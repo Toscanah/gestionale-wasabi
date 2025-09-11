@@ -80,14 +80,15 @@ export default async function createSubOrder({
       });
 
       const newQuantity = productInOrder.quantity - product.quantity;
-      const newPrintedAmount = productInOrder.printed_amount - product.quantity;
 
       if (newQuantity > 0) {
         await prisma.productInOrder.update({
           where: { id: productInOrder.id },
           data: {
             quantity: newQuantity,
-            printed_amount: newPrintedAmount,
+            last_printed_quantity: {
+              set: Math.min(productInOrder.last_printed_quantity, newQuantity),
+            },
           },
         });
       } else {

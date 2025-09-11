@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns"; // Ensure date-fns is installed
-import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import OrderHistory from "../../../components/order-history/OrderHistory";
 import {
@@ -16,11 +15,12 @@ import chroma from "chroma-js";
 import { CustomerWithStats } from "@/app/(site)/lib/shared";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
+import { differenceInCalendarDays, format } from "date-fns";
 
 const QuickTooltip = ({ title, label }: { title: string; label: string }) => (
   <Tooltip delayDuration={0}>
     <TooltipTrigger className="flex gap-2 items-center">
-      <Warning color={"yellow"} className="h-4 w-4" />
+      <Warning color={"#d97706"} className="h-4 w-4" />
       {title}
     </TooltipTrigger>
     <TooltipContent side="bottom">
@@ -34,11 +34,12 @@ const QuickTooltip = ({ title, label }: { title: string; label: string }) => (
 
 const columns: ColumnDef<CustomerWithStats>[] = [
   FieldColumn({
-    key: "phone.phone",
     header: "Telefono",
+    key: "phone.phone",
+    sortable: false,
   }),
 
-  FullNameColumn({}),
+  FullNameColumn({ sortable: false }),
 
   JoinColumn({
     header: "Campanelli",
@@ -46,31 +47,19 @@ const columns: ColumnDef<CustomerWithStats>[] = [
       key: "doorbells",
       wrapper: ({ children }) => <div className="max-w-36">{children}</div>,
     },
+    sortable: false,
   }),
-
-  // FieldColumn({
-  //   key: "averageOrdersWeek",
-  //   header: "Media a settimana",
-  // }),
-
-  // FieldColumn({
-  //   key: "averageOrdersMonth",
-  //   header: "Media al mese",
-  // }),
-
-  // FieldColumn({
-  //   key: "averageOrdersYear",
-  //   header: "Media all'anno",
-  // }),
 
   ValueColumn({
     header: <QuickTooltip title="RFM" label="L'indice RFM" />,
-    value: (row) => roundToTwo(row.original.rfm.score.finalScore),
-    accessor: (customer) => customer.rfm.score.finalScore,
+    value: (row) => roundToTwo(row.original.stats.rfm.score.finalScore),
+    accessor: (customer) => customer.stats.rfm.score.finalScore,
+    sortable: false,
   }),
 
   ValueColumn({
     header: <QuickTooltip title="Rank" label="Il rank RFM" />,
+    sortable: false,
     value: (row, meta) => {
       const { ranks, theme } = meta as CustomerStatsTableMeta;
 
@@ -79,9 +68,9 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
       const sorted = [...ranks].sort((a, b) => b.priority - a.priority);
 
-      const currentRank = row.original.rfm.rank;
+      const currentRank = row.original.stats?.rfm.rank;
       const index = sorted.findIndex(
-        (r) => r.rank.trim().toLowerCase() === currentRank.trim().toLowerCase()
+        (r) => r.rank.trim().toLowerCase() === currentRank?.trim().toLowerCase()
       );
 
       if (index === -1) return "-";
@@ -91,57 +80,65 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
       return <span style={{ color, fontWeight: 600 }}>{currentRank}</span>;
     },
-    accessor: (customer) => JSON.stringify(customer.rfm),
-    sortingFn: (rowA, rowB, columnId) => {
-      const meta =
-        (rowA.getAllCells().at(0)?.getContext().table.options.meta as CustomerStatsTableMeta) ?? {};
-
-      const ranks = meta.ranks ?? [];
-      // build lookup map (rank → priority)
-      const map = new Map(ranks.map((r) => [r.rank, r.priority]));
-
-      // values from the rows
-      const aRank = rowA.getValue<string>(columnId);
-      const bRank = rowB.getValue<string>(columnId);
-
-      // priorities (fallback to -Infinity if not found)
-      const aP = map.get(aRank) ?? -Infinity;
-      const bP = map.get(bRank) ?? -Infinity;
-
-      // higher priority first
-      return bP - aP;
-    },
+    accessor: (customer) => customer.stats.rfm.rank ?? "",
   }),
 
   ValueColumn({
     header: "Ultimo ordine",
-    value: (row) => (row.original.lastOrder ? format(row.original.lastOrder, "dd-MM-yyyy") : ""),
-    accessor: (customer) => customer.lastOrder,
+    value: (row) => {
+      if (row.original.stats.last_order_at) {
+        const lastOrderDate = row.original.stats.last_order_at;
+        const formattedDate = format(lastOrderDate, "dd-MM-yyyy");
+        const daysSince = differenceInCalendarDays(new Date(), lastOrderDate);
+
+        return (
+          <>
+            <span>
+              {formattedDate} <span className="text-muted-foreground">({daysSince} giorni fa)</span>
+            </span>
+          </>
+        );
+      }
+
+      return "";
+    },
+    accessor: (customer) => customer.stats.last_order_at,
+    sortable: false,
   }),
 
-  FieldColumn({
-    key: "averageSpending",
-    header: "Spesa media",
+  ValueColumn({
+    header: "Primo ordine",
+    value: (row) =>
+      row.original.stats.firstOrderAt
+        ? format(row.original.stats.first_order_at, "dd-MM-yyyy")
+        : "",
+    accessor: (customer) => customer.stats.first_order_at,
+    sortable: false,
   }),
 
-  FieldColumn({
-    key: "totalSpending",
-    header: "Spesa totale",
+  ValueColumn({
+    header: "Spesa media (€)",
+    value: (row) => "€ " + roundToTwo(row.original.stats.average_order),
+    accessor: (customer) => customer.stats.average_order,
+    sortable: false,
   }),
 
-  // TableColumn({
-  //   accessorKey: "score",
-  //   header: "Punteggio",
-  // }),
+  ValueColumn({
+    header: "Spesa totale (€)",
+    value: (row) => "€ " + roundToTwo(row.original.stats.total_spent),
+    accessor: (customer) => customer.stats.total_spent,
+    sortable: false,
+  }),
 
-  // TableColumn({
-  //   accessorKey: "customer_score",
-  //   header: "Punteggio",
-  //   cellContent: (row) => <ScoreDialog customer={row.original} />,
-  // }),
+  ValueColumn({
+    header: "Numero ordini",
+    value: (row) => row.original.stats.totalOrders,
+    accessor: (customer) => customer.stats.totalOrders,
+    sortable: false,
+  }),
 
   ActionColumn({
-    header: "Storico ordini",
+    header: "Altro",
     action: (row) => {
       const customer = row.original;
 
@@ -161,6 +158,33 @@ const columns: ColumnDef<CustomerWithStats>[] = [
       );
     },
   }),
+
+  // ActionColumn({
+  //   header: "Altro",
+  //   action: (row) => {
+  //     const customer = row.original;
+
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="outline">Open</Button>
+  //         </DropdownMenuTrigger>
+
+  //         <DropdownMenuContent align="start">
+  //           <WasabiDialog
+
+  //             size="mediumPlus"
+  //             title="Storico cliente"
+  //             putUpperBorder
+  //             trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()}>Vedi ordini precedenti</DropdownMenuItem>}
+  //           >
+  //             <OrderHistory customer={customer} />
+  //           </WasabiDialog>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // }),
 ];
 
 export default columns;

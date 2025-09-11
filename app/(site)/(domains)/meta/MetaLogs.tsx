@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
 import { AnyOrder, HomeOrder } from "../../lib/shared";
 import {
   Accordion,

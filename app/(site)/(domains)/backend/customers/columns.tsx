@@ -5,7 +5,7 @@ import {
   JoinColumn,
   ValueColumn,
 } from "../../../components/table/TableColumns";
-import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";

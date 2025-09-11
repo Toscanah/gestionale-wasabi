@@ -4,14 +4,13 @@ interface WasabiPopoverProps {
   trigger: React.ReactNode;
   children: React.ReactNode;
   contentClassName?: string;
+  modal?: boolean;
 }
 
-export default function WasabiPopover({ trigger, children, contentClassName }: WasabiPopoverProps) {
+export default function WasabiPopover({ trigger, children, contentClassName, modal = true }: WasabiPopoverProps) {
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        {trigger}
-      </PopoverTrigger>
+    <Popover modal={modal}>
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent className={`w-full ${contentClassName}`}>{children}</PopoverContent>
     </Popover>
   );

@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect } from "react";
 import debounce from "lodash/debounce";
-import WasabiPopover from "../../popover/WasabiPopover";
+import WasabiPopover from "../../wasabi/WasabiPopover";
 import FilterTrigger from "../common/FilterTrigger";
 import TimeInput from "./TimeInput";
 import { Clock } from "@phosphor-icons/react";

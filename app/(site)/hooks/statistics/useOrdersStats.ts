@@ -7,6 +7,7 @@ import calculateResults from "../../lib/services/order-management/calculateOrder
 import { ALL_WEEKDAYS } from "../../components/ui/filters/select/WeekdaysFilter";
 import { FULL_DAY_RANGE } from "../../components/ui/filters/time/TimeWindowFilter";
 import { OrderContract } from "../../lib/shared";
+import { OrderType } from "@prisma/client";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -16,69 +17,6 @@ export enum DAYS_OF_WEEK {
   SATURDAY = "Sabato",
   SUNDAY = "Domenica",
 }
-
-export type OrderStatsResults = {
-  // Home orders
-  homeOrders: number;
-  homeRevenue: number;
-  homeProducts: number;
-  homeSoups: number;
-  homeRices: number; // count of "rice" dishes
-  homeSalads: number;
-  homeRice: number; // total rice mass (e.g., grams) consumed
-
-  // Pickup orders
-  pickupOrders: number;
-  pickupRevenue: number;
-  pickupProducts: number;
-  pickupSoups: number;
-  pickupRices: number;
-  pickupSalads: number;
-  pickupRice: number;
-
-  // Table orders
-  tableOrders: number;
-  tableRevenue: number;
-  tableProducts: number;
-  tableSoups: number;
-  tableRices: number;
-  tableSalads: number;
-  tableRice: number;
-
-  // Per day stats
-  homeOrdersPerDay: number;
-  homeRevenuePerDay: number;
-  homeProductsPerDay: number;
-
-  pickupOrdersPerDay: number;
-  pickupRevenuePerDay: number;
-  pickupProductsPerDay: number;
-
-  tableOrdersPerDay: number;
-  tableRevenuePerDay: number;
-  tableProductsPerDay: number;
-
-  // Averages per order
-  homeRevenuePerOrder: number;
-  pickupRevenuePerOrder: number;
-  tableRevenuePerOrder: number;
-
-  // ---- Averages per day (extra categories) ----
-  homeSoupsPerDay: number;
-  homeRicesPerDay: number;
-  homeSaladsPerDay: number;
-  homeRiceMassPerDay: number;
-
-  pickupSoupsPerDay: number;
-  pickupRicesPerDay: number;
-  pickupSaladsPerDay: number;
-  pickupRiceMassPerDay: number;
-
-  tableSoupsPerDay: number;
-  tableRicesPerDay: number;
-  tableSaladsPerDay: number;
-  tableRiceMassPerDay: number;
-};
 
 export default function useOrdersStats() {
   const [state, dispatch] = useReducer(sectionReducer, INITIAL_STATE);
@@ -142,23 +80,18 @@ export default function useOrdersStats() {
     };
   }, [state]);
 
-  const { data: shiftBackfill, isLoading: isShiftBackfillLoading } = useQuery({
-    queryKey: ["shiftBackfill"],
-    queryFn: () => fetchRequest("PATCH", "/api/orders", "updateOrdersShift"),
-    staleTime: Infinity,
-    // enabled: false,
-  });
+  // const { data: shiftBackfill, isLoading: isShiftBackfillLoading } = useQuery({
+  //   queryKey: ["shiftBackfill"],
+  //   queryFn: () => fetchRequest("PATCH", "/api/orders", "updateOrdersShift"),
+  //   staleTime: Infinity,
+  // });
 
   const { data, isLoading: isOrdersLoading } = useQuery({
     queryKey: ["orders", filters],
-    queryFn: async (): Promise<OrderContract["Responses"]["GetOrdersWithPayments"]> =>
-      fetchRequest("POST", "/api/orders", "getOrdersWithPayments", {
+    queryFn: async (): Promise<OrderContract["Responses"]["ComputeOrdersStats"]> =>
+      fetchRequest("POST", "/api/orders", "computeOrdersStats", {
         filters,
-        summary: true,
       }),
-    enabled: !!shiftBackfill,
-    // enabled: true,
-    select: (res) => calculateResults(res.orders, state.period, state.weekdays),
   });
 
   function isDefaultState(state: SectionState): boolean {
@@ -191,7 +124,7 @@ export default function useOrdersStats() {
     showReset: !isDefaultState(state),
     dispatch,
     filteredResults: data ?? null,
-    isLoading: isOrdersLoading || isShiftBackfillLoading,
+    isLoading: isOrdersLoading,
     disabledFlags: getDisabledFlags(state),
   };
 }

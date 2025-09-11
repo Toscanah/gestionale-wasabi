@@ -37,7 +37,7 @@ function buildHeader<T>(title: ReactNode = "", sort: boolean): ColumnDef<T>["hea
         <ArrowsDownUp className="ml-2 h-4 w-4" />
       </Button>
     ) : (
-      String(title)
+      <>{title}</>
     );
 }
 

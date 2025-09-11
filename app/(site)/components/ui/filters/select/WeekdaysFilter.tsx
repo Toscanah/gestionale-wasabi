@@ -1,4 +1,4 @@
-import SelectFilter from "./SelectFilter";
+import WasabiSelect from "./WasabiSelect";
 import { Calendar } from "@phosphor-icons/react";
 
 export type Weekday = 0 | 2 | 3 | 4 | 5 | 6;
@@ -35,7 +35,7 @@ export default function WeekdaysFilter({
   };
 
   return (
-    <SelectFilter
+    <WasabiSelect
       disabled={disabled}
       mode="multi"
       allLabel="Tutti"

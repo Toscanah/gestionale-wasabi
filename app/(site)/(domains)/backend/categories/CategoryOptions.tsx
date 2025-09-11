@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
-import WasabiSingleSelect from "../../../components/ui/select/WasabiSingleSelect";
+import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
 import { Button } from "@/components/ui/button";
 import { X } from "@phosphor-icons/react";
 import { Option } from "@prisma/client";
@@ -74,7 +74,7 @@ export default function CategoryOptions({ field, options }: CategoryOptionsProps
               )
               .map((option) => ({
                 value: option.id.toString(),
-                name: option.option_name,
+                label: option.option_name,
               })),
           },
         ]}

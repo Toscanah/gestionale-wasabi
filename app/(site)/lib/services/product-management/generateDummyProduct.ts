@@ -1,12 +1,19 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { KitchenType, ProductInOrderStatus } from "@prisma/client";
+import { last } from "lodash";
 
+/**
+ * Generates a dummy `ProductInOrder` object with default placeholder values.
+ * 
+ * @returns {ProductInOrder} A dummy product object with default values for testing or initialization purposes.
+ */
 export default function generateDummyProduct(): ProductInOrder {
   return {
     created_at: new Date(Date.now() + 60 * 1000),
     variation: "",
     status: ProductInOrderStatus.IN_ORDER,
-    printed_amount: -1,
+    last_printed_quantity: 0,
+    to_be_printed: 0,
     frozen_price: 0,
     product: {
       kitchen: KitchenType.NONE,

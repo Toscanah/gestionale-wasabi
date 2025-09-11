@@ -124,11 +124,11 @@ export function useProductsManager(
       })
     );
 
-  const updateUnprintedProducts = async () => {
+  const updatePrintedProducts = async () => {
     const unprintedProducts = await fetchRequest<ProductInOrder[]>(
       "PATCH",
       "/api/products/",
-      "updatePrintedAmounts",
+      "updatePrintedProducts",
       {
         orderId: order.id,
       }
@@ -141,7 +141,7 @@ export function useProductsManager(
         return {
           ...unprintedProduct,
           quantity: remainingQuantity,
-          printed_amount: unprintedProduct.quantity,
+          to_be_printed: unprintedProduct.to_be_printed ?? 0,
         };
       });
 
@@ -217,7 +217,7 @@ export function useProductsManager(
     updateProductField,
     deleteProducts,
     updateProductOption,
-    updateUnprintedProducts,
+    updatePrintedProducts,
     updateProductVariation,
   };
 }

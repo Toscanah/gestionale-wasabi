@@ -5,151 +5,209 @@ import {
   OrderWithPaymentsAndTotalsSchema,
   ProductInOrderWithOptionsSchema,
 } from "../models/_index";
-import { ApiContract } from "../types/api-contract";
 import { NoContentRequestSchema } from "./common/no-content";
 import { wrapSchema } from "./common/utils";
 import { PaginationRequestSchema, PaginationResponseSchema } from "./common/pagination";
 import { ShiftFilterValue } from "../enums/shift";
 import { PeriodRequestSchema } from "./common/period";
+import { TimeWindowRequestSchema } from "./common/time-window";
+import { OrdersStats } from "./_index";
 
-export const GetOrderByIdSchema = z.object({
-  orderId: z.number(),
-  variant: z.string().default("onlyPaid"),
-});
+// -----------------
+// Order contracts
+// -----------------
+export namespace OrderContracts {
+  // ---- Getters ----
+  export namespace GetById {
+    export const Input = z.object({
+      orderId: z.number(),
+      variant: z.string().default("onlyPaid"),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const GetOrdersByTypeSchema = wrapSchema("type", z.nativeEnum(OrderType));
+  export namespace GetByType {
+    export const Input = wrapSchema("type", z.nativeEnum(OrderType));
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CreateTableOrderSchema = z.object({
-  table: z.string(),
-  people: z.number(),
-  resName: z.string().optional(),
-});
+  export namespace GetWithPayments {
+    export const Input = z
+      .object({
+        filters: z.object({
+          orderTypes: z.array(z.nativeEnum(OrderType)).optional(),
+          shift: z.nativeEnum(ShiftFilterValue).optional(),
+          period: PeriodRequestSchema,
+          weekdays: z.array(z.number()).optional(),
+          timeWindow: TimeWindowRequestSchema.optional(),
+          query: z.string().optional(),
+        }),
+        summary: z.boolean().optional(),
+      })
+      .merge(PaginationRequestSchema.partial());
+    export type Input = z.infer<typeof Input>;
 
-export const CreatePickupOrderSchema = z.object({
-  name: z.string(),
-  when: z.string(),
-  phone: z.string(),
-});
+    export const Output = z
+      .object({
+        orders: z.array(OrderWithPaymentsAndTotalsSchema),
+      })
+      .merge(PaginationResponseSchema);
+    export type Output = z.infer<typeof Output>;
+  }
 
-export const CreateHomeOrderSchema = z.object({
-  customerId: z.number(),
-  addressId: z.number(),
-  contactPhone: z.string(),
-});
+  // ---- Create ----
+  export namespace CreateTable {
+    export const Input = z.object({
+      table: z.string(),
+      people: z.number(),
+      resName: z.string().optional(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CreateSubOrderSchema = z.object({
-  parentOrder: AnyOrderSchema,
-  products: z.array(ProductInOrderWithOptionsSchema),
-  isReceiptPrinted: z.boolean(),
-});
+  export namespace CreatePickup {
+    export const Input = z.object({
+      name: z.string(),
+      when: z.string(),
+      phone: z.string(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrderDiscountSchema = z.object({
-  orderId: z.number(),
-  discount: z.number().optional(),
-});
+  export namespace CreateHome {
+    export const Input = z.object({
+      customerId: z.number(),
+      addressId: z.number(),
+      contactPhone: z.string(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrderPaymentStatusSchema = z.object({
-  orderId: z.number(),
-  prepaid: z.boolean(),
-  plannedPayment: z.nativeEnum(PlannedPayment),
-});
+  export namespace CreateSub {
+    export const Input = z.object({
+      parentOrder: AnyOrderSchema,
+      products: z.array(ProductInOrderWithOptionsSchema),
+      isReceiptPrinted: z.boolean(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrderTimeSchema = z.object({
-  orderId: z.number(),
-  time: z.string(),
-});
+  // ---- Update ----
+  export namespace UpdateDiscount {
+    export const Input = z.object({
+      orderId: z.number(),
+      discount: z.number().optional(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrderPrintedFlagSchema = wrapSchema("orderId", z.number());
+  export namespace UpdatePaymentStatus {
+    export const Input = z.object({
+      orderId: z.number(),
+      prepaid: z.boolean(),
+      plannedPayment: z.nativeEnum(PlannedPayment),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const JoinTableOrdersSchema = z.object({
-  tableToJoin: z.string(),
-  originalOrderId: z.number(),
-});
+  export namespace UpdateTime {
+    export const Input = z.object({
+      orderId: z.number(),
+      time: z.string(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrderTableSchema = z.object({
-  table: z.string(),
-  orderId: z.number(),
-});
+  export namespace UpdatePrintedFlag {
+    export const Input = wrapSchema("orderId", z.number());
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrderExtraItemsSchema = z.object({
-  orderId: z.number(),
-  items: z.enum(["salads", "soups", "rices"]),
-  value: z.number().nullable(),
-});
+  export namespace UpdateTable {
+    export const Input = z.object({
+      table: z.string(),
+      orderId: z.number(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrderShiftSchema = z.object({
-  orderId: z.number(),
-  shift: z.nativeEnum(WorkingShift),
-});
+  export namespace UpdateExtraItems {
+    export const Input = z.object({
+      orderId: z.number(),
+      items: z.enum(["salads", "soups", "rices"]),
+      value: z.number().nullable(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CancelOrderSchema = z.object({
-  orderId: z.number(),
-  cooked: z.boolean().optional().default(false),
-});
+  export namespace UpdateShift {
+    export const Input = z.object({
+      orderId: z.number(),
+      shift: z.nativeEnum(WorkingShift),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CancelOrdersInBulkSchema = z.object({
-  orderIds: z.array(z.number()),
-  productsCooked: z.boolean(),
-});
+  export namespace UpdateTablePpl {
+    export const Input = z.object({
+      orderId: z.number(),
+      people: z.number(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrderTablePplSchema = z.object({
-  orderId: z.number(),
-  people: z.number(),
-});
+  // ---- Bulk / Misc ----
+  export namespace Cancel {
+    export const Input = z.object({
+      orderId: z.number(),
+      cooked: z.boolean().optional().default(false),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const GetOrdersWithPaymentsRequestSchema = z
-  .object({
-    filters: z.object({
-      orderTypes: z.array(z.nativeEnum(OrderType)).optional(), // optional = ALL types
-      shift: z.nativeEnum(ShiftFilterValue).optional(), // LUNCH, DINNER, undefined = ALL shifts
-      period: PeriodRequestSchema, // undefined = since forever. If from=to, single date
-      weekdays: z.array(z.number()).optional(), // 0–6, undefined = all
-      timeWindow: z
-        .object({
-          from: z.string(), // "HH:mm"
-          to: z.string(),
-        })
-        .optional(), // undefined = all day
-      query: z.string().optional(),
-    }),
-    summary: z.boolean().optional(),
-  })
-  .merge(PaginationRequestSchema.partial());
+  export namespace CancelInBulk {
+    export const Input = z.object({
+      orderIds: z.array(z.number()),
+      productsCooked: z.boolean(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOrdersShiftSchema = NoContentRequestSchema;
+  export namespace JoinTable {
+    export const Input = z.object({
+      tableToJoin: z.string(),
+      originalOrderId: z.number(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const ORDER_REQUESTS = {
-  cancelOrder: CancelOrderSchema,
-  cancelOrdersInBulk: CancelOrdersInBulkSchema,
-  createHomeOrder: CreateHomeOrderSchema,
-  createPickupOrder: CreatePickupOrderSchema,
-  createSubOrder: CreateSubOrderSchema,
-  createTableOrder: CreateTableOrderSchema,
-  deleteEverything: NoContentRequestSchema,
-  fixOrdersShift: NoContentRequestSchema,
-  getOrderById: GetOrderByIdSchema,
-  getOrdersByType: GetOrdersByTypeSchema,
-  getOrdersWithPayments: GetOrdersWithPaymentsRequestSchema,
-  joinTableOrders: JoinTableOrdersSchema,
-  updateOrderDiscount: UpdateOrderDiscountSchema,
-  updateOrderExtraItems: UpdateOrderExtraItemsSchema,
-  updateOrderPaymentStatus: UpdateOrderPaymentStatusSchema,
-  updateOrderPrintedFlag: UpdateOrderPrintedFlagSchema,
-  updateOrderShift: UpdateOrderShiftSchema,
-  updateOrdersShift: UpdateOrdersShiftSchema,
-  updateOrderTable: UpdateOrderTableSchema,
-  updateOrderTablePpl: UpdateOrderTablePplSchema,
-  updateOrderTime: UpdateOrderTimeSchema,
-};
+  export namespace DeleteEverything {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const GetOrdersWithPaymentsResponseSchema = z
-  .object({
-    orders: z.array(OrderWithPaymentsAndTotalsSchema),
-  })
-  .merge(PaginationResponseSchema);
+  export namespace FixShift {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const ORDER_RESPONSES = {
-  getOrdersWithPayments: GetOrdersWithPaymentsResponseSchema,
-};
+  export namespace UpdateOrdersShift {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export type OrderContract = ApiContract<typeof ORDER_REQUESTS, typeof ORDER_RESPONSES>;
+  export namespace ComputeStats {
+    export const Input = z.object({
+      filters: z.object({
+        shift: z.enum(ShiftFilterValue).optional(),
+        period: PeriodRequestSchema,
+        weekdays: z.array(z.number()).optional(),
+        timeWindow: TimeWindowRequestSchema.optional(),
+      }),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = OrdersStats.Results;
+    export type Output = z.infer<typeof Output>;
+  }
+}

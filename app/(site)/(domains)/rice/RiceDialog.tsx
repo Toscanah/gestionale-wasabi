@@ -5,8 +5,8 @@ import { Gear } from "@phosphor-icons/react";
 import { RiceBatch, RiceLogType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { useEffect, useState } from "react";
-import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
-import WasabiSingleSelect from "../../components/ui/select/WasabiSingleSelect";
+import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
+import WasabiSingleSelect from "../../components/ui/wasabi/WasabiSingleSelect";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
 import fetchRequest from "../../lib/api/fetchRequest";
@@ -146,7 +146,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                 items: riceBatches
                   .sort((a, b) => b.amount - a.amount)
                   .map((batch) => ({
-                    name: batch.label || `${batch.amount}`,
+                    label: batch.label || `${batch.amount}`,
                     value: String(batch.id),
                   })),
               },

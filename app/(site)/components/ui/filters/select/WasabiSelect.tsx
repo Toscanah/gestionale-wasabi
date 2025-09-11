@@ -11,7 +11,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import WasabiPopover from "../../popover/WasabiPopover";
+import WasabiPopover from "../../wasabi/WasabiPopover";
 import FilterTrigger from "../common/FilterTrigger";
 
 type CommandOption = {
@@ -60,7 +60,7 @@ type WasabiSelectProps = (
   allLabel?: string;
 };
 
-export default function SelectFilter(props: WasabiSelectProps) {
+export default function WasabiSelect(props: WasabiSelectProps) {
   const {
     mode,
     groups,
@@ -121,7 +121,7 @@ export default function SelectFilter(props: WasabiSelectProps) {
         />
       }
     >
-      <Command>
+      <Command >
         {showInput && (
           <CommandInput className="h-10" placeholder={inputPlaceholder || "Cerca..."} />
         )}

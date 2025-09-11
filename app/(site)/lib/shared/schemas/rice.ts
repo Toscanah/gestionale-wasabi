@@ -5,36 +5,50 @@ import { ShiftFilterValue } from "../enums/shift";
 import { NoContentRequestSchema } from "./common/no-content";
 import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
 import { wrapSchema } from "./common/utils";
-import { ApiContract } from "../types/api-contract";
 
-export const AddRiceBatchSchema = wrapSchema("batch", RiceBatchSchema.omit({ id: true }));
+export namespace RiceContracts {
+  export namespace AddBatch {
+    export const Input = wrapSchema("batch", RiceBatchSchema.omit({ id: true }));
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateRiceBatchSchema = z.object({
-  batchId: z.number(),
-  field: z.enum(["amount", "label"]),
-  value: z.any(),
-});
+  export namespace UpdateBatch {
+    export const Input = z.object({
+      batchId: z.number(),
+      field: z.enum(["amount", "label"]),
+      value: z.any(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const AddRiceLogSchema = z.object({
-  riceBatchId: z.number().nullable(),
-  manualValue: z.number().nullable(),
-  type: z.nativeEnum(RiceLogType).nullable(),
-});
+  export namespace AddLog {
+    export const Input = z.object({
+      riceBatchId: z.number().nullable(),
+      manualValue: z.number().nullable(),
+      type: z.enum(RiceLogType).nullable(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const GetDailyRiceUsageSchema = z.object({
-  shift: z.nativeEnum(ShiftFilterValue),
-});
+  export namespace GetDailyUsage {
+    export const Input = z.object({
+      shift: z.nativeEnum(ShiftFilterValue),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const RICE_REQUESTS = {
-  getDailyRiceUsage: GetDailyRiceUsageSchema,
-  getRiceBatches: NoContentRequestSchema,
-  addRiceBatch: AddRiceBatchSchema,
-  deleteRiceBatch: ToggleDeleteEntityRequestSchema,
-  updateRiceBatch: UpdateRiceBatchSchema,
-  getRiceLogs: NoContentRequestSchema,
-  addRiceLog: AddRiceLogSchema,
-};
+  export namespace GetBatches {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const RICE_RESPONSES = {};
+  export namespace DeleteBatch {
+    export const Input = ToggleDeleteEntityRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export type RiceContract = ApiContract<typeof RICE_REQUESTS, typeof RICE_RESPONSES>;
+  export namespace GetLogs {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
+}

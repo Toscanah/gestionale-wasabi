@@ -1,24 +1,16 @@
 import { BaseOrder } from "../../shared";
 import { getOrderTotal } from "../order-management/getOrderTotal";
 
-export function prepareRFMInputs(dateFilteredOrders: BaseOrder[], lifetimeOrders: BaseOrder[]) {
-  const dateFilteredOrdersCount = dateFilteredOrders.length;
+export function prepareRFMInputs(lifetimeOrders: BaseOrder[]) {
+  const orderCount = lifetimeOrders.length;
 
-  const lastOrderDateLifetime =
-    lifetimeOrders.length > 0
-      ? lifetimeOrders.reduce(
-          (latest, order) => (order.created_at > latest ? order.created_at : latest),
-          new Date(0)
-        )
-      : undefined;
+  const totalSpending = lifetimeOrders.reduce((sum, order) => sum + getOrderTotal({ order }), 0);
 
-  const totalSpending = dateFilteredOrders.reduce(
-    (sum, order) => sum + getOrderTotal({ order }),
-    0
-  );
+  const averageSpending = orderCount > 0 ? totalSpending / orderCount : 0;
 
-  const averageSpendingFiltered =
-    dateFilteredOrdersCount > 0 ? totalSpending / dateFilteredOrdersCount : 0;
-
-  return { dateFilteredOrdersCount, lastOrderDateLifetime, averageSpendingFiltered };
+  return {
+    orderCount,
+    totalSpending,
+    averageSpending,
+  };
 }

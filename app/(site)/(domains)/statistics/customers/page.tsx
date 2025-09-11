@@ -15,8 +15,9 @@ import React from "react";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
-import SelectFilter from "@/app/(site)/components/ui/filters/select/SelectFilter";
 import RankFilter from "@/app/(site)/components/ui/filters/select/RankFilter";
+import SortingMenu, { SortField } from "@/app/(site)/components/ui/sorting/SortingMenu";
+import { CustomerStatsSortField } from "@/app/(site)/lib/shared";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];
@@ -39,6 +40,9 @@ export default function CustomersStats() {
     handleReset,
     allRanks,
     rfmRanks,
+    sortingFields,
+    activeSorts,
+    setActiveSorts,
   } = useCustomersStats({ page, pageSize });
   const { theme } = useTheme();
 
@@ -86,7 +90,7 @@ export default function CustomersStats() {
             mode="range"
             handleDateFilter={setPeriod}
           />
-          
+
           <RankFilter
             ranks={ranks}
             onRanksChange={setRanks}
@@ -94,10 +98,18 @@ export default function CustomersStats() {
             disabled={isLoading}
           />
 
-          <ResetFiltersButton
-            onReset={handleReset}
-            show={ranks.length !== allRanks.length || !!period?.from || !!period?.to}
-          />
+          <div className="w-full flex gap-4 items-center justify-end">
+            <ResetFiltersButton
+              onReset={handleReset}
+              show={ranks.length !== allRanks.length || !!period?.from || !!period?.to}
+            />
+  
+            <SortingMenu
+              onChange={setActiveSorts}
+              availableFields={Object.keys(sortingFields)}
+              activeSorts={activeSorts}
+            />
+          </div>
         </div>
 
         <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />

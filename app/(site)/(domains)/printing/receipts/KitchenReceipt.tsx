@@ -6,6 +6,11 @@ import { KitchenType } from "@prisma/client";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
 import { GlobalSettings } from "../../../lib/shared/types/settings";
 import { BIG_PRINT, SMALL_PRINT } from "../constants";
+import {
+  DEFAULT_WHEN_LABEL,
+  DEFAULT_WHEN_VALUE,
+} from "@/app/(site)/lib/shared/constants/default-when";
+import formatWhenLabel from "@/app/(site)/lib/utils/domains/order/formatWhenLabel";
 
 const calculateAdjustedTime = (originalTime: string) => {
   const timeParts = originalTime.split(":");
@@ -132,8 +137,8 @@ export default function KitchenReceipt({ order }: KitchenReceiptProps) {
           }
           right={
             <Text bold size={BIG_PRINT}>
-              {homeOrder.when == "immediate"
-                ? "SUBITO"
+              {homeOrder.when == DEFAULT_WHEN_VALUE
+                ? DEFAULT_WHEN_LABEL.toUpperCase()
                 : calculateAdjustedTime(homeOrder.when ?? "")}
             </Text>
           }

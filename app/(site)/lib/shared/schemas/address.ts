@@ -1,25 +1,25 @@
 import { AddressSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
 import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
-import { ApiContract } from "../types/api-contract";
 
-export const CreateAddressInputSchema = createInputSchema(AddressSchema);
+export namespace AddressContracts {
+  export namespace Create {
+    export const Input = wrapSchema("address", createInputSchema(AddressSchema));
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateAddressInputSchema = updateInputSchema(AddressSchema);
+  export namespace Update {
+    export const Input = wrapSchema("address", updateInputSchema(AddressSchema));
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CreateAddressSchema = wrapSchema("address", CreateAddressInputSchema);
+  export namespace GetByCustomer {
+    export const Input = wrapSchema("customerId", z.number());
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateAddressSchema = wrapSchema("address", UpdateAddressInputSchema);
-
-export const GetAddressesByCustomerSchema = wrapSchema("customerId", z.number());
-
-export const GetLastAddressOfCustomerSchema = wrapSchema("phone", z.string());
-
-export const ADDRESS_REQUESTS = {
-  createAddress: CreateAddressSchema,
-  updateAddress: UpdateAddressSchema,
-  getAddressesByCustomer: GetAddressesByCustomerSchema,
-  getLastAddressOfCustomer: GetLastAddressOfCustomerSchema,
-};
-
-export type AddressContract = ApiContract<typeof ADDRESS_REQUESTS>;
+  export namespace GetLastOfCustomer {
+    export const Input = wrapSchema("phone", z.string());
+    export type Input = z.infer<typeof Input>;
+  }
+}

@@ -1,15 +1,14 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder, OrderContract } from "@/app/(site)/lib/shared";
+import formatWhenLabel from "../../utils/domains/order/formatWhenLabel";
+import { updateOrderShift } from "./updateOrderShift";
 
 export default async function updateOrderTime({
   time,
   orderId,
-}: {
-  time: string;
-  orderId: number;
-}): Promise<AnyOrder> {
+}: OrderContract["Requests"]["UpdateOrderTime"]): Promise<AnyOrder> {
   const baseOrder = await prisma.order.findUnique({
     where: { id: orderId },
     select: { type: true },
@@ -19,7 +18,7 @@ export default async function updateOrderTime({
     throw new Error(`Order with id ${orderId} not found`);
   }
 
-  const when = time?.toLowerCase() === "Prima possibile" ? "immediate" : time;
+  const when = formatWhenLabel(time);
   const subtypeUpdateWhen = {
     data: {
       when,
@@ -39,6 +38,8 @@ export default async function updateOrderTime({
   } else {
     await prisma.homeOrder.update(subtypeUpdateWhen);
   }
+
+  await updateOrderShift({ orderId });
 
   return await getOrderById({ orderId });
 }

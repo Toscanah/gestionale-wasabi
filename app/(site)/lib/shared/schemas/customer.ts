@@ -1,96 +1,131 @@
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod";
 import { z } from "zod";
-import { ApiContract } from "../types/api-contract";
 import { RFMConfigSchema } from "../models/rfm";
-import { CustomerWithEngagementSchema, CustomerWithStatsSchema } from "../models/customer";
+import { CustomerStatsOnlySchema } from "../models/customer";
 import { createInputSchema, wrapSchema } from "./common/utils";
 import { PaginationRequestSchema, PaginationResponseSchema } from "./common/pagination";
 import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
 import { NoContentRequestSchema } from "./common/no-content";
 import { PeriodRequestSchema } from "./common/period";
+import SortingSchema from "./common/sorting";
+import { CommonQueryFilterSchema } from "./common/query";
 
-export const GetCustomerByPhoneRequestSchema = z.object({ phone: z.string() });
+export const CUSTOMER_STATS_SORT_FIELDS = [
+  "rfm.rank",
+  "rfm.score.finalScore",
+  "total_orders",
+  "total_spent",
+  "last_order_at",
+  "first_order_at",
+] as const;
 
-export const GetCustomerWithDetailsRequestSchema = z.object({ customerId: z.number() });
+export type CustomerStatsSortField = (typeof CUSTOMER_STATS_SORT_FIELDS)[number];
 
-export const GetCustomersByDoorbellRequestSchema = z.object({ doorbell: z.string() });
+const CustomerStatsSortingSchema = SortingSchema(...CUSTOMER_STATS_SORT_FIELDS);
 
-export const UpdateCustomerFromAdminRequestSchema = wrapSchema(
-  "customer",
-  CustomerSchema.extend({ phone: z.string() })
-);
+export namespace CustomerContracts {
+  export namespace GetByPhone {
+    export const Input = z.object({ phone: z.string() });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateCustomerFromOrderRequestSchema = wrapSchema("customer", CustomerSchema);
+  export namespace GetWithDetails {
+    export const Input = z.object({ customerId: z.number() });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CreateCustomerInputRequestSchema = createInputSchema(CustomerSchema)
-  .omit({
-    phone_id: true,
-    rfm: true,
-  })
-  .extend({
-    phone: z.string(),
-    name: z.string().nullable(),
-    surname: z.string().nullable(),
-  });
+  export namespace GetAllWithDetails {
+    export const Input = PaginationRequestSchema.partial().extend({
+      filters: z
+        .object({
+          ranks: z.array(z.string()).optional(),
+        })
+        .merge(CommonQueryFilterSchema)
+        .optional(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CreateCustomerRequestSchema = wrapSchema("customer", CreateCustomerInputRequestSchema);
+  export namespace GetByDoorbell {
+    export const Input = z.object({ doorbell: z.string() });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateCustomerAddressesRequestSchema = z.object({
-  addresses: z.array(AddressSchema),
-  customerId: z.number(),
-});
+  export namespace UpdateFromAdmin {
+    export const Input = wrapSchema("customer", CustomerSchema.extend({ phone: z.string() }));
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateCustomerOrderNotesRequestSchema = z.object({
-  orderId: z.number(),
-  notes: z.string(),
-});
+  export namespace UpdateFromOrder {
+    export const Input = wrapSchema("customer", CustomerSchema);
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const GetCustomerDetailsRequestSchema = PaginationRequestSchema.partial().extend({
-  filters: z
-    .object({
-      ranks: z.array(z.string()).optional(),
-      search: z.string().optional(),
-    })
-    .optional(),
-});
+  export namespace Create {
+    export const Input = wrapSchema(
+      "customer",
+      createInputSchema(CustomerSchema).omit({ phone_id: true }).extend({
+        phone: z.string(),
+        name: z.string().nullable(),
+        surname: z.string().nullable(),
+      })
+    );
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const ComputeCustomersStatsRequestSchema = PaginationRequestSchema.extend({
-  filters: z.object({
-    period: PeriodRequestSchema,
-    ranks: z.array(z.string()).optional(),
-    query: z.string().optional(),
-  }),
-});
+  export namespace UpdateAddresses {
+    export const Input = z.object({
+      addresses: z.array(AddressSchema),
+      customerId: z.number(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateCustomersRFMRequestSchema = z.object({
-  rfmConfig: RFMConfigSchema,
-});
+  export namespace UpdateOrderNotes {
+    export const Input = z.object({
+      orderId: z.number(),
+      notes: z.string(),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CUSTOMER_REQUESTS = {
-  getCustomerByPhone: GetCustomerByPhoneRequestSchema,
-  getCustomerWithDetails: GetCustomerWithDetailsRequestSchema,
-  getCustomersWithDetails: GetCustomerDetailsRequestSchema,
-  getCustomersByDoorbell: GetCustomersByDoorbellRequestSchema,
-  updateCustomerFromAdmin: UpdateCustomerFromAdminRequestSchema,
-  updateCustomerFromOrder: UpdateCustomerFromOrderRequestSchema,
-  updateCustomerOrderNotes: UpdateCustomerOrderNotesRequestSchema,
-  createCustomer: CreateCustomerRequestSchema,
-  toggleCustomer: ToggleDeleteEntityRequestSchema,
-  updateCustomerAddresses: UpdateCustomerAddressesRequestSchema,
-  deleteCustomerById: ToggleDeleteEntityRequestSchema,
-  computeCustomersStats: ComputeCustomersStatsRequestSchema,
-  getCustomersWithMarketing: NoContentRequestSchema,
-  updateCustomersRFM: UpdateCustomersRFMRequestSchema,
-};
+  export namespace Toggle {
+    export const Input = ToggleDeleteEntityRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const ComputeCustomerStatsResponseSchema = z
-  .object({
-    customers: z.array(CustomerWithStatsSchema),
-  })
-  .merge(PaginationResponseSchema);
+  export namespace DeleteById {
+    export const Input = ToggleDeleteEntityRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const CUSTOMER_RESPONSES = {
-  computeCustomersStats: ComputeCustomerStatsResponseSchema,
-};
+  export namespace GetWithMarketing {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export type CustomerContract = ApiContract<typeof CUSTOMER_REQUESTS, typeof CUSTOMER_RESPONSES>;
+  // ---- Stats ----
+
+  export namespace ComputeStats {
+    export const Input = PaginationRequestSchema.extend({
+      filters: z
+        .object({
+          period: PeriodRequestSchema,
+          ranks: z.array(z.string()).optional(),
+        })
+        .merge(CommonQueryFilterSchema)
+        .optional(),
+      sort: z.array(CustomerStatsSortingSchema).optional(),
+      rfmConfig: RFMConfigSchema,
+      persist: z.boolean().optional().default(false),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = z
+      .object({
+        customersStats: z.array(CustomerStatsOnlySchema),
+      })
+      .merge(PaginationResponseSchema);
+    export type Output = z.infer<typeof Output>;
+  }
+}

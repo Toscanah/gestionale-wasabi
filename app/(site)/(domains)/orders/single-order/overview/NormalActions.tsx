@@ -8,7 +8,7 @@ import { OrderType, PaymentScope, PlannedPayment } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 import useMetaTemplates from "@/app/(site)/hooks/meta/useMetaTemplates";
 import { useTemplatesParams } from "@/app/(site)/hooks/meta/useTemplatesParams";
@@ -48,8 +48,6 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
   useEffect(() => {
     const prepareParams = async () => {
       if (!hasConfirmationSent()) {
-        console.log(templates)
-
         const confermaTemplate = templates.find((t) => t.name === ORDER_CONFIRMATION_TEMPLATE_NAME);
         if (!confermaTemplate) return;
 
@@ -73,8 +71,6 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
         setParam(templateId, "body_text", 1, finalWhen);
         setParam(templateId, "body_text", 2, "https://www.wasabi-trieste.it/politiche-di-ritardo");
         // setParam(templateId, "button_url", 0, "/#");
-
-        console.log(paramsReady)
 
         setParamsReady(true);
       } else {

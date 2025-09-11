@@ -14,9 +14,16 @@ interface UsePrintingActionsParams {
 }
 
 export default function usePrintingActions({ maybeSendConfirmation }: UsePrintingActionsParams) {
-  const { updateUnprintedProducts, toggleDialog, updatePrintedFlag, issueLedgers } =
+  const { updatePrintedProducts, toggleDialog, updatePrintedFlag, issueLedgers } =
     useOrderContext();
   const { printKitchen, printOrder, printRider, printEngagements } = usePrinter();
+
+  function getAtomicProducts(order: AnyOrder) {
+    return order.products.map((p) => ({
+      ...p,
+      to_be_printed: p.quantity,
+    }));
+  }
 
   async function buildPrintContent(
     order: AnyOrder,
@@ -24,14 +31,18 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
     isRePrint = false
   ) {
     const content: PrintContent[] = [];
+    const unprintedProducts = await updatePrintedProducts();
 
     if (!isRePrint && !order.suborder_of) {
-      const unprintedProducts = await updateUnprintedProducts();
       if (unprintedProducts.length > 0) {
         content.push(() => KitchenReceipt({ order: { ...order, products: unprintedProducts } }));
       }
     } else {
-      content.push(() => KitchenReceipt({ order }));
+      const allProducts = getAtomicProducts(order);
+
+      if (allProducts.length > 0) {
+        content.push(() => KitchenReceipt({ order: { ...order, products: allProducts } }));
+      }
     }
 
     content.push(() =>
@@ -53,7 +64,11 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
   // ---------- High-level orchestrated actions ----------
 
   async function handleKitchenRePrint(order: AnyOrder) {
-    await printKitchen({ order });
+    await updatePrintedProducts();
+    const allProducts = getAtomicProducts(order);
+    await printKitchen({
+      order: { ...order, products: allProducts },
+    });
   }
 
   async function handleOrderRePrint(order: AnyOrder, plannedPayment: PlannedPayment) {

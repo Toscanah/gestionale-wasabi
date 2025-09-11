@@ -19,35 +19,39 @@ const DESC_PADDING_LONG = 7;
 const VAR_LEFT_PADDING = 4;
 
 export default function KitchenProducts({ groupedProducts }: KitchenProductsProps) {
-  const ProductLine = ({ product }: ProductLineProps) => (
-    <Fragment key={uniqueId()}>
-      <Text inline bold size={BIG_PRINT}>
-        {fitReceiptText(
-          sanitazeReceiptText(product.product.code.toUpperCase()),
-          CODE_MAX_LENGTH,
-          CODE_PADDING
-        )}
-      </Text>
+  const ProductLine = ({ product }: ProductLineProps) => {
+    const to_print_qty = product.to_be_printed ?? 0;
 
-      <Text inline bold size={SMALL_PRINT}>
-        {fitReceiptText(
-          sanitazeReceiptText(product.product.desc),
-          DESC_MAX_LENGTH,
-          String(product.printed_amount).length > 1 ? DESC_PADDING_SHORT : DESC_PADDING_LONG
-        )}
-      </Text>
-
-      <Text bold size={BIG_PRINT}>
-        {fitReceiptText(product.printed_amount.toString(), String(product.printed_amount).length)}
-      </Text>
-
-      {product.variation && (
-        <Text bold size={BIG_PRINT}>
-          {" ".repeat(VAR_LEFT_PADDING) + sanitazeReceiptText(product.variation)}
+    return (
+      <Fragment key={uniqueId()}>
+        <Text inline bold size={BIG_PRINT}>
+          {fitReceiptText(
+            sanitazeReceiptText(product.product.code.toUpperCase()),
+            CODE_MAX_LENGTH,
+            CODE_PADDING
+          )}
         </Text>
-      )}
-    </Fragment>
-  );
+
+        <Text inline bold size={SMALL_PRINT}>
+          {fitReceiptText(
+            sanitazeReceiptText(product.product.desc),
+            DESC_MAX_LENGTH,
+            String(to_print_qty).length > 1 ? DESC_PADDING_SHORT : DESC_PADDING_LONG
+          )}
+        </Text>
+
+        <Text bold size={BIG_PRINT}>
+          {fitReceiptText(to_print_qty.toString(), String(to_print_qty).length)}
+        </Text>
+
+        {product.variation && (
+          <Text bold size={BIG_PRINT}>
+            {" ".repeat(VAR_LEFT_PADDING) + sanitazeReceiptText(product.variation)}
+          </Text>
+        )}
+      </Fragment>
+    );
+  };
 
   return (
     <>

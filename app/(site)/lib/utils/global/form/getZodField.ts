@@ -10,12 +10,14 @@ export default function getZodField(
     case "number":
       return required
         ? z.coerce
-            .number({ required_error: requiredMsg })
+            .number({ error: (issue) => (issue.expected ? requiredMsg : undefined) })
             .gt(0, { message: "Questo campo non può essere 0" })
         : z.coerce.number().optional();
     case "string":
       return required
-        ? z.string({ required_error: requiredMsg }).min(1, { message: requiredMsg })
+        ? z
+            .string({ error: (issue) => (issue.expected ? requiredMsg : undefined) })
+            .min(1, { message: requiredMsg })
         : z.string().optional();
     case "array":
       return required
@@ -24,6 +26,8 @@ export default function getZodField(
     case "boolean":
       return z.coerce.boolean();
     case "any":
-      return required ? z.any({ required_error: requiredMsg }) : z.any().optional();
+      return required
+        ? z.any({ error: (issue) => (issue.expected ? requiredMsg : undefined) })
+        : z.any().optional();
   }
 }

@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ProductWithStats } from "../../../lib/shared/types/product-with-stats";
 import formatRice from "../../../lib/utils/domains/rice/formatRice";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import TopOptions from "./dialogs/TopOptions";
 import TopCustomers from "./dialogs/TopCustomers";

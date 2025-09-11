@@ -7,7 +7,7 @@ type SkeletonCellRenderer = () => React.ReactNode;
 type Options<T> = {
   isLoading: boolean;
   data: T[];
-  columns: ColumnDef<T, any>[];
+  columns: ColumnDef<T>[];
   pageSize?: number | undefined;
 };
 
@@ -17,7 +17,7 @@ export default function useSkeletonTable<T>({ isLoading, data, columns, pageSize
     [isLoading, data, pageSize]
   );
 
-  const tableColumns = React.useMemo<ColumnDef<T, any>[]>(() => {
+  const tableColumns = React.useMemo<ColumnDef<T>[]>(() => {
     if (!isLoading) return columns;
 
     return columns.map((col) => ({

@@ -5,7 +5,7 @@ import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import TableControls from "../../components/table/TableControls";
 import Table from "../../components/table/Table";
-import WasabiDialog from "../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
 import { ColumnDef } from "@tanstack/react-table";
 import getColumns from "./getColumns";
 import useTable from "../../hooks/table/useTable";

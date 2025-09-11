@@ -3,25 +3,38 @@ import { z } from "zod";
 import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
 import { NoContentRequestSchema } from "./common/no-content";
 import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
-import { ApiContract } from "../types/api-contract";
 
-export const UpdateOptionsOfCategorySchema = z.object({
-  category: CategorySchema,
-  options: z.array(OptionSchema),
-});
+export namespace OptionContracts {
+  export namespace GetAll {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const UpdateOptionSchema = wrapSchema("option", updateInputSchema(OptionSchema));
-export const CreateOptionSchema = wrapSchema("option", createInputSchema(OptionSchema));
+  export namespace GetAllWithCategories {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const OPTION_REQUESTS = {
-  getAllOptions: NoContentRequestSchema,
-  getAllOptionsWithCategories: NoContentRequestSchema,
-  updateOptionsOfCategory: UpdateOptionsOfCategorySchema,
-  updateOption: UpdateOptionSchema,
-  createNewOption: CreateOptionSchema,
-  toggleOption: ToggleDeleteEntityRequestSchema,
-};
+  export namespace UpdateOptionsOfCategory {
+    export const Input = z.object({
+      category: CategorySchema,
+      options: z.array(OptionSchema),
+    });
+    export type Input = z.infer<typeof Input>;
+  }
 
-export const OPTION_RESPONSES = {};
+  export namespace Update {
+    export const Input = wrapSchema("option", updateInputSchema(OptionSchema));
+    export type Input = z.infer<typeof Input>;
+  }
 
-export type OptionContract = ApiContract<typeof OPTION_REQUESTS, typeof OPTION_RESPONSES>;
+  export namespace Create {
+    export const Input = wrapSchema("option", createInputSchema(OptionSchema));
+    export type Input = z.infer<typeof Input>;
+  }
+
+  export namespace Toggle {
+    export const Input = ToggleDeleteEntityRequestSchema;
+    export type Input = z.infer<typeof Input>;
+  }
+}

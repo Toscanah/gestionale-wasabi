@@ -1,5 +1,5 @@
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import WasabiDialog from "@/app/(site)/components/ui/dialog/WasabiDialog";
+import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { PaymentsSummaryData } from "@/app/(site)/lib/services/payments/calculatePaymentsSummary";
 import { Button } from "@/components/ui/button";
 

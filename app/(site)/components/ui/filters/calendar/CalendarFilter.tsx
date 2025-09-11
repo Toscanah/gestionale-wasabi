@@ -4,11 +4,11 @@ import { Calendar as ShadCalendar } from "@/components/ui/calendar";
 import { startOfYear, endOfYear } from "date-fns";
 import { it } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
-import WasabiPopover from "../../popover/WasabiPopover";
+import WasabiPopover from "../../wasabi/WasabiPopover";
 import { CalendarBlank, HashStraight, Lightning } from "@phosphor-icons/react";
 import FilterTrigger from "../common/FilterTrigger";
 import DateShiftButton from "./DateShiftButton";
-import SelectFilter from "../select/SelectFilter";
+import WasabiSelect from "../select/WasabiSelect";
 import { DATE_FILTERING_PRESETS, DatePreset } from "@/app/(site)/lib/shared/enums/date-preset";
 import getDateRangeFromPreset from "@/app/(site)/lib/utils/global/date/getDateRangeForPreset";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
@@ -98,7 +98,7 @@ export default function CalendarFilter({
     >
       <div className="w-full flex gap-2 items-center">
         {usePresets && mode === "range" && (
-          <SelectFilter
+          <WasabiSelect
             triggerIcon={Lightning}
             mode="transient"
             triggerClassName="w-full border-solid"
@@ -118,7 +118,7 @@ export default function CalendarFilter({
         )}
 
         {useYears && mode === "range" && (
-          <SelectFilter
+          <WasabiSelect
             triggerIcon={HashStraight}
             mode="transient"
             triggerClassName="w-full border-solid"

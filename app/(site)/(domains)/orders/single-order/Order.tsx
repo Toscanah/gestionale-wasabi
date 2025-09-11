@@ -1,7 +1,7 @@
 import { TableCell } from "@/components/ui/table";
 import { Cell, flexRender } from "@tanstack/react-table";
 import OrderTable from "./OrderTable";
-import WasabiDialog from "../../../components/ui/dialog/WasabiDialog";
+import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import { FormEvent, useState } from "react";
 import { OrderProvider } from "../../../context/OrderContext";

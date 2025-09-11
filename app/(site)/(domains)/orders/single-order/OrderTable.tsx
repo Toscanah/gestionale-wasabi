@@ -27,7 +27,7 @@ export default function OrderTable() {
     newQuantity,
     updateProduct,
     updateProductField,
-    updateUnprintedProducts,
+    updatePrintedProducts,
   } = useOrderContext();
   const { printKitchen } = usePrinter();
 
@@ -87,10 +87,10 @@ export default function OrderTable() {
 
   useEffect(() => {
     const printKitchenRec = async () => {
-      const unprintedProducts = await updateUnprintedProducts();
+      const updatedProducts = await updatePrintedProducts();
 
-      if (unprintedProducts.length > 0) {
-        await printKitchen({ order: { ...order, products: unprintedProducts } });
+      if (updatedProducts.length > 0) {
+        await printKitchen({ order: { ...order, products: updatedProducts } });
       }
     };
 

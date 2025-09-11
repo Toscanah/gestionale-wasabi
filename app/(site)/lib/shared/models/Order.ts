@@ -9,9 +9,10 @@ import {
   TableOrderSchema,
 } from "@/prisma/generated/zod";
 import { z } from "zod";
-import { ProductInOrderWithOptionsSchema } from "./product";
+import { MinimalProductInOrderSchema, ProductInOrderWithOptionsSchema } from "./product";
 import { CustomerWithPhoneSchema, CustomerWithPhoneAndEngagementSchema } from "./customer";
 import { EngagementWithDetailsSchema } from "./engagement";
+import { GetOrdersStatsSchema } from "../schemas/order";
 
 export const BaseOrderSchema = OrderSchema.extend({
   products: z.array(z.lazy(() => ProductInOrderWithOptionsSchema)),
@@ -68,12 +69,44 @@ export const AnyOrderSchema = z.union([
   PickupOrderInOrderSchema,
 ]);
 
-export type OrderWithPaymentsAndTotals = z.infer<typeof OrderWithPaymentsAndTotalsSchema>;
+export const MinimalOrderSchema = BaseOrderSchema.pick({
+  id: true,
+  created_at: true,
+  type: true,
+  discount: true,
+}).extend({
+  products: z.array(MinimalProductInOrderSchema),
+});
+
+export const ShiftEvaluableOrderSchema = BaseOrderSchema.pick({
+  id: true,
+  created_at: true,
+  type: true,
+  shift: true,
+})
+  .partial({ shift: true })
+  .extend({
+    home_order: HomeOrderSchema.pick({ when: true }).nullable(),
+    pickup_order: PickupOrderSchema.pick({ when: true }).nullable(),
+  });
+
+
+// --- Base and Minimal Order Types ---
+export type BaseOrder = z.infer<typeof BaseOrderSchema>;
+export type MinimalOrder = z.infer<typeof MinimalOrderSchema>;
+export type ShiftEvaluableOrder = z.infer<typeof ShiftEvaluableOrderSchema>;
+
+// --- Order Types with Specific Order Details ---
 export type TableOrder = z.infer<typeof TableOrderInOrderSchema>;
 export type HomeOrder = z.infer<typeof HomeOrderInOrderSchema>;
 export type PickupOrder = z.infer<typeof PickupOrderInOrderSchema>;
-export type AnyOrder = z.infer<typeof AnyOrderSchema>;
+
+// --- Order Types with Nested Order ---
 export type TableOrderWithOrder = z.infer<typeof TableOrderWithOrderSchema>;
 export type HomeOrderWithOrder = z.infer<typeof HomeOrderWithOrderSchema>;
 export type PickupOrderWithOrder = z.infer<typeof PickupOrderWithOrderSchema>;
-export type BaseOrder = z.infer<typeof BaseOrderSchema>;
+
+// --- Aggregated and Union Order Types ---
+export type OrderWithPaymentsAndTotals = z.infer<typeof OrderWithPaymentsAndTotalsSchema>;
+export type AnyOrder = z.infer<typeof AnyOrderSchema>;
+// export type OrdersStatsArray = z.infer<typeof OrdersStatsArraySchema>;
