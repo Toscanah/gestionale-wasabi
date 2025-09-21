@@ -6,12 +6,13 @@ import { Label } from "@/components/ui/label";
 import OrderPayment from "@/app/(site)/(domains)/payments/order/OrderPayment";
 import { TableOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "../../../context/OrderContext";
-import fetchRequest from "../../../lib/api/fetchRequest";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import roundToCents from "../../../lib/utils/global/number/roundToCents";
 import { debounce } from "lodash";
 import { toastSuccess } from "../../../lib/utils/global/toast";
 import useFocusOnClick from "../../../hooks/focus/useFocusOnClick";
+import { trpc } from "@/lib/server/client";
+import { Payment } from "@/prisma/generated/schemas";
 
 interface RomanStyleProps {
   handleBackButton: () => void;
@@ -27,49 +28,74 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
 
   const total = getOrderTotal({ order, applyDiscount: true });
 
+  const utils = trpc.useUtils();
+
+  const { data: romanPaymentsData } = trpc.payments.getRomanPaymentsByOrder.useQuery(
+    { orderId: order.id },
+    { enabled: total > 0 }
+  );
+
+  const updateTablePplMutation = trpc.orders.updateTablePpl.useMutation({
+    onSuccess: (updatedOrder) => {
+      updateOrder({
+        table_order: {
+          ...(order as TableOrder).table_order,
+          people: updatedOrder.table_order?.people ?? 0,
+        },
+      });
+      toastSuccess("Numero di persone aggiornato con successo");
+    },
+  });
+
   useEffect(() => {
-    if (total <= 0) return;
+    if (!romanPaymentsData) return;
 
-    fetchRequest<{ payments: { amount: number; payment_group_code: string | null }[] }>(
-      "GET",
-      "/api/payments/",
-      "getRomanPaymentsByOrder",
-      { orderId: order.id }
-    ).then(({ payments }) => {
-      const ppl = (order as TableOrder).table_order?.people || 1;
-      const perPersonAmount = roundToCents(total / ppl);
+    const payments = romanPaymentsData.romanPayments;
+    const ppl = (order as TableOrder).table_order?.people || 1;
 
-      const groupMap = new Map<string, number>();
+    // Total already paid (sum of all Roman payments)
+    const totalPaid = roundToCents(payments.reduce((sum, p) => sum + p.amount, 0));
 
-      for (const payment of payments) {
-        if (!payment.payment_group_code) continue;
+    // Aggregate payments by group code (so one person paying with multiple methods counts once)
+    const groupMap = new Map<string, number>();
+    for (const payment of payments) {
+      if (!payment.payment_group_code) continue;
+      const prev = groupMap.get(payment.payment_group_code) || 0;
+      groupMap.set(payment.payment_group_code, roundToCents(prev + payment.amount));
+    }
 
-        const prev = groupMap.get(payment.payment_group_code) || 0;
-        groupMap.set(payment.payment_group_code, roundToCents(prev + payment.amount));
-      }
+    // Count how many distinct groups are "locked" (paid at least their fair share)
+    // Fair share is calculated dynamically every time
+    const lockedPeople = Array.from(groupMap.values()).filter((paid) => paid > 0).length;
 
-      // Count how many "people" (groups) have fully paid
-      const fullyPaidPeople = Array.from(groupMap.values()).filter(
-        (paid) => paid >= perPersonAmount
-      ).length;
+    // Remaining people = total people – fully paid groups
+    const remainingPeople = Math.max(1, ppl - lockedPeople);
 
-      const alreadyPaid = roundToCents(payments.reduce((sum, p) => sum + p.amount, 0));
+    // Each remaining person owes: (total – paid) / remainingPeople
+    const perRemainingAmount = roundToCents((total - totalPaid) / remainingPeople);
 
-      const currentPersonIndex = fullyPaidPeople + 1;
+    setPpl(ppl);
+    setCurrentPerson(lockedPeople + 1);
+    setPaidAmount(totalPaid);
+    setAmountToPay(perRemainingAmount);
+  }, [romanPaymentsData, order, total]);
 
-      setPpl(ppl);
-      setCurrentPerson(currentPersonIndex);
-      setPaidAmount(alreadyPaid);
-      setAmountToPay(perPersonAmount);
-    });
-  }, [order, total]);
-
-  const handleOrderPaymentComplete = () => {
-    const currentRoundedPayment = roundToCents(amountToPay); // always same
+  const handleOrderPaymentComplete = (updatedPayments: Payment[]) => {
+    const currentRoundedPayment = roundToCents(amountToPay);
     const newPaidAmount = roundToCents(paidAmount + currentRoundedPayment);
 
+    utils.payments.getRomanPaymentsByOrder.setData({ orderId: order.id }, (prev) => ({
+      romanPayments: updatedPayments
+        .filter((p) => p.scope === PaymentScope.ROMAN)
+        .map((p) => ({
+          amount: p.amount,
+          id: p.id,
+          payment_group_code: p.payment_group_code ?? null,
+        })),
+    }));
+
     updateOrder({
-      payments: [...order.payments, { amount: currentRoundedPayment, scope: PaymentScope.ROMAN }],
+      payments: updatedPayments,
     });
 
     if (currentPerson < ppl) {
@@ -83,13 +109,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
 
   const debouncedHandlePplChange = useCallback(
     debounce((newPpl: number) => {
-      fetchRequest<TableOrder>("PATCH", "/api/orders", "updateOrderTablePpl", {
-        people: newPpl,
-        orderId: order.id,
-      }).then(() => {
-        updateOrder({ table_order: { ...(order as TableOrder).table_order, people: newPpl } });
-        toastSuccess("Numero di persone aggiornato con successo");
-      });
+      updateTablePplMutation.mutate({ people: newPpl, orderId: order.id });
     }, 1000),
     []
   );

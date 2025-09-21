@@ -16,9 +16,9 @@ export default function calculateExtraItems(order: AnyOrder) {
   const saladsFromOrder = order.salads ?? 0;
   const ricesFromOrder = order.rices ?? 0;
 
-  const soupsFinal = order.soups !== null ? order.soups : soupsFromProducts;
-  const saladsFinal = order.salads !== null ? order.salads : saladsFromProducts;
-  const ricesFinal = order.rices !== null ? order.rices : ricesFromProducts;
+  const soupsFinal = order.soups !== null && order.soups !== undefined ? order.soups : soupsFromProducts;
+  const saladsFinal = order.salads !== null && order.salads !== undefined ? order.salads : saladsFromProducts;
+  const ricesFinal = order.rices !== null && order.rices !== undefined ? order.rices : ricesFromProducts;
 
   return {
     soupsFromProducts,

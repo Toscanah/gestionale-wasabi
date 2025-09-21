@@ -1,4 +1,4 @@
-import { KeyboardEvent, useRef } from "react";
+import { KeyboardEvent, useEffect, useRef } from "react";
 
 export default function useFocusCycle() {
   const refs = useRef<Set<HTMLElement>>(new Set());

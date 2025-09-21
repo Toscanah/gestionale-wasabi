@@ -1,7 +1,7 @@
 import { WorkingShift } from "@prisma/client";
 import { ShiftFilterValue } from "../../../shared/enums/shift";
 import { getEffectiveOrderShift } from "./getEffectiveOrderShift";
-import { ShiftEvaluableOrder } from "@/app/(site)/lib/shared/types/shift-evaluable-order";
+import { ShiftEvaluableOrder } from "../../../shared";
 
 export default function orderMatchesShift(
   order: ShiftEvaluableOrder,

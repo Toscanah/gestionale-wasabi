@@ -1,19 +1,21 @@
-import { EngagementContract } from "../../../shared";
+import normalizeTemplatePayload from "../../../services/engagement/normalizeTemplatePayload";
+import { EngagementContracts } from "../../../shared";
 import prisma from "../../db";
-import { EngagementTemplate } from "@prisma/client";
 
 export default async function updateEngagementTemplate({
   id,
   label,
   redeemable,
   payload,
-}: EngagementContract["Requests"]["UpdateEngagementTemplate"]): Promise<EngagementTemplate> {
+}: EngagementContracts.UpdateTemplate.Input): Promise<EngagementContracts.UpdateTemplate.Output> {
   const prev = await prisma.engagementTemplate.findUnique({
     where: { id },
     select: { redeemable: true },
   });
 
-  if (!prev) throw new Error(`EngagementTemplate ${id} not found`);
+  if (!prev) {
+    throw new Error(`EngagementTemplate ${id} not found`);
+  }
 
   const updated = await prisma.$transaction(async (tx) => {
     const tpl = await tx.engagementTemplate.update({
@@ -21,7 +23,7 @@ export default async function updateEngagementTemplate({
       data: {
         label,
         payload: payload as any,
-        redeemable, 
+        redeemable,
       },
     });
 
@@ -36,5 +38,5 @@ export default async function updateEngagementTemplate({
     return tpl;
   });
 
-  return updated;
+  return normalizeTemplatePayload(updated);
 }

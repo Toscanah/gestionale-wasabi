@@ -94,7 +94,7 @@ const EngagementContent = ({ engagement }: { engagement: EngagementWithDetails }
 
 export default function PrevEngagement({ engagements }: { engagements: EngagementWithDetails[] }) {
   const deleteEngagement = (engagement: Engagement) => {
-    // fetchRequest("DELETE", "/api/engagements", "deleteEngagement", { id: engagement.id });
+    // ("DELETE", "/api/engagements", "deleteEngagement", { id: engagement.id });
   };
 
   return (
@@ -108,7 +108,7 @@ export default function PrevEngagement({ engagements }: { engagements: Engagemen
       // putSeparator
     >
       <Accordion type="multiple" className="w-full max-h-[20rem] overflow-y-auto">
-        {/* TOODO: should filter out engagement that comes from a suborder otherwise dups might appear*/}
+        {/* TODO: should filter out engagement that comes from a suborder otherwise dups might appear*/}
         {engagements.length > 0 ? (
           engagements.map((eng) => (
             <AccordionItem key={eng.id} value={`engagement-${eng.id}`}>

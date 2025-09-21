@@ -1,6 +1,9 @@
+import { CustomerContracts } from "../../shared";
 import prisma from "../db";
 
-export default async function deleteCustomerById({ id }: { id: number }) {
+export default async function deleteCustomerById({
+  id,
+}: CustomerContracts.DeleteById.Input): Promise<CustomerContracts.DeleteById.Output> {
   return await prisma.$transaction(async (tx) => {
     const customer = await tx.customer.findUnique({
       where: { id },
@@ -52,12 +55,13 @@ export default async function deleteCustomerById({ id }: { id: number }) {
     //   });
     // }
 
-    const deletedCustomer = await tx.customer.delete({
+    await tx.customer.delete({
       where: { id: customer.id },
+      select: { id: true },
     });
 
     await tx.phone.delete({ where: { id: customer.phone_id } });
 
-    return deletedCustomer ? true : false;
+    return { id };
   });
 }

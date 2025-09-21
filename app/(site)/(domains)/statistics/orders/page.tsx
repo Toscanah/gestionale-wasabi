@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { uniqueId } from "lodash";
 import Section from "./Section";
@@ -10,7 +10,11 @@ import { cn } from "@/lib/utils";
 import GoBack from "../../../components/ui/misc/GoBack";
 
 export default function OrdersStats() {
-  const [sections, setSections] = useState<{ id: string }[]>([{ id: uniqueId() }]);
+  const [sections, setSections] = useState<{ id: string }[]>([]);
+
+  useEffect(() => {
+    setSections([{ id: uniqueId() }]);
+  }, []);
 
   const addSection = () => setSections((prev) => [...prev, { id: uniqueId() }]);
 

@@ -1,11 +1,11 @@
-import { Address, Customer } from "@prisma/client";
-import fetchRequest from "../../lib/api/fetchRequest";
 import parseAddress from "../../lib/utils/domains/address/parseAddress";
 import { FormValues } from "../../(domains)/orders/create-order/home/address/form";
 import { ExtraInfo } from "../../context/CreateHomeOrderContext";
 import { toastSuccess } from "../../lib/utils/global/toast";
 import { Dispatch, SetStateAction } from "react";
-import { AddressContract, CustomerContract } from "../../lib/shared";
+import { AddressContracts, CustomerContracts } from "../../lib/shared";
+import { trpc } from "@/lib/server/client";
+import { AddressType, CustomerType } from "@/prisma/generated/schemas";
 
 function getActionType(object: object | undefined): string {
   return object === undefined ? "create" : "update";
@@ -13,64 +13,30 @@ function getActionType(object: object | undefined): string {
 
 interface UseCustomerManageParams {
   phone: string;
-  setCustomer: Dispatch<SetStateAction<Customer | undefined>>;
-  customer: Customer | undefined;
-  selectedAddress: Address | undefined;
+  customer: CustomerType | undefined;
+  selectedAddress: AddressType | undefined;
   setExtraInfo: Dispatch<SetStateAction<ExtraInfo>>;
-  setAddresses: Dispatch<SetStateAction<Address[]>>;
   selectedOption: string;
-  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>;
+  setSelectedAddress: Dispatch<SetStateAction<AddressType | undefined>>;
 }
 
-type CreateCustomerInput = CustomerContract["Requests"]["CreateCustomer"]["customer"];
-type CreateAddressInput = AddressContract["Requests"]["CreateAddress"]["address"];
-type UpdateAddressInput = AddressContract["Requests"]["UpdateAddress"]["address"];
+type CreateCustomerInput = CustomerContracts.Create.Input["customer"];
+type CreateAddressInput = AddressContracts.Create.Input["address"];
 
 export default function useCustomerManager({
   phone,
-  setCustomer,
   customer,
   selectedAddress,
   setExtraInfo,
-  setAddresses,
   selectedOption,
   setSelectedAddress,
 }: UseCustomerManageParams) {
-  const handleCreateCustomer = async (customer: CreateCustomerInput) => {
-    const createdCustomer = await fetchRequest<Customer>(
-      "POST",
-      "/api/customers/",
-      "createCustomer",
-      {
-        customer,
-      }
-    );
+  const createCustomerMutation = trpc.customers.create.useMutation();
+  const updateCustomerMutation = trpc.customers.updateFromOrder.useMutation();
+  const createAddressMutation = trpc.addresses.create.useMutation();
+  const updateAddressMutation = trpc.addresses.update.useMutation();
 
-    setCustomer(createdCustomer);
-    return createdCustomer;
-  };
-
-  const handleUpdateCustomer = async (customer: Customer) => {
-    const updatedCustomer = await fetchRequest<Customer>(
-      "PATCH",
-      "/api/customers/",
-      "updateCustomerFromOrder",
-      { customer }
-    );
-
-    setCustomer(updatedCustomer);
-    return updatedCustomer;
-  };
-
-  const handleCreateAddress = async (address: CreateAddressInput) =>
-    await fetchRequest<Address>("POST", "/api/addresses/", "createAddress", {
-      address: { ...address },
-    });
-
-  const handleUpdateAddress = async (address: UpdateAddressInput) =>
-    await fetchRequest<Address>("PATCH", "/api/addresses/", "updateAddress", {
-      address: { ...address },
-    });
+  const utils = trpc.useUtils();
 
   async function onSubmit(values: FormValues) {
     const { street, civic } = parseAddress(values.street);
@@ -98,38 +64,38 @@ export default function useCustomerManager({
       temporary: selectedOption === "temp",
     };
 
-    setExtraInfo({ contactPhone: values.contact_phone });
+    setExtraInfo({ contactPhone: values.contact_phone ?? undefined });
 
-    let updatedCustomer: Customer;
+    let updatedCustomer: CustomerType;
     if (actionCustomer === "create") {
-      updatedCustomer = await handleCreateCustomer(customerContent);
+      updatedCustomer = await createCustomerMutation.mutateAsync({ customer: customerContent });
     } else {
       if (!customer) return;
-      updatedCustomer = await handleUpdateCustomer({ ...customer, ...customerContent });
+      updatedCustomer = await updateCustomerMutation.mutateAsync({
+        customer: { ...customer, ...customerContent },
+      });
     }
 
-    let updatedAddress;
+    utils.customers.getByPhone.setData({ phone }, updatedCustomer);
+
+    let updatedAddress: AddressType;
     if (actionAddress === "create") {
-      updatedAddress = await handleCreateAddress({
-        ...addressContent,
-        customer_id: updatedCustomer.id,
+      updatedAddress = await createAddressMutation.mutateAsync({
+        address: { ...addressContent, customer_id: updatedCustomer.id },
       });
     } else {
       if (!selectedAddress) return;
-      updatedAddress = await handleUpdateAddress({
-        ...addressContent,
-        customer_id: updatedCustomer.id,
-        id: selectedAddress.id,
+      updatedAddress = await updateAddressMutation.mutateAsync({
+        address: { ...addressContent, customer_id: updatedCustomer.id, id: selectedAddress.id },
       });
     }
 
-    setAddresses((prevAddresses) => {
-      const addressExists = prevAddresses.some((address) => address.id === updatedAddress.id);
-      return addressExists
-        ? prevAddresses.map((address) =>
-            address.id === updatedAddress.id ? updatedAddress : address
-          )
-        : [...prevAddresses, updatedAddress];
+    utils.addresses.getByCustomer.setData({ customerId: updatedCustomer.id }, (prev) => {
+      if (!prev) return [updatedAddress];
+      const exists = prev.some((addr) => addr.id === updatedAddress.id);
+      return exists
+        ? prev.map((addr) => (addr.id === updatedAddress.id ? updatedAddress : addr))
+        : [...prev, updatedAddress];
     });
 
     setSelectedAddress(updatedAddress);

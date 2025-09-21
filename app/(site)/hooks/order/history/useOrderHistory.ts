@@ -2,13 +2,13 @@ import {
   getOrderTotal,
   OrderInputWithoutDiscount,
 } from "@/app/(site)/lib/services/order-management/getOrderTotal";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import { OrderStatus } from "@prisma/client";
 import { useEffect, useState } from "react";
 import useHistoryStats from "./useHistoryStats";
 
 interface UseOrderHistoryParams {
-  customer: CustomerWithDetails;
+  customer: ComprehensiveCustomer;
 }
 
 

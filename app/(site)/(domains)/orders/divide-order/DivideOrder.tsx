@@ -3,12 +3,9 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import OrderPayment from "@/app/(site)/(domains)/payments/order/OrderPayment";
 import { PayingAction } from "../single-order/OrderTable";
-import print from "../../printing/print";
-import OrderReceipt from "../../printing/receipts/OrderReceipt";
 import { useOrderContext } from "../../../context/OrderContext";
 import DivideTable from "./DivideTable";
 import moveProductsInDivideOrder from "../../../lib/services/order-management/moveProductsInDivideOrder";
-import fetchRequest from "../../../lib/api/fetchRequest";
 import { OrderStatus, PaymentScope, PlannedPayment } from "@prisma/client";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 

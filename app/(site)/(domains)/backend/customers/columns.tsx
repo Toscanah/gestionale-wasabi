@@ -10,13 +10,10 @@ import { Button } from "@/components/ui/button";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { Dispatch, SetStateAction } from "react";
 import OrderHistory from "../../../components/order-history/OrderHistory";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 
-const columns = (
-  customers: CustomerWithDetails[],
-  setCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>
-): ColumnDef<CustomerWithDetails>[] => [
+const columns = (customers: ComprehensiveCustomer[]): ColumnDef<ComprehensiveCustomer>[] => [
   FieldColumn({
     key: "phone.phone",
     header: "Num. di telefono",
@@ -55,27 +52,6 @@ const columns = (
     accessor: (customer) => customer.origin,
   }),
 
-  // ActionColumn({
-  //   header: "Storico ordini",
-  //   action: (row) => {
-  //     const customer = row.original;
-
-  //     return (
-  //       <DialogWrapper
-  //         size="mediumPlus"
-  //         title="Storico ordini"
-  //         trigger={
-  //           <Button type="button" variant={"outline"}>
-  //             Vedi ordini precedenti
-  //           </Button>
-  //         }
-  //       >
-  //         <OrderHistory customer={customer} />
-  //       </DialogWrapper>
-  //     );
-  //   },
-  // }),
-
   ActionColumn({
     header: "Indirizzi",
     action: (row) => {
@@ -94,11 +70,7 @@ const columns = (
             </Button>
           }
         >
-          <CustomerAddresses
-            addresses={customer?.addresses ?? []}
-            customerId={customerId}
-            setCustomers={setCustomers}
-          />
+          <CustomerAddresses addresses={customer?.addresses ?? []} customerId={customerId} />
         </WasabiDialog>
       );
     },

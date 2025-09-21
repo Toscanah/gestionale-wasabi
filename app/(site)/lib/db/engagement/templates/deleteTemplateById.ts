@@ -1,10 +1,10 @@
+import { EngagementContracts } from "../../../shared";
 import prisma from "../../db";
-import { EngagementContract } from "@/app/(site)/lib/shared";
 
 export default async function deleteTemplateById({
   templateId,
-}: EngagementContract["Requests"]["DeleteTemplateById"]) {
-  await prisma.$transaction(async (tx) => {
+}: EngagementContracts.DeleteTemplateById.Input): Promise<EngagementContracts.DeleteTemplateById.Output> {
+  return await prisma.$transaction(async (tx) => {
     // Step 1: Delete all engagements using the template
     await tx.engagement.deleteMany({
       where: {
@@ -13,12 +13,10 @@ export default async function deleteTemplateById({
     });
 
     // Step 2: Delete the template itself
-    await tx.engagementTemplate.delete({
+    return await tx.engagementTemplate.delete({
       where: {
         id: templateId,
       },
     });
   });
-
-  return templateId;
 }

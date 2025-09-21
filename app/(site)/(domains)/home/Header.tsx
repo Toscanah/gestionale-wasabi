@@ -9,6 +9,7 @@ import { useWasabiContext } from "../../context/WasabiContext";
 import DeleteOrdersBulk from "../orders/components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";
 import SendMessagesDialog from "../meta/SendMessagesDialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface HeaderProps {
   toggleOrdersByType: (type: OrderType) => void;
@@ -30,7 +31,7 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
         <div className="flex items-center w-full">
           {selectedOrders.length > 0 ? (
             <div className="flex items-center gap-2 w-full">
-              {settings.useWhatsApp &&
+              {settings.whatsapp &&
                 selectedOrders.every((order) => order.type === OrderType.HOME) && (
                   <SendMessagesDialog />
                 )}

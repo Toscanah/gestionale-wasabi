@@ -1,19 +1,18 @@
-import { ExtraItems } from "../../../(domains)/orders/single-order/overview/ExtraItems";
+import { OrderContracts } from "../../shared";
 import prisma from "../db";
+import getOrderById from "./getOrderById";
 
 export default async function updateOrderExtraItems({
   orderId,
   items,
   value,
-}: {
-  orderId: number;
-  items: ExtraItems;
-  value: number | null;
-}) {
+}: OrderContracts.UpdateExtraItems.Input): Promise<OrderContracts.UpdateExtraItems.Output> {
   const newValue = value === null || value < 0 ? null : value;
 
-  return await prisma.order.update({
+  await prisma.order.update({
     where: { id: orderId },
     data: { [items]: newValue },
   });
+
+  return await getOrderById({ orderId: orderId });
 }

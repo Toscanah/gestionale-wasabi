@@ -30,19 +30,6 @@ export default function ProductsListSection({
     );
   const groupedProducts: GroupedProductsByOptions = aggregateProducts(filteredProducts);
 
-  Object.entries(groupedProducts).forEach(([groupKey, products]) => {
-    console.table(
-      products.map((p) => ({
-        group: groupKey,
-        id: p.id,
-        to_be_printed: p.to_be_printed,
-        
-        code: p.product.code,
-        status: p.status,
-      }))
-    );
-  });
-
   return recipient == "customer"
     ? CustomerProducts({
         groupedProducts,

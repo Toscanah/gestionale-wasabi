@@ -1,33 +1,46 @@
 import {
   AddressSchema,
-  EngagementSchema,
   HomeOrderSchema,
   MetaMessageLogSchema,
   OrderSchema,
   PaymentSchema,
   PickupOrderSchema,
   TableOrderSchema,
-} from "@/prisma/generated/zod";
+} from "@/prisma/generated/schemas";
 import { z } from "zod";
 import { MinimalProductInOrderSchema, ProductInOrderWithOptionsSchema } from "./product";
-import { CustomerWithPhoneSchema, CustomerWithPhoneAndEngagementSchema } from "./customer";
+import { CustomerWithPhoneAndEngagementSchema } from "./customer";
 import { EngagementWithDetailsSchema } from "./engagement";
-import { GetOrdersStatsSchema } from "../schemas/order";
 
-export const BaseOrderSchema = OrderSchema.extend({
+export const OrderWithProducts = OrderSchema.extend({
   products: z.array(z.lazy(() => ProductInOrderWithOptionsSchema)),
-  engagements: z.array(EngagementWithDetailsSchema),
 });
 
-export const OrderWithPaymentsSchema = BaseOrderSchema.extend({
+export const OrderWithPaymentsSchema = OrderSchema.extend({
   payments: z.array(PaymentSchema),
 });
 
-export const TableOrderInOrderSchema = OrderWithPaymentsSchema.extend({
+export const OrderWithEngagementsSchema = OrderSchema.extend({
+  engagements: z.array(EngagementWithDetailsSchema),
+});
+
+export const OrderFullPaymentContextSchema = OrderWithProducts.extend(
+  OrderWithPaymentsSchema.pick({
+    payments: true,
+  }).shape
+);
+
+export const FullOrderSchema = OrderWithProducts.extend(
+  OrderWithEngagementsSchema.pick({
+    engagements: true,
+  }).shape
+).extend(OrderWithPaymentsSchema.pick({ payments: true }).shape);
+
+export const TableOrderInOrderSchema = FullOrderSchema.extend({
   table_order: TableOrderSchema.nullable(),
 });
 
-export const HomeOrderInOrderSchema = OrderWithPaymentsSchema.extend({
+export const HomeOrderInOrderSchema = FullOrderSchema.extend({
   home_order: HomeOrderSchema.extend({
     customer: z.lazy(() => CustomerWithPhoneAndEngagementSchema),
     address: AddressSchema,
@@ -35,33 +48,39 @@ export const HomeOrderInOrderSchema = OrderWithPaymentsSchema.extend({
   }).nullable(),
 });
 
-export const PickupOrderInOrderSchema = OrderWithPaymentsSchema.extend({
+export const PickupOrderInOrderSchema = FullOrderSchema.extend({
   pickup_order: PickupOrderSchema.extend({
     customer: z.lazy(() => CustomerWithPhoneAndEngagementSchema).nullable(),
   }).nullable(),
 });
 
 export const TableOrderWithOrderSchema = TableOrderSchema.extend({
-  order: BaseOrderSchema,
+  order: FullOrderSchema.omit({
+    payments: true,
+  }),
 });
 
 export const HomeOrderWithOrderSchema = HomeOrderSchema.extend({
-  order: BaseOrderSchema,
+  order: FullOrderSchema.omit({
+    payments: true,
+  }),
 });
 
 export const PickupOrderWithOrderSchema = PickupOrderSchema.extend({
-  order: BaseOrderSchema,
+  order: FullOrderSchema.omit({
+    payments: true,
+  }),
 });
 
-export const OrderWithPaymentsAndTotalsSchema = BaseOrderSchema.extend({
-  totalCash: z.number().int(),
-  totalCard: z.number().int(),
-  totalVouch: z.number().int(),
-  totalCredit: z.number().int(),
+export const OrderWithSummedPayments = OrderWithProducts.extend({
+  summedCash: z.number(),
+  summedCard: z.number(),
+  summedVouch: z.number(),
+  // totalCredit: z.number().int(),
 })
-  .merge(TableOrderInOrderSchema)
-  .merge(HomeOrderInOrderSchema)
-  .merge(PickupOrderInOrderSchema);
+  .and(TableOrderInOrderSchema)
+  .and(HomeOrderInOrderSchema)
+  .and(PickupOrderInOrderSchema);
 
 export const AnyOrderSchema = z.union([
   TableOrderInOrderSchema,
@@ -69,7 +88,7 @@ export const AnyOrderSchema = z.union([
   PickupOrderInOrderSchema,
 ]);
 
-export const MinimalOrderSchema = BaseOrderSchema.pick({
+export const LiteOrderSchema = OrderWithProducts.pick({
   id: true,
   created_at: true,
   type: true,
@@ -78,7 +97,7 @@ export const MinimalOrderSchema = BaseOrderSchema.pick({
   products: z.array(MinimalProductInOrderSchema),
 });
 
-export const ShiftEvaluableOrderSchema = BaseOrderSchema.pick({
+export const ShiftEvaluableOrderSchema = OrderWithProducts.pick({
   id: true,
   created_at: true,
   type: true,
@@ -90,10 +109,10 @@ export const ShiftEvaluableOrderSchema = BaseOrderSchema.pick({
     pickup_order: PickupOrderSchema.pick({ when: true }).nullable(),
   });
 
-
 // --- Base and Minimal Order Types ---
-export type BaseOrder = z.infer<typeof BaseOrderSchema>;
-export type MinimalOrder = z.infer<typeof MinimalOrderSchema>;
+export type OrderWithProducts = z.infer<typeof OrderWithProducts>;
+export type LiteOrder = z.infer<typeof LiteOrderSchema>;
+export type OrderFullPaymentContext = z.infer<typeof OrderFullPaymentContextSchema>;
 export type ShiftEvaluableOrder = z.infer<typeof ShiftEvaluableOrderSchema>;
 
 // --- Order Types with Specific Order Details ---
@@ -107,6 +126,5 @@ export type HomeOrderWithOrder = z.infer<typeof HomeOrderWithOrderSchema>;
 export type PickupOrderWithOrder = z.infer<typeof PickupOrderWithOrderSchema>;
 
 // --- Aggregated and Union Order Types ---
-export type OrderWithPaymentsAndTotals = z.infer<typeof OrderWithPaymentsAndTotalsSchema>;
+export type OrderWithSummedPayments = z.infer<typeof OrderWithSummedPayments>;
 export type AnyOrder = z.infer<typeof AnyOrderSchema>;
-// export type OrdersStatsArray = z.infer<typeof OrdersStatsArraySchema>;

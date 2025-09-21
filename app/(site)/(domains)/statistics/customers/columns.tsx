@@ -16,10 +16,11 @@ import { CustomerWithStats } from "@/app/(site)/lib/shared";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
 import { differenceInCalendarDays, format } from "date-fns";
+import { DARK_SCALE_3, LIGHT_SCALE_3 } from "@/app/(site)/lib/shared/constants/colors";
 
 const QuickTooltip = ({ title, label }: { title: string; label: string }) => (
   <Tooltip delayDuration={0}>
-    <TooltipTrigger className="flex gap-2 items-center">
+    <TooltipTrigger className="flex gap-2 items-center hover:cursor-default">
       <Warning color={"#d97706"} className="h-4 w-4" />
       {title}
     </TooltipTrigger>
@@ -63,8 +64,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
     value: (row, meta) => {
       const { ranks, theme } = meta as CustomerStatsTableMeta;
 
-      const colorArray =
-        theme === "dark" ? ["#00FF00", "#FFFF00", "#FF0000"] : ["#009688", "#FF9800", "#795548"];
+      const colorArray = theme === "dark" ? DARK_SCALE_3 : LIGHT_SCALE_3;
 
       const sorted = [...ranks].sort((a, b) => b.priority - a.priority);
 
@@ -86,8 +86,8 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   ValueColumn({
     header: "Ultimo ordine",
     value: (row) => {
-      if (row.original.stats.last_order_at) {
-        const lastOrderDate = row.original.stats.last_order_at;
+      if (row.original.stats.lastOrderAt) {
+        const lastOrderDate = row.original.stats.lastOrderAt;
         const formattedDate = format(lastOrderDate, "dd-MM-yyyy");
         const daysSince = differenceInCalendarDays(new Date(), lastOrderDate);
 
@@ -102,7 +102,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
       return "";
     },
-    accessor: (customer) => customer.stats.last_order_at,
+    accessor: (customer) => customer.stats.lastOrderAt,
     sortable: false,
   }),
 
@@ -110,23 +110,23 @@ const columns: ColumnDef<CustomerWithStats>[] = [
     header: "Primo ordine",
     value: (row) =>
       row.original.stats.firstOrderAt
-        ? format(row.original.stats.first_order_at, "dd-MM-yyyy")
+        ? format(row.original.stats.firstOrderAt, "dd-MM-yyyy")
         : "",
-    accessor: (customer) => customer.stats.first_order_at,
+    accessor: (customer) => customer.stats.firstOrderAt,
     sortable: false,
   }),
 
   ValueColumn({
     header: "Spesa media (€)",
-    value: (row) => "€ " + roundToTwo(row.original.stats.average_order),
-    accessor: (customer) => customer.stats.average_order,
+    value: (row) => "€ " + roundToTwo(row.original.stats.averageOrder ?? 0),
+    accessor: (customer) => customer.stats.averageOrder,
     sortable: false,
   }),
 
   ValueColumn({
     header: "Spesa totale (€)",
-    value: (row) => "€ " + roundToTwo(row.original.stats.total_spent),
-    accessor: (customer) => customer.stats.total_spent,
+    value: (row) => "€ " + roundToTwo(row.original.stats.totalSpent ?? 0),
+    accessor: (customer) => customer.stats.totalSpent,
     sortable: false,
   }),
 

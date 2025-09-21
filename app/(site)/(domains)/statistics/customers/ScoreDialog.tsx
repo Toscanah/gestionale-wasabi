@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 
 interface ScoreDialogProps {
-  customer: CustomerWithDetails;
+  customer: ComprehensiveCustomer;
 }
 
 /**

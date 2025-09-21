@@ -9,10 +9,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ReactNode } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TablePaginationProps<TData> {
   table: Table<TData>;
-  totalCount?: ReactNode;
+  totalCount?: number;
   page?: number;
   pageSize?: number;
   pageCount?: number;
@@ -46,15 +47,14 @@ export default function TablePagination<TData>({
   };
 
   return (
-    <div className="flex w-full items-center gap-x-6 px-2">
-      {/* Rows per page */}
-      <div className="flex items-center space-x-2">
-        <p className="text-sm font-medium">Righe per pagina</p>
+    <div className="flex w-full items-center gap-4">
+      <div className="flex items-center gap-4">
+        <p className="text-sm font-medium">Elementi per pagina</p>
         <Select
           value={`${currentPageSize}`}
           onValueChange={(value) => handlePageSizeChange(Number(value))}
         >
-          <SelectTrigger className="h-8 w-[70px]" disabled={disabled}>
+          <SelectTrigger className="h-8 w-24" disabled={disabled}>
             <SelectValue placeholder={`${currentPageSize}`} />
           </SelectTrigger>
           <SelectContent side="top">
@@ -64,67 +64,42 @@ export default function TablePagination<TData>({
               </SelectItem>
             ))}
             <SelectItem key={-1} value={`${totalCount ?? 0}`}>
-              Tutti
+              Tutti <span className="text-muted-foreground">(sconsigliato, pesante)</span>
             </SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      {/* Current page info */}
-      <div className="flex w-[400px] items-center text-sm font-medium">
-        Pagina {currentPage + 1} di {totalPages}
-        {totalCount && (
-          <>
-            &nbsp;
-            <span className="text-muted-foreground">
-              {"("}
-              {totalCount}
-              {")"}
-            </span>
-          </>
-        )}
-      </div>
+      <span className="text-muted-foreground text-sm">
+        {currentPage * currentPageSize + 1}-
+        {Math.min((currentPage + 1) * currentPageSize, totalCount ?? 0)}
+        {" di "}
+        {totalCount}
+      </span>
 
-      {/* Navigation buttons */}
-      <div className="flex items-center ml-auto space-x-2">
+      <div className="flex items-center ml-auto">
         <Button
           variant="outline"
-          className="hidden h-8 w-8 p-0 lg:flex"
-          onClick={() => handlePageChange(0)}
-          disabled={currentPage === 0 || disabled}
-        >
-          <span className="sr-only">Go to first page</span>
-          <ChevronsLeft />
-        </Button>
-
-        <Button
-          variant="outline"
-          className="h-8 w-8 p-0"
+          className="h-8 px-2 border-r-0 rounded-r-none"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 0 || disabled}
         >
-          <span className="sr-only">Go to previous page</span>
-          <ChevronLeft />
+          <ChevronLeft className="mr-2" />
+          Precedente
         </Button>
+
+        <span className="flex items-center justify-center text-sm border h-8 p-2">
+          Pagina {currentPage + 1} di {totalPages}
+        </span>
 
         <Button
           variant="outline"
-          className="h-8 w-8 p-0"
+          className="h-8 px-2 border-l-0 rounded-l-none"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage + 1 >= totalPages || disabled}
         >
-          <span className="sr-only">Go to next page</span>
-          <ChevronRight />
-        </Button>
-
-        <Button
-          variant="outline"
-          className="hidden h-8 w-8 p-0 lg:flex"
-          onClick={() => handlePageChange(totalPages - 1)}
-          disabled={currentPage + 1 >= totalPages || disabled}
-        >
-          <span className="sr-only">Go to last page</span>
-          <ChevronsRight />
+          Successiva
+          <ChevronRight className="ml-2" />
         </Button>
       </div>
     </div>

@@ -1,16 +1,16 @@
 import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
-import { AnyOrder, OrderContract, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import prisma from "../../db";
 import createPickupOrder from "../pickup/createPickupOrder";
 import createTableOrder from "../table/createTableOrder";
 import addProductsToOrder from "../../products/addProductsToOrder";
 import getOrderById from "../getOrderById";
+import { AnyOrder, OrderContracts, PickupOrder, TableOrder } from "../../../shared";
 
 export default async function createSubOrder({
   parentOrder,
   products,
   isReceiptPrinted,
-}: OrderContract["Requests"]["CreateSubOrder"]) {
+}: OrderContracts.CreateSub.Input): Promise<OrderContracts.CreateSub.Output> {
   let newSubOrder: AnyOrder | undefined;
 
   const suborderCount = await prisma.order.count({
@@ -23,26 +23,30 @@ export default async function createSubOrder({
   });
 
   const suborderNumber = suborderCount + 1;
-  let order;
+  let order: AnyOrder;
 
   switch (parentOrder.type) {
     case OrderType.PICKUP:
       order = parentOrder as PickupOrder;
+
       const pickupOrderResponse = await createPickupOrder({
         name: `${order.pickup_order?.name}_${suborderNumber}`,
         when: order.pickup_order?.when ?? "immediate",
-        phone: order.pickup_order?.customer?.phone?.phone,
+        phone: order.pickup_order?.customer?.phone.phone ?? "",
       });
+
       newSubOrder = pickupOrderResponse?.order;
       break;
 
     case OrderType.TABLE:
       order = parentOrder as TableOrder;
+
       const tableOrderResponse = await createTableOrder({
         table: `${order.table_order?.table}_${suborderNumber}`,
         people: order.table_order?.people ?? 1,
         resName: order.table_order?.res_name ?? "",
       });
+
       newSubOrder = tableOrderResponse?.order;
       break;
 

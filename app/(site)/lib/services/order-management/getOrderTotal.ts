@@ -1,9 +1,9 @@
-import { MinimalOrder } from "@/app/(site)/lib/shared";
+import { LiteOrder } from "@/app/(site)/lib/shared";
 import getDiscountedTotal from "./getDiscountedTotal";
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import filterDeletedProducts from "../../services/product-management/filterDeletedProducts";
 
-type BaseOrderInput = Pick<MinimalOrder, "products" | "type">;
+type BaseOrderInput = Pick<LiteOrder, "products" | "type">;
 
 type OrderInputWithDiscount = BaseOrderInput & {
   discount: number;

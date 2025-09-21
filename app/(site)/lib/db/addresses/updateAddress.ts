@@ -1,9 +1,9 @@
-import { AddressContract } from "../../shared";
+import { AddressContracts } from "../../shared";
 import prisma from "../db";
 
-export default async function updateAddress({
-  address,
-}: AddressContract["Requests"]["UpdateAddress"]) {
+export default async function updateAddress(
+  {address}: AddressContracts.Update.Input
+): Promise<AddressContracts.Update.Output> {
   return await prisma.address.update({
     data: {
       civic: address.civic,

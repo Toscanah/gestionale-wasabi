@@ -9,14 +9,14 @@ import { getOrderTotal } from "../../../lib/services/order-management/getOrderTo
 import OrderDetail from "./OrderDetail";
 import { Button } from "@/components/ui/button";
 import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
-import { BaseOrder, ProductInOrder } from "../../../lib/shared";
+import { OrderWithProducts, ProductInOrder } from "../../../lib/shared";
 import filterDeletedProducts from "../../../lib/services/product-management/filterDeletedProducts";
 import { useEffect } from "react";
 
 type OrderAccordionItemProps = {
   type: string;
   id: number;
-  order: BaseOrder;
+  order: OrderWithProducts;
   onCheckboxChange: (pio: ProductInOrder) => void;
   onCreate?: (newProducts: ProductInOrder[]) => void;
   selectedProducts: ProductInOrder[];

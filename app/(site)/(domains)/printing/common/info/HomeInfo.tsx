@@ -2,10 +2,10 @@ import { Br, Line, Text } from "react-thermal-printer";
 import { BIG_PRINT, SMALL_PRINT } from "../../constants";
 import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import splitIntoLines from "@/app/(site)/lib/utils/global/string/splitIntoLines";
-import { Address } from "@prisma/client";
+import { AddressType } from "@/prisma/generated/schemas";
 
 interface HomeInfoProps {
-  address: Address;
+  address: AddressType;
   phone: string | undefined;
   contactPhone: string | undefined;
   putWhen: boolean;

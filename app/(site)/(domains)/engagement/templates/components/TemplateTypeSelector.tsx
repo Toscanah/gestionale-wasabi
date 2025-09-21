@@ -23,8 +23,8 @@ export default function TemplateTypeSelector({
         className="flex gap-4"
       >
         {ENGAGEMENT_TYPES.map(({ value, label }) => (
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem key={value} value={value} id={value} />
+          <div className="flex items-center space-x-2" key={value}>
+            <RadioGroupItem value={value} id={value} />
             <Label htmlFor={value}>{label}</Label>
           </div>
         ))}

@@ -12,9 +12,12 @@ type Options<T> = {
 };
 
 export default function useSkeletonTable<T>({ isLoading, data, columns, pageSize = 10 }: Options<T>) {
+  // If pageSize is not a valid number, show all data
+  const effectivePageSize = Number.isFinite(pageSize) && pageSize > 0 ? pageSize : data.length;
+
   const tableData = React.useMemo<T[]>(
-    () => (isLoading ? (Array(pageSize).fill({}) as T[]) : data),
-    [isLoading, data, pageSize]
+    () => (isLoading ? (Array(effectivePageSize).fill({}) as T[]) : data),
+    [isLoading, data, effectivePageSize]
   );
 
   const tableColumns = React.useMemo<ColumnDef<T>[]>(() => {

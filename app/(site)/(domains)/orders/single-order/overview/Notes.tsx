@@ -2,13 +2,11 @@ import { useCallback, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import { OrderType } from "@prisma/client";
-
-type PossibleOrdersType = HomeOrder | PickupOrder;
+import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
+import { trpc } from "@/lib/server/client";
 
 export default function Notes() {
   const { order, updateOrder } = useOrderContext();
@@ -16,19 +14,16 @@ export default function Notes() {
 
   const initialNotes =
     order.type === OrderType.HOME
-      ? (order as HomeOrder).home_order?.customer.order_notes ?? ""
-      : (order as PickupOrder).pickup_order?.customer?.order_notes ?? "";
+      ? ((order as HomeOrder).home_order?.customer.order_notes ?? "")
+      : ((order as PickupOrder).pickup_order?.customer?.order_notes ?? "");
 
   const [additionalNotes, setAdditionalNotes] = useState<string>(initialNotes);
 
-  const updateCustomerOrderNotes = (notes: string) =>
-    fetchRequest<PossibleOrdersType>("PATCH", "/api/customers/", "updateCustomerOrderNotes", {
-      orderId: order.id,
-      notes,
-    }).then((updatedOrder) => {
+  const updateNotesMutation = trpc.customers.updateOrderNotes.useMutation({
+    onSuccess: (updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
-      let parsedOrder;
 
+      let parsedOrder;
       if (order.type === OrderType.HOME) {
         parsedOrder = (updatedOrder as HomeOrder).home_order;
       } else {
@@ -47,24 +42,26 @@ export default function Notes() {
               },
             }
           : order.type == OrderType.PICKUP
-          ? {
-              pickup_order: {
-                ...parsedOrder,
-                customer: {
-                  ...parsedOrder?.customer,
-                  order_notes: parsedOrder?.customer?.order_notes ?? "",
+            ? {
+                pickup_order: {
+                  ...parsedOrder,
+                  customer: {
+                    ...parsedOrder?.customer,
+                    order_notes: parsedOrder?.customer?.order_notes ?? "",
+                  },
                 },
-              },
-            }
-          : {}),
-
+              }
+            : {}),
         is_receipt_printed: false,
       });
-    });
+    },
+  });
 
   const debouncedUpdateNotes = useCallback(
-    debounce((notes: string) => updateCustomerOrderNotes(notes), 1500),
-    []
+    debounce((notes: string) => {
+      updateNotesMutation.mutate({ orderId: order.id, notes });
+    }, 1500),
+    [order.id]
   );
 
   const handleNotesChange = (event: React.ChangeEvent<HTMLInputElement>) => {

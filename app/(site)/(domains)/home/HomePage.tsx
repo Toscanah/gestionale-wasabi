@@ -56,16 +56,6 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
         <div className="w-full flex justify-between items-center">
           <div className="flex items-center gap-4 text-2xl w-[28rem]">
             <SidebarTrigger /> Wasabi Sushi
-            {/* <ArrowsClockwise
-              onClick={fetchInitialOrders}
-              size={32}
-              className="hover:cursor-pointer hover:rotate-[360deg] transform transition-transform duration-500 ease-in-out"
-            /> */}
-            {/* <Button
-              onClick={() => {
-                fetchRequest("GET", "/api/payments", "analyzePaymentScopes");
-              }}
-            ></Button> */}
           </div>
 
           <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />

@@ -1,3 +1,4 @@
+import { Trophy } from "@phosphor-icons/react";
 import WasabiSelect from "./WasabiSelect";
 
 interface RankFilterProps {
@@ -18,6 +19,7 @@ export default function RankFilter({ ranks, onRanksChange, allRanks, disabled }:
 
   return (
     <WasabiSelect
+    triggerIcon={Trophy}
       title="Rank"
       mode="multi"
       disabled={disabled}

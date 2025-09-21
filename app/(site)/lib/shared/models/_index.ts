@@ -6,3 +6,4 @@ export * from "./order";
 export * from "./product";
 export * from "./rice";
 export * from "./meta"
+export * from "./rfm";

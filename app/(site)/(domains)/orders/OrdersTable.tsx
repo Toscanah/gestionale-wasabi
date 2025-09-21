@@ -23,8 +23,8 @@ interface CustomCellProps {
 
 export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTableProps) {
   const { settings } = useWasabiContext();
-  const columns = getColumns(type, settings.useWhatsApp);
-  const table = useTable<any>({ data, columns });
+  const columns = getColumns(type, settings.whatsapp);
+  const table = useTable<AnyOrder>({ data, columns });
 
   const CustomCell = ({ cell, className }: CustomCellProps) => {
     const orderId = cell.row.original.id;

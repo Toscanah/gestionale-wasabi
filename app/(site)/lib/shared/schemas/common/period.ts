@@ -5,6 +5,8 @@ const DateRangeSchema = z.object({
   to: z.coerce.date().optional(),
 });
 
-export const PeriodRequestSchema = z.union([z.date(), DateRangeSchema]).optional();
+export const PeriodRequestSchema = z.object({
+  period: z.union([z.date(), DateRangeSchema]),
+});
 
 export type Period = z.infer<typeof PeriodRequestSchema>;

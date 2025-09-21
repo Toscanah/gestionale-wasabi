@@ -1,12 +1,10 @@
-import { Product } from "@/app/(site)/lib/shared";
+import { ProductContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { categoryInclude } from "../includes";
 
 export default async function updateProduct({
   product,
-}: {
-  product: Product;
-}): Promise<Product | null> {
+}: ProductContracts.Update.Input): Promise<ProductContracts.Update.Output> {
   const existingProduct = await prisma.product.findFirst({
     where: {
       code: product.code,
@@ -16,7 +14,9 @@ export default async function updateProduct({
     },
   });
 
-  if (existingProduct) return null;
+  if (!existingProduct) {
+    throw new Error("Product with this code does not exist");
+  }
 
   return await prisma.product.update({
     where: {

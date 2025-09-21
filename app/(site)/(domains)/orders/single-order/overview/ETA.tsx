@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { OrderType } from "@prisma/client";
-import { AnyOrder, HomeOrder } from "@/app/(site)/lib/shared";
+import { HomeOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import calculateETA from "@/app/(site)/lib/services/order-management/calculateETA";
 
 export default function ETA() {
@@ -18,9 +16,11 @@ export default function ETA() {
     const fetchAndCalculateETA = async () => {
       if (!order || !settings.riders) return;
 
-      const homeOrders = await fetchRequest<HomeOrder[]>("GET", "/api/orders/", "getOrdersByType", {
-        type: OrderType.HOME,
-      });
+      // const homeOrders = await <HomeOrder[]>("GET", "/api/orders/", "getOrdersByType", {
+      //   type: OrderType.HOME,
+      // });
+
+      const homeOrders = [] as HomeOrder[];
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);

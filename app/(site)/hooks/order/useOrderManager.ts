@@ -3,10 +3,10 @@ import { AnyOrder, TableOrder } from "@/app/(site)/lib/shared";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../../context/WasabiContext";
 import generateDummyProduct from "../../lib/services/product-management/generateDummyProduct";
-import fetchRequest from "../../lib/api/fetchRequest";
-import scaleProducts from "../../lib/services/product-management/scaleProducts";
 import { toastError, toastSuccess } from "../../lib/utils/global/toast";
 import { OrderStatus, OrderType } from "@prisma/client";
+import { trpc, trpcClient } from "@/lib/server/client";
+import scaleProducts from "../../lib/services/product-management/scaleProducts";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -49,61 +49,56 @@ export function useOrderManager(
       return updatedOrder;
     });
 
-  const updatePrintedFlag = async () =>
-    fetchRequest<boolean>("PATCH", "/api/orders", "updateOrderPrintedFlag", {
-      orderId,
-    }).then((is_receipt_printed) => updateOrder({ is_receipt_printed }));
+  const printedFlagMutation = trpc.orders.updatePrintedFlag.useMutation({
+    onSuccess: () => updateOrder({ is_receipt_printed: true }),
+  });
 
-  const cancelOrder = async (cooked: boolean = false) =>
-    fetchRequest<AnyOrder>("DELETE", "/api/orders/", "cancelOrder", {
-      orderId,
-      cooked,
-    }).then((deletedOrder) => {
-      updateRemainingRice();
-      updateGlobalState(deletedOrder, "delete");
-    });
+  const updatePrintedFlag = () => printedFlagMutation.mutateAsync({ orderId });
+
+  const cancelOrder = async (cooked = false) => {
+    const deletedOrder = await trpcClient.orders.cancel.mutate({ orderId, cooked });
+    updateRemainingRice();
+    updateGlobalState(deletedOrder, "delete");
+  };
 
   const createSubOrder = async (
     parentOrder: AnyOrder,
     products: ProductInOrder[],
     isReceiptPrinted: boolean
-  ) =>
-    fetchRequest<AnyOrder>("POST", "/api/orders/", "createSubOrder", {
-      parentOrder: { ...parentOrder },
+  ) => {
+    const newSubOrder = await trpcClient.orders.createSub.mutate({
+      parentOrder,
       products,
       isReceiptPrinted,
-    }).then((newSubOrder) => {
-      const { updatedProducts } = scaleProducts({
-        originalProducts: parentOrder.products,
-        productsToScale: products,
-        orderType: parentOrder.type,
-      });
-
-      updateGlobalState(newSubOrder, "add");
-
-      updateOrder({
-        products: updatedProducts,
-        is_receipt_printed: false,
-      });
     });
-
-  const joinTableOrders = (tableToJoin: string) =>
-    fetchRequest<{ updatedOrder: TableOrder; joinedTable: TableOrder }>(
-      "POST",
-      "/api/orders/",
-      "joinTableOrders",
-      { originalOrderId: orderId, tableToJoin }
-    ).then((result) => {
-      if (!result) {
-        return toastError(
-          "Tavolo da unire non trovato oppure più ordini con lo stesso tavolo trovati"
-        );
-      }
-
-      setJoinedTables((prev) => [...prev, result.joinedTable]);
-      updateOrder({ ...result.updatedOrder });
-      toastSuccess("Tavoli uniti con successo");
+    const { updatedProducts } = scaleProducts({
+      originalProducts: parentOrder.products,
+      productsToScale: products,
     });
+    updateGlobalState(newSubOrder, "add");
+    updateOrder({ products: updatedProducts, is_receipt_printed: false });
+  };
+
+  const joinTableOrders = async (tableToJoin: string) => {
+    const result = await trpcClient.orders.joinTables.mutate({
+      originalOrderId: orderId,
+      tableToJoin,
+    });
+    if (!result)
+      return toastError(
+        "Tavolo da unire non trovato oppure più ordini con lo stesso tavolo trovati"
+      );
+    setJoinedTables((prev) => [...prev, result.joinedTable]);
+    updateOrder(result.updatedOrder);
+    toastSuccess("Tavoli uniti con successo");
+  };
+
+  const issueLedgers = async (order: AnyOrder) => {
+    const redeemables = order.engagements?.filter((e) => e.enabled && e.template?.redeemable) ?? [];
+    if (redeemables.length > 0 && order.type !== OrderType.TABLE) {
+      await trpcClient.engagements.issueLedgers.mutate({ orderId });
+    }
+  };
 
   useEffect(() => {
     if (joinedTables.length > 0) {
@@ -112,15 +107,12 @@ export function useOrderManager(
     }
   }, [dialogOpen]);
 
-  const issueLedgers = async (order: AnyOrder) => {
-    const redeemables = order.engagements?.filter((e) => e.enabled && e.template?.redeemable) ?? [];
-
-    if (redeemables.length > 0 && order.type !== OrderType.TABLE) {
-      fetchRequest("POST", "/api/engagements", "issueLedgers", {
-        orderId,
-      });
-    }
+  return {
+    updateOrder,
+    updatePrintedFlag,
+    cancelOrder,
+    createSubOrder,
+    joinTableOrders,
+    issueLedgers,
   };
-
-  return { updateOrder, updatePrintedFlag, cancelOrder, createSubOrder, joinTableOrders, issueLedgers };
 }

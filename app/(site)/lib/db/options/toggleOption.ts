@@ -1,11 +1,14 @@
+import { OptionContracts } from "../../shared";
 import prisma from "../db";
 
-export default async function toggleOption({ id }: { id: number }) {
+export default async function toggleOption({
+  id,
+}: OptionContracts.Toggle.Input): Promise<OptionContracts.Toggle.Output> {
   const optionId = id;
   const option = await prisma.option.findUnique({ where: { id: optionId } });
 
   if (!option) {
-    return null;
+    throw new Error("Option not found");
   }
 
   return prisma.option.update({
@@ -15,5 +18,6 @@ export default async function toggleOption({ id }: { id: number }) {
     data: {
       active: !option.active,
     },
+    select: { id: true, active: true },
   });
 }

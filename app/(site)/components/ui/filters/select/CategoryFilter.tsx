@@ -6,12 +6,14 @@ interface CategoryFilterProps {
   selectedCategoryIds: number[];
   onCategoryIdsChange: (updatedCategories: number[]) => void;
   allCategories: Category[];
+  disabled?: boolean;
 }
 
 export default function CategoryFilter({
   selectedCategoryIds,
   onCategoryIdsChange,
   allCategories,
+  disabled = false,
 }: CategoryFilterProps) {
   const handleChange = (newValues: string[]) => {
     if (newValues.length === 0 || newValues.length === allCategories.length) {
@@ -23,6 +25,7 @@ export default function CategoryFilter({
 
   return (
     <WasabiSelect
+    disabled={disabled}
       allLabel="Tutte"
       title="Categorie"
       mode="multi"

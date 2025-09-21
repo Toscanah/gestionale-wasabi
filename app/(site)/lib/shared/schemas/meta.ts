@@ -1,10 +1,15 @@
 import { z } from "zod";
 import { NoContentRequestSchema } from "./common/no-content";
+import { MetaTemplateSchema } from "../models/meta";
+import { AnyOrderSchema } from "../models/order";
 
 export namespace MetaContracts {
   export namespace GetTemplates {
     export const Input = NoContentRequestSchema;
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.array(MetaTemplateSchema);
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace SendMessage {
@@ -21,5 +26,8 @@ export namespace MetaContracts {
       }),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = AnyOrderSchema
+    export type Output = z.infer<typeof Output>;
   }
 }

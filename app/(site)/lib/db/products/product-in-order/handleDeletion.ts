@@ -1,4 +1,4 @@
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductContracts, ProductInOrder } from "@/app/(site)/lib/shared";
 import { Prisma } from "@prisma/client";
 import { productInOrderInclude } from "../../includes";
 
@@ -10,7 +10,7 @@ export default async function handleDeletion({
   tx: Prisma.TransactionClient;
   currentOrderId: number;
   productInOrder: ProductInOrder;
-}) {
+}): Promise<ProductContracts.UpdateInOrder.Output> {
   if (productInOrder.paid_quantity === 0) {
     await tx.optionInProductOrder.deleteMany({
       where: { product_in_order_id: productInOrder.id },
@@ -26,7 +26,7 @@ export default async function handleDeletion({
       data: { is_receipt_printed: false },
     });
 
-    return { deletedProduct };
+    return { updatedProductInOrder: deletedProduct, isDeleted: true };
   }
 
   const updatedProduct = await tx.productInOrder.update({
@@ -42,5 +42,5 @@ export default async function handleDeletion({
     data: { is_receipt_printed: false },
   });
 
-  return { deletedProduct: { ...updatedProduct, quantity: 0 } };
+  return { updatedProductInOrder: updatedProduct, isDeleted: true };
 }

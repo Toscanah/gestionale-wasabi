@@ -57,13 +57,12 @@ export function OrderEngagementTabs({
     const all = [
       ...(order.engagements ?? []),
       ...(order.type === OrderType.HOME
-        ? (order as HomeOrder).home_order?.customer?.engagements ?? []
+        ? ((order as HomeOrder).home_order?.customer?.engagements ?? [])
         : []),
       ...(order.type === OrderType.PICKUP
-        ? (order as PickupOrder).pickup_order?.customer?.engagements ?? []
+        ? ((order as PickupOrder).pickup_order?.customer?.engagements ?? [])
         : []),
     ];
-    console.log("dio", order);
     setEngagements(dedupeEngagements(all));
   }, [order.engagements]);
 
@@ -137,7 +136,7 @@ export function OrderEngagementTabs({
         ) : (
           <Accordion type="multiple" className="flex flex-col gap-4 w-full items-center">
             {engagements.map((engagement, index) => (
-              <div className="flex gap-6 w-full items-center">
+              <div className="flex gap-6 w-full items-center" key={index}>
                 <Checkbox
                   className="ml-6"
                   checked={engagement.enabled}

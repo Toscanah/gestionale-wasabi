@@ -1,6 +1,6 @@
 -- @param {DateTime} $1:from? Start date of the period (nullable)
 -- @param {DateTime} $2:to? End date of the period (nullable)
--- @param {Json}     $3:weekdays? Allowed weekdays as JSON array (nullable)
+-- @param {String}     $3:weekdays? Allowed weekdays as comma-separated string (nullable, e.g. '2,5')
 -- @param {WorkingShift}   $4:shift? Working shift filter (nullable, 'ALL' means ignore)
 -- @param {String}   $5:from_time? Start time of day "HH:mm" (nullable)
 -- @param {String}   $6:to_time? End time of day "HH:mm" (nullable)
@@ -19,11 +19,9 @@ WITH
         FROM days d
         WHERE EXTRACT(DOW FROM d.day) <> 1 -- skip Mondays
           AND (
-              $3::jsonb IS NULL
-              OR EXTRACT(DOW FROM d.day)::int IN (
-                  SELECT jsonb_array_elements_text($3::jsonb)::int
-              )
-          )
+            $3::text IS NULL
+            OR EXTRACT(DOW FROM d.day)::int = ANY (string_to_array($3::text, ',')::int[])
+        )
     ),
 
     num_days AS (
@@ -39,10 +37,8 @@ WITH
           AND ($2::timestamptz IS NULL OR o.created_at <= $2)
           AND EXTRACT(DOW FROM o.created_at) <> 1 -- skip Mondays
           AND (
-              $3 IS NULL
-              OR EXTRACT(DOW FROM o.created_at)::int IN (
-                  SELECT jsonb_array_elements_text($3::jsonb)::int
-              )
+            $3::text IS NULL
+            OR EXTRACT(DOW FROM o.created_at)::int = ANY (string_to_array($3::text, ',')::int[])
           )
           AND (
               $4::"WorkingShift" IS NULL OR o.shift = $4::"WorkingShift"
@@ -54,54 +50,58 @@ WITH
     ),
 
     product_lines AS (
-        SELECT
-            pio.order_id,
-            SUM(pio.paid_quantity)::double precision                    AS total_products,
-            SUM(pio.paid_quantity * pio.frozen_price)::double precision AS line_revenue,
-            SUM(
-                CASE 
-                  WHEN pio.status IN ('IN_ORDER','DELETED_COOKED') 
-                  THEN (pio.paid_quantity * pr.rice) 
-                  ELSE 0 
-                END
-            )::double precision                                         AS rice_mass,
-            SUM(pr.soups  * pio.quantity)::double precision             AS soups,
-            SUM(pr.rices  * pio.quantity)::double precision             AS rices,
-            SUM(pr.salads * pio.quantity)::double precision             AS salads
-        FROM "ProductInOrder" pio
-        JOIN "Product" pr ON pr.id = pio.product_id
-        GROUP BY pio.order_id
-    ),
+    SELECT
+        pio.order_id,
+        SUM(pio.paid_quantity::double precision)                                        AS total_products,
+        SUM(pio.paid_quantity::double precision * pio.frozen_price::double precision)   AS line_revenue,
+        SUM(
+            CASE 
+              WHEN pio.status IN ('IN_ORDER','DELETED_COOKED') 
+              THEN (pio.paid_quantity::double precision * pr.rice::double precision) 
+              ELSE 0::double precision
+            END
+        ) AS rice_mass,
+        SUM(pr.soups::double precision  * pio.quantity::double precision)   AS soups,
+        SUM(pr.rices::double precision  * pio.quantity::double precision)   AS rices,
+        SUM(pr.salads::double precision * pio.quantity::double precision)   AS salads
+    FROM "ProductInOrder" pio
+    JOIN "Product" pr ON pr.id = pio.product_id
+    GROUP BY pio.order_id
+),
 
-    order_stats AS (
-        SELECT
-            fo.type,
-            COUNT(DISTINCT fo.id)::int           AS orders,
-            COALESCE(SUM(pl.line_revenue), 0)::double precision  AS revenue,
-            COALESCE(SUM(pl.total_products),0)::double precision AS products,
-            SUM(
-              CASE 
-                WHEN fo.soups IS NOT NULL AND fo.soups <> 0 THEN fo.soups
-                ELSE pl.soups
-              END
-            )::double precision AS soups,
-            SUM(
-              CASE 
-                WHEN fo.rices IS NOT NULL AND fo.rices <> 0 THEN fo.rices
-                ELSE pl.rices
-              END
-            )::double precision AS rices,
-            SUM(
-              CASE 
-                WHEN fo.salads IS NOT NULL AND fo.salads <> 0 THEN fo.salads
-                ELSE pl.salads
-              END
-            )::double precision AS salads,
-            SUM(pl.rice_mass)::double precision AS rice
-        FROM filtered_orders fo
-        LEFT JOIN product_lines pl ON pl.order_id = fo.id
-        GROUP BY fo.type
-    )
+order_stats AS (
+    SELECT
+        fo.type,
+        COUNT(DISTINCT fo.id)::int AS orders,
+        COALESCE(SUM(pl.line_revenue), 0::double precision)  AS revenue,
+        COALESCE(SUM(pl.total_products), 0::double precision) AS products,
+        SUM(
+          CASE 
+            WHEN fo.soups IS NOT NULL AND fo.soups <> 0 
+            THEN fo.soups::double precision
+            ELSE pl.soups
+          END
+        ) AS soups,
+        SUM(
+          CASE 
+            WHEN fo.rices IS NOT NULL AND fo.rices <> 0 
+            THEN fo.rices::double precision
+            ELSE pl.rices
+          END
+        ) AS rices,
+        SUM(
+          CASE 
+            WHEN fo.salads IS NOT NULL AND fo.salads <> 0 
+            THEN fo.salads::double precision
+            ELSE pl.salads
+          END
+        ) AS salads,
+        SUM(pl.rice_mass) AS rice
+    FROM filtered_orders fo
+    LEFT JOIN product_lines pl ON pl.order_id = fo.id
+    GROUP BY fo.type
+)
+
 
 SELECT
     os.type,
@@ -112,13 +112,13 @@ SELECT
     os.rices,
     os.salads,
     os.rice,
-    (os.revenue / NULLIF(os.orders,0))::double precision AS "revenuePerOrder",
-    (os.orders   / nd.cnt)::double precision             AS "ordersPerDay",
-    (os.revenue  / nd.cnt)::double precision             AS "revenuePerDay",
-    (os.products / nd.cnt)::double precision             AS "productsPerDay",
-    (os.soups    / nd.cnt)::double precision             AS "soupsPerDay",
-    (os.rices    / nd.cnt)::double precision             AS "ricesPerDay",
-    (os.salads   / nd.cnt)::double precision             AS "saladsPerDay",
-    (os.rice     / nd.cnt)::double precision             AS "ricePerDay"
+    (os.revenue::double precision / NULLIF(os.orders,0)::double precision)      AS "revenuePerOrder",
+    (os.orders::double precision / nd.cnt::double precision)                    AS "ordersPerDay",
+    (os.revenue::double precision / nd.cnt::double precision)                   AS "revenuePerDay",
+    (os.products::double precision / nd.cnt::double precision)                  AS "productsPerDay",
+    (os.soups::double precision / nd.cnt::double precision)                     AS "soupsPerDay",
+    (os.rices::double precision / nd.cnt::double precision)                     AS "ricesPerDay",
+    (os.salads::double precision / nd.cnt::double precision)                    AS "saladsPerDay",
+    (os.rice::double precision / nd.cnt::double precision)                      AS "ricePerDay"
 FROM order_stats os
 CROSS JOIN num_days nd;

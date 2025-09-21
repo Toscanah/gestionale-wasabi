@@ -8,7 +8,7 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import FormFields from "../FormFields";
 import { formSchema, getCategoryFields } from "./form";
 import { CategoryWithOptions } from "@/app/(site)/lib/shared";
-import { Option } from "@/prisma/generated/zod";
+import { Option } from "@/prisma/generated/schemas";
 import dynamic from "next/dynamic";
 
 const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {

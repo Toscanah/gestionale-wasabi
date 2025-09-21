@@ -101,7 +101,7 @@ export default function CustomersStats() {
           <div className="w-full flex gap-4 items-center justify-end">
             <ResetFiltersButton
               onReset={handleReset}
-              show={ranks.length !== allRanks.length || !!period?.from || !!period?.to}
+              show={ranks.length !== allRanks.length || !!period?.from || !!period?.to || !!debouncedQuery}
             />
   
             <SortingMenu
@@ -118,10 +118,10 @@ export default function CustomersStats() {
           table={table}
           page={page}
           pageSize={pageSize}
-          pageCount={Math.ceil(totalCount / pageSize)}
+          pageCount={Math.ceil(totalCount / (pageSize ?? totalCount))}
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
-          totalCount={`${totalCount} clienti totali`}
+          totalCount={totalCount}
         />
 
         <GoBack path="/home" />

@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
-import { PaymentsSummaryData } from "@/app/(site)/lib/services/payments/calculatePaymentsSummary";
 import { DateRange } from "react-day-picker";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
+import { PaymentContracts } from "@/app/(site)/lib/shared";
 
 interface PrintSummaryProps {
-  summaryData: PaymentsSummaryData;
+  summaryData: PaymentContracts.GetSummary.Output;
   period: DateRange | undefined;
 }
 
 export default function PrintSummary({
   summaryData,
   period,
-  disabled
+  disabled,
 }: PrintSummaryProps & { disabled: boolean }) {
   const { printPaymentSummary } = usePrinter();
   const parsedDate = formatDateFilter("range", period);

@@ -7,13 +7,13 @@ import {
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
-import { AnyOrder, PaymentContract } from "@/app/(site)/lib/shared";
 import { randomUUID } from "crypto";
+import { PaymentContracts } from "../../shared";
 
 export default async function payOrder({
   payments,
   productsToPay,
-}: PaymentContract["Requests"]["PayOrder"]): Promise<AnyOrder> {
+}: PaymentContracts.PayOrder.Input): Promise<PaymentContracts.PayOrder.Output> {
   if (payments.length === 0) {
     throw new Error("No payments passed");
   }
@@ -74,13 +74,9 @@ export default async function payOrder({
         select: { ledgers: true, id: true },
       });
 
-      console.log(engagements)
-
       const reEnableIds = engagements
         .filter((e) => e.ledgers.every((l) => l.status !== EngagementLedgerStatus.ISSUED))
         .map((e) => e.id);
-
-        console.log(reEnableIds)
 
       if (reEnableIds.length > 0) {
         await tx.engagement.updateMany({

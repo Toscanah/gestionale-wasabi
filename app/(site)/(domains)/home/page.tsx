@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { WasabiProvider } from "../../context/WasabiContext";
 import { OrderType } from "@prisma/client";
 import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "@/app/(site)/lib/shared";
 import HomePage from "./HomePage";
-import fetchRequest from "../../lib/api/fetchRequest";
+import { trpc } from "@/lib/server/client";
+import { ordersAPI } from "@/lib/server/api";
 
 export type BuildOrderState<TTable, THome, TPickup> = {
   [OrderType.TABLE]: TTable;
@@ -18,81 +18,48 @@ type Orders = BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>;
 type UpdateStateAction = "update" | "delete" | "add";
 
 export default function HomeWrapper() {
-  const [orders, setOrders] = useState<Orders>({
-    [OrderType.TABLE]: [],
-    [OrderType.HOME]: [],
-    [OrderType.PICKUP]: [],
-  });
+  const utils = trpc.useUtils();
 
-  const [loadings, setLoadings] = useState<BuildOrderState<boolean, boolean, boolean>>({
-    [OrderType.TABLE]: true,
-    [OrderType.HOME]: true,
-    [OrderType.PICKUP]: true,
-  });
+  const { data: homeOrders = [], isLoading: homeLoading } = ordersAPI.getHomeOrders.useQuery();
 
-  // DO NOT CHANGE! THIS IS SO DELICATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) =>
-    setOrders((prevOrders) => {
-      const existingOrders = prevOrders[order.type] || [];
+  const { data: pickupOrders = [], isLoading: pickupLoading } =
+    ordersAPI.getPickupOrders.useQuery();
 
-      const actions: Record<UpdateStateAction, () => typeof prevOrders> = {
-        update: () => ({
-          ...prevOrders,
-          [order.type]: existingOrders.map((existingOrder) =>
-            existingOrder.id === order.id ? order : existingOrder
-          ),
-        }),
+  const { data: tableOrders = [], isLoading: tableLoading } = ordersAPI.getTableOrders.useQuery();
 
-        delete: () => ({
-          ...prevOrders,
-          [order.type]: existingOrders.filter((existingOrder) => existingOrder.id !== order.id),
-        }),
-
-        add: () => ({
-          ...prevOrders,
-          [order.type]: [...existingOrders, order],
-        }),
-      };
-
-      return actions[action]?.() ?? prevOrders;
-    });
-
-  const fetchOrdersByType = async <T,>(type: OrderType): Promise<T> =>
-    await fetchRequest<T>("GET", "/api/orders", "getOrdersByType", {
-      type,
-    });
-
-  const fetchAllOrders = async () => {
-    setLoadings({
-      [OrderType.HOME]: true,
-      [OrderType.PICKUP]: true,
-      [OrderType.TABLE]: true,
-    });
-
-    const [home, pickup, table] = await Promise.all([
-      fetchOrdersByType<HomeOrder[]>(OrderType.HOME),
-      fetchOrdersByType<PickupOrder[]>(OrderType.PICKUP),
-      fetchOrdersByType<TableOrder[]>(OrderType.TABLE),
-    ]);
-
-    // await new Promise((r) => setTimeout(r, 2000));
-
-    setOrders({
-      [OrderType.HOME]: home,
-      [OrderType.PICKUP]: pickup,
-      [OrderType.TABLE]: table,
-    });
-
-    setLoadings({
-      [OrderType.HOME]: false,
-      [OrderType.PICKUP]: false,
-      [OrderType.TABLE]: false,
-    });
+  const orders: Orders = {
+    [OrderType.HOME]: homeOrders,
+    [OrderType.PICKUP]: pickupOrders,
+    [OrderType.TABLE]: tableOrders,
   };
 
-  useEffect(() => {
-    fetchAllOrders();
-  }, []);
+  const loadings = {
+    [OrderType.HOME]: homeLoading,
+    [OrderType.PICKUP]: pickupLoading,
+    [OrderType.TABLE]: tableLoading,
+  };
+
+  const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) => {
+    const cacheUpdaters: Record<OrderType, (updater: (prev: any[]) => any[]) => void> = {
+      [OrderType.HOME]: (updater: (prev: HomeOrder[]) => HomeOrder[]) =>
+        utils.orders.getHomeOrders.setData(undefined, (prev = []) => updater(prev)),
+      [OrderType.PICKUP]: (updater: (prev: PickupOrder[]) => PickupOrder[]) =>
+        utils.orders.getPickupOrders.setData(undefined, (prev = []) => updater(prev)),
+      [OrderType.TABLE]: (updater: (prev: TableOrder[]) => TableOrder[]) =>
+        utils.orders.getTableOrders.setData(undefined, (prev = []) => updater(prev)),
+    };
+
+    const updateFn = (prev: AnyOrder[]) => {
+      const actions: Record<UpdateStateAction, () => AnyOrder[]> = {
+        update: () => prev.map((o) => (o.id === order.id ? order : o)),
+        delete: () => prev.filter((o) => o.id !== order.id),
+        add: () => [...prev, order],
+      };
+      return actions[action]();
+    };
+
+    cacheUpdaters[order.type](updateFn);
+  };
 
   return (
     <WasabiProvider updateGlobalState={updateGlobalState}>

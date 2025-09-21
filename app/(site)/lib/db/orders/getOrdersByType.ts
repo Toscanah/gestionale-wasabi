@@ -1,6 +1,6 @@
 import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
 import prisma from "../db";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderContracts } from "@/app/(site)/lib/shared";
 import {
   engagementsInclude,
   homeOrderInclude,
@@ -8,7 +8,11 @@ import {
   productInOrderInclude,
 } from "../includes";
 
-export default async function getOrdersByType({ type }: { type: OrderType }): Promise<AnyOrder[]> {
+export default async function getOrdersByType({
+  type,
+}: {
+  type: OrderType;
+}): Promise<OrderContracts.Common.AnyOrder[]> {
   const orders = await prisma.order.findMany({
     include: {
       products: {

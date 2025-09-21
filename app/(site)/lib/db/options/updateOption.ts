@@ -1,8 +1,10 @@
-import { Option } from "@prisma/client";
 import prisma from "../db";
 import { categoriesInclude } from "../includes";
+import { OptionContracts } from "../../shared";
 
-export default async function updateOption({ option }: { option: Option }) {
+export default async function updateOption({
+  option,
+}: OptionContracts.Update.Input): Promise<OptionContracts.Update.Output> {
   return await prisma.option.update({
     where: {
       id: option.id,

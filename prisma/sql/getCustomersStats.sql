@@ -26,7 +26,7 @@ WITH
         SELECT
             co.customer_id,
             COUNT(DISTINCT co.order_id) AS total_orders,
-            COALESCE(SUM(pio.quantity * pio.frozen_price), 0) AS total_spent,
+            COALESCE(SUM(pio.quantity::double precision * pio.frozen_price::double precision), 0) AS total_spent,
             MIN(co.created_at) AS first_order_at,
             MAX(co.created_at) AS last_order_at
         FROM
@@ -46,7 +46,8 @@ SELECT
     COALESCE(os.total_spent, 0)::double precision AS "totalSpent",
     COALESCE(
         CASE
-            WHEN os.total_orders > 0 THEN (os.total_spent / os.total_orders)::double precision
+            WHEN os.total_orders > 0 THEN 
+                (os.total_spent::double precision / os.total_orders::double precision)
         END,
         0
     ) AS "averageOrder",
@@ -62,7 +63,8 @@ SELECT
     COALESCE(os.total_orders, 0)::int AS "frequency",
     COALESCE(
         CASE
-            WHEN os.total_orders > 0 THEN (os.total_spent / os.total_orders)::double precision
+            WHEN os.total_orders > 0 THEN 
+                (os.total_spent::double precision / os.total_orders::double precision)
         END,
         0
     ) AS "monetary"

@@ -1,10 +1,9 @@
-import { AddressContract } from "../../shared";
+import { AddressContracts } from "../../shared";
 import prisma from "../db";
-import { Address } from "@prisma/client";
 
 export default async function createAddress({
   address,
-}: AddressContract["Requests"]["CreateAddress"]): Promise<Address> {
+}: AddressContracts.Create.Input): Promise<AddressContracts.Create.Output> {
   return await prisma.address.create({
     data: {
       civic: address.civic,

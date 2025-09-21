@@ -9,14 +9,16 @@ import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
 import useCsvExport from "@/app/(site)/hooks/useCsvExport";
 import { OrderFilters } from "@/app/(site)/hooks/statistics/sectionReducer";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
-import { MetricsResult, OrderStatsMetrics, OrderStatsResults, SHIFT_LABELS, ShiftFilterValue } from "@/app/(site)/lib/shared";
 import { Weekday, WEEKDAY_LABELS } from "@/app/(site)/components/ui/filters/select/WeekdaysFilter";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import averageStatsColumns from "./averageStatsColumns";
+import { OrdersStats, SHIFT_LABELS } from "@/app/(site)/lib/shared";
+
+type MetricsResult = OrdersStats.Metrics;
 
 interface SectionResultsProps {
-  results: OrderStatsResults | null;
+  results: OrdersStats.Results | null;
   isLoading: boolean;
   filters: OrderFilters;
 }
@@ -25,39 +27,37 @@ export type GeneralResultRecord = {
   title: string;
   ordersPct: string;
   revenuePct: string;
-} & OrderStatsMetrics;
+} & MetricsResult;
 
 export type AverageResultRecord = {
   title: string;
   avgPerOrder: number;
-} & {
-  [K in keyof OrderStatsMetrics as `${K}PerDay`]: number;
-};
+} & OrdersStats.Daily;
 
 type CombinedResultRecord = GeneralResultRecord | AverageResultRecord;
 
-const CSV_HEADERS: Record<keyof (GeneralResultRecord & AverageResultRecord), string> = {
-  title: "Tipo ordine",
-  orders: "Ordini",
-  ordersPct: "% Ordini",
-  revenue: "Incasso",
-  revenuePct: "% Incasso",
-  avgPerOrder: "Scontrino medio",
-  ordersPerDay: "Ordini/giorno",
-  revenuePerDay: "Incasso/giorno",
-  productsPerDay: "Prodotti/giorno",
-  products: "Prodotti",
-  soups: "Zuppe",
-  rices: "Porzioni riso",
-  salads: "Insalate",
-  rice: "Riso cucinato",
+// const CSV_HEADERS: Record<keyof (GeneralResultRecord & AverageResultRecord), string> = {
+//   title: "Tipo ordine",
+//   orders: "Ordini",
+//   ordersPct: "% Ordini",
+//   revenue: "Incasso",
+//   revenuePct: "% Incasso",
+//   avgPerOrder: "Scontrino medio",
+//   // ordersPerDay: "Ordini/giorno",
+//   // revenuePerDay: "Incasso/giorno",
+//   // productsPerDay: "Prodotti/giorno",
+//   products: "Prodotti",
+//   soups: "Zuppe",
+//   rices: "Porzioni riso",
+//   salads: "Insalate",
+//   rice: "Riso cucinato",
 
-  // --- new per-day stats ---
-  soupsPerDay: "Zuppe/giorno",
-  ricesPerDay: "Porzioni riso/giorno",
-  saladsPerDay: "Insalate/giorno",
-  ricePerDay: "Riso cucinato/giorno",
-};
+//   // --- new per-day stats ---
+//   // soupsPerDay: "Zuppe/giorno",
+//   // ricesPerDay: "Porzioni riso/giorno",
+//   // saladsPerDay: "Insalate/giorno",
+//   // ricePerDay: "Riso cucinato/giorno",
+// };
 
 export default function SectionResults({ results, isLoading, filters }: SectionResultsProps) {
   const [showGeneral, setShowGeneral] = React.useState(false);
@@ -81,7 +81,7 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
     const pct = (part: number, total: number) =>
       total > 0 ? `${roundToTwo((part / total) * 100)}%` : "0%";
 
-    const makeGeneral = (title: string, r: MetricsResult): GeneralResultRecord => ({
+    const makeGeneral = (title: string, r: OrdersStats.Result): GeneralResultRecord => ({
       title,
       orders: r.orders,
       ordersPct: pct(r.orders, totalOrders),
@@ -113,16 +113,12 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
       },
     ];
 
-    const makeAverage = (title: string, r: MetricsResult): AverageResultRecord => ({
+    const makeAverage = (title: string, r: OrdersStats.Result): AverageResultRecord => ({
       title,
       avgPerOrder: r.revenuePerOrder,
-      ordersPerDay: r.perDay.orders,
-      revenuePerDay: r.perDay.revenue,
-      productsPerDay: r.perDay.products,
-      soupsPerDay: r.perDay.soups,
-      ricesPerDay: r.perDay.rices,
-      saladsPerDay: r.perDay.salads,
-      ricePerDay: r.perDay.rice,
+      perDay: {
+        ...r.perDay,
+      },
     });
 
     // Average stats
@@ -133,24 +129,25 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
       {
         title: "Tutti",
         avgPerOrder: totalOrders > 0 ? totalRevenue / totalOrders : 0,
-        ordersPerDay:
-          results.home.perDay.orders + results.pickup.perDay.orders + results.table.perDay.orders,
-        revenuePerDay:
-          results.home.perDay.revenue +
-          results.pickup.perDay.revenue +
-          results.table.perDay.revenue,
-        productsPerDay:
-          results.home.perDay.products +
-          results.pickup.perDay.products +
-          results.table.perDay.products,
-        soupsPerDay:
-          results.home.perDay.soups + results.pickup.perDay.soups + results.table.perDay.soups,
-        ricesPerDay:
-          results.home.perDay.rices + results.pickup.perDay.rices + results.table.perDay.rices,
-        saladsPerDay:
-          results.home.perDay.salads + results.pickup.perDay.salads + results.table.perDay.salads,
-        ricePerDay:
-          results.home.perDay.rice + results.pickup.perDay.rice + results.table.perDay.rice,
+        perDay: {
+          orders:
+            results.home.perDay.orders + results.pickup.perDay.orders + results.table.perDay.orders,
+          revenue:
+            results.home.perDay.revenue +
+            results.pickup.perDay.revenue +
+            results.table.perDay.revenue,
+          products:
+            results.home.perDay.products +
+            results.pickup.perDay.products +
+            results.table.perDay.products,
+          soups:
+            results.home.perDay.soups + results.pickup.perDay.soups + results.table.perDay.soups,
+          rices:
+            results.home.perDay.rices + results.pickup.perDay.rices + results.table.perDay.rices,
+          salads:
+            results.home.perDay.salads + results.pickup.perDay.salads + results.table.perDay.salads,
+          rice: results.home.perDay.rice + results.pickup.perDay.rice + results.table.perDay.rice,
+        },
       },
     ];
 
@@ -181,11 +178,11 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
     Orario: formatTimeWindow(filters.timeWindow),
   };
 
-  const { downloadCsv } = useCsvExport<CombinedResultRecord>(
-    [...generalSections, ...averageSections],
-    CSV_HEADERS,
-    parsedFilters
-  );
+  // const { downloadCsv } = useCsvExport<CombinedResultRecord>(
+  //   [...generalSections, ...averageSections],
+  //   CSV_HEADERS,
+  //   parsedFilters
+  // );
 
   // ----- TABLES -----
   const { tableData: generalData, tableColumns: generalColumns } = useSkeletonTable({
@@ -244,9 +241,14 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
           </Label>
         </div>
 
-        <Button onClick={() => downloadCsv()} className="ml-auto" disabled={isLoading || (!showGeneral && !showAverage)}>
+        {/* <Button
+          onClick={() => downloadCsv()}
+          className="ml-auto"
+          // disabled={isLoading || (!showGeneral && !showAverage)}
+          disabled
+        >
           Scarica dati
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

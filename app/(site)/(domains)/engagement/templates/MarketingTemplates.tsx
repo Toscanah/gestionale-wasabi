@@ -1,15 +1,12 @@
 import { Accordion } from "@/components/ui/accordion";
 import useEngagementTemplates from "../../../hooks/engagement/templates/useEngagementTemplates";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  EngagementContract,
-  ParsedEngagementTemplate,
-  TemplatePayloadDraft,
-} from "../../../lib/shared";
+import { EngagementContracts, ParsedEngagementTemplate } from "../../../lib/shared";
 import TemplateContentCreate from "./components/content/TemplateContentCreate";
 import TemplateContentEdit from "./components/content/TemplateContentEdit";
 import TemplateContentView from "./components/content/TemplateContentView";
 import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
+import { trpc } from "@/lib/server/client";
 
 interface MarketingTemplatesProps {
   selection?: boolean;
@@ -27,7 +24,6 @@ export default function MarketingTemplates({
   const {
     isLoading,
     templates,
-    setTemplates,
     draftTemplate,
     setDraftTemplate,
     updateTemplate,
@@ -36,6 +32,8 @@ export default function MarketingTemplates({
     resetDraftTemplate,
   } = useEngagementTemplates();
 
+  const utils = trpc.useUtils();
+
   const filteredTemplates = filterFn ? templates.filter(filterFn) : templates;
 
   const handleCheckboxChange = (templateId: number) => {
@@ -43,20 +41,17 @@ export default function MarketingTemplates({
     onSelectTemplate?.(templateId, !isSelected);
   };
 
-  const handleTemplateDelete = async (templateId: number) => {
-    await deleteTemplate(templateId);
-    setTemplates((prev) => prev.filter((t) => t.id !== templateId));
-  };
+  const handleTemplateDelete = async (templateId: number) => await deleteTemplate(templateId);
 
   const handleTemplateSave = async (updatedTemplate: ParsedEngagementTemplate) => {
     updateTemplate(updatedTemplate);
   };
 
-  const handleTemplateCreate = async (newTemplate: TemplatePayloadDraft) =>
+  const handleTemplateCreate = async (newTemplate: EngagementContracts.TemplatePayloadDraft) =>
     await createTemplate(newTemplate);
 
   const handleNewTemplateChange = (
-    updatedDraft: Partial<EngagementContract["Requests"]["CreateEngagementTemplate"]>
+    updatedDraft: Partial<EngagementContracts.TemplatePayloadDraft>
   ) => {
     setDraftTemplate((prev) => ({
       ...prev,
@@ -69,18 +64,21 @@ export default function MarketingTemplates({
   };
 
   const handleTemplateChange = (templateId: number, updates: Partial<ParsedEngagementTemplate>) => {
-    setTemplates((prev) =>
-      prev.map((t) => {
-        if (t.id !== templateId) return t;
-        return {
-          ...t,
-          ...updates,
-          payload: {
-            ...t.payload,
-            ...(updates.payload ?? {}),
-          },
-        };
-      })
+    utils.engagements.getTemplates.setData(undefined, (old) =>
+      old
+        ? old.map((t) =>
+            t.id === templateId
+              ? {
+                  ...t,
+                  ...updates,
+                  payload: {
+                    ...t.payload,
+                    ...(updates.payload ?? {}),
+                  },
+                }
+              : t
+          )
+        : old
     );
   };
 

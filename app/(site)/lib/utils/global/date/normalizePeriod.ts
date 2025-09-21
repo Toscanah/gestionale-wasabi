@@ -1,21 +1,14 @@
+import z from "zod";
+import { PeriodRequestSchema } from "../../../shared";
+
 /**
- * Normalizes a period input into an object with `from` and `to` Date properties.
+ * Normalizes a period input into a standardized object containing `from` and `to` Date properties.
  *
- * @param period - A `Date` object representing a single date, or an object with `from` and optional `to` Date properties.
- * @returns An object with `from` and `to` properties as `Date` instances, or `undefined` if no period is provided.
- *
- * @example
- * normalizePeriod(new Date('2024-01-01'));
- * // Returns: { from: Date('2024-01-01'), to: Date('2024-01-01') }
- *
- * normalizePeriod({ from: new Date('2024-01-01'), to: new Date('2024-01-31') });
- * // Returns: { from: Date('2024-01-01'), to: Date('2024-01-31') }
- *
- * normalizePeriod({ from: new Date('2024-01-01') });
- * // Returns: { from: Date('2024-01-01'), to: Date('2024-01-01') }
+ * @param period - The period to normalize. Can be undefined, a Date, or an object with `from` and optional `to` properties.
+ * @returns An object with `from` and `to` Date properties if the input is valid, or `undefined` if no period is provided.
  */
 export default function normalizePeriod(
-  period?: Date | { from: Date; to?: Date }
+  period?: z.infer<typeof PeriodRequestSchema.shape.period>
 ): { from: Date; to: Date } | undefined {
   if (!period) return undefined;
   if (period instanceof Date) return { from: period, to: period };

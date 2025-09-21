@@ -23,13 +23,14 @@ export namespace OrdersStats {
   });
   export type Average = z.infer<typeof Average>;
 
-  export const Result = Metrics.merge(Daily).merge(Average);
+  export const Result = Metrics.and(Daily).and(Average);
   export type Result = z.infer<typeof Result>;
 
   const lowerOrderTypes = Object.values(OrderType).map(
     (t) => t.toLowerCase() as Lowercase<typeof t>
   );
   export const LowerOrderTypeEnum = z.enum(lowerOrderTypes);
+  export type LowerOrderTypeEnum = z.infer<typeof LowerOrderTypeEnum>;
 
   export const Results = z.record(LowerOrderTypeEnum, Result);
   export type Results = z.infer<typeof Results>;

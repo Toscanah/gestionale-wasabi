@@ -1,8 +1,10 @@
-import { CategoryWithOptions } from "@/app/(site)/lib/shared";
+import { CategoryContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { optionsInclude } from "../includes";
 
-export default async function getCategories(): Promise<CategoryWithOptions[]> {
+export default async function getCategories(
+  input: CategoryContracts.GetAll.Input
+): Promise<CategoryContracts.GetAll.Output> {
   return await prisma.category.findMany({
     include: optionsInclude,
   });

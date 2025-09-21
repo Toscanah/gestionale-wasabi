@@ -1,12 +1,12 @@
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import { PaymentsSummaryData } from "@/app/(site)/lib/services/payments/calculatePaymentsSummary";
+import { PaymentContracts } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 
 export default function PaymentsSummary({
   summaryData,
-  disabled
-}: { summaryData: PaymentsSummaryData } & { disabled: boolean }) {
+  disabled,
+}: { summaryData: PaymentContracts.GetSummary.Output } & { disabled: boolean }) {
   const { totals, totalAmount, rawTotalAmount, centsDifference } = summaryData;
 
   const total = roundToTwo(totalAmount);

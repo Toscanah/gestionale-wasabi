@@ -1,13 +1,11 @@
-import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
-import { AnyOrder, PickupOrder } from "@/app/(site)/lib/shared"
-;
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import WhenSelector from "../../../../components/ui/filters/select/WhenSelector";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import useFocusCycle from "../../../../hooks/focus/useFocusCycle";
-import fetchRequest from "../../../../lib/api/fetchRequest";
 import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Plus, Question } from "@phosphor-icons/react";
@@ -16,6 +14,7 @@ import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
 import { cn } from "@/lib/utils";
+import { trpc } from "@/lib/server/client";
 interface PickupProps {
   setOrder: Dispatch<SetStateAction<AnyOrder>>;
   order: AnyOrder;
@@ -32,26 +31,23 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
   const [phone, setPhone] = useState<string>("");
   const [when, setWhen] = useState<string>("immediate");
 
+  const createPickupMutation = trpc.orders.createPickup.useMutation({
+    onSuccess: (pickupOrder) => {
+      if (pickupOrder.isNewOrder) {
+        toastSuccess("Ordine creato con successo");
+        updateGlobalState(pickupOrder.order, "add");
+      }
+      setOrder(pickupOrder.order);
+    },
+  });
+
   const createPickupOrder = () => {
     if (name === "") {
       return toastError("L'ordine deve avere un nome di un cliente");
     }
 
     const content = { name, when, phone };
-
-    fetchRequest<{ order: PickupOrder; isNewOrder: boolean }>(
-      "POST",
-      "/api/orders/",
-      "createPickupOrder",
-      { ...content }
-    ).then((pickupOrder) => {
-      if (pickupOrder.isNewOrder) {
-        toastSuccess("Ordine creato con successo");
-        updateGlobalState(pickupOrder.order, "add");
-      }
-
-      setOrder(pickupOrder.order);
-    });
+    createPickupMutation.mutate(content);
   };
 
   return (
@@ -94,7 +90,6 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
                 //   ref.value = "";
                 // }
               }}
-              value={name}
               defaultValue={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -160,11 +155,8 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
               ref={(ref) => {
                 addRefs(ref);
-                // if (ref) {
-                //   ref.value = "";
-                // }
+
               }}
-              value={phone}
               defaultValue={phone}
               onChange={(e) => setPhone(e.target.value)}
               onKeyDown={handleKeyDown}

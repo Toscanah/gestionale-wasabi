@@ -75,13 +75,13 @@ export default function CalendarFilter({
         ? undefined
         : () => handleDateFilter(defaultValue as Date | undefined)
       : isEqualDateFilter(dateFilter, defaultValue)
-      ? undefined
-      : () =>
-          handleDateFilter(
-            defaultValue == undefined
-              ? { from: undefined, to: undefined }
-              : (defaultValue as DateRange)
-          );
+        ? undefined
+        : () =>
+            handleDateFilter(
+              defaultValue == undefined
+                ? { from: undefined, to: undefined }
+                : (defaultValue as DateRange)
+            );
 
   return (
     <WasabiPopover
@@ -132,7 +132,7 @@ export default function CalendarFilter({
             }}
             groups={[
               {
-                options: [...(YEARS_SINCE_START ?? [])].map((y) => ({
+                options: [...YEARS_SINCE_START].map((y) => ({
                   label: String(y),
                   value: String(y),
                 })),
@@ -149,8 +149,8 @@ export default function CalendarFilter({
           initialFocus
           defaultMonth={
             mode === "range"
-              ? (dateFilter as DateRange)?.from ?? new Date()
-              : (dateFilter as Date) ?? new Date()
+              ? ((dateFilter as DateRange)?.from ?? new Date())
+              : ((dateFilter as Date) ?? new Date())
           }
           selected={dateFilter}
           onSelect={(range: any) => {

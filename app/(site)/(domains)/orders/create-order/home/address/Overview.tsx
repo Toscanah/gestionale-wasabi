@@ -1,17 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Address } from "@prisma/client";
-import { Dispatch, KeyboardEvent, RefObject, SetStateAction, useState } from "react";
+import { KeyboardEvent, RefObject, useCallback, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { HomeOrder } from "@/app/(site)/lib/shared"
-;
 import { Badge } from "@/components/ui/badge";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
+import { debounce } from "lodash";
 
 interface OverviewProps {
   phoneRef: RefObject<HTMLInputElement>;
@@ -57,6 +54,20 @@ export default function Overview({
     }
   }, [orderDisabled]);
 
+  const handlePhoneChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setPhone(e.target.value);
+    }, 300),
+    []
+  );
+
+  const handleDoorbellChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setDoorbell(e.target.value);
+    }, 300),
+    []
+  );
+
   return (
     <div className="h-full flex flex-col w-[30%] max-w-[30%]  min-w-[30%] justify-between">
       <div className="flex w-full justify-center flex-col space-y-4">
@@ -69,10 +80,9 @@ export default function Overview({
           ref={phoneRef}
           className="w-full text-center text-3xl h-16"
           defaultValue={phone}
-          value={phone}
           type="number"
           onKeyDown={handleKeyDown}
-          onChange={(e: any) => setPhone(e.target.value)}
+          onChange={handlePhoneChange}
         />
 
         <Label htmlFor="customer-name" className="text-xl">
@@ -84,11 +94,10 @@ export default function Overview({
           ref={doorbellRef}
           className="w-full text-center text-3xl h-16"
           defaultValue={doorbell}
-          value={doorbell}
           type="text"
           disabled
           onKeyDown={handleKeyDown}
-          onChange={(e: any) => setDoorbell(e.target.value)}
+          onChange={handleDoorbellChange}
         />
       </div>
 

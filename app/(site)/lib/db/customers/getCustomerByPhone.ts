@@ -1,15 +1,17 @@
-import { Customer } from "@prisma/client";
 import prisma from "../db";
+import { CustomerContracts } from "../../shared";
 
 export default async function getCustomerByPhone({
   phone,
-}: {
-  phone: string;
-}): Promise<Customer | null> {
+}: CustomerContracts.GetByPhone.Input): Promise<CustomerContracts.GetByPhone.Output> {
   const phoneRecord = await prisma.phone.findUnique({
     where: { phone },
     select: { customer: true },
   });
 
-  return phoneRecord?.customer ?? null;
+  if (!phoneRecord || !phoneRecord.customer) {
+    return null;
+  }
+
+  return phoneRecord.customer;
 }

@@ -1,31 +1,35 @@
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Category } from "@prisma/client";
 import { DateRange } from "react-day-picker";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { ProductWithStats } from "@/app/(site)/lib/shared/types/product-with-stats";
-import { CategoryContract, ProductContract, ShiftFilterValue } from "@/app/(site)/lib/shared"; // same enum used elsewhere
+import {
+  ProductContracts,
+  ProductStatsSortField,
+  ProductWithStats,
+  ShiftFilterValue,
+} from "@/app/(site)/lib/shared"; // same enum used elsewhere
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";
+import { trpc } from "@/lib/server/client";
+import { SortField } from "../../components/ui/sorting/SortingMenu";
+import useQueryFilter from "../table/useGlobalFilter";
+
+export const PRODUCT_STATS_SORT_MAP: Record<string, ProductStatsSortField> = {
+  Quantità: "unitsSold",
+  Totale: "revenue",
+  "Totale riso": "totalRice",
+} as const;
 
 export default function useProductsStats() {
   const [period, setPeriod] = useState<DateRange | undefined>(TODAY_PERIOD);
   const [shift, setShift] = useState<ShiftFilterValue>(ShiftFilterValue.ALL);
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
 
-  const { data: allCategories = [] } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () =>
-      (
-        await fetchRequest<CategoryContract["Responses"]["GetCategories"]>(
-          "GET",
-          "/api/categories",
-          "getCategories"
-        )
-      ).filter((c) => c.active),
-    staleTime: Infinity,
+  const { inputQuery, setInputQuery, debouncedQuery } = useQueryFilter();
+  const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
+
+  const { data: allCategories = [] } = trpc.categories.getAll.useQuery(undefined, {
+    select: (categories) => categories.filter((c) => c.active),
   });
 
-  const filters: ProductContract["Requests"]["GetProductsWithStats"]["filters"] = useMemo(() => {
+  const filters: NonNullable<ProductContracts.ComputeStats.Input>["filters"] = useMemo(() => {
     const periodFilter = period?.from
       ? { from: period.from, to: period.to ?? period.from }
       : undefined;
@@ -37,12 +41,22 @@ export default function useProductsStats() {
         ? undefined
         : categoryIds;
 
+    const search = debouncedQuery && debouncedQuery.trim() !== "" ? debouncedQuery : undefined;
+
     return {
       period: periodFilter,
       shift: shiftFilter,
       categoryIds: categoryFilter,
+      query: search,
     };
   }, [period, shift, categoryIds, allCategories]);
+
+  const sorting = useMemo(() => {
+    return activeSorts.map((s) => ({
+      field: PRODUCT_STATS_SORT_MAP[s.field as ProductStatsSortField],
+      direction: s.direction,
+    }));
+  }, [activeSorts]);
 
   useEffect(() => {
     if (allCategories.length > 0 && categoryIds.length === 0) {
@@ -50,52 +64,54 @@ export default function useProductsStats() {
     }
   }, [allCategories, categoryIds.length]);
 
-  const { data: shiftBackfill } = useQuery({
-    queryKey: ["shiftBackfill"],
-    queryFn: () => fetchRequest("PATCH", "/api/orders", "updateOrdersShift"),
-    staleTime: Infinity,
-    enabled: Array.isArray(allCategories) && allCategories.length > 0,
-  });
+  const { data: baseProducts } = trpc.products.getAll.useQuery();
 
-  const { data: filteredProducts = [], isLoading } = useQuery({
-    queryKey: ["products-stats", { filters }],
-    queryFn: async (): Promise<ProductWithStats[]> => {
-      return await fetchRequest<ProductWithStats[]>(
-        "POST",
-        "/api/products",
-        "getProductsWithStats",
-        { filters }
-      );
+  const computeQuery = trpc.products.computeStats.useQuery(
+    {
+      filters,
+      sort: sorting,
     },
-    enabled: !!shiftBackfill,
-    staleTime: 1000 * 60 * 5,
-  });
+    {
+      enabled: !!baseProducts,
+      select: (data) => {
+        if (!baseProducts) return [] as ProductWithStats[];
+
+        const baseMap = new Map(baseProducts.map((c) => [c.id, c]));
+
+        return data.productsStats.flatMap((ps) => {
+          const { productId, ...stats } = ps;
+          const base = baseMap.get(productId);
+          if (!base) return [];
+          return { ...base, stats };
+        }) as ProductWithStats[];
+      },
+    }
+  );
 
   const handleReset = () => {
     setPeriod(TODAY_PERIOD);
     setShift(ShiftFilterValue.ALL);
     setCategoryIds(allCategories.map((c) => c.id));
+    setInputQuery("");
   };
 
-  const showReset =
-    shift !== ShiftFilterValue.ALL ||
-    categoryIds.length !== allCategories.length ||
-    !(
-      period?.from?.getTime() === TODAY_PERIOD.from?.getTime() &&
-      period?.to?.getTime() === TODAY_PERIOD.to?.getTime()
-    );
-
   return {
-    filteredProducts,
+    filteredProducts: computeQuery.data ?? [],
     allCategories,
     categoryIds,
     setCategoryIds,
     shift,
     setShift,
+    debouncedQuery,
+    inputQuery,
+    setInputQuery,
     period,
     setPeriod,
     handleReset,
-    showReset,
-    isLoading,
+    isLoading: computeQuery.isLoading || computeQuery.isFetching,
+    sortingFields: PRODUCT_STATS_SORT_MAP,
+    activeSorts,
+    setActiveSorts,
+    parsedFilters: filters,
   };
 }

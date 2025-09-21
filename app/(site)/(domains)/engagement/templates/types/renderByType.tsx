@@ -1,9 +1,9 @@
 import {
+  EngagementContracts,
   ImagePayload,
   MessagePayload,
   ParsedEngagementPayload,
   QrPayload,
-  TemplatePayloadDraft,
 } from "@/app/(site)/lib/shared";
 import { EngagementType } from "@prisma/client";
 import QRCode from "./QRCode";
@@ -32,7 +32,7 @@ export default function renderByType(
         <Image
           value={(payload as ImagePayload).imageUrl}
           onChange={(selectedImage) =>
-            !disabled && onChange({ selectedImage } as TemplatePayloadDraft)
+            !disabled && onChange({ selectedImage } as EngagementContracts.TemplatePayloadDraft)
           }
           disabled={disabled}
         />

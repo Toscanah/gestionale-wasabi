@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CustomerWithDetails } from "../../lib/shared";
+import { ComprehensiveCustomer } from "../../lib/shared";
 import { EngagementType } from "@prisma/client";
 
 export enum WeekFilterEnum {
@@ -11,14 +11,14 @@ export enum WeekFilterEnum {
 }
 
 interface EngagementFiltersParams {
-  selectedCustomers: CustomerWithDetails[];
+  selectedCustomers: ComprehensiveCustomer[];
 }
 
 export function useEngagementFilters({ selectedCustomers }: EngagementFiltersParams) {
   const [weekFilter, setWeekFilter] = useState<WeekFilterEnum>(WeekFilterEnum.THIS_WEEK);
   const [activeTypes, setActiveTypes] = useState<EngagementType[]>(Object.values(EngagementType));
-  const [filteredLeftCustomers, setFilteredLeftCustomers] = useState<CustomerWithDetails[]>([]);
-  const [filteredRightCustomers, setFilteredRightCustomers] = useState<CustomerWithDetails[]>([]);
+  const [filteredLeftCustomers, setFilteredLeftCustomers] = useState<ComprehensiveCustomer[]>([]);
+  const [filteredRightCustomers, setFilteredRightCustomers] = useState<ComprehensiveCustomer[]>([]);
 
   const calculateStartAndEndOfWeek = (filter: WeekFilterEnum) => {
     const today = new Date();
@@ -41,7 +41,7 @@ export function useEngagementFilters({ selectedCustomers }: EngagementFiltersPar
     return { startOfWeek, endOfWeek };
   };
 
-  const applyWeekFilter = (allCustomers: CustomerWithDetails[], newFilter: WeekFilterEnum) => {
+  const applyWeekFilter = (allCustomers: ComprehensiveCustomer[], newFilter: WeekFilterEnum) => {
     setWeekFilter(newFilter);
 
     const { startOfWeek, endOfWeek } = calculateStartAndEndOfWeek(newFilter);

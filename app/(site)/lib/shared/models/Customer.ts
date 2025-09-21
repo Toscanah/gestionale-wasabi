@@ -1,45 +1,29 @@
-import {
-  AddressSchema,
-  CustomerSchema,
-  CustomerStatsSchema,
-  EngagementSchema,
-  PhoneSchema,
-  ProductInOrderSchema,
-} from "@/prisma/generated/zod";
+import { AddressSchema, CustomerSchema, PhoneSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
-import {
-  BaseOrderSchema,
-  HomeOrderWithOrderSchema,
-  MinimalOrderSchema,
-  PickupOrderWithOrderSchema,
-} from "./order";
+import { HomeOrderWithOrderSchema, LiteOrderSchema, PickupOrderWithOrderSchema } from "./order";
 import { EngagementWithDetailsSchema } from "./engagement";
 import { RFMCustomerSegmentSchema } from "./rfm";
-import { getCustomersStats, getOrdersStats } from "@prisma/client/sql";
-import { RFMCustomerSegment } from "../types/rfm";
-import { GetCustomersStatsSchema } from "../schemas/customer";
-
-export const CustomerWithAddressesAndOrdersSchema = CustomerSchema.extend({
-  addresses: z.array(AddressSchema),
-  home_orders: z.array(HomeOrderWithOrderSchema),
-  pickup_orders: z.array(PickupOrderWithOrderSchema),
-  phone: PhoneSchema,
-});
-
-export const CustomerWithEngagementSchema = CustomerWithAddressesAndOrdersSchema.extend({
-  engagements: z.array(EngagementWithDetailsSchema),
-});
+import { GetCustomersStatsSchema } from "../schemas/results/getCustomersStats.schema";
 
 export const CustomerWithPhoneSchema = CustomerSchema.extend({
   phone: PhoneSchema,
+});
+
+export const CustomerWithAddresses = CustomerWithPhoneSchema.extend({
+  addresses: z.array(AddressSchema),
 });
 
 export const CustomerWithPhoneAndEngagementSchema = CustomerWithPhoneSchema.extend({
   engagements: z.array(EngagementWithDetailsSchema),
 });
 
-export const CustomerWithAddressesSchema = CustomerWithPhoneSchema.extend({
-  addresses: z.array(AddressSchema),
+export const CustomerWithAddressesAndOrdersSchema = CustomerWithAddresses.extend({
+  home_orders: z.array(HomeOrderWithOrderSchema),
+  pickup_orders: z.array(PickupOrderWithOrderSchema),
+});
+
+export const ComprehensiveCustomerSchema = CustomerWithAddressesAndOrdersSchema.extend({
+  engagements: z.array(EngagementWithDetailsSchema),
 });
 
 export const CustomerStatsOnlySchema = GetCustomersStatsSchema.omit({
@@ -52,17 +36,17 @@ export const CustomerStatsOnlySchema = GetCustomersStatsSchema.omit({
 
 export type CustomerStats = z.infer<typeof CustomerStatsOnlySchema>;
 
-export const CustomerWithStatsSchema = CustomerWithEngagementSchema.extend({
+export const CustomerWithStatsSchema = ComprehensiveCustomerSchema.extend({
   stats: CustomerStatsOnlySchema.omit({ customerId: true }),
 });
 
-export const MinimalCustomerSchema = CustomerSchema.extend({
+export const CustomerWithOrdersSchema = CustomerSchema.extend({
   home_orders: z.array(
     HomeOrderWithOrderSchema.pick({
       id: true,
       order: true,
     }).extend({
-      order: MinimalOrderSchema,
+      order: LiteOrderSchema,
     })
   ),
   pickup_orders: z.array(
@@ -70,7 +54,7 @@ export const MinimalCustomerSchema = CustomerSchema.extend({
       id: true,
       order: true,
     }).extend({
-      order: MinimalOrderSchema,
+      order: LiteOrderSchema,
     })
   ),
 }).pick({
@@ -79,9 +63,8 @@ export const MinimalCustomerSchema = CustomerSchema.extend({
   pickup_orders: true,
 });
 
-export type MinimalCustomer = z.infer<typeof MinimalCustomerSchema>;
+export type CustomerWithOrders = z.infer<typeof CustomerWithOrdersSchema>;
 export type CustomerWithPhone = z.infer<typeof CustomerWithPhoneSchema>;
-export type CustomerWithPhoneAndEngagement = z.infer<typeof CustomerWithPhoneAndEngagementSchema>;
-export type CustomerWithAddresses = z.infer<typeof CustomerWithAddressesSchema>;
-export type CustomerWithDetails = z.infer<typeof CustomerWithEngagementSchema>;
+export type CustomerWithAddresses = z.infer<typeof CustomerWithAddresses>;
+export type ComprehensiveCustomer = z.infer<typeof ComprehensiveCustomerSchema>;
 export type CustomerWithStats = z.infer<typeof CustomerWithStatsSchema>;

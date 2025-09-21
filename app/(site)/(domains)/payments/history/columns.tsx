@@ -1,15 +1,15 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { AnyOrder, HomeOrder, OrderWithPaymentsAndTotals } from "@/app/(site)/lib/shared";
+import { HomeOrder, OrderWithSummedPayments } from "@/app/(site)/lib/shared";
 import { Badge } from "@/components/ui/badge";
 import { OrderType, PlannedPayment } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import fetchRequest from "../../../lib/api/fetchRequest";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
+import { trpcClient } from "@/lib/server/client";
 
-const columns: ColumnDef<OrderWithPaymentsAndTotals>[] = [
+const columns: ColumnDef<OrderWithSummedPayments>[] = [
   ValueColumn({
     header: "Tipo di ordine",
     value: (row) => {
@@ -18,8 +18,8 @@ const columns: ColumnDef<OrderWithPaymentsAndTotals>[] = [
           {row.original.type == OrderType.HOME
             ? "Domicilio"
             : row.original.type == OrderType.PICKUP
-            ? "Asporto"
-            : "Tavolo"}
+              ? "Asporto"
+              : "Tavolo"}
         </Badge>
       );
     },
@@ -35,8 +35,8 @@ const columns: ColumnDef<OrderWithPaymentsAndTotals>[] = [
         (order.type === OrderType.TABLE
           ? order.table_order?.table
           : order.type === OrderType.PICKUP
-          ? order.pickup_order?.name
-          : order.home_order?.address.doorbell) || ""
+            ? order.pickup_order?.name
+            : order.home_order?.address.doorbell) || ""
       ).toLocaleUpperCase();
     },
     accessor: (order) => order.type,
@@ -68,20 +68,20 @@ const columns: ColumnDef<OrderWithPaymentsAndTotals>[] = [
 
   ValueColumn({
     header: "Totale contanti",
-    value: (row) => roundToTwo(row.original.totalCash),
-    accessor: (order) => order.totalCash,
+    value: (row) => roundToTwo(row.original.summedCash),
+    accessor: (order) => order.summedCash,
   }),
 
   ValueColumn({
     header: "Totale carta",
-    value: (row) => roundToTwo(row.original.totalCard),
-    accessor: (order) => order.totalCard,
+    value: (row) => roundToTwo(row.original.summedCard),
+    accessor: (order) => order.summedCard,
   }),
 
   ValueColumn({
     header: "Totale buoni",
-    value: (row) => roundToTwo(row.original.totalVouch),
-    accessor: (order) => order.totalVouch,
+    value: (row) => roundToTwo(row.original.summedVouch),
+    accessor: (order) => order.summedVouch,
   }),
 
   ValueColumn({
@@ -94,12 +94,6 @@ const columns: ColumnDef<OrderWithPaymentsAndTotals>[] = [
     header: "Ristampa",
     action: (row) => <ReprintCell orderId={row.original.id} />,
   }),
-
-  // TableColumn({
-  //   accessorKey: "ordine",
-  //   header: "Ordine",
-  //   cellContent: (row) => <OrderSummary order={row.original} />,
-  // }),
 ];
 
 export default columns;
@@ -108,10 +102,7 @@ function ReprintCell({ orderId }: { orderId: number }) {
   const { printOrder } = usePrinter();
 
   const handleClick = async () => {
-    const order = await fetchRequest<AnyOrder>("GET", "/api/orders/", "getOrderById", {
-      orderId,
-      variant: "allProducts",
-    });
+    const order = await trpcClient.orders.getById.query({ orderId, variant: "allProducts" });
 
     let plannedPayment: PlannedPayment = PlannedPayment.UNKNOWN;
     if (order.type == OrderType.HOME) {

@@ -1,10 +1,10 @@
-import { EngagementLedgerWithDetails, EngagementContract } from "../../../shared";
+import { EngagementContracts } from "../../../shared";
 import prisma from "../../db";
 
 export default async function getEngagementsLedgersByCustomer({
   customerId,
-}: EngagementContract["Requests"]["GetEngagementsLedgersByCustomer"]): Promise<
-  EngagementLedgerWithDetails[]
+}: EngagementContracts.GetLedgersByCustomer.Input): Promise<
+  EngagementContracts.GetLedgersByCustomer.Output
 > {
   return await prisma.engagementLedger.findMany({
     where: {

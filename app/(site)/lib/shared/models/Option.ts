@@ -1,4 +1,8 @@
-import { CategorySchema, OptionInProductOrderSchema, OptionSchema } from "@/prisma/generated/zod";
+import {
+  CategorySchema,
+  OptionInProductOrderSchema,
+  OptionSchema,
+} from "@/prisma/generated/schemas";
 import { z } from "zod";
 
 export const OptionWithCategoriesSchema = OptionSchema.extend({
@@ -11,6 +15,11 @@ export const OptionWithCategoriesSchema = OptionSchema.extend({
 
 export const OptionInProductOrderWithOptionSchema = OptionInProductOrderSchema.extend({
   option: OptionSchema,
+});
+
+export const OptionStatsOnlySchema = z.object({
+  option: z.string(),
+  count: z.number(),
 });
 
 export type OptionWithCategories = z.infer<typeof OptionWithCategoriesSchema>;

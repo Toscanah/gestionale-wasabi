@@ -1,39 +1,39 @@
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { EngagementLedgerWithDetails } from "@/app/(site)/lib/shared";
-import { EngagementLedger, EngagementLedgerStatus } from "@prisma/client";
-import { useEffect, useState } from "react";
+import { trpc } from "@/lib/server/client";
+import { EngagementLedgerStatus } from "@prisma/client";
 
 interface UseEngagementsLedgersParams {
   customerId: number;
 }
 
 export default function useEngagementsLedgers({ customerId }: UseEngagementsLedgersParams) {
-  const [ledgers, setLedgers] = useState<EngagementLedgerWithDetails[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { data: ledgers = [], isLoading } = trpc.engagements.getLedgersByCustomer.useQuery(
+    { customerId },
+    { enabled: !!customerId }
+  );
 
-  const updateLedgerStatus = (ledgerId: number, status: EngagementLedgerStatus) => {
-    fetchRequest<EngagementLedger>("PATCH", "/api/engagements/", "updateLedgerStatus", {
-      ledgerId,
-      status,
-    }).then((updatedLedger) => {
-      setLedgers((prev) =>
-        prev.map((ledger) => (ledger.id === ledgerId ? { ...ledger, ...updatedLedger } : ledger))
+  const utils = trpc.useUtils();
+  const updateLedgerStatusMutation = trpc.engagements.updateLedgerStatus.useMutation({
+    onSuccess: (updatedLedger) => {
+      utils.engagements.getLedgersByCustomer.setData({ customerId }, (prev) =>
+        prev
+          ? prev.map((ledger) =>
+              ledger.id === updatedLedger.id ? { ...ledger, ...updatedLedger } : ledger
+            )
+          : []
       );
-    });
-  };
+    },
+    onError: (error) => {
+      console.error("Failed to update ledger status:", error);
+    },
+  });
 
-  useEffect(() => {
-    fetchRequest<EngagementLedgerWithDetails[]>(
-      "GET",
-      "/api/engagements/",
-      "getEngagementsLedgersByCustomer",
-      { customerId }
-    )
-      .then(setLedgers)
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+  const updateLedgerStatus = (
+    ledgerId: number,
+    orderId: number,
+    status: EngagementLedgerStatus
+  ) => {
+    updateLedgerStatusMutation.mutate({ ledgerId, orderId, status });
+  };
 
   return { ledgers, updateLedgerStatus, isLoading };
 }

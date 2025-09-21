@@ -12,7 +12,6 @@ export default function RiceSummary() {
   const { rice } = useWasabiContext();
   const [filter, setFilter] = useState<ShiftFilterValue>(ShiftFilterValue.ALL);
 
-  // Load stored value on mount
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY) as ShiftFilterValue | null;
     if (stored && Object.values(ShiftFilterValue).includes(stored)) {
@@ -20,7 +19,6 @@ export default function RiceSummary() {
     }
   }, []);
 
-  // Save whenever filter changes
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, filter);
   }, [filter]);

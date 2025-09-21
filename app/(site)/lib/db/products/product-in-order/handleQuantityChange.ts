@@ -47,10 +47,10 @@ export default async function handleQuantityChange({
   });
 
   return {
-    updatedProduct: {
+    updatedProductInOrder: {
       ...updatedProduct,
       quantity: updatedProduct.quantity - updatedProduct.paid_quantity,
       to_be_printed: updatedProduct.quantity - updatedProduct.last_printed_quantity,
     },
-  } as { updatedProduct: ProductInOrder };
+  };
 }

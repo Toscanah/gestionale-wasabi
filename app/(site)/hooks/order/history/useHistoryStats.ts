@@ -49,6 +49,7 @@ function toShiftEvaluableOrder(
       type: OrderType.HOME,
       created_at: order.created_at,
       home_order: { when: wrapper.when },
+      pickup_order: null,
     };
   }
 
@@ -58,6 +59,7 @@ function toShiftEvaluableOrder(
       type: OrderType.PICKUP,
       created_at: order.created_at,
       pickup_order: { when: wrapper.when },
+      home_order: null,
     };
   }
 
@@ -91,8 +93,10 @@ function calculateMostCommonDays(dayStats: Record<number, number>) {
 }
 
 function getTimeSlot(decimalHour: number): "lunch" | "dinner" | "other" {
-  if (decimalHour >= ShiftBoundaries.LUNCH_FROM && decimalHour <= ShiftBoundaries.LUNCH_TO) return "lunch";
-  if (decimalHour >= ShiftBoundaries.DINNER_FROM && decimalHour <= ShiftBoundaries.DINNER_TO) return "dinner";
+  if (decimalHour >= ShiftBoundaries.LUNCH_FROM && decimalHour <= ShiftBoundaries.LUNCH_TO)
+    return "lunch";
+  if (decimalHour >= ShiftBoundaries.DINNER_FROM && decimalHour <= ShiftBoundaries.DINNER_TO)
+    return "dinner";
   return "other";
 }
 

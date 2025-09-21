@@ -14,6 +14,7 @@ import {
   HashLoader,
   MoonLoader,
   PacmanLoader,
+  PulseLoader,
   PuffLoader,
   RingLoader,
   RiseLoader,
@@ -29,10 +30,11 @@ export type RandomSpinnerProps = {
 };
 
 const SPINNERS = [
+  PulseLoader,
   // BounceLoader,
   // BarLoader,
   // BeatLoader,
-  CircleLoader,
+  // CircleLoader,
   // ClipLoader,
   // ClimbingBoxLoader,
   // DotLoader,

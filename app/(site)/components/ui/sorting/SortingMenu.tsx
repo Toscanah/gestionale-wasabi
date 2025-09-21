@@ -5,6 +5,9 @@ import WasabiSelect from "../filters/select/WasabiSelect";
 import WasabiSingleSelect from "../wasabi/WasabiSingleSelect";
 import SortDirectionSelector from "./SortDirectionSelector";
 import { SortDirection } from "@/app/(site)/lib/shared/schemas/common/sorting";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 export type SortField = {
   index: number;
@@ -19,7 +22,12 @@ interface SortingMenuProps {
   triggerClassName?: string;
 }
 
-export default function SortingMenu({ activeSorts, availableFields, onChange, triggerClassName }: SortingMenuProps) {
+export default function SortingMenu({
+  activeSorts,
+  availableFields,
+  onChange,
+  triggerClassName,
+}: SortingMenuProps) {
   const usedFields = activeSorts.map((s) => s.field);
   const remainingFields = availableFields.filter((f) => !usedFields.includes(f));
 
@@ -27,9 +35,17 @@ export default function SortingMenu({ activeSorts, availableFields, onChange, tr
     <WasabiPopover
       modal={false}
       trigger={
-        <Button variant="outline" className={triggerClassName}>
-          <ArrowsDownUp className="mr-2 h-4 w-4" />
+        <Button variant="outline" className={cn("h-10 flex gap-2 items-center", triggerClassName)}>
+          <ArrowsDownUp className="h-4 w-4" />
           Ordina
+          {activeSorts.length > 0 && (
+            <>
+              <Separator orientation="vertical" className="mx-0.5" />
+              <Badge variant="secondary" className="px-1 rounded-lg">
+                {activeSorts.length}
+              </Badge>
+            </>
+          )}
         </Button>
       }
       contentClassName="w-[500px] flex flex-col gap-4"

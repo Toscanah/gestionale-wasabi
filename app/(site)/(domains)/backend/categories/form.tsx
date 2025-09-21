@@ -3,7 +3,7 @@ import getZodField from "../../../lib/utils/global/form/getZodField";
 import { FormFieldType } from "../FormFields";
 import CategoryOptions from "./CategoryOptions";
 import { ControllerRenderProps } from "react-hook-form";
-import { Option } from "@/prisma/generated/zod";
+import { Option } from "@/prisma/generated/schemas";
 
 export const formSchema = z.object({
   category: getZodField("string"),

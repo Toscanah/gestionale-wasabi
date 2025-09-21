@@ -1,11 +1,10 @@
-import { HomeOrder } from "@/app/(site)/lib/shared";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { PlannedPayment } from "@prisma/client";
 import { PaymentStatus } from "./OrderOverview";
+import { trpc } from "@/lib/server/client";
 
 interface PaymentStatusSelectionProps {
   paymentStatus: PaymentStatus;
@@ -32,10 +31,17 @@ export default function PaymentStatusSelection({
     { value: "CARD", label: "Carta" },
   ];
 
+  const updatePaymentStatusMutation = trpc.orders.updatePaymentStatus.useMutation({
+    onSuccess: (updatedOrder) => {
+      toastSuccess("Pagamento aggiornato correttamente", "Stato pagamento aggiornato");
+      updateOrder(updatedOrder); 
+    },
+
+  });
+
   const handlePaymentStatusChange = (value: StatusOptions) => {
     setSelectedOption(value);
 
-    // Build new state from selected option
     const newStatus: PaymentStatus =
       value === "ALREADY_PAID"
         ? { prepaid: true, plannedPayment: PlannedPayment.UNKNOWN }
@@ -43,14 +49,10 @@ export default function PaymentStatusSelection({
 
     setPaymentStatus(newStatus);
 
-    // Update DB
-    fetchRequest<HomeOrder>("PATCH", "/api/orders/", "updateOrderPaymentStatus", {
+    updatePaymentStatusMutation.mutate({
       orderId: order.id,
       prepaid: newStatus.prepaid,
       plannedPayment: newStatus.plannedPayment,
-    }).then((updatedOrder) => {
-      toastSuccess("Pagamento aggiornato correttamente", "Stato pagamento aggiornato");
-      updateOrder(updatedOrder);
     });
   };
 

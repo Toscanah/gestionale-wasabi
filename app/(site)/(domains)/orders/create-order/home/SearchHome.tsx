@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
 import OrderTable from "../../single-order/OrderTable";
-import { AnyOrder } from "@/app/(site)/lib/shared"
-;
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import { HandPalm } from "@phosphor-icons/react";
 import Home from "./Home";
 import { toastError } from "@/app/(site)/lib/utils/global/toast";
@@ -107,7 +106,6 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
       </Button>
 
       <WasabiDialog
-        autoFocus={false}
         size="large"
         open={open}
         onOpenChange={() => {
@@ -116,7 +114,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
         contentClassName="flex flex-col gap-6 items-center max-w-screen max-h-screen h-[95vh]"
       >
         {order.id == -1 ? (
-           <CreateHomeOrderProvider
+          <CreateHomeOrderProvider
             setOrder={setOrder}
             initialPhone={homePhone}
             initialDoorbell={homeDoorbell}

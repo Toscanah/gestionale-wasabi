@@ -1,5 +1,5 @@
 import {
-  CustomerWithDetails,
+  ComprehensiveCustomer,
   HomeOrderWithOrder,
   PickupOrderWithOrder,
 } from "@/app/(site)/lib/shared";
@@ -14,7 +14,7 @@ import { useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
 
 interface OrderHistoryProps {
-  customer: CustomerWithDetails;
+  customer: ComprehensiveCustomer;
   onCreate?: (newProducts: ProductInOrder[]) => void;
   noStatistics?: boolean;
 }

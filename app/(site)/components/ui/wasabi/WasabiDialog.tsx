@@ -33,6 +33,7 @@ export type WasabiDialogProps = {
   variant?: "delete" | "normal" | "warning";
   contentClassName?: string;
   triggerClassName?: string;
+  footerClassName?: string;
   putSeparator?: boolean;
   open?: boolean;
   footer?: ReactNode;
@@ -64,6 +65,7 @@ export default function WasabiDialog({
   onOpenChange,
   size = "medium",
   modal = true,
+  footerClassName,
 }: WasabiDialogProps) {
   // const [interactionReady, setInteractionReady] = useState(false);
 
@@ -91,7 +93,7 @@ export default function WasabiDialog({
   // }, [interactionReady]);
 
   return (
-    <Dialog onOpenChange={thisOnOpenChange} open={open} modal={true}>
+    <Dialog onOpenChange={thisOnOpenChange} open={open} modal={modal}>
       {trigger && (
         <DialogTrigger
           asChild
@@ -117,7 +119,7 @@ export default function WasabiDialog({
           "w-auto max-h-screen",
           sizes[size],
           isDeleteVariant && "border-t-4 border-t-red-600",
-          isWarningVariant && "border-t-4 border-t-orange-500",
+          isWarningVariant && "border-t-4 border-t-warning-500",
           putUpperBorder && "border-t-4 border-t-gray-400",
           // !interactionReady && "*:cursor-not-allowed", // add this
           contentClassName
@@ -141,13 +143,19 @@ export default function WasabiDialog({
           </DialogHeader>
         )}
 
+        {!title && !(isDeleteVariant || isWarningVariant) && (
+          <DialogHeader className="sr-only">
+            <DialogTitle className="sr-only" />
+          </DialogHeader>
+        )}
+
         {(desc || putSeparator) && <Separator />}
 
         {children}
 
         {isDeleteVariant && onDelete && (
           <DialogFooter className="w-full">
-            <div className="w-full flex gap-2">
+            <div className={cn("w-full flex gap-2", footerClassName)}>
               <DialogClose asChild>
                 <Button className="w-full" variant={"outline"}>
                   Ho cambiato idea

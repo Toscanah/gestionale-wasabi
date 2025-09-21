@@ -1,30 +1,71 @@
 import { z } from "zod";
-import { OrderSchema, ProductSchema } from "@/prisma/generated/zod";
-import { ProductInOrderWithOptionsSchema } from "../models/product";
+import { OptionInProductOrderSchema, OrderSchema, ProductSchema } from "@/prisma/generated/schemas";
+import {
+  ProductInOrderWithOptionsSchema,
+  ProductStats,
+  ProductStatsOnlySchema,
+  ProductWithCategorySchema,
+} from "../models/product";
 import { ShiftFilterValue } from "../enums/shift";
 import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
-import { NoContentRequestSchema } from "./common/no-content";
-import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
+import {
+  ToggleDeleteEntityRequestSchema,
+  ToggleEntityResponseSchema,
+} from "./common/toggle-delete-entity";
 import { PeriodRequestSchema } from "./common/period";
+import { OptionInProductOrderWithOptionSchema } from "../models/option";
+import SortingSchema from "./common/sorting";
+import { CommonQueryFilterSchema } from "./common/query";
+import { DottedKeys } from "../types/dotted-keys";
 
-// -----------------
-// Product contracts
-// -----------------
+export const PRODUCT_STATS_SORT_FIELDS = [
+  "unitsSold",
+  "revenue",
+  "totalRice",
+] as const satisfies DottedKeys<ProductStats>[];
+
+export type ProductStatsSortField = (typeof PRODUCT_STATS_SORT_FIELDS)[number];
+
+const ProductStatsSortingSchema = SortingSchema(...PRODUCT_STATS_SORT_FIELDS);
+
 export namespace ProductContracts {
-  export namespace GetAll {
-    export const Input = NoContentRequestSchema;
-    export type Input = z.infer<typeof Input>;
+  export namespace Common {
+    export const WithCategory = ProductWithCategorySchema;
+    export type WithCategory = z.infer<typeof WithCategory>;
+
+    export const InOrder = ProductInOrderWithOptionsSchema;
+    export type InOrder = z.infer<typeof InOrder>;
   }
 
-  export namespace GetWithStats {
-    export const Input = z.object({
-      filters: z.object({
-        period: PeriodRequestSchema,
-        shift: z.nativeEnum(ShiftFilterValue).optional(),
-        categoryIds: z.array(z.number()).optional(),
-      }),
-    });
+  export namespace GetAll {
+    export const Input = z.void();
+    export type Input = void;
+
+    export const Output = z.array(Common.WithCategory);
+    export type Output = z.infer<typeof Output>;
+  }
+
+  export namespace ComputeStats {
+    export const Input = z
+      .object({
+        filters: z
+          .object({
+            ...PeriodRequestSchema.shape,
+            ...CommonQueryFilterSchema.shape,
+            shift: z.enum(ShiftFilterValue),
+            categoryIds: z.array(z.number()),
+          })
+          .partial(),
+        sort: z.array(ProductStatsSortingSchema),
+      })
+      .partial()
+      .optional();
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.object({
+      productsStats: z.array(ProductStatsOnlySchema),
+    });
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace Create {
@@ -36,6 +77,9 @@ export namespace ProductContracts {
       })
     );
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.WithCategory;
+    export type Output = Common.WithCategory;
   }
 
   export namespace Update {
@@ -46,41 +90,64 @@ export namespace ProductContracts {
       })
     );
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.WithCategory;
+    export type Output = Common.WithCategory;
   }
 
   export namespace AddToOrder {
     export const Input = z.object({
-      order: OrderSchema,
+      order: OrderSchema.pick({ id: true, type: true }),
       productCode: z.string(),
       quantity: z.number(),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.InOrder;
+    export type Output = Common.InOrder;
   }
 
   export namespace UpdateInOrder {
     export const Input = z.object({
       orderId: z.number(),
-      key: z.string(),
+      key: z.enum(["quantity", "code"]),
       value: z.any(),
-      productInOrder: ProductInOrderWithOptionsSchema,
+      productInOrder: Common.InOrder,
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.object({
+      updatedProductInOrder: Common.InOrder,
+      isDeleted: z.boolean().optional(),
+    });
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace AddMultipleToOrder {
     export const Input = z.object({
       orderId: z.number(),
-      products: z.array(ProductInOrderWithOptionsSchema),
+      products: z.array(Common.InOrder),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.object({
+      addedProducts: z.array(Common.InOrder),
+    });
+    export type Output = z.infer<typeof Output>;
   }
 
-  export namespace UpdateOptionsInOrder {
+  export namespace ToggleOptionInOrder {
     export const Input = z.object({
       productInOrderId: z.number(),
       optionId: z.number(),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.object({
+      deleted: z.boolean(),
+      optionInProductOrder: OptionInProductOrderWithOptionSchema,
+    });
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace UpdateVariationInOrder {
@@ -89,16 +156,25 @@ export namespace ProductContracts {
       productInOrderId: z.number(),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.InOrder;
+    export type Output = Common.InOrder;
   }
 
   export namespace Toggle {
     export const Input = ToggleDeleteEntityRequestSchema;
     export type Input = z.infer<typeof Input>;
+
+    export const Output = ToggleEntityResponseSchema;
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace UpdatePrinted {
     export const Input = wrapSchema("orderId", z.number());
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.array(Common.InOrder);
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace DeleteFromOrder {
@@ -108,5 +184,8 @@ export namespace ProductContracts {
       cooked: z.boolean().default(false),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.array(Common.InOrder);
+    export type Output = z.infer<typeof Output>;
   }
 }

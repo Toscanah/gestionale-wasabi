@@ -2,13 +2,14 @@ import { KeyboardEvent, RefObject, useEffect } from "react";
 import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import FormField from "@/app/(site)/components/ui/FormField";
-import getForm from "@/app/(site)/lib/utils/global/form/getForm";
-import formSchema from "./form";
+import formSchema, { FormValues } from "./form";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
 import { CustomerOrigin } from "@prisma/client";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { FormField as RawFormField } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 
 interface AddressFormProps {
   formRef: RefObject<HTMLFormElement>;
@@ -18,15 +19,18 @@ interface AddressFormProps {
 
 export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFormProps) {
   const { onSubmit, extraInfo, selectedAddress, customer, phone } = useCreateHomeOrder();
-  const form = getForm(formSchema);
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: formSchema.parse({}),
+  });
 
   const resetForm = () => {
     form.reset({
       street: !selectedAddress
         ? ""
         : selectedAddress?.street && selectedAddress?.civic
-        ? `${selectedAddress.street} ${selectedAddress.civic}`
-        : selectedAddress?.street,
+          ? `${selectedAddress.street} ${selectedAddress.civic}`
+          : selectedAddress?.street,
       name: customer?.name || "",
       surname: customer?.surname || "",
       floor: selectedAddress?.floor || "",
@@ -37,21 +41,13 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
       doorbell: selectedAddress?.doorbell || "",
       email: customer?.email || "",
       preferences: customer?.preferences || "",
-      origin: customer?.origin || CustomerOrigin.UNKNOWN,
+      origin: customer?.origin as CustomerOrigin || CustomerOrigin.UNKNOWN,
     });
 
     form.clearErrors();
   };
 
   useEffect(resetForm, [selectedAddress, customer, phone]);
-
-  const ORIGINS: { value: CustomerOrigin; label: string }[] = [
-    { value: CustomerOrigin.PHONE, label: "Telefono" },
-    { value: CustomerOrigin.WEB, label: "Web" },
-    { value: CustomerOrigin.COUPON, label: "Coupon" },
-    { value: CustomerOrigin.REFERRAL, label: "Passaparola" },
-    { value: CustomerOrigin.UNKNOWN, label: "Sconosciuta" },
-  ];
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
@@ -69,16 +65,16 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
                 <FormLabel>Origine cliente</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    value={field.value as CustomerOrigin}
                     onValueChange={field.onChange}
+                    value={field.value}
                     className="w-full flex gap-8 items-center"
                   >
-                    {ORIGINS.map((origin) => (
-                      <FormItem key={origin.value} className="flex items-center gap-2">
+                    {Object.entries(CUSTOMER_ORIGIN_LABELS).map(([value, label]) => (
+                      <FormItem key={value} className="flex items-center gap-2">
                         <FormControl>
-                          <RadioGroupItem className="h-5 w-5" value={origin.value} />
+                          <RadioGroupItem className="h-5 w-5" value={value as CustomerOrigin} />
                         </FormControl>
-                        <FormLabel className="!mt-0 text-2xl">{origin.label}</FormLabel>
+                        <FormLabel className="!mt-0 text-2xl">{label}</FormLabel>
                       </FormItem>
                     ))}
                   </RadioGroup>

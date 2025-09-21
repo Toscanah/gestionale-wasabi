@@ -4,53 +4,45 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Address } from "@prisma/client";
 import { useState, Dispatch, SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import parseAddress from "@/app/(site)/lib/utils/domains/address/parseAddress";
 import { Button } from "@/components/ui/button";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
-import { toastError } from "@/app/(site)/lib/utils/global/toast";
+import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
+import { toastError, toastSuccess } from "@/app/(site)/lib/utils/global/toast";
+import { trpc } from "@/lib/server/client";
+import { AddressType } from "@/prisma/generated/schemas";
 
 interface CustomerAddressesProps {
-  addresses: Address[];
+  addresses: AddressType[];
   customerId: number;
-  setCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>;
 }
 
 export default function CustomerAddresses({
   addresses,
   customerId,
-  setCustomers,
 }: CustomerAddressesProps) {
-  const [currentAddresses, setCurrentAddresses] = useState<Address[]>(addresses ?? []);
+  const [currentAddresses, setCurrentAddresses] = useState<AddressType[]>(addresses ?? []);
+
+  const utils = trpc.useUtils();
+
+  const updateAddresses = trpc.customers.updateAddresses.useMutation({
+    onSuccess: (updatedCustomer) => {
+      setCurrentAddresses(updatedCustomer.addresses);
+      utils.customers.getAllWithDetails.invalidate();
+      toastSuccess("Indirizzi aggiornati con successo");
+    },
+  });
 
   const saveAddresses = () => {
     if (currentAddresses.some((address) => !address.civic?.trim())) {
       return toastError("Tutti gli indirizzi devono avere almeno un civico e via validi");
     }
-
-    fetchRequest<CustomerWithDetails>("PATCH", "/api/customers", "updateCustomerAddresses", {
-      addresses: currentAddresses,
-      customerId,
-    }).then((updatedCustomer) => {
-      // setCustomers((prevCustomers) =>
-      //   prevCustomers.map((customer) =>
-      //     customer.id === customerId
-      //       ? {
-      //           ...customer,
-      //           addresses: updatedCustomer.addresses,
-      //         }
-      //       : customer
-      //   )
-      // );
-      location.reload();
-    });
+    updateAddresses.mutate({ addresses: currentAddresses, customerId });
   };
 
   const addAddress = () =>
@@ -70,14 +62,14 @@ export default function CustomerAddresses({
       ...prevAddresses,
     ]);
 
-  const toggleAddress = (addressToToggle: Address) =>
+  const toggleAddress = (addressToToggle: AddressType) =>
     setCurrentAddresses((prevAddresses) =>
       prevAddresses.map((address) =>
         address.id === addressToToggle.id ? { ...address, active: !address.active } : address
       )
     );
 
-  const updateField = (addressId: number, key: keyof Address, value: any) => {
+  const updateField = (addressId: number, key: keyof AddressType, value: any) => {
     const newAddresses = currentAddresses.map((address) => {
       if (address.id === addressId) {
         if (key === "street") {

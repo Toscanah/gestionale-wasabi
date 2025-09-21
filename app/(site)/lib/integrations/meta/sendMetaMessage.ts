@@ -1,6 +1,6 @@
 import axios from "axios";
 import prisma from "../../db/db";
-import { AnyOrder, MetaContract } from "../../shared";
+import { MetaContracts } from "../../shared";
 import getOrderById from "../../db/orders/getOrderById";
 import { MessageDirection } from "@prisma/client";
 import getMetaSecrets from "../../services/meta/getMetaSecrets";
@@ -9,7 +9,7 @@ export default async function sendMetaMessage({
   template,
   params,
   orderId,
-}: MetaContract["Requests"]["SendMetaMessage"]): Promise<AnyOrder | undefined> {
+}: MetaContracts.SendMessage.Input): Promise<MetaContracts.SendMessage.Output> {
   const { WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN } = getMetaSecrets();
   const API_URL = `https://graph.facebook.com/v18.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
@@ -26,18 +26,18 @@ export default async function sendMetaMessage({
 
   if (!homeOrder) throw new Error("HomeOrder not found");
 
-  const phone = homeOrder?.customer.phone.phone;
+  const phone = homeOrder.customer.phone.phone;
   if (!phone) throw new Error("Missing customer's phone number");
 
   if (phone.startsWith("040")) {
     return await getOrderById({ orderId });
   }
 
-  const tempAllowedPhones = ["3342954184", "3339998542"];
+  // const tempAllowedPhones = ["3342954184", "3339998542"];
 
-  if (!tempAllowedPhones.includes(phone)) {
-    throw new Error("Phone number not allowed");
-  }
+  // if (!tempAllowedPhones.includes(phone)) {
+  //   throw new Error("Phone number not allowed");
+  // }
 
   const to = "39" + phone;
 
@@ -75,10 +75,8 @@ export default async function sendMetaMessage({
     });
   }
 
-  console.log(JSON.stringify(components));
-
   try {
-    await axios.post(
+    await axios.post<MetaContracts.SendMessage.Output>(
       API_URL,
       {
         messaging_product: "whatsapp",

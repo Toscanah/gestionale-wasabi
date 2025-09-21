@@ -1,25 +1,14 @@
 import prisma from "../../db";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductContracts, ProductInOrder } from "@/app/(site)/lib/shared";
 import handleProductCodeChange from "./handleCodeChange";
 import handleQuantityChange from "./handleQuantityChange";
-
-export type UpdateProductInOrderResponse = {
-  updatedProduct?: ProductInOrder;
-  deletedProduct?: ProductInOrder;
-  error?: string;
-};
 
 export default async function updateProductInOrder({
   orderId,
   key,
   value,
   productInOrder,
-}: {
-  orderId: number;
-  key: string;
-  value: any;
-  productInOrder: ProductInOrder;
-}): Promise<UpdateProductInOrderResponse> {
+}: ProductContracts.UpdateInOrder.Input): Promise<ProductContracts.UpdateInOrder.Output> {
   return await prisma.$transaction(async (tx) => {
     const currentOrder = await tx.order.findUnique({
       where: { id: orderId },
@@ -27,7 +16,7 @@ export default async function updateProductInOrder({
     });
 
     if (!currentOrder) {
-      return { error: "Order not found" };
+      throw new Error("Order not found");
     }
 
     if (key === "code") {
@@ -36,6 +25,6 @@ export default async function updateProductInOrder({
       return handleQuantityChange({ tx, currentOrder, newQuantity: Number(value), productInOrder });
     }
 
-    return { error: "Invalid key" };
+    throw new Error("Invalid key provided");
   });
 }

@@ -3,15 +3,13 @@ import TemplateTypeSelector from "../TemplateTypeSelector";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import TemplateWrapper from "../TemplateWrapper";
-import {
-  EngagementContract,
-  ParsedEngagementPayload,
-  TemplatePayloadDraft,
-} from "@/app/(site)/lib/shared";
+import { EngagementContracts, ParsedEngagementPayload } from "@/app/(site)/lib/shared";
 import renderByType from "../../types/renderByType";
 import { EngagementType } from "@prisma/client";
 
-type CreateTemplateWithImage = EngagementContract["Requests"]["CreateEngagementTemplate"] & {
+type TemplatePayloadDraft = EngagementContracts.TemplatePayloadDraft;
+
+type CreateTemplateWithImage = EngagementContracts.CreateTemplate.Input & {
   selectedImage?: TemplatePayloadDraft["selectedImage"];
 };
 

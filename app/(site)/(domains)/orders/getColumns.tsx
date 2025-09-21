@@ -4,7 +4,6 @@ import { it } from "date-fns/locale";
 import { OrderType } from "@prisma/client";
 import { AnyOrder, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import { ActionColumn, FieldColumn, ValueColumn } from "../../components/table/TableColumns";
-import getDiscountedTotal from "../../lib/services/order-management/getDiscountedTotal";
 import roundToTwo from "../../lib/utils/global/number/roundToTwo";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,8 +12,8 @@ import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal
 import MetaLogs from "../meta/MetaLogs";
 import formatWhenLabel from "../../lib/utils/domains/order/formatWhenLabel";
 
-export default function getColumns(type: OrderType, useWhatsapp: boolean): ColumnDef<any>[] {
-  const columns: ColumnDef<any>[] = [
+export default function getColumns(type: OrderType, useWhatsapp: boolean): ColumnDef<AnyOrder>[] {
+  const columns: ColumnDef<AnyOrder>[] = [
     // {
     //   accessorKey: "#",
     //   cell: ({ row, table }) => {
@@ -66,8 +65,8 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
           }
 
           case OrderType.HOME: {
-            const parsedRow = row.original as HomeOrder;
-            return (parsedRow.home_order?.address?.doorbell || "").toLocaleUpperCase();
+            const homeOrder = row.original as HomeOrder;
+            return (homeOrder.home_order?.address?.doorbell || "").toLocaleUpperCase();
           }
         }
       },
@@ -91,32 +90,37 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
   switch (type) {
     case OrderType.HOME:
       columns.push(
-        FieldColumn<HomeOrder>({
+        FieldColumn({
           key: "home_order.customer.phone.phone",
           header: "Telefono",
         }),
 
-        ValueColumn<HomeOrder>({
+        ValueColumn({
           header: "Indirizzo",
-          value: (row) => (
-            <div className="w-52 max-w-52">{`${(
-              row.original.home_order?.address?.street ?? ""
-            ).toUpperCase()} ${(
-              row.original.home_order?.address?.civic ?? ""
-            ).toUpperCase()}`}</div>
-          ),
-          accessor: (order) => {
+          value: (row) => {
+            const homeOrder = row.original as HomeOrder;
+
             return (
-              (order as HomeOrder).home_order?.address?.street?.toUpperCase() +
+              <div className="w-52 max-w-52">{`${(
+                homeOrder.home_order?.address?.street ?? ""
+              ).toUpperCase()} ${(homeOrder.home_order?.address?.civic ?? "").toUpperCase()}`}</div>
+            );
+          },
+
+          accessor: (order) => {
+            const homeOrder = order as HomeOrder;
+
+            return (
+              homeOrder.home_order?.address?.street?.toUpperCase() +
               " " +
-              (order as HomeOrder).home_order?.address?.civic?.toUpperCase()
+              homeOrder.home_order?.address?.civic?.toUpperCase()
             );
           },
         }),
 
-        ValueColumn<HomeOrder>({
+        ValueColumn({
           header: "Quando",
-          value: (row) => formatWhenLabel(row.original.home_order?.when),
+          value: (row) => formatWhenLabel((row.original as HomeOrder).home_order?.when),
           accessor: (order) => {
             return (order as HomeOrder).home_order?.when;
           },
@@ -125,9 +129,9 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
       break;
     case OrderType.PICKUP:
       columns.push(
-        ValueColumn<PickupOrder>({
+        ValueColumn({
           header: "Quando",
-          value: (row) => formatWhenLabel(row.original.pickup_order?.when),
+          value: (row) => formatWhenLabel((row.original as PickupOrder).pickup_order?.when),
           accessor: (order) => {
             return (order as PickupOrder).pickup_order?.when;
           },
@@ -158,7 +162,7 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
 
   if (type === OrderType.HOME && useWhatsapp) {
     columns.push(
-      ActionColumn<HomeOrder>({
+      ActionColumn({
         header: "Messaggi",
         action: (row) => <MetaLogs order={row.original} />,
       })

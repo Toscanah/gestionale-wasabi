@@ -1,9 +1,9 @@
-import { EngagementContract } from "../../shared";
+import { EngagementContracts } from "../../shared";
 import prisma from "../db";
 
 export default async function toggleEngagementById({
   engagementId,
-}: EngagementContract["Requests"]["ToggleEngagementById"]) {
+}: EngagementContracts.ToggleById.Input): Promise<EngagementContracts.ToggleById.Output> {
   const engagement = await prisma.engagement.findFirst({
     where: {
       id: engagementId,
@@ -19,14 +19,16 @@ export default async function toggleEngagementById({
 
   const { enabled } = engagement;
 
-  await prisma.engagement.update({
+  return await prisma.engagement.update({
     where: {
       id: engagementId,
     },
     data: {
       enabled: !enabled,
     },
+    select: {
+      id: true,
+      enabled: true,
+    },
   });
-
-  return null;
 }

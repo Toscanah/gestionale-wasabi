@@ -1,10 +1,9 @@
-import { Address } from "@prisma/client";
 import prisma from "../db";
-import { AddressContract } from "../../shared";
+import { AddressContracts } from "../../shared";
 
 export default async function getAddressesByCustomer({
   customerId,
-}: AddressContract["Requests"]["GetAddressesByCustomer"]): Promise<Address[]> {
+}: AddressContracts.GetByCustomer.Input): Promise<AddressContracts.GetByCustomer.Output> {
   return await prisma.address.findMany({
     where: {
       customer: {

@@ -8,69 +8,69 @@ import { Input } from "@/components/ui/input";
 import { Plus, Trash } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 import { toastSuccess } from "../../../lib/utils/global/toast";
-import fetchRequest from "../../../lib/api/fetchRequest";
-import { RiceBatch } from "@prisma/client";
 import { debounce } from "lodash";
 import useTable from "@/app/(site)/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
 import { Label } from "@/components/ui/label";
+import { trpc } from "@/lib/server/client";
+import { RiceBatchType } from "@/prisma/generated/schemas";
 
-const DEFAULT_NEW_BATCH: RiceBatch = { id: -1, amount: 0, label: "" };
+const DEFAULT_NEW_BATCH: RiceBatchType = { id: -1, amount: 0, label: "" };
+
+export type RiceDefaultValuesTableMeta = {
+  debouncedUpdateBatch: (
+    batchId: number,
+    field: keyof Omit<RiceBatchType, "id">,
+    value: any
+  ) => void;
+  removeRiceBatch: (batchId: number) => Promise<void>;
+};
 
 export default function RiceDefaultValues() {
-  const [newBatch, setNewBatch] = useState<RiceBatch>(DEFAULT_NEW_BATCH);
-  const [riceBatches, setRiceBatches] = useState<RiceBatch[]>([]);
+  const [newBatch, setNewBatch] = useState<RiceBatchType>(DEFAULT_NEW_BATCH);
 
-  const fetchRiceBatches = async () =>
-    fetchRequest<RiceBatch[]>("GET", "/api/rice/", "getRiceBatches").then(setRiceBatches);
+  const utils = trpc.useUtils();
+  const { data: riceBatches = [], refetch: refetchRiceBatches } = trpc.rice.getBatches.useQuery(
+    undefined,
+    {}
+  );
 
-  useEffect(() => {
-    fetchRiceBatches();
-  }, []);
-
-  const addRiceBatch = async () => {
-    if (!newBatch?.amount || !newBatch?.label) return;
-    const { amount, label } = newBatch;
-
-    fetchRequest<RiceBatch>("POST", "/api/rice/", "addRiceBatch", {
-      batch: { amount, label },
-    }).then((createdBatch) => {
-      setRiceBatches((prev) => {
-        const isDuplicate = prev.some((batch) => batch.id === createdBatch.id);
-
-        if (!isDuplicate) {
-          return [...prev, createdBatch];
-        }
-
-        return prev;
-      });
-
+  const addBatch = trpc.rice.addBatch.useMutation({
+    onSuccess: () => {
+      utils.rice.getBatches.invalidate();
       setNewBatch(DEFAULT_NEW_BATCH);
       toastSuccess("Valore aggiunto con successo");
-    });
-  };
+    },
+  });
 
-  const removeRiceBatch = async (batchId: number) =>
-    fetchRequest("DELETE", "/api/rice/", "deleteRiceBatch", { id: batchId }).then(() => {
-      setRiceBatches((prev) => prev.filter((batch) => batch.id !== batchId));
+  const removeBatch = trpc.rice.deleteBatch.useMutation({
+    onSuccess: () => {
+      utils.rice.getBatches.invalidate();
       toastSuccess("Valore rimosso con successo");
-    });
+    },
+  });
+
+  const updateBatch = trpc.rice.updateBatch.useMutation({
+    onSuccess: () => {
+      toastSuccess("Valore aggiornato con successo");
+    },
+  });
 
   const debouncedUpdateBatch = useCallback(
-    debounce(
-      (batchId: number, field: keyof Omit<RiceBatch, "id">, value: any) =>
-        fetchRequest("PATCH", "/api/rice/", "updateRiceBatch", { batchId, field, value }).then(() =>
-          toastSuccess("Valore aggiornato con successo")
-        ),
-      1000
-    ),
+    debounce((batchId: number, field: keyof Omit<RiceBatchType, "id">, value: any) => {
+      updateBatch.mutate({ batchId, field, value });
+    }, 1000),
     []
   );
 
-  const table = useTable({
+  const table = useTable<RiceBatchType>({
     data: riceBatches,
-    columns: columns({ debouncedUpdateBatch, removeRiceBatch }),
+    columns,
+    meta: {
+      debouncedUpdateBatch,
+      removeRiceBatch: async (batchId: number) => await removeBatch.mutateAsync({ id: batchId }),
+    },
   });
 
   return (
@@ -79,7 +79,7 @@ export default function RiceDefaultValues() {
       title="Valori di default del riso"
       desc="I valori si salvano automaticamente"
       putUpperBorder
-      onOpenChange={() => fetchRiceBatches()}
+      onOpenChange={() => refetchRiceBatches()}
       autoFocus={false}
       trigger={
         <SidebarMenuSubButton className="hover:cursor-pointer ">
@@ -134,7 +134,11 @@ export default function RiceDefaultValues() {
           </div>
         </div>
 
-        <Button className="w-full" onClick={addRiceBatch} disabled={!newBatch.amount}>
+        <Button
+          className="w-full"
+          onClick={() => addBatch.mutate({ batch: { ...newBatch } })}
+          disabled={!newBatch.amount}
+        >
           <Plus size={24} />
         </Button>
       </div>

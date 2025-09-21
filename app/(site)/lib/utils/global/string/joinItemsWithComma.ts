@@ -1,4 +1,4 @@
-import { CategoryWithOptions, CustomerWithDetails, OptionWithCategories } from "@/app/(site)/lib/shared"
+import { CategoryWithOptions, ComprehensiveCustomer, OptionWithCategories } from "@/app/(site)/lib/shared"
 ;
 import capitalizeFirstLetter from "./capitalizeFirstLetter";
 
@@ -26,7 +26,7 @@ export default function joinItemsWithComma(
     [
       "doorbells",
       (item) =>
-        (item as CustomerWithDetails).addresses.map((address) =>
+        (item as ComprehensiveCustomer).addresses.map((address) =>
           capitalizeFirstLetter(truncate(address.doorbell))
         ),
     ],
@@ -40,7 +40,7 @@ export default function joinItemsWithComma(
     [
       "addresses",
       (item) =>
-        (item as CustomerWithDetails).addresses.map(
+        (item as ComprehensiveCustomer).addresses.map(
           (address) => capitalizeFirstLetter(truncate(address.street)) + " " + address.civic
         ),
     ],

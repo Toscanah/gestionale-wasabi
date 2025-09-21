@@ -4,22 +4,18 @@ import { ActionColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash } from "@phosphor-icons/react";
-import { RiceBatch } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import { RiceDefaultValuesTableMeta } from "./RiceDefaultValues";
+import { RiceBatchType } from "@/prisma/generated/schemas";
 
-const columns = ({
-  debouncedUpdateBatch,
-  removeRiceBatch,
-}: {
-  debouncedUpdateBatch: (batchId: number, field: keyof Omit<RiceBatch, "id">, value: any) => void;
-  removeRiceBatch: (batchId: number) => Promise<void>;
-}): ColumnDef<RiceBatch>[] => [
+const columns: ColumnDef<RiceBatchType>[] = [
   IndexColumn({}),
 
   ValueColumn({
     header: "Etichetta",
-    value: (row) => {
+    value: (row, meta) => {
       const batch = row.original;
+      const { debouncedUpdateBatch } = meta as RiceDefaultValuesTableMeta;
 
       return (
         <Input
@@ -35,8 +31,9 @@ const columns = ({
 
   ValueColumn({
     header: "Valore",
-    value: (row) => {
+    value: (row, meta) => {
       const batch = row.original;
+      const { debouncedUpdateBatch } = meta as RiceDefaultValuesTableMeta;
 
       return (
         <Input
@@ -54,15 +51,19 @@ const columns = ({
 
   ActionColumn({
     header: "Elimina",
-    action: (row) => (
-      <Button className="group w-full" onClick={() => removeRiceBatch(row.original.id)}>
-        <Trash
-          size={24}
-          className="transform transition-transform duration-300 
+    action: (row, meta) => {
+      const { removeRiceBatch } = meta as RiceDefaultValuesTableMeta;
+
+      return (
+        <Button className="group w-full" onClick={() => removeRiceBatch(row.original.id)}>
+          <Trash
+            size={24}
+            className="transform transition-transform duration-300 
                           group-hover:rotate-[360deg] hover:font-bold hover:drop-shadow-2xl"
-        />
-      </Button>
-    ),
+          />
+        </Button>
+      );
+    },
   }),
 ];
 

@@ -74,11 +74,31 @@ export default function ApplicationSettings() {
         <div className="w-full flex items-center gap-2">
           <Checkbox
             id="use-whatsapp"
-            checked={settings.useWhatsApp}
-            onCheckedChange={(checked) => updateSettings("useWhatsApp", Boolean(checked))}
+            checked={settings.whatsapp.active}
+            onCheckedChange={(checked) =>
+              updateSettings("whatsapp", { ...settings.whatsapp, active: Boolean(checked) })
+            }
           />
           <Label htmlFor="use-whatsapp" className="cursor-pointer">
             Attiva invio messaggi WhatsApp automatici
+          </Label>
+        </div>
+
+        <div className=" w-full flex items-center gap-2">
+          <span>└─</span>
+          <Checkbox
+            id="send-whatsapp-confirmation"
+            disabled={!settings.whatsapp.active}
+            checked={settings.whatsapp.sendOrderConf}
+            onCheckedChange={(checked) =>
+              updateSettings("whatsapp", {
+                ...settings.whatsapp,
+                sendConfirmation: Boolean(checked),
+              })
+            }
+          />
+          <Label htmlFor="send-whatsapp-confirmation" className="cursor-pointer">
+            Manda il messaggio di conferma ordine in automatico
           </Label>
         </div>
       </div>

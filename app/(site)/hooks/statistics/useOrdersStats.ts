@@ -1,13 +1,10 @@
-import { useMemo, useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import sectionReducer, { INITIAL_STATE, SectionState } from "./sectionReducer";
-import { useQuery } from "@tanstack/react-query";
-import fetchRequest from "../../lib/api/fetchRequest";
 import { isSameDay } from "date-fns";
-import calculateResults from "../../lib/services/order-management/calculateOrderStats";
 import { ALL_WEEKDAYS } from "../../components/ui/filters/select/WeekdaysFilter";
 import { FULL_DAY_RANGE } from "../../components/ui/filters/time/TimeWindowFilter";
-import { OrderContract } from "../../lib/shared";
-import { OrderType } from "@prisma/client";
+import { trpc } from "@/lib/server/client";
+import { OrderContracts } from "../../lib/shared";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -21,11 +18,9 @@ export enum DAYS_OF_WEEK {
 export default function useOrdersStats() {
   const [state, dispatch] = useReducer(sectionReducer, INITIAL_STATE);
 
-  // TODO: decidere dove mettere sta roba nel posto giusto
   function getDisabledFlags(state: SectionState) {
     const { period, shift } = state;
 
-    // ----- WEEKDAYS
     let disableWeekdays = false;
     if (period?.from && period?.to) {
       if (isSameDay(period.from, period.to)) {
@@ -37,7 +32,6 @@ export default function useOrdersStats() {
       disableWeekdays = true; // single day
     }
 
-    // ----- TIME RANGE
     const disableTimeWindow = shift !== "ALL";
 
     return {
@@ -50,23 +44,19 @@ export default function useOrdersStats() {
     };
   }
 
-  const filters: OrderContract["Requests"]["GetOrdersWithPayments"]["filters"] = useMemo(() => {
+  const filters: NonNullable<OrderContracts.ComputeStats.Input>["filters"] = useMemo(() => {
     let period: { from: Date; to: Date } | undefined = undefined;
 
     if (!state.period) {
       period = undefined;
     } else if (state.period.from && (state.period.to || state.period.from)) {
-      // If only from is set, use it for both from and to
       period = { from: state.period.from, to: state.period.to ?? state.period.from };
     }
 
-    // Weekdays
     const weekdays = state.weekdays.length === ALL_WEEKDAYS.length ? undefined : state.weekdays;
 
-    // Shift
     const shift = state.shift === "ALL" ? undefined : state.shift;
 
-    // TimeRange
     const timeWindow =
       state.timeWindow.from === FULL_DAY_RANGE.from && state.timeWindow.to === FULL_DAY_RANGE.to
         ? undefined
@@ -80,19 +70,20 @@ export default function useOrdersStats() {
     };
   }, [state]);
 
-  // const { data: shiftBackfill, isLoading: isShiftBackfillLoading } = useQuery({
-  //   queryKey: ["shiftBackfill"],
-  //   queryFn: () => fetchRequest("PATCH", "/api/orders", "updateOrdersShift"),
-  //   staleTime: Infinity,
-  // });
+  const shiftBackfill = trpc.orders.updateOrdersShift.useMutation();
 
-  const { data, isLoading: isOrdersLoading } = useQuery({
-    queryKey: ["orders", filters],
-    queryFn: async (): Promise<OrderContract["Responses"]["ComputeOrdersStats"]> =>
-      fetchRequest("POST", "/api/orders", "computeOrdersStats", {
-        filters,
-      }),
-  });
+  useEffect(() => {
+    // shiftBackfill.mutate(); // runs once on mount
+  }, []);
+
+  const { data: ordersStats, isLoading: isOrdersLoading } = trpc.orders.computeStats.useQuery(
+    {
+      filters,
+    },
+    {
+      enabled: true,
+    }
+  );
 
   function isDefaultState(state: SectionState): boolean {
     const init_state = INITIAL_STATE;
@@ -123,7 +114,7 @@ export default function useOrdersStats() {
     state,
     showReset: !isDefaultState(state),
     dispatch,
-    filteredResults: data ?? null,
+    filteredResults: ordersStats ?? null,
     isLoading: isOrdersLoading,
     disabledFlags: getDisabledFlags(state),
   };

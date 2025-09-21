@@ -1,18 +1,36 @@
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { DateRange } from "react-day-picker";
-import { ShiftFilterValue, OrderContract } from "@/app/(site)/lib/shared";
-import { OrderType } from "@prisma/client";
-import fetchRequest from "../../lib/api/fetchRequest";
-import calculatePaymentsSummary, {
-  DEFAULT_SUMMARY_DATA,
-  PaymentsSummaryData,
-} from "../../lib/services/payments/calculatePaymentsSummary";
+import { OrderContracts, PaymentContracts, ShiftFilterValue } from "@/app/(site)/lib/shared";
+import { OrderType, PaymentType } from "@prisma/client";
 import useQueryFilter from "../table/useGlobalFilter";
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";
-import { PaginationRequest } from "../../lib/shared/schemas/common/pagination";
+import { ordersAPI, paymentsAPI } from "@/lib/server/api";
 
-type UsePaymentsHistoryParams = PaginationRequest;
+type UsePaymentsHistoryParams = {
+  page: number;
+  pageSize: number;
+};
+
+const DEFAULT_PAYMENTS_SUMMARY: PaymentContracts.GetSummary.Output = {
+  totals: {
+    [PaymentType.CASH]: { label: "Contanti", total: 0 },
+    [PaymentType.CARD]: { label: "Carta", total: 0 },
+    [PaymentType.VOUCH]: { label: "Buoni", total: 0 },
+    [PaymentType.CREDIT]: { label: "Crediti", total: 0 },
+  },
+  inPlaceAmount: 0,
+  takeawayAmount: 0,
+  homeOrdersAmount: 0,
+  pickupOrdersAmount: 0,
+  tableOrdersAmount: 0,
+  customersCount: 0,
+  homeOrdersCount: 0,
+  pickupOrdersCount: 0,
+  tableOrdersCount: 0,
+  totalAmount: 0,
+  rawTotalAmount: 0,
+  centsDifference: 0,
+};
 
 export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistoryParams) {
   const { debouncedQuery, inputQuery, setInputQuery } = useQueryFilter();
@@ -24,7 +42,7 @@ export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistor
     OrderType.TABLE,
   ]);
 
-  const filters: OrderContract["Requests"]["GetOrdersWithPayments"]["filters"] = useMemo(() => {
+  const filters: NonNullable<OrderContracts.GetWithPayments.Input>["filters"] = useMemo(() => {
     const periodFilter = period?.from ? { from: period.from, to: period.to } : undefined;
     const typeFilter = orderTypes.length === Object.keys(OrderType).length ? undefined : orderTypes;
 
@@ -38,34 +56,17 @@ export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistor
     };
   }, [period, orderTypes, shift, debouncedQuery]);
 
-  type Res = OrderContract["Responses"]["GetOrdersWithPayments"];
-
-  const paginatedQuery = useQuery({
-    queryKey: ["payments", { page, pageSize, filters }],
-    queryFn: async (): Promise<Res> =>
-      await fetchRequest("POST", "/api/orders", "getOrdersWithPayments", {
-        filters,
-        page,
-        pageSize,
-      }),
-    staleTime: 1000 * 60 * 10,
+  const { data: summaryData, isLoading: isLoadingSummary } = paymentsAPI.getSummary.useQuery({
+    filters,
   });
 
-  const summaryQuery = useQuery({
-    queryKey: ["payments-summary", { filters }],
-    queryFn: async (): Promise<PaymentsSummaryData> => {
-      const res = await fetchRequest<Res>("POST", "/api/orders", "getOrdersWithPayments", {
-        filters,
-        page: 0,
-        pageSize: 0,
-        summary: true,
-      });
-      return calculatePaymentsSummary(res.orders);
-    },
-    staleTime: 1000 * 60 * 10,
-  });
+  const { data: paginatedPayments, isLoading: isLoadingPayments } =
+    ordersAPI.getWithPayments.useQuery({
+      filters,
+      pagination:
+        pageSize !== null && !isNaN(pageSize) && pageSize > 0 ? { page, pageSize } : undefined,
+    });
 
-  // ---- reset ----
   const handleReset = () => {
     setOrderTypes([OrderType.HOME, OrderType.PICKUP, OrderType.TABLE]);
     setShift(ShiftFilterValue.ALL);
@@ -83,9 +84,9 @@ export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistor
 
   return {
     // table
-    filteredOrders: paginatedQuery.data?.orders ?? [],
-    totalCount: paginatedQuery.data?.totalCount ?? 0,
-    isLoading: paginatedQuery.isLoading,
+    filteredOrders: paginatedPayments?.orders ?? [],
+    totalCount: paginatedPayments?.totalCount ?? 0,
+    isLoading: isLoadingPayments || isLoadingSummary,
 
     // filters state
     orderTypes,
@@ -104,6 +105,6 @@ export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistor
       isDefaultPeriod(period, TODAY_PERIOD)
     ),
     // summary
-    summaryData: summaryQuery.data ?? DEFAULT_SUMMARY_DATA,
+    summaryData: summaryData ?? DEFAULT_PAYMENTS_SUMMARY,
   };
 }

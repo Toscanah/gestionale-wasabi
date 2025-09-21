@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder, OrderContracts } from "@/app/(site)/lib/shared";
 import { useProductsManager } from "../hooks/order/useProductsManager";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Table } from "@tanstack/react-table";
@@ -30,13 +30,13 @@ interface OrderContextType {
   newQuantity: number;
   addProduct: () => void;
   addProducts: (products: ProductInOrder[]) => void;
-  updateProduct: (key: string, value: any, index: number) => void;
+  updateProduct: (key: "quantity" | "code", value: any, index: number) => void;
   updateProductField: (key: string, value: any, index: number) => void;
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
   updateProductOption: (productInOrderId: number, optionId: number) => void;
   updatePrintedProducts: () => Promise<ProductInOrder[]>;
   updateOrder: (order: RecursivePartial<AnyOrder>) => void;
-  updatePrintedFlag: () => Promise<void>;
+  updatePrintedFlag: () => Promise<OrderContracts.UpdatePrintedFlag.Output>;
   joinTableOrders: (tableToJoin: string) => void;
   updateProductVariation: (variation: string, productInOrderId: number) => void;
   issueLedgers: (order: AnyOrder) => Promise<void>;

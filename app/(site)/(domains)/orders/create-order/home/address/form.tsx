@@ -1,19 +1,27 @@
-import getZodField from "@/app/(site)/lib/utils/global/form/getZodField";
+import { AddressContracts, CustomerContracts } from "@/app/(site)/lib/shared";
+import { HomeOrderSchema } from "@/prisma/generated/schemas";
+import { CustomerOrigin } from "@prisma/client";
 import { z } from "zod";
 
 const formSchema = z.object({
-  street: getZodField("string"),
-  doorbell: getZodField("string"),
-  name: getZodField("string", false),
-  surname: getZodField("string", false),
-  email: getZodField("string", false),
-  floor: getZodField("string", false),
-  stair: getZodField("string", false),
-  street_info: getZodField("string", false),
-  order_notes: getZodField("string", false),
-  contact_phone: getZodField("string", false),
-  preferences: getZodField("string", false),
-  origin: getZodField("string", false),
+  street: AddressContracts.Create.Input.shape.address.shape.street.default(""),
+  doorbell: AddressContracts.Create.Input.shape.address.shape.doorbell.default(""),
+  name: CustomerContracts.Create.Input.shape.customer.shape.name.optional().default(""),
+  surname: CustomerContracts.Create.Input.shape.customer.shape.surname.optional().default(""),
+  email: CustomerContracts.Create.Input.shape.customer.shape.email.optional().default(""),
+  floor: AddressContracts.Create.Input.shape.address.shape.floor.optional().default(""),
+  stair: AddressContracts.Create.Input.shape.address.shape.stair.optional().default(""),
+  street_info: AddressContracts.Create.Input.shape.address.shape.street_info.optional().default(""),
+  order_notes: CustomerContracts.Create.Input.shape.customer.shape.order_notes
+    .optional()
+    .default(""),
+  contact_phone: HomeOrderSchema.shape.contact_phone.optional().default(""),
+  preferences: CustomerContracts.Create.Input.shape.customer.shape.preferences
+    .optional()
+    .default(""),
+  origin: CustomerContracts.Create.Input.shape.customer.shape.origin
+    .optional()
+    .default(CustomerOrigin.UNKNOWN),
 });
 
 export default formSchema;

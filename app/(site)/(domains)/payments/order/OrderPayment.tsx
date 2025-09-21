@@ -11,6 +11,7 @@ import PaymentConfirmationAndTools from "./sections/PaymentConfirmationAndTools"
 import { useOrderContext } from "../../../context/OrderContext";
 import { useEffect } from "react";
 import ResetPayment from "./ResetPayment";
+import { Payment } from "@/prisma/generated/schemas";
 
 export type PaymentMethod = {
   type: PaymentType;
@@ -21,7 +22,7 @@ export type PaymentMethod = {
 export interface OrderPaymentProps {
   scope: PaymentScope;
   stage: "FINAL" | "PARTIAL";
-  onOrderPaid: () => void;
+  onOrderPaid: (updatePayments: Payment[]) => void;
   onBackButton: () => void;
   partialOrder?: AnyOrder;
   manualTotalAmount?: number;

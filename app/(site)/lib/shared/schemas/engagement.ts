@@ -1,12 +1,32 @@
 import { EngagementLedgerStatus, EngagementType } from "@prisma/client";
 import { z } from "zod";
-import { ParsedEngagementTemplateSchema } from "../models/engagement";
+import {
+  EngagementLedgerWithDetailsSchema,
+  EngagementWithDetailsSchema,
+  ParsedEngagementTemplateSchema,
+} from "../models/engagement";
 import { wrapSchema } from "./common/utils";
 import { NoContentRequestSchema } from "./common/no-content";
+import {
+  EngagementLedgerSchema,
+  EngagementSchema,
+  EngagementTemplateSchema,
+} from "@/prisma/generated/schemas";
 
 export namespace EngagementContracts {
-  // Shared schemas
-  export const TemplatePayloadDraft = ParsedEngagementTemplateSchema.omit({
+  // 👇 Extracted common bases
+  export namespace Common {
+    export const Template = EngagementTemplateSchema;
+    export type Template = z.infer<typeof Template>;
+
+    export const WithDetails = EngagementWithDetailsSchema;
+    export type WithDetails = z.infer<typeof WithDetails>;
+
+    export const ParsedTemplate = ParsedEngagementTemplateSchema;
+    export type ParsedTemplate = z.infer<typeof ParsedTemplate>;
+  }
+
+  export const TemplatePayloadDraft = Common.ParsedTemplate.omit({
     id: true,
     created_at: true,
   }).extend({
@@ -19,9 +39,12 @@ export namespace EngagementContracts {
       label: z.string().optional(),
       type: z.enum(EngagementType),
       redeemable: z.boolean(),
-      payload: z.record(z.any(), z.any()),
+      payload: Common.ParsedTemplate.shape.payload,
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.ParsedTemplate;
+    export type Output = Common.ParsedTemplate;
   }
 
   export namespace UpdateTemplate {
@@ -29,11 +52,17 @@ export namespace EngagementContracts {
       id: z.number(),
     }).omit({ type: true });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.ParsedTemplate
+    export type Output = Common.ParsedTemplate;
   }
 
-  export namespace DeleteTemplate {
+  export namespace DeleteTemplateById {
     export const Input = wrapSchema("templateId", z.number());
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.Template;
+    export type Output = Common.Template;
   }
 
   export namespace Create {
@@ -43,21 +72,38 @@ export namespace EngagementContracts {
       orderId: z.number().optional(),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.WithDetails.nullable();
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace GetByCustomer {
     export const Input = wrapSchema("customerId", z.number());
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.array(Common.WithDetails);
+    export type Output = z.infer<typeof Output>;
   }
 
-  export namespace DeleteById {
+  export namespace DeleteEngagementById {
     export const Input = wrapSchema("engagementId", z.number());
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.object({
+      id: z.number(),
+    });
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace ToggleById {
     export const Input = wrapSchema("engagementId", z.number());
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.object({
+      id: z.number(),
+      enabled: z.boolean(),
+    });
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace GetLedgersByCustomer {
@@ -65,23 +111,40 @@ export namespace EngagementContracts {
       customerId: z.number(),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.array(EngagementLedgerWithDetailsSchema);
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace IssueLedgers {
     export const Input = wrapSchema("orderId", z.number());
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.array(
+      EngagementSchema.pick({ id: true }).extend({
+        template: EngagementTemplateSchema.pick({ id: true, redeemable: true }),
+      })
+    );
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace UpdateLedgerStatus {
     export const Input = z.object({
       ledgerId: z.number(),
-      status: z.nativeEnum(EngagementLedgerStatus),
+      orderId: z.number(),
+      status: z.enum(EngagementLedgerStatus),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = EngagementLedgerSchema;
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace GetTemplates {
     export const Input = NoContentRequestSchema;
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.array(Common.ParsedTemplate);
+    export type Output = z.infer<typeof Output>;
   }
 }

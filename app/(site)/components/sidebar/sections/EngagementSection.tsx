@@ -3,15 +3,20 @@ import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
 import MarketingTemplates from "@/app/(site)/(domains)/engagement/templates/MarketingTemplates";
 import WasabiDialog from "../../ui/wasabi/WasabiDialog";
+import { trpc } from "@/lib/server/client";
 
 export default function EngagementSection() {
+  const utils = trpc.useUtils();
+
   const EngagementModels = () => (
     <WasabiDialog
-      // onOpenChange={(open) => {
-      //   if (!open) {
-      //     window.location.reload();
-      //   }
-      // }}
+      onOpenChange={(open) => {
+        if (!open) {
+          utils.orders.getHomeOrders.invalidate();
+          utils.orders.getPickupOrders.invalidate();
+          utils.orders.getTableOrders.invalidate();
+        }
+      }}
       title="Modelli marketing"
       size="medium"
       putUpperBorder

@@ -1,7 +1,8 @@
 import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
-import { Address, OrderType, PlannedPayment } from "@prisma/client";
+import { OrderType, PlannedPayment } from "@prisma/client";
 import CommonInfo from "./CommonInfo";
 import HomeInfo from "./HomeInfo";
+import { AddressType } from "@/prisma/generated/schemas";
 
 interface OrderInfoSectionProps {
   order: AnyOrder;
@@ -26,7 +27,7 @@ export default function OrderInfoSection({
   let orderNotes: string | undefined;
 
   // --- Home-only fields ---
-  let address: Address | undefined = undefined;
+  let address: AddressType | undefined = undefined;
   let contactPhone: string | undefined;
   let phone: string | undefined;
 

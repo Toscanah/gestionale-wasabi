@@ -7,7 +7,7 @@ import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
 
 interface EngagementHistoryProps {
   customerId: number;
-  orderId: number
+  orderId: number;
 }
 
 export type EngagementHistoryTableMeta = {
@@ -18,12 +18,27 @@ export type EngagementHistoryTableMeta = {
 export default function EngagementHistory({ customerId, orderId }: EngagementHistoryProps) {
   const { ledgers, updateLedgerStatus, isLoading } = useEngagementsLedgers({ customerId });
 
-  const table = useTable({ data: ledgers, columns, meta: { updateLedgerStatus, orderId } });
+  const sortedLedgers = [...ledgers].sort(
+    (a, b) => new Date(b.issued_at).getTime() - new Date(a.issued_at).getTime()
+  );
+  const table = useTable({
+    data: sortedLedgers,
+    columns,
+    meta: {
+      updateLedgerStatus: (ledgerId: number, status: EngagementLedgerStatus) =>
+        updateLedgerStatus(ledgerId, orderId, status),
+      orderId,
+    },
+  });
 
   return (
     <Loader isLoading={isLoading}>
       {ledgers.length > 0 ? (
-        <Table table={table} tableClassName="max-h-[70vh]" />
+        <Table
+          table={table}
+          tableClassName="max-h-[70vh]"
+          cellClassName={(i) => (i == 3 ? "w-[35rem] max-w-[35rem]" : "")}
+        />
       ) : (
         <p className="text-muted-foreground w-full flex justify-center">
           Nessuno storico disponibile

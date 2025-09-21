@@ -7,26 +7,24 @@ import React, {
   SetStateAction,
   useEffect,
 } from "react";
-import { AnyOrder, CustomerWithDetails, HomeOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import useCustomerLookup from "../hooks/create-home-order/useCustomerLookup";
-import fetchRequest from "../lib/api/fetchRequest";
 import { useWasabiContext } from "./WasabiContext";
-import { Address, Customer } from "@prisma/client";
 import { FormValues } from "../(domains)/orders/create-order/home/address/form";
 import useCustomerManager from "../hooks/create-home-order/useCustomerManager";
 import useAddressSelection from "../hooks/create-home-order/useAddressSelection";
+import { trpc } from "@/lib/server/client";
+import { AddressType, CustomerType } from "@/prisma/generated/schemas";
 
 type CreateHomeOrderType = {
   phone: string;
   setPhone: Dispatch<SetStateAction<string>>;
-  setCustomer: Dispatch<SetStateAction<Customer | undefined>>;
-  customer: Customer | undefined;
-  selectedAddress: Address | undefined;
+  customer: CustomerType | undefined;
+  selectedAddress: AddressType | undefined;
   setExtraInfo: Dispatch<SetStateAction<ExtraInfo>>;
   extraInfo: ExtraInfo;
-  addresses: Address[];
-  setAddresses: Dispatch<SetStateAction<Address[]>>;
-  setSelectedAddress: Dispatch<SetStateAction<Address | undefined>>;
+  addresses: AddressType[];
+  setSelectedAddress: Dispatch<SetStateAction<AddressType | undefined>>;
   initialPhone: string;
   initialDoorbell: string;
   selectedOption: string;
@@ -35,10 +33,9 @@ type CreateHomeOrderType = {
   createHomeOrder: () => void;
   setDoorbell: Dispatch<SetStateAction<string>>;
   doorbell: string;
-  permAddresses: Address[];
-  tempAddress: Address | undefined;
-  setPossibleCustomers: Dispatch<SetStateAction<CustomerWithDetails[]>>;
-  possibleCustomers: CustomerWithDetails[];
+  permAddresses: AddressType[];
+  tempAddress: AddressType | undefined;
+  possibleCustomers: ComprehensiveCustomer[];
 };
 
 type CreateHomeOrderProps = {
@@ -61,14 +58,11 @@ export const CreateHomeOrderProvider = ({
   initialDoorbell,
 }: CreateHomeOrderProps) => {
   const [extraInfo, setExtraInfo] = useState<ExtraInfo>({ contactPhone: "" });
-  const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(undefined);
+  const [selectedAddress, setSelectedAddress] = useState<AddressType | undefined>(undefined);
   const [selectedOption, setSelectedOption] = useState<string>("");
 
-  const resetState = () => {
-    setAddresses([]);
+  const handleResetState = () => {
     setSelectedAddress(undefined);
-    setCustomer(undefined);
-    setPossibleCustomers([]);
   };
 
   const { updateGlobalState } = useWasabiContext();
@@ -77,21 +71,16 @@ export const CreateHomeOrderProvider = ({
     addresses,
     phone,
     doorbell,
-    setCustomer,
-    setAddresses,
     setPhone,
     setDoorbell,
     possibleCustomers,
-    setPossibleCustomers,
-  } = useCustomerLookup({ initialPhone, initialDoorbell, resetState });
+  } = useCustomerLookup({ initialPhone, initialDoorbell, onReset: handleResetState });
 
   const { onSubmit } = useCustomerManager({
     phone,
-    setCustomer,
     customer,
     selectedAddress,
     setExtraInfo,
-    setAddresses,
     selectedOption,
     setSelectedAddress,
   });
@@ -105,16 +94,20 @@ export const CreateHomeOrderProvider = ({
     setSelectedOption,
   });
 
+  const createHomeOrderMutation = trpc.orders.createHome.useMutation({
+    onSuccess: (newHomeOrder) => {
+      setOrder(newHomeOrder);
+      updateGlobalState(newHomeOrder, "add");
+    },
+  });
+
   const createHomeOrder = () => {
     if (!customer || !selectedAddress) return;
 
-    fetchRequest<HomeOrder>("POST", "/api/orders/", "createHomeOrder", {
+    createHomeOrderMutation.mutate({
       customerId: customer.id,
       addressId: selectedAddress.id,
       contactPhone: extraInfo.contactPhone || "",
-    }).then((newHomeOrder) => {
-      setOrder(newHomeOrder);
-      updateGlobalState(newHomeOrder, "add");
     });
   };
 
@@ -125,7 +118,6 @@ export const CreateHomeOrderProvider = ({
       value={{
         setSelectedAddress,
         possibleCustomers,
-        setPossibleCustomers,
         tempAddress,
         setExtraInfo,
         initialPhone,
@@ -133,13 +125,11 @@ export const CreateHomeOrderProvider = ({
         doorbell,
         initialDoorbell,
         phone,
-        setCustomer,
         createHomeOrder,
         customer,
         selectedAddress,
         onSubmit,
         extraInfo,
-        setAddresses,
         selectedOption,
         setSelectedOption,
         addresses,

@@ -1,18 +1,33 @@
-import { CategorySchema, OptionSchema } from "@/prisma/generated/zod";
+import { CategorySchema, OptionSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
 import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
 import { NoContentRequestSchema } from "./common/no-content";
-import { ToggleDeleteEntityRequestSchema } from "./common/toggle-delete-entity";
+import { OptionWithCategoriesSchema } from "../models/option";
+import { ToggleDeleteEntityRequestSchema, ToggleEntityResponseSchema } from "./common/toggle-delete-entity";
 
 export namespace OptionContracts {
+  export namespace Common {
+    export const NoContentInput = NoContentRequestSchema;
+    export type NoContentInput = z.infer<typeof NoContentInput>;
+
+    export const WithCategories = OptionWithCategoriesSchema;
+    export type WithCategories = z.infer<typeof WithCategories>;
+  }
+
   export namespace GetAll {
-    export const Input = NoContentRequestSchema;
-    export type Input = z.infer<typeof Input>;
+    export const Input = Common.NoContentInput;
+    export type Input = Common.NoContentInput;
+
+    export const Output = z.array(OptionSchema);
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace GetAllWithCategories {
-    export const Input = NoContentRequestSchema;
-    export type Input = z.infer<typeof Input>;
+    export const Input = Common.NoContentInput;
+    export type Input = Common.NoContentInput;
+
+    export const Output = z.array(Common.WithCategories);
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace UpdateOptionsOfCategory {
@@ -21,20 +36,35 @@ export namespace OptionContracts {
       options: z.array(OptionSchema),
     });
     export type Input = z.infer<typeof Input>;
+
+    export const Output = z.object({
+      added: z.array(z.number()),
+      removed: z.array(z.number()),
+    });
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace Update {
     export const Input = wrapSchema("option", updateInputSchema(OptionSchema));
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.WithCategories;
+    export type Output = Common.WithCategories;
   }
 
   export namespace Create {
     export const Input = wrapSchema("option", createInputSchema(OptionSchema));
     export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.WithCategories;
+    export type Output = Common.WithCategories;
   }
 
   export namespace Toggle {
     export const Input = ToggleDeleteEntityRequestSchema;
     export type Input = z.infer<typeof Input>;
+
+    export const Output = ToggleEntityResponseSchema;
+    export type Output = z.infer<typeof Output>;
   }
 }

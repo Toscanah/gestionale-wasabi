@@ -6,6 +6,6 @@ export default function formatRice(rice: number, extraSpace?: boolean): string {
     const kg = absoluteRice / 1000;
     return `${sign}${parseFloat(kg.toFixed(3))} kg`;
   } else {
-    return `${sign}${absoluteRice}${extraSpace ? "\u00A0\u00A0\u00A0" : ""}g`;
+    return `${sign}${parseFloat(absoluteRice.toFixed(3))}${extraSpace ? "\u00A0\u00A0\u00A0" : ""}g`;
   }
 }

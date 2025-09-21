@@ -1,18 +1,13 @@
-import { Order } from "@prisma/client";
 import prisma from "../db";
 import { getProductPrice } from "../../services/product-management/getProductPrice";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductContracts } from "@/app/(site)/lib/shared";
 import { categoryInclude, productInOrderInclude } from "../includes";
 
 export default async function addProductToOrder({
   order,
   productCode,
   quantity,
-}: {
-  order: Order;
-  productCode: string;
-  quantity: number;
-}): Promise<ProductInOrder | null> {
+}: ProductContracts.AddToOrder.Input): Promise<ProductContracts.AddToOrder.Output> {
   return await prisma.$transaction(async (tx) => {
     const product = await tx.product.findFirst({
       where: { code: { equals: productCode, mode: "insensitive" }, active: true },
@@ -20,7 +15,7 @@ export default async function addProductToOrder({
     });
 
     if (!product) {
-      return null;
+      throw new Error("Product not found");
     }
 
     const frozenPrice = getProductPrice({ product: product as any }, order.type);

@@ -1,11 +1,9 @@
-import { RiceBatch } from "@/prisma/generated/zod";
+import { RiceContracts } from "../../shared";
 import prisma from "../db";
 
 export default async function addRiceBatch({
   batch,
-}: {
-  batch: Omit<RiceBatch, "id">;
-}): Promise<RiceBatch> {
+}: RiceContracts.AddBatch.Input): Promise<RiceContracts.AddBatch.Output> {
   const existingBatch = await prisma.riceBatch.findFirst({
     where: {
       amount: batch.amount,

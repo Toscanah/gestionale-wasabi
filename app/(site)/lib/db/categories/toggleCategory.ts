@@ -1,11 +1,13 @@
-import { Category } from "@prisma/client";
 import prisma from "../db";
+import { CategoryContracts } from "../../shared";
 
-export default async function toggleCategory({ id }: { id: number }): Promise<Category | null> {
-  const category = await prisma.category.findUnique({ where: { id } });
+export default async function toggleCategory({
+  id,
+}: CategoryContracts.Toggle.Input): Promise<CategoryContracts.Toggle.Output> {
+  const category = await prisma.category.findUnique({ where: { id }, select: { active: true } });
 
   if (!category) {
-    return null;
+    throw new Error("Category not found");
   }
 
   return prisma.category.update({

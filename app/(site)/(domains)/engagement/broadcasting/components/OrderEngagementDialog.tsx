@@ -48,7 +48,9 @@ export default function OrderEngagementDialog({
     >
       <OrderEngagementTabs
         order={order}
-        onToggleEngagement={handleToggleEngagement}
+        onToggleEngagement={async (engagementId) => {
+          await handleToggleEngagement(engagementId);
+        }}
         selectedTemplates={selectedTemplates}
         onSelectTemplate={onSelectTemplate}
         onCreateEngagement={handleCreateEngagement}

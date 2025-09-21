@@ -20,8 +20,10 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
     avgPerHour: 3,
     count: 5,
   },
-  useWhatsApp: true,
-  
+  whatsapp: {
+    active: false,
+    sendOrderConf: false,
+  },
 };
 
 export default function useSettings() {

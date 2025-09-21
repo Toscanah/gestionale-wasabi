@@ -1,19 +1,17 @@
-import { useRef, useState, useEffect, Dispatch, SetStateAction, ReactNode } from "react";
+import { useState, Dispatch, SetStateAction, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AnyOrder, TableOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../../../../context/WasabiContext";
-import fetchRequest from "../../../../lib/api/fetchRequest";
 import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { cn } from "@/lib/utils";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
-import generateEmptyOrder from "@/app/(site)/lib/services/order-management/generateEmptyOrder";
-import { OrderType } from "@prisma/client";
 import { Plus } from "@phosphor-icons/react";
+import { trpc } from "@/lib/server/client";
 
 interface TableProps {
   setOrder: Dispatch<SetStateAction<AnyOrder>>;
@@ -31,10 +29,18 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
   const [people, setPeople] = useState<number | undefined>(undefined);
   const [resName, setResName] = useState<string>("");
 
-  // const tableRef = useRef<HTMLInputElement>(null);
-  // const pplRef = useRef<HTMLInputElement>(null);
-  // const nameRef = useRef<HTMLInputElement>(null);
-  // const buttonRef = useRef<HTMLButtonElement>(null);
+  const createTableMutation = trpc.orders.createTable.useMutation({
+    onSuccess: (tableOrder) => {
+      if (tableOrder.isNewOrder) {
+        toastSuccess("Ordine creato con successo");
+        updateGlobalState(tableOrder.order, "add");
+      }
+      setOrder(tableOrder.order);
+    },
+    onError: () => {
+      toastError("Errore nella creazione dell'ordine");
+    },
+  });
 
   const createTableOrder = () => {
     if (table == "") {
@@ -42,22 +48,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
     }
 
     const content = { table, people: people || 1, resName };
-
-    fetchRequest<{ order: TableOrder; isNewOrder: boolean }>(
-      "POST",
-      "/api/orders/",
-      "createTableOrder",
-      {
-        ...content,
-      }
-    ).then((tableOrder) => {
-      if (tableOrder.isNewOrder) {
-        toastSuccess("Ordine creato con successo");
-        updateGlobalState(tableOrder.order, "add");
-      }
-
-      setOrder(tableOrder.order);
-    });
+    createTableMutation.mutate(content);
   };
 
   return (
@@ -102,7 +93,6 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                   // }
                   addRefs(tableRef);
                 }}
-                value={table}
                 defaultValue={table}
                 onChange={(e) => setTable(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -124,7 +114,6 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                   // }
                   addRefs(pplRef);
                 }}
-                value={people}
                 defaultValue={people}
                 onChange={(e) => setPeople(Number(e.target.value))}
                 onKeyDown={handleKeyDown}

@@ -1,23 +1,18 @@
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
-import { HomeOrder } from "@/app/(site)/lib/shared";
+import { CustomerContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { engagementsInclude, homeAndPickupOrdersInclude } from "../includes";
 import filterInactiveProducts from "../../services/product-management/filterInactiveProducts";
 
 /**
- * Retrieves a customer by ID along with related details such as addresses, phone, home and pickup orders, and engagements.
- * Applies filtering to exclude inactive products from the returned customer data.
+ * Retrieves a customer by ID along with related details such as addresses, phone, orders, and engagements.
  *
- * @param params - An object containing the customer ID.
- * @param params.customerId - The unique identifier of the customer to retrieve.
- * @returns A promise that resolves to the customer with detailed information, or `null` if the customer is not found.
+ * @param {CustomerContracts.GetWithDetails.Input} params - The input object containing the customer ID.
+ * @returns {Promise<CustomerContracts.GetWithDetails.Output>} The customer details with related entities, or `null` if not found.
  */
 export default async function getCustomerWithDetails({
   customerId,
-}: {
-  customerId: number;
-}): Promise<CustomerWithDetails> {
-  const customer: CustomerWithDetails = await prisma.customer.findUniqueOrThrow({
+}: CustomerContracts.GetWithDetails.Input): Promise<CustomerContracts.GetWithDetails.Output> {
+  const customer = await prisma.customer.findUnique({
     where: {
       id: customerId,
     },
@@ -28,6 +23,10 @@ export default async function getCustomerWithDetails({
       ...engagementsInclude,
     },
   });
+
+  if (!customer) {
+    throw new Error("Customer not found");
+  }
 
   return filterInactiveProducts(customer);
 }

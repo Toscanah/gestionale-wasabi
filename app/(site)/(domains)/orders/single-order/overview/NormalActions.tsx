@@ -7,7 +7,6 @@ import OrderReceipt from "@/app/(site)/(domains)/printing/receipts/OrderReceipt"
 import { OrderType, PaymentScope, PlannedPayment } from "@prisma/client";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 import useMetaTemplates from "@/app/(site)/hooks/meta/useMetaTemplates";
@@ -38,9 +37,9 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
 
   const { settings } = useWasabiContext();
   const { paramsMap, setParam } = useTemplatesParams();
-  const shouldLoadTemplates = settings.useWhatsApp && dialogOpen;
+  const shouldLoadTemplates = settings.whatsapp.active && dialogOpen;
 
-  const { templates, sendMessages } = useMetaTemplates({
+  const { templates, sendMessages, isMetaError } = useMetaTemplates({
     open: shouldLoadTemplates,
     paramsMap,
   });
@@ -49,7 +48,10 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
     const prepareParams = async () => {
       if (!hasConfirmationSent()) {
         const confermaTemplate = templates.find((t) => t.name === ORDER_CONFIRMATION_TEMPLATE_NAME);
-        if (!confermaTemplate) return;
+        if (!confermaTemplate) {
+          setParamsReady(true);
+          return;
+        }
 
         const templateId = confermaTemplate.id;
 
@@ -78,12 +80,18 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
       }
     };
 
-    setParamsReady(false); // Reset before starting
+    setParamsReady(false);
+
+    if (isMetaError) {
+      setParamsReady(true);
+      return;
+    }
+
     prepareParams();
   }, [order, hasConfirmationSent, templates]);
 
   const maybeSendConfirmation = async (order: AnyOrder) => {
-    if (!hasConfirmationSent() && settings.useWhatsApp) {
+    if (!hasConfirmationSent() && settings.whatsapp.active && settings.whatsapp.sendOrderConf) {
       await sendMessages({
         templateName: ORDER_CONFIRMATION_TEMPLATE_NAME,
         order,
@@ -194,7 +202,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
       <div className="flex gap-6">
         <Button
           className="w-full text-3xl h-36"
-          disabled={!hasProducts || (settings.useWhatsApp && !paramsReady)}
+          disabled={!hasProducts || (settings.whatsapp && !paramsReady)}
           onClick={() => handlePrint(order, plannedPayment)}
         >
           STAMPA 打印

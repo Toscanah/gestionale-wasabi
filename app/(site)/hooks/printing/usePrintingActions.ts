@@ -7,7 +7,6 @@ import EngagementReceipt from "../../(domains)/printing/receipts/EngagementRecei
 import print, { PrintContent } from "../../(domains)/printing/print";
 import { useOrderContext } from "../../context/OrderContext";
 import usePrinter from "./usePrinter";
-import fetchRequest from "../../lib/api/fetchRequest";
 
 interface UsePrintingActionsParams {
   maybeSendConfirmation?: (order: AnyOrder) => Promise<void>;

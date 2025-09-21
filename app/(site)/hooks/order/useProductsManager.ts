@@ -1,184 +1,34 @@
-import { useState } from "react";
-import { AnyOrder, OptionInProductOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder } from "@/app/(site)/lib/shared";
 import generateDummyProduct from "../../lib/services/product-management/generateDummyProduct";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import fetchRequest from "../../lib/api/fetchRequest";
-import { toastError, toastSuccess } from "../../lib/utils/global/toast";
-import { Table } from "@tanstack/react-table";
+import { toastSuccess } from "../../lib/utils/global/toast";
 import { RecursivePartial } from "./useOrderManager";
-import { UpdateProductInOrderResponse } from "../../lib/db/products/product-in-order/updateProductInOrder";
 import { ProductInOrderStatus } from "@prisma/client";
+import useProductCrud from "./products/useProductCrud";
+import useProductMods from "./products/useProductMods";
+import useProductPrinting from "./products/useProductPrinting";
+import useProductExtras from "./products/useProductExtras";
+
+export type UpdateProductsListFunction = (params: {
+  addedProducts?: ProductInOrder[];
+  updatedProducts?: ProductInOrder[];
+  deletedProducts?: ProductInOrder[];
+  isDummyUpdate?: boolean;
+  toast?: boolean;
+  updateFlag?: boolean;
+}) => void;
 
 export function useProductsManager(
   order: AnyOrder,
   updateOrder: (order: RecursivePartial<AnyOrder>) => void
 ) {
-  const [newCode, setNewCode] = useState<string>("");
-  const [newQuantity, setNewQuantity] = useState<number>(0);
-
-  const addProduct = () =>
-    fetchRequest<ProductInOrder>("POST", "/api/products/", "addProductToOrder", {
-      order,
-      productCode: newCode,
-      quantity: Number(newQuantity),
-    }).then((newProduct) => {
-      if (newProduct) {
-        updateProductsList({ newProducts: [newProduct] });
-      } else {
-        updateProductsList({ updatedProducts: [generateDummyProduct()] });
-        toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
-      }
-    });
-
-  const addProducts = (products: ProductInOrder[]) =>
-    fetchRequest<ProductInOrder[]>("POST", "/api/products", "addProductsToOrder", {
-      orderId: order.id,
-      products,
-    }).then((newProducts) => updateProductsList({ newProducts }));
-
-  const updateProduct = (key: string, value: any, index: number) => {
-    let productToUpdate = order.products[index];
-
-    if (key == "quantity" && value < 0) {
-      return toastError("La quantità non può essere negativa");
-    }
-
-    fetchRequest<UpdateProductInOrderResponse>("PATCH", "/api/products/", "updateProductInOrder", {
-      orderId: order.id,
-      key: key,
-      value: value,
-      productInOrder: productToUpdate,
-    }).then((result) => {
-      const { updatedProduct, deletedProduct, error } = result;
-
-      if (error) {
-        return toastError(
-          `Il prodotto con codice ${newCode} non è stato trovato`,
-          "Prodotto non trovato"
-        );
-      }
-
-      updateProductsList({
-        updatedProducts: updatedProduct && [updatedProduct],
-        deletedProducts: deletedProduct && [deletedProduct],
-      });
-    });
-  };
-
-  const deleteProducts = (table: Table<any>, cooked: boolean) => {
-    const selectedRows = table.getFilteredSelectedRowModel().rows;
-    const selectedProductIds = selectedRows.map((row) => row.original.id);
-
-    if (selectedProductIds.length > 0) {
-      fetchRequest("DELETE", "/api/products/", "deleteProductsFromOrder", {
-        productIds: selectedProductIds,
-        orderId: order.id,
-        cooked,
-      }).then(() => {
-        updateProductsList({
-          deletedProducts: order.products.filter((p) => selectedProductIds.includes(p.id)),
-        });
-        table.resetRowSelection();
-      });
-    }
-  };
-
-  const updateProductField = (key: string, value: any, index: number) => {
-    const updatedProducts = [...order.products];
-
-    if (key === "code") {
-      updatedProducts[index].product.code = value;
-      setNewCode(value);
-    } else if (key === "quantity") {
-      updatedProducts[index].quantity = value;
-      setNewQuantity(value);
-    }
-
-    updateProductsList({ updatedProducts, isDummyUpdate: true });
-  };
-
-  const updateProductOption = (productInOrderId: number, optionId: number) =>
-    fetchRequest<OptionInProductOrder>("PATCH", "/api/products/", "updateProductOptionsInOrder", {
-      productInOrderId,
-      optionId,
-    }).then((newOption) =>
-      updateProductsList({
-        updatedProducts: order.products.map((product) => {
-          if (product.id !== productInOrderId) {
-            return product;
-          }
-
-          const isOptionPresent = product.options.some(
-            (selectedOption) => selectedOption.option.id === newOption.option_id
-          );
-
-          return {
-            ...product,
-            options: isOptionPresent
-              ? product.options.filter(
-                  (selectedOption) => selectedOption.option.id !== newOption.option_id
-                )
-              : [...product.options, { ...newOption }],
-          };
-        }),
-      })
-    );
-
-  const updatePrintedProducts = async () => {
-    const unprintedProducts = await fetchRequest<ProductInOrder[]>(
-      "PATCH",
-      "/api/products/",
-      "updatePrintedProducts",
-      {
-        orderId: order.id,
-      }
-    );
-
-    if (unprintedProducts.length > 0) {
-      const updatedProducts: ProductInOrder[] = unprintedProducts.map((unprintedProduct) => {
-        const remainingQuantity = unprintedProduct.quantity - unprintedProduct.paid_quantity;
-
-        return {
-          ...unprintedProduct,
-          quantity: remainingQuantity,
-          to_be_printed: unprintedProduct.to_be_printed ?? 0,
-        };
-      });
-
-      updateProductsList({
-        updatedProducts,
-        toast: false,
-        updateFlag: false,
-      });
-    }
-
-    return unprintedProducts;
-  };
-
-  const updateProductVariation = (variation: string, productInOrderId: number) =>
-    fetchRequest<ProductInOrder>("PATCH", "/api/products/", "updateProductVariationInOrder", {
-      variation,
-      productInOrderId,
-    }).then((updatedProduct) => {
-      if (updatedProduct) {
-        updateProductsList({ updatedProducts: [updatedProduct] });
-      }
-    });
-
-  const updateProductsList = ({
-    newProducts = [],
+  const updateProductsList: UpdateProductsListFunction = ({
+    addedProducts = [],
     updatedProducts = [],
     deletedProducts = [],
     isDummyUpdate = false,
     toast = true,
     updateFlag = true,
-  }: {
-    newProducts?: ProductInOrder[];
-    updatedProducts?: ProductInOrder[];
-    deletedProducts?: ProductInOrder[];
-    isDummyUpdate?: boolean;
-    toast?: boolean;
-    updateFlag?: boolean;
   }) => {
     if (isDummyUpdate) return;
 
@@ -195,29 +45,27 @@ export function useProductsManager(
         return update ? { ...product, ...update } : product;
       });
 
-    const finalProducts = [...updatedProductsList, ...newProducts, generateDummyProduct()];
+    const finalProducts = [...updatedProductsList, ...addedProducts, generateDummyProduct()];
+
+    const extraUpdates = extras.computeAndUpdateExtras(finalProducts);
 
     updateOrder({
       products: finalProducts,
+      ...extraUpdates,
       is_receipt_printed: updateFlag ? false : undefined,
     });
-
-    setNewCode("");
-    setNewQuantity(0);
 
     if (toast) toastSuccess("Prodotti aggiornati correttamente");
   };
 
+  const crud = useProductCrud({ order, updateProductsList });
+  const mods = useProductMods({ order, updateProductsList });
+  const printing = useProductPrinting({ order, updateProductsList });
+  const extras = useProductExtras({ order });
+
   return {
-    addProduct,
-    addProducts,
-    newCode,
-    newQuantity,
-    updateProduct,
-    updateProductField,
-    deleteProducts,
-    updateProductOption,
-    updatePrintedProducts,
-    updateProductVariation,
+    ...crud,
+    ...mods,
+    ...printing,
   };
 }

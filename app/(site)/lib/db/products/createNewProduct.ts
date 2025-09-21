@@ -1,13 +1,11 @@
-import { Product } from "@/app/(site)/lib/shared";
+import { ProductContracts } from "../../shared";
 import prisma from "../db";
 import { categoryInclude } from "../includes";
 import { KitchenType } from "@prisma/client";
 
 export default async function createNewProduct({
   product,
-}: {
-  product: Product;
-}): Promise<Product | null> {
+}: ProductContracts.Create.Input): Promise<ProductContracts.Create.Output> {
   const existingProduct = await prisma.product.findFirst({
     where: {
       code: product.code,
@@ -15,7 +13,7 @@ export default async function createNewProduct({
   });
 
   if (existingProduct) {
-    return null;
+    throw new Error("Product with this code already exists");
   }
 
   const newProduct = await prisma.product.create({

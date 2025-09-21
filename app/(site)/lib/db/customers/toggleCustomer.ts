@@ -1,10 +1,13 @@
+import { CustomerContracts } from "../../shared";
 import prisma from "../db";
 
-export default async function toggleCustomer({ id }: { id: number }) {
+export default async function toggleCustomer({
+  id,
+}: CustomerContracts.Toggle.Input): Promise<CustomerContracts.Toggle.Output> {
   const customer = await prisma.customer.findUnique({ where: { id } });
 
   if (!customer) {
-    return null;
+    throw new Error("Customer not found");
   }
 
   return prisma.customer.update({
@@ -14,5 +17,6 @@ export default async function toggleCustomer({ id }: { id: number }) {
     data: {
       active: !customer.active,
     },
+    select: { id: true, active: true },
   });
 }

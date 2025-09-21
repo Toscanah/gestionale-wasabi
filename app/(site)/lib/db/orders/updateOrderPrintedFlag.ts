@@ -1,11 +1,9 @@
+import { OrderContracts } from "../../shared";
 import prisma from "../db";
-import getOrderById from "./getOrderById";
 
 export default async function updateOrderPrintedFlag({
   orderId,
-}: {
-  orderId: number;
-}): Promise<boolean> {
+}: OrderContracts.UpdatePrintedFlag.Input): Promise<OrderContracts.UpdatePrintedFlag.Output> {
   await prisma.order.update({
     where: {
       id: orderId,
@@ -17,5 +15,5 @@ export default async function updateOrderPrintedFlag({
     },
   });
 
-  return (await getOrderById({orderId})).is_receipt_printed;
+  return { isReceiptPrinted: true };
 }

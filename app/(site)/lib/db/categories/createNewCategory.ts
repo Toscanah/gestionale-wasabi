@@ -1,27 +1,27 @@
-import { CategoryWithOptions } from "@/app/(site)/lib/shared";
+import { CategoryContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { optionsInclude } from "../includes";
+import { Prisma } from "@prisma/client";
 
 export default async function createNewCategory({
   category,
-}: {
-  category: CategoryWithOptions;
-}): Promise<CategoryWithOptions | null> {
+}: CategoryContracts.Create.Input): Promise<CategoryContracts.Create.Output> {
+  const { category: categoryName, options } = category;
   return await prisma.$transaction(async (tx) => {
     const existingCategory = await tx.category.findFirst({
-      where: { category: category.category },
+      where: { category: categoryName },
     });
 
     if (existingCategory) {
       return null;
     }
 
-    const categoryData: any = { category: category.category };
+    const data: Prisma.CategoryCreateInput = { category: categoryName };
 
-    if (category.options?.length) {
-      categoryData.options = {
+    if (options?.length) {
+      data.options = {
         createMany: {
-          data: category.options.map((option) => ({
+          data: options.map((option) => ({
             option_id: option.option.id,
           })),
         },
@@ -29,7 +29,7 @@ export default async function createNewCategory({
     }
 
     return await tx.category.create({
-      data: categoryData,
+      data,
       include: optionsInclude,
     });
   });

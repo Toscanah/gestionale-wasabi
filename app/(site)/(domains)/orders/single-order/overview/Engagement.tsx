@@ -1,10 +1,9 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import OrderEngagementDialog from "@/app/(site)/(domains)/engagement/broadcasting/components/OrderEngagementDialog";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { patchOrderEngagements } from "@/app/(site)/lib/services/order-management/patchOrderEngagements";
-import { AnyOrder } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { trpc } from "@/lib/server/client";
 
 export default function Engagement() {
   const { order, updateOrder } = useOrderContext();
@@ -15,20 +14,6 @@ export default function Engagement() {
       Marketing
     </Button>
   );
-
-  useEffect(() => {
-    if (open) {
-      fetchRequest<AnyOrder>("GET", "/api/orders", "getOrderById", { orderId: order.id }).then(
-        (fetchedOrder) =>
-          updateOrder({
-            ...patchOrderEngagements({
-              order,
-              replaceEngagements: fetchedOrder.engagements, // overwrite everything
-            }),
-          })
-      );
-    }
-  }, [open]);
 
   return (
     <OrderEngagementDialog

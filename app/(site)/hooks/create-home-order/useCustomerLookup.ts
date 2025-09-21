@@ -1,78 +1,61 @@
-import { Address, Customer } from "@prisma/client";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import fetchRequest from "../../lib/api/fetchRequest";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared"
-;
-import { useCreateHomeOrder } from "../../context/CreateHomeOrderContext";
+import { useEffect, useState } from "react";
+import { trpc } from "@/lib/server/client";
+import { AddressType, CustomerType } from "@/prisma/generated/schemas";
 
 interface UseCustomerLookupParams {
   initialPhone: string;
   initialDoorbell: string;
-  resetState: () => void;
+  onReset: () => void;
 }
 
 export default function useCustomerLookup({
   initialPhone,
   initialDoorbell,
-  resetState,
+  onReset,
 }: UseCustomerLookupParams) {
   const [phone, setPhone] = useState<string>(initialPhone || "");
   const [doorbell, setDoorbell] = useState<string>(initialDoorbell || "");
-  const [possibleCustomers, setPossibleCustomers] = useState<CustomerWithDetails[]>([]);
-  const [customer, setCustomer] = useState<Customer | undefined>(undefined);
-  const [addresses, setAddresses] = useState<Address[]>([]);
 
-  const fetchCustomer = (phone: string) =>
-    fetchRequest<Customer>("GET", "/api/customers", "getCustomerByPhone", {
-      phone,
-    }).then((fetchedCustomer) => {
-      setCustomer(fetchedCustomer || undefined);
+  // ---- Queries
+  const { data: customer = undefined } = trpc.customers.getByPhone.useQuery(
+    { phone },
+    { enabled: !!phone }
+  );
 
-      if (fetchedCustomer) {
-        fetchAddresses(fetchedCustomer.id);
-      } else {
-        setAddresses([]);
-      }
-    });
+  const { data: fetchedAddresses = [] } = trpc.addresses.getByCustomer.useQuery(
+    { customerId: customer?.id ?? -1 },
+    {
+      enabled: !!customer?.id,
+      select: (addresses) => addresses.filter((addr) => !addr.temporary),
+    }
+  );
 
-  const fetchAddresses = (customerId: number) =>
-    fetchRequest<Address[]>("GET", "/api/addresses/", "getAddressesByCustomer", {
-      customerId: Number(customerId),
-    }).then((fetchedAddresses) =>
-      setAddresses(fetchedAddresses.filter((address) => !address.temporary))
-    );
-
-  const fetchCustomersByDoorbell = (doorbell: string) =>
-    fetchRequest<CustomerWithDetails[]>("GET", "/api/customers", "getCustomersByDoorbell", {
-      doorbell,
-    }).then(setPossibleCustomers);
+  const { data: fetchedPossibleCustomers = [] } = trpc.customers.getByDoorbell.useQuery(
+    { doorbell },
+    { enabled: !!doorbell }
+  );
 
   useEffect(() => {
     if (phone) {
-      resetState();
+      onReset();
       setDoorbell("");
-      fetchCustomer(phone);
     }
   }, [phone]);
 
   useEffect(() => {
     if (doorbell) {
-      resetState();
+      onReset();
       setPhone("");
-      fetchCustomersByDoorbell(doorbell);
     }
   }, [doorbell]);
 
   return {
-    customer,
-    addresses,
+    customer: customer || undefined,
+    addresses: fetchedAddresses,
     phone,
     doorbell,
-    possibleCustomers,
-    setCustomer,
-    setAddresses,
+    possibleCustomers: fetchedPossibleCustomers ?? [],
     setPhone,
     setDoorbell,
-    setPossibleCustomers,
   };
 }

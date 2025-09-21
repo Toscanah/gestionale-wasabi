@@ -1,15 +1,11 @@
-import { Address } from "@/prisma/generated/zod";
 import prisma from "../db";
 import getCustomerWithDetails from "./getCustomerWithDetails";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import { CustomerContracts } from "@/app/(site)/lib/shared";
 
 export default async function updateCustomerAddresses({
   addresses,
   customerId,
-}: {
-  addresses: Address[];
-  customerId: number;
-}): Promise<CustomerWithDetails | null> {
+}: CustomerContracts.UpdateAddresses.Input): Promise<CustomerContracts.UpdateAddresses.Output> {
   await prisma.$transaction(async (tx) => {
     const updatePromises = addresses
       .filter((address) => address.id > 0)
@@ -50,5 +46,5 @@ export default async function updateCustomerAddresses({
     await Promise.all([...updatePromises, ...createPromises]);
   });
 
-  return getCustomerWithDetails({customerId});
+  return getCustomerWithDetails({ customerId });
 }

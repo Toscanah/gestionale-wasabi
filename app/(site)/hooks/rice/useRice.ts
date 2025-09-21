@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import fetchRequest from "../../lib/api/fetchRequest";
 import { RiceLog } from "../../lib/shared/models/rice";
 import { isToday } from "date-fns";
 import { RiceLogType } from "@prisma/client";
 import useRiceState from "./useRiceState";
 import { toastSuccess } from "../../lib/utils/global/toast";
 import { ShiftFilterValue } from "../../lib/shared";
+import { riceAPI } from "@/lib/server/api";
+import { trpc, trpcClient } from "@/lib/server/client";
 
 export type UpdateRiceInput =
   | {
@@ -23,23 +24,35 @@ export type UpdateRiceInput =
 
 export default function useRice() {
   const { rice, save, load } = useRiceState();
+  const addRiceLog = riceAPI.addLog.useMutation();
+  const utils = trpc.useUtils();
 
-  const getTodayLogs = async (): Promise<RiceLog[]> => {
-    const logs = await fetchRequest<RiceLog[]>("GET", "/api/rice", "getRiceLogs");
-    return logs.filter((log) => isToday(new Date(log.created_at)));
+  const sumLogAmount = (log: RiceLog): number => {
+    if (log.type === RiceLogType.BATCH) {
+      return log.rice_batch?.amount ?? 0;
+    }
+
+    if (log.type === RiceLogType.MANUAL || log.type === RiceLogType.RESET) {
+      return log.manual_value ?? 0;
+    }
+    
+    return 0;
   };
 
-  const sumLogAmount = (log: RiceLog): number =>
-    log.rice_batch_id ? log.rice_batch.amount : log.manual_value ?? 0;
+  const getTodayLogs = async (): Promise<RiceLog[]> =>
+    (await trpcClient.rice.getLogs.query()).filter((log) => isToday(new Date(log.created_at)));
 
-  const fetchDailyRiceUsage = async (shift: ShiftFilterValue): Promise<number> =>
-    fetchRequest<number>("GET", "/api/rice", "getDailyRiceUsage", { shift });
+  const fetchDailyRiceUsage = async (shift: ShiftFilterValue): Promise<number> => {
+    return (await trpcClient.rice.getDailyUsage.query({ shift })).dailyUsage;
+  };
 
   const updateRemainingRice = async (total = rice.total) => {
     const [lunch, dinner] = await Promise.all([
       fetchDailyRiceUsage(ShiftFilterValue.LUNCH),
       fetchDailyRiceUsage(ShiftFilterValue.DINNER),
     ]);
+
+    utils.rice.getLogs.invalidate();
 
     save((prev) => ({
       ...prev,
@@ -52,18 +65,19 @@ export default function useRice() {
     if (!delta) return;
 
     if (log === "manual") {
-      await fetchRequest("POST", "/api/rice", "addRiceLog", {
+      addRiceLog.mutate({
         riceBatchId: null,
         manualValue: delta,
         type: RiceLogType.MANUAL,
       });
-    } else if (log === "batch") {
-      await fetchRequest("POST", "/api/rice", "addRiceLog", {
+    } else {
+      addRiceLog.mutate({
         riceBatchId: selectedRiceBatchId,
         manualValue: null,
         type: RiceLogType.BATCH,
       });
     }
+
 
     const newTotal = rice.total + delta;
 
@@ -80,7 +94,7 @@ export default function useRice() {
   const resetRice = async () => {
     if (!rice.total) return;
 
-    await fetchRequest("POST", "/api/rice", "addRiceLog", {
+    addRiceLog.mutate({
       riceBatchId: null,
       manualValue: -rice.total,
       type: RiceLogType.RESET,
@@ -90,17 +104,21 @@ export default function useRice() {
   };
 
   const initializeRice = async () => {
-    const stored = load();
-    const logs = await getTodayLogs();
-    const total = logs.reduce((acc, log) => acc + sumLogAmount(log), 0);
+    try {
+      const stored = load();
+      const logs = await getTodayLogs();
+      const total = logs.reduce((acc, log) => acc + sumLogAmount(log), 0);
 
-    save((prev) => ({
-      ...prev,
-      total,
-      threshold: stored.threshold,
-    }));
+      save((prev) => ({
+        ...prev,
+        total,
+        threshold: stored.threshold,
+      }));
 
-    await updateRemainingRice(total);
+      await updateRemainingRice(total);
+    } catch (error) {
+      console.error("Failed to initialize rice:", error);
+    }
   };
 
   useEffect(() => {

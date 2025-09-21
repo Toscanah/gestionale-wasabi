@@ -1,20 +1,17 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { CustomerContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import getOrderById from "../orders/getOrderById";
 
 export default async function updateCustomerOrderNotes({
   orderId,
   notes,
-}: {
-  orderId: number;
-  notes: string;
-}): Promise<AnyOrder> {
+}: CustomerContracts.UpdateOrderNotes.Input): Promise<CustomerContracts.UpdateOrderNotes.Output> {
   // Reset receipt print status
   await prisma.order.update({
     where: { id: orderId },
     data: { is_receipt_printed: false },
   });
- 
+
   // Get the customer_id from either homeOrder or pickupOrder
   const homeOrder = await prisma.homeOrder.findUnique({
     where: { id: orderId },
@@ -41,5 +38,5 @@ export default async function updateCustomerOrderNotes({
     data: { order_notes: notes },
   });
 
-  return await getOrderById({ orderId });
+  return (await getOrderById({ orderId })) as CustomerContracts.UpdateOrderNotes.Output;
 }

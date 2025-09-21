@@ -1,6 +1,5 @@
 "use client";
 
-import { OrderType } from "@prisma/client";
 import { endOfDay, isSameDay, startOfDay } from "date-fns";
 import React from "react";
 import useTable from "../../../hooks/table/useTable";
@@ -89,6 +88,7 @@ export default function PaymentsTable() {
               from: startOfDay(new Date()),
               to: endOfDay(new Date()),
             }}
+            useYears
             dateFilter={period}
             handleDateFilter={setPeriod}
             disabled={isLoading}
@@ -119,7 +119,7 @@ export default function PaymentsTable() {
           pageCount={Math.ceil(totalCount / pageSize)}
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
-          totalCount={`${totalCount} pagamenti`}
+          totalCount={totalCount}
         />
 
         <div className="mt-auto flex justify-between">

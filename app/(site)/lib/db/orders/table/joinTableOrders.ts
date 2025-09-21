@@ -1,4 +1,4 @@
-import { TableOrder } from "@/app/(site)/lib/shared";
+import { OrderContracts, TableOrder } from "@/app/(site)/lib/shared";
 import prisma from "../../db";
 import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
 import getOrderById from "../getOrderById";
@@ -7,10 +7,7 @@ import addProductsToOrder from "../../products/addProductsToOrder";
 export default async function joinTableOrders({
   originalOrderId,
   tableToJoin,
-}: {
-  originalOrderId: number;
-  tableToJoin: string;
-}): Promise<{ updatedOrder: TableOrder; joinedTable: TableOrder } | null> {
+}: OrderContracts.JoinTables.Input): Promise<OrderContracts.JoinTables.Output> {
   const possibleOrdersToJoin = await prisma.order.findMany({
     where: {
       table_order: {
@@ -22,7 +19,7 @@ export default async function joinTableOrders({
   });
 
   if (!possibleOrdersToJoin || possibleOrdersToJoin.length !== 1) {
-    return null;
+    throw new Error("Unable to join tables: table to join not found or not unique");
   }
 
   const orderToJoinId = possibleOrdersToJoin[0];

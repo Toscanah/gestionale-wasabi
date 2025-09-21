@@ -1,13 +1,13 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
-import { AnyOrder, OrderContract } from "@/app/(site)/lib/shared";
+import { OrderContracts } from "../../shared";
 
 export default async function updateOrderPaymentStatus({
   prepaid,
   orderId,
   plannedPayment,
-}: OrderContract["Requests"]["UpdateOrderPaymentStatus"]): Promise<AnyOrder> {
+}: OrderContracts.UpdatePaymentStatus.Input): Promise<OrderContracts.UpdatePaymentStatus.Output> {
   // Always reset printed flag first
   await prisma.order.update({
     where: { id: orderId },
@@ -41,5 +41,5 @@ export default async function updateOrderPaymentStatus({
   }
 
   // Return the updated order
-  return (await getOrderById({ orderId })) as AnyOrder;
+  return await getOrderById({ orderId });
 }

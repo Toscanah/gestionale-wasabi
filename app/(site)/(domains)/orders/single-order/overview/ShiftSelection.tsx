@@ -1,6 +1,4 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { WorkingShift } from "@prisma/client";
 
@@ -15,13 +13,13 @@ export default function ShiftSelection() {
       newShift = WorkingShift.UNSPECIFIED;
     }
 
-    fetchRequest("PATCH", "/api/orders/", "updateOrderShift", {
-      orderId: order.id,
-      shift: newShift,
-    }).then(() => {
-      updateOrder({ shift: newShift });
-      toastSuccess("Turno aggiornato con successo");
-    });
+    // ("PATCH", "/api/orders/", "updateOrderShift", {
+    //   orderId: order.id,
+    //   shift: newShift,
+    // }).then(() => {
+    //   updateOrder({ shift: newShift });
+    //   toastSuccess("Turno aggiornato con successo");
+    // });
   };
 
   return (

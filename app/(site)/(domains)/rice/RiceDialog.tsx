@@ -2,15 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
-import { RiceBatch, RiceLogType } from "@prisma/client";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
 import WasabiSingleSelect from "../../components/ui/wasabi/WasabiSingleSelect";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
-import fetchRequest from "../../lib/api/fetchRequest";
 import useFocusOnClick from "../../hooks/focus/useFocusOnClick";
+import { trpc } from "@/lib/server/client";
 
 interface RiceDialogProps {
   variant: "header" | "sidebar";
@@ -23,16 +22,9 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
   const [riceToAdd, setRiceToAdd] = useState<number>(0);
   const [riceToRemove, setRiceToRemove] = useState<number>(0);
   const [selectedRiceBatchId, setSelectedRiceBatchId] = useState<number | null>(null);
-  const [riceBatches, setRiceBatches] = useState<RiceBatch[]>([]);
+  const { data: riceBatches = [], refetch } = trpc.rice.getBatches.useQuery();
 
   useFocusOnClick(["threshold", "add-rice", "rem-rice"]);
-
-  const fetchRiceBatches = () =>
-    fetchRequest<RiceBatch[]>("GET", "/api/rice/", "getRiceBatches").then(setRiceBatches);
-
-  useEffect(() => {
-    fetchRiceBatches();
-  }, []);
 
   const handleAddRice = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.valueAsNumber || 0;
@@ -88,15 +80,16 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
     setSelectedRiceBatchId(null);
   };
 
-  useEffect(() => {
-    setThreshold(rice.threshold);
-  }, [rice.threshold]);
+  useEffect(() => setThreshold(rice.threshold), [rice.threshold]);
 
   return (
     <WasabiDialog
       size="medium"
       autoFocus={false}
-      onOpenChange={resetForm}
+      onOpenChange={(open) => {
+        if (open) refetch();
+        resetForm();
+      }}
       title="Gestione riso"
       desc="Tutti i valori sono calcolati in grammi"
       contentClassName="gap-4"

@@ -1,3 +1,4 @@
+import { ColumnDef } from "@tanstack/react-table";
 import { BaseColumnProps, ValueColumn } from "../TableColumns";
 
 type NameInfo = { name?: string | null; surname?: string | null };
@@ -13,7 +14,7 @@ type FullNameColumnProps = BaseColumnProps;
 export default function FullNameColumn<T extends NameInfo>({
   header = "Chi",
   sortable = true,
-}: FullNameColumnProps) {
+}: FullNameColumnProps = {}): ColumnDef<T> {
   return ValueColumn<T>({
     header,
     accessor: fullName,

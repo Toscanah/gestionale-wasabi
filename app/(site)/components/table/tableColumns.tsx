@@ -54,17 +54,17 @@ export type BaseColumnProps = {
 /* ------------------------------------------------------
  *  1. IndexColumn
  * ---------------------------------------------------- */
-type IndexColumn = BaseColumnProps;
+type IndexColumn = Omit<BaseColumnProps, "sortable">;
 
 /**
  * Returns a column definition for a row index column (auto-incrementing number).
  * @param header - The column header label (default: "#").
  * @param sortable - Whether the column is sortable (default: true).
  */
-export function IndexColumn<T>({ header = "#", sortable = true }: IndexColumn): ColumnDef<T> {
+export function IndexColumn<T>({ header = "#" }: IndexColumn): ColumnDef<T> {
   return {
     id: typeof header === "string" ? header : "#",
-    header: buildHeader<T>(header, sortable),
+    header: buildHeader<T>(header, false),
     cell: ({ row, table }) =>
       (table.getSortedRowModel()?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) ?? 0) + 1,
   };
@@ -148,7 +148,7 @@ export function ValueColumn<T>({
   }
 
   const col: ColumnDef<T> = {
-    id: typeof header === "string" ? header : header !== undefined ? String(header) : uniqueId(),
+    id: typeof header === "string" ? header : header !== undefined ? uniqueId("col_") : uniqueId(),
     accessorFn: (original) => accessor(original),
     header: buildHeader<T>(header, sortable),
     cell: ({ row, table }) => value(row, table.options.meta),

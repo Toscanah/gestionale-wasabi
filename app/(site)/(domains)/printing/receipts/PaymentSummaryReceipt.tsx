@@ -2,13 +2,11 @@ import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
 import { SMALL_PRINT } from "../constants";
-import { PaymentsSummaryData } from "@/app/(site)/lib/services/payments/calculatePaymentsSummary";
-import { DateRange } from "react-day-picker";
-import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
 import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
+import { PaymentContracts } from "@/app/(site)/lib/shared";
 
 export interface PaymentSummaryReceiptProps {
-  summaryData: PaymentsSummaryData;
+  summaryData: PaymentContracts.GetSummary.Output;
   period: string;
 }
 

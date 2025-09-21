@@ -1,13 +1,13 @@
-import { AnyOrder, OrderContract } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import getOrderById from "./getOrderById";
 import { cancelProductInOrder } from "../products/product-in-order/cancelProductInOrder";
 import { OrderStatus } from "@prisma/client";
+import { OrderContracts } from "../../shared";
 
 export default async function cancelOrder({
   orderId,
   cooked = false,
-}: OrderContract["Requests"]["CancelOrder"]): Promise<AnyOrder> {
+}: OrderContracts.Cancel.Input): Promise<OrderContracts.Cancel.Output> {
   const productsInOrder = await prisma.productInOrder.findMany({
     where: {
       order_id: orderId,

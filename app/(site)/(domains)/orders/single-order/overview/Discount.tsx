@@ -1,37 +1,41 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { Input } from "@/components/ui/input";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
+import { ordersAPI } from "@/lib/server/api";
 
 export default function Discount() {
   const { order, updateOrder } = useOrderContext();
   const [discount, setDiscount] = useState<number | undefined>(
-    order.discount == 0 ? undefined : order.discount
+    order.discount === 0 ? undefined : order.discount
   );
 
-  const debouncedFetch = useCallback(
-    debounce(
-      (discount: number) =>
-        fetchRequest<AnyOrder>("PATCH", "/api/orders/", "updateOrderDiscount", {
-          orderId: order.id,
-          discount: discount,
-        }).then((updatedOrder) => {
-          toastSuccess("Sconto aggiornato correttamente");
-          updateOrder({ discount: updatedOrder.discount, is_receipt_printed: false });
-        }),
-      1000
-    ),
-    []
+  const { mutate: updateDiscount } = ordersAPI.updateDiscount.useMutation();
+
+  const debouncedUpdate = useCallback(
+    debounce((discount: number) => {
+      updateDiscount(
+        { orderId: order.id, discount },
+        {
+          onSuccess: (updatedOrder) => {
+            toastSuccess("Sconto aggiornato correttamente");
+            updateOrder({
+              discount: updatedOrder.discount,
+              is_receipt_printed: false,
+            });
+          },
+        }
+      );
+    }, 1000),
+    [order.id, updateOrder]
   );
 
-  const handleDiscount = (discount: number) => {
-    let correctDiscount = isNaN(discount) ? undefined : discount;
+  const handleDiscount = (value: number) => {
+    const correctDiscount = isNaN(value) ? undefined : value;
     setDiscount(correctDiscount);
-    debouncedFetch(correctDiscount ?? 0);
+    debouncedUpdate(correctDiscount ?? 0);
   };
 
   useFocusOnClick(["discount"]);
@@ -39,7 +43,7 @@ export default function Discount() {
   return (
     <Input
       id="discount"
-      value={discount}
+      defaultValue={discount}
       onChange={(e) => handleDiscount(e.target.valueAsNumber)}
       className="w-full text-xl h-12"
       placeholder="Sconto"

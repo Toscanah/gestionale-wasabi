@@ -1,5 +1,5 @@
 import {
-  EngagementContract,
+  EngagementContracts,
   ParsedEngagementPayload,
   ParsedEngagementTemplate,
 } from "@/app/(site)/lib/shared";
@@ -11,13 +11,11 @@ import getTemplateName from "@/app/(site)/lib/utils/domains/engagement/getTempla
 import { Button } from "@/components/ui/button";
 import { Trash } from "@phosphor-icons/react";
 import renderByType from "../../types/renderByType";
-import { EngagementType } from "@prisma/client";
-import { Checkbox } from "@/components/ui/checkbox";
 
 type EditModeProps = {
   index: number;
   template: ParsedEngagementTemplate;
-  onChange: (updates: Partial<EngagementContract["Requests"]["UpdateEngagementTemplate"]>) => void;
+  onChange: (updates: Partial<EngagementContracts.TemplatePayloadDraft>) => void;
   onDelete: (templateId: number) => Promise<void>;
   onSave: (template: ParsedEngagementTemplate) => Promise<void>;
 };

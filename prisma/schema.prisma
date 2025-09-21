@@ -8,8 +8,8 @@ generator json {
 }
 
 generator zod {
-    provider         = "zod-prisma-types"
-    createInputTypes = "false"
+    provider = "prisma-zod-generator"
+    config   = "./zod-gen-config.json"
 }
 
 datasource db {
@@ -41,6 +41,7 @@ model Order {
     engagements                 Engagement[]
     issued_engagement_ledgers   EngagementLedger[] @relation("ledger_issued_on_order")
     redeemed_engagement_ledgers EngagementLedger[] @relation("ledger_redeemed_on_order")
+    voided_engagement_ledgers   EngagementLedger[] @relation("ledger_voided_on_order")
     home_order                  HomeOrder?
     payments                    Payment[]
     pickup_order                PickupOrder?
@@ -162,11 +163,13 @@ model EngagementLedger {
     issued_at            DateTime               @default(now())
     redeemed_on_order_id Int?
     redeemed_at          DateTime?
-    status               EngagementLedgerStatus @default(ISSUED)
+    voided_on_order_id   Int?
     voided_at            DateTime?
+    status               EngagementLedgerStatus @default(ISSUED)
     engagement           Engagement             @relation(fields: [engagement_id], references: [id], onDelete: Cascade)
     issued_on_order      Order                  @relation("ledger_issued_on_order", fields: [issued_on_order_id], references: [id])
     redeemed_on_order    Order?                 @relation("ledger_redeemed_on_order", fields: [redeemed_on_order_id], references: [id])
+    voided_on_order      Order?                 @relation("ledger_voided_on_order", fields: [voided_on_order_id], references: [id])
 
     @@index([engagement_id])
     @@index([issued_on_order_id])

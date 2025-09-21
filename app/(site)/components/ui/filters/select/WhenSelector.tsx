@@ -1,4 +1,4 @@
-import { forwardRef, KeyboardEvent, useState } from "react";
+import { ElementRef, forwardRef, KeyboardEvent, useEffect, useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -11,14 +11,16 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { Check } from "@phosphor-icons/react";
+import { Check, Clock, Moon, PuzzlePiece, Sun } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import generateTimeSlots from "@/app/(site)/lib/utils/global/time/generateTimeSlots";
-import WasabiSelect from "./WasabiSelect";
+import WasabiSelect, { CommandGroupType, CommandOption } from "./WasabiSelect";
 import {
   DEFAULT_WHEN_LABEL,
   DEFAULT_WHEN_VALUE,
 } from "@/app/(site)/lib/shared/constants/default-when";
+import { ShiftBoundaries } from "@/app/(site)/lib/shared";
+import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 
 interface WhenSelectorProps {
   className?: string;
@@ -29,136 +31,157 @@ interface WhenSelectorProps {
   source?: string;
 }
 
-const WhenSelector = forwardRef<HTMLDivElement, WhenSelectorProps>(
+function floatToHourMinute(value: number, minuteOffset = 0): [number, number] {
+  const hour = Math.floor(value);
+  let minute = Math.round((value - hour) * 60) + minuteOffset;
+
+  let adjustedHour = hour;
+  if (minute >= 60) {
+    adjustedHour += Math.floor(minute / 60);
+    minute = minute % 60;
+  }
+
+  return [adjustedHour, minute];
+}
+
+const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorProps>(
   ({ className, field, value, onValueChange, onKeyDown, source = "" }, ref) => {
     const [open, setOpen] = useState<boolean>(false);
+    const [hasSelectedOnce, setHasSelectedOnce] = useState(false);
+
+    const handleOpenChange = (nextOpen: boolean) => {
+      if (nextOpen) {
+        setHasSelectedOnce(false); // reset every time popover is opened
+      }
+      setOpen(nextOpen);
+    };
+
+    const handleFocus = () => {
+      // Only reset if the popover is closed — i.e. real "field re-entry"
+      if (!open) {
+        setHasSelectedOnce(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+      if ((e.key === "Enter" || e.key === "ArrowDown") && !open) {
+        if (!hasSelectedOnce) {
+          setOpen(true);
+          e.preventDefault();
+          return;
+        }
+        if (onKeyDown) onKeyDown(e); // after first selection
+      } else {
+        if (onKeyDown) onKeyDown(e);
+      }
+    };
+
+    const { settings } = useWasabiContext();
+    const GAP = settings.whenSelectorGap || 1;
 
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
 
-    const lunchTimes = generateTimeSlots(12, 0, 14, 30, currentHour, currentMinute);
-    const dinnerTimes = generateTimeSlots(18, 30, 22, 30, currentHour, currentMinute);
+    // const currentHour = 11;
+    // const currentMinute = 30;
+
+    const [lunchFromHour, lunchFromMinute] = floatToHourMinute(ShiftBoundaries.LUNCH_FROM);
+    const [lunchToHour, lunchToMinute] = floatToHourMinute(ShiftBoundaries.LUNCH_TO);
+
+    const [dinnerFromHour, dinnerFromMinute] = floatToHourMinute(ShiftBoundaries.DINNER_FROM, GAP);
+    const [dinnerToHour, dinnerToMinute] = floatToHourMinute(ShiftBoundaries.DINNER_TO);
+
+    const lunchTimes = generateTimeSlots(
+      lunchFromHour,
+      lunchFromMinute,
+      lunchToHour,
+      lunchToMinute,
+      currentHour,
+      currentMinute,
+      GAP
+    );
+
+    const dinnerTimes = generateTimeSlots(
+      dinnerFromHour,
+      dinnerFromMinute,
+      dinnerToHour,
+      dinnerToMinute,
+      currentHour,
+      currentMinute,
+      GAP
+    );
 
     const allTimeSlots = [...lunchTimes, ...dinnerTimes];
     const isValuePresent = value && allTimeSlots.includes(value);
 
-    const additionalOptions =
-      value && !isValuePresent && value !== "immediate" ? [{ label: value, value }] : [];
+    const additionalOption: CommandOption | null =
+      value && !isValuePresent && value !== DEFAULT_WHEN_VALUE ? { label: value, value } : null;
 
-    const options = [
-      ...additionalOptions,
-      { label: DEFAULT_WHEN_LABEL, value: DEFAULT_WHEN_VALUE },
-      ...(lunchTimes.length > 0 ? lunchTimes.map((time) => ({ label: time, value: time })) : []),
-      ...(dinnerTimes.length > 0 ? dinnerTimes.map((time) => ({ label: time, value: time })) : []),
-    ];
+    const groups: CommandGroupType[] = [];
+
+    if (additionalOption) {
+      groups.push({
+        label: "Altre opzioni",
+        icon: PuzzlePiece,
+        options: [additionalOption],
+      });
+    }
+
+    groups.push({
+      label: DEFAULT_WHEN_LABEL,
+      icon: Clock,
+      options: [{ label: DEFAULT_WHEN_LABEL, value: DEFAULT_WHEN_VALUE }],
+    });
+
+    if (lunchTimes.length > 0) {
+      groups.push({
+        label: "Pranzo",
+        icon: Sun,
+        options: lunchTimes.map((time) => ({ label: time, value: time })),
+      });
+    }
+
+    if (dinnerTimes.length > 0) {
+      groups.push({
+        label: "Cena",
+        icon: Moon,
+        options: dinnerTimes.map((time) => ({ label: time, value: time })),
+      });
+    }
 
     return (
       <WasabiSelect
         title="Quando"
         mode="single"
-        disabled={false}
+        open={open}
+        onOpenChange={handleOpenChange}
+        ref={ref}
+        trigger={(selected) => (
+          <Button
+            variant="outline"
+            className={cn("h-12 w-full text-xl uppercase", className)}
+            // onKeyDown={handleKeyDown}
+            // onFocus={handleFocus}
+          >
+            {selected ? selected.label : ""}
+          </Button>
+        )}
         inputPlaceholder="Cerca un orario..."
         onChange={(value) => {
           if (onValueChange) onValueChange(value);
           if (field) field.onChange(value);
+          // setHasSelectedOnce(true);
+          setOpen(false);
         }}
         allLabel="Tutti"
-        groups={[
-          {
-            options: options.map((option) => ({
-              label: option.label,
-              value: option.value,
-            })),
-          },
-        ]}
+        groups={groups}
         selectedValue={value || ""}
       />
     );
-
-    return <></>;
-
-    const renderGroup = (groupOptions: any[], groupLabel?: string) =>
-      groupOptions.length > 0 && (
-        <CommandGroup>
-          {groupLabel && <div className="px-2 py-1 text-sm font-semibold">{groupLabel}</div>}
-          {groupOptions.map((option) => (
-            <CommandItem
-              key={option.value}
-              value={option.value}
-              onSelect={(currentValue) => {
-                if (onValueChange) onValueChange(currentValue);
-                if (field) field.onChange(currentValue);
-                setOpen(false);
-              }}
-            >
-              {option.label}
-              <Check
-                className={cn("ml-auto", value === option.value ? "opacity-100" : "opacity-0")}
-              />
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      );
-
-    return (
-      <Popover open={open} onOpenChange={setOpen} modal={true}>
-        <PopoverTrigger asChild>
-          <Button
-            onKeyDown={(e) => {
-              if (source === "pickup") {
-                if (e.key === "Enter" || e.key === "ArrowDown") {
-                  e.preventDefault();
-                  onKeyDown?.(e);
-                  return false;
-                }
-
-                setOpen(true);
-              } else {
-                onKeyDown?.(e);
-              }
-            }}
-            ref={ref as any}
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className={className}
-          >
-            {value
-              ? options.find((option) => option.value === value)?.label
-              : "Seleziona un'orario"}
-          </Button>
-        </PopoverTrigger>
-
-        <PopoverContent className="p-0">
-          <Command>
-            <CommandInput placeholder="Cerca un orario" className="h-9" />
-            <CommandList>
-              <CommandEmpty>Nessun orario trovato</CommandEmpty>
-
-              {renderGroup(additionalOptions, "Altre opzioni")}
-
-              {renderGroup([{ label: "Subito", value: "immediate" }], "Subito")}
-
-              {additionalOptions.length > 0 && lunchTimes.length > 0 && <CommandSeparator />}
-
-              {renderGroup(
-                lunchTimes.map((time) => ({ label: `${time}`, value: time })),
-                "Pranzo"
-              )}
-
-              {lunchTimes.length > 0 && dinnerTimes.length > 0 && <CommandSeparator />}
-
-              {renderGroup(
-                dinnerTimes.map((time) => ({ label: `${time}`, value: time })),
-                "Cena"
-              )}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    );
   }
 );
+
+WhenSelector.displayName = "WhenSelector";
 
 export default WhenSelector;

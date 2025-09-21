@@ -1,12 +1,12 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { TableOrder } from "@/app/(site)/lib/shared";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
 import { PaymentScope } from "@prisma/client";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
+import { trpc } from "@/lib/server/client";
 
 export default function TableUpdate() {
   const { order: anyOrder, joinTableOrders, updateOrder } = useOrderContext();
@@ -16,19 +16,31 @@ export default function TableUpdate() {
   const [people, setPeople] = useState<number>(order.table_order?.people ?? 0);
   const [join, setJoin] = useState<string>("");
 
+  const updateTableMutation = trpc.orders.updateTable.useMutation({
+    onSuccess: (updatedTableOrder) => {
+      updateOrder({
+        table_order: { ...order.table_order, table: updatedTableOrder.table_order?.table },
+      });
+      toastSuccess("Tavolo aggiornato con successo");
+    },
+  });
+
+  const updatePeopleMutation = trpc.orders.updateTablePpl.useMutation({
+    onSuccess: (updatedTableOrder) => {
+      updateOrder({
+        table_order: { ...order.table_order, people: updatedTableOrder.table_order?.people },
+      });
+      toastSuccess("Numero di persone aggiornato con successo");
+    },
+  });
+
   const debouncedHandleTableChange = useCallback(
     debounce((newTable: string) => {
       if (newTable !== "") {
-        fetchRequest<TableOrder>("PATCH", "/api/orders", "updateOrderTable", {
-          table: newTable,
-          orderId: order.id,
-        }).then(() => {
-          updateOrder({ table_order: { ...order.table_order, table: newTable } });
-          toastSuccess("Tavolo aggiornato con successo");
-        });
+        updateTableMutation.mutate({ table: newTable, orderId: order.id });
       }
     }, 1000),
-    []
+    [order.id]
   );
 
   const debouncedHandleTableJoin = useCallback(
@@ -42,15 +54,9 @@ export default function TableUpdate() {
 
   const debouncedHandlePplChange = useCallback(
     debounce((newPpl: number) => {
-      fetchRequest<TableOrder>("PATCH", "/api/orders", "updateOrderTablePpl", {
-        people: newPpl,
-        orderId: order.id,
-      }).then(() => {
-        updateOrder({ table_order: { ...order.table_order, people: newPpl } });
-        toastSuccess("Numero di persone aggiornato con successo");
-      });
+      updatePeopleMutation.mutate({ people: newPpl, orderId: order.id });
     }, 1000),
-    []
+    [order.id]
   );
 
   const handleTableInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

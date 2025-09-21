@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { GeneralResultRecord } from "./SectionResults";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
+import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
 
 const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
   FieldColumn({
@@ -22,7 +23,7 @@ const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
 
   ValueColumn({
     header: "Incasso",
-    value: (row) => `€ ${row.original.revenue}`,
+    value: (row) => `€ ${roundToTwo(row.original.revenue)}`,
     accessor: (stats) => stats.revenue,
   }),
 
@@ -57,7 +58,7 @@ const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
 
   ValueColumn({
     header: "Riso cucinato",
-    value: (row) => roundToTwo(row.original.rice),
+    value: (row) => formatRice(row.original.rice),
     accessor: (stats) => stats.rice,
   }),
 ];

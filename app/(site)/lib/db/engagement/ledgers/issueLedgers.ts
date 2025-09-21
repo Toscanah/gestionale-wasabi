@@ -1,10 +1,10 @@
 import { EngagementLedgerStatus, OrderType } from "@prisma/client";
 import prisma from "../../db";
-import { EngagementContract } from "../../../shared";
+import { EngagementContracts } from "../../../shared";
 
 export default async function issueLedgers({
   orderId,
-}: EngagementContract["Requests"]["IssueLedgers"]) {
+}: EngagementContracts.IssueLedgers.Input): Promise<EngagementContracts.IssueLedgers.Output> {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     select: {
@@ -17,7 +17,7 @@ export default async function issueLedgers({
   }
 
   if (order.type == OrderType.TABLE) {
-    return [];
+    throw new Error("Cannot issue engagement ledgers for table orders");
   }
 
   const engagements = await prisma.engagement.findMany({
@@ -36,8 +36,20 @@ export default async function issueLedgers({
     },
   });
 
+  // Get already issued ledgers for this order
+  const issuedLedgers = await prisma.engagementLedger.findMany({
+    where: {
+      issued_on_order_id: orderId,
+      status: EngagementLedgerStatus.ISSUED,
+    },
+    select: {
+      engagement_id: true,
+    },
+  });
+  const alreadyIssuedIds = new Set(issuedLedgers.map((l) => l.engagement_id));
+
   for (const engagement of engagements) {
-    if (engagement.template.redeemable) {
+    if (engagement.template.redeemable && !alreadyIssuedIds.has(engagement.id)) {
       await prisma.engagementLedger.create({
         data: {
           engagement_id: engagement.id,

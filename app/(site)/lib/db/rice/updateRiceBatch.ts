@@ -1,19 +1,17 @@
-import { RiceBatch } from "@prisma/client";
 import prisma from "../db";
-
-type ValidFields = Omit<RiceBatch, "id">;
+import { RiceContracts } from "../../shared";
 
 export default async function updateRiceBatch({
   batchId,
   field,
   value,
-}: {
-  batchId: number;
-  field: keyof ValidFields;
-  value: any;
-}) {
+}: RiceContracts.UpdateBatch.Input): Promise<RiceContracts.UpdateBatch.Output> {
   if (!batchId) {
     throw new Error("Batch ID is required");
+  }
+
+  if (!value) {
+    throw new Error("Value is required");
   }
 
   // TODO: fix field validation
@@ -26,10 +24,6 @@ export default async function updateRiceBatch({
   // if (!validFields.includes(field)) {
   //   throw new Error("Invalid field");
   // }
-
-  if (!value) {
-    throw new Error("Value is required");
-  }
 
   let parsedValue: number | string;
 

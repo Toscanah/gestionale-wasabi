@@ -1,15 +1,14 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
 import calculateExtraItems from "@/app/(site)/lib/services/order-management/calculateExtraItems";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
-import useLocalExtraItems from "@/app/(site)/hooks/useLocalExtraItems";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useState } from "react";
+import { trpc } from "@/lib/server/client";
 
 interface ExtraItemProps {
   label: string;
@@ -108,31 +107,29 @@ export default function ExtraItems() {
     });
   }, [order.products]);
 
+  const updateExtraMutation = trpc.orders.updateExtraItems.useMutation();
+
   const debouncedUpdateAllExtras = useCallback(
     debounce((extras: ManualExtras, order: AnyOrder) => {
       const { soupsFromProducts, saladsFromProducts, ricesFromProducts } =
         calculateExtraItems(order);
 
-      const updates: Partial<Record<ExtraItems, number | null>> = {};
+      const updates: Partial<Record<ExtraItems, number | null>> = {
+        soups: extras.soups === soupsFromProducts ? null : extras.soups,
+        salads: extras.salads === saladsFromProducts ? null : extras.salads,
+        rices: extras.rices === ricesFromProducts ? null : extras.rices,
+      };
 
-      updates.soups = extras.soups === soupsFromProducts ? null : extras.soups;
-      updates.salads = extras.salads === saladsFromProducts ? null : extras.salads;
-      updates.rices = extras.rices === ricesFromProducts ? null : extras.rices;
-
-      console.log("Updating extras:", updates);
-
-      const updatePromises = Object.entries(updates).map(([key, value]) =>
-        fetchRequest("PATCH", "/api/orders/", "updateOrderExtraItems", {
+      for (const [key, value] of Object.entries(updates)) {
+        updateExtraMutation.mutate({
           orderId: order.id,
           items: key as ExtraItems,
           value,
-        })
-      );
+        });
+      }
 
-      Promise.all(updatePromises).then(() => {
-        updateOrder(updates);
-        toastSuccess("Zuppe, insalate e risi aggiornati correttamente");
-      });
+      updateOrder(updates);
+      toastSuccess("Zuppe, insalate e risi aggiornati correttamente");
     }, 1500),
     []
   );

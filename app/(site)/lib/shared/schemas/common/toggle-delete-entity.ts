@@ -1,5 +1,20 @@
 import { z } from "zod";
 
-export const ToggleDeleteEntityRequestSchema = z.object({
-  id: z.number(),
-});
+export const ToggleDeleteEntityRequestSchema = z
+  .object({
+    id: z.number(),
+  })
+  .strict();
+
+export const ToggleEntityResponseSchema = z
+  .object({
+    id: z.number(),
+    active: z.boolean(),
+  })
+  .strict();
+
+export const DeleteEntityResponseSchema = z
+  .object({
+    id: z.number(),
+  })
+  .strict();

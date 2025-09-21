@@ -1,6 +1,6 @@
 import { OrderStatus, OrderType } from "@prisma/client";
 import prisma from "../../db";
-import { PickupOrder } from "@/app/(site)/lib/shared";
+import { OrderContracts, PickupOrder } from "@/app/(site)/lib/shared";
 import { engagementsInclude, productsInOrderInclude } from "../../includes";
 import { updateOrderShift } from "../updateOrderShift";
 
@@ -8,11 +8,7 @@ export default async function createPickupOrder({
   name,
   when,
   phone,
-}: {
-  name: string;
-  when: string;
-  phone?: string;
-}): Promise<{ order: PickupOrder; isNewOrder: boolean }> {
+}: OrderContracts.CreatePickup.Input): Promise<OrderContracts.CreatePickup.Output> {
   return await prisma.$transaction(async (tx) => {
     let orderName = name;
     let customerData = undefined;

@@ -1,15 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import { FieldColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
+import AddressesColumn from "@/app/(site)/components/table/common/AddressesColumn";
 
 export default function columns({
   isRightTable,
 }: {
   isRightTable: boolean;
-}): ColumnDef<CustomerWithDetails>[] {
-  const columns: ColumnDef<CustomerWithDetails>[] = [
-    FullNameColumn({}),
+}): ColumnDef<ComprehensiveCustomer>[] {
+  const columns: ColumnDef<ComprehensiveCustomer>[] = [
+    FullNameColumn(),
 
     ValueColumn({
       header: "Telefono",
@@ -24,10 +25,7 @@ export default function columns({
       sortable: false,
     }),
 
-    JoinColumn({
-      options: { key: "addresses" },
-      sortable: false,
-    }),
+    AddressesColumn(),
   ];
 
   // if (isRightTable) {

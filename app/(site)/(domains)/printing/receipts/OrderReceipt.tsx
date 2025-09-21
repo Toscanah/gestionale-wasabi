@@ -55,10 +55,10 @@ export default function OrderReceipt<T extends AnyOrder>({
               pickupOrder.name
                 ? pickupOrder.name
                 : pickupOrder.customer?.name
-                ? pickupOrder.customer.name
-                : pickupOrder.customer?.phone.phone
-                ? pickupOrder.customer.phone.phone
-                : ""
+                  ? pickupOrder.customer.name
+                  : pickupOrder.customer?.phone.phone
+                    ? pickupOrder.customer.phone.phone
+                    : ""
             )}
           </Text>
           <Text align="right" size={BIG_PRINT}>

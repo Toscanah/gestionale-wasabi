@@ -7,19 +7,22 @@ import {
   ValueColumn,
 } from "@/app/(site)/components/table/TableColumns";
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
-import fetchRequest from "@/app/(site)/lib/api/fetchRequest";
-import { CustomerWithDetails } from "@/app/(site)/lib/shared";
+import { CustomerContracts, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import useTable from "@/app/(site)/hooks/table/useTable";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
+import { customersAPI } from "@/lib/server/api";
+import AddressesColumn from "@/app/(site)/components/table/common/AddressesColumn";
+import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
+import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 
 interface TopCustomersProps {
   product: { id: number; name: string };
+  filters?: NonNullable<CustomerContracts.GetAllWithDetails.Input>["filters"];
 }
 
-type TopCustomer = CustomerWithDetails & { productCount: number };
+type TopCustomer = ComprehensiveCustomer & { productCount: number };
 
 const columns: ColumnDef<TopCustomer>[] = [
   IndexColumn({}),
@@ -30,12 +33,9 @@ const columns: ColumnDef<TopCustomer>[] = [
     accessor: (customer) => customer.phone?.phone ?? "–",
   }),
 
-  FullNameColumn({}),
+  FullNameColumn(),
 
-  JoinColumn({
-    options: { key: "addresses" },
-    header: "Indirizzi",
-  }),
+  AddressesColumn(),
 
   FieldColumn({
     key: "productCount",
@@ -43,100 +43,61 @@ const columns: ColumnDef<TopCustomer>[] = [
   }),
 ];
 
-export default function TopCustomers({ product }: TopCustomersProps) {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [customers, setCustomers] = useState<TopCustomer[]>([]);
+export default function TopCustomers({ product, filters }: TopCustomersProps) {
+  const { data: rankedCustomers = [], isFetching } = customersAPI.getAllWithDetails.useQuery(
+    { filters },
+    {
+      select: (allCustomers) =>
+        (allCustomers ?? [])
+          .map((customer) => {
+            let productCount = 0;
 
-  const table = useTable({ data: customers, columns });
-
-  useEffect(() => {
-    if (!open) return;
-
-    const loadData = async () => {
-      const allCustomers = await fetchRequest<CustomerWithDetails[]>(
-        "GET",
-        "/api/customers/",
-        "getCustomersWithDetails"
-      );
-
-      const ranked = allCustomers
-        .map((customer) => {
-          let productCount = 0;
-
-          // Count from home orders
-          customer.home_orders?.forEach((order) => {
-            order.order?.products?.forEach((p) => {
-              if (p.product_id === product.id) {
-                productCount += p.quantity;
-              }
+            customer.home_orders?.forEach((order) => {
+              order.order?.products?.forEach((p) => {
+                if (p.product_id === product.id) {
+                  productCount += p.quantity;
+                }
+              });
             });
-          });
 
-          // Count from pickup orders
-          customer.pickup_orders?.forEach((order) => {
-            order.order?.products?.forEach((p) => {
-              if (p.product_id === product.id) {
-                productCount += p.quantity;
-              }
+            customer.pickup_orders?.forEach((order) => {
+              order.order?.products?.forEach((p) => {
+                if (p.product_id === product.id) {
+                  productCount += p.quantity;
+                }
+              });
             });
-          });
 
-          return { ...customer, productCount };
-        })
-        .filter((c) => c.productCount > 0)
-        .sort((a, b) => b.productCount - a.productCount)
-        .slice(0, 50);
+            return { ...customer, productCount };
+          })
+          .filter((c) => c.productCount > 0)
+          .sort((a, b) => b.productCount - a.productCount)
+          .slice(0, 50),
+    }
+  );
 
-      setCustomers(ranked);
-      setLoading(false);
-    };
+  const { tableData, tableColumns } = useSkeletonTable({
+    isLoading: isFetching,
+    data: rankedCustomers,
+    columns,
+  });
 
-    loadData();
-  }, [open, product.id]);
+  const table = useTable({ data: tableData, columns: tableColumns });
 
   return (
     <WasabiDialog
-      open={open}
-      onOpenChange={setOpen}
       title="Top clienti"
       size="mediumPlus"
-      trigger={<Button className="w-40">Mostra top clienti</Button>}
-      desc={"I 50 clienti che hanno acquistato di più [" + product.name + "]"}
+      trigger={
+        isFetching ? (
+          <RandomSpinner isLoading size={10} />
+        ) : (
+          <Button className="w-40">Mostra top clienti</Button>
+        )
+      }
+      desc={`I 50 clienti che hanno acquistato di più [${product.name.trim()}]`}
     >
-      {loading ? (
-        <RandomSpinner isLoading={loading} />
-      ) : (
-        <Table table={table} tableClassName="max-h-[500px] overflow-y-auto" />
-        // <div className="max-h-[500px] overflow-y-auto">
-        //   <table className="min-w-full text-sm">
-        //     <thead>
-        //       <tr className="text-left font-semibold border-b">
-        //         <th className="p-2">#</th>
-        //         <th className="p-2">Telefono</th>
-        //         <th className="p-2">Nome</th>
-        //         <th className="p-2">Indirizzi</th>
-        //         <th className="p-2">Qtà</th>
-        //       </tr>
-        //     </thead>
-        //     <tbody>
-        //       {customers.map((customer, index) => (
-        //         <tr key={customer.id} className="border-b">
-        //           <td className="p-2">{index + 1}</td>
-        //           <td className="p-2">{customer.phone?.phone ?? "–"}</td>
-        //           <td className="p-2">
-        //             {customer.name ?? ""} {customer.surname ?? ""}
-        //           </td>
-        //           <td className="p-2">
-        //             {joinItemsWithComma(customer as any, "addresses", { sort: true, maxChar: 30 })}
-        //           </td>
-        //           <td className="p-2">{customer.productCount}</td>
-        //         </tr>
-        //       ))}
-        //     </tbody>
-        //   </table>
-        // </div>
-      )}
+      <Table table={table} tableClassName="max-h-[500px] overflow-y-auto" />
     </WasabiDialog>
   );
 }

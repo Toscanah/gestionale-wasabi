@@ -1,6 +1,9 @@
+import { ProductContracts } from "../../shared";
 import prisma from "../db";
 
-export default async function toggleProduct({ id }: { id: number }) {
+export default async function toggleProduct({
+  id,
+}: ProductContracts.Toggle.Input): Promise<ProductContracts.Toggle.Output> {
   const productId = id;
   const product = await prisma.product.findUnique({
     where: {
@@ -12,7 +15,7 @@ export default async function toggleProduct({ id }: { id: number }) {
   });
 
   if (!product) {
-    return null;
+    throw new Error("Product not found");
   }
 
   return await prisma.product.update({
@@ -21,6 +24,10 @@ export default async function toggleProduct({ id }: { id: number }) {
     },
     data: {
       active: !product.active,
+    },
+    select: {
+      id: true,
+      active: true,
     },
   });
 }

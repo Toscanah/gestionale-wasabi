@@ -1,4 +1,4 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import {
   engagementsInclude,
@@ -6,15 +6,11 @@ import {
   pickupOrderInclude,
   productInOrderInclude,
 } from "../includes";
-import normalizeTemplatePayload from "../../services/engagement/normalizeTemplatePayload";
 
 export default async function getOrderById({
   orderId,
   variant = "onlyPaid",
-}: {
-  orderId: number;
-  variant?: string;
-}): Promise<AnyOrder> {
+}: OrderContracts.GetById.Input): Promise<OrderContracts.GetById.Output> {
   const existingOrder = await prisma.order.findUnique({
     where: {
       id: orderId,

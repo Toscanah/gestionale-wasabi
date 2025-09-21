@@ -1,18 +1,14 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../../db";
 import { engagementsInclude, homeOrderInclude, productsInOrderInclude } from "../../includes";
-import { HomeOrder } from "@/app/(site)/lib/shared";
+import { HomeOrder, OrderContracts } from "@/app/(site)/lib/shared";
 import { updateOrderShift } from "../updateOrderShift";
 
 export default async function createHomeOrder({
   customerId,
   addressId,
   contactPhone,
-}: {
-  customerId: number;
-  addressId: number;
-  contactPhone: string;
-}): Promise<HomeOrder> {
+}: OrderContracts.CreateHome.Input): Promise<OrderContracts.CreateHome.Output> {
   return await prisma.$transaction(async (tx) => {
     const customerEngagements = await tx.engagement.findMany({
       where: {

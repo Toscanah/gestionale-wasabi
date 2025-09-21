@@ -1,41 +1,29 @@
 import { Button } from "@/components/ui/button";
 import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
-import { useEffect, useState } from "react";
 import { format, isToday } from "date-fns";
 import { RiceLog } from "../../lib/shared/models/rice";
-import fetchRequest from "../../lib/api/fetchRequest";
 import formatRice from "../../lib/utils/domains/rice/formatRice";
 import { RiceLogType } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
+import { trpc } from "@/lib/server/client";
 
 export default function RiceHistory() {
-  const [logs, setLogs] = useState<RiceLog[]>([]);
+  const { data: logs = [], refetch } = trpc.rice.getLogs.useQuery();
 
-  const fetchLogs = () =>
-    fetchRequest<RiceLog[]>("GET", "/api/rice", "getRiceLogs").then((logs) =>
-      setLogs(
-        logs
-          .filter((log) => isToday(new Date(log.created_at)))
-          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      )
-    );
-
-  useEffect(() => {
-    fetchLogs();
-  }, []);
+  const todayLogs = logs.filter((log) => isToday(new Date(log.created_at)));
 
   const getAmount = (log: RiceLog) =>
-    log.rice_batch_id ? log.rice_batch.amount : log.manual_value ?? 0;
+    log.rice_batch_id ? (log.rice_batch ? log.rice_batch.amount : 0) : (log.manual_value ?? 0);
 
-  const positiveLogs = logs.filter((log) => getAmount(log) > 0 && log.type !== RiceLogType.RESET);
-  const negativeLogs = logs.filter((log) => getAmount(log) < 0 && log.type !== RiceLogType.RESET);
-  const resetLogs = logs.filter((log) => log.type === RiceLogType.RESET);
+  const positiveLogs = todayLogs.filter((log) => getAmount(log) > 0 && log.type !== RiceLogType.RESET);
+  const negativeLogs = todayLogs.filter((log) => getAmount(log) < 0 && log.type !== RiceLogType.RESET);
+  const resetLogs = todayLogs.filter((log) => log.type === RiceLogType.RESET);
 
   const renderLog = (log: RiceLog) => (
     <li key={log.id}>
       {log.rice_batch_id ? (
         <span>
-          <strong>{log.rice_batch.label}</strong>: {formatRice(log.rice_batch.amount)}
+          <strong>{log.rice_batch?.label ?? ""}</strong>: {formatRice(log.rice_batch?.amount ?? 0)}
         </span>
       ) : (
         <span>
@@ -53,9 +41,11 @@ export default function RiceHistory() {
       trigger={<Button variant={"outline"}>Storico</Button>}
       title="Storico di oggi"
       size="medium"
-      onOpenChange={fetchLogs}
+      onOpenChange={(open) => {
+        if (open) refetch();
+      }}
     >
-      {logs.length > 0 ? (
+      {todayLogs.length > 0 ? (
         <>
           <div className="flex gap-4 max-h-80 overflow-y-auto">
             <div className="flex-1">

@@ -1,12 +1,10 @@
-import { CustomerWithDetails, CustomerWithPhone } from "@/app/(site)/lib/shared";
+import { CustomerContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { engagementsInclude, homeAndPickupOrdersInclude } from "../includes";
 
 export default async function updateCustomerFromAdmin({
   customer,
-}: {
-  customer: CustomerWithPhone;
-}): Promise<CustomerWithDetails> {
+}: CustomerContracts.UpdateFromAdmin.Input): Promise<CustomerContracts.UpdateFromAdmin.Output> {
   const { phone, ...customerData } = customer;
 
   if (!phone) {

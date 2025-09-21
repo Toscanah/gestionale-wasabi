@@ -1,4 +1,4 @@
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductContracts, ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType, Prisma } from "@prisma/client";
 import { categoryInclude, productInOrderInclude } from "../../includes";
 import { getProductPrice } from "@/app/(site)/lib/services/product-management/getProductPrice";
@@ -13,18 +13,18 @@ export default async function handleProductCodeChange({
   currentOrder: { id: number; type: OrderType };
   newProductCode: string;
   productInOrder: ProductInOrder;
-}) {
+}): Promise<ProductContracts.UpdateInOrder.Output> {
   const newProduct = await tx.product.findFirst({
     where: { code: { equals: newProductCode, mode: "insensitive" } },
     include: { ...categoryInclude },
   });
 
   if (!newProduct) {
-    return { error: "Product not found" };
+    throw new Error("Product with the provided code does not exist");
   }
 
   if (productInOrder.product.code.toUpperCase() === newProduct.code.toUpperCase()) {
-    return { updatedProduct: productInOrder };
+    return { updatedProductInOrder: productInOrder };
   }
 
   const updatedProduct = await tx.productInOrder.update({
@@ -63,5 +63,5 @@ export default async function handleProductCodeChange({
     },
   });
 
-  return { updatedProduct };
+  return { updatedProductInOrder: updatedProduct };
 }

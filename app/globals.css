@@ -31,7 +31,7 @@
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
-    --radius: 0.50rem;
+    --radius: 0.5rem;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -40,6 +40,42 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* ✅ SUCCESS (green) */
+    --success-50: 142 76% 97%;
+    --success-100: 142 76% 90%;
+    --success-200: 142 76% 80%;
+    --success-300: 142 76% 70%;
+    --success-400: 142 76% 55%;
+    --success-500: 142 71% 45%; /* main */
+    --success-600: 142 71% 35%;
+    --success-700: 142 71% 28%;
+    --success-800: 142 71% 22%;
+    --success-900: 142 71% 15%;
+
+    /* ✅ WARNING (orange) */
+    --warning-50: 24 95% 97%;
+    --warning-100: 24 95% 90%;
+    --warning-200: 24 95% 80%;
+    --warning-300: 24 95% 70%;
+    --warning-400: 24 95% 60%;
+    --warning-500: 24 95% 53%; /* main */
+    --warning-600: 24 95% 45%;
+    --warning-700: 24 95% 35%;
+    --warning-800: 24 95% 25%;
+    --warning-900: 24 95% 15%;
+
+    /* ✅ STANDARD (blue) */
+    --standard-50: 217 91% 97%;
+    --standard-100: 217 91% 90%;
+    --standard-200: 217 91% 80%;
+    --standard-300: 217 91% 70%;
+    --standard-400: 217 91% 60%;
+    --standard-500: 217 91% 50%; /* main */
+    --standard-600: 217 91% 40%;
+    --standard-700: 217 91% 30%;
+    --standard-800: 217 91% 22%;
+    --standard-900: 217 91% 15%;
   }
 
   .dark {
@@ -70,12 +106,46 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* ✅ SUCCESS (green - darker for dark mode) */
+    --success-50: 142 76% 15%;
+    --success-100: 142 76% 20%;
+    --success-200: 142 76% 25%;
+    --success-300: 142 76% 30%;
+    --success-400: 142 76% 35%;
+    --success-500: 142 76% 40%; /* main */
+    --success-600: 142 76% 50%;
+    --success-700: 142 76% 60%;
+    --success-800: 142 76% 70%;
+    --success-900: 142 76% 80%;
+
+    /* ✅ WARNING (orange - deeper for dark mode) */
+    --warning-50: 24 95% 15%;
+    --warning-100: 24 95% 20%;
+    --warning-200: 24 95% 25%;
+    --warning-300: 24 95% 30%;
+    --warning-400: 24 95% 35%;
+    --warning-500: 24 95% 40%; /* main */
+    --warning-600: 24 95% 50%;
+    --warning-700: 24 95% 60%;
+    --warning-800: 24 95% 70%;
+    --warning-900: 24 95% 80%;
+
+    /* ✅ STANDARD (blue - deeper for dark mode) */
+    --standard-50: 217 91% 15%;
+    --standard-100: 217 91% 20%;
+    --standard-200: 217 91% 25%;
+    --standard-300: 217 91% 30%;
+    --standard-400: 217 91% 35%;
+    --standard-500: 217 91% 40%; /* main */
+    --standard-600: 217 91% 50%;
+    --standard-700: 217 91% 60%;
+    --standard-800: 217 91% 70%;
+    --standard-900: 217 91% 80%;
   }
 }
 
 @layer base {
-  
-
   * {
     @apply border-border;
   }

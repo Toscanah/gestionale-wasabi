@@ -22,21 +22,31 @@ export default function OrderDeletionDialog({ onDelete, type, trigger }: OrderDe
   const DialogTrigger = trigger || DefaultTrigger;
 
   const DialogContent = () => (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-4">
       <span className="text-lg">
         Stai per eliminare {type === "single" ? "questo ordine." : "gli ordini selezionati."} Questa
         azione è finale e non reversibile.
       </span>
 
-      <div className="flex gap-2 items-center">
-        <Label className="text-lg font-normal">Ho cucinato i prodotti di questo ordine</Label>
-        <Checkbox checked={productsCooked} onCheckedChange={(e) => setProductsCooked(!!e)} />
-      </div>
+      <Label className="hover:bg-accent/50 text-lg flex items-center gap-4 rounded-lg border p-4 has-[[aria-checked=true]]:border-warning-600 has-[[aria-checked=true]]:bg-warning-50 ">
+        <Checkbox
+          id="toggle-2"
+          checked={productsCooked}
+          onCheckedChange={(e) => setProductsCooked(!!e)}
+          className="data-[state=checked]:border-warning-500 data-[state=checked]:bg-warning-600 data-[state=checked]:text-white"
+        />
+        <p className="font-medium">Ho cucinato i prodotti di questo ordine</p>
+      </Label>
     </div>
   );
 
   return (
     <WasabiDialog
+      title="Conferma eliminazione ordine"
+      putSeparator
+      onOpenChange={() => setProductsCooked(false)}
+      footerClassName="gap-4"
+      contentClassName="p-4"
       size="medium"
       variant="delete"
       triggerClassName="flex-1"

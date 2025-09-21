@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
-import fetchRequest from "../../lib/api/fetchRequest";
 import { OrderStatus, PaymentScope, PaymentType } from "@prisma/client";
 import { DEFAULT_PAYMENT, Payment } from "../../context/OrderPaymentContext";
 import { useOrderContext } from "../../context/OrderContext";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";
 import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 import { OrderPaymentProps } from "../../(domains)/payments/order/OrderPayment";
+import { trpc } from "@/lib/server/client";
 
 interface UseOrderPaymentParams extends Omit<OrderPaymentProps, "onBackButton" | "partialOrder"> {
   payment: Payment;
@@ -56,6 +56,27 @@ export default function useOrderPayment({
       remainingAmount: orderTotal,
     });
 
+  const payOrderMutation = trpc.payments.payOrder.useMutation({
+    onSuccess: (updatedOrder) => {
+      onOrderPaid([...updatedOrder.payments]);
+
+      if (stage === "FINAL") {
+        updateOrder({ status: OrderStatus.PAID });
+        return;
+      }
+
+      const { updatedProducts } = scaleProducts({
+        originalProducts: originalOrder.products,
+        productsToScale: payingOrder.products,
+      });
+
+      updateOrder({
+        status: updatedOrder.status,
+        products: updatedProducts,
+      });
+    },
+  });
+
   const payOrder = () => {
     const productsToPay = payingOrder.products;
 
@@ -74,29 +95,10 @@ export default function useOrderPayment({
           scope,
         };
       });
-    // .filter((p) => p.amount > 0);
 
-    fetchRequest<AnyOrder>("POST", "/api/payments/", "payOrder", {
+    payOrderMutation.mutate({
       payments,
       productsToPay,
-    }).then((updatedOrder) => {
-      onOrderPaid();
-
-      if (stage == "FINAL") {
-        updateOrder({ status: OrderStatus.PAID });
-        return;
-      }
-
-      const { updatedProducts } = scaleProducts({
-        originalProducts: originalOrder.products,
-        productsToScale: productsToPay,
-        orderType: originalOrder.type,
-      });
-
-      updateOrder({
-        status: updatedOrder.status,
-        products: updatedProducts,
-      });
     });
   };
 

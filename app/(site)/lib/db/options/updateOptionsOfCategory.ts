@@ -1,13 +1,10 @@
-import { Category, Option } from "@/prisma/generated/zod";
+import { OptionContracts } from "../../shared";
 import prisma from "../db";
 
 export default async function updateOptionsOfCategory({
   category,
   options,
-}: {
-  category: Category;
-  options: Option[];
-}) {
+}: OptionContracts.UpdateOptionsOfCategory.Input): Promise<OptionContracts.UpdateOptionsOfCategory.Output> {
   return await prisma.$transaction(async (tx) => {
     // Fetch current options linked to the category
     const currentOptions = await tx.categoryOnOption.findMany({

@@ -1,15 +1,12 @@
-import { Address } from "@prisma/client";
-import { useEffect, useState } from "react";
-import { useCreateHomeOrder } from "../../context/CreateHomeOrderContext";
-import fetchRequest from "../../lib/api/fetchRequest";
-import { HomeOrder } from "@/app/(site)/lib/shared"
-;
+import { useEffect, useMemo, useState } from "react";
+import { trpc } from "@/lib/server/client";
+import { AddressType } from "@/prisma/generated/schemas";
 
 interface UseAddressSelectionParams {
-  addresses: Address[];
+  addresses: AddressType[];
   phone: string;
-  selectedAddress: Address | undefined;
-  setSelectedAddress: (address: Address | undefined) => void;
+  selectedAddress: AddressType | undefined;
+  setSelectedAddress: (address: AddressType | undefined) => void;
   selectedOption: string;
   setSelectedOption: (option: string) => void;
 }
@@ -22,39 +19,37 @@ export default function useAddressSelection({
   selectedOption,
   setSelectedOption,
 }: UseAddressSelectionParams) {
-  const [permAddresses, setPermAddresses] = useState<Address[]>([]);
-  const [tempAddress, setTempAddress] = useState<Address | undefined>();
-  const [lastAddressId, setLastAddressId] = useState<string>("");
+  const permAddresses = useMemo(
+    () => addresses.filter((address) => !address.temporary),
+    [addresses]
+  );
 
-  useEffect(() => {
-    setLastAddressId("");
-    setPermAddresses(addresses.filter((address) => !address.temporary));
-    setTempAddress(addresses.find((address) => address.temporary));
-  }, [addresses]);
+  const tempAddress = useMemo(() => addresses.find((address) => address.temporary), [addresses]);
 
-  useEffect(() => {
-    if (phone && !selectedAddress && permAddresses.length > 0) {
-      fetchRequest<number | null>("GET", "/api/addresses/", "getLastAddressOfCustomer", {
-        phone,
-      }).then((lastAddressId) => {
-        if (lastAddressId) {
-          const address = addresses.some((addr) => addr.id === lastAddressId && addr.active)
-            ? lastAddressId.toString()
-            : "";
-
-          setLastAddressId(address);
-          setSelectedOption(address);
-        }
-      });
+  const { data: lastAddressId } = trpc.addresses.getLastOfCustomer.useQuery(
+    { phone },
+    {
+      enabled: Boolean(phone && !selectedAddress && permAddresses.length > 0),
     }
-  }, [permAddresses]);
+  );
+
+  useEffect(() => {
+    if (lastAddressId) {
+      const valid = addresses.some((addr) => addr.id === lastAddressId && addr.active)
+        ? lastAddressId.toString()
+        : "";
+
+      setSelectedOption(valid);
+    }
+  }, [lastAddressId, addresses]);
 
   useEffect(() => {
     if (selectedAddress) {
       setSelectedOption(selectedAddress.temporary ? "temp" : selectedAddress.id.toString());
     } else {
       setSelectedOption(
-        lastAddressId || permAddresses.find((addr) => addr.active)?.id.toString() || "new"
+        lastAddressId?.toString() ??
+          (permAddresses.find((addr) => addr.active)?.id.toString() || "new")
       );
     }
   }, [permAddresses]);
@@ -64,8 +59,8 @@ export default function useAddressSelection({
       selectedOption === "temp"
         ? tempAddress
         : selectedOption === "new"
-        ? undefined
-        : addresses.find((addr) => selectedOption === addr.id.toString());
+          ? undefined
+          : addresses.find((addr) => selectedOption === addr.id.toString());
 
     setSelectedAddress(address);
   }, [selectedOption]);

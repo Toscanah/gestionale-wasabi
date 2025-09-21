@@ -1,11 +1,9 @@
-import { Customer } from "@/prisma/generated/zod";
 import prisma from "../db";
+import { CustomerContracts } from "../../shared";
 
 export default async function updateCustomerFromOrder({
   customer,
-}: {
-  customer: Customer;
-}): Promise<Customer> {
+}: CustomerContracts.UpdateFromOrder.Input): Promise<CustomerContracts.UpdateFromOrder.Output> {
   return await prisma.customer.update({
     where: {
       id: customer.id,

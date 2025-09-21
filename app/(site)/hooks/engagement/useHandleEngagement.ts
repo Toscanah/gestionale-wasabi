@@ -1,7 +1,7 @@
 import { OrderType } from "@prisma/client";
 import { useState } from "react";
-import fetchRequest from "../../lib/api/fetchRequest";
 import { AnyOrder, EngagementWithDetails, HomeOrder, PickupOrder } from "../../lib/shared";
+import { trpc } from "@/lib/server/client";
 
 export type UseHandleEngagementParams =
   | { order: AnyOrder; customerIds?: number[] }
@@ -12,6 +12,7 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
     throw new Error("Either 'order' or 'customerIds' must be provided.");
   }
 
+  const utils = trpc.useUtils();
   const [selectedTemplates, setSelectedTemplates] = useState<number[]>([]);
 
   const orderId = order?.id;
@@ -19,8 +20,8 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
     order?.type === OrderType.HOME
       ? (order as HomeOrder).home_order?.customer?.id
       : order?.type === OrderType.PICKUP
-      ? (order as PickupOrder).pickup_order?.customer?.id
-      : undefined;
+        ? (order as PickupOrder).pickup_order?.customer?.id
+        : undefined;
 
   const targetCustomerIds = customerIds ?? (singleCustomerId ? [singleCustomerId] : []);
 
@@ -29,41 +30,41 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
       prev.includes(templateId) ? prev.filter((id) => id !== templateId) : [...prev, templateId]
     );
 
-  const getEngagements = async () => {
-    if (!singleCustomerId) return [];
-    return await fetchRequest<EngagementWithDetails[]>(
-      "GET",
-      "/api/engagements/",
-      "getEngagementsByCustomer",
-      {
-        customerId: singleCustomerId,
-      }
-    );
-  };
+  const getEngagementsQuery = trpc.engagements.getByCustomer.useQuery(
+    { customerId: singleCustomerId! },
+    { enabled: !!singleCustomerId }
+  );
 
-  // TODO: should check if instead of EngagementWithDetails,
-  // undefined was returned = engagement with that templete already exists
+  const createMutation = trpc.engagements.create.useMutation({
+    onSuccess: () => utils.engagements.getByCustomer.invalidate(),
+  });
+
+  const deleteMutation = trpc.engagements.deleteEngagementById.useMutation({
+    onSuccess: () => utils.engagements.getByCustomer.invalidate(),
+  });
+
+  const toggleMutation = trpc.engagements.toggleById.useMutation({
+    onSuccess: () => utils.engagements.getByCustomer.invalidate(),
+  });
+
+  const getEngagements = async () => getEngagementsQuery.data ?? [];
+
   const createEngagements = async (): Promise<EngagementWithDetails[]> => {
     if (orderId) {
       const customerId =
-        order.type === OrderType.HOME
+        order?.type === OrderType.HOME
           ? (order as HomeOrder).home_order?.customer?.id
-          : order.type === OrderType.PICKUP
-          ? (order as PickupOrder).pickup_order?.customer?.id
-          : undefined;
+          : order?.type === OrderType.PICKUP
+            ? (order as PickupOrder).pickup_order?.customer?.id
+            : undefined;
 
       const results = await Promise.all(
         selectedTemplates.map((templateId) =>
-          fetchRequest<EngagementWithDetails | null>(
-            "POST",
-            "/api/engagements/",
-            "createEngagement",
-            {
-              orderId,
-              customerId,
-              templateId,
-            }
-          )
+          createMutation.mutateAsync({
+            orderId,
+            customerId,
+            templateId,
+          })
         )
       );
 
@@ -72,15 +73,10 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
       const results = await Promise.all(
         targetCustomerIds.flatMap((customerId) =>
           selectedTemplates.map((templateId) =>
-            fetchRequest<EngagementWithDetails | null>(
-              "POST",
-              "/api/engagements/",
-              "createEngagement",
-              {
-                customerId,
-                templateId,
-              }
-            )
+            createMutation.mutateAsync({
+              customerId,
+              templateId,
+            })
           )
         )
       );
@@ -90,16 +86,13 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
   };
 
   const deleteEngagement = async (engagementId: number) =>
-    fetchRequest<number>("DELETE", "/api/engagements", "deleteEngagementById", {
-      engagementId,
-    });
+    deleteMutation.mutateAsync({ engagementId });
 
   const toggleEngagement = async (engagementId: number) =>
-    fetchRequest<void>("PATCH", "/api/engagements", "toggleEngagementById", { engagementId });
+    toggleMutation.mutateAsync({ engagementId });
 
   return {
     createEngagements,
-    getEngagements,
     selectedTemplates,
     onSelectTemplate,
     deleteEngagement,

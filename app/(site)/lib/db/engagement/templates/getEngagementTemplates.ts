@@ -1,8 +1,10 @@
-import { EngagementTemplate } from "@prisma/client";
 import prisma from "../../db";
 import normalizeTemplatePayload from "@/app/(site)/lib/services/engagement/normalizeTemplatePayload";
+import { EngagementContracts } from "../../../shared";
 
-export default async function getEngagementTemplates(): Promise<EngagementTemplate[]> {
-  const templates = await prisma.engagementTemplate.findMany({});
+export default async function getEngagementTemplates(
+  input: EngagementContracts.GetTemplates.Input
+): Promise<EngagementContracts.GetTemplates.Output> {
+  const templates = await prisma.engagementTemplate.findMany();
   return templates.map(normalizeTemplatePayload);
 }
