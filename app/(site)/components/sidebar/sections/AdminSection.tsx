@@ -11,6 +11,7 @@ export default function AdminSection() {
 
   return (
     <SidebarMenuGroup
+      disabled={true}
       label="Admin"
       icon={<UserCircleGear className="w-4 h-4" />}
       items={adminItems}
