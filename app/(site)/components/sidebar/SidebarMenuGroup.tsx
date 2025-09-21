@@ -27,12 +27,13 @@ export type SidebarMenuGroupProps = {
   label: string;
   icon: React.ReactNode;
   items: SidebarMenuGroupItem[];
+  disabled?: boolean;
 };
 
-export function SidebarMenuGroup({ label, icon, items }: SidebarMenuGroupProps) {
+export function SidebarMenuGroup({ label, icon, items, disabled }: SidebarMenuGroupProps) {
   return (
     <SidebarMenu key={label}>
-      <Collapsible className="group/collapsible">
+      <Collapsible className="group/collapsible" disabled={disabled}>
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>
             <SidebarMenuButton>

@@ -39,7 +39,10 @@ export default function AdminEngagementDialog({
       trigger={trigger}
       putUpperBorder
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(open) => {
+        selectedTemplates.map((id) => onSelectTemplate(id));
+        setOpen(open);
+      }}
     >
       <div className="space-y-4">
         <MarketingTemplates

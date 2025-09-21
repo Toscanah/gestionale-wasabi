@@ -1,10 +1,10 @@
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
+import { ENGAGEMENT_TYPES_LABELS } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { EngagementType } from "@prisma/client";
 import React from "react";
-import { ENGAGEMENT_TYPES } from "../../templates/types/EngagementTypes";
 
 interface EngagementFilterProps {
   activeTypes: EngagementType[];
@@ -25,7 +25,7 @@ export default function EngagementFilter({ activeTypes, setActiveTypes }: Engage
       }
     >
       <div className="grid grid-cols-3 gap-3">
-        {ENGAGEMENT_TYPES.slice()
+        {ENGAGEMENT_TYPES_LABELS.slice()
           .sort((a, b) => a.label.localeCompare(b.label))
           .map((type) => (
             <div key={type.label} className="flex items-center gap-2">

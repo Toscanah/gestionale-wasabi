@@ -100,18 +100,14 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
                     </CreateOrder>
                   </div>
 
-                  {isLoading ? (
-                    <RandomSpinner isLoading={isLoading} size={32} />
-                  ) : (
-                    <OrdersTable
-                      overdrawnOrderIds={overdrawnOrderIds}
-                      data={orders[type].sort(
-                        (a, b) =>
-                          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-                      )}
-                      type={type}
-                    />
-                  )}
+                  <OrdersTable
+                    isLoading={isLoading}
+                    overdrawnOrderIds={overdrawnOrderIds}
+                    data={orders[type].sort(
+                      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                    )}
+                    type={type}
+                  />
                 </ResizablePanel>
 
                 {index < totalTypes - 1 && <ResizableHandle />}

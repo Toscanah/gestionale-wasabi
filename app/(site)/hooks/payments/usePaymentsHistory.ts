@@ -56,16 +56,33 @@ export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistor
     };
   }, [period, orderTypes, shift, debouncedQuery]);
 
-  const { data: summaryData, isLoading: isLoadingSummary } = paymentsAPI.getSummary.useQuery({
-    filters,
-  });
+  const {
+    data: summaryData,
+    isLoading: isLoadingSummary,
+    isFetching: isFetchingSummary,
+  } = paymentsAPI.getSummary.useQuery(
+    {
+      filters,
+    },
+    {
+      placeholderData: (prev) => prev,
+    }
+  );
 
-  const { data: paginatedPayments, isLoading: isLoadingPayments } =
-    ordersAPI.getWithPayments.useQuery({
+  const {
+    data: paginatedPayments,
+    isLoading: isLoadingPayments,
+    isFetching: isFetchingPayments,
+  } = ordersAPI.getWithPayments.useQuery(
+    {
       filters,
       pagination:
         pageSize !== null && !isNaN(pageSize) && pageSize > 0 ? { page, pageSize } : undefined,
-    });
+    },
+    {
+      placeholderData: (prev) => prev,
+    }
+  );
 
   const handleReset = () => {
     setOrderTypes([OrderType.HOME, OrderType.PICKUP, OrderType.TABLE]);
@@ -86,7 +103,7 @@ export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistor
     // table
     filteredOrders: paginatedPayments?.orders ?? [],
     totalCount: paginatedPayments?.totalCount ?? 0,
-    isLoading: isLoadingPayments || isLoadingSummary,
+    isLoading: isLoadingPayments || isLoadingSummary || isFetchingPayments || isFetchingSummary,
 
     // filters state
     orderTypes,

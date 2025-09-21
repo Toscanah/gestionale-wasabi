@@ -9,11 +9,13 @@ import useTable from "../../hooks/table/useTable";
 import Table from "../../components/table/Table";
 import { cn } from "@/lib/utils";
 import { useWasabiContext } from "../../context/WasabiContext";
+import useSkeletonTable from "../../hooks/table/useSkeletonTable";
 
 export interface OrdersTableProps {
   data: AnyOrder[];
   type: OrderType;
   overdrawnOrderIds: Set<number>;
+  isLoading: boolean;
 }
 
 interface CustomCellProps {
@@ -21,10 +23,25 @@ interface CustomCellProps {
   className: string;
 }
 
-export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTableProps) {
+export default function OrdersTable({
+  data,
+  type,
+  overdrawnOrderIds,
+  isLoading,
+}: OrdersTableProps) {
   const { settings } = useWasabiContext();
-  const columns = getColumns(type, settings.whatsapp);
-  const table = useTable<AnyOrder>({ data, columns });
+
+  const columns = getColumns(type, settings.whatsapp.active);
+  const { tableColumns, tableData } = useSkeletonTable({
+    data,
+    columns,
+    isLoading,
+    pageSize: data.length,
+  });
+  const table = useTable<AnyOrder>({
+    data: tableData,
+    columns: tableColumns.slice(isLoading ? 1 : 0),
+  });
 
   const CustomCell = ({ cell, className }: CustomCellProps) => {
     const orderId = cell.row.original.id;
@@ -47,7 +64,7 @@ export default function OrdersTable({ data, type, overdrawnOrderIds }: OrdersTab
           );
         }}
         cellClassName={(index) => (index == 3 && type == OrderType.HOME ? "max-w-42 truncate" : "")}
-        CustomCell={CustomCell}
+        CustomCell={isLoading ? undefined : CustomCell}
       />
     </div>
   );

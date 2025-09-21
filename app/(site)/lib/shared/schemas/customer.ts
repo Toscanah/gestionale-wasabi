@@ -8,14 +8,14 @@ import {
   CustomerStats,
 } from "../models/customer";
 import { createInputSchema, wrapSchema } from "./common/utils";
-import { PaginationRequestSchema, PaginationResponseSchema } from "./common/pagination";
+import { PaginationSchema, PaginationResponseSchema } from "./common/pagination";
 import {
   DeleteEntityResponseSchema,
   ToggleDeleteEntityRequestSchema,
   ToggleEntityResponseSchema,
 } from "./common/toggle-delete-entity";
 import { NoContentRequestSchema } from "./common/no-content";
-import { PeriodRequestSchema } from "./common/period";
+import { PeriodRequestSchema } from "./common/filters/period";
 import SortingSchema from "./common/sorting";
 import {
   AnyOrderSchema,
@@ -24,8 +24,9 @@ import {
   TableOrderInOrderSchema,
 } from "../models/order";
 import { ShiftFilterValue } from "../enums/shift";
-import { CommonQueryFilterSchema } from "./common/query";
+import { CommonQueryFilterSchema } from "./common/filters/query";
 import { DottedKeys } from "../types/dotted-keys";
+import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
 export const CUSTOMER_STATS_SORT_FIELDS = [
   "rfm.rank",
@@ -67,28 +68,25 @@ export namespace CustomerContracts {
   }
 
   export namespace GetAllWithDetails {
-    export const Input = z
-      .object({
-        filters: z
-          .object({
-            orders: z
-              .object({
-                ...PeriodRequestSchema.shape,
-                shift: z.enum(ShiftFilterValue),
-              })
-              .partial()
-              .optional(),
-            ...CommonQueryFilterSchema.shape,
-          })
-          .partial(),
-        ...PaginationRequestSchema.shape,
-      })
+    export const Input = wrapFilters(
+      z
+        .object({
+          orders: APIFiltersSchema.pick({
+            shift: true,
+            period: true,
+          }).partial(),
+        })
+        .extend(APIFiltersSchema.pick({ query: true, engagementTypes: true }).shape)
+    )
+      .extend(PaginationSchema.shape)
       .partial()
       .optional();
 
     export type Input = z.infer<typeof Input>;
 
-    export const Output = z.array(Common.WithEngagement);
+    export const Output = z.object({
+      customers: z.array(Common.WithEngagement),
+    }).and(PaginationResponseSchema);
     export type Output = z.infer<typeof Output>;
   }
 
@@ -175,18 +173,17 @@ export namespace CustomerContracts {
   }
 
   export namespace ComputeStats {
-    export const Input = z
-      .object({
-        filters: z
-          .object({
-            ranks: z.array(z.string()),
-            ...PeriodRequestSchema.shape,
-            ...CommonQueryFilterSchema.shape,
-          })
-          .partial(),
+    export const Input = wrapFilters(
+      APIFiltersSchema.pick({
+        ranks: true,
+        period: true,
+        query: true,
+      })
+    )
+      .extend(PaginationSchema.shape)
+      .extend({
         rfmConfig: RFMConfigSchema,
         sort: z.array(CustomerStatsSortingSchema),
-        ...PaginationRequestSchema.shape,
       })
       .partial({ filters: true, sort: true, pagination: true });
 

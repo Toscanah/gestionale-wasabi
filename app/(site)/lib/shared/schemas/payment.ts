@@ -4,14 +4,21 @@ import { ProductInOrderWithOptionsSchema } from "../models/product";
 import { AnyOrderSchema } from "../models/order";
 import { PaymentType } from "@prisma/client";
 import { OrderContracts } from "./order";
+import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
 export namespace PaymentContracts {
   export namespace GetSummary {
-    export const Input = z
-      .object({
-        filters: OrderContracts.Common.Filters.partial().optional(),
+    export const Input = wrapFilters(
+      APIFiltersSchema.pick({
+        orderTypes: true,
+        shift: true,
+        period: true,
+        query: true,
       })
+    )
+      .partial()
       .optional();
+
     export type Input = z.infer<typeof Input>;
 
     export const PaymentTotalSchema = z.object({

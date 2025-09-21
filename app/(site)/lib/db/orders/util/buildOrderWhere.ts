@@ -1,10 +1,23 @@
 import { OrderType, Prisma } from "@prisma/client";
-import { ORDER_TYPE_LABELS, OrderContracts, ShiftFilterValue, STARTING_DAY } from "../../../shared";
+import { ORDER_TYPE_LABELS, ShiftFilterValue } from "../../../shared";
 import normalizePeriod from "../../../utils/global/date/normalizePeriod";
 import { endOfDay, startOfDay } from "date-fns";
+import z from "zod";
+import { APIFiltersSchema } from "../../../shared/schemas/common/filters/filters";
+
+type PossibleFilters = z.infer<
+  ReturnType<
+    typeof APIFiltersSchema.pick<{
+      orderTypes: true;
+      shift: true;
+      period: true;
+      query: true;
+    }>
+  >
+>;
 
 export default function buildOrderWhere(
-  filters: Partial<OrderContracts.Common.Filters> | undefined
+  filters: Partial<PossibleFilters> | undefined
 ): Prisma.OrderWhereInput {
   const { orderTypes, shift, period, query } = filters ?? {};
   const normalizedPeriod = normalizePeriod(period);

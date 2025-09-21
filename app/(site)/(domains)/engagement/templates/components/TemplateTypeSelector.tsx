@@ -1,7 +1,7 @@
+import { ENGAGEMENT_TYPES_LABELS } from "@/app/(site)/lib/shared";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { EngagementType } from "@prisma/client";
-import { ENGAGEMENT_TYPES } from "../types/EngagementTypes";
 
 interface EngagementChoiceProps {
   selectedType: EngagementType;
@@ -22,7 +22,7 @@ export default function TemplateTypeSelector({
         onValueChange={(val: EngagementType) => onChange(val)}
         className="flex gap-4"
       >
-        {ENGAGEMENT_TYPES.map(({ value, label }) => (
+        {ENGAGEMENT_TYPES_LABELS.map(({ value, label }) => (
           <div className="flex items-center space-x-2" key={value}>
             <RadioGroupItem value={value} id={value} />
             <Label htmlFor={value}>{label}</Label>

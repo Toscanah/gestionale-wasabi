@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { ReactNode } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface TablePaginationProps<TData> {
   table: Table<TData>;
@@ -20,6 +21,8 @@ interface TablePaginationProps<TData> {
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
   disabled?: boolean;
+  selectSizeClassName?: string;
+  selectPageClassName?: string;
 }
 
 export default function TablePagination<TData>({
@@ -31,10 +34,15 @@ export default function TablePagination<TData>({
   onPageChange,
   onPageSizeChange,
   disabled,
+  selectSizeClassName,
+  selectPageClassName,
 }: TablePaginationProps<TData>) {
   const currentPage = page ?? table.getState().pagination.pageIndex;
   const currentPageSize = pageSize ?? table.getState().pagination.pageSize;
-  const totalPages = pageCount ?? table.getPageCount();
+  const totalPages =
+    currentPageSize === -1
+      ? 1 // only one "page" when showing all
+      : (pageCount ?? table.getPageCount());
 
   const handlePageChange = (newPage: number) => {
     if (onPageChange) onPageChange(newPage);
@@ -54,7 +62,7 @@ export default function TablePagination<TData>({
           value={`${currentPageSize}`}
           onValueChange={(value) => handlePageSizeChange(Number(value))}
         >
-          <SelectTrigger className="h-8 w-24" disabled={disabled}>
+          <SelectTrigger className={cn("h-8 w-24", selectSizeClassName)} disabled={disabled}>
             <SelectValue placeholder={`${currentPageSize}`} />
           </SelectTrigger>
           <SelectContent side="top">
@@ -63,7 +71,7 @@ export default function TablePagination<TData>({
                 {size}
               </SelectItem>
             ))}
-            <SelectItem key={-1} value={`${totalCount ?? 0}`}>
+            <SelectItem key={-1} value={"-1"}>
               Tutti <span className="text-muted-foreground">(sconsigliato, pesante)</span>
             </SelectItem>
           </SelectContent>
@@ -71,16 +79,29 @@ export default function TablePagination<TData>({
       </div>
 
       <span className="text-muted-foreground text-sm">
-        {currentPage * currentPageSize + 1}-
-        {Math.min((currentPage + 1) * currentPageSize, totalCount ?? 0)}
-        {" di "}
-        {totalCount}
+        {(() => {
+          const total = totalCount ?? 0;
+          if (currentPageSize === -1) {
+            // Show all records
+            if (total === 0) return `0 di 0`;
+            return `${total} di ${total}`;
+          }
+          const start = total === 0 ? 0 : currentPage * currentPageSize + 1;
+          const end = Math.min((currentPage + 1) * currentPageSize, total);
+          if (start === end) {
+            return `${end} di ${total}`;
+          }
+          if (end === total && start === 1) {
+            return `${total} di ${total}`;
+          }
+          return `${start}-${end} di ${total}`;
+        })()}
       </span>
 
       <div className="flex items-center ml-auto">
         <Button
           variant="outline"
-          className="h-8 px-2 border-r-0 rounded-r-none"
+          className={cn("h-8 px-2 border-r-0 rounded-r-none", selectPageClassName)}
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 0 || disabled}
         >
@@ -88,13 +109,18 @@ export default function TablePagination<TData>({
           Precedente
         </Button>
 
-        <span className="flex items-center justify-center text-sm border h-8 p-2">
+        <span
+          className={cn(
+            "flex items-center justify-center text-sm border h-8 p-2",
+            selectPageClassName
+          )}
+        >
           Pagina {currentPage + 1} di {totalPages}
         </span>
 
         <Button
           variant="outline"
-          className="h-8 px-2 border-l-0 rounded-l-none"
+          className={cn("h-8 px-2 border-l-0 rounded-l-none", selectPageClassName)}
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage + 1 >= totalPages || disabled}
         >

@@ -27,7 +27,8 @@ export default function getZodField(
       return z.coerce.boolean();
     case "any":
       return required
-        ? z.any({ error: (issue) => (issue.expected ? requiredMsg : undefined) })
+        ? z.custom((val) => val !== undefined && val !== null, { message: requiredMsg })
         : z.any().optional();
   }
 }
+// error: (issue) => (issue.expected ? requiredMsg : undefined)

@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { CommonQueryFilter } from "../../../shared/schemas/common/query";
+import { CommonQueryFilter } from "../../../shared/schemas/common/filters/query";
 
 export default function customerWhereQuery({
   query,

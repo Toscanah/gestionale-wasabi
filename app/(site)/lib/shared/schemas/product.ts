@@ -12,11 +12,12 @@ import {
   ToggleDeleteEntityRequestSchema,
   ToggleEntityResponseSchema,
 } from "./common/toggle-delete-entity";
-import { PeriodRequestSchema } from "./common/period";
+import { PeriodRequestSchema } from "./common/filters/period";
 import { OptionInProductOrderWithOptionSchema } from "../models/option";
 import SortingSchema from "./common/sorting";
-import { CommonQueryFilterSchema } from "./common/query";
+import { CommonQueryFilterSchema } from "./common/filters/query";
 import { DottedKeys } from "../types/dotted-keys";
+import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
 export const PRODUCT_STATS_SORT_FIELDS = [
   "unitsSold",
@@ -46,20 +47,20 @@ export namespace ProductContracts {
   }
 
   export namespace ComputeStats {
-    export const Input = z
-      .object({
-        filters: z
-          .object({
-            ...PeriodRequestSchema.shape,
-            ...CommonQueryFilterSchema.shape,
-            shift: z.enum(ShiftFilterValue),
-            categoryIds: z.array(z.number()),
-          })
-          .partial(),
+    export const Input = wrapFilters(
+      APIFiltersSchema.pick({
+        period: true,
+        query: true,
+        shift: true,
+        categoryIds: true,
+      })
+    )
+      .extend({
         sort: z.array(ProductStatsSortingSchema),
       })
       .partial()
       .optional();
+
     export type Input = z.infer<typeof Input>;
 
     export const Output = z.object({

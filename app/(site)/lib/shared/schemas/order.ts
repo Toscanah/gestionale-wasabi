@@ -1,4 +1,4 @@
-import { OrderType, PaymentType, PlannedPayment, WorkingShift } from "@prisma/client";
+import { OrderType, PlannedPayment, WorkingShift } from "@prisma/client";
 import { z } from "zod";
 import {
   AnyOrderSchema,
@@ -10,12 +10,9 @@ import {
 } from "../models/_index";
 import { NoContentRequestSchema } from "./common/no-content";
 import { wrapSchema } from "./common/utils";
-import { PaginationRequestSchema, PaginationResponseSchema } from "./common/pagination";
-import { ShiftFilterValue } from "../enums/shift";
-import { PeriodRequestSchema } from "./common/period";
-import { TimeWindowRequestSchema } from "./common/time-window";
+import { PaginationSchema, PaginationResponseSchema } from "./common/pagination";
 import { OrdersStats } from "./results/order-stats";
-import { CommonQueryFilterSchema } from "./common/query";
+import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
 export namespace OrderContracts {
   export namespace Common {
@@ -33,19 +30,6 @@ export namespace OrderContracts {
 
     export const NoContentInput = NoContentRequestSchema;
     export type NoContentInput = z.infer<typeof NoContentInput>;
-
-    export const Weekdays = z.array(z.number().min(0).max(6));
-    export type Weekdays = z.infer<typeof Weekdays>;
-
-    export const Filters = z.object({
-      orderTypes: z.array(z.enum(OrderType)),
-      shift: z.enum(ShiftFilterValue),
-      ...PeriodRequestSchema.shape,
-      ...CommonQueryFilterSchema.shape,
-      weekdays: Common.Weekdays,
-      timeWindow: TimeWindowRequestSchema,
-    });
-    export type Filters = z.infer<typeof Filters>;
   }
 
   export namespace GetById {
@@ -84,14 +68,13 @@ export namespace OrderContracts {
   }
 
   export namespace GetWithPayments {
-    export const Input = z
-      .object({
-        filters: Common.Filters.omit({
-          weekdays: true,
-          timeWindow: true,
-        }).partial(),
-        ...PaginationRequestSchema.shape,
+    export const Input = wrapFilters(
+      APIFiltersSchema.omit({
+        weekdays: true,
+        timeWindow: true,
       })
+    )
+      .extend(PaginationSchema.shape)
       .partial()
       .optional();
     export type Input = z.infer<typeof Input>;
@@ -304,17 +287,15 @@ export namespace OrderContracts {
   }
 
   export namespace ComputeStats {
-    export const Input = z
-      .object({
-        filters: Common.Filters.omit({
-          orderTypes: true,
-          query: true,
-        })
-          .partial()
-          .optional(),
+    export const Input = wrapFilters(
+      APIFiltersSchema.omit({
+        orderTypes: true,
+        query: true,
       })
+    )
       .partial()
       .optional();
+
     export type Input = z.infer<typeof Input>;
 
     export const Output = OrdersStats.Results;

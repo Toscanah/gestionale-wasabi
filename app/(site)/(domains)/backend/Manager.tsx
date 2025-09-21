@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentType, ReactNode, useMemo, useCallback, useState, useEffect } from "react";
+import { ComponentType, ReactNode, useMemo, useCallback, useState } from "react";
 import { Pencil, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import TableControls from "../../components/table/TableControls";
@@ -9,32 +9,17 @@ import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
 import { ColumnDef } from "@tanstack/react-table";
 import getColumns from "./getColumns";
 import useTable from "../../hooks/table/useTable";
-import { PathType, ValidActionKeys } from "../../lib/api/fetchRequest";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import useManager from "../../hooks/backend/useManager";
 import TablePagination from "../../components/table/TablePagination";
-
-export type BaseEntity = { id: number; active: boolean };
+import { BaseEntity, EntityOf, ManagerDomain } from "../../hooks/backend/useManagerActions";
 
 export interface FormFieldsProps<T extends BaseEntity> {
   handleSubmit: (values: Partial<T>) => void;
   submitLabel: string;
   object?: T;
 }
-
-enum ActionKey {
-  UPDATE = "update",
-  ADD = "add",
-  TOGGLE = "toggle",
-  DELETE = "delete",
-}
-
-export type BackendActionsMap = Omit<Record<ActionKey, ValidActionKeys>, ActionKey.DELETE> & {
-  [ActionKey.DELETE]?: ValidActionKeys;
-};
-
-export type EntityType = "product" | "category" | "option" | "customer";
 
 export const MANAGER_LABELS = {
   add: "Aggiungi",
@@ -54,29 +39,23 @@ export const MANAGER_LABELS = {
   exists: "Questo elemento esiste già",
 };
 
-interface ManagerProps<T extends BaseEntity> {
-  receivedData: T[];
-  path: PathType;
-  fetchActions: BackendActionsMap;
-  FormFields: ComponentType<FormFieldsProps<T>>;
-  columns: ColumnDef<T>[];
-  type: EntityType;
+interface ManagerProps<D extends ManagerDomain> {
+  domain: D;
+  FormFields: ComponentType<FormFieldsProps<EntityOf<D>>>;
+  columns: ColumnDef<EntityOf<D>>[];
   additionalFilters?: ReactNode[];
   pagination?: boolean;
   deleteAction?: boolean;
 }
 
-export default function Manager<T extends BaseEntity>({
-  receivedData,
-  path,
-  fetchActions,
+export default function Manager<D extends ManagerDomain>({
+  domain,
   columns,
   FormFields,
-  type,
   additionalFilters,
   pagination = false,
   deleteAction = false,
-}: ManagerProps<T>) {
+}: ManagerProps<D>) {
   const {
     filteredData,
     debouncedQuery,
@@ -85,12 +64,7 @@ export default function Manager<T extends BaseEntity>({
     actions,
     showOnlyActive,
     setShowOnlyActive,
-  } = useManager({
-    receivedData,
-    path,
-    fetchActions,
-    type,
-  });
+  } = useManager({ domain });
 
   const { handleAdd, handleUpdate, handleDelete, handleToggle } = actions;
 
@@ -100,9 +74,8 @@ export default function Manager<T extends BaseEntity>({
     delete: <Trash size={20} />,
   };
 
-  // Use callbacks for components that depend on props
   const EditAction = useCallback(
-    ({ object }: { object: T }) => (
+    ({ object }: { object: EntityOf<D> }) => (
       <WasabiDialog
         size="medium"
         title={`${MANAGER_LABELS.edit} elemento`}
@@ -110,7 +83,7 @@ export default function Manager<T extends BaseEntity>({
       >
         <FormFields
           object={object}
-          handleSubmit={(v) => handleUpdate(v, object)}
+          handleSubmit={(v) => handleUpdate(object, v)}
           submitLabel={MANAGER_LABELS.edit}
         />
       </WasabiDialog>
@@ -119,7 +92,7 @@ export default function Manager<T extends BaseEntity>({
   );
 
   const ToggleAction = useCallback(
-    ({ object }: { object: T }) => (
+    ({ object }: { object: EntityOf<D> }) => (
       <WasabiDialog
         size="small"
         title={MANAGER_LABELS.confirmToggleTitle}
@@ -139,8 +112,8 @@ export default function Manager<T extends BaseEntity>({
     [handleToggle]
   );
 
-  const deleteActionFn = useCallback(
-    ({ object }: { object: T }) =>
+  const DeleteAction = useCallback(
+    ({ object }: { object: EntityOf<D> }) =>
       deleteAction ? (
         <WasabiDialog
           variant="delete"
@@ -173,8 +146,13 @@ export default function Manager<T extends BaseEntity>({
 
   const tableColumns = useMemo(
     () =>
-      getColumns<T>(columns, EditAction, ToggleAction, deleteAction ? deleteActionFn : undefined),
-    [columns, EditAction, ToggleAction, deleteAction, deleteActionFn]
+      getColumns<EntityOf<D>>(
+        columns,
+        EditAction,
+        ToggleAction,
+        deleteAction ? DeleteAction : undefined
+      ),
+    [columns, EditAction, ToggleAction, deleteAction, DeleteAction]
   );
 
   const table = useMemo(
@@ -200,7 +178,9 @@ export default function Manager<T extends BaseEntity>({
         onReset={() => setShowOnlyActive(true)}
       >
         <div className="space-x-4 flex items-center ">
-          {additionalFilters?.map((filter) => filter)}
+          {additionalFilters?.map((filter, idx) => (
+            <div key={idx}>{filter}</div>
+          ))}
           <Checkbox
             checked={showOnlyActive}
             onCheckedChange={() => setShowOnlyActive(!showOnlyActive)}
@@ -209,9 +189,9 @@ export default function Manager<T extends BaseEntity>({
         </div>
       </TableControls>
 
-      <Table<T> table={table} />
+      <Table<EntityOf<D>> table={table} />
 
-      {pagination ? (
+      {/* {pagination ? (
         <TablePagination
           table={table}
           totalCount={`${table.getFilteredRowModel().rows.length} elementi totali`}
@@ -220,7 +200,7 @@ export default function Manager<T extends BaseEntity>({
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredRowModel().rows.length} elementi totali
         </div>
-      )}
+      )} */}
     </div>
   );
 }

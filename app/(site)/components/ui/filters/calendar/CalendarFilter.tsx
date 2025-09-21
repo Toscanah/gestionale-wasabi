@@ -35,6 +35,7 @@ type RangeModeProps = {
 
 type CalendarProps = {
   disabled?: boolean;
+  title?: string;
 } & (SingleModeProps | RangeModeProps);
 
 export default function CalendarFilter({
@@ -45,6 +46,7 @@ export default function CalendarFilter({
   disabled = false,
   usePresets = true,
   defaultValue,
+  title,
 }: CalendarProps) {
   const label = formatDateFilter(mode, dateFilter);
   const values = label ? [label] : [];
@@ -90,7 +92,7 @@ export default function CalendarFilter({
         <FilterTrigger
           triggerIcon={CalendarBlank}
           disabled={disabled}
-          title={mode === "single" ? "Data" : "Intervallo"}
+          title={title ? title : mode === "single" ? "Data" : "Intervallo"}
           onClear={onClear}
           values={values}
         />

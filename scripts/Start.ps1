@@ -31,7 +31,7 @@ function Update-Dependencies {
     & git pull
 
     Write-Host "`n[INFO] Installo le librerie necessarie" -ForegroundColor Magenta
-    & npm install
+    & npm install --force
     & npm install prisma@latest
     & npm install @prisma/client@latest
 

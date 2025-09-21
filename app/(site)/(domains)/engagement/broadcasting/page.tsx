@@ -2,7 +2,6 @@
 
 import { ArrowRight } from "@phosphor-icons/react";
 import columns from "./columns/columns";
-import WeekFilter from "./filters/WeekFilter";
 import { Button } from "@/components/ui/button";
 import EngagementFilter from "./filters/EngagementFilter";
 import useEngagement from "../../../hooks/engagement/useEngagement";
@@ -10,60 +9,115 @@ import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import GoBack from "../../../components/ui/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";
-import useQueryFilter from "../../../hooks/table/useGlobalFilter";
-import { Input } from "@/components/ui/input";
-import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
+import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
+import TablePagination from "@/app/(site)/components/table/TablePagination";
+import usePagination from "@/app/(site)/hooks/table/usePagination";
+import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
+import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
+import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
+import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
+import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 
 export default function EngagementPage() {
-  const {debouncedQuery, inputQuery, setInputQuery} = useQueryFilter();
+  const { page, pageSize, setPage, setPageSize } = usePagination({ initialPageSize: 50 });
 
   const {
     activeTypes,
-    filteredLeftCustomers,
-    filteredRightCustomers,
-    weekFilter,
-    onWeekFilterChange,
+    setActiveTypes,
+    leftCustomers,
+    rightCustomers,
+    isLoading,
     onLeftTableRowClick,
     onRightTableRowClick,
-    setActiveTypes,
+    period,
+    setPeriod,
+    inputQuery,
+    setInputQuery,
+    debouncedQuery,
+    clearSelectedCustomers,
+    totalCount,
+    handleReset,
+  } = useEngagement({ page, pageSize });
+
+  const { tableColumns, tableData } = useSkeletonTable({
+    data: leftCustomers,
+    columns,
     isLoading,
-    setFilteredRightCustomers,
-  } = useEngagement();
+  });
 
   const leftTable = useTable({
-    data: filteredLeftCustomers,
-    columns: columns({ isRightTable: false }),
+    data: tableData,
+    columns: tableColumns,
     query: debouncedQuery,
     setQuery: setInputQuery,
+    pagination: {
+      mode: "server",
+      pageSize,
+      pageIndex: page,
+      pageCount: Math.ceil((totalCount || 0) / pageSize),
+      onPaginationChange: (updater) => {
+        const newState =
+          typeof updater === "function" ? updater({ pageIndex: page, pageSize }) : updater;
+
+        setPage(newState.pageIndex);
+      },
+    },
   });
 
   const rightTable = useTable({
-    data: filteredRightCustomers,
-    columns: columns({ isRightTable: true }),
+    data: rightCustomers,
+    columns,
   });
 
   return (
     <div className="h-screen w-screen flex justify-center items-center p-16">
-      <div className="min-w-w-[47.5%] w-[47.5%] h-full p-4 flex flex-col">
-        <div className="flex w-full gap-4 items-center mb-4">
-          <Input
-            defaultValue={inputQuery}
-            type="text"
-            placeholder="Cerca..."
-            onChange={(e) => setInputQuery(e.target.value)}
+      <div className="min-w-w-[47.5%] w-[47.5%] h-full p-4 flex flex-col gap-4">
+        <div className="flex w-full gap-4 items-center">
+          <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
+
+          <CalendarFilter
+            defaultValue={TODAY_PERIOD}
+            title="Intervallo ordini clienti"
+            mode="range"
+            dateFilter={period}
+            handleDateFilter={setPeriod}
+            disabled={isLoading}
           />
-          <WeekFilter onWeekFilterChange={onWeekFilterChange} weekFilter={weekFilter} />
+
+          <ResetFiltersButton
+            onReset={handleReset}
+            show={!!inputQuery || period !== TODAY_PERIOD}
+          />
         </div>
 
-        {isLoading ? (
-          <RandomSpinner isLoading={isLoading} />
-        ) : (
-          <Table
-            table={leftTable}
-            tableClassName="max-h-[74vh] h-[74vh] "
-            onRowClick={onLeftTableRowClick}
-          />
-        )}
+        <Table
+          rowClassName={(row) => {
+            const base = "h-16 max-h-16";
+
+            if (rightCustomers.some((c) => c.id === row.original.id)) {
+              return `${base} bg-muted`;
+            }
+
+            return base;
+          }}
+          table={leftTable}
+          tableClassName="max-h-[74vh] h-[74vh]"
+          cellClassName={(index) => (index == 3 ? "max-w-60 w-60 truncate" : "")}
+          onRowClick={onLeftTableRowClick}
+        />
+
+        <TablePagination
+          disabled={isLoading}
+          selectSizeClassName="h-10"
+          selectPageClassName="h-10"
+          table={leftTable}
+          page={page}
+          pageSize={pageSize}
+          pageCount={Math.ceil(totalCount / (pageSize ?? totalCount))}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+          totalCount={totalCount}
+        />
       </div>
 
       <div className="w-[5%] h-full flex flex-col items-center justify-center">
@@ -71,24 +125,26 @@ export default function EngagementPage() {
       </div>
 
       <div className="min-w-w-[47.5%] w-[47.5%] h-full p-4 flex flex-col gap-4">
-        {/* <EngagementFilter activeTypes={activeTypes} setActiveTypes={setActiveTypes} /> */}
+        <EngagementFilter activeTypes={activeTypes} setActiveTypes={setActiveTypes} />
 
         <Table
+          rowClassName={() => "h-16 max-h-16"}
           cellClassName={(index) => (index == 3 ? "max-w-60 w-60 truncate" : "")}
           table={rightTable}
+          showNoResult={false}
           tableClassName="max-h-[74vh] h-[74vh]"
           onRowClick={onRightTableRowClick}
         />
 
         <div className="flex gap-4 w-full items-center justify-center">
           <AdminEngagementDialog
-            onSuccess={() => setFilteredRightCustomers([])} // TODO: implement smth better here -> setState that updates customers with new eng.
-            customerIds={filteredRightCustomers.map((c) => c.id)}
+            onSuccess={() => {
+              clearSelectedCustomers();
+              toastSuccess("Marketing creato con successo");
+            }}
+            customerIds={rightCustomers.map((c) => c.id)}
             trigger={
-              <Button
-                disabled={filteredRightCustomers.length > 0 ? false : true}
-                className="w-full"
-              >
+              <Button disabled={rightCustomers.length > 0 ? false : true} className="w-full">
                 Vai
               </Button>
             }

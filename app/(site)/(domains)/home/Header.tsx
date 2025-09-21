@@ -31,7 +31,7 @@ export default function Header({ toggleOrdersByType, activeOrders }: HeaderProps
         <div className="flex items-center w-full">
           {selectedOrders.length > 0 ? (
             <div className="flex items-center gap-2 w-full">
-              {settings.whatsapp &&
+              {settings.whatsapp.active &&
                 selectedOrders.every((order) => order.type === OrderType.HOME) && (
                   <SendMessagesDialog />
                 )}

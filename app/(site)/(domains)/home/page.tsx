@@ -20,12 +20,23 @@ type UpdateStateAction = "update" | "delete" | "add";
 export default function HomeWrapper() {
   const utils = trpc.useUtils();
 
-  const { data: homeOrders = [], isLoading: homeLoading } = ordersAPI.getHomeOrders.useQuery();
+  const {
+    data: homeOrders = [],
+    isLoading: homeLoading,
+    isFetching: homeFetching,
+  } = ordersAPI.getHomeOrders.useQuery();
 
-  const { data: pickupOrders = [], isLoading: pickupLoading } =
-    ordersAPI.getPickupOrders.useQuery();
+  const {
+    data: pickupOrders = [],
+    isLoading: pickupLoading,
+    isFetching: pickupFetching,
+  } = ordersAPI.getPickupOrders.useQuery();
 
-  const { data: tableOrders = [], isLoading: tableLoading } = ordersAPI.getTableOrders.useQuery();
+  const {
+    data: tableOrders = [],
+    isLoading: tableLoading,
+    isFetching: tableFetching,
+  } = ordersAPI.getTableOrders.useQuery();
 
   const orders: Orders = {
     [OrderType.HOME]: homeOrders,
@@ -34,9 +45,9 @@ export default function HomeWrapper() {
   };
 
   const loadings = {
-    [OrderType.HOME]: homeLoading,
-    [OrderType.PICKUP]: pickupLoading,
-    [OrderType.TABLE]: tableLoading,
+    [OrderType.HOME]: homeLoading || homeFetching,
+    [OrderType.PICKUP]: pickupLoading || pickupFetching,
+    [OrderType.TABLE]: tableLoading || tableFetching,
   };
 
   const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) => {

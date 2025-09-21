@@ -67,7 +67,9 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     }));
   }, [activeSorts]);
 
-  const { data: baseCustomers } = customersAPI.getAllWithDetails.useQuery();
+  const baseQuery = customersAPI.getAllWithDetails.useQuery(undefined, {
+    placeholderData: (prev) => prev,
+  });
 
   const computeQuery = customersAPI.computeStats.useQuery(
     {
@@ -83,12 +85,13 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
       rfmConfig,
     },
     {
-      enabled: !!baseCustomers,
+      enabled: !!baseQuery.data?.customers,
       placeholderData: (prev) => prev,
       select: (data) => {
+        const baseCustomers = baseQuery.data;
         if (!baseCustomers) return { customers: [] as CustomerWithStats[], totalCount: 0 };
 
-        const baseMap = new Map(baseCustomers.map((c) => [c.id, c]));
+        const baseMap = new Map(baseCustomers.customers.map((c) => [c.id, c]));
 
         return {
           totalCount: data.totalCount,
@@ -115,7 +118,11 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
   return {
     customers: computeQuery.data?.customers ?? [],
     totalCount: computeQuery.data?.totalCount ?? 0,
-    isLoading: computeQuery.isLoading || computeQuery.isFetching,
+    isLoading:
+      computeQuery.isLoading ||
+      computeQuery.isFetching ||
+      baseQuery.isLoading ||
+      baseQuery.isFetching,
     period,
     ranks,
     setRanks,

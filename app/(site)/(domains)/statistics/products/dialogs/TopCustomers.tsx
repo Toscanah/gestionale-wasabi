@@ -1,11 +1,6 @@
 import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
 import Table from "@/app/(site)/components/table/Table";
-import {
-  FieldColumn,
-  IndexColumn,
-  JoinColumn,
-  ValueColumn,
-} from "@/app/(site)/components/table/TableColumns";
+import { FieldColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { CustomerContracts, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import useTable from "@/app/(site)/hooks/table/useTable";
@@ -44,11 +39,11 @@ const columns: ColumnDef<TopCustomer>[] = [
 ];
 
 export default function TopCustomers({ product, filters }: TopCustomersProps) {
-  const { data: rankedCustomers = [], isFetching } = customersAPI.getAllWithDetails.useQuery(
+  const { data, isFetching } = customersAPI.getAllWithDetails.useQuery(
     { filters },
     {
       select: (allCustomers) =>
-        (allCustomers ?? [])
+        (allCustomers.customers ?? [])
           .map((customer) => {
             let productCount = 0;
 
@@ -78,7 +73,7 @@ export default function TopCustomers({ product, filters }: TopCustomersProps) {
 
   const { tableData, tableColumns } = useSkeletonTable({
     isLoading: isFetching,
-    data: rankedCustomers,
+    data: data ?? [],
     columns,
   });
 
