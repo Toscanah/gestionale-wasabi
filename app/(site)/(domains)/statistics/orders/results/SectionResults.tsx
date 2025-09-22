@@ -34,30 +34,46 @@ export type AverageResultRecord = {
   avgPerOrder: number;
 } & OrdersStats.Daily;
 
-type CombinedResultRecord = GeneralResultRecord | AverageResultRecord;
+type AverageResultRecordFlat = Omit<AverageResultRecord, "perDay"> & {
+  [K in keyof OrdersStats.Daily["perDay"] as `${K & string}PerDay`]: OrdersStats.Daily["perDay"][K];
+};
 
-// const CSV_HEADERS: Record<keyof (GeneralResultRecord & AverageResultRecord), string> = {
-//   title: "Tipo ordine",
-//   orders: "Ordini",
-//   ordersPct: "% Ordini",
-//   revenue: "Incasso",
-//   revenuePct: "% Incasso",
-//   avgPerOrder: "Scontrino medio",
-//   // ordersPerDay: "Ordini/giorno",
-//   // revenuePerDay: "Incasso/giorno",
-//   // productsPerDay: "Prodotti/giorno",
-//   products: "Prodotti",
-//   soups: "Zuppe",
-//   rices: "Porzioni riso",
-//   salads: "Insalate",
-//   rice: "Riso cucinato",
+type CSVCombinedResultRecord = GeneralResultRecord & AverageResultRecordFlat;
 
-//   // --- new per-day stats ---
-//   // soupsPerDay: "Zuppe/giorno",
-//   // ricesPerDay: "Porzioni riso/giorno",
-//   // saladsPerDay: "Insalate/giorno",
-//   // ricePerDay: "Riso cucinato/giorno",
-// };
+const CSV_HEADERS: Record<keyof CSVCombinedResultRecord, string> = {
+  title: "Tipo ordine",
+  orders: "Ordini",
+  ordersPct: "% Ordini",
+  revenue: "Incasso",
+  revenuePct: "% Incasso",
+  avgPerOrder: "Scontrino medio",
+  ordersPerDay: "Ordini/giorno",
+  revenuePerDay: "Incasso/giorno",
+  productsPerDay: "Prodotti/giorno",
+  products: "Prodotti",
+  soups: "Zuppe",
+  rices: "Porzioni riso",
+  salads: "Insalate",
+  rice: "Riso cucinato",
+  soupsPerDay: "Zuppe/giorno",
+  ricesPerDay: "Porzioni riso/giorno",
+  saladsPerDay: "Insalate/giorno",
+  ricePerDay: "Riso cucinato/giorno",
+};
+
+function flattenAverage(r: AverageResultRecord): AverageResultRecordFlat {
+  return {
+    title: r.title,
+    avgPerOrder: r.avgPerOrder,
+    ordersPerDay: r.perDay.orders,
+    revenuePerDay: r.perDay.revenue,
+    productsPerDay: r.perDay.products,
+    soupsPerDay: r.perDay.soups,
+    ricesPerDay: r.perDay.rices,
+    saladsPerDay: r.perDay.salads,
+    ricePerDay: r.perDay.rice,
+  };
+}
 
 export default function SectionResults({ results, isLoading, filters }: SectionResultsProps) {
   const [showGeneral, setShowGeneral] = React.useState(false);
@@ -178,12 +194,13 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
     Orario: formatTimeWindow(filters.timeWindow),
   };
 
-  // const { downloadCsv } = useCsvExport<CombinedResultRecord>(
-  //   [...generalSections, ...averageSections],
+  const flatAverageSections: AverageResultRecordFlat[] = averageSections.map(flattenAverage);
+
+  // const { downloadCsv } = useCsvExport<CSVCombinedResultRecord>(
+  //   [...generalSections, ...flatAverageSections],
   //   CSV_HEADERS,
   //   parsedFilters
   // );
-
   // ----- TABLES -----
   const { tableData: generalData, tableColumns: generalColumns } = useSkeletonTable({
     isLoading,
