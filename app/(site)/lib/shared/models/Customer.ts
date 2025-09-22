@@ -1,8 +1,8 @@
 import { AddressSchema, CustomerSchema, PhoneSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
-import { HomeOrderWithOrderSchema, LiteOrderSchema, PickupOrderWithOrderSchema } from "./order";
-import { EngagementWithDetailsSchema } from "./engagement";
-import { RFMCustomerSegmentSchema } from "./rfm";
+import { HomeOrderWithOrderSchema, LiteOrderSchema, PickupOrderWithOrderSchema } from "./Order";
+import { EngagementWithDetailsSchema } from "./Engagement";
+import { RFMCustomerSegmentSchema } from "./RFM";
 import { GetCustomersStatsSchema } from "../schemas/results/getCustomersStats.schema";
 
 export const CustomerWithPhoneSchema = CustomerSchema.extend({

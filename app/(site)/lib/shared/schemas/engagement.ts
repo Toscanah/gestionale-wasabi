@@ -4,7 +4,7 @@ import {
   EngagementLedgerWithDetailsSchema,
   EngagementWithDetailsSchema,
   ParsedEngagementTemplateSchema,
-} from "../models/engagement";
+} from "../models/Engagement";
 import { wrapSchema } from "./common/utils";
 import { NoContentRequestSchema } from "./common/no-content";
 import {
@@ -14,7 +14,6 @@ import {
 } from "@/prisma/generated/schemas";
 
 export namespace EngagementContracts {
-  // 👇 Extracted common bases
   export namespace Common {
     export const Template = EngagementTemplateSchema;
     export type Template = z.infer<typeof Template>;

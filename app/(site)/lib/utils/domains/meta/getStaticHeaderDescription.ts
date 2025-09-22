@@ -1,4 +1,4 @@
-import { TemplateFormat } from "../../../shared/enums/meta";
+import { TemplateFormat } from "../../../shared";
 
 export default function getStaticHeaderDescription(format: TemplateFormat): string {
   switch (format) {

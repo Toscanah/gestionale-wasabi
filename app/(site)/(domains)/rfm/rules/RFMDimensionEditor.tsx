@@ -1,5 +1,5 @@
 // components/RfmDimensionEditor.tsx
-import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/app/(site)/lib/shared/types/rfm";
+import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/app/(site)/lib/shared/types/RFM";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "@phosphor-icons/react";

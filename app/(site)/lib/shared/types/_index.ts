@@ -1,2 +1,2 @@
-export * from "./rfm";
-export * from "./settings";
+export * from "./RFM";
+export * from "./Settings";

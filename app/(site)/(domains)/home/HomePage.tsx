@@ -11,7 +11,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import Header from "./Header";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../../components/sidebar/Sidebar";
-import { HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
+import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import getOverdrawnOrderIds from "../../lib/services/order-management/getOverdrawnOrderIds";
 import { BuildOrderState } from "./page";
 import dynamic from "next/dynamic";
@@ -41,7 +41,7 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
         : { ...prev, [type]: !prev[type] }
     );
 
-  const allOrdersFlat = useMemo(() => Object.values(orders).flat(), [orders]);
+  const allOrdersFlat = useMemo(() => Object.values(orders).flat() as AnyOrder[], [orders]);
   const overdrawnOrderIds = useMemo(
     () => getOverdrawnOrderIds(allOrdersFlat, rice.total),
     [allOrdersFlat, rice]

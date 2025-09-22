@@ -1,21 +1,18 @@
 import { z } from "zod";
-import { OptionInProductOrderSchema, OrderSchema, ProductSchema } from "@/prisma/generated/schemas";
+import { OrderSchema, ProductSchema } from "@/prisma/generated/schemas";
 import {
   ProductInOrderWithOptionsSchema,
   ProductStats,
   ProductStatsOnlySchema,
   ProductWithCategorySchema,
-} from "../models/product";
-import { ShiftFilterValue } from "../enums/shift";
+} from "../models/Product";
 import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
 import {
   ToggleDeleteEntityRequestSchema,
   ToggleEntityResponseSchema,
 } from "./common/toggle-delete-entity";
-import { PeriodRequestSchema } from "./common/filters/period";
-import { OptionInProductOrderWithOptionSchema } from "../models/option";
+import { OptionInProductOrderWithOptionSchema } from "../models/Option";
 import SortingSchema from "./common/sorting";
-import { CommonQueryFilterSchema } from "./common/filters/query";
 import { DottedKeys } from "../types/dotted-keys";
 import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 

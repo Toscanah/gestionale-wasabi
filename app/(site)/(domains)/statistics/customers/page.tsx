@@ -3,10 +3,9 @@
 import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import columns from "./columns";
-import useQueryFilter from "../../../hooks/table/useGlobalFilter";
 import GoBack from "../../../components/ui/misc/GoBack";
 import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
-import { RFMRankRule } from "@/app/(site)/lib/shared/types/rfm";
+import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
 import { useTheme } from "next-themes";
 import useCustomersStats from "@/app/(site)/hooks/statistics/useCustomersStats";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
@@ -16,8 +15,7 @@ import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
 import RankFilter from "@/app/(site)/components/ui/filters/select/RankFilter";
-import SortingMenu, { SortField } from "@/app/(site)/components/ui/sorting/SortingMenu";
-import { CustomerStatsSortField } from "@/app/(site)/lib/shared";
+import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];
@@ -101,9 +99,14 @@ export default function CustomersStats() {
           <div className="w-full flex gap-4 items-center justify-end">
             <ResetFiltersButton
               onReset={handleReset}
-              show={ranks.length !== allRanks.length || !!period?.from || !!period?.to || !!debouncedQuery}
+              show={
+                ranks.length !== allRanks.length ||
+                !!period?.from ||
+                !!period?.to ||
+                !!debouncedQuery
+              }
             />
-  
+
             <SortingMenu
               onChange={setActiveSorts}
               availableFields={Object.keys(sortingFields)}

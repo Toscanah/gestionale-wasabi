@@ -1,5 +1,5 @@
 import { WorkingShift } from "@prisma/client";
-import { ShiftFilterValue } from "../../../shared/enums/shift";
+import { ShiftFilterValue } from "../../../shared/enums/Shift";
 import { getEffectiveOrderShift } from "./getEffectiveOrderShift";
 import { ShiftEvaluableOrder } from "../../../shared";
 

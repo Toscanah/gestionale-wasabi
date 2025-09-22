@@ -1,10 +1,4 @@
-import {
-  AnyOrder,
-  EngagementWithDetails,
-  HomeOrder,
-  ParsedEngagementTemplate,
-  PickupOrder,
-} from "../../shared";
+import { AnyOrder, EngagementWithDetails, ParsedEngagementTemplate } from "../../shared";
 import { OrderType } from "@prisma/client";
 
 interface PatchEngagementsParams {
@@ -59,12 +53,13 @@ export function patchOrderEngagements({
   const patchedEngagements = patchEngagementList(order.engagements);
   const baseOrder: AnyOrder = { ...order, engagements: patchedEngagements };
 
-  if (order.type === OrderType.HOME) {
-    const home = (order as HomeOrder).home_order;
+  if (order.type == OrderType.HOME) {
+    const home = order.home_order;
     if (!home) return baseOrder;
 
     return {
       ...baseOrder,
+      type: OrderType.HOME,
       home_order: {
         ...home,
         customer: {
@@ -76,11 +71,12 @@ export function patchOrderEngagements({
   }
 
   if (order.type === OrderType.PICKUP) {
-    const pickup = (order as PickupOrder).pickup_order;
+    const pickup = order.pickup_order;
     if (!pickup) return baseOrder;
 
     return {
       ...baseOrder,
+      type: OrderType.PICKUP,
       pickup_order: {
         ...pickup,
         customer: pickup.customer

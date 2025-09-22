@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { NoContentRequestSchema } from "./common/no-content";
-import { MetaTemplateSchema } from "../models/meta";
-import { AnyOrderSchema } from "../models/order";
+import { MetaTemplateSchema } from "../models/Meta";
+import { AnyOrderSchema } from "../models/Order";
 
 export namespace MetaContracts {
   export namespace GetTemplates {
@@ -27,7 +27,7 @@ export namespace MetaContracts {
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = AnyOrderSchema
+    export const Output = AnyOrderSchema;
     export type Output = z.infer<typeof Output>;
   }
 }

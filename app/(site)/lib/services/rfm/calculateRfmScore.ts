@@ -1,4 +1,4 @@
-import { RFMRangeRule, RFMScore, RFMRules } from "@/app/(site)/lib/shared/types/rfm";
+import { RFMRangeRule, RFMScore, RFMRules } from "@/app/(site)/lib/shared/types/RFM";
 
 function getPointsFromRules(value: number, rules: RFMRangeRule[]): number {
   for (const rule of rules) {

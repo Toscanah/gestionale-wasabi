@@ -1,9 +1,6 @@
 import { AnyOrder } from "../../shared";
 import getPioRice from "../../services/product-management/getPioRice";
 
-/**
- * Returns a Set of numeric order IDs that cause or follow a rice shortage.
- */
 export default function getOverdrawnOrderIds(orders: AnyOrder[], totalRice: number): Set<number> {
   let riceLeft = totalRice;
   const redIds = new Set<number>();

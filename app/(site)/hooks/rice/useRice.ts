@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { RiceLog } from "../../lib/shared/models/rice";
+import { RiceLog } from "../../lib/shared/models/Rice";
 import { isToday } from "date-fns";
 import { RiceLogType } from "@prisma/client";
 import useRiceState from "./useRiceState";

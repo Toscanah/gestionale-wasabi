@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RFMRankForm from "./RFMRankForm";
-import { RFMRankRule } from "@/app/(site)/lib/shared/types/rfm";
+import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
 import { useEffect, useRef, useState } from "react";
 import { DEFAULT_RANK_RULE } from "@/app/(site)/lib/shared/constants/rfm-config";
 import { Trash } from "@phosphor-icons/react";

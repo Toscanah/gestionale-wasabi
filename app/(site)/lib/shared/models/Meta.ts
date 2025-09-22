@@ -7,7 +7,7 @@ import {
   TemplateLanguage,
   TemplateParameterFormat,
   TemplateStatus,
-} from "../enums/meta";
+} from "../enums/Meta";
 
 // BUTTONS
 

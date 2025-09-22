@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { RFMRules, RFMRangeRule } from "../../lib/shared/types/rfm";
+import { RFMRules, RFMRangeRule } from "../../lib/shared/types/RFM";
 import { DEFAULT_RFM_CONFIG } from "../../lib/shared/constants/rfm-config";
 
 export default function useRfmRules() {

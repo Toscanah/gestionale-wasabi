@@ -2,7 +2,7 @@ import { CategorySchema, OptionSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
 import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
 import { NoContentRequestSchema } from "./common/no-content";
-import { OptionWithCategoriesSchema } from "../models/option";
+import { OptionWithCategoriesSchema } from "../models/Option";
 import { ToggleDeleteEntityRequestSchema, ToggleEntityResponseSchema } from "./common/toggle-delete-entity";
 
 export namespace OptionContracts {

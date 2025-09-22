@@ -13,8 +13,7 @@ import useMetaTemplates from "../../hooks/meta/useMetaTemplates";
 import { useTemplatesParams } from "../../hooks/meta/useTemplatesParams";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { TemplateStatus } from "../../lib/shared/enums/meta";
-import { MetaTemplate } from "../../lib/shared";
+import { MetaTemplate, TemplateStatus } from "../../lib/shared";
 import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "../../lib/integrations/meta/constants";
 
 export default function SendMessagesDialog() {

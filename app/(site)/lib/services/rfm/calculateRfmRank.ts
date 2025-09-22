@@ -1,4 +1,4 @@
-import { RFMRankRule, RFMScore } from "../../shared/types/rfm";
+import { RFMRankRule, RFMScore } from "../../shared/types/RFM";
 
 /**
  * Calculates the RFM (Recency, Frequency, Monetary) rank for a given score based on a set of ranking rules.

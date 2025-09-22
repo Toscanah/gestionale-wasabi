@@ -1,5 +1,5 @@
 import { DateRange } from "react-day-picker";
-import { ShiftFilterValue } from "../../lib/shared/enums/shift";
+import { ShiftFilterValue } from "../../lib/shared/enums/Shift";
 import { OrderType } from "@prisma/client";
 import { ALL_WEEKDAYS, Weekday } from "../../components/ui/filters/select/WeekdaysFilter";
 import { FULL_DAY_RANGE, TimeWindow } from "../../components/ui/filters/time/TimeWindowFilter";

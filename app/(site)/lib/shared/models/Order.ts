@@ -8,9 +8,10 @@ import {
   TableOrderSchema,
 } from "@/prisma/generated/schemas";
 import { z } from "zod";
-import { MinimalProductInOrderSchema, ProductInOrderWithOptionsSchema } from "./product";
-import { CustomerWithPhoneAndEngagementSchema } from "./customer";
-import { EngagementWithDetailsSchema } from "./engagement";
+import { MinimalProductInOrderSchema, ProductInOrderWithOptionsSchema } from "./Product";
+import { CustomerWithPhoneAndEngagementSchema } from "./Customer";
+import { EngagementWithDetailsSchema } from "./Engagement";
+import { OrderType } from "@prisma/client";
 
 export const OrderWithProducts = OrderSchema.extend({
   products: z.array(z.lazy(() => ProductInOrderWithOptionsSchema)),
@@ -82,10 +83,10 @@ export const OrderWithSummedPayments = OrderWithProducts.extend({
   .and(HomeOrderInOrderSchema)
   .and(PickupOrderInOrderSchema);
 
-export const AnyOrderSchema = z.union([
-  TableOrderInOrderSchema,
-  HomeOrderInOrderSchema,
-  PickupOrderInOrderSchema,
+export const AnyOrderSchema = z.discriminatedUnion("type", [
+  TableOrderInOrderSchema.extend({ type: z.literal(OrderType.TABLE) }),
+  HomeOrderInOrderSchema.extend({ type: z.literal(OrderType.HOME) }),
+  PickupOrderInOrderSchema.extend({ type: z.literal(OrderType.PICKUP) }),
 ]);
 
 export const LiteOrderSchema = OrderWithProducts.pick({

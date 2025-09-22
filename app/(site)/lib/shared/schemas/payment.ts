@@ -1,7 +1,7 @@
 import { PaymentSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
-import { ProductInOrderWithOptionsSchema } from "../models/product";
-import { AnyOrderSchema } from "../models/order";
+import { ProductInOrderWithOptionsSchema } from "../models/Product";
+import { AnyOrderSchema } from "../models/Order";
 import { PaymentType } from "@prisma/client";
 import { OrderContracts } from "./order";
 import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";

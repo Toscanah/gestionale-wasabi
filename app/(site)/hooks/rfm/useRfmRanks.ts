@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { RFMRankRule } from "../../lib/shared/types/rfm";
+import { RFMRankRule } from "../../lib/shared/types/RFM";
 import { DEFAULT_RFM_CONFIG } from "../../lib/shared/constants/rfm-config";
 
 export default function useRfmRanks() {

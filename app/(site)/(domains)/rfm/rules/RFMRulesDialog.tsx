@@ -1,14 +1,12 @@
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { SidebarMenuButton, SidebarMenuSubButton } from "@/components/ui/sidebar";
-import { HashStraight } from "@phosphor-icons/react";
-import { RFMRules } from "@/app/(site)/lib/shared/types/rfm";
+import { SidebarMenuSubButton } from "@/components/ui/sidebar";
+import { RFMRules } from "@/app/(site)/lib/shared/types/RFM";
 import RFMDimensionEditor from "./RFMDimensionEditor";
 import useRfmRules from "@/app/(site)/hooks/rfm/useRfmRules";
 

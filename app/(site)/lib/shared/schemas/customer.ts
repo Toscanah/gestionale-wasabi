@@ -1,12 +1,12 @@
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
-import { RFMConfigSchema } from "../models/rfm";
+import { RFMConfigSchema } from "../models/RFM";
 import {
   CustomerStatsOnlySchema,
   ComprehensiveCustomerSchema,
   CustomerWithPhoneSchema,
   CustomerStats,
-} from "../models/customer";
+} from "../models/Customer";
 import { createInputSchema, wrapSchema } from "./common/utils";
 import { PaginationSchema, PaginationResponseSchema } from "./common/pagination";
 import {
@@ -15,16 +15,8 @@ import {
   ToggleEntityResponseSchema,
 } from "./common/toggle-delete-entity";
 import { NoContentRequestSchema } from "./common/no-content";
-import { PeriodRequestSchema } from "./common/filters/period";
 import SortingSchema from "./common/sorting";
-import {
-  AnyOrderSchema,
-  HomeOrderInOrderSchema,
-  PickupOrderInOrderSchema,
-  TableOrderInOrderSchema,
-} from "../models/order";
-import { ShiftFilterValue } from "../enums/shift";
-import { CommonQueryFilterSchema } from "./common/filters/query";
+import { HomeOrderInOrderSchema, PickupOrderInOrderSchema } from "../models/Order";
 import { DottedKeys } from "../types/dotted-keys";
 import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
@@ -84,9 +76,11 @@ export namespace CustomerContracts {
 
     export type Input = z.infer<typeof Input>;
 
-    export const Output = z.object({
-      customers: z.array(Common.WithEngagement),
-    }).and(PaginationResponseSchema);
+    export const Output = z
+      .object({
+        customers: z.array(Common.WithEngagement),
+      })
+      .and(PaginationResponseSchema);
     export type Output = z.infer<typeof Output>;
   }
 

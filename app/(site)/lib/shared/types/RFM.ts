@@ -9,7 +9,7 @@ import {
   RFMRangeRuleSchema,
   RFMRuleschema,
   RFMScoreSchema,
-} from "../models/rfm";
+} from "../models/RFM";
 
 export type RFMRangeRule = z.infer<typeof RFMRangeRuleSchema>;
 
