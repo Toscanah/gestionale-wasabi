@@ -19,6 +19,7 @@ export default function When() {
 
   const updateOrderTimeMutation = trpc.orders.updateTime.useMutation({
     onSuccess: (updatedOrder) => {
+      console.log({ updatedOrder });
       updateOrder(updatedOrder);
       toastSuccess("Orario dell'ordine correttamente aggiornato");
     },

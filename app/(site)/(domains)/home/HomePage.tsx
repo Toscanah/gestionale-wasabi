@@ -41,7 +41,11 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
         : { ...prev, [type]: !prev[type] }
     );
 
-  const allOrdersFlat = useMemo(() => Object.values(orders).flat() as AnyOrder[], [orders]);
+  const allOrdersFlat: AnyOrder[] = useMemo(
+    () => [...orders.TABLE, ...orders.HOME, ...orders.PICKUP],
+    [orders]
+  );
+
   const overdrawnOrderIds = useMemo(
     () => getOverdrawnOrderIds(allOrdersFlat, rice.total),
     [allOrdersFlat, rice]

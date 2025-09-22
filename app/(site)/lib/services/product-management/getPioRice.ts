@@ -1,12 +1,5 @@
-import { ProductInOrder } from "@prisma/client";
+import { MinimalProductInOrder } from "../../shared";
 
-export default function getPioRice(
-  product: Partial<ProductInOrder> & {
-    product: {
-      rice?: number;
-    };
-    quantity?: number;
-  }
-): number {
+export default function getPioRice(product: MinimalProductInOrder): number {
   return (product.product.rice ?? 0) * (product.quantity ?? 0);
 }

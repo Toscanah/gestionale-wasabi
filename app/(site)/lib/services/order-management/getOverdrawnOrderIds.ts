@@ -1,7 +1,7 @@
-import { AnyOrder } from "../../shared";
+import { LiteOrder } from "../../shared";
 import getPioRice from "../../services/product-management/getPioRice";
 
-export default function getOverdrawnOrderIds(orders: AnyOrder[], totalRice: number): Set<number> {
+export default function getOverdrawnOrderIds(orders: LiteOrder[], totalRice: number): Set<number> {
   let riceLeft = totalRice;
   const redIds = new Set<number>();
 

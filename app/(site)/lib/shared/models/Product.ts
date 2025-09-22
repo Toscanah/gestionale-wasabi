@@ -19,7 +19,7 @@ export const MinimalProductInOrderSchema = ProductInOrderSchema.pick({
   status: true,
   paid_quantity: true,
 }).extend({
-  product: ProductSchema.pick({ active: true }),
+  product: ProductSchema.pick({ active: true, rice: true }),
 });
 
 export const ProductStatsOnlySchema = z.object({
