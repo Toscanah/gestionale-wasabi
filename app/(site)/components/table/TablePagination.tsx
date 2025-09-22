@@ -1,5 +1,4 @@
 import { Table } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -8,9 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ReactNode } from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { CaretDoubleLeft, CaretDoubleRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
 
 interface TablePaginationProps<TData> {
   table: Table<TData>;
@@ -42,7 +40,7 @@ export default function TablePagination<TData>({
   const totalPages =
     currentPageSize === -1
       ? 1 // only one "page" when showing all
-      : (pageCount ?? table.getPageCount());
+      : Math.max(1, pageCount ?? table.getPageCount());
 
   const handlePageChange = (newPage: number) => {
     if (onPageChange) onPageChange(newPage);
@@ -101,17 +99,30 @@ export default function TablePagination<TData>({
       <div className="flex items-center ml-auto">
         <Button
           variant="outline"
-          className={cn("h-8 px-2 border-r-0 rounded-r-none", selectPageClassName)}
+          className={cn(
+            "h-8 px-2 border-r-0 rounded-r-none flex items-center",
+            selectPageClassName
+          )}
+          onClick={() => handlePageChange(0)}
+          disabled={currentPage === 0 || disabled}
+        >
+          <CaretDoubleLeft size={20} className="mr-2" />
+          <span className="leading-none text-sm">Inizio</span>
+        </Button>
+
+        <Button
+          variant="outline"
+          className={cn("h-8 px-2 border-r-0 rounded-none flex items-center", selectPageClassName)}
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 0 || disabled}
         >
-          <ChevronLeft className="mr-2" />
-          Precedente
+          <CaretLeft size={20} className="mr-2" />
+          <span className="leading-none text-sm">Precedente</span>
         </Button>
 
         <span
           className={cn(
-            "flex items-center justify-center text-sm border h-8 p-2",
+            "flex flex-col items-center justify-center text-sm border h-8 px-2 leading-none",
             selectPageClassName
           )}
         >
@@ -120,12 +131,25 @@ export default function TablePagination<TData>({
 
         <Button
           variant="outline"
-          className={cn("h-8 px-2 border-l-0 rounded-l-none", selectPageClassName)}
+          className={cn("h-8 px-2 border-l-0 rounded-none flex items-center", selectPageClassName)}
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage + 1 >= totalPages || disabled}
         >
-          Successiva
-          <ChevronRight className="ml-2" />
+          <span className="leading-none text-sm">Successiva</span>
+          <CaretRight size={20} className="ml-2" />
+        </Button>
+
+        <Button
+          variant="outline"
+          className={cn(
+            "h-8 px-2 border-l-0 rounded-l-none flex items-center",
+            selectPageClassName
+          )}
+          onClick={() => handlePageChange(totalPages - 1)}
+          disabled={currentPage + 1 >= totalPages || disabled}
+        >
+          <span className="leading-none text-sm">Fine</span>
+          <CaretDoubleRight size={20} className="ml-2" />
         </Button>
       </div>
     </div>

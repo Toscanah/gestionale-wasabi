@@ -17,8 +17,8 @@ export default function SortDirectionSelector({
       groups={[
         {
           items: [
-            { label: "Ascendente", value: "asc" },
-            { label: "Discendente", value: "desc" },
+            { label: "Crescente", value: "asc" },
+            { label: "Decrescente", value: "desc" },
           ],
         },
       ]}

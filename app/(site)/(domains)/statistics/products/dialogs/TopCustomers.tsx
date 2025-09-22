@@ -11,8 +11,9 @@ import { customersAPI } from "@/lib/server/api";
 import AddressesColumn from "@/app/(site)/components/table/common/AddressesColumn";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
+import React from "react";
 
-interface TopCustomersProps {
+export interface TopCustomersProps {
   product: { id: number; name: string };
   filters?: NonNullable<CustomerContracts.GetAllWithDetails.Input>["filters"];
 }
@@ -39,9 +40,12 @@ const columns: ColumnDef<TopCustomer>[] = [
 ];
 
 export default function TopCustomers({ product, filters }: TopCustomersProps) {
+  const [open, setOpen] = React.useState(false);
+
   const { data, isFetching } = customersAPI.getAllWithDetails.useQuery(
     { filters },
     {
+      enabled: open,
       select: (allCustomers) =>
         (allCustomers.customers ?? [])
           .map((customer) => {
@@ -81,18 +85,18 @@ export default function TopCustomers({ product, filters }: TopCustomersProps) {
 
   return (
     <WasabiDialog
+      open={open}
+      onOpenChange={setOpen}
       title="Top clienti"
       size="mediumPlus"
-      trigger={
-        isFetching ? (
-          <RandomSpinner isLoading size={10} />
-        ) : (
-          <Button className="w-40">Mostra top clienti</Button>
-        )
-      }
+      trigger={<Button className="w-40">Mostra top clienti</Button>}
       desc={`I 50 clienti che hanno acquistato di più [${product.name.trim()}]`}
     >
-      <Table table={table} tableClassName="max-h-[500px] overflow-y-auto" />
+      <Table
+        table={table}
+        tableClassName="max-h-[500px] overflow-y-auto"
+        rowClassName={() => ""}
+      />
     </WasabiDialog>
   );
 }

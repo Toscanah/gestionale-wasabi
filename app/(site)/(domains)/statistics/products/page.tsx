@@ -95,6 +95,7 @@ export default function ProductsStats() {
             />
 
             <SortingMenu
+              disabled={isLoading}
               onChange={setActiveSorts}
               availableFields={Object.keys(sortingFields)}
               activeSorts={activeSorts}

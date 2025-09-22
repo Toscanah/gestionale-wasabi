@@ -10,7 +10,7 @@ import { useTheme } from "next-themes";
 import useCustomersStats from "@/app/(site)/hooks/statistics/useCustomersStats";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
 import usePagination from "@/app/(site)/hooks/table/usePagination";
-import React from "react";
+import React, { useEffect } from "react";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
@@ -75,6 +75,14 @@ export default function CustomersStats() {
     },
   });
 
+  const pageCount = Math.ceil(totalCount / (pageSize ?? totalCount));
+
+  useEffect(() => {
+    if (page >= pageCount) {
+      setPage(Math.max(0, pageCount - 1));
+    }
+  }, [totalCount, pageSize]);
+
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
@@ -108,6 +116,7 @@ export default function CustomersStats() {
             />
 
             <SortingMenu
+              disabled={isLoading}
               onChange={setActiveSorts}
               availableFields={Object.keys(sortingFields)}
               activeSorts={activeSorts}
@@ -121,7 +130,7 @@ export default function CustomersStats() {
           table={table}
           page={page}
           pageSize={pageSize}
-          pageCount={Math.ceil(totalCount / (pageSize ?? totalCount))}
+          pageCount={pageCount}
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
           totalCount={totalCount}

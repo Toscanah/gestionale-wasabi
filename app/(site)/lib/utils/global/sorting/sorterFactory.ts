@@ -4,7 +4,7 @@ import defaultComparator, { Comparator } from "./defaultComparator";
 
 export default function sorterFactory<T>(
   sort: { field: string; direction: SortDirection }[],
-  customComparators: Record<string, Comparator<T>> = {}
+  customComparators: Record<string, Comparator<any>> = {}
 ) {
   return (a: T, b: T): number => {
     for (const { field, direction } of sort) {
@@ -12,7 +12,7 @@ export default function sorterFactory<T>(
       const aVal = getNestedValue(a, field);
       const bVal = getNestedValue(b, field);
 
-      const result = comparator(aVal as any, bVal as any, direction);
+      const result = comparator(aVal, bVal, direction);
       if (result !== 0) return result;
     }
     return 0;

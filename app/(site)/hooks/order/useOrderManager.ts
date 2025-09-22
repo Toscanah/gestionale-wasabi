@@ -9,7 +9,7 @@ import { trpc, trpcClient } from "@/lib/server/client";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";
 
 export type RecursivePartial<T> = {
-  [P in keyof T]?: RecursivePartial<T[P]>;
+  [P in keyof T]?: T[P] extends object ? RecursivePartial<T[P]> | null : T[P] | null;
 };
 
 export function useOrderManager(

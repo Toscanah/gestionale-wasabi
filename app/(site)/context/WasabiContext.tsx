@@ -2,11 +2,9 @@ import { createContext, useContext, useState, ReactNode } from "react";
 import { AnyOrder } from "@/app/(site)/lib/shared";
 import useRice, { UpdateRiceInput } from "../hooks/rice/useRice";
 import useSettings from "../hooks/useSettings";
-import { GlobalSettings } from "../lib/shared/types/settings";
+import { GlobalSettings } from "../lib/shared/types/Settings";
 import { OrderType } from "@prisma/client";
 import { Rice } from "../hooks/rice/useRiceState";
-import { RFMRules, RFMRangeRule } from "../lib/shared/types/rfm";
-import useRfmRules from "../hooks/rfm/useRfmRules";
 
 export interface WasabiContextProps {
   updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;

@@ -24,6 +24,8 @@ export default function CommonInfo({
   orderNotes,
   prepaid,
 }: CommonInfoProps) {
+  console.log(plannedPayment);
+
   return (
     <>
       {putExtraItems && ExtraItemsSection({ order })}
@@ -48,10 +50,10 @@ export default function CommonInfo({
             </>
           )}
 
-          {plannedPayment !== PlannedPayment.UNKNOWN &&
+          {(prepaid || (!prepaid && plannedPayment !== PlannedPayment.UNKNOWN)) &&
             PaymentNotesSection({ plannedPayment, prepaid })}
 
-            <Line />
+          <Line />
         </>
       )}
     </>

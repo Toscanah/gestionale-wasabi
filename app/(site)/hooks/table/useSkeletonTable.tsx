@@ -11,7 +11,12 @@ type Options<T> = {
   pageSize?: number | undefined;
 };
 
-export default function useSkeletonTable<T>({ isLoading, data, columns, pageSize = 10 }: Options<T>) {
+export default function useSkeletonTable<T>({
+  isLoading,
+  data,
+  columns,
+  pageSize = 10,
+}: Options<T>) {
   // If pageSize is not a valid number, show all data
   const effectivePageSize = Number.isFinite(pageSize) && pageSize > 0 ? pageSize : data.length;
 
@@ -25,7 +30,14 @@ export default function useSkeletonTable<T>({ isLoading, data, columns, pageSize
 
     return columns.map((col) => ({
       ...col,
-      cell: () => <Skeleton className="h-full w-full" />,
+      cell: () => (
+        <div className="relative w-full h-full flex items-center">
+          {/* Invisible text sets consistent height */}
+          <span className="opacity-0 select-none">Placeholder</span>
+          {/* Skeleton overlays it */}
+          <Skeleton className="absolute inset-0 w-full h-full" />
+        </div>
+      ),
     }));
   }, [isLoading, columns]);
 

@@ -69,7 +69,7 @@ export default function useProductsStats() {
   const computeQuery = trpc.products.computeStats.useQuery(
     {
       filters,
-      sort: sorting,
+      sort: sorting.length > 0 ? sorting : undefined,
     },
     {
       enabled: !!baseProducts,

@@ -50,8 +50,12 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     }
 
     const ranksFilter = ranks.length === rfmRanks.length ? undefined : ranks;
-
     const search = debouncedQuery && debouncedQuery.trim() !== "" ? debouncedQuery : undefined;
+
+    // If all filters are undefined, return undefined
+    if (!normalizedPeriod && !ranksFilter && !search) {
+      return undefined;
+    }
 
     return {
       period: normalizedPeriod,
@@ -67,9 +71,21 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     }));
   }, [activeSorts]);
 
-  const baseQuery = customersAPI.getAllWithDetails.useQuery(undefined, {
-    placeholderData: (prev) => prev,
-  });
+  console.log(sorting)
+
+  const baseQuery = customersAPI.getAllWithDetails.useQuery(
+    {
+      filters: {
+        query: filters?.query,
+        orders: {
+          period: filters?.period,
+        },
+      },
+    },
+    {
+      placeholderData: (prev) => prev,
+    }
+  );
 
   const computeQuery = customersAPI.computeStats.useQuery(
     {
@@ -81,13 +97,15 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
               pageSize,
             }
           : undefined,
-      sort: sorting,
+      sort: sorting.length > 0 ? sorting : undefined,
       rfmConfig,
     },
     {
-      enabled: !!baseQuery.data?.customers,
+      enabled: baseQuery.isSuccess && !!baseQuery.data?.customers,
       placeholderData: (prev) => prev,
       select: (data) => {
+        console.log(baseQuery.data?.totalCount)
+
         const baseCustomers = baseQuery.data;
         if (!baseCustomers) return { customers: [] as CustomerWithStats[], totalCount: 0 };
 

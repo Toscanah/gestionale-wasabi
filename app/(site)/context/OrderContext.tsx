@@ -35,7 +35,7 @@ interface OrderContextType {
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
   updateProductOption: (productInOrderId: number, optionId: number) => void;
   updatePrintedProducts: () => Promise<ProductInOrder[]>;
-  updateOrder: (order: RecursivePartial<AnyOrder>) => void;
+  updateOrder: (order: RecursivePartial<AnyOrder> ) => void;
   updatePrintedFlag: () => Promise<OrderContracts.UpdatePrintedFlag.Output>;
   joinTableOrders: (tableToJoin: string) => void;
   updateProductVariation: (variation: string, productInOrderId: number) => void;

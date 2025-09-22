@@ -4,7 +4,7 @@ import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType } from "@prisma/client";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
-import { GlobalSettings } from "../../../lib/shared/types/settings";
+import { GlobalSettings } from "../../../lib/shared/types/Settings";
 import { BIG_PRINT, SMALL_PRINT } from "../constants";
 import {
   DEFAULT_WHEN_LABEL,

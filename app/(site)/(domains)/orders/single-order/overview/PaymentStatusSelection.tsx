@@ -49,6 +49,8 @@ export default function PaymentStatusSelection({
 
     setPaymentStatus(newStatus);
 
+    console.log(newStatus)
+
     updatePaymentStatusMutation.mutate({
       orderId: order.id,
       prepaid: newStatus.prepaid,

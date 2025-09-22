@@ -82,11 +82,11 @@ export const OrderWithSummedPayments = OrderWithProducts.extend({
   .and(HomeOrderInOrderSchema)
   .and(PickupOrderInOrderSchema);
 
-export const AnyOrderSchema = FullOrderSchema.extend({
-  table_order: TableOrderSchema.nullable(),
-  home_order: HomeOrderSchema.nullable(),
-  pickup_order: PickupOrderSchema.nullable(),
-});
+export const AnyOrderSchema = z.union([
+  z.looseObject(TableOrderInOrderSchema.shape),
+  z.looseObject(HomeOrderInOrderSchema.shape),
+  z.looseObject(PickupOrderInOrderSchema.shape),
+]);
 
 export const LiteOrderSchema = OrderWithProducts.pick({
   id: true,

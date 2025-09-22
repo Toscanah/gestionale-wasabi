@@ -1,4 +1,12 @@
-import { startOfDay, subDays, startOfMonth, endOfMonth, startOfYear, endOfYear } from "date-fns";
+import {
+  startOfDay,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  endOfDay,
+} from "date-fns";
 import { DatePreset } from "../../../shared/enums/date-preset";
 import { DateRange } from "react-day-picker";
 import { STARTING_DAY, STARTING_YEAR } from "../../../shared/constants/starting-periods";
@@ -9,16 +17,16 @@ export default function getDateRangeFromPreset(
 ): DateRange | undefined {
   switch (value) {
     case DatePreset.TODAY:
-      return { from: startOfDay(today), to: startOfDay(today) };
+      return { from: startOfDay(today), to: endOfDay(today) };
     case DatePreset.YESTERDAY:
       const yesterday = subDays(today, 1);
-      return { from: startOfDay(yesterday), to: startOfDay(yesterday) };
+      return { from: startOfDay(yesterday), to: endOfDay(yesterday) };
     case DatePreset.LAST_7:
       const last7 = subDays(today, 6);
-      return { from: startOfDay(last7), to: startOfDay(today) };
+      return { from: startOfDay(last7), to: endOfDay(today) };
     case DatePreset.LAST_30:
       const last30 = subDays(today, 29);
-      return { from: startOfDay(last30), to: startOfDay(today) };
+      return { from: startOfDay(last30), to: endOfDay(today) };
     case DatePreset.LAST_MONTH:
       const lastMonth = subDays(today, 30);
       return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
@@ -30,6 +38,8 @@ export default function getDateRangeFromPreset(
         return { from: STARTING_DAY, to: endOfYear(today) };
       }
       return { from: startOfYear(today), to: endOfYear(today) };
+    case DatePreset.TO_TODAY:
+      return { from: STARTING_DAY, to: endOfDay(today) };
     default:
       return undefined;
   }

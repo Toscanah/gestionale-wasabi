@@ -31,20 +31,26 @@ export default async function computeCustomersStats(
   let page = 0;
   let pageSize = MAX_RECORDS;
 
+  let offset = 0;
+  let limit = MAX_RECORDS;
+
   // Case 1: DB-side pagination
   if (pagination && !needsNodeSideProcessing) {
     page = pagination.page;
     pageSize = pagination.pageSize;
+
+    offset = page * pageSize;
+    limit = pageSize;
   }
 
   // Case 2: Node-side pagination
   if (pagination && needsNodeSideProcessing) {
     page = pagination.page;
     pageSize = pagination.pageSize;
-  }
 
-  const offset = page * pageSize;
-  const limit = pageSize;
+    offset = 0; // always fetch from start
+    limit = MAX_RECORDS; // fetch all possible rows
+  }
 
   const customersStatsBase: GetCustomersStats[] = await prisma.$queryRawTyped(
     getCustomersStats(
@@ -102,13 +108,10 @@ export default async function computeCustomersStats(
     rfmConfig.ranks.map((r) => [r.rank, r.priority])
   );
 
-  const rankComparator: Comparator<CustomerStats> = (
-    a: CustomerStats,
-    b: CustomerStats,
-    direction: SortDirection
-  ) => {
-    const aP: number = rankPriorityMap.get(a.rfm.rank) ?? -Infinity;
-    const bP: number = rankPriorityMap.get(b.rfm.rank) ?? -Infinity;
+  const rankComparator: Comparator<string> = (a, b, direction) => {
+    const aP = rankPriorityMap.get(a) ?? -Infinity;
+    const bP = rankPriorityMap.get(b) ?? -Infinity;
+
     if (aP === bP) return 0;
     return direction === "asc" ? aP - bP : bP - aP;
   };

@@ -12,6 +12,8 @@ export default function PaymentNotesSection({ plannedPayment, prepaid }: Payment
   const finalNotes =
     plannedPayment === PlannedPayment.CASH ? "CONTANTI" : prepaid ? "GIA' PAGATO" : "CARTA";
 
+  console.log(finalNotes)
+
   return (
     <>
       <Text bold inline size={SMALL_PRINT}>

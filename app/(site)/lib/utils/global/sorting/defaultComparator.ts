@@ -1,8 +1,12 @@
 import { SortDirection } from "../../../shared";
 
-export type Comparator<T> = (a: T, b: T, direction: SortDirection) => number;
+export type Comparator<V> = (a: V, b: V, direction: SortDirection) => number;
 
-export default function defaultComparator(a: unknown, b: unknown, direction: SortDirection): number {
+export default function defaultComparator(
+  a: unknown,
+  b: unknown,
+  direction: SortDirection
+): number {
   if (a == null && b == null) return 0;
   if (a == null) return 1;
   if (b == null) return -1;

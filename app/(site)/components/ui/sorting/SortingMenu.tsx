@@ -20,6 +20,7 @@ interface SortingMenuProps {
   activeSorts: SortField[];
   onChange: (newSorts: SortField[]) => void;
   triggerClassName?: string;
+  disabled?: boolean;
 }
 
 export default function SortingMenu({
@@ -27,6 +28,7 @@ export default function SortingMenu({
   availableFields,
   onChange,
   triggerClassName,
+  disabled,
 }: SortingMenuProps) {
   const usedFields = activeSorts.map((s) => s.field);
   const remainingFields = availableFields.filter((f) => !usedFields.includes(f));
@@ -35,7 +37,11 @@ export default function SortingMenu({
     <WasabiPopover
       modal={false}
       trigger={
-        <Button variant="outline" className={cn("h-10 flex gap-2 items-center", triggerClassName)}>
+        <Button
+          disabled={disabled}
+          variant="outline"
+          className={cn("h-10 flex gap-2 items-center", triggerClassName)}
+        >
           <ArrowsDownUp className="h-4 w-4" />
           Ordina
           {activeSorts.length > 0 && (

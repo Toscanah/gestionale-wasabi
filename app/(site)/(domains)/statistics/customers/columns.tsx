@@ -94,7 +94,10 @@ const columns: ColumnDef<CustomerWithStats>[] = [
         return (
           <>
             <span>
-              {formattedDate} <span className="text-muted-foreground">({daysSince} giorni fa)</span>
+              {formattedDate}{" "}
+              <span className="text-muted-foreground">
+              ({daysSince === 0 ? "oggi" : `${daysSince} giorni fa`})
+              </span>
             </span>
           </>
         );
