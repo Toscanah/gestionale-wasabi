@@ -17,7 +17,7 @@ import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
 import { CustomerContracts } from "@/app/(site)/lib/shared";
 
 export type ProductStatsTableMeta = {
-  filters?: NonNullable<CustomerContracts.GetAllWithDetails.Input>["filters"];
+  filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
 };
 
 export default function ProductsStats() {

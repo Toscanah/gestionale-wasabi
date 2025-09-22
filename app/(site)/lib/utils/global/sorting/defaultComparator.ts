@@ -2,13 +2,23 @@ import { SortDirection } from "../../../shared";
 
 export type Comparator<V> = (a: V, b: V, direction: SortDirection) => number;
 
+function toDateSafe(val: unknown): Date | null {
+  if (val == null) return null;
+  if (val instanceof Date) return val;
+  if (typeof val === "string" && !isNaN(Date.parse(val))) {
+    return new Date(val);
+  }
+  return null;
+}
+
 export default function defaultComparator(
   a: unknown,
   b: unknown,
   direction: SortDirection
 ): number {
+  // handle nulls consistently
   if (a == null && b == null) return 0;
-  if (a == null) return 1;
+  if (a == null) return 1; // nulls always last
   if (b == null) return -1;
 
   // numbers
@@ -16,9 +26,12 @@ export default function defaultComparator(
     return direction === "asc" ? a - b : b - a;
   }
 
-  // dates
-  if (a instanceof Date && b instanceof Date) {
-    return direction === "asc" ? a.getTime() - b.getTime() : b.getTime() - a.getTime();
+  // dates (covers Date instances and ISO strings)
+  const aDate = toDateSafe(a);
+  const bDate = toDateSafe(b);
+  if (aDate && bDate) {
+    const diff = aDate.getTime() - bDate.getTime();
+    return direction === "asc" ? diff : -diff;
   }
 
   // fallback string

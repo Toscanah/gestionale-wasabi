@@ -33,7 +33,7 @@ export default function CustomerAddresses({
   const updateAddresses = trpc.customers.updateAddresses.useMutation({
     onSuccess: (updatedCustomer) => {
       setCurrentAddresses(updatedCustomer.addresses);
-      utils.customers.getAllWithDetails.invalidate();
+      utils.customers.getAllComprehensive.invalidate();
       toastSuccess("Indirizzi aggiornati con successo");
     },
   });

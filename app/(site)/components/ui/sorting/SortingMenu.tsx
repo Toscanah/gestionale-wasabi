@@ -47,9 +47,17 @@ export default function SortingMenu({
           {activeSorts.length > 0 && (
             <>
               <Separator orientation="vertical" className="mx-0.5" />
-              <Badge variant="secondary" className="px-1 rounded-lg">
-                {activeSorts.length}
-              </Badge>
+              {activeSorts.length <= 2 ? (
+                activeSorts.map((sort) => (
+                  <Badge key={sort.field} variant="secondary" className="px-1 rounded-lg mx-0.5">
+                    {sort.field}
+                  </Badge>
+                ))
+              ) : (
+                <Badge variant="secondary" className="px-1 rounded-lg">
+                  {activeSorts.length}
+                </Badge>
+              )}
             </>
           )}
         </Button>

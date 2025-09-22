@@ -27,7 +27,7 @@ export default function useEngagement({ page, pageSize }: UseEngagementParams) {
 
   const [activeTypes, setActiveTypes] = useState<EngagementType[]>(Object.values(EngagementType));
 
-  const filters: NonNullable<CustomerContracts.GetAllWithDetails.Input>["filters"] = useMemo(() => {
+  const filters: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"] = useMemo(() => {
     const periodFilter = period?.from
       ? { from: period.from, to: period.to ?? period.from }
       : undefined;
@@ -41,7 +41,7 @@ export default function useEngagement({ page, pageSize }: UseEngagementParams) {
   }, [period, debouncedQuery]);
 
   const utils = trpc.useUtils();
-  const { data, isLoading, isFetching } = trpc.customers.getAllWithDetails.useQuery(
+  const { data, isLoading, isFetching } = trpc.customers.getAllComprehensive.useQuery(
     {
       filters,
       pagination:
@@ -77,7 +77,7 @@ export default function useEngagement({ page, pageSize }: UseEngagementParams) {
 
   const clearSelectedCustomers = () => {
     setSelectedCustomers([]);
-    utils.customers.getAllWithDetails.invalidate();
+    utils.customers.getAllComprehensive.invalidate();
   };
 
   const handleReset = () => {

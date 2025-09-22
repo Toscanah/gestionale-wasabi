@@ -12,7 +12,7 @@ export type BaseEntity = { id: number; active: boolean };
 
 type DomainMap = {
   products: ProductContracts.GetAll.Output;
-  customers: CustomerContracts.GetAllWithDetails.Output["customers"];
+  customers: CustomerContracts.GetAllComprehensive.Output["customers"];
   categories: CategoryContracts.GetAll.Output;
   options: OptionContracts.GetAll.Output;
 };
@@ -47,7 +47,7 @@ export default function useManagerActions<D extends ManagerDomain>({
 
   const cache = {
     products: utils.products.getAll as CacheSetter<EntityOf<"products">>,
-    customers: utils.customers.getAllWithDetails as CacheSetter<EntityOf<"customers">>,
+    customers: utils.customers.getAllComprehensive as CacheSetter<EntityOf<"customers">>,
     categories: utils.categories.getAll as CacheSetter<EntityOf<"categories">>,
     options: utils.options.getAll as CacheSetter<EntityOf<"options">>,
   }[domain] as unknown as CacheSetter<EntityOf<D>>;

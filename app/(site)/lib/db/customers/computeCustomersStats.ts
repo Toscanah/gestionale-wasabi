@@ -55,8 +55,6 @@ export default async function computeCustomersStats(
 
   const originsStr = customerOrigins && customerOrigins.length ? customerOrigins.join(",") : null;
 
-  console.log(originsStr);
-
   const customersStatsBase: GetCustomersStats[] = await prisma.$queryRawTyped(
     getCustomersStats(
       normalizedPeriod?.from ? startOfDay(new Date(normalizedPeriod.from)) : null,
@@ -114,18 +112,34 @@ export default async function computeCustomersStats(
     rfmConfig.ranks.map((r) => [r.rank, r.priority])
   );
 
-  const rankComparator: Comparator<string> = (a, b, direction) => {
-    const aP = rankPriorityMap.get(a) ?? -Infinity;
-    const bP = rankPriorityMap.get(b) ?? -Infinity;
+  const rankComparator: Comparator<string | null | undefined> = (a, b, direction) => {
+    // nulls/unknowns always last
+    if (!a && !b) return 0;
+    if (!a) return 1;
+    if (!b) return -1;
+
+    const aP = rankPriorityMap.get(a) ?? 0;
+    const bP = rankPriorityMap.get(b) ?? 0;
 
     if (aP === bP) return 0;
     return direction === "asc" ? aP - bP : bP - aP;
+  };
+
+  const dateComparator = (a: Date | null, b: Date | null, direction: SortDirection) => {
+    if (!a && !b) return 0;
+    if (!a) return 1; // nulls always last
+    if (!b) return -1; // nulls always last
+
+    const diff = a.getTime() - b.getTime();
+    return direction === "asc" ? diff : -diff;
   };
 
   if (sort?.length) {
     sorted = [...filtered].sort(
       sorterFactory(sort, {
         "rfm.rank": rankComparator,
+        // firstOrderAt: dateComparator,
+        // lastOrderAt: dateComparator,
       })
     );
   }

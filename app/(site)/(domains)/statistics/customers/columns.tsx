@@ -12,7 +12,7 @@ import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn"
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { CustomerStatsTableMeta } from "./page";
 import chroma from "chroma-js";
-import { CustomerWithStats } from "@/app/(site)/lib/shared";
+import { CUSTOMER_ORIGIN_LABELS, CustomerWithStats } from "@/app/(site)/lib/shared";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
 import { differenceInCalendarDays, format } from "date-fns";
@@ -41,6 +41,13 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   FullNameColumn({ sortable: false }),
+
+  ValueColumn({
+    header: "Origine",
+    value: (row) => CUSTOMER_ORIGIN_LABELS[row.original.origin],
+    accessor: (customer) => customer.origin,
+    sortable: false,
+  }),
 
   JoinColumn({
     header: "Campanelli",
@@ -84,6 +91,32 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   ValueColumn({
+    header: "Primo ordine",
+    value: (row) => {
+      if (row.original.stats.firstOrderAt) {
+        const firstOrderDate = row.original.stats.firstOrderAt;
+        const formattedDate = format(firstOrderDate, "dd-MM-yyyy");
+        const daysSince = differenceInCalendarDays(new Date(), firstOrderDate);
+
+        return (
+          <>
+            <span>
+              {formattedDate}{" "}
+              <span className="text-muted-foreground">
+                ({daysSince === 0 ? "oggi" : `${daysSince} giorni fa`})
+              </span>
+            </span>
+          </>
+        );
+      }
+
+      return "";
+    },
+    accessor: (customer) => customer.stats.firstOrderAt,
+    sortable: false,
+  }),
+
+  ValueColumn({
     header: "Ultimo ordine",
     value: (row) => {
       if (row.original.stats.lastOrderAt) {
@@ -96,7 +129,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
             <span>
               {formattedDate}{" "}
               <span className="text-muted-foreground">
-              ({daysSince === 0 ? "oggi" : `${daysSince} giorni fa`})
+                ({daysSince === 0 ? "oggi" : `${daysSince} giorni fa`})
               </span>
             </span>
           </>
@@ -110,31 +143,21 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   ValueColumn({
-    header: "Primo ordine",
-    value: (row) =>
-      row.original.stats.firstOrderAt
-        ? format(row.original.stats.firstOrderAt, "dd-MM-yyyy")
-        : "",
-    accessor: (customer) => customer.stats.firstOrderAt,
-    sortable: false,
-  }),
-
-  ValueColumn({
-    header: "Spesa media (€)",
+    header: "Spesa media",
     value: (row) => "€ " + roundToTwo(row.original.stats.averageOrder ?? 0),
     accessor: (customer) => customer.stats.averageOrder,
     sortable: false,
   }),
 
   ValueColumn({
-    header: "Spesa totale (€)",
+    header: "Spesa totale",
     value: (row) => "€ " + roundToTwo(row.original.stats.totalSpent ?? 0),
     accessor: (customer) => customer.stats.totalSpent,
     sortable: false,
   }),
 
   ValueColumn({
-    header: "Numero ordini",
+    header: "Num. ordini",
     value: (row) => row.original.stats.totalOrders,
     accessor: (customer) => customer.stats.totalOrders,
     sortable: false,

@@ -15,7 +15,7 @@ import React from "react";
 
 export interface TopCustomersProps {
   product: { id: number; name: string };
-  filters?: NonNullable<CustomerContracts.GetAllWithDetails.Input>["filters"];
+  filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
 }
 
 type TopCustomer = ComprehensiveCustomer & { productCount: number };
@@ -42,7 +42,7 @@ const columns: ColumnDef<TopCustomer>[] = [
 export default function TopCustomers({ product, filters }: TopCustomersProps) {
   const [open, setOpen] = React.useState(false);
 
-  const { data, isFetching } = customersAPI.getAllWithDetails.useQuery(
+  const { data, isFetching } = customersAPI.getAllComprehensive.useQuery(
     { filters },
     {
       enabled: open,

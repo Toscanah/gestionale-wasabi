@@ -14,19 +14,32 @@ WITH
         )::date AS day
     ),
 
-    valid_days AS (
+    order_days AS (
+        SELECT DISTINCT o.created_at::date AS day
+        FROM "Order" o
+        WHERE o.status = 'PAID'
+    ),
+
+    payment_days AS (
+        SELECT DISTINCT p.created_at::date AS day
+        FROM "Payment" p
+    ),
+
+    worked_days AS (
         SELECT d.day
         FROM days d
+        JOIN order_days od ON od.day = d.day
+        JOIN payment_days pd ON pd.day = d.day
         WHERE EXTRACT(DOW FROM d.day) <> 1 -- skip Mondays
           AND (
             $3::text IS NULL
             OR EXTRACT(DOW FROM d.day)::int = ANY (string_to_array($3::text, ',')::int[])
-        )
+          )
     ),
 
     num_days AS (
         SELECT GREATEST(COUNT(*), 1)::int AS cnt
-        FROM valid_days
+        FROM worked_days
     ),
 
     filtered_orders AS (
@@ -50,58 +63,57 @@ WITH
     ),
 
     product_lines AS (
-    SELECT
-        pio.order_id,
-        SUM(pio.paid_quantity::double precision)                                        AS total_products,
-        SUM(pio.paid_quantity::double precision * pio.frozen_price::double precision)   AS line_revenue,
-        SUM(
-            CASE 
-              WHEN pio.status IN ('IN_ORDER','DELETED_COOKED') 
-              THEN (pio.paid_quantity::double precision * pr.rice::double precision) 
-              ELSE 0::double precision
-            END
-        ) AS rice_mass,
-        SUM(pr.soups::double precision  * pio.quantity::double precision)   AS soups,
-        SUM(pr.rices::double precision  * pio.quantity::double precision)   AS rices,
-        SUM(pr.salads::double precision * pio.quantity::double precision)   AS salads
-    FROM "ProductInOrder" pio
-    JOIN "Product" pr ON pr.id = pio.product_id
-    GROUP BY pio.order_id
-),
+        SELECT
+            pio.order_id,
+            SUM(pio.paid_quantity::double precision)                                        AS total_products,
+            SUM(pio.paid_quantity::double precision * pio.frozen_price::double precision)   AS line_revenue,
+            SUM(
+                CASE 
+                  WHEN pio.status IN ('IN_ORDER','DELETED_COOKED') 
+                  THEN (pio.paid_quantity::double precision * pr.rice::double precision) 
+                  ELSE 0::double precision
+                END
+            ) AS rice_mass,
+            SUM(pr.soups::double precision  * pio.quantity::double precision)   AS soups,
+            SUM(pr.rices::double precision  * pio.quantity::double precision)   AS rices,
+            SUM(pr.salads::double precision * pio.quantity::double precision)   AS salads
+        FROM "ProductInOrder" pio
+        JOIN "Product" pr ON pr.id = pio.product_id
+        GROUP BY pio.order_id
+    ),
 
-order_stats AS (
-    SELECT
-        fo.type,
-        COUNT(DISTINCT fo.id)::int AS orders,
-        COALESCE(SUM(pl.line_revenue), 0::double precision)  AS revenue,
-        COALESCE(SUM(pl.total_products), 0::double precision) AS products,
-        SUM(
-          CASE 
-            WHEN fo.soups IS NOT NULL AND fo.soups <> 0 
-            THEN fo.soups::double precision
-            ELSE pl.soups
-          END
-        ) AS soups,
-        SUM(
-          CASE 
-            WHEN fo.rices IS NOT NULL AND fo.rices <> 0 
-            THEN fo.rices::double precision
-            ELSE pl.rices
-          END
-        ) AS rices,
-        SUM(
-          CASE 
-            WHEN fo.salads IS NOT NULL AND fo.salads <> 0 
-            THEN fo.salads::double precision
-            ELSE pl.salads
-          END
-        ) AS salads,
-        SUM(pl.rice_mass) AS rice
-    FROM filtered_orders fo
-    LEFT JOIN product_lines pl ON pl.order_id = fo.id
-    GROUP BY fo.type
-)
-
+    order_stats AS (
+        SELECT
+            fo.type,
+            COUNT(DISTINCT fo.id)::int AS orders,
+            COALESCE(SUM(pl.line_revenue), 0::double precision)  AS revenue,
+            COALESCE(SUM(pl.total_products), 0::double precision) AS products,
+            SUM(
+              CASE 
+                WHEN fo.soups IS NOT NULL AND fo.soups <> 0 
+                THEN fo.soups::double precision
+                ELSE pl.soups
+              END
+            ) AS soups,
+            SUM(
+              CASE 
+                WHEN fo.rices IS NOT NULL AND fo.rices <> 0 
+                THEN fo.rices::double precision
+                ELSE pl.rices
+              END
+            ) AS rices,
+            SUM(
+              CASE 
+                WHEN fo.salads IS NOT NULL AND fo.salads <> 0 
+                THEN fo.salads::double precision
+                ELSE pl.salads
+              END
+            ) AS salads,
+            SUM(pl.rice_mass) AS rice
+        FROM filtered_orders fo
+        LEFT JOIN product_lines pl ON pl.order_id = fo.id
+        GROUP BY fo.type
+    )
 
 SELECT
     os.type,

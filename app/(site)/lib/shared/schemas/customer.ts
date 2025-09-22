@@ -59,7 +59,7 @@ export namespace CustomerContracts {
     export type Output = z.infer<typeof Output>;
   }
 
-  export namespace GetAllWithDetails {
+  export namespace GetAllComprehensive {
     export const Input = wrapFilters(
       z
         .object({

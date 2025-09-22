@@ -16,7 +16,7 @@ const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/R
 });
 
 export default function CustomersDashboard() {
-  const { data: customers = [], isFetching } = trpc.customers.getAllWithDetails.useQuery();
+  const { data: customers = [], isFetching } = trpc.customers.getAllComprehensive.useQuery();
 
   const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<ComprehensiveCustomer>) => (
     <FormFields

@@ -10,9 +10,9 @@ import normalizePeriod from "../../utils/global/date/normalizePeriod";
 import customerWhereQuery from "./util/customerWhereQuery";
 import { EngagementType, OrderStatus, Prisma } from "@prisma/client";
 
-export default async function getCustomersWithDetails(
-  input: CustomerContracts.GetAllWithDetails.Input
-): Promise<CustomerContracts.GetAllWithDetails.Output> {
+export default async function getComprehensiveCustomers(
+  input: CustomerContracts.GetAllComprehensive.Input
+): Promise<CustomerContracts.GetAllComprehensive.Output> {
   const { filters, pagination } = input ?? {};
 
   const { page, pageSize } = pagination || {};

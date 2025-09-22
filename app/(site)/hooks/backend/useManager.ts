@@ -14,7 +14,7 @@ export default function useManager<D extends ManagerDomain>({ domain }: UseManag
 
   const queryMap = {
     products: trpc.products.getAll,
-    customers: trpc.customers.getAllWithDetails,
+    customers: trpc.customers.getAllComprehensive,
     categories: trpc.categories.getAll,
     options: trpc.options.getAll,
   }[domain];

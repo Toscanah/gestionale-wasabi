@@ -78,7 +78,7 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     }));
   }, [activeSorts]);
 
-  const baseQuery = customersAPI.getAllWithDetails.useQuery(undefined, {
+  const baseQuery = customersAPI.getAllComprehensive.useQuery(undefined, {
     placeholderData: (prev) => prev,
   });
 
