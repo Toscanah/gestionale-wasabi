@@ -28,9 +28,18 @@ const loggerMiddleware = t.middleware(async ({ path, type, getRawInput, next }) 
   // Green for success, red for error, cyan for timing
   const timeStr = `(${ms}ms, ${(ms / 1000).toFixed(2)}s)`;
 
+  const time = new Date();
+  const parsedTime = `${time.getHours().toString().padStart(2, "0")}:${time
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}:${time.getSeconds().toString().padStart(2, "0")}:${time
+    .getMilliseconds()
+    .toString()
+    .padStart(3, "0")}`;
+
   if (result.ok) {
     console.log(
-      `[tRPC] \x1b[42;30m SUC \x1b[0m \x1b[36m${type.toUpperCase()}\x1b[0m \x1b[1m${path}\x1b[0m \x1b[36m${timeStr}\x1b[0m${inputStr}`
+      `[tRPC] ${parsedTime} \x1b[42;30m SUC \x1b[0m \x1b[36m${type.toUpperCase()}\x1b[0m \x1b[1m${path}\x1b[0m \x1b[36m${timeStr}\x1b[0m${inputStr}`
     );
     return result;
   }
@@ -38,7 +47,7 @@ const loggerMiddleware = t.middleware(async ({ path, type, getRawInput, next }) 
   // result.error is a TRPCError
   const err = result.error;
   console.error(
-    `[tRPC] \x1b[41;37m ERR \x1b[0m \x1b[36m${type.toUpperCase()}\x1b[0m \x1b[1m${path}\x1b[0m \x1b[36m${timeStr}\x1b[0m${inputStr}`,
+    `[tRPC] ${parsedTime} \x1b[41;37m ERR \x1b[0m \x1b[36m${type.toUpperCase()}\x1b[0m \x1b[1m${path}\x1b[0m \x1b[36m${timeStr}\x1b[0m${inputStr}`,
     {
       code: err.code,
       cause: err.cause,
