@@ -9,7 +9,7 @@ import {
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";
 import { trpc } from "@/lib/server/client";
 import { SortField } from "../../components/ui/sorting/SortingMenu";
-import useQueryFilter from "../table/useGlobalFilter";
+import useQueryFilter from "../table/useQueryFilter";
 
 export const PRODUCT_STATS_SORT_MAP: Record<string, ProductStatsSortField> = {
   Quantità: "unitsSold",

@@ -3,6 +3,7 @@
 -- @param {String} $3:query? Free-text search (nullable)
 -- @param {Int} $4:offset Pagination offset
 -- @param {Int} $5:limit? Pagination limit (nullable, no limit if null)
+-- @param {String} $6:customerOrigins? Comma separated string of origins (nullable)
 
 WITH
     customer_orders AS (
@@ -82,6 +83,13 @@ WHERE
         OR ph.phone ILIKE '%' || $3::text || '%'
         OR ad.doorbell ILIKE '%' || $3::text || '%'
     )
+    AND (
+        $6::text IS NULL
+        OR c.origin = ANY (
+            string_to_array($6::text, ',')::"CustomerOrigin"[]
+        )
+    )
+
 GROUP BY
     c.id,
     c.name,

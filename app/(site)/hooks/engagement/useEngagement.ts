@@ -5,7 +5,7 @@ import { trpc } from "@/lib/server/client";
 import { DateRange } from "react-day-picker";
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";
 import { ENGAGEMENT_TYPES_LABELS } from "../../lib/shared/constants/engagement-types-labels";
-import useQueryFilter from "../table/useGlobalFilter";
+import useQueryFilter from "../table/useQueryFilter";
 
 function filterRightCustomers(customers: ComprehensiveCustomer[], activeTypes: EngagementType[]) {
   return customers.filter((c) =>

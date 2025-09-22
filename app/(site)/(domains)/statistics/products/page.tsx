@@ -63,7 +63,7 @@ export default function ProductsStats() {
         <div className="w-full flex items-center gap-4">
           {/* <span className="font-bold text-xl">Pagamenti</span> */}
 
-          <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
+          <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
 
           <CalendarFilter
             defaultValue={TODAY_PERIOD}

@@ -3,10 +3,11 @@ import useRfmRules from "../rfm/useRfmRules";
 import useRfmRanks from "../rfm/useRfmRanks";
 import { useMemo, useState } from "react";
 import { CustomerContracts, CustomerStatsSortField, CustomerWithStats } from "../../lib/shared";
-import useQueryFilter from "../table/useGlobalFilter";
+import useQueryFilter from "../table/useQueryFilter";
 import { SortField } from "../../components/ui/sorting/SortingMenu";
 import { trpc } from "@/lib/server/client";
 import { customersAPI } from "@/lib/server/api";
+import { CustomerOrigin } from "@prisma/client";
 
 const DEFAULT_DATE: DateRange = {
   from: undefined,
@@ -37,6 +38,9 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
   const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
   const [period, setPeriod] = useState<DateRange | undefined>(DEFAULT_DATE);
   const [ranks, setRanks] = useState<string[]>(ALL_RANKS);
+  const [customerOrigins, setCustomerOrigins] = useState<CustomerOrigin[]>(
+    Object.values(CustomerOrigin)
+  );
 
   const rfmConfig = { ranks: rfmRanks, rules: rfmRules };
 
@@ -49,11 +53,13 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
       };
     }
 
+    const originsFilter =
+      customerOrigins.length === Object.values(CustomerOrigin).length ? undefined : customerOrigins;
     const ranksFilter = ranks.length === rfmRanks.length ? undefined : ranks;
     const search = debouncedQuery && debouncedQuery.trim() !== "" ? debouncedQuery : undefined;
 
     // If all filters are undefined, return undefined
-    if (!normalizedPeriod && !ranksFilter && !search) {
+    if (!normalizedPeriod && !ranksFilter && !search && !originsFilter) {
       return undefined;
     }
 
@@ -61,8 +67,9 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
       period: normalizedPeriod,
       ranks: ranksFilter,
       query: search,
+      customerOrigins: originsFilter,
     };
-  }, [period, ranks, debouncedQuery]);
+  }, [period, ranks, debouncedQuery, customerOrigins]);
 
   const sorting = useMemo(() => {
     return activeSorts.map((s) => ({
@@ -71,21 +78,9 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     }));
   }, [activeSorts]);
 
-  console.log(sorting)
-
-  const baseQuery = customersAPI.getAllWithDetails.useQuery(
-    {
-      filters: {
-        query: filters?.query,
-        orders: {
-          period: filters?.period,
-        },
-      },
-    },
-    {
-      placeholderData: (prev) => prev,
-    }
-  );
+  const baseQuery = customersAPI.getAllWithDetails.useQuery(undefined, {
+    placeholderData: (prev) => prev,
+  });
 
   const computeQuery = customersAPI.computeStats.useQuery(
     {
@@ -104,8 +99,6 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
       enabled: baseQuery.isSuccess && !!baseQuery.data?.customers,
       placeholderData: (prev) => prev,
       select: (data) => {
-        console.log(baseQuery.data?.totalCount)
-
         const baseCustomers = baseQuery.data;
         if (!baseCustomers) return { customers: [] as CustomerWithStats[], totalCount: 0 };
 
@@ -145,6 +138,8 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     ranks,
     setRanks,
     setPeriod,
+    customerOrigins,
+    setCustomerOrigins,
     debouncedQuery,
     inputQuery,
     setInputQuery,

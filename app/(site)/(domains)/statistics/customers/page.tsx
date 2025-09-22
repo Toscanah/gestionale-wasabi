@@ -14,8 +14,9 @@ import React, { useEffect } from "react";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
-import RankFilter from "@/app/(site)/components/ui/filters/select/RankFilter";
+import RanksFilter from "@/app/(site)/components/ui/filters/select/RanksFilter";
 import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
+import CustomerOriginsFilter from "@/app/(site)/components/ui/filters/select/CustomerOriginsFilter";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];
@@ -41,6 +42,8 @@ export default function CustomersStats() {
     sortingFields,
     activeSorts,
     setActiveSorts,
+    customerOrigins,
+    setCustomerOrigins,
   } = useCustomersStats({ page, pageSize });
   const { theme } = useTheme();
 
@@ -87,7 +90,7 @@ export default function CustomersStats() {
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
         <div className="w-full flex gap-4 items-center">
-          <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
+          <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
 
           <CalendarFilter
             usePresets
@@ -97,7 +100,13 @@ export default function CustomersStats() {
             handleDateFilter={setPeriod}
           />
 
-          <RankFilter
+          <CustomerOriginsFilter
+            onOriginsChange={setCustomerOrigins}
+            origins={customerOrigins}
+            disabled={isLoading}
+          />
+
+          <RanksFilter
             ranks={ranks}
             onRanksChange={setRanks}
             allRanks={allRanks}

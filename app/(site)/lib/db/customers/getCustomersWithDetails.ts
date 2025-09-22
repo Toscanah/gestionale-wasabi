@@ -16,7 +16,7 @@ export default async function getCustomersWithDetails(
   const { filters, pagination } = input ?? {};
 
   const { page, pageSize } = pagination || {};
-  const { query, engagementTypes } = filters || {};
+  const { query, engagementTypes, customerOrigins } = filters || {};
 
   const { period, shift } = filters?.orders || {};
 
@@ -24,6 +24,7 @@ export default async function getCustomersWithDetails(
 
   const orderWhere: Prisma.OrderWhereInput = {
     ...(shift && shift !== ShiftFilterValue.ALL ? { shift } : {}),
+
     ...(normalizedPeriod?.from || normalizedPeriod?.to
       ? {
           created_at: {
@@ -49,6 +50,12 @@ export default async function getCustomersWithDetails(
       engagements: {
         some: { template: { type: { in: engagementTypes } } },
       },
+    });
+  }
+
+  if (customerOrigins?.length) {
+    andFilters.push({
+      origin: { in: customerOrigins },
     });
   }
 

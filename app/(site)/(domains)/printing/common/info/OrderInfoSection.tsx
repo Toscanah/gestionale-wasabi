@@ -50,7 +50,6 @@ export default function OrderInfoSection({
     orderNotes = po.customer?.order_notes ?? undefined;
   }
 
-  console.log(whenValue);
 
   return (
     <>

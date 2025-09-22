@@ -68,7 +68,9 @@ export namespace CustomerContracts {
             period: true,
           }).partial(),
         })
-        .extend(APIFiltersSchema.pick({ query: true, engagementTypes: true }).shape)
+        .extend(
+          APIFiltersSchema.pick({ query: true, engagementTypes: true, customerOrigins: true }).shape
+        )
     )
       .extend(PaginationSchema.shape)
       .partial()
@@ -172,6 +174,7 @@ export namespace CustomerContracts {
         ranks: true,
         period: true,
         query: true,
+        customerOrigins: true,
       })
     )
       .extend(PaginationSchema.shape)

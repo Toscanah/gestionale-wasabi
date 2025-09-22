@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { MANAGER_LABELS } from "../../(domains)/backend/Manager";
-import useQueryFilter from "../table/useGlobalFilter";
+import useQueryFilter from "../table/useQueryFilter";
 import useManagerActions, { ManagerDomain } from "./useManagerActions";
 import { trpc } from "@/lib/server/client";
 

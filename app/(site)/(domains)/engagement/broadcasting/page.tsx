@@ -73,7 +73,7 @@ export default function EngagementPage() {
     <div className="h-screen w-screen flex justify-center items-center p-16">
       <div className="min-w-w-[47.5%] w-[47.5%] h-full p-4 flex flex-col gap-4">
         <div className="flex w-full gap-4 items-center">
-          <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
+          <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
 
           <CalendarFilter
             defaultValue={TODAY_PERIOD}

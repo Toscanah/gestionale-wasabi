@@ -10,7 +10,7 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
 import columns from "./columns";
-import useQueryFilter from "../../../hooks/table/useGlobalFilter";
+import useQueryFilter from "../../../hooks/table/useQueryFilter";
 import usePagination from "@/app/(site)/hooks/table/usePagination";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import usePaymentsHistory from "@/app/(site)/hooks/payments/usePaymentsHistory";
@@ -80,7 +80,7 @@ export default function PaymentsTable() {
         <div className="w-full flex items-center gap-4">
           <span className="font-bold text-xl">Pagamenti</span>
 
-          <SearchBar disabled={isLoading} filter={inputQuery} onChange={setInputQuery} />
+          <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
 
           <CalendarFilter
             mode="range"

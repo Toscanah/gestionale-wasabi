@@ -8,7 +8,7 @@ interface RankFilterProps {
   disabled?: boolean;
 }
 
-export default function RankFilter({ ranks, onRanksChange, allRanks, disabled }: RankFilterProps) {
+export default function RanksFilter({ ranks, onRanksChange, allRanks, disabled }: RankFilterProps) {
   const handleChange = (newValues: string[]) => {
     if (newValues.length === 0 || newValues.length === allRanks.length) {
       onRanksChange(allRanks);

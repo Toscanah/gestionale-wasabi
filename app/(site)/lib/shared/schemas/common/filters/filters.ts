@@ -8,6 +8,7 @@ import { ShiftFilterSchema } from "./shift";
 import { RanksFilterSchema } from "./ranks";
 import { EngagementTypesFilterSchema } from "./engagement-types";
 import { CategoriesFilterSchema } from "./categories";
+import { CustomerOriginFilterSchema } from "./customer-origin";
 
 export const APIFiltersSchema = ShiftFilterSchema.extend(OrderTypesFilterSchema.shape)
   .extend(PeriodRequestSchema.shape)
@@ -16,7 +17,8 @@ export const APIFiltersSchema = ShiftFilterSchema.extend(OrderTypesFilterSchema.
   .extend(TimeWindowFilterSchema.shape)
   .extend(RanksFilterSchema.shape)
   .extend(EngagementTypesFilterSchema.shape)
-  .extend(CategoriesFilterSchema.shape);
+  .extend(CategoriesFilterSchema.shape)
+  .extend(CustomerOriginFilterSchema.shape);
 
 export function wrapFilters<T extends z.ZodRawShape>(schema: z.ZodObject<T>) {
   return z.object({ filters: schema.partial() });

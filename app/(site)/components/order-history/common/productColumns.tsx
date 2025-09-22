@@ -15,6 +15,11 @@ export default function productColumns(selectable = false): ColumnDef<ProductInO
     }),
 
     FieldColumn({
+      header: "Codice",
+      key: "product.code",
+    }),
+
+    FieldColumn({
       header: "Descrizione",
       key: "product.desc",
     }),

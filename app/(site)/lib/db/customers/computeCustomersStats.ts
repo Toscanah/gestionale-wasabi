@@ -10,12 +10,13 @@ import { endOfDay, startOfDay } from "date-fns";
 import { Comparator } from "../../utils/global/sorting/defaultComparator";
 import sorterFactory from "../../utils/global/sorting/sorterFactory";
 import { MAX_RECORDS } from "../../shared/constants/max-records";
+import customerWhereQuery from "./util/customerWhereQuery";
 
 export default async function computeCustomersStats(
   input: CustomerContracts.ComputeStats.Input
 ): Promise<CustomerContracts.ComputeStats.Output> {
   const { rfmConfig, filters, pagination, sort } = input ?? {};
-  const { period, ranks, query } = filters || {};
+  const { period, ranks, query, customerOrigins } = filters || {};
   const normalizedPeriod = normalizePeriod(period);
 
   let needsNodeSideProcessing = false;
@@ -52,13 +53,18 @@ export default async function computeCustomersStats(
     limit = MAX_RECORDS; // fetch all possible rows
   }
 
+  const originsStr = customerOrigins && customerOrigins.length ? customerOrigins.join(",") : null;
+
+  console.log(originsStr);
+
   const customersStatsBase: GetCustomersStats[] = await prisma.$queryRawTyped(
     getCustomersStats(
       normalizedPeriod?.from ? startOfDay(new Date(normalizedPeriod.from)) : null,
       normalizedPeriod?.to ? endOfDay(new Date(normalizedPeriod.to)) : null,
       query ?? null,
       offset,
-      limit
+      limit,
+      originsStr
     )
   );
 
@@ -133,7 +139,49 @@ export default async function computeCustomersStats(
   if (needsNodeSideProcessing) {
     totalCount = filtered.length;
   } else {
-    totalCount = await countCustomers({ query });
+    totalCount = await countCustomers({
+      where: {
+        AND: [
+          // text query
+          customerWhereQuery({ query: query ?? "" }),
+
+          // origins
+          customerOrigins?.length ? { origin: { in: customerOrigins } } : {},
+
+          // orders period
+          normalizedPeriod?.from || normalizedPeriod?.to
+            ? {
+                OR: [
+                  {
+                    home_orders: {
+                      some: {
+                        order: {
+                          created_at: {
+                            ...(normalizedPeriod?.from ? { gte: normalizedPeriod.from } : {}),
+                            ...(normalizedPeriod?.to ? { lte: normalizedPeriod.to } : {}),
+                          },
+                        },
+                      },
+                    },
+                  },
+                  {
+                    pickup_orders: {
+                      some: {
+                        order: {
+                          created_at: {
+                            ...(normalizedPeriod?.from ? { gte: normalizedPeriod.from } : {}),
+                            ...(normalizedPeriod?.to ? { lte: normalizedPeriod.to } : {}),
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
+              }
+            : {},
+        ],
+      },
+    });
   }
 
   return {

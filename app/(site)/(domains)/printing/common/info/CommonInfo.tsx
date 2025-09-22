@@ -24,8 +24,6 @@ export default function CommonInfo({
   orderNotes,
   prepaid,
 }: CommonInfoProps) {
-  console.log(plannedPayment);
-
   return (
     <>
       {putExtraItems && ExtraItemsSection({ order })}
