@@ -107,7 +107,7 @@ export default function TablePagination<TData>({
           disabled={currentPage === 0 || disabled}
         >
           <CaretDoubleLeft size={20} className="mr-2" />
-          <span className="leading-none text-sm">Inizio</span>
+          <span className="leading-none text-sm">Prima</span>
         </Button>
 
         <Button
@@ -148,7 +148,7 @@ export default function TablePagination<TData>({
           onClick={() => handlePageChange(totalPages - 1)}
           disabled={currentPage + 1 >= totalPages || disabled}
         >
-          <span className="leading-none text-sm">Fine</span>
+          <span className="leading-none text-sm">Ultima</span>
           <CaretDoubleRight size={20} className="ml-2" />
         </Button>
       </div>
