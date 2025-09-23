@@ -71,7 +71,7 @@ export default function RFMRanksDialog() {
         </AccordionItem>
 
         {ranks.map((rank, i) => (
-          <div className="w-full flex gap-4 items-center">
+          <div className="w-full flex gap-4 items-center" key={i}>
             <AccordionItem key={rank.rank} value={rank.rank} className="w-full">
               <AccordionTrigger className="flex items-center">
                 <span>
