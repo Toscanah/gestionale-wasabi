@@ -8,6 +8,7 @@ const averageStatsColumns: ColumnDef<AverageResultRecord>[] = [
   FieldColumn({
     header: "Tipo ordine",
     key: "title",
+    sortable: false,
   }),
 
   ValueColumn({

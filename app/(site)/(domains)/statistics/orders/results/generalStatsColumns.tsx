@@ -8,6 +8,7 @@ const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
   FieldColumn({
     header: "Tipo ordine",
     key: "title",
+    sortable: false,
   }),
 
   ValueColumn({
