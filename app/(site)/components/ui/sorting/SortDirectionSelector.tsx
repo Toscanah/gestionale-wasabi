@@ -17,8 +17,8 @@ export default function SortDirectionSelector({
       groups={[
         {
           items: [
-            { label: "Più grandi prima, poi più piccoli", value: "desc" },
-            { label: "Più piccoli prima, poi più grandi", value: "asc" },
+            { label: "Grande -> piccolo", value: "desc" },
+            { label: "Piccolo -> grande", value: "asc" },
           ],
         },
       ]}
