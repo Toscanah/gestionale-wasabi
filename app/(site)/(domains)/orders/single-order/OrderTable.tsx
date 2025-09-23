@@ -1,5 +1,5 @@
 import getColumns from "./getColumns";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { PickupOrder, ProductInOrder } from "@/app/(site)/lib/shared";
 import { useEffect, useState } from "react";
 import Table from "../../../components/table/Table";
 import useTable from "../../../hooks/table/useTable";
@@ -116,7 +116,9 @@ export default function OrderTable() {
 
         <ExtraItems />
 
-        {order.type !== OrderType.TABLE && (
+        {(order.type === OrderType.HOME ||
+          (order.type === OrderType.PICKUP && (order as PickupOrder).pickup_order?.customer_id) ||
+          order.type !== OrderType.TABLE) && (
           <div className="flex space-x-6">
             <Notes />
           </div>
