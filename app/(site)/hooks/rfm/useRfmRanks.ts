@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { RFMRankRule } from "../../lib/shared/types/RFM";
-import { DEFAULT_RFM_CONFIG } from "../../lib/shared/constants/rfm-config";
+import { DEFAULT_RFM_CONFIG } from "../../lib/shared/constants/default-rfm-config";
 
 export default function useRfmRanks() {
   const [ranks, setRanks] = useState<RFMRankRule[]>(DEFAULT_RFM_CONFIG.ranks);

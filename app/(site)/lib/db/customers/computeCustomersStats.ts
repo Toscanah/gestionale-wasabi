@@ -125,15 +125,6 @@ export default async function computeCustomersStats(
     return direction === "asc" ? aP - bP : bP - aP;
   };
 
-  const dateComparator = (a: Date | null, b: Date | null, direction: SortDirection) => {
-    if (!a && !b) return 0;
-    if (!a) return 1; // nulls always last
-    if (!b) return -1; // nulls always last
-
-    const diff = a.getTime() - b.getTime();
-    return direction === "asc" ? diff : -diff;
-  };
-
   if (sort?.length) {
     sorted = [...filtered].sort(
       sorterFactory(sort, {

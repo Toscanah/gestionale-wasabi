@@ -62,13 +62,7 @@ SELECT
         0
     ) AS "recency",
     COALESCE(os.total_orders, 0)::int AS "frequency",
-    COALESCE(
-        CASE
-            WHEN os.total_orders > 0 THEN 
-                (os.total_spent::double precision / os.total_orders::double precision)
-        END,
-        0
-    ) AS "monetary"
+    COALESCE(os.total_spent, 0) AS "monetary"
 FROM
     public."Customer" c
     LEFT JOIN order_stats os ON os.customer_id = c.id
