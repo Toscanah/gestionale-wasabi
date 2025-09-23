@@ -21,12 +21,12 @@ type UseCustomersStatsParams = {
 
 export const CUSTOMER_STATS_SORT_MAP: Record<string, CustomerStatsSortField> = {
   "Spesa totale": "totalSpent",
-  "Ultimo ordine": "lastOrderAt",
+  "Ordine medio": "averageOrder",
   "Numero ordini": "totalOrders",
   "Primo ordine": "firstOrderAt",
+  "Ultimo ordine": "lastOrderAt",
   "Punteggio RFM": "rfm.score.finalScore",
   "Rank RFM": "rfm.rank",
-  "Ordine medio": "averageOrder",
 } as const;
 
 export default function useCustomersStats({ page, pageSize }: UseCustomersStatsParams) {
