@@ -47,34 +47,7 @@ function floatToHourMinute(value: number, minuteOffset = 0): [number, number] {
 const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorProps>(
   ({ className, field, value, onValueChange, onKeyDown, source = "" }, ref) => {
     const [open, setOpen] = useState<boolean>(false);
-    const [hasSelectedOnce, setHasSelectedOnce] = useState(false);
-
-    const handleOpenChange = (nextOpen: boolean) => {
-      if (nextOpen) {
-        setHasSelectedOnce(false); // reset every time popover is opened
-      }
-      setOpen(nextOpen);
-    };
-
-    const handleFocus = () => {
-      // Only reset if the popover is closed — i.e. real "field re-entry"
-      if (!open) {
-        setHasSelectedOnce(false);
-      }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
-      if ((e.key === "Enter" || e.key === "ArrowDown") && !open) {
-        if (!hasSelectedOnce) {
-          setOpen(true);
-          e.preventDefault();
-          return;
-        }
-        if (onKeyDown) onKeyDown(e); // after first selection
-      } else {
-        if (onKeyDown) onKeyDown(e);
-      }
-    };
+    const [oneTimeValue, setOneTimeValue] = useState<string>("");
 
     const { settings } = useWasabiContext();
     const GAP = settings.whenSelectorGap || 1;
@@ -150,6 +123,21 @@ const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorPro
       });
     }
 
+    const handleOpenChange = (open: boolean) => {
+      setOpen(open);
+    };
+
+    const handleOneKeyDown = (e: KeyboardEvent<any>) => {
+      if (!oneTimeValue) {
+        return;
+      }
+
+      if (e.key === "Enter" || e.key === "ArrowDown") {
+        e.preventDefault();
+        onKeyDown?.(e);
+      }
+    };
+
     return (
       <WasabiSelect
         title="Quando"
@@ -159,10 +147,9 @@ const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorPro
         ref={ref}
         trigger={(selected) => (
           <Button
+            onKeyDown={handleOneKeyDown}
             variant="outline"
             className={cn("h-12 w-full text-xl uppercase", className)}
-            // onKeyDown={handleKeyDown}
-            // onFocus={handleFocus}
           >
             {selected ? selected.label : ""}
           </Button>
@@ -171,7 +158,7 @@ const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorPro
         onChange={(value) => {
           if (onValueChange) onValueChange(value);
           if (field) field.onChange(value);
-          // setHasSelectedOnce(true);
+          setOneTimeValue(value);
           setOpen(false);
         }}
         allLabel="Tutti"
