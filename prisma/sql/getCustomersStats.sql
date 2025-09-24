@@ -14,6 +14,7 @@ WITH
         FROM
             public."HomeOrder" ho
             JOIN public."Order" o ON o.id = ho.id
+        WHERE o.suborder_of IS NULL
         UNION ALL
         SELECT
             po.customer_id,
@@ -22,6 +23,7 @@ WITH
         FROM
             public."PickupOrder" po
             JOIN public."Order" o ON o.id = po.id
+        WHERE o.suborder_of IS NULL
     ),
     order_stats AS (
         SELECT

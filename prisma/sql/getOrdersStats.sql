@@ -46,6 +46,7 @@ WITH
         SELECT o.*
         FROM "Order" o
         WHERE o.status = 'PAID'
+          AND o.suborder_of IS NULL
           AND ($1::timestamptz IS NULL OR o.created_at >= $1)
           AND ($2::timestamptz IS NULL OR o.created_at <= $2)
           AND EXTRACT(DOW FROM o.created_at) <> 1 -- skip Mondays
