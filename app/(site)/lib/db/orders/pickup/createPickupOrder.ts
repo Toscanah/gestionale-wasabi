@@ -105,11 +105,14 @@ export default async function createPickupOrder({
 
     const shift = await updateOrderShift({ orderId: createdOrder.id, tx });
 
-    // Shape into the discriminated union branch
+    if (!createdOrder.pickup_order) {
+      throw new Error("Pickup order creation failed");
+    }
+
     const order: PickupOrder = {
       ...createdOrder,
       type: OrderType.PICKUP,
-      pickup_order: createdOrder.pickup_order!, // safe
+      pickup_order: createdOrder.pickup_order,
       shift,
     };
 

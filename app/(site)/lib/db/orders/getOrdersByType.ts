@@ -12,16 +12,12 @@ export default async function getOrdersByType({
   type,
 }: {
   type: OrderType;
-}): Promise<OrderContracts.Common.AnyOrder[]> {
+}): Promise<OrderByType[]> {
   const orders = await prisma.order.findMany({
     include: {
       products: {
-        where: {
-          status: ProductInOrderStatus.IN_ORDER,
-        },
-        include: {
-          ...productInOrderInclude,
-        },
+        where: { status: ProductInOrderStatus.IN_ORDER },
+        include: { ...productInOrderInclude },
       },
       payments: true,
       ...homeOrderInclude,
@@ -29,30 +25,23 @@ export default async function getOrdersByType({
       table_order: true,
       ...engagementsInclude,
     },
-    where: {
-      type,
-      status: OrderStatus.ACTIVE,
-    },
-    orderBy: {
-      created_at: "asc",
-    },
+    where: { type, status: OrderStatus.ACTIVE },
+    orderBy: { created_at: "asc" },
   });
 
   const adjustedOrders = orders.map((order) => {
     const unpaidProducts = order.products
-      .filter((product) => (product.paid_quantity ?? 0) < product.quantity)
-      .map((product) => {
-        const unpaidQty = product.quantity - (product.paid_quantity ?? 0);
-        return {
-          ...product,
-          quantity: unpaidQty,
-        };
-      });
+      .filter((p) => (p.paid_quantity ?? 0) < p.quantity)
+      .map((p) => ({
+        ...p,
+        quantity: p.quantity - (p.paid_quantity ?? 0),
+      }));
 
     return {
       ...order,
+      type, // literal ensures narrowing
       products: unpaidProducts,
-    };
+    } as OrderByType;
   });
 
   return adjustedOrders;

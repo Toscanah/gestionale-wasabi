@@ -50,11 +50,14 @@ export default async function createHomeOrder({
 
     const shift = await updateOrderShift({ orderId: created.id, tx });
 
-    // Shape as the discriminated union branch (HomeOrder)
+    if (!created.home_order) {
+      throw new Error("Home order creation failed");
+    }
+
     const order: HomeOrder = {
       ...created,
       type: OrderType.HOME,
-      home_order: created.home_order!, // guaranteed non-null for HOME
+      home_order: created.home_order,
       shift,
     };
 

@@ -6,25 +6,19 @@ import {
   pickupOrderInclude,
   productInOrderInclude,
 } from "../includes";
-import {
-  OrderByType,
-  TableOrder,
-  HomeOrder,
-  PickupOrder,
-  OrderContracts,
-} from "@/app/(site)/lib/shared";
+import { TableOrder, HomeOrder, PickupOrder, OrderByType } from "@/app/(site)/lib/shared";
 
 type OrderVariant = "onlyPaid" | "all";
 
 /** ---------- Overloads ---------- */
 export async function getOrderById(params: {
   orderId: number;
-  type: "HOME";
+  type: "TABLE";
   variant?: OrderVariant;
 }): Promise<TableOrder>;
 export async function getOrderById(params: {
   orderId: number;
-  type: "TABLE";
+  type: "HOME";
   variant?: OrderVariant;
 }): Promise<HomeOrder>;
 export async function getOrderById(params: {

@@ -53,10 +53,18 @@ export default async function createTableOrder({
     },
   });
 
-  await updateOrderShift({ orderId: newOrder.id });
+  const shift = await updateOrderShift({ orderId: newOrder.id });
 
-  const updatedOrder = await getOrderById({ orderId: newOrder.id, type: OrderType.TABLE });
+  if (!newOrder.table_order) {
+    throw new Error("Table order creation failed");
+  }
 
-  // ✅ TS now knows this is a TableOrder
-  return { order: updatedOrder, isNewOrder: true };
+  const order: TableOrder = {
+    ...newOrder,
+    shift,
+    type: OrderType.TABLE,
+    table_order: newOrder.table_order,
+  };
+
+  return { order, isNewOrder: true };
 }
