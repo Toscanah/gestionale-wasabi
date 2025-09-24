@@ -46,73 +46,64 @@ WITH
         SELECT o.*
         FROM "Order" o
         WHERE o.status = 'PAID'
-          AND o.suborder_of IS NULL
+          AND o.suborder_of IS NULL               -- ✅ only parent orders
           AND ($1::timestamptz IS NULL OR o.created_at >= $1)
           AND ($2::timestamptz IS NULL OR o.created_at <= $2)
-          AND EXTRACT(DOW FROM o.created_at) <> 1 -- skip Mondays
+          AND EXTRACT(DOW FROM o.created_at) <> 1
           AND (
             $3::text IS NULL
             OR EXTRACT(DOW FROM o.created_at)::int = ANY (string_to_array($3::text, ',')::int[])
           )
+          AND ($4::"WorkingShift" IS NULL OR o.shift = $4::"WorkingShift")
           AND (
-              $4::"WorkingShift" IS NULL OR o.shift = $4::"WorkingShift"
-          )
-          AND (
-              $5::text IS NULL OR $6::text IS NULL
-              OR to_char(o.created_at, 'HH24:MI') BETWEEN $5::text AND $6::text
+            $5::text IS NULL OR $6::text IS NULL
+            OR to_char(o.created_at, 'HH24:MI') BETWEEN $5::text AND $6::text
           )
     ),
 
+    -- ✅ aggregate products by *parent* order id, so suborder items roll up
     product_lines AS (
         SELECT
-            pio.order_id,
-            SUM(pio.paid_quantity::double precision)                                        AS total_products,
-            SUM(pio.paid_quantity::double precision * pio.frozen_price::double precision)   AS line_revenue,
+            COALESCE(o.suborder_of, o.id) AS parent_order_id,
+            SUM(pio.paid_quantity::double precision)                                      AS total_products,
+            SUM(pio.paid_quantity::double precision * pio.frozen_price::double precision) AS line_revenue,
             SUM(
-                CASE 
-                  WHEN pio.status IN ('IN_ORDER','DELETED_COOKED') 
-                  THEN (pio.paid_quantity::double precision * pr.rice::double precision) 
-                  ELSE 0::double precision
-                END
+              CASE
+                WHEN pio.status IN ('IN_ORDER','DELETED_COOKED')
+                THEN (pio.paid_quantity::double precision * pr.rice::double precision)
+                ELSE 0::double precision
+              END
             ) AS rice_mass,
-            SUM(pr.soups::double precision  * pio.quantity::double precision)   AS soups,
-            SUM(pr.rices::double precision  * pio.quantity::double precision)   AS rices,
-            SUM(pr.salads::double precision * pio.quantity::double precision)   AS salads
+            SUM(pr.soups::double precision  * pio.quantity::double precision)  AS soups,
+            SUM(pr.rices::double precision  * pio.quantity::double precision)  AS rices,
+            SUM(pr.salads::double precision * pio.quantity::double precision)  AS salads
         FROM "ProductInOrder" pio
+        JOIN "Order" o   ON o.id = pio.order_id
         JOIN "Product" pr ON pr.id = pio.product_id
-        GROUP BY pio.order_id
+        GROUP BY COALESCE(o.suborder_of, o.id)
     ),
 
     order_stats AS (
         SELECT
             fo.type,
-            COUNT(DISTINCT fo.id)::int AS orders,
-            COALESCE(SUM(pl.line_revenue), 0::double precision)  AS revenue,
-            COALESCE(SUM(pl.total_products), 0::double precision) AS products,
+            COUNT(DISTINCT fo.id)::int                         AS orders,            -- ✅ parents only
+            COALESCE(SUM(pl.line_revenue), 0::double precision)   AS revenue,         -- ✅ suborders included via roll-up
+            COALESCE(SUM(pl.total_products), 0::double precision) AS products,        -- ✅ suborders included via roll-up
             SUM(
-              CASE 
-                WHEN fo.soups IS NOT NULL AND fo.soups <> 0 
-                THEN fo.soups::double precision
-                ELSE pl.soups
-              END
+              CASE WHEN fo.soups IS NOT NULL AND fo.soups <> 0 THEN fo.soups::double precision
+                   ELSE pl.soups END
             ) AS soups,
             SUM(
-              CASE 
-                WHEN fo.rices IS NOT NULL AND fo.rices <> 0 
-                THEN fo.rices::double precision
-                ELSE pl.rices
-              END
+              CASE WHEN fo.rices IS NOT NULL AND fo.rices <> 0 THEN fo.rices::double precision
+                   ELSE pl.rices END
             ) AS rices,
             SUM(
-              CASE 
-                WHEN fo.salads IS NOT NULL AND fo.salads <> 0 
-                THEN fo.salads::double precision
-                ELSE pl.salads
-              END
+              CASE WHEN fo.salads IS NOT NULL AND fo.salads <> 0 THEN fo.salads::double precision
+                   ELSE pl.salads END
             ) AS salads,
             SUM(pl.rice_mass) AS rice
         FROM filtered_orders fo
-        LEFT JOIN product_lines pl ON pl.order_id = fo.id
+        LEFT JOIN product_lines pl ON pl.parent_order_id = fo.id   -- ✅ join by parent id
         GROUP BY fo.type
     )
 

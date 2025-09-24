@@ -9,40 +9,42 @@ WITH
     customer_orders AS (
         SELECT
             ho.customer_id,
-            o.id AS order_id,
+            COALESCE(o.suborder_of, o.id) AS parent_order_id,
             o.created_at
         FROM
             public."HomeOrder" ho
             JOIN public."Order" o ON o.id = ho.id
-        WHERE o.suborder_of IS NULL
+
         UNION ALL
+
         SELECT
             po.customer_id,
-            o.id AS order_id,
+            COALESCE(o.suborder_of, o.id) AS parent_order_id,
             o.created_at
         FROM
             public."PickupOrder" po
             JOIN public."Order" o ON o.id = po.id
-        WHERE o.suborder_of IS NULL
     ),
+
     order_stats AS (
         SELECT
             co.customer_id,
-            COUNT(DISTINCT co.order_id) AS total_orders,
+            COUNT(DISTINCT co.parent_order_id) AS total_orders,
             COALESCE(SUM(pio.quantity::double precision * pio.frozen_price::double precision), 0) AS total_spent,
             MIN(co.created_at) AS first_order_at,
             MAX(co.created_at) AS last_order_at
         FROM
             customer_orders co
             JOIN public."ProductInOrder" pio 
-              ON pio.order_id = co.order_id
-             AND pio.status = 'IN_ORDER'
+            ON pio.order_id = co.parent_order_id
+            AND pio.status = 'IN_ORDER'
         WHERE
             ($1::timestamptz IS NULL OR co.created_at >= $1)
             AND ($2::timestamptz IS NULL OR co.created_at <= $2)
         GROUP BY
             co.customer_id
     )
+
 SELECT
     c.id AS "customerId",
     COALESCE(os.total_orders, 0)::int AS "totalOrders",
