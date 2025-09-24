@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import MarketingTemplates from "../../templates/MarketingTemplates";
 import { Button } from "@/components/ui/button";
-import { patchOrderEngagements } from "../../../../lib/services/order-management/patchOrderEngagements";
+import patchOrderEngagements from "../../../../lib/services/order-management/patchOrderEngagements";
 import { Checkbox } from "@/components/ui/checkbox";
 import TemplateContentView from "../../templates/components/content/TemplateContentView";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
@@ -49,20 +49,19 @@ export function OrderEngagementTabs({
   const [engagements, setEngagements] = useState<EngagementWithDetails[]>([]);
 
   const customerId =
-    order.type == OrderType.HOME
-      ? (order as HomeOrder).home_order?.customer?.id
-      : (order as PickupOrder).pickup_order?.customer?.id;
+    order.type === OrderType.HOME
+      ? order.home_order.customer?.id
+      : order.type === OrderType.PICKUP
+        ? order.pickup_order.customer?.id
+        : undefined;
 
   useEffect(() => {
     const all = [
       ...(order.engagements ?? []),
-      ...(order.type === OrderType.HOME
-        ? ((order as HomeOrder).home_order?.customer?.engagements ?? [])
-        : []),
-      ...(order.type === OrderType.PICKUP
-        ? ((order as PickupOrder).pickup_order?.customer?.engagements ?? [])
-        : []),
+      ...(order.type === OrderType.HOME ? (order.home_order.customer?.engagements ?? []) : []),
+      ...(order.type === OrderType.PICKUP ? (order.pickup_order.customer?.engagements ?? []) : []),
     ];
+
     setEngagements(dedupeEngagements(all));
   }, [order.engagements]);
 

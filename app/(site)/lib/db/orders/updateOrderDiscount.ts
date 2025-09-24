@@ -1,6 +1,6 @@
 import { OrderContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
-import getOrderById from "./getOrderById";
+import { getOrderById } from "./getOrderById";
 
 export default async function updateOrderDiscount({
   orderId,
@@ -16,5 +16,5 @@ export default async function updateOrderDiscount({
     },
   });
 
-  return await getOrderById({orderId});
+  return await getOrderById({ orderId });
 }

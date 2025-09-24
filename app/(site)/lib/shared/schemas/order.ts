@@ -16,8 +16,8 @@ import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
 export namespace OrderContracts {
   export namespace Common {
-    export const AnyOrder = OrderByTypeSchema;
-    export type AnyOrder = z.infer<typeof AnyOrder>;
+    export const DiscrimOrder = OrderByTypeSchema;
+    export type DiscrimOrder = z.infer<typeof DiscrimOrder>;
 
     export const TableOrder = TableOrderInOrderSchema;
     export type TableOrder = z.infer<typeof TableOrder>;
@@ -35,12 +35,12 @@ export namespace OrderContracts {
   export namespace GetById {
     export const Input = z.object({
       orderId: z.number(),
-      variant: z.string().default("onlyPaid").optional(),
+      variant: z.enum(["onlyPaid", "allProducts"]).default("onlyPaid").optional(),
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.AnyOrder;
-    export type Output = Common.AnyOrder;
+    export const Output = Common.DiscrimOrder;
+    export type Output = Common.DiscrimOrder;
   }
 
   export namespace GetHomeOrders {
@@ -131,14 +131,14 @@ export namespace OrderContracts {
 
   export namespace CreateSub {
     export const Input = z.object({
-      parentOrder: Common.AnyOrder,
+      parentOrder: Common.DiscrimOrder,
       products: z.array(ProductInOrderWithOptionsSchema),
       isReceiptPrinted: z.boolean(),
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.AnyOrder;
-    export type Output = Common.AnyOrder;
+    export const Output = Common.DiscrimOrder;
+    export type Output = Common.DiscrimOrder;
   }
 
   export namespace UpdateDiscount {
@@ -148,8 +148,8 @@ export namespace OrderContracts {
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.AnyOrder;
-    export type Output = Common.AnyOrder;
+    export const Output = Common.DiscrimOrder;
+    export type Output = Common.DiscrimOrder;
   }
 
   export namespace UpdatePaymentStatus {
@@ -160,8 +160,8 @@ export namespace OrderContracts {
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.AnyOrder;
-    export type Output = Common.AnyOrder;
+    export const Output = Common.DiscrimOrder;
+    export type Output = Common.DiscrimOrder;
   }
 
   export namespace UpdateTime {
@@ -171,8 +171,8 @@ export namespace OrderContracts {
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.AnyOrder;
-    export type Output = Common.AnyOrder;
+    export const Output = Common.DiscrimOrder;
+    export type Output = Common.DiscrimOrder;
   }
 
   export namespace UpdatePrintedFlag {
@@ -204,8 +204,8 @@ export namespace OrderContracts {
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.AnyOrder;
-    export type Output = Common.AnyOrder;
+    export const Output = Common.DiscrimOrder;
+    export type Output = Common.DiscrimOrder;
   }
 
   export namespace UpdateShift {
@@ -234,8 +234,8 @@ export namespace OrderContracts {
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.AnyOrder;
-    export type Output = Common.AnyOrder;
+    export const Output = Common.DiscrimOrder;
+    export type Output = Common.DiscrimOrder;
   }
 
   export namespace CancelInBulk {

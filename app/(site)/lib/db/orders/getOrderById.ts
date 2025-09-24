@@ -6,9 +6,15 @@ import {
   pickupOrderInclude,
   productInOrderInclude,
 } from "../includes";
-import { TableOrder, HomeOrder, PickupOrder, OrderByType } from "@/app/(site)/lib/shared";
+import {
+  TableOrder,
+  HomeOrder,
+  PickupOrder,
+  OrderByType,
+  OrderContracts,
+} from "@/app/(site)/lib/shared";
 
-type OrderVariant = "onlyPaid" | "all";
+type OrderVariant = OrderContracts.GetById.Input["variant"];
 
 /** ---------- Overloads ---------- */
 export async function getOrderById(params: {

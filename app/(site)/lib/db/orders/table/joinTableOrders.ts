@@ -1,8 +1,8 @@
-import { OrderContracts, TableOrder } from "@/app/(site)/lib/shared";
+import { OrderContracts } from "@/app/(site)/lib/shared";
 import prisma from "../../db";
-import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
-import getOrderById from "../getOrderById";
+import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
 import addProductsToOrder from "../../products/addProductsToOrder";
+import { getOrderById } from "../getOrderById";
 
 export default async function joinTableOrders({
   originalOrderId,
@@ -42,7 +42,7 @@ export default async function joinTableOrders({
   });
 
   return {
-    updatedOrder: (await getOrderById({ orderId: originalOrderId })) as TableOrder,
-    joinedTable: (await getOrderById({ orderId: orderToJoinId.id })) as TableOrder,
+    updatedOrder: await getOrderById({ orderId: originalOrderId, type: OrderType.TABLE }),
+    joinedTable: await getOrderById({ orderId: orderToJoinId.id, type: OrderType.TABLE }),
   };
 }

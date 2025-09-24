@@ -1,8 +1,8 @@
 import prisma from "../db";
-import getOrderById from "./getOrderById";
 import { cancelProductInOrder } from "../products/product-in-order/cancelProductInOrder";
 import { OrderStatus } from "@prisma/client";
 import { OrderContracts } from "../../shared";
+import { getOrderById } from "./getOrderById";
 
 export default async function cancelOrder({
   orderId,

@@ -3,8 +3,8 @@ import prisma from "../../db";
 import createPickupOrder from "../pickup/createPickupOrder";
 import createTableOrder from "../table/createTableOrder";
 import addProductsToOrder from "../../products/addProductsToOrder";
-import getOrderById from "../getOrderById";
 import { OrderByType, OrderContracts, PickupOrder, TableOrder } from "../../../shared";
+import { getOrderById } from "../getOrderById";
 
 export default async function createSubOrder({
   parentOrder,

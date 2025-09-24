@@ -6,9 +6,9 @@ import {
 } from "@prisma/client";
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import prisma from "../db";
-import getOrderById from "../orders/getOrderById";
 import { randomUUID } from "crypto";
 import { PaymentContracts } from "../../shared";
+import { getOrderById } from "../orders/getOrderById";
 
 export default async function payOrder({
   payments,

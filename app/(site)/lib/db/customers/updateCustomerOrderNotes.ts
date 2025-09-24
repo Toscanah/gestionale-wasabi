@@ -1,6 +1,7 @@
 import { CustomerContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
-import getOrderById from "../orders/getOrderById";
+import { getOrderById } from "../orders/getOrderById";
+import { OrderGuards } from "../../shared/types/order-guards";
 
 export default async function updateCustomerOrderNotes({
   orderId,
@@ -38,5 +39,11 @@ export default async function updateCustomerOrderNotes({
     data: { order_notes: notes },
   });
 
-  return (await getOrderById({ orderId })) as CustomerContracts.UpdateOrderNotes.Output;
+  const order = await getOrderById({ orderId });
+
+  if (OrderGuards.isHome(order) || OrderGuards.isPickup(order)) {
+    return order;
+  }
+
+  throw new Error("Expected HOME or PICKUP order but got TABLE");
 }

@@ -1,6 +1,7 @@
-import { OrderContracts, TableOrder } from "../../../shared";
+import { OrderType } from "@prisma/client";
+import { OrderContracts } from "../../../shared";
 import prisma from "../../db";
-import getOrderById from "../getOrderById";
+import { getOrderById } from "../getOrderById";
 
 export default async function updateOrderTablePpl({
   orderId,
@@ -11,5 +12,5 @@ export default async function updateOrderTablePpl({
     data: { people },
   });
 
-  return (await getOrderById({ orderId })) as TableOrder;
+  return await getOrderById({ orderId, type: OrderType.TABLE });
 }

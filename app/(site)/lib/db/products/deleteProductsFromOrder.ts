@@ -1,6 +1,6 @@
 import { ProductContracts } from "../../shared";
 import prisma from "../db";
-import getOrderById from "../orders/getOrderById";
+import { getOrderById } from "../orders/getOrderById";
 import { cancelProductInOrder } from "./product-in-order/cancelProductInOrder";
 
 export default async function deleteProductsFromOrder({
@@ -33,5 +33,5 @@ export default async function deleteProductsFromOrder({
     },
   });
 
-  return deletedProducts
+  return deletedProducts;
 }

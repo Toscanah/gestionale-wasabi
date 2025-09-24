@@ -1,9 +1,9 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
-import getOrderById from "./getOrderById";
 import formatWhenLabel from "../../utils/domains/order/formatWhenLabel";
 import { updateOrderShift } from "./updateOrderShift";
 import { OrderContracts } from "../../shared";
+import { getOrderById } from "./getOrderById";
 
 export default async function updateOrderTime({
   time,

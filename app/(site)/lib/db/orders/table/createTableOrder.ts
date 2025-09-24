@@ -3,8 +3,6 @@ import prisma from "../../db";
 import { OrderContracts, TableOrder } from "@/app/(site)/lib/shared";
 import { engagementsInclude, productsInOrderInclude } from "../../includes";
 import { updateOrderShift } from "../updateOrderShift";
-import { isTableOrder } from "../../../utils/domains/order/orderParser";
-import { getOrderById } from "../getOrderById";
 
 export default async function createTableOrder({
   table,

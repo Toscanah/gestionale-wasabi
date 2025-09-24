@@ -68,7 +68,7 @@ export default async function getOrdersWithPayments(
     });
 
     return { ...order, ...paymentTotals };
-  });
+  }) as OrderWithSummedPayments[];
 
   return {
     orders: ordersWithPaymentTotals,

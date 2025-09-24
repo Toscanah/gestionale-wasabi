@@ -1,7 +1,7 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../db";
-import getOrderById from "./getOrderById";
 import { OrderContracts } from "../../shared";
+import { getOrderById } from "./getOrderById";
 
 export default async function updateOrderPaymentStatus({
   prepaid,

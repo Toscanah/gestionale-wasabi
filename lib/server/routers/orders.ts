@@ -1,7 +1,5 @@
 import { OrderContracts } from "@/app/(site)/lib/shared";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import getOrderById from "@/app/(site)/lib/db/orders/getOrderById";
-import getOrdersByType from "@/app/(site)/lib/db/orders/getOrdersByType";
 import getOrdersWithPayments from "@/app/(site)/lib/db/orders/getOrdersWithPayments";
 import createTableOrder from "@/app/(site)/lib/db/orders/table/createTableOrder";
 import createPickupOrder from "@/app/(site)/lib/db/orders/pickup/createPickupOrder";
@@ -20,7 +18,12 @@ import cancelOrdersInBulk from "@/app/(site)/lib/db/orders/cancelOrdersInBulk";
 import joinTableOrders from "@/app/(site)/lib/db/orders/table/joinTableOrders";
 import updateOrdersShift from "@/app/(site)/lib/db/orders/updateOrdersShift";
 import computeOrdersStats from "@/app/(site)/lib/db/orders/computeOrdersStats";
-import { OrderType } from "@prisma/client";
+import {
+  getHomeOrders,
+  getPickupOrders,
+  getTableOrders,
+} from "@/app/(site)/lib/db/orders/getOrdersByType";
+import { getOrderById } from "@/app/(site)/lib/db/orders/getOrderById";
 
 export const ordersRouter = createTRPCRouter({
   getById: publicProcedure
@@ -31,28 +34,17 @@ export const ordersRouter = createTRPCRouter({
   getHomeOrders: publicProcedure
     .input(OrderContracts.GetHomeOrders.Input)
     .output(OrderContracts.GetHomeOrders.Output)
-    .query(
-      ({ input }) =>
-        getOrdersByType({ type: OrderType.HOME }) as Promise<OrderContracts.GetHomeOrders.Output>
-    ),
+    .query(({ input }) => getHomeOrders()),
 
   getPickupOrders: publicProcedure
     .input(OrderContracts.GetPickupOrders.Input)
     .output(OrderContracts.GetPickupOrders.Output)
-    .query(
-      ({ input }) =>
-        getOrdersByType({
-          type: OrderType.PICKUP,
-        }) as Promise<OrderContracts.GetPickupOrders.Output>
-    ),
+    .query(({ input }) => getPickupOrders()),
 
   getTableOrders: publicProcedure
     .input(OrderContracts.GetTableOrders.Input)
     .output(OrderContracts.GetTableOrders.Output)
-    .query(
-      ({ input }) =>
-        getOrdersByType({ type: OrderType.TABLE }) as Promise<OrderContracts.GetTableOrders.Output>
-    ),
+    .query(({ input }) => getTableOrders()),
 
   getWithPayments: publicProcedure
     .input(OrderContracts.GetWithPayments.Input)

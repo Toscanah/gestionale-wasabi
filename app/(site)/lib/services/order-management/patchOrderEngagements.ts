@@ -1,5 +1,9 @@
-import { OrderType } from "@prisma/client";
-import { OrderByType, EngagementWithDetails, HomeOrder, ParsedEngagementTemplate, PickupOrder } from "../../shared";
+import {
+  OrderByType,
+  EngagementWithDetails,
+  ParsedEngagementTemplate,
+} from "../../shared";
+import { OrderGuards } from "../../shared/types/order-guards";
 
 interface PatchEngagementsParams {
   order: OrderByType;
@@ -10,7 +14,7 @@ interface PatchEngagementsParams {
   replaceEngagements?: EngagementWithDetails[];
 }
 
-export function patchOrderEngagements({
+export default function patchOrderEngagements({
   order,
   addEngagements = [],
   removeTemplateIds = [],
@@ -39,7 +43,7 @@ export function patchOrderEngagements({
     }
 
     // Apply engagement-level updates (like enabled toggle)
-    if (updateEngagements && updateEngagements.length > 0) {
+    if (updateEngagements.length > 0) {
       patched = patched.map((e) => {
         const patch = updateEngagements.find((u) => u.id === e.id);
         return patch ? { ...e, ...patch } : e;
@@ -50,42 +54,40 @@ export function patchOrderEngagements({
     return [...patched, ...addEngagements];
   };
 
+  // Always patch the top-level order.engagements
   const patchedEngagements = patchEngagementList(order.engagements);
-  const baseOrder: OrderByType = { ...order, engagements: patchedEngagements };
 
-  if (order.type == OrderType.HOME) {
-    const home = (order as HomeOrder).home_order;
-    if (!home) return baseOrder;
-
+  if (OrderGuards.isHome(order)) {
     return {
-      ...baseOrder,
+      ...order,
+      engagements: patchedEngagements,
       home_order: {
-        ...home,
+        ...order.home_order,
         customer: {
-          ...home.customer,
-          engagements: patchEngagementList(home.customer.engagements),
+          ...order.home_order.customer,
+          engagements: patchEngagementList(order.home_order.customer.engagements),
         },
+        address: order.home_order.address,
+        messages: order.home_order.messages,
       },
     };
   }
 
-  if (order.type === OrderType.PICKUP) {
-    const pickup = (order as PickupOrder).pickup_order;
-    if (!pickup) return baseOrder;
-
+  if (OrderGuards.isPickup(order)) {
     return {
-      ...baseOrder,
+      ...order,
+      engagements: patchedEngagements,
       pickup_order: {
-        ...pickup,
-        customer: pickup.customer
+        ...order.pickup_order,
+        customer: order.pickup_order.customer
           ? {
-              ...pickup.customer,
-              engagements: patchEngagementList(pickup.customer.engagements),
+              ...order.pickup_order.customer,
+              engagements: patchEngagementList(order.pickup_order.customer.engagements),
             }
           : null,
       },
     };
   }
 
-  return baseOrder;
+  return { ...order, engagements: patchedEngagements };
 }
