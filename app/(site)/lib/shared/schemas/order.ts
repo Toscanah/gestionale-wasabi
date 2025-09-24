@@ -1,7 +1,7 @@
 import { OrderType, PlannedPayment, WorkingShift } from "@prisma/client";
 import { z } from "zod";
 import {
-  AnyOrderSchema,
+  OrderByTypeSchema,
   HomeOrderInOrderSchema,
   OrderWithSummedPayments,
   PickupOrderInOrderSchema,
@@ -16,7 +16,7 @@ import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
 export namespace OrderContracts {
   export namespace Common {
-    export const AnyOrder = AnyOrderSchema;
+    export const AnyOrder = OrderByTypeSchema;
     export type AnyOrder = z.infer<typeof AnyOrder>;
 
     export const TableOrder = TableOrderInOrderSchema;

@@ -17,7 +17,7 @@ import {
 import { NoContentRequestSchema } from "./common/no-content";
 import SortingSchema from "./common/sorting";
 import { HomeOrderInOrderSchema, PickupOrderInOrderSchema } from "../models/Order";
-import { DottedKeys } from "../types/dotted-keys";
+import { DottedKeys } from "../types/DottedKeys";
 import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
 export const CUSTOMER_STATS_SORT_FIELDS = [

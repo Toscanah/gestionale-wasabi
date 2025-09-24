@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import useRice, { UpdateRiceInput } from "../hooks/rice/useRice";
 import useSettings from "../hooks/useSettings";
 import { GlobalSettings } from "../lib/shared/types/Settings";
@@ -7,7 +7,7 @@ import { OrderType } from "@prisma/client";
 import { Rice } from "../hooks/rice/useRiceState";
 
 export interface WasabiContextProps {
-  updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
+  updateGlobalState: (order: OrderByType, action: "update" | "delete" | "add") => void;
   rice: Rice;
   updateRice: ({ delta, threshold, log, selectedRiceBatchId }: UpdateRiceInput) => void;
   resetRice: () => void;
@@ -30,7 +30,7 @@ export const useWasabiContext = () => {
 
 interface WasabiProviderProps {
   children: ReactNode;
-  updateGlobalState: (order: AnyOrder, action: "update" | "delete" | "add") => void;
+  updateGlobalState: (order: OrderByType, action: "update" | "delete" | "add") => void;
 }
 
 type SelectedOrders = { id: number; type: OrderType };

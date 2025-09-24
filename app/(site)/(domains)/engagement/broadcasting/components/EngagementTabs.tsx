@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOrderContext } from "../../../../context/OrderContext";
 import {
-  AnyOrder,
+  OrderByType,
   EngagementWithDetails,
   HomeOrder,
   ParsedEngagementTemplate,
@@ -20,7 +20,7 @@ import { Trash } from "@phosphor-icons/react";
 import EngagementHistory from "./history/EngagementHistory";
 
 type OrderEngagementTabsProps = {
-  order: AnyOrder;
+  order: OrderByType;
   selectedTemplates: number[];
   onSelectTemplate: (id: number) => void;
   onCreateEngagement: () => void;

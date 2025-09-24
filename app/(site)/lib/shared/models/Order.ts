@@ -13,6 +13,8 @@ import { CustomerWithPhoneAndEngagementSchema } from "./Customer";
 import { OrderType } from "@prisma/client";
 import { EngagementWithDetailsSchema } from "./Engagement";
 
+/** ---------- Shared “base” enrichments (no relations yet) ---------- */
+
 export const OrderWithProducts = OrderSchema.extend({
   products: z.array(z.lazy(() => ProductInOrderWithOptionsSchema)),
 });
@@ -25,34 +27,41 @@ export const OrderWithEngagementsSchema = OrderSchema.extend({
   engagements: z.array(EngagementWithDetailsSchema),
 });
 
-export const OrderFullPaymentContextSchema = OrderWithProducts.extend(
-  OrderWithPaymentsSchema.pick({
-    payments: true,
-  }).shape
-);
-
+/** Full base (no per-type relation yet) */
 export const FullOrderSchema = OrderWithProducts.extend(
   OrderWithEngagementsSchema.pick({
     engagements: true,
   }).shape
 ).extend(OrderWithPaymentsSchema.pick({ payments: true }).shape);
 
+export const OrderFullPaymentContextSchema = OrderWithProducts.extend(
+  OrderWithPaymentsSchema.pick({
+    payments: true,
+  }).shape
+);
+
+/** ---------- Per-type “InOrder” shapes (discriminants) ---------- */
+/** Each branch sets the literal `type` and carries the right relation. */
+
 export const TableOrderInOrderSchema = FullOrderSchema.extend({
-  table_order: TableOrderSchema.nullable(),
+  type: z.literal(OrderType.TABLE),
+  table_order: TableOrderSchema, // present & validated
 });
 
 export const HomeOrderInOrderSchema = FullOrderSchema.extend({
+  type: z.literal(OrderType.HOME),
   home_order: HomeOrderSchema.extend({
     customer: z.lazy(() => CustomerWithPhoneAndEngagementSchema),
     address: AddressSchema,
     messages: z.array(MetaMessageLogSchema),
-  }).nullable(),
+  }),
 });
 
 export const PickupOrderInOrderSchema = FullOrderSchema.extend({
+  type: z.literal(OrderType.PICKUP),
   pickup_order: PickupOrderSchema.extend({
     customer: z.lazy(() => CustomerWithPhoneAndEngagementSchema).nullable(),
-  }).nullable(),
+  }),
 });
 
 export const TableOrderWithOrderSchema = TableOrderSchema.extend({
@@ -73,20 +82,23 @@ export const PickupOrderWithOrderSchema = PickupOrderSchema.extend({
   }),
 });
 
-export const OrderWithSummedPayments = OrderWithProducts.extend({
-  summedCash: z.number(),
-  summedCard: z.number(),
-  summedVouch: z.number(),
-})
-  .and(TableOrderInOrderSchema)
-  .and(HomeOrderInOrderSchema)
-  .and(PickupOrderInOrderSchema);
-
-export const AnyOrderSchema = z.union([
-  z.looseObject(TableOrderInOrderSchema.shape),
-  z.looseObject(HomeOrderInOrderSchema.shape),
-  z.looseObject(PickupOrderInOrderSchema.shape),
+/** ---------- The discriminated union (new name) ---------- */
+/** This replaces the old `OrderByTypeSchema`. */
+export const OrderByTypeSchema = z.discriminatedUnion("type", [
+  TableOrderInOrderSchema,
+  HomeOrderInOrderSchema,
+  PickupOrderInOrderSchema,
 ]);
+
+/** ---------- Complementary shapes you already use ---------- */
+
+export const OrderWithSummedPayments = z
+  .object({
+    summedCash: z.number(),
+    summedCard: z.number(),
+    summedVouch: z.number(),
+  })
+  .and(OrderByTypeSchema);
 
 export const LiteOrderSchema = OrderWithProducts.pick({
   id: true,
@@ -127,4 +139,4 @@ export type PickupOrderWithOrder = z.infer<typeof PickupOrderWithOrderSchema>;
 
 // --- Aggregated and Union Order Types ---
 export type OrderWithSummedPayments = z.infer<typeof OrderWithSummedPayments>;
-export type AnyOrder = z.infer<typeof AnyOrderSchema>;
+export type OrderByType = z.infer<typeof OrderByTypeSchema>;

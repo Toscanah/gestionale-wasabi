@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { AnyOrder, TableOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, TableOrder } from "@/app/(site)/lib/shared";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../../context/WasabiContext";
 import generateDummyProduct from "../../lib/services/product-management/generateDummyProduct";
@@ -14,13 +14,13 @@ export type RecursivePartial<T> = {
 
 export function useOrderManager(
   orderId: number,
-  setOrder: Dispatch<SetStateAction<AnyOrder>>,
+  setOrder: Dispatch<SetStateAction<OrderByType>>,
   dialogOpen: boolean
 ) {
   const { updateGlobalState, updateRemainingRice } = useWasabiContext();
   const [joinedTables, setJoinedTables] = useState<TableOrder[]>([]);
 
-  const updateOrder = (newOrder: RecursivePartial<AnyOrder>) =>
+  const updateOrder = (newOrder: RecursivePartial<OrderByType>) =>
     setOrder((prevOrder) => {
       const products = [
         ...(newOrder.products || prevOrder.products).filter((p: any) => p.id !== -1),
@@ -37,7 +37,7 @@ export function useOrderManager(
         ...newOrder,
         products,
         is_receipt_printed,
-      } as AnyOrder;
+      } as OrderByType;
 
       updateGlobalState(
         updatedOrder,
@@ -62,7 +62,7 @@ export function useOrderManager(
   };
 
   const createSubOrder = async (
-    parentOrder: AnyOrder,
+    parentOrder: OrderByType,
     products: ProductInOrder[],
     isReceiptPrinted: boolean
   ) => {
@@ -93,7 +93,7 @@ export function useOrderManager(
     toastSuccess("Tavoli uniti con successo");
   };
 
-  const issueLedgers = async (order: AnyOrder) => {
+  const issueLedgers = async (order: OrderByType) => {
     const redeemables = order.engagements?.filter((e) => e.enabled && e.template?.redeemable) ?? [];
     if (redeemables.length > 0 && order.type !== OrderType.TABLE) {
       await trpcClient.engagements.issueLedgers.mutate({ orderId });

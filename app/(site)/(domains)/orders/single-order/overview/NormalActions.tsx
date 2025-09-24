@@ -1,4 +1,4 @@
-import { AnyOrder, HomeOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { PayingAction } from "../OrderTable";
@@ -90,7 +90,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
     prepareParams();
   }, [order, hasConfirmationSent, templates]);
 
-  const maybeSendConfirmation = async (order: AnyOrder) => {
+  const maybeSendConfirmation = async (order: OrderByType) => {
     if (!hasConfirmationSent() && settings.whatsapp.active && settings.whatsapp.sendOrderConf) {
       await sendMessages({
         templateName: ORDER_CONFIRMATION_TEMPLATE_NAME,

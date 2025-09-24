@@ -1,5 +1,5 @@
 import { OrderType } from "@prisma/client";
-import { AnyOrder, HomeOrder, PickupOrder, Riders } from "../../shared";
+import { OrderByType, HomeOrder, PickupOrder, Riders } from "../../shared";
 
 type CalculateETAParams = {
   riders: Riders;

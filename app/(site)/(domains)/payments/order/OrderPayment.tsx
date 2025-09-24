@@ -1,4 +1,4 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { Separator } from "@/components/ui/separator";
 import getDiscountedTotal from "../../../lib/services/order-management/getDiscountedTotal";
 import { Icon } from "@phosphor-icons/react";
@@ -24,7 +24,7 @@ export interface OrderPaymentProps {
   stage: "FINAL" | "PARTIAL";
   onOrderPaid: (updatePayments: Payment[]) => void;
   onBackButton: () => void;
-  partialOrder?: AnyOrder;
+  partialOrder?: OrderByType;
   manualTotalAmount?: number;
 }
 

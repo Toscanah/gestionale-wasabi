@@ -2,7 +2,7 @@ import { useState, Dispatch, SetStateAction, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
@@ -14,10 +14,10 @@ import { Plus } from "@phosphor-icons/react";
 import { trpc } from "@/lib/server/client";
 
 interface TableProps {
-  setOrder: Dispatch<SetStateAction<AnyOrder>>;
+  setOrder: Dispatch<SetStateAction<OrderByType>>;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  order: AnyOrder;
+  order: OrderByType;
   children: ReactNode;
 }
 

@@ -1,5 +1,5 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import { KitchenType } from "@prisma/client";
@@ -45,7 +45,7 @@ const MAX_LABEL = 16;
 type ReceiptTitle = "SUSHI" | "CUCINA" | "ALTRO";
 
 export interface KitchenReceiptProps {
-  order: AnyOrder;
+  order: OrderByType;
 }
 
 export default function KitchenReceipt({ order }: KitchenReceiptProps) {

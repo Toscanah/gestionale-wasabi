@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { OrderStatus, PaymentScope, PaymentType } from "@prisma/client";
 import { DEFAULT_PAYMENT, Payment } from "../../context/OrderPaymentContext";
 import { useOrderContext } from "../../context/OrderContext";
@@ -11,7 +11,7 @@ import { trpc } from "@/lib/server/client";
 interface UseOrderPaymentParams extends Omit<OrderPaymentProps, "onBackButton" | "partialOrder"> {
   payment: Payment;
   setPayment: Dispatch<SetStateAction<Payment>>;
-  payingOrder: AnyOrder;
+  payingOrder: OrderByType;
 }
 
 export default function useOrderPayment({

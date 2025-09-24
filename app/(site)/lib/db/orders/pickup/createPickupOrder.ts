@@ -11,43 +11,32 @@ export default async function createPickupOrder({
 }: OrderContracts.CreatePickup.Input): Promise<OrderContracts.CreatePickup.Output> {
   return await prisma.$transaction(async (tx) => {
     let orderName = name;
-    let customerData = undefined;
+    let customerData: { connect: { id: number } } | undefined = undefined;
     let customerId: number | null = null;
 
     if (phone) {
       const existingPhone = await tx.phone.findUnique({
-        where: { phone: phone },
+        where: { phone },
         include: { customer: true },
       });
 
       if (existingPhone?.customer) {
         customerId = existingPhone.customer.id;
-        customerData = {
-          connect: { id: customerId },
-        };
+        customerData = { connect: { id: customerId } };
         orderName = existingPhone.customer.surname ?? name;
       } else {
-        const newPhone = await tx.phone.create({
-          data: { phone },
-        });
-
+        const newPhone = await tx.phone.create({ data: { phone } });
         const newCustomer = await tx.customer.create({
-          data: {
-            phone: {
-              connect: { id: newPhone.id },
-            },
-          },
+          data: { phone: { connect: { id: newPhone.id } } },
         });
 
-        customerData = {
-          connect: { id: newCustomer.id },
-        };
+        customerData = { connect: { id: newCustomer.id } };
         customerId = newCustomer.id;
       }
     }
 
     // Check if there's already an ACTIVE pickup order with this name
-    const existingOrder: PickupOrder | null = await tx.order.findFirst({
+    const existingOrder = await tx.order.findFirst({
       where: {
         type: OrderType.PICKUP,
         pickup_order: { name },
@@ -68,16 +57,18 @@ export default async function createPickupOrder({
     });
 
     if (existingOrder) {
-      return { order: existingOrder, isNewOrder: false };
+      // Cast into discriminated branch
+      const order: PickupOrder = {
+        ...existingOrder,
+        type: OrderType.PICKUP,
+        pickup_order: existingOrder.pickup_order!, // safe: type=Pickup
+      };
+      return { order, isNewOrder: false };
     }
 
     const customerEngagements =
       customerId !== null
-        ? await tx.engagement.findMany({
-            where: {
-              customer_id: customerId,
-            },
-          })
+        ? await tx.engagement.findMany({ where: { customer_id: customerId } })
         : [];
 
     // Create the order
@@ -88,11 +79,7 @@ export default async function createPickupOrder({
           connect: customerEngagements.map((e) => ({ id: e.id })),
         },
         pickup_order: {
-          create: {
-            name: orderName,
-            when,
-            customer: customerData,
-          },
+          create: { name: orderName, when, customer: customerData },
         },
       },
       include: {
@@ -111,17 +98,21 @@ export default async function createPickupOrder({
 
     if (customerEngagements.length > 0) {
       await tx.engagement.updateMany({
-        where: {
-          id: { in: customerEngagements.map((e) => e.id) },
-        },
-        data: {
-          enabled: true,
-          order_id: createdOrder.id,
-        },
+        where: { id: { in: customerEngagements.map((e) => e.id) } },
+        data: { enabled: true, order_id: createdOrder.id },
       });
     }
 
     const shift = await updateOrderShift({ orderId: createdOrder.id, tx });
-    return { order: { ...createdOrder, shift }, isNewOrder: true };
+
+    // Shape into the discriminated union branch
+    const order: PickupOrder = {
+      ...createdOrder,
+      type: OrderType.PICKUP,
+      pickup_order: createdOrder.pickup_order!, // safe
+      shift,
+    };
+
+    return { order, isNewOrder: true };
   });
 }

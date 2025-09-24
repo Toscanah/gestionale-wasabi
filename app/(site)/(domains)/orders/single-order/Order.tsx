@@ -2,7 +2,7 @@ import { TableCell } from "@/components/ui/table";
 import { Cell, flexRender } from "@tanstack/react-table";
 import OrderTable from "./OrderTable";
 import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { FormEvent, useState } from "react";
 import { OrderProvider } from "../../../context/OrderContext";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ import { Warning } from "@phosphor-icons/react";
 import { OrderType } from "@prisma/client";
 
 interface OrderProps {
-  cell: Cell<AnyOrder, unknown>;
+  cell: Cell<OrderByType, unknown>;
   className: string;
   isOverdrawn: boolean;
 }

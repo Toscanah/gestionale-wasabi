@@ -1,5 +1,5 @@
 import { Br, Cut, Line, Text } from "react-thermal-printer";
-import { AnyOrder, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/info/OrderInfoSection";
@@ -11,13 +11,13 @@ import SingleEngagement from "../common/SingleEngagement";
 import { Fragment } from "react";
 
 export interface OrderReceiptProps {
-  order: AnyOrder;
+  order: OrderByType;
   plannedPayment: PlannedPayment;
   putInfo?: boolean;
   forceCut?: boolean;
 }
 
-export default function OrderReceipt<T extends AnyOrder>({
+export default function OrderReceipt<T extends OrderByType>({
   order,
   plannedPayment,
   putInfo = true,

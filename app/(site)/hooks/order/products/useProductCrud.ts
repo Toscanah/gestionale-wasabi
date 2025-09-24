@@ -1,5 +1,5 @@
 import generateDummyProduct from "@/app/(site)/lib/services/product-management/generateDummyProduct";
-import { AnyOrder, ProductInOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, ProductInOrder } from "@/app/(site)/lib/shared";
 import { toastError } from "@/app/(site)/lib/utils/global/toast";
 import { productsAPI } from "@/lib/server/api";
 import { Table } from "@tanstack/react-table";
@@ -7,7 +7,7 @@ import { useState } from "react";
 import { UpdateProductsListFunction } from "../useProductsManager";
 
 type UseProductCrudParams = {
-  order: AnyOrder;
+  order: OrderByType;
   updateProductsList: UpdateProductsListFunction;
 };
 

@@ -13,7 +13,7 @@ import {
 } from "./common/toggle-delete-entity";
 import { OptionInProductOrderWithOptionSchema } from "../models/Option";
 import SortingSchema from "./common/sorting";
-import { DottedKeys } from "../types/dotted-keys";
+import { DottedKeys } from "../types/DottedKeys";
 import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
 
 export const PRODUCT_STATS_SORT_FIELDS = [

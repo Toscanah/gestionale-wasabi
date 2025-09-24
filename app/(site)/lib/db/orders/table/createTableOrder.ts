@@ -2,6 +2,9 @@ import { OrderStatus, OrderType } from "@prisma/client";
 import prisma from "../../db";
 import { OrderContracts, TableOrder } from "@/app/(site)/lib/shared";
 import { engagementsInclude, productsInOrderInclude } from "../../includes";
+import { updateOrderShift } from "../updateOrderShift";
+import { isTableOrder } from "../../../utils/domains/order/orderParser";
+import { getOrderById } from "../getOrderById";
 
 export default async function createTableOrder({
   table,
@@ -11,9 +14,7 @@ export default async function createTableOrder({
   const existingOrder = await prisma.order.findFirst({
     where: {
       type: OrderType.TABLE,
-      table_order: {
-        table: table,
-      },
+      table_order: { table },
       status: OrderStatus.ACTIVE,
     },
     include: {
@@ -25,7 +26,12 @@ export default async function createTableOrder({
   });
 
   if (existingOrder) {
-    return { order: existingOrder, isNewOrder: false };
+    const order: TableOrder = {
+      ...existingOrder,
+      type: OrderType.TABLE,
+      table_order: existingOrder.table_order!, // safe because type = TABLE
+    };
+    return { order, isNewOrder: false };
   }
 
   const newOrder = await prisma.order.create({
@@ -33,7 +39,7 @@ export default async function createTableOrder({
       type: OrderType.TABLE,
       table_order: {
         create: {
-          table: table,
+          table,
           res_name: resName ?? "",
           people: Number(people),
         },
@@ -47,5 +53,10 @@ export default async function createTableOrder({
     },
   });
 
-  return { order: newOrder, isNewOrder: true };
+  await updateOrderShift({ orderId: newOrder.id });
+
+  const updatedOrder = await getOrderById({ orderId: newOrder.id, type: OrderType.TABLE });
+
+  // ✅ TS now knows this is a TableOrder
+  return { order: updatedOrder, isNewOrder: true };
 }

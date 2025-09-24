@@ -1,5 +1,5 @@
 import { OrderType, PlannedPayment } from "@prisma/client";
-import { AnyOrder, HomeOrder } from "../../lib/shared";
+import { OrderByType, HomeOrder } from "../../lib/shared";
 import KitchenReceipt from "../../(domains)/printing/receipts/KitchenReceipt";
 import OrderReceipt from "../../(domains)/printing/receipts/OrderReceipt";
 import RiderReceipt from "../../(domains)/printing/receipts/RiderReceipt";
@@ -9,7 +9,7 @@ import { useOrderContext } from "../../context/OrderContext";
 import usePrinter from "./usePrinter";
 
 interface UsePrintingActionsParams {
-  maybeSendConfirmation?: (order: AnyOrder) => Promise<void>;
+  maybeSendConfirmation?: (order: OrderByType) => Promise<void>;
 }
 
 export default function usePrintingActions({ maybeSendConfirmation }: UsePrintingActionsParams) {
@@ -17,7 +17,7 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
     useOrderContext();
   const { printKitchen, printOrder, printRider, printEngagements } = usePrinter();
 
-  function getAtomicProducts(order: AnyOrder) {
+  function getAtomicProducts(order: OrderByType) {
     return order.products.map((p) => ({
       ...p,
       to_be_printed: p.quantity,
@@ -25,7 +25,7 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
   }
 
   async function buildPrintContent(
-    order: AnyOrder,
+    order: OrderByType,
     plannedPayment: PlannedPayment,
     isRePrint = false
   ) {
@@ -62,7 +62,7 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
 
   // ---------- High-level orchestrated actions ----------
 
-  async function handleKitchenRePrint(order: AnyOrder) {
+  async function handleKitchenRePrint(order: OrderByType) {
     await updatePrintedProducts();
     const allProducts = getAtomicProducts(order);
     await printKitchen({
@@ -70,7 +70,7 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
     });
   }
 
-  async function handleOrderRePrint(order: AnyOrder, plannedPayment: PlannedPayment) {
+  async function handleOrderRePrint(order: OrderByType, plannedPayment: PlannedPayment) {
     const content: PrintContent[] = [];
 
     content.push(() =>
@@ -91,13 +91,13 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
     await print(...content);
   }
 
-  async function handleFullRePrint(order: AnyOrder, plannedPayment: PlannedPayment) {
+  async function handleFullRePrint(order: OrderByType, plannedPayment: PlannedPayment) {
     await updatePrintedFlag();
     const content = await buildPrintContent(order, plannedPayment, true);
     await print(...content);
   }
 
-  async function handlePrint(order: AnyOrder, plannedPayment: PlannedPayment) {
+  async function handlePrint(order: OrderByType, plannedPayment: PlannedPayment) {
     await updatePrintedFlag();
     const content = await buildPrintContent(order, plannedPayment, false);
     await issueLedgers(order);

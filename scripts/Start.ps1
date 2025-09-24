@@ -38,7 +38,7 @@ function Update-Dependencies {
     Write-Host "`n[INFO] Imposto il database" -ForegroundColor Magenta
     Push-Location ..
     & npx prisma db push
-    & npx prisma generate
+    & npx prisma generate --sql
     Pop-Location
 
     Write-Host "`n[INFO] Costruisco il programma" -ForegroundColor Magenta

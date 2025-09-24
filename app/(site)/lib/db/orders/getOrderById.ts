@@ -1,4 +1,4 @@
-import { OrderContracts } from "@/app/(site)/lib/shared";
+import { OrderType } from "@prisma/client";
 import prisma from "../db";
 import {
   engagementsInclude,
@@ -6,21 +6,50 @@ import {
   pickupOrderInclude,
   productInOrderInclude,
 } from "../includes";
+import {
+  OrderByType,
+  TableOrder,
+  HomeOrder,
+  PickupOrder,
+  OrderContracts,
+} from "@/app/(site)/lib/shared";
 
-export default async function getOrderById({
+type OrderVariant = "onlyPaid" | "all";
+
+/** ---------- Overloads ---------- */
+export async function getOrderById(params: {
+  orderId: number;
+  type: "HOME";
+  variant?: OrderVariant;
+}): Promise<TableOrder>;
+export async function getOrderById(params: {
+  orderId: number;
+  type: "TABLE";
+  variant?: OrderVariant;
+}): Promise<HomeOrder>;
+export async function getOrderById(params: {
+  orderId: number;
+  type: "PICKUP";
+  variant?: OrderVariant;
+}): Promise<PickupOrder>;
+export async function getOrderById(params: {
+  orderId: number;
+  variant?: OrderVariant;
+}): Promise<OrderByType>;
+
+export async function getOrderById({
   orderId,
+  type,
   variant = "onlyPaid",
-}: OrderContracts.GetById.Input): Promise<OrderContracts.GetById.Output> {
+}: {
+  orderId: number;
+  type?: OrderType;
+  variant?: OrderVariant;
+}): Promise<OrderByType> {
   const existingOrder = await prisma.order.findUnique({
-    where: {
-      id: orderId,
-    },
+    where: { id: orderId },
     include: {
-      products: {
-        include: {
-          ...productInOrderInclude,
-        },
-      },
+      products: { include: { ...productInOrderInclude } },
       payments: true,
       ...homeOrderInclude,
       ...pickupOrderInclude,
@@ -33,18 +62,43 @@ export default async function getOrderById({
     throw new Error(`Order with id ${orderId} not found`);
   }
 
-  // Filter products manually if needed
   const filteredProducts =
     variant === "onlyPaid"
       ? existingOrder.products.filter((p) => (p.paid_quantity ?? 0) < p.quantity)
       : existingOrder.products;
 
-  return {
-    ...existingOrder,
-    products: filteredProducts,
-    // engagements: existingOrder.engagements.map((e) => ({
-    //   ...e,
-    //   template: normalizeTemplatePayload(e.template),
-    // })),
-  };
+  // Build strongly typed object based on discriminator
+  let order: OrderByType;
+  switch (existingOrder.type) {
+    case OrderType.TABLE:
+      order = {
+        ...existingOrder,
+        type: OrderType.TABLE,
+        products: filteredProducts,
+        table_order: existingOrder.table_order!,
+      };
+      break;
+    case OrderType.HOME:
+      order = {
+        ...existingOrder,
+        type: OrderType.HOME,
+        products: filteredProducts,
+        home_order: existingOrder.home_order!,
+      };
+      break;
+    case OrderType.PICKUP:
+      order = {
+        ...existingOrder,
+        type: OrderType.PICKUP,
+        products: filteredProducts,
+        pickup_order: existingOrder.pickup_order!,
+      };
+      break;
+  }
+
+  if (type && order.type !== type) {
+    throw new Error(`Expected ${type} order but got ${order.type}`);
+  }
+
+  return order;
 }

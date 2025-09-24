@@ -1,9 +1,9 @@
-import { AnyOrder, ProductInOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, ProductInOrder } from "@/app/(site)/lib/shared";
 import { UpdateProductsListFunction } from "../useProductsManager";
 import { productsAPI } from "@/lib/server/api";
 
 type UseProductPrintingParams = {
-  order: AnyOrder;
+  order: OrderByType;
   updateProductsList: UpdateProductsListFunction;
 };
 

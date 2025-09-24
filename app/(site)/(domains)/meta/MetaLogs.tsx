@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
-import { AnyOrder, HomeOrder } from "../../lib/shared";
+import { OrderByType, HomeOrder } from "../../lib/shared";
 import {
   Accordion,
   AccordionContent,
@@ -12,7 +12,7 @@ import { MessageDirection } from "@prisma/client";
 import { cn } from "@/lib/utils";
 
 type MetaLogsProps = {
-  order: AnyOrder;
+  order: OrderByType;
 };
 
 export default function MetaLogs({ order }: MetaLogsProps) {

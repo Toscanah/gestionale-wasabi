@@ -3,7 +3,7 @@
 import getColumns from "./getColumns";
 import { OrderType } from "@prisma/client";
 import { Cell } from "@tanstack/react-table";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import Order from "./single-order/Order";
 import useTable from "../../hooks/table/useTable";
 import Table from "../../components/table/Table";
@@ -12,14 +12,14 @@ import { useWasabiContext } from "../../context/WasabiContext";
 import useSkeletonTable from "../../hooks/table/useSkeletonTable";
 
 export interface OrdersTableProps {
-  data: AnyOrder[];
+  data: OrderByType[];
   type: OrderType;
   overdrawnOrderIds: Set<number>;
   isLoading: boolean;
 }
 
 interface CustomCellProps {
-  cell: Cell<AnyOrder, unknown>;
+  cell: Cell<OrderByType, unknown>;
   className: string;
 }
 
@@ -38,7 +38,7 @@ export default function OrdersTable({
     isLoading,
     pageSize: data.length,
   });
-  const table = useTable<AnyOrder>({
+  const table = useTable<OrderByType>({
     data: tableData,
     columns: tableColumns.slice(isLoading ? 1 : 0),
   });

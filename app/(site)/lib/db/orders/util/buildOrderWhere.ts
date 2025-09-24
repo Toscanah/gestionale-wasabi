@@ -22,6 +22,10 @@ export default function buildOrderWhere(
   const { orderTypes, shift, period, query } = filters ?? {};
   const normalizedPeriod = normalizePeriod(period);
 
+  console.log("given", period)
+
+  console.log(normalizedPeriod)
+
   let where: Prisma.OrderWhereInput = {
     payments: { some: {} },
   };
@@ -77,6 +81,8 @@ export default function buildOrderWhere(
       lte: endOfDay(baseTo),
     };
   }
+
+  console.log(where)
 
   return where;
 }

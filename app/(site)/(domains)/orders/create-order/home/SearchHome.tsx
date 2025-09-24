@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
 import OrderTable from "../../single-order/OrderTable";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { HandPalm } from "@phosphor-icons/react";
 import Home from "./Home";
 import { toastError } from "@/app/(site)/lib/utils/global/toast";
@@ -14,10 +14,10 @@ import { OrderType } from "@prisma/client";
 import { CreateHomeOrderProvider } from "@/app/(site)/context/CreateHomeOrderContext";
 
 interface SearchHomeProps {
-  setOrder: Dispatch<SetStateAction<AnyOrder>>;
+  setOrder: Dispatch<SetStateAction<OrderByType>>;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  order: AnyOrder;
+  order: OrderByType;
   children: ReactNode;
 }
 

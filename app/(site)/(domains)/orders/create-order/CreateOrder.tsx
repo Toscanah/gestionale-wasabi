@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { OrderType } from "@prisma/client";
 import Table from "./table/Table";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import generateEmptyOrder from "../../../lib/services/order-management/generateEmptyOrder";
 import Pickup from "./pickup/Pickup";
 import SearchHome from "./home/SearchHome";
@@ -15,7 +15,7 @@ interface CreateOrderProps {
 }
 
 export default function CreateOrder({ type, triggerClassName, children }: CreateOrderProps) {
-  const [order, setOrder] = useState<AnyOrder>(generateEmptyOrder(type));
+  const [order, setOrder] = useState<OrderByType>(generateEmptyOrder(type));
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {

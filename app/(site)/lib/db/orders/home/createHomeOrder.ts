@@ -16,8 +16,8 @@ export default async function createHomeOrder({
       },
     });
 
-    // 2. Create the order and attach engagements
-    const order = await tx.order.create({
+    // Create the order and attach engagements
+    const created = await tx.order.create({
       data: {
         type: OrderType.HOME,
         engagements: {
@@ -40,19 +40,24 @@ export default async function createHomeOrder({
       },
     });
 
-    // 3. Mark those engagements as APPLIED
+    // Mark those engagements as APPLIED
     if (customerEngagements.length > 0) {
       await tx.engagement.updateMany({
-        where: {
-          id: { in: customerEngagements.map((e) => e.id) },
-        },
-        data: {
-          order_id: order.id,
-        },
+        where: { id: { in: customerEngagements.map((e) => e.id) } },
+        data: { order_id: created.id },
       });
     }
 
-    const shift = await updateOrderShift({ orderId: order.id, tx });
-    return { ...order, shift };
+    const shift = await updateOrderShift({ orderId: created.id, tx });
+
+    // Shape as the discriminated union branch (HomeOrder)
+    const order: HomeOrder = {
+      ...created,
+      type: OrderType.HOME,
+      home_order: created.home_order!, // guaranteed non-null for HOME
+      shift,
+    };
+
+    return order;
   });
 }

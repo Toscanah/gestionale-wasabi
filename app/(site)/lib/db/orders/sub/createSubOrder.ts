@@ -4,14 +4,14 @@ import createPickupOrder from "../pickup/createPickupOrder";
 import createTableOrder from "../table/createTableOrder";
 import addProductsToOrder from "../../products/addProductsToOrder";
 import getOrderById from "../getOrderById";
-import { AnyOrder, OrderContracts, PickupOrder, TableOrder } from "../../../shared";
+import { OrderByType, OrderContracts, PickupOrder, TableOrder } from "../../../shared";
 
 export default async function createSubOrder({
   parentOrder,
   products,
   isReceiptPrinted,
 }: OrderContracts.CreateSub.Input): Promise<OrderContracts.CreateSub.Output> {
-  let newSubOrder: AnyOrder | undefined;
+  let newSubOrder: OrderByType | undefined;
 
   const suborderCount = await prisma.order.count({
     where: {
@@ -23,7 +23,7 @@ export default async function createSubOrder({
   });
 
   const suborderNumber = suborderCount + 1;
-  let order: AnyOrder;
+  let order: OrderByType;
 
   switch (parentOrder.type) {
     case OrderType.PICKUP:

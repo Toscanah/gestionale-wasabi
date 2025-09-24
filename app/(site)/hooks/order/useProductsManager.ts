@@ -1,4 +1,4 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import generateDummyProduct from "../../lib/services/product-management/generateDummyProduct";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { toastSuccess } from "../../lib/utils/global/toast";
@@ -19,8 +19,8 @@ export type UpdateProductsListFunction = (params: {
 }) => void;
 
 export function useProductsManager(
-  order: AnyOrder,
-  updateOrder: (order: RecursivePartial<AnyOrder>) => void
+  order: OrderByType,
+  updateOrder: (order: RecursivePartial<OrderByType>) => void
 ) {
   const updateProductsList: UpdateProductsListFunction = ({
     addedProducts = [],

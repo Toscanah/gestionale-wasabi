@@ -1,9 +1,9 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { productsAPI } from "@/lib/server/api";
 import { UpdateProductsListFunction } from "../useProductsManager";
 
 type UseProductModsParans = {
-  order: AnyOrder;
+  order: OrderByType;
   updateProductsList: UpdateProductsListFunction;
 };
 

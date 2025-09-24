@@ -1,7 +1,7 @@
 import { PaymentSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
 import { ProductInOrderWithOptionsSchema } from "../models/Product";
-import { AnyOrderSchema } from "../models/Order";
+import { OrderByTypeSchema } from "../models/Order";
 import { PaymentType } from "@prisma/client";
 import { OrderContracts } from "./order";
 import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
@@ -63,7 +63,7 @@ export namespace PaymentContracts {
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = AnyOrderSchema;
+    export const Output = OrderByTypeSchema;
     export type Output = z.infer<typeof Output>;
   }
 

@@ -1,6 +1,6 @@
 import { EngagementWithDetails } from "@/app/(site)/lib/shared";
 import { OrderEngagementTabs } from "./EngagementTabs";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import WasabiDialog, { WasabiDialogProps } from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import useHandleEngagement from "@/app/(site)/hooks/engagement/useHandleEngagement";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
@@ -8,7 +8,7 @@ import { Dispatch, SetStateAction } from "react";
 
 type OrderEngagementDialogProps = {
   trigger: WasabiDialogProps["trigger"];
-  order: AnyOrder;
+  order: OrderByType;
   onSuccess: (engagements: EngagementWithDetails[]) => void;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;

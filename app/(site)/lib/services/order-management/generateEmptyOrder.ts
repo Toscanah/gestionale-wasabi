@@ -1,7 +1,7 @@
 import { OrderStatus, OrderType, WorkingShift } from "@prisma/client";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 
-export default function generateEmptyOrder(orderType: OrderType): AnyOrder {
+export default function generateEmptyOrder(orderType: OrderType): OrderByType {
   return {
     discount: 0,
     engagements: [],

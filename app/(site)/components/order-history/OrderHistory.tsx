@@ -62,6 +62,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
   }
 
   const handleAccordionChange = (value: string) => {
+    if (!onCreate) return;
     if (!value) return resetProductSelection();
 
     const [orderType, orderIdString] = value.split("-");

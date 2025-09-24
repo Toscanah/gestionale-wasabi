@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AnyOrder } from "../../lib/shared";
+import { OrderByType } from "../../lib/shared";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { toastError, toastSuccess } from "../../lib/utils/global/toast";
 import { TemplateParamsMap } from "./useTemplatesParams";
@@ -31,7 +31,7 @@ export default function useMetaTemplates({ open, paramsMap }: UseMetaTemplatesPa
     toast = true,
   }: {
     templateName?: string;
-    order?: AnyOrder;
+    order?: OrderByType;
     toast?: boolean;
   } = {}): Promise<boolean> => {
     const VAR_REGEX = /\{\{(\d+)\}\}/g;

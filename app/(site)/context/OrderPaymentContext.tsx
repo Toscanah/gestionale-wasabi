@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { PaymentType } from "@prisma/client";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import useOrderPayment from "../hooks/order/useOrderPayment";
 import roundToTwo from "../lib/utils/global/number/roundToTwo";
 import { useOrderContext } from "./OrderContext";
@@ -19,7 +19,7 @@ interface OrderPaymentContextProps {
   activeTool: "manual" | "table";
   setPaymentCalculations: React.Dispatch<React.SetStateAction<PaymentCalculation[]>>;
   resetPayment: () => void;
-  order: AnyOrder;
+  order: OrderByType;
   orderTotal: number;
 }
 

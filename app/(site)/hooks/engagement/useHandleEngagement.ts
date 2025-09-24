@@ -1,11 +1,11 @@
 import { OrderType } from "@prisma/client";
 import { useState } from "react";
-import { AnyOrder, EngagementWithDetails, HomeOrder, PickupOrder } from "../../lib/shared";
+import { OrderByType, EngagementWithDetails, HomeOrder, PickupOrder } from "../../lib/shared";
 import { trpc } from "@/lib/server/client";
 
 export type UseHandleEngagementParams =
-  | { order: AnyOrder; customerIds?: number[] }
-  | { order?: AnyOrder; customerIds: number[] };
+  | { order: OrderByType; customerIds?: number[] }
+  | { order?: OrderByType; customerIds: number[] };
 
 export default function useHandleEngagement({ order, customerIds }: UseHandleEngagementParams) {
   if (!order && !customerIds) {

@@ -7,7 +7,7 @@ import React, {
   SetStateAction,
   useEffect,
 } from "react";
-import { AnyOrder, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
+import { OrderByType, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import useCustomerLookup from "../hooks/create-home-order/useCustomerLookup";
 import { useWasabiContext } from "./WasabiContext";
 import { FormValues } from "../(domains)/orders/create-order/home/address/form";
@@ -40,7 +40,7 @@ type CreateHomeOrderType = {
 
 type CreateHomeOrderProps = {
   children: ReactNode;
-  setOrder: Dispatch<SetStateAction<AnyOrder>>;
+  setOrder: Dispatch<SetStateAction<OrderByType>>;
   initialPhone: string;
   initialDoorbell: string;
 };

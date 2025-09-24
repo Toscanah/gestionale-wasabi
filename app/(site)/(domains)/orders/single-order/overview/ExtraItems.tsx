@@ -2,7 +2,7 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import calculateExtraItems from "@/app/(site)/lib/services/order-management/calculateExtraItems";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -110,7 +110,7 @@ export default function ExtraItems() {
   const updateExtraMutation = trpc.orders.updateExtraItems.useMutation();
 
   const debouncedUpdateAllExtras = useCallback(
-    debounce((extras: ManualExtras, order: AnyOrder) => {
+    debounce((extras: ManualExtras, order: OrderByType) => {
       const { soupsFromProducts, saladsFromProducts, ricesFromProducts } =
         calculateExtraItems(order);
 

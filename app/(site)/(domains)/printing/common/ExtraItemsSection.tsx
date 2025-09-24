@@ -1,10 +1,10 @@
 import { Br, Text } from "react-thermal-printer";
 import calculateExtraItems from "../../../lib/services/order-management/calculateExtraItems";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { SMALL_PRINT } from "../constants";
 
 interface ExtraItemsProps {
-  order: AnyOrder;
+  order: OrderByType;
 }
 
 export default function ExtraItemsSection({ order }: ExtraItemsProps) {

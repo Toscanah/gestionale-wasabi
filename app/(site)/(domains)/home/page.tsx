@@ -2,7 +2,7 @@
 
 import { WasabiProvider } from "../../context/WasabiContext";
 import { OrderType } from "@prisma/client";
-import { TableOrder, HomeOrder, PickupOrder, AnyOrder } from "@/app/(site)/lib/shared";
+import { TableOrder, HomeOrder, PickupOrder, OrderByType } from "@/app/(site)/lib/shared";
 import HomePage from "./HomePage";
 import { trpc } from "@/lib/server/client";
 import { ordersAPI } from "@/lib/server/api";
@@ -50,7 +50,7 @@ export default function HomeWrapper() {
     [OrderType.TABLE]: tableLoading || tableFetching,
   };
 
-  const updateGlobalState = (order: AnyOrder, action: UpdateStateAction) => {
+  const updateGlobalState = (order: OrderByType, action: UpdateStateAction) => {
     const cacheUpdaters: Record<OrderType, (updater: (prev: any[]) => any[]) => void> = {
       [OrderType.HOME]: (updater: (prev: HomeOrder[]) => HomeOrder[]) =>
         utils.orders.getHomeOrders.setData(undefined, (prev = []) => updater(prev)),
@@ -60,8 +60,8 @@ export default function HomeWrapper() {
         utils.orders.getTableOrders.setData(undefined, (prev = []) => updater(prev)),
     };
 
-    const updateFn = (prev: AnyOrder[]) => {
-      const actions: Record<UpdateStateAction, () => AnyOrder[]> = {
+    const updateFn = (prev: OrderByType[]) => {
+      const actions: Record<UpdateStateAction, () => OrderByType[]> = {
         update: () => prev.map((o) => (o.id === order.id ? order : o)),
         delete: () => prev.filter((o) => o.id !== order.id),
         add: () => [...prev, order],

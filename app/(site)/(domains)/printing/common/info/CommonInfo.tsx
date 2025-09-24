@@ -1,4 +1,4 @@
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { PlannedPayment } from "@prisma/client";
 import ExtraItemsSection from "../ExtraItemsSection";
 import { Line, Text } from "react-thermal-printer";
@@ -8,7 +8,7 @@ import PaymentNotesSection from "../PaymentNotesSection";
 import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
 
 interface CommonInfoProps {
-  order: AnyOrder;
+  order: OrderByType;
   plannedPayment: PlannedPayment;
   putExtraItems: boolean;
   preferences: string | undefined;

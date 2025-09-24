@@ -1,11 +1,11 @@
-import { AnyOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import { OrderType, PlannedPayment } from "@prisma/client";
 import CommonInfo from "./CommonInfo";
 import HomeInfo from "./HomeInfo";
 import { AddressType } from "@/prisma/generated/schemas";
 
 interface OrderInfoSectionProps {
-  order: AnyOrder;
+  order: OrderByType;
   plannedPayment: PlannedPayment;
   options: {
     putExtraItems?: boolean;

@@ -1,5 +1,5 @@
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
-import { AnyOrder } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/app/(site)/lib/shared";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,8 +16,8 @@ import OrderTable from "../../single-order/OrderTable";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/server/client";
 interface PickupProps {
-  setOrder: Dispatch<SetStateAction<AnyOrder>>;
-  order: AnyOrder;
+  setOrder: Dispatch<SetStateAction<OrderByType>>;
+  order: OrderByType;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   children: ReactNode;

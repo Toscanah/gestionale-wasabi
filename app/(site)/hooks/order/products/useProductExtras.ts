@@ -1,10 +1,10 @@
 import { ExtraItems } from "@/app/(site)/(domains)/orders/single-order/overview/ExtraItems";
 import calculateExtraItems from "@/app/(site)/lib/services/order-management/calculateExtraItems";
-import { AnyOrder, ProductInOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, ProductInOrder } from "@/app/(site)/lib/shared";
 import { ordersAPI } from "@/lib/server/api";
 
 type UseProductExtrasParams = {
-  order: AnyOrder;
+  order: OrderByType;
 };
 
 export default function useProductExtras({ order }: UseProductExtrasParams) {

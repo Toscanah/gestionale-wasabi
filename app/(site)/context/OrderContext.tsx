@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
-import { AnyOrder, OrderContracts } from "@/app/(site)/lib/shared";
+import { OrderByType, OrderContracts } from "@/app/(site)/lib/shared";
 import { useProductsManager } from "../hooks/order/useProductsManager";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Table } from "@tanstack/react-table";
@@ -7,7 +7,7 @@ import generateDummyProduct from "../lib/services/product-management/generateDum
 import { RecursivePartial, useOrderManager } from "../hooks/order/useOrderManager";
 
 interface OrderProviderProps {
-  order: AnyOrder;
+  order: OrderByType;
   children: ReactNode;
   dialogOpen: boolean;
   setDialogOpen: Dispatch<SetStateAction<boolean>>;
@@ -16,13 +16,13 @@ interface OrderProviderProps {
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 interface OrderContextType {
-  setOrder: Dispatch<SetStateAction<AnyOrder>>;
-  order: AnyOrder;
+  setOrder: Dispatch<SetStateAction<OrderByType>>;
+  order: OrderByType;
   dialogOpen: boolean;
   toggleDialog: (dialogOpen: boolean) => void;
   cancelOrder: (cooked: boolean) => Promise<void>;
   createSubOrder: (
-    parentOrder: AnyOrder,
+    parentOrder: OrderByType,
     products: ProductInOrder[],
     isReceiptPrinted: boolean
   ) => Promise<void>;
@@ -35,11 +35,11 @@ interface OrderContextType {
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
   updateProductOption: (productInOrderId: number, optionId: number) => void;
   updatePrintedProducts: () => Promise<ProductInOrder[]>;
-  updateOrder: (order: RecursivePartial<AnyOrder> ) => void;
+  updateOrder: (order: RecursivePartial<OrderByType> ) => void;
   updatePrintedFlag: () => Promise<OrderContracts.UpdatePrintedFlag.Output>;
   joinTableOrders: (tableToJoin: string) => void;
   updateProductVariation: (variation: string, productInOrderId: number) => void;
-  issueLedgers: (order: AnyOrder) => Promise<void>;
+  issueLedgers: (order: OrderByType) => Promise<void>;
 }
 
 export const OrderProvider = ({
@@ -48,7 +48,7 @@ export const OrderProvider = ({
   dialogOpen,
   setDialogOpen,
 }: OrderProviderProps) => {
-  const [order, setOrder] = useState<AnyOrder>({
+  const [order, setOrder] = useState<OrderByType>({
     ...initialOrder,
     products: [
       ...(initialOrder.products ?? []).filter((p) => p.id !== -1),
