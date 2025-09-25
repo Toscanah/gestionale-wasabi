@@ -12,9 +12,12 @@ export default async function updateOrdersShift(
   });
 
   return await Promise.all(
-    orders.map(async (o) => ({
-      orderId: o.id,
-      updatedShift: await updateOrderShift({ orderId: o.id }),
-    }))
+    orders.map(async (o, i) => {
+      console.log(`Updating order id: ${o.id}. ${i + 1}/${orders.length}`);
+      return {
+        orderId: o.id,
+        updatedShift: await updateOrderShift({ orderId: o.id }),
+      };
+    })
   );
 }
