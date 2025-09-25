@@ -20,7 +20,7 @@ export default function SortDirectionSelector({
       <span>Grande</span>
       <ArrowRight
         className={`h-4 w-4 transition-transform duration-700 ease-in-out ${
-          direction === "asc" ? "" : "rotate-[-540deg]"
+          direction === "desc" ? "" : "rotate-[-540deg]"
         }`}
         style={{
           transitionProperty: "transform",
