@@ -15,8 +15,8 @@ export default function Footer() {
   return (
     <SidebarFooter>
       <SidebarMenu className="p-2">
-        <Button onClick={() => fixMutation.mutate()}>
-          temporaneo, non cliccare se non c'è ale
+        <Button variant={"destructive"} onClick={() => fixMutation.mutate()}>
+          Shifts backfill, NO TOUCH
         </Button>
       </SidebarMenu>
     </SidebarFooter>
