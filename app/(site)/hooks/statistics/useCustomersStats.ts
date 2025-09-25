@@ -82,6 +82,11 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     placeholderData: (prev) => prev,
   });
 
+  const baseMap = useMemo(
+    () => new Map(baseQuery.data?.customers.map((c) => [c.id, c]) ?? []),
+    [baseQuery.data]
+  );
+
   const computeQuery = customersAPI.computeStats.useQuery(
     {
       filters,
@@ -99,20 +104,17 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
       enabled: baseQuery.isSuccess && !!baseQuery.data?.customers,
       placeholderData: (prev) => prev,
       select: (data) => {
-        const baseCustomers = baseQuery.data;
-        if (!baseCustomers) return { customers: [] as CustomerWithStats[], totalCount: 0 };
-
-        const baseMap = new Map(baseCustomers.customers.map((c) => [c.id, c]));
+        if (!baseQuery.data) return { customers: [], totalCount: 0 };
 
         return {
           totalCount: data.totalCount,
           customers: data.customersStats
-            .flatMap((s) => {
-              const { customerId, ...stats } = s;
-              const base = baseMap.get(customerId);
+            .map((s) => {
+              const base = baseMap.get(s.customerId);
               if (!base) return null;
 
-              return { ...base, stats };
+              // attach stats without cloning base
+              return Object.assign({}, base, { stats: s });
             })
             .filter(Boolean) as CustomerWithStats[],
         };

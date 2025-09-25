@@ -24,10 +24,10 @@
     }
   },
   "scripts": {
-    "dev": "prisma db push && npx prisma generate --sql && next dev",
+    "dev": "prisma db push && npx prisma generate --sql && next dev --hostname localhost",
     "lint": "next lint",
     "build": "next build && electron-builder build --win --x64 --dir --publish never",
-    "start": "next start",
+    "start": "next start --hostname localhost",
     "stop": "pkill --signal SIGINT myApp",
     "electron": "electron .",
     "dist": "electron-builder"
