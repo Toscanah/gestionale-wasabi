@@ -8,6 +8,7 @@ import { getOrderTotal } from "../../../lib/services/order-management/getOrderTo
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import { trpcClient } from "@/lib/server/client";
+import { OrderGuards } from "@/app/(site)/lib/shared/types/order-guards";
 
 const columns: ColumnDef<OrderWithSummedPayments>[] = [
   ValueColumn({
@@ -15,9 +16,9 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
     value: (row) => {
       return (
         <Badge>
-          {row.original.type == OrderType.HOME
+          {OrderGuards.isHome(row.original)
             ? "Domicilio"
-            : row.original.type == OrderType.PICKUP
+            : OrderGuards.isPickup(row.original)
               ? "Asporto"
               : "Tavolo"}
         </Badge>
@@ -32,9 +33,9 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
       const order = row.original;
 
       return (
-        (order.type === OrderType.TABLE
+        (OrderGuards.isTable(order)
           ? order.table_order?.table
-          : order.type === OrderType.PICKUP
+          : OrderGuards.isPickup(order)
             ? order.pickup_order?.name
             : order.home_order?.address.doorbell) || ""
       ).toLocaleUpperCase();
@@ -105,11 +106,11 @@ function ReprintCell({ orderId }: { orderId: number }) {
     const order = await trpcClient.orders.getById.query({ orderId, variant: "allProducts" });
 
     let plannedPayment: PlannedPayment = PlannedPayment.UNKNOWN;
-    if (order.type == OrderType.HOME) {
-      plannedPayment = (order as HomeOrder).home_order?.planned_payment || PlannedPayment.UNKNOWN;
+    if (OrderGuards.isHome(order)) {
+      plannedPayment = order.home_order.planned_payment || PlannedPayment.UNKNOWN;
     }
 
-    await printOrder({ order, plannedPayment, putInfo: true });
+    await printOrder({ order, plannedPayment, putInfo: true, forceCut: true });
   };
 
   return <Button onClick={handleClick}>Stampa</Button>;

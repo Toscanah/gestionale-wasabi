@@ -1,4 +1,4 @@
-import { OrderByType, HomeOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder, OrderGuards } from "@/app/(site)/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { PayingAction } from "../OrderTable";
@@ -28,8 +28,8 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
 
   const hasConfirmationSent = useCallback(() => {
     return (
-      order.type == OrderType.HOME &&
-      (order as HomeOrder).home_order?.messages.some(
+      OrderGuards.isHome(order) &&
+      order.home_order?.messages.some(
         (mess) => mess.template_name === ORDER_CONFIRMATION_TEMPLATE_NAME
       )
     );
@@ -118,7 +118,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
 
   const canSplit = (products: ProductInOrder[]) =>
     products.length > 1 ||
-    (products.length === 1 && products[0].quantity > 1 && order.type !== OrderType.HOME);
+    (products.length === 1 && products[0].quantity > 1 && !OrderGuards.isHome(order));
 
   const handleFullPayment = async () => {
     if (!order.is_receipt_printed) {
@@ -180,7 +180,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
           disabled={
             !canSplit(order.products.filter((product) => product.id !== -1)) ||
             order.payments.some((p) => p.scope === PaymentScope.ROMAN) ||
-            order.type === OrderType.HOME
+            OrderGuards.isHome(order)
           }
         >
           Dividi 分单
@@ -190,7 +190,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
           onClick={() => setAction("payRoman")}
           className="w-full text-3xl h-12"
           disabled={
-            order.type === OrderType.HOME || order.products.filter((p) => p.id !== -1).length === 0
+            OrderGuards.isHome(order) || order.products.filter((p) => p.id !== -1).length === 0
           }
         >
           Romana

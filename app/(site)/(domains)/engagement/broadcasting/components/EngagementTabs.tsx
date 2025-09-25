@@ -6,6 +6,7 @@ import {
   HomeOrder,
   ParsedEngagementTemplate,
   PickupOrder,
+  OrderGuards,
 } from "../../../../lib/shared";
 import { OrderType } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -48,18 +49,17 @@ export function OrderEngagementTabs({
   const { updateOrder } = useOrderContext();
   const [engagements, setEngagements] = useState<EngagementWithDetails[]>([]);
 
-  const customerId =
-    order.type === OrderType.HOME
-      ? order.home_order.customer?.id
-      : order.type === OrderType.PICKUP
-        ? order.pickup_order.customer?.id
-        : undefined;
+  const customerId = OrderGuards.isHome(order)
+    ? order.home_order.customer?.id
+    : OrderGuards.isPickup(order)
+      ? order.pickup_order.customer?.id
+      : undefined;
 
   useEffect(() => {
     const all = [
       ...(order.engagements ?? []),
-      ...(order.type === OrderType.HOME ? (order.home_order.customer?.engagements ?? []) : []),
-      ...(order.type === OrderType.PICKUP ? (order.pickup_order.customer?.engagements ?? []) : []),
+      ...(OrderGuards.isHome(order) ? (order.home_order.customer?.engagements ?? []) : []),
+      ...(OrderGuards.isPickup(order) ? (order.pickup_order.customer?.engagements ?? []) : []),
     ];
 
     setEngagements(dedupeEngagements(all));
@@ -180,7 +180,7 @@ export function OrderEngagementTabs({
         )}
       </TabsContent>
 
-      {order.type !== OrderType.TABLE && customerId && (
+      {!OrderGuards.isTable(order) && customerId && (
         <TabsContent value="history">
           <EngagementHistory customerId={customerId} orderId={order.id} />
         </TabsContent>

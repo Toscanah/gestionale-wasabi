@@ -1,5 +1,11 @@
 import { Br, Cut, Line, Text } from "react-thermal-printer";
-import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
+import {
+  OrderByType,
+  HomeOrder,
+  PickupOrder,
+  TableOrder,
+  OrderGuards,
+} from "@/app/(site)/lib/shared";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/info/OrderInfoSection";
@@ -88,7 +94,7 @@ export default function OrderReceipt<T extends OrderByType>({
         ))}
 
       {FooterSection({ orderId: order.id })}
-      {(forceCut || order.type !== OrderType.HOME) && <Cut />}
+      {(forceCut || !OrderGuards.isHome(order)) && <Cut />}
     </>
   );
 }

@@ -2,7 +2,7 @@ import { TableCell } from "@/components/ui/table";
 import { Cell, flexRender } from "@tanstack/react-table";
 import OrderTable from "./OrderTable";
 import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
-import { OrderByType } from "@/app/(site)/lib/shared";
+import { OrderByType, OrderGuards } from "@/app/(site)/lib/shared";
 import { FormEvent, useState } from "react";
 import { OrderProvider } from "../../../context/OrderContext";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,7 @@ export default function Order({ cell, className, isOverdrawn }: OrderProps) {
   return (
     <WasabiDialog
       open={open}
-      double={cell.row.original.type !== OrderType.TABLE}
+      double={!OrderGuards.isTable(cell.row.original)}
       onOpenChange={setOpen}
       size="large"
       contentClassName={cn("h-[95vh] flex", isOverdrawn && "!border !border-2 !border-red-500")}

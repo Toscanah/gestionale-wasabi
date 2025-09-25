@@ -3,6 +3,7 @@ import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrd
 import { parseOrderTime } from "@/app/(site)/lib/services/order-management/shift/getEffectiveOrderShift";
 import {
   HomeOrderWithOrder,
+  OrderGuards,
   PickupOrderWithOrder,
   ShiftEvaluableOrder,
 } from "@/app/(site)/lib/shared";
@@ -41,27 +42,25 @@ export type UseHistoryStatsParams = {
 function toShiftEvaluableOrder(
   wrapper: HomeOrderWithOrder | PickupOrderWithOrder
 ): ShiftEvaluableOrder {
-  const { order } = wrapper;
-
-  if (order.type === OrderType.HOME) {
+  if ("home_order" in wrapper) {
+    const { order, when } = wrapper;
     return {
       ...order,
       type: OrderType.HOME,
       created_at: order.created_at,
-      home_order: { when: wrapper.when },
+      home_order: { when },
       pickup_order: null,
     };
   }
 
-  if (order.type === OrderType.PICKUP) {
-    return {
-      ...order,
-      type: OrderType.PICKUP,
-      created_at: order.created_at,
-      pickup_order: { when: wrapper.when },
-      home_order: null,
-    };
-  }
+  const { order, when } = wrapper;
+  return {
+    ...order,
+    type: OrderType.PICKUP,
+    created_at: order.created_at,
+    pickup_order: { when },
+    home_order: null,
+  };
 
   throw new Error("Unsupported order type");
 }

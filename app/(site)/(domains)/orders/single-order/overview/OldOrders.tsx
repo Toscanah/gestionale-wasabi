@@ -1,6 +1,6 @@
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
-import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
+import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
@@ -10,30 +10,29 @@ export default function OldOrders() {
   const { order, addProducts } = useOrderContext();
 
   // ---- Extract customerId (or undefined if not applicable)
-  const customerId =
-    order.type === OrderType.PICKUP
-      ? (order as PickupOrder).pickup_order?.customer_id
-      : order.type === OrderType.HOME
-        ? (order as HomeOrder).home_order?.customer_id
-        : undefined;
+  const customerId = OrderGuards.isPickup(order)
+    ? order.pickup_order?.customer_id
+    : OrderGuards.isHome(order)
+      ? order.home_order?.customer_id
+      : undefined;
 
   // ---- Query for customer
   const { data: customer } = trpc.customers.getWithDetails.useQuery(
     { customerId: customerId! },
     {
-      enabled: !!customerId && order.type !== OrderType.TABLE,
+      enabled: !!customerId && !OrderGuards.isTable(order),
       staleTime: Infinity,
       select: (customer) => {
         if (!customer) return undefined;
 
-        if (order.type === OrderType.HOME) {
+        if (OrderGuards.isHome(order)) {
           return {
             ...customer,
             home_orders: customer.home_orders.filter((h) => h.id !== order.id),
           };
         }
 
-        if (order.type === OrderType.PICKUP) {
+        if (OrderGuards.isPickup(order)) {
           return {
             ...customer,
             pickup_orders: customer.pickup_orders.filter((p) => p.id !== order.id),

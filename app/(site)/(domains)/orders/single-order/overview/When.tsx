@@ -1,6 +1,6 @@
 import WhenSelector from "@/app/(site)/components/ui/filters/select/WhenSelector";
 import { OrderType } from "@prisma/client";
-import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
+import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { useState } from "react";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
@@ -10,11 +10,11 @@ export default function When() {
   const { order, updateOrder } = useOrderContext();
 
   const [orderTime, setOrderTime] = useState<string>(
-    order.type !== OrderType.TABLE
-      ? order.type == OrderType.PICKUP
-        ? ((order as PickupOrder).pickup_order?.when ?? "")
-        : ((order as HomeOrder).home_order?.when ?? "")
-      : ""
+    OrderGuards.isPickup(order)
+      ? (order.pickup_order?.when ?? "")
+      : OrderGuards.isHome(order)
+        ? (order.home_order?.when ?? "")
+        : ""
   );
 
   const updateOrderTimeMutation = trpc.orders.updateTime.useMutation({

@@ -10,7 +10,7 @@ import NormalActions from "./NormalActions";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableUpdate from "./TableUpdate";
 import PaymentStatusSelection from "./PaymentStatusSelection";
-import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
+import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
 import Engagement from "./Engagement";
 
 interface OrderOverviewProps {
@@ -26,21 +26,19 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
   const { order } = useOrderContext();
 
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>({
-    prepaid:
-      order.type === OrderType.HOME
-        ? (order as HomeOrder).home_order?.prepaid || false
-        : order.type === OrderType.PICKUP
-        ? (order as PickupOrder).pickup_order?.prepaid || false
+    prepaid: OrderGuards.isHome(order)
+      ? order.home_order?.prepaid || false
+      : OrderGuards.isPickup(order)
+        ? order.pickup_order?.prepaid || false
         : false,
-    plannedPayment:
-      order.type === OrderType.HOME
-        ? (order as HomeOrder).home_order?.planned_payment || PlannedPayment.UNKNOWN
-        : PlannedPayment.UNKNOWN,
+    plannedPayment: OrderGuards.isHome(order)
+      ? order.home_order?.planned_payment || PlannedPayment.UNKNOWN
+      : PlannedPayment.UNKNOWN,
   });
 
   return (
     <div className="w-[28%] flex flex-col gap-6 h-full">
-      {order.type !== OrderType.TABLE && (
+      {!OrderGuards.isTable(order) && (
         <>
           <PaymentStatusSelection
             paymentStatus={paymentStatus}
@@ -51,7 +49,7 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
       )}
 
       <div className="w-full flex gap-6 items-center">
-        {order.type !== OrderType.TABLE && (
+        {!OrderGuards.isTable(order) && (
           <>
             <When />
             {/* <ShiftSelection /> */}
@@ -62,7 +60,7 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
         <Discount />
       </div>
 
-      {order.type == OrderType.TABLE && <TableUpdate />}
+      {OrderGuards.isTable(order) && <TableUpdate />}
       {/* {order.type != OrderType.TABLE && <ETA />} */}
 
       <Rice />

@@ -10,6 +10,6 @@ type ProductInOrderWithPrice = Partial<ProductInOrder> & {
 
 export function getProductPrice(product: ProductInOrderWithPrice, orderType: OrderType): number {
   return orderType === OrderType.TABLE
-    ? product.product.site_price ?? 0
-    : product.product.home_price ?? 0;
+    ? (product.product.site_price ?? 0)
+    : (product.product.home_price ?? 0);
 }

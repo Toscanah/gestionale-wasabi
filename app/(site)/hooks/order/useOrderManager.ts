@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { OrderByType, TableOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, OrderGuards, TableOrder } from "@/app/(site)/lib/shared";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../../context/WasabiContext";
 import generateDummyProduct from "../../lib/services/product-management/generateDummyProduct";
@@ -95,7 +95,7 @@ export function useOrderManager(
 
   const issueLedgers = async (order: OrderByType) => {
     const redeemables = order.engagements?.filter((e) => e.enabled && e.template?.redeemable) ?? [];
-    if (redeemables.length > 0 && order.type !== OrderType.TABLE) {
+    if (redeemables.length > 0 && !OrderGuards.isTable(order)) {
       await trpcClient.engagements.issueLedgers.mutate({ orderId });
     }
   };

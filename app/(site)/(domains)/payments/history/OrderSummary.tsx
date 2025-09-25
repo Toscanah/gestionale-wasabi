@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { Badge } from "@/components/ui/badge";
 import { OrderType } from "@prisma/client";
-import { OrderWithSummedPayments } from "@/app/(site)/lib/shared";
+import { OrderGuards, OrderWithSummedPayments } from "@/app/(site)/lib/shared";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import joinItemsWithComma from "@/app/(site)/lib/utils/global/string/joinItemsWithComma";
 
@@ -18,11 +18,11 @@ export default function OrderSummary({ order }: OrderSummaryProps) {
       title={
         <div className="flex gap-2 items-center">
           <Badge>
-            {order.type == OrderType.HOME
+            {OrderGuards.isHome(order)
               ? "Domicilio"
-              : order.type == OrderType.TABLE
-              ? "Tavolo"
-              : "Asporto"}
+              : OrderGuards.isTable(order)
+                ? "Tavolo"
+                : "Asporto"}
           </Badge>
           Ordine del {new Date(order.created_at).toLocaleDateString("it-IT")} - €{" "}
           {getOrderTotal({ order, round: true })}

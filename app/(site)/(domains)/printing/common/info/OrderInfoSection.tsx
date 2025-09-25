@@ -1,4 +1,4 @@
-import { OrderByType, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder, PickupOrder, OrderGuards } from "@/app/(site)/lib/shared";
 import { OrderType, PlannedPayment } from "@prisma/client";
 import CommonInfo from "./CommonInfo";
 import HomeInfo from "./HomeInfo";
@@ -18,7 +18,7 @@ export default function OrderInfoSection({
   plannedPayment,
   options: { putExtraItems = true, putWhen = true },
 }: OrderInfoSectionProps) {
-  const isHome = order.type === OrderType.HOME;
+  const isHome = OrderGuards.isHome(order);
 
   // --- Common fields ---
   let prepaid = false;
@@ -49,7 +49,6 @@ export default function OrderInfoSection({
     preferences = po.customer?.preferences ?? undefined;
     orderNotes = po.customer?.order_notes ?? undefined;
   }
-
 
   return (
     <>

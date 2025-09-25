@@ -1,5 +1,5 @@
 import { OrderType, PlannedPayment } from "@prisma/client";
-import { OrderByType, HomeOrder } from "../../lib/shared";
+import { OrderByType, HomeOrder, OrderGuards } from "../../lib/shared";
 import KitchenReceipt from "../../(domains)/printing/receipts/KitchenReceipt";
 import OrderReceipt from "../../(domains)/printing/receipts/OrderReceipt";
 import RiderReceipt from "../../(domains)/printing/receipts/RiderReceipt";
@@ -45,11 +45,15 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
     }
 
     content.push(() =>
-      OrderReceipt({ order, plannedPayment, putInfo: order.type == OrderType.TABLE ? false : true })
+      OrderReceipt({
+        order,
+        plannedPayment,
+        putInfo: !OrderGuards.isTable(order),
+      })
     );
 
-    if (order.type === OrderType.HOME) {
-      content.push(() => RiderReceipt({ order: order as HomeOrder, plannedPayment }));
+    if (OrderGuards.isHome(order)) {
+      content.push(() => RiderReceipt({ order, plannedPayment }));
     }
 
     const redeemableEngagements = order.engagements.filter((e) => e.template.redeemable);
@@ -77,13 +81,13 @@ export default function usePrintingActions({ maybeSendConfirmation }: UsePrintin
       OrderReceipt({
         order,
         plannedPayment,
-        putInfo: order.type === OrderType.HOME,
+        putInfo: OrderGuards.isHome(order),
       })
     );
 
-    if (order.type === OrderType.HOME) {
+    if (OrderGuards.isHome(order)) {
       content.push(
-        () => RiderReceipt({ order: order as HomeOrder, plannedPayment }),
+        () => RiderReceipt({ order, plannedPayment }),
         () => EngagementReceipt({ engagements: order.engagements })
       );
     }

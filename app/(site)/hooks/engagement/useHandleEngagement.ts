@@ -1,6 +1,12 @@
 import { OrderType } from "@prisma/client";
 import { useState } from "react";
-import { OrderByType, EngagementWithDetails, HomeOrder, PickupOrder } from "../../lib/shared";
+import {
+  OrderByType,
+  EngagementWithDetails,
+  HomeOrder,
+  PickupOrder,
+  OrderGuards,
+} from "../../lib/shared";
 import { trpc } from "@/lib/server/client";
 
 export type UseHandleEngagementParams =
@@ -16,12 +22,13 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
   const [selectedTemplates, setSelectedTemplates] = useState<number[]>([]);
 
   const orderId = order?.id;
-  const singleCustomerId =
-    order?.type === OrderType.HOME
-      ? (order as HomeOrder).home_order?.customer?.id
-      : order?.type === OrderType.PICKUP
-        ? (order as PickupOrder).pickup_order?.customer?.id
-        : undefined;
+  const singleCustomerId = order
+    ? OrderGuards.isHome(order)
+      ? order.home_order?.customer?.id
+      : OrderGuards.isPickup(order)
+        ? order.pickup_order?.customer?.id
+        : undefined
+    : undefined;
 
   const targetCustomerIds = customerIds ?? (singleCustomerId ? [singleCustomerId] : []);
 
@@ -51,12 +58,13 @@ export default function useHandleEngagement({ order, customerIds }: UseHandleEng
 
   const createEngagements = async (): Promise<EngagementWithDetails[]> => {
     if (orderId) {
-      const customerId =
-        order?.type === OrderType.HOME
-          ? (order as HomeOrder).home_order?.customer?.id
-          : order?.type === OrderType.PICKUP
-            ? (order as PickupOrder).pickup_order?.customer?.id
-            : undefined;
+      const customerId = order
+        ? OrderGuards.isHome(order)
+          ? order.home_order?.customer?.id
+          : OrderGuards.isPickup(order)
+            ? order.pickup_order?.customer?.id
+            : undefined
+        : undefined;
 
       const results = await Promise.all(
         selectedTemplates.map((templateId) =>

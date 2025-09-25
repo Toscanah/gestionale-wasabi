@@ -5,17 +5,18 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import { OrderType } from "@prisma/client";
-import { HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
+import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
 import { trpc } from "@/lib/server/client";
 
 export default function Notes() {
   const { order, updateOrder } = useOrderContext();
   useFocusOnClick(["notes-field"]);
 
-  const initialNotes =
-    order.type === OrderType.HOME
-      ? ((order as HomeOrder).home_order?.customer.order_notes ?? "")
-      : ((order as PickupOrder).pickup_order?.customer?.order_notes ?? "");
+  const initialNotes = OrderGuards.isHome(order)
+    ? (order.home_order?.customer.order_notes ?? "")
+    : OrderGuards.isPickup(order)
+      ? (order.pickup_order?.customer?.order_notes ?? "")
+      : "";
 
   const [additionalNotes, setAdditionalNotes] = useState<string>(initialNotes);
 
@@ -23,37 +24,41 @@ export default function Notes() {
     onSuccess: (updatedOrder) => {
       toastSuccess("Note aggiornate correttamente", "Note aggiornate");
 
-      let parsedOrder;
-      if (order.type === OrderType.HOME) {
-        parsedOrder = (updatedOrder as HomeOrder).home_order;
-      } else {
-        parsedOrder = (updatedOrder as PickupOrder).pickup_order;
+      if (OrderGuards.isTable(updatedOrder)) {
+        return;
       }
 
-      updateOrder({
-        ...(order.type == OrderType.HOME
-          ? {
-              home_order: {
-                ...parsedOrder,
-                customer: {
-                  ...parsedOrder?.customer,
-                  order_notes: parsedOrder?.customer?.order_notes ?? "",
-                },
-              },
-            }
-          : order.type == OrderType.PICKUP
-            ? {
-                pickup_order: {
-                  ...parsedOrder,
-                  customer: {
-                    ...parsedOrder?.customer,
-                    order_notes: parsedOrder?.customer?.order_notes ?? "",
-                  },
-                },
-              }
-            : {}),
-        is_receipt_printed: false,
-      });
+      if (OrderGuards.isHome(updatedOrder)) {
+        const parsedOrder = updatedOrder.home_order;
+
+        updateOrder({
+          home_order: {
+            ...parsedOrder,
+            customer: parsedOrder?.customer
+              ? {
+                  ...parsedOrder.customer,
+                  order_notes: parsedOrder.customer.order_notes ?? "",
+                }
+              : undefined,
+          },
+          is_receipt_printed: false,
+        });
+      } else if (OrderGuards.isPickup(updatedOrder)) {
+        const parsedOrder = updatedOrder.pickup_order;
+
+        updateOrder({
+          pickup_order: {
+            ...parsedOrder,
+            customer: parsedOrder?.customer
+              ? {
+                  ...parsedOrder.customer,
+                  order_notes: parsedOrder.customer.order_notes ?? "",
+                }
+              : undefined,
+          },
+          is_receipt_printed: false,
+        });
+      }
     },
   });
 
