@@ -1,17 +1,17 @@
 import { z } from "zod";
-import getZodField from "../../../lib/utils/global/form/getZodField";
-import { FormFieldType } from "../FormFields";
+import { FormFieldType } from "../manager/FormFields";
 
-export const formSchema = z.object({
-  option_name: getZodField("string"),
+export const optionFormSchema = z.object({
+  option_name: z.string().min(1, "Il nome dell'opzione è obbligatorio").default(""),
 });
 
-export function getOptionFields(): FormFieldType[] {
+export type OptionFormData = z.infer<typeof optionFormSchema>;
+
+export function getOptionFields(): FormFieldType<z.input<typeof optionFormSchema>>[] {
   return [
     {
       name: "option_name",
-      label: "Opzione",
+      label: "Nome opzione",
     },
-    
   ];
 }

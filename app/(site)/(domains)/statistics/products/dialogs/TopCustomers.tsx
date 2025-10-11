@@ -89,14 +89,10 @@ export default function TopCustomers({ product, filters }: TopCustomersProps) {
       onOpenChange={setOpen}
       title="Top clienti"
       size="mediumPlus"
-      trigger={<Button className="w-40">Mostra top clienti</Button>}
+      trigger={<Button variant={"outline"}>Mostra clienti migliori</Button>}
       desc={`I 50 clienti che hanno acquistato di più [${product.name.trim()}]`}
     >
-      <Table
-        table={table}
-        tableClassName="max-h-[500px] overflow-y-auto"
-        rowClassName={() => ""}
-      />
+      <Table table={table} tableClassName="max-h-[500px] overflow-y-auto" rowClassName={() => ""} />
     </WasabiDialog>
   );
 }

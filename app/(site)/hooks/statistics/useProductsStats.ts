@@ -25,7 +25,7 @@ export default function useProductsStats() {
   const { inputQuery, setInputQuery, debouncedQuery } = useQueryFilter();
   const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
 
-  const { data: allCategories = [] } = trpc.categories.getAll.useQuery(undefined, {
+  const { data: allCategories = [], ...catQuery } = trpc.categories.getAll.useQuery(undefined, {
     select: (categories) => categories.filter((c) => c.active),
   });
 
@@ -64,7 +64,7 @@ export default function useProductsStats() {
     }
   }, [allCategories, categoryIds.length]);
 
-  const { data: baseProducts } = trpc.products.getAll.useQuery();
+  const { data: baseProducts, ...baseQuery } = trpc.products.getAll.useQuery();
 
   const computeQuery = trpc.products.computeStats.useQuery(
     {
@@ -93,6 +93,7 @@ export default function useProductsStats() {
     setShift(ShiftFilterValue.ALL);
     setCategoryIds(allCategories.map((c) => c.id));
     setInputQuery("");
+    setActiveSorts([]);
   };
 
   return {
@@ -108,7 +109,13 @@ export default function useProductsStats() {
     period,
     setPeriod,
     handleReset,
-    isLoading: computeQuery.isLoading || computeQuery.isFetching,
+    isLoading:
+      computeQuery.isLoading ||
+      computeQuery.isFetching ||
+      catQuery.isLoading ||
+      catQuery.isFetching ||
+      baseQuery.isLoading ||
+      baseQuery.isFetching,
     sortingFields: PRODUCT_STATS_SORT_MAP,
     activeSorts,
     setActiveSorts,

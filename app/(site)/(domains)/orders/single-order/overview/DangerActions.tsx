@@ -31,8 +31,7 @@ export default function DangerActions({ table }: DangerActionsProps) {
         variant="delete"
         trigger={
           <Button
-            className="w-1/2 h-12 text-xl"
-            variant={"warnining"}
+            className="w-1/2 h-12 text-xl bg-yellow-400"
             disabled={table.getFilteredSelectedRowModel().rows.length == 0}
           >
             Cancella prodotti selezionati

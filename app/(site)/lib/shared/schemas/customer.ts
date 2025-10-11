@@ -51,7 +51,7 @@ export namespace CustomerContracts {
     export type Output = z.infer<typeof Output>;
   }
 
-  export namespace GetWithDetails {
+  export namespace GetComprehensive {
     export const Input = z.object({ customerId: z.number() });
     export type Input = z.infer<typeof Input>;
 
@@ -95,7 +95,7 @@ export namespace CustomerContracts {
   }
 
   export namespace UpdateFromAdmin {
-    export const Input = wrapSchema("customer", CustomerWithPhoneSchema);
+    export const Input = z.object({ customer: CustomerWithPhoneSchema });
     export type Input = z.infer<typeof Input>;
 
     export const Output = Common.WithEngagement;
@@ -111,18 +111,17 @@ export namespace CustomerContracts {
   }
 
   export namespace Create {
-    export const Input = wrapSchema(
-      "customer",
-      createInputSchema(Common.Entity).omit({ phone_id: true }).extend({
+    export const Input = z.object({
+      customer: createInputSchema(Common.Entity).omit({ phone_id: true }).extend({
         phone: z.string(),
         name: z.string().nullable(),
         surname: z.string().nullable(),
-      })
-    );
+      }),
+    });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.Entity;
-    export type Output = z.infer<typeof Output>;
+    export const Output = Common.WithEngagement;
+    export type Output = Common.WithEngagement;
   }
 
   export namespace UpdateAddresses {

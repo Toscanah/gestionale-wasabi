@@ -8,7 +8,7 @@ import OrderTypesFilter from "../../../components/ui/filters/select/OrderTypesFi
 import TimeWindowFilter from "@/app/(site)/components/ui/filters/time/TimeWindowFilter";
 import SectionResults from "./results/SectionResults";
 import { Separator } from "@/components/ui/separator";
-import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
+import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
 import useCsvExport from "@/app/(site)/hooks/useCsvExport";
 import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
 
@@ -81,7 +81,7 @@ export default function Section({}: SectionProps) {
           }
         />
 
-        <ResetFiltersButton show={showReset} onReset={() => dispatch({ type: "RESET" })} />
+        <ResetTableControlsBtn show={showReset} onReset={() => dispatch({ type: "RESET" })} />
       </div>
 
       {/* <Separator className="w-full"/> */}

@@ -10,7 +10,7 @@ import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { cn } from "@/lib/utils";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
-import { Plus } from "@phosphor-icons/react";
+import { PlusIcon } from "@phosphor-icons/react";
 import { trpc } from "@/lib/server/client";
 
 interface TableProps {
@@ -53,13 +53,15 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
 
   return (
     <WasabiDialog
+      putSeparator
+      putUpperBorder
       title={order.id !== -1 ? "" : "Ordine al tavolo"}
       size={order.id !== -1 ? "large" : "medium"}
       open={open}
       trigger={
         <div className="w-full pr-4 pb-4">
           <Button className="w-full text-3xl h-24 rounded-none">
-            <Plus className="mr-2 h-5 w-5" /> Ordine al tavolo {children}
+            <PlusIcon className="mr-2 h-5 w-5" /> Ordine al tavolo {children}
           </Button>
         </div>
       }
@@ -83,14 +85,10 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                 Nome tavolo
               </Label>
               <Input
-                // placeholder="Nome tavolo"
                 type="text"
                 id="table"
                 className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
                 ref={(tableRef) => {
-                  // if (tableRef) {
-                  //   tableRef.value = "";
-                  // }
                   addRefs(tableRef);
                 }}
                 defaultValue={table}
@@ -104,14 +102,10 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
                 Numero persone
               </Label>
               <Input
-                // placeholder="N° persone"
                 type="number"
                 id="ppl"
                 className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
                 ref={(pplRef) => {
-                  // if (pplRef) {
-                  //   pplRef.value = "";
-                  // }
                   addRefs(pplRef);
                 }}
                 defaultValue={people}

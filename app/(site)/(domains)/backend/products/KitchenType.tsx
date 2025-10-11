@@ -1,29 +1,29 @@
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { KitchenType as TypeOfKitchen } from "@prisma/client";
+import { KITCHEN_TYPE_LABELS } from "@/app/(site)/lib/shared/constants/kitchen-type-labels";
 import { ControllerRenderProps } from "react-hook-form";
+import WasabiSimpleSelect from "../../../components/ui/wasabi/WasabiSimpleSelect";
 
-const kitchenTypeLabels: Record<TypeOfKitchen, string> = {
-  [TypeOfKitchen.HOT]: "Cucina calda",
-  [TypeOfKitchen.COLD]: "Cucina fredda",
-  [TypeOfKitchen.HOT_AND_COLD]: "Cucina calda e fredda",
-  [TypeOfKitchen.OTHER]: "Altro",
-  [TypeOfKitchen.NONE]: "Nessuna",
-};
+export default function KitchenType({ field }: { field: ControllerRenderProps<any> }) {
+  const options = Object.entries(KITCHEN_TYPE_LABELS).map(([value, label]) => ({
+    value,
+    label,
+  }));
 
-export default function KitchenType({ field }: { field: ControllerRenderProps }) {
   return (
-    <RadioGroup
-      onValueChange={field.onChange}
-      defaultValue={field.value}
-      className="w-full flex flex-wrap"
-    >
-      {Object.entries(kitchenTypeLabels).map(([value, label]) => (
-        <div key={value} className="flex items-center space-x-2 w-[45%]">
-          <RadioGroupItem value={value} id={value} />
-          <Label htmlFor={value}>{label}</Label>
-        </div>
-      ))}
-    </RadioGroup>
+    <div className="space-y-2 space-x-2 text-center">
+      <WasabiSimpleSelect
+        searchPlaceholder="Cerca cucina..."
+        placeholder="Seleziona una cucina"
+        triggerClassName="h-9"
+        field={{
+          ...field,
+          value: field.value?.toString() ?? "-1",
+          onChange: (val: string) => {
+            const parsed = val === "-1" ? null : val;
+            field.onChange(parsed);
+          },
+        }}
+        groups={[{ options }]}
+      />
+    </div>
   );
 }

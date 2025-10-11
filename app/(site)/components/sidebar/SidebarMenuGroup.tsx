@@ -18,7 +18,7 @@ export type SidebarMenuGroupLinkItem = {
 
 export type SidebarMenuGroupComponentItem = {
   type: "component";
-  element: JSX.Element;
+  element: React.JSX.Element;
 };
 
 export type SidebarMenuGroupItem = SidebarMenuGroupLinkItem | SidebarMenuGroupComponentItem;

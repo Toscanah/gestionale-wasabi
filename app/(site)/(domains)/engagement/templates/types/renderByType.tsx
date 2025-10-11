@@ -9,13 +9,14 @@ import { EngagementType } from "@prisma/client";
 import QRCode from "./QRCode";
 import Image from "./Image";
 import Message from "./Message";
+import React from "react";
 
 export default function renderByType(
   type: EngagementType,
   payload: ParsedEngagementPayload,
   onChange: (update: any) => void,
   disabled = false
-): JSX.Element | null {
+): React.JSX.Element | null {
   switch (type) {
     case EngagementType.QR_CODE:
       return (

@@ -37,7 +37,7 @@ export default function DateShiftButton({
   };
 
   return (
-    <Button className="h-8 w-full" variant="outline" onClick={handleClick}>
+    <Button className="h-8 flex-1" variant="outline" onClick={handleClick}>
       <Icon className="h-4 w-4 mr-2" />
       {absAmount} giorni
     </Button>

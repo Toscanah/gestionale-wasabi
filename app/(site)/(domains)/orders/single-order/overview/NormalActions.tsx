@@ -139,20 +139,20 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
       onOpenChange={setRePrintDialog}
       title="Cosa vuoi re-stampare?"
       trigger={
-        <Button className="w-full text-3xl h-12" disabled={!hasProducts}>
+        <Button className="flex-1 text-3xl h-12" disabled={!hasProducts}>
           Re-Stampa 重新打印
         </Button>
       }
     >
       <div className="flex gap-6">
         <Button
-          className="w-full text-4xl h-24"
+          className="flex-1 text-4xl h-24"
           onClick={() => handleKitchenRePrint(order).then(() => setRePrintDialog(false))}
         >
           Cucina 厨房
         </Button>
         <Button
-          className="w-full text-4xl h-24"
+          className="flex-1 text-4xl h-24"
           onClick={() =>
             handleFullRePrint(order, plannedPayment).then(() => setRePrintDialog(false))
           }
@@ -160,7 +160,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
           Tutto 所有
         </Button>
         <Button
-          className="w-full text-4xl h-24"
+          className="flex-1 text-4xl h-24"
           onClick={() =>
             handleOrderRePrint(order, plannedPayment).then(() => setRePrintDialog(false))
           }
@@ -175,7 +175,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
     <>
       <div className="flex gap-6">
         <Button
-          className="w-full text-3xl h-12"
+          className="flex-1 text-3xl h-12"
           onClick={() => setAction("payPart")}
           disabled={
             !canSplit(order.products.filter((product) => product.id !== -1)) ||
@@ -188,7 +188,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
 
         <Button
           onClick={() => setAction("payRoman")}
-          className="w-full text-3xl h-12"
+          className="flex-1 text-3xl h-12"
           disabled={
             OrderGuards.isHome(order) || order.products.filter((p) => p.id !== -1).length === 0
           }
@@ -201,7 +201,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
 
       <div className="flex gap-6">
         <Button
-          className="w-full text-3xl h-36"
+          className="flex-1 text-3xl h-36"
           disabled={!hasProducts || (settings.whatsapp && !paramsReady)}
           onClick={() => handlePrint(order, plannedPayment)}
         >
@@ -209,7 +209,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
         </Button>
 
         <Button
-          className="w-full text-3xl h-36"
+          className="flex-1 text-3xl h-36"
           onClick={handleFullPayment}
           disabled={!(getOrderTotal({ order }) > 0)}
         >

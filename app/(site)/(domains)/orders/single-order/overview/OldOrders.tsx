@@ -17,7 +17,7 @@ export default function OldOrders() {
       : undefined;
 
   // ---- Query for customer
-  const { data: customer } = trpc.customers.getWithDetails.useQuery(
+  const { data: customer } = trpc.customers.getComprehensive.useQuery(
     { customerId: customerId! },
     {
       enabled: !!customerId && !OrderGuards.isTable(order),

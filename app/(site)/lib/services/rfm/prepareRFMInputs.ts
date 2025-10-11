@@ -1,7 +1,7 @@
-import { OrderWithProducts } from "../../shared";
+import { LiteOrder, OrderWithProducts } from "../../shared";
 import { getOrderTotal } from "../order-management/getOrderTotal";
 
-export function prepareRFMInputs(lifetimeOrders: OrderWithProducts[]) {
+export function prepareRFMInputs(lifetimeOrders: LiteOrder[]) {
   const orderCount = lifetimeOrders.length;
 
   const totalSpending = lifetimeOrders.reduce((sum, order) => sum + getOrderTotal({ order }), 0);

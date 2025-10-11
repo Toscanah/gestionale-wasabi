@@ -6,17 +6,13 @@ import WasabiDialog from "../ui/wasabi/WasabiDialog";
 import { trpc } from "@/lib/server/client";
 
 export default function Footer() {
-  const fixMutation = trpc.orders.updateOrdersShift.useMutation({
-    onSuccess: () => {
-      console.log("success");
-    },
-  });
+  const fixMutation = trpc.orders.updateOrdersShift.useMutation();
 
   return (
     <SidebarFooter>
       <SidebarMenu className="p-2">
-        <Button variant={"destructive"} onClick={() => fixMutation.mutate()}>
-          Shifts backfill, NO TOUCH
+        <Button disabled variant={"destructive"} onClick={() => fixMutation.mutate()}>
+          no touchy
         </Button>
       </SidebarMenu>
     </SidebarFooter>

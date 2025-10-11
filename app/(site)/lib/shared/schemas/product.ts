@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { OrderSchema, ProductSchema } from "@/prisma/generated/schemas";
 import {
+  Product,
   ProductInOrderWithOptionsSchema,
   ProductStats,
   ProductStatsOnlySchema,
@@ -15,6 +16,7 @@ import { OptionInProductOrderWithOptionSchema } from "../models/Option";
 import SortingSchema from "./common/sorting";
 import { DottedKeys } from "../types/DottedKeys";
 import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
+import { PaginationResponseSchema, PaginationSchema } from "./common/pagination";
 
 export const PRODUCT_STATS_SORT_FIELDS = [
   "unitsSold",
@@ -26,6 +28,20 @@ export type ProductStatsSortField = (typeof PRODUCT_STATS_SORT_FIELDS)[number];
 
 const ProductStatsSortingSchema = SortingSchema(...PRODUCT_STATS_SORT_FIELDS);
 
+export const PRODUCT_SORT_FIELDS = [
+  "category.category",
+  "code",
+  "desc",
+  "home_price",
+  "site_price",
+  "kitchen",
+  "rice",
+] as const satisfies DottedKeys<Product>[];
+
+export type ProductSortField = (typeof PRODUCT_SORT_FIELDS)[number];
+
+const ProductSortingSchema = SortingSchema(...PRODUCT_SORT_FIELDS);
+
 export namespace ProductContracts {
   export namespace Common {
     export const WithCategory = ProductWithCategorySchema;
@@ -36,10 +52,25 @@ export namespace ProductContracts {
   }
 
   export namespace GetAll {
-    export const Input = z.void();
-    export type Input = void;
+    export const Input = wrapFilters(
+      APIFiltersSchema.pick({
+        categoryIds: true,
+        onlyActive: true,
+      })
+    )
+      .extend(PaginationSchema.shape)
+      .extend({
+        sort: z.array(ProductSortingSchema),
+      })
+      .partial()
+      .optional();
+    export type Input = z.infer<typeof Input>;
 
-    export const Output = z.array(Common.WithCategory);
+    export const Output = z
+      .object({
+        products: z.array(Common.WithCategory),
+      })
+      .and(PaginationResponseSchema);
     export type Output = z.infer<typeof Output>;
   }
 
@@ -67,13 +98,10 @@ export namespace ProductContracts {
   }
 
   export namespace Create {
-    export const Input = wrapSchema(
-      "product",
-      createInputSchema(ProductSchema).partial({
-        category_id: true,
-        rice: true,
-      })
-    );
+    export const Input = z.object({
+      product: createInputSchema(ProductSchema),
+    });
+
     export type Input = z.infer<typeof Input>;
 
     export const Output = Common.WithCategory;
@@ -81,12 +109,9 @@ export namespace ProductContracts {
   }
 
   export namespace Update {
-    export const Input = wrapSchema(
-      "product",
-      updateInputSchema(ProductSchema).partial({
-        category_id: true,
-      })
-    );
+    export const Input = z.object({
+      product: updateInputSchema(ProductSchema),
+    });
     export type Input = z.infer<typeof Input>;
 
     export const Output = Common.WithCategory;

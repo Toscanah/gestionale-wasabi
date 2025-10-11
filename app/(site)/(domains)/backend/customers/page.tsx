@@ -1,24 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import FormFields from "../FormFields";
+import FormFields from "../manager/FormFields";
 import { formSchema, getCustomerFields } from "./form";
-import Manager, { FormFieldsProps } from "../Manager";
+import Manager, { FormFieldsProps } from "../manager/Manager";
 import columns from "./columns";
 import GoBack from "../../../components/ui/misc/GoBack";
 import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import dynamic from "next/dynamic";
 import { trpc } from "@/lib/server/client";
 import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
-
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
-  ssr: false,
-});
+import useCustomersManager from "@/app/(site)/hooks/backend/base/useCustomersManager";
+import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
 
 export default function CustomersDashboard() {
   const { data: customers = [], isFetching } = trpc.customers.getAllComprehensive.useQuery();
+  const { page, pageSize, setPage, setPageSize } = useTablePagination();
 
-  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<ComprehensiveCustomer>) => (
+  const Fields = ({
+    handleSubmit,
+    object,
+    submitLabel,
+  }: FormFieldsProps<ComprehensiveCustomer>) => (
     <FormFields
       handleSubmit={handleSubmit}
       submitLabel={submitLabel}
@@ -45,19 +46,11 @@ export default function CustomersDashboard() {
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
         <Loader isLoading={isFetching}>
           <Manager<ComprehensiveCustomer>
-            type="customer"
-            receivedData={customers}
+            useDomainManager={() => useCustomersManager()}
             columns={columns(customers)}
             FormFields={Fields}
-            path="/api/customers/"
             pagination
             deleteAction
-            fetchActions={{
-              add: "createCustomer",
-              toggle: "toggleCustomer",
-              update: "updateCustomerFromAdmin",
-              delete: "deleteCustomerById",
-            }}
           />
         </Loader>
       </div>

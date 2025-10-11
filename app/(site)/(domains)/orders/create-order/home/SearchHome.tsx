@@ -99,7 +99,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
       <Button
         ref={buttonRef}
         type="submit"
-        className="w-52 text-3xl rounded-none h-full"
+        className="w-52 text-3xl rounded-none h-24"
         onClick={searchHome}
       >
         Vai {children}

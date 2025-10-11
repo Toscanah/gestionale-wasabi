@@ -12,11 +12,12 @@ import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
-import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
+import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
 import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
 import { CustomerContracts } from "@/app/(site)/lib/shared";
+import { TableMeta } from "@tanstack/react-table";
 
-export type ProductStatsTableMeta = {
+export type ProductStatsTableMeta = TableMeta<any> & {
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
 };
 
@@ -46,7 +47,7 @@ export default function ProductsStats() {
     columns,
   });
 
-  const table = useTable({
+  const table = useTable<(typeof tableData)[number], ProductStatsTableMeta>({
     data: tableData,
     columns: tableColumns,
     query: inputQuery,
@@ -54,7 +55,8 @@ export default function ProductsStats() {
     pagination: { mode: "client" },
     meta: {
       filters: { orders: { period: parsedFilters.period, shift: parsedFilters.shift } },
-    } as ProductStatsTableMeta,
+      isLoading,
+    },
   });
 
   return (
@@ -84,14 +86,16 @@ export default function ProductsStats() {
           />
 
           <div className="w-full flex gap-4 items-center justify-end">
-            <ResetFiltersButton
+            <ResetTableControlsBtn
               onReset={handleReset}
-              show={
+              hasFilters={
                 categoryIds.length !== allCategories.length ||
                 period?.from?.getTime() !== TODAY_PERIOD?.from?.getTime() ||
                 period?.to?.getTime() !== TODAY_PERIOD?.to?.getTime() ||
                 !!inputQuery
               }
+              hasServerSorting={!!activeSorts.length}
+              disabled={isLoading}
             />
 
             <SortingMenu
@@ -103,7 +107,7 @@ export default function ProductsStats() {
           </div>
         </div>
 
-        <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />
+        <Table table={table} />
 
         <span>
           Totale:{" "}

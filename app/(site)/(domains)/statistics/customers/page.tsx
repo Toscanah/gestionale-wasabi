@@ -9,11 +9,11 @@ import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
 import { useTheme } from "next-themes";
 import useCustomersStats from "@/app/(site)/hooks/statistics/useCustomersStats";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
-import usePagination from "@/app/(site)/hooks/table/usePagination";
+import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
 import React, { useEffect } from "react";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
-import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
+import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
 import RanksFilter from "@/app/(site)/components/ui/filters/select/RanksFilter";
 import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
 import CustomerOriginsFilter from "@/app/(site)/components/ui/filters/select/CustomerOriginsFilter";
@@ -24,7 +24,7 @@ export type CustomerStatsTableMeta = {
 };
 
 export default function CustomersStats() {
-  const { page, pageSize, setPage, setPageSize } = usePagination();
+  const { page, pageSize, setPage, setPageSize } = useTablePagination({ initialPageSize: 20 });
   const {
     customers,
     totalCount,
@@ -62,29 +62,16 @@ export default function CustomersStats() {
     pagination: {
       mode: "server",
       pageSize,
-      pageIndex: page,
-      pageCount: Math.ceil((totalCount || 0) / pageSize),
-      onPaginationChange: (updater) => {
-        const newState =
-          typeof updater === "function" ? updater({ pageIndex: page, pageSize }) : updater;
-
-        setPage(newState.pageIndex);
-        setPageSize(newState.pageSize);
-      },
+      page,
+      setPage,
+      setPageSize,
+      totalCount,
     },
     meta: {
       ranks: rfmRanks,
       theme: theme ?? "light",
     },
   });
-
-  const pageCount = Math.ceil(totalCount / (pageSize ?? totalCount));
-
-  useEffect(() => {
-    if (page >= pageCount) {
-      setPage(Math.max(0, pageCount - 1));
-    }
-  }, [totalCount, pageSize]);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
@@ -114,14 +101,16 @@ export default function CustomersStats() {
           />
 
           <div className="w-full flex gap-4 items-center justify-end">
-            <ResetFiltersButton
+            <ResetTableControlsBtn
               onReset={handleReset}
-              show={
+              hasFilters={
                 ranks.length !== allRanks.length ||
                 !!period?.from ||
                 !!period?.to ||
                 !!debouncedQuery
               }
+              hasServerSorting={!!activeSorts.length}
+              disabled={isLoading}
             />
 
             <SortingMenu
@@ -133,16 +122,16 @@ export default function CustomersStats() {
           </div>
         </div>
 
-        <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />
+        <Table table={table} />
 
         <TablePagination
           table={table}
           page={page}
           pageSize={pageSize}
-          pageCount={pageCount}
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
           totalCount={totalCount}
+          disabled={isLoading}
         />
 
         <GoBack path="/home" />

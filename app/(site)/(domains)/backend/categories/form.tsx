@@ -1,16 +1,19 @@
 import { z } from "zod";
-import getZodField from "../../../lib/utils/global/form/getZodField";
-import { FormFieldType } from "../FormFields";
+import { AnyFieldDef, FormFieldType } from "../manager/FormFields";
 import CategoryOptions from "./CategoryOptions";
-import { ControllerRenderProps } from "react-hook-form";
-import { Option } from "@/prisma/generated/schemas";
+import { Option } from "@prisma/client";
+import { OptionSchema } from "@/prisma/generated/schemas";
 
-export const formSchema = z.object({
-  category: getZodField("string"),
-  options: z.array(z.any()).optional(),
+export const categoryFormSchema = z.object({
+  category: z.string().min(1, "Il nome è obbligatorio").default(""),
+  options: z.array(OptionSchema).default([]),
 });
 
-export function getCategoryFields(options: Option[]): FormFieldType[] {
+export type CategoryFormData = z.infer<typeof categoryFormSchema>;
+
+export function getCategoryFields(
+  options: Option[]
+): AnyFieldDef<z.input<typeof categoryFormSchema>>[] {
   return [
     {
       name: "category",
@@ -19,14 +22,28 @@ export function getCategoryFields(options: Option[]): FormFieldType[] {
     {
       name: "options",
       label: "Opzioni",
-      unique: true,
-      children: ({ field }: { field: ControllerRenderProps }) => {
-        return (
-          <div className="space-y-2 text-center">
-            <CategoryOptions field={field} options={options} />
-          </div>
-        );
-      },
+      description: (
+        <span>
+          Se hai bisogno di una nuova opzione vai a{" "}
+          <a
+            href="/backend/options"
+            className="underline text-primary hover:text-blue-500 transition-colors visited:text-primary"
+          >
+            questa pagina
+          </a>
+          .
+        </span>
+      ),
+      render: (field) => (
+        <CategoryOptions
+          allOptions={options}
+          onChange={field.onChange}
+          options={(field.value ?? []).map((opt) => ({
+            ...opt,
+            active: typeof opt.active === "boolean" ? opt.active : false,
+          }))}
+        />
+      ),
     },
   ];
 }

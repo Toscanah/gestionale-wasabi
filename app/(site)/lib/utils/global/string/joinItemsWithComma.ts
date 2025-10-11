@@ -1,6 +1,10 @@
-import { CategoryWithOptions, ComprehensiveCustomer, OptionWithCategories } from "@/app/(site)/lib/shared"
-;
+import {
+  CategoryWithOptions,
+  ComprehensiveCustomer,
+  OptionWithCategories,
+} from "@/app/(site)/lib/shared";
 import capitalizeFirstLetter from "./capitalizeFirstLetter";
+import normalizeCase from "./normalizeCase";
 
 export type JoinItemType = "addresses" | "options" | "categories" | "doorbells";
 
@@ -19,37 +23,37 @@ export default function joinItemsWithComma(
   type: JoinItemType,
   options: JoinOptions = {}
 ): string {
-  const { sort = false, maxChar = Infinity }: JoinOptions = options;
+  const { sort = true, maxChar = Infinity }: JoinOptions = options;
   const truncate = (str: string) => str.slice(0, Math.min(str.length, maxChar));
 
   const formatFns = new Map<JoinItemType, (item: any) => any[]>([
     [
       "doorbells",
       (item) =>
-        (item as ComprehensiveCustomer).addresses.map((address) =>
-          capitalizeFirstLetter(truncate(address.doorbell))
-        ),
+        (item as ComprehensiveCustomer)?.addresses?.map?.((address) =>
+          normalizeCase(truncate(address.doorbell))
+        ) ?? [],
     ],
     [
       "categories",
       (item) =>
-        (item as OptionWithCategories).categories.map((cat) =>
-          capitalizeFirstLetter(truncate(cat.category.category))
-        ),
+        (item as OptionWithCategories)?.categories?.map?.((cat) =>
+          normalizeCase(truncate(cat.category.category))
+        ) ?? [],
     ],
     [
       "addresses",
       (item) =>
-        (item as ComprehensiveCustomer).addresses.map(
-          (address) => capitalizeFirstLetter(truncate(address.street)) + " " + address.civic
-        ),
+        (item as ComprehensiveCustomer)?.addresses?.map?.(
+          (address) => normalizeCase(truncate(address.street)) + " " + address.civic
+        ) ?? [],
     ],
     [
       "options",
       (item) =>
-        (item as CategoryWithOptions).options.map((option) =>
-          capitalizeFirstLetter(truncate(option.option.option_name))
-        ),
+        (item as CategoryWithOptions)?.options?.map?.((option) =>
+          normalizeCase(truncate(option.option.option_name))
+        ) ?? [],
     ],
   ]);
 

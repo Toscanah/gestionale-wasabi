@@ -13,6 +13,8 @@ export const ToggleEntityResponseSchema = z
   })
   .strict();
 
+export type ToggleEntityResponse = z.infer<typeof ToggleEntityResponseSchema>;
+
 export const DeleteEntityResponseSchema = z
   .object({
     id: z.number(),

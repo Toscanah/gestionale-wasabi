@@ -14,7 +14,7 @@ import {
 import { Check, Clock, Moon, PuzzlePiece, Sun } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import generateTimeSlots from "@/app/(site)/lib/utils/global/time/generateTimeSlots";
-import WasabiSelect, { CommandGroupType, CommandOption } from "./WasabiSelect";
+import WasabiSelect, { CommandGroupType, CommandOption } from "../../wasabi/WasabiSelect";
 import {
   DEFAULT_WHEN_LABEL,
   DEFAULT_WHEN_VALUE,

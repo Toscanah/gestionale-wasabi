@@ -1,69 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import fetchRequest from "../../../lib/api/fetchRequest";
-import Manager, { FormFieldsProps } from "../Manager";
-import GoBack from "../../../components/ui/misc/GoBack";
+import Manager, { FormFieldsProps } from "../manager/Manager";
 import { OptionWithCategories } from "@/app/(site)/lib/shared";
 import columns from "./columns";
-import FormFields from "../FormFields";
-import { formSchema, getOptionFields } from "./form";
-import dynamic from "next/dynamic";
-
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
-  ssr: false,
-});
-
-type FormValues = Partial<OptionWithCategories>;
+import { getOptionFields, OptionFormData, optionFormSchema } from "./form";
+import useOptionsManager from "@/app/(site)/hooks/backend/base/useOptionsManager";
+import { FormFields } from "../manager/FormFields";
 
 export default function OptionsDashboard() {
-  const [options, setOptions] = useState<OptionWithCategories[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    fetchRequest<OptionWithCategories[]>(
-      "GET",
-      "/api/options/",
-      "getAllOptionsWithCategories"
-    ).then((options) => {
-      setOptions(options);
-      setLoading(false);
-    });
-  }, []);
-
-  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<OptionWithCategories>) => (
+  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<OptionFormData>) => (
     <FormFields
       handleSubmit={handleSubmit}
       submitLabel={submitLabel}
-      defaultValues={{ ...object }}
-      layout={[{ fieldsPerRow: 1 }]}
+      defaultValues={optionFormSchema.parse(object || {})}
+      layout={[{ fields: ["option_name"] }]}
       formFields={getOptionFields()}
-      formSchema={formSchema}
+      formSchema={optionFormSchema}
     />
   );
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
-        {loading ? (
-          <RandomSpinner isLoading={loading} />
-        ) : (
-          <Manager<OptionWithCategories>
-            receivedData={options}
-            columns={columns}
-            FormFields={Fields}
-            path="/api/options/"
-            type="option"
-            fetchActions={{
-              add: "createNewOption",
-              toggle: "toggleOption",
-              update: "updateOption",
-            }}
-          />
-        )}
-      </div>
-
-      <GoBack path="../../home" />
-    </div>
+    <Manager<OptionWithCategories, OptionFormData>
+      useDomainManager={useOptionsManager}
+      columns={columns}
+      FormFields={Fields}
+      labels={{ singular: "opzione", plural: "opzioni" }}
+    />
   );
 }

@@ -17,5 +17,9 @@ export default async function toggleCategory({
     data: {
       active: !category.active,
     },
+    select: {
+      id: true,
+      active: true,
+    },
   });
 }

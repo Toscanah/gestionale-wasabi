@@ -1,7 +1,7 @@
 import { CustomerContracts } from "@/app/(site)/lib/shared";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import getCustomerByPhone from "@/app/(site)/lib/db/customers/getCustomerByPhone";
-import getCustomerWithDetails from "@/app/(site)/lib/db/customers/getCustomerWithDetails";
+import getComprehensiveCustomer from "@/app/(site)/lib/db/customers/getComprehensiveCustomer";
 import getComprehensiveCustomers from "@/app/(site)/lib/db/customers/getComprehensiveCustomers";
 import getCustomersByDoorbell from "@/app/(site)/lib/db/customers/getCustomersByDoorbell";
 import updateCustomerFromAdmin from "@/app/(site)/lib/db/customers/updateCustomerFromAdmin";
@@ -19,10 +19,10 @@ export const customersRouter = createTRPCRouter({
     .output(CustomerContracts.GetByPhone.Output)
     .query(({ input }) => getCustomerByPhone(input)),
 
-  getWithDetails: publicProcedure
-    .input(CustomerContracts.GetWithDetails.Input)
-    .output(CustomerContracts.GetWithDetails.Output)
-    .query(({ input }) => getCustomerWithDetails(input)),
+  getComprehensive: publicProcedure
+    .input(CustomerContracts.GetComprehensive.Input)
+    .output(CustomerContracts.GetComprehensive.Output)
+    .query(({ input }) => getComprehensiveCustomer(input)),
 
   getAllComprehensive: publicProcedure
     .input(CustomerContracts.GetAllComprehensive.Input)

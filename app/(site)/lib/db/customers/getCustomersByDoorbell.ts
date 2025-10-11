@@ -1,6 +1,6 @@
 import { CustomerContracts, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import prisma from "../db";
-import getCustomerWithDetails from "./getCustomerWithDetails";
+import getComprehensiveCustomer from "./getComprehensiveCustomer";
 
 export default async function getCustomersByDoorbell({
   doorbell,
@@ -20,7 +20,7 @@ export default async function getCustomersByDoorbell({
   });
 
   const customers = await Promise.all(
-    customersId.map(async (customer) => await getCustomerWithDetails({ customerId: customer.id }))
+    customersId.map(async (customer) => await getComprehensiveCustomer({ customerId: customer.id }))
   ).then((results) => results.filter(Boolean) as ComprehensiveCustomer[]);
 
   return customers;

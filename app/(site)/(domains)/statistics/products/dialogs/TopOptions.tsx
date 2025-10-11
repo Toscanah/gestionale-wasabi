@@ -44,7 +44,7 @@ export default function TopOptions({ product }: TopOptionsProps) {
     <WasabiDialog
       size="medium"
       trigger={
-        <Button className="w-40" variant="default">
+        <Button className="w-40" variant="outline">
           Vedi opzioni usate
         </Button>
       }

@@ -9,8 +9,9 @@ import {
 } from "@tanstack/react-table";
 import { Dispatch, SetStateAction } from "react";
 import type { TableMeta } from "@tanstack/react-table";
+import { MAX_RECORDS } from "../../lib/shared";
 
-const DEFAULT_PAGE_SIZE = 999999;
+const DEFAULT_PAGE_SIZE = MAX_RECORDS;
 const noop = () => {};
 
 interface ClientPagination {
@@ -21,9 +22,10 @@ interface ClientPagination {
 interface ServerPagination {
   mode: "server";
   pageSize: number;
-  pageIndex: number;
-  pageCount: number;
-  onPaginationChange: (updater: any) => void;
+  setPageSize: (size: number) => void;
+  page: number;
+  setPage: (page: number) => void;
+  totalCount: number;
 }
 
 type TablePagination = ClientPagination | ServerPagination | undefined;
@@ -31,8 +33,8 @@ type TablePagination = ClientPagination | ServerPagination | undefined;
 interface TableProps<T, M extends TableMeta<T> = TableMeta<T>> {
   data: T[];
   columns: ColumnDef<T>[];
-  query?: string; // 👈 debounced query
-  setQuery?: Dispatch<SetStateAction<string>>; // 👈 updates raw inputQuery
+  query?: string;
+  setQuery?: Dispatch<SetStateAction<string>>;
   rowSelection?: Record<string, boolean>;
   setRowSelection?: Dispatch<SetStateAction<Record<string, boolean>>>;
   pagination?: TablePagination;
@@ -59,7 +61,7 @@ export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
       ...(pagination && pagination.mode === "server"
         ? {
             pagination: {
-              pageIndex: pagination.pageIndex,
+              pageIndex: pagination.page,
               pageSize: pagination.pageSize,
             },
           }
@@ -67,19 +69,28 @@ export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
     },
     onGlobalFilterChange: setQuery,
     getRowId: (_row: any, index: number) => String(index),
+    getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: setRowSelection,
-    autoResetPageIndex: false,
+    autoResetPageIndex: true,
     autoResetAll: false,
   };
 
   if (pagination?.mode === "server") {
+    const { pageSize, setPageSize, page, setPage, totalCount } = pagination;
+
     return useReactTable({
       ...commonConfig,
       manualPagination: true,
-      pageCount: pagination.pageCount,
-      onPaginationChange: pagination.onPaginationChange,
+      pageCount: Math.ceil((totalCount || 0) / pageSize),
+      onPaginationChange: (updater) => {
+        const newState =
+          typeof updater === "function" ? updater({ pageIndex: page, pageSize }) : updater;
+
+        setPage(newState.pageIndex);
+        setPageSize(newState.pageSize);
+      },
     });
   }
 

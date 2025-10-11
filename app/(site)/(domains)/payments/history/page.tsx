@@ -1,17 +1,14 @@
 "use client";
 
-import { endOfDay, isSameDay, startOfDay } from "date-fns";
+import { endOfDay,startOfDay } from "date-fns";
 import React from "react";
 import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
-import TableControls from "../../../components/table/TableControls";
-import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
 import GoBack from "../../../components/ui/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
 import columns from "./columns";
-import useQueryFilter from "../../../hooks/table/useQueryFilter";
-import usePagination from "@/app/(site)/hooks/table/usePagination";
+import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import usePaymentsHistory from "@/app/(site)/hooks/payments/usePaymentsHistory";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
@@ -19,11 +16,10 @@ import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import OrderTypesFilter from "@/app/(site)/components/ui/filters/select/OrderTypesFilter";
 import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
-import { debounce } from "lodash";
-import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
+import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
 
 export default function PaymentsTable() {
-  const { page, pageSize, setPage, setPageSize } = usePagination({});
+  const { page, pageSize, setPage, setPageSize } = useTablePagination();
 
   const {
     filteredOrders,
@@ -60,15 +56,10 @@ export default function PaymentsTable() {
     pagination: {
       mode: "server",
       pageSize,
-      pageIndex: page,
-      pageCount: Math.ceil((totalCount || 0) / pageSize),
-      onPaginationChange: (updater) => {
-        const newState =
-          typeof updater === "function" ? updater({ pageIndex: page, pageSize }) : updater;
-
-        setPage(newState.pageIndex);
-        setPageSize(newState.pageSize);
-      },
+      page,
+      setPage,
+      setPageSize,
+      totalCount,
     },
   });
 
@@ -102,7 +93,7 @@ export default function PaymentsTable() {
             disabled={isLoading}
           />
 
-          <ResetFiltersButton
+          <ResetTableControlsBtn
             onReset={handleReset}
             className="ml-auto"
             show={!isLoading && showReset}
@@ -116,7 +107,6 @@ export default function PaymentsTable() {
           table={table}
           page={page}
           pageSize={pageSize}
-          pageCount={Math.ceil(totalCount / pageSize)}
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
           totalCount={totalCount}

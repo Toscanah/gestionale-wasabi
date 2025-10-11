@@ -10,7 +10,7 @@ import React, {
 import { OrderByType, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import useCustomerLookup from "../hooks/create-home-order/useCustomerLookup";
 import { useWasabiContext } from "./WasabiContext";
-import { FormValues } from "../(domains)/orders/create-order/home/address/form";
+import { AddressFormValues } from "../(domains)/orders/create-order/home/address/form";
 import useCustomerManager from "../hooks/create-home-order/useCustomerManager";
 import useAddressSelection from "../hooks/create-home-order/useAddressSelection";
 import { trpc } from "@/lib/server/client";
@@ -29,7 +29,7 @@ type CreateHomeOrderType = {
   initialDoorbell: string;
   selectedOption: string;
   setSelectedOption: Dispatch<SetStateAction<string>>;
-  onSubmit: (values: FormValues) => Promise<void>;
+  onSubmit: (values: AddressFormValues) => Promise<void>;
   createHomeOrder: () => void;
   setDoorbell: Dispatch<SetStateAction<string>>;
   doorbell: string;

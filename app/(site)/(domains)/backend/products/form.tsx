@@ -1,90 +1,140 @@
 import { z } from "zod";
-import getZodField from "../../../lib/utils/global/form/getZodField";
+import { ControllerRenderProps, FieldValues } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
-import { FormFieldType } from "../FormFields";
-import { ControllerRenderProps } from "react-hook-form";
-import { CategoryWithOptions } from "@/app/(site)/lib/shared"
-;
-import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
+import { FormFieldType } from "../manager/FormFields";
+import { CategoryContracts, CategoryWithOptions } from "@/app/(site)/lib/shared";
+import WasabiSimpleSelect from "../../../components/ui/wasabi/WasabiSimpleSelect";
+import { KitchenTypeSchema } from "@/prisma/generated/schemas";
 import KitchenType from "./KitchenType";
 
-export const formSchema = z.object({
-  code: getZodField("string"),
-  salads: getZodField("number", false),
-  soups: getZodField("number", false),
-  rices: getZodField("number", false),
-  desc: getZodField("string"),
-  site_price: getZodField("number"),
-  home_price: getZodField("number"),
-  rice: getZodField("number", false),
-  category_id: getZodField("number", false),
-  kitchen: getZodField("string"),
+export const productFormSchema = z.object({
+  code: z
+    .string({ error: "Il codice è obbligatorio" })
+    .min(1, { error: "Il codice è obbligatorio" })
+    .default(""),
+  desc: z.string().min(1, { error: "La descrizione è obbligatoria" }).default(""),
+  salads: z.coerce
+    .number({ error: "Inserisci un numero" })
+    .min(0, { error: "Le insalate devono essere un numero positivo" })
+    .default(0),
+  soups: z.coerce
+    .number({ error: "Inserisci un numero" })
+    .min(0, { error: "Le zuppe devono essere un numero positivo" })
+    .default(0),
+  rices: z.coerce
+    .number({ error: "Inserisci un numero" })
+    .min(0, { error: "Il riso extra deve essere un numero positivo" })
+    .default(0),
+  site_price: z.coerce
+    .number({ error: "Inserisci un numero" })
+    .min(0, { error: "Il prezzo in loco deve essere un numero positivo" })
+    .default(0),
+  home_price: z.coerce
+    .number({ error: "Inserisci un numero" })
+    .min(0, { error: "Il prezzo asporto deve essere un numero positivo" })
+    .default(0),
+  rice: z.coerce
+    .number({ error: "Inserisci un numero" })
+    .min(0, { error: "Il riso deve essere un numero positivo" })
+    .default(0),
+  category_id: z.coerce.number().nullable().default(null),
+  kitchen: KitchenTypeSchema.default("NONE"),
 });
 
-export function getProductFields(categories: CategoryWithOptions[]): FormFieldType[] {
+export type ProductFormData = z.infer<typeof productFormSchema>;
+
+export function getProductFields(
+  categories: CategoryContracts.GetAll.Output
+): FormFieldType<z.input<typeof productFormSchema>>[] {
   return [
     {
       name: "code",
       label: "Codice",
     },
-    { name: "rice", label: "Riso per cucinare", type: "number" },
-    { name: "salads", label: "Insalate", type: "number" },
-    { name: "soups", label: "Zuppe", type: "number" },
-    { name: "rices", label: "Riso extra", type: "number" },
+    {
+      name: "rice",
+      label: "Riso per cucinare (g)",
+      type: "number",
+    },
+    {
+      name: "salads",
+      label: "Insalate",
+      type: "number",
+    },
+    {
+      name: "soups",
+      label: "Zuppe",
+      type: "number",
+    },
+    {
+      name: "rices",
+      label: "Riso extra",
+      type: "number",
+    },
     {
       name: "desc",
       label: "Descrizione",
-      children: <Textarea className="resize-none" />,
     },
     {
       name: "site_price",
-      label: "Prezzo in loco",
+      label: "Prezzo in loco (€)",
       type: "number",
     },
     {
       name: "home_price",
-      label: "Prezzo asporto",
+      label: "Prezzo asporto (€)",
       type: "number",
     },
     {
       name: "category_id",
       label: "Categoria",
-      children: ({ field }: { field: ControllerRenderProps }) => {
-        return (
-          <div className="space-y-2 space-x-2 text-center">
-            <WasabiSingleSelect
-              className="h-10"
-              field={field}
-              groups={[
-                {
-                  items: [
-                    { value: "-1", label: "Nessuna categoria" },
-                    ...categories.map((cat) => ({
-                      value: cat.id.toString(),
-                      name: cat.category,
-                    })),
-                  ],
-                },
-              ]}
-              //defaultValue={field.value?.toString() == undefined ? "-1" : field.value?.toString()}
-              value={field.value?.toString() || "-1"}
-            />
-          </div>
-        );
-      },
-      unique: true,
+      description: (
+        <span>
+          Se hai bisogno di una nuova categoria vai a{" "}
+          <a
+            href="/backend/categories"
+            className="underline text-primary hover:text-blue-500 transition-colors visited:text-primary"
+          >
+            questa pagina
+          </a>
+          .
+        </span>
+      ),
+      render: (field) => (
+        <WasabiSimpleSelect
+          searchPlaceholder="Cerca categoria..."
+          placeholder="Seleziona una categoria"
+          triggerClassName="h-9"
+          field={{
+            ...field,
+            value: field.value?.toString() ?? "-1",
+            onChange: (val: string) => {
+              const parsed = val === "-1" ? null : Number(val);
+              field.onChange(parsed);
+            },
+          }}
+          groups={[
+            {
+              options: [
+                { value: "-1", label: "Nessuna categoria" },
+                ...categories.map((cat) => ({
+                  value: cat.id.toString(),
+                  label: cat.category,
+                })),
+              ],
+            },
+          ]}
+        />
+      ),
     },
     {
       name: "kitchen",
       label: "Cucina",
-      unique: true,
-      children: ({ field }: { field: ControllerRenderProps }) => {
-        return (
-          <div className="space-y-2 text-center">
-            <KitchenType field={field} />
-          </div>
-        );
-      },
+      render: (field) => (
+        <div className="space-y-2 text-center">
+          <KitchenType field={field} />
+        </div>
+      ),
     },
   ];
 }

@@ -14,14 +14,26 @@ export namespace CategoryContracts {
     export type Entity = z.infer<typeof Entity>;
   }
 
-  export namespace Create {
-    export const Input = wrapSchema(
-      "category",
-      createInputSchema(Common.Entity).partial({ options: true })
-    );
+  export namespace CountProductsByCategory {
+    export const Input = NoContentRequestSchema;
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.Entity.nullable();
+    export const Output = z.array(
+      z.object({
+        categoryId: z.number(),
+        productCount: z.number(),
+      })
+    );
+    export type Output = z.infer<typeof Output>;
+  }
+
+  export namespace Create {
+    export const Input = z.object({
+      category: createInputSchema(Common.Entity).partial({ options: true }),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.Entity;
     export type Output = z.infer<typeof Output>;
   }
 
@@ -45,7 +57,15 @@ export namespace CategoryContracts {
     export const Input = NoContentRequestSchema;
     export type Input = z.infer<typeof Input>;
 
-    export const Output = z.array(CategorySchema);
+    export const Output = z.array(Common.Entity);
+    export type Output = z.infer<typeof Output>;
+  }
+
+  export namespace GetAllWithOptions {
+    export const Input = NoContentRequestSchema;
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = z.array(Common.Entity);
     export type Output = z.infer<typeof Output>;
   }
 }

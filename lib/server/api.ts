@@ -40,11 +40,12 @@ export const categoriesAPI: Hooks<typeof trpc.categories> = {
   update: trpc.categories.update,
   toggle: trpc.categories.toggle,
   getAll: trpc.categories.getAll,
+  countProductsByCategory: trpc.categories.countProductsByCategory,
 };
 
 export const customersAPI: Hooks<typeof trpc.customers> = {
   getByPhone: trpc.customers.getByPhone,
-  getWithDetails: trpc.customers.getWithDetails,
+  getComprehensive: trpc.customers.getComprehensive,
   getAllComprehensive: trpc.customers.getAllComprehensive,
   getByDoorbell: trpc.customers.getByDoorbell,
   updateFromAdmin: trpc.customers.updateFromAdmin,

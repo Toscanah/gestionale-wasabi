@@ -10,8 +10,19 @@ import NormalActions from "./NormalActions";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import TableUpdate from "./TableUpdate";
 import PaymentStatusSelection from "./PaymentStatusSelection";
-import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
+import {
+  CUSTOMER_ORIGIN_LABELS,
+  HomeOrder,
+  OrderGuards,
+  PickupOrder,
+} from "@/app/(site)/lib/shared";
 import Engagement from "./Engagement";
+import calculateRfmRank from "@/app/(site)/lib/services/rfm/calculateRfmRank";
+import calculateRfmScore from "@/app/(site)/lib/services/rfm/calculateRfmScore";
+import useRfmRules from "@/app/(site)/hooks/rfm/useRfmRules";
+import useRfmRanks from "@/app/(site)/hooks/rfm/useRfmRanks";
+import extractCustomerOrders from "@/app/(site)/lib/services/customer-management/extractCustomerOrders";
+import CustomerLookup from "./CustomerLookup";
 
 interface OrderOverviewProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
@@ -65,6 +76,8 @@ export default function OrderOverview({ setAction }: OrderOverviewProps) {
 
       <Rice />
       <Total />
+
+      {OrderGuards.isHome(order) || (OrderGuards.isPickup(order) && <CustomerLookup />)}
 
       <div className="mt-auto flex flex-col gap-6">
         <NormalActions setAction={setAction} plannedPayment={paymentStatus.plannedPayment} />

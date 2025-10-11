@@ -5,6 +5,7 @@ import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { PlannedPayment } from "@prisma/client";
 import { PaymentStatus } from "./OrderOverview";
 import { trpc } from "@/lib/server/client";
+import WasabiSimpleSelect from "../../../../components/ui/wasabi/WasabiSimpleSelect";
 
 interface PaymentStatusSelectionProps {
   paymentStatus: PaymentStatus;
@@ -34,9 +35,8 @@ export default function PaymentStatusSelection({
   const updatePaymentStatusMutation = trpc.orders.updatePaymentStatus.useMutation({
     onSuccess: (updatedOrder) => {
       toastSuccess("Pagamento aggiornato correttamente", "Stato pagamento aggiornato");
-      updateOrder(updatedOrder); 
+      updateOrder(updatedOrder);
     },
-
   });
 
   const handlePaymentStatusChange = (value: StatusOptions) => {
@@ -61,22 +61,20 @@ export default function PaymentStatusSelection({
   }, [prepaid, plannedPayment]);
 
   return (
-    <div className="space-y-2">
-      <ToggleGroup
-        variant="outline"
-        className="flex w-full gap-6"
-        type="single"
-        value={selectedOption}
-        onValueChange={(value: StatusOptions) =>
-          handlePaymentStatusChange(value || PlannedPayment.UNKNOWN)
-        }
-      >
-        {paymentOptions.map(({ value, label }) => (
-          <ToggleGroupItem key={value} value={value} className="flex-1 h-12 text-xl">
-            {label}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
-    </div>
+    <ToggleGroup
+      variant="outline"
+      className="flex w-full"
+      type="single"
+      value={selectedOption}
+      onValueChange={(value: StatusOptions) =>
+        handlePaymentStatusChange(value || PlannedPayment.UNKNOWN)
+      }
+    >
+      {paymentOptions.map(({ value, label }) => (
+        <ToggleGroupItem key={value} value={value} className="h-12 text-xl">
+          {label}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
   );
 }

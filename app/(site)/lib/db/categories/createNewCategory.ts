@@ -2,6 +2,7 @@ import { CategoryContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { optionsInclude } from "../includes";
 import { Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 export default async function createNewCategory({
   category,
@@ -13,7 +14,10 @@ export default async function createNewCategory({
     });
 
     if (existingCategory) {
-      return null;
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "Category with this name already exists.",
+      });
     }
 
     const data: Prisma.CategoryCreateInput = { category: categoryName };

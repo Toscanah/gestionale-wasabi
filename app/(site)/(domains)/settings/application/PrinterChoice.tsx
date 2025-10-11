@@ -1,6 +1,6 @@
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
 import { Label } from "@/components/ui/label";
-import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
+import WasabiSimpleSelect from "../../../components/ui/wasabi/WasabiSimpleSelect";
 
 export type Printer = {
   name: "Stampante bianca" | "Stampante nera";
@@ -17,10 +17,12 @@ export default function PrinterChoice() {
 
   return (
     <>
-      <Label htmlFor="printer" className="cursor-pointer">Stampante</Label>
-      <WasabiSingleSelect
+      <Label htmlFor="printer" className="cursor-pointer">
+        Stampante
+      </Label>
+      <WasabiSimpleSelect
         id="printer"
-        className="h-10"
+        triggerClassName="h-10"
         value={settings.selectedPrinter.name}
         onValueChange={(printerName) => {
           const selectedPrinter = PREDEFINED_PRINTERS.find(
@@ -32,7 +34,10 @@ export default function PrinterChoice() {
         }}
         groups={[
           {
-            items: PREDEFINED_PRINTERS.map((printer) => printer.name),
+            options: PREDEFINED_PRINTERS.map((printer) => ({
+              value: printer.name,
+              label: printer.name,
+            })),
           },
         ]}
       />

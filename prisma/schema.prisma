@@ -27,8 +27,8 @@ model Rider {
 
 model Order {
     id                          Int                @id @default(autoincrement())
-    created_at                  DateTime           @default(now())
-    updated_at                  DateTime           @default(now()) @updatedAt
+    created_at                  DateTime           @default(now()) @db.Timestamptz(3)
+    updated_at                  DateTime           @default(now()) @updatedAt @db.Timestamptz(3)
     discount                    Float              @default(0)
     type                        OrderType
     is_receipt_printed          Boolean            @default(false)
@@ -72,8 +72,8 @@ model HomeOrder {
     customer_id     Int
     when            String           @default("immediate")
     contact_phone   String?
-    last_reply_at   DateTime?
-    reply_seen_at   DateTime?
+    last_reply_at   DateTime?        @db.Timestamptz(3)
+    reply_seen_at   DateTime?        @db.Timestamptz(3)
     planned_payment PlannedPayment   @default(UNKNOWN)
     id              Int              @id
     prepaid         Boolean          @default(false)
@@ -128,7 +128,7 @@ model EngagementTemplate {
     label       String?
     type        EngagementType
     payload     Json
-    created_at  DateTime       @default(now())
+    created_at  DateTime       @default(now()) @db.Timestamptz(3)
     redeemable  Boolean        @default(false)
     engagements Engagement[]
 
@@ -138,7 +138,7 @@ model EngagementTemplate {
 
 model Engagement {
     id          Int                @id @default(autoincrement())
-    created_at  DateTime           @default(now())
+    created_at  DateTime           @default(now()) @db.Timestamptz(3)
     customer_id Int?
     order_id    Int?
     template_id Int
@@ -160,11 +160,11 @@ model EngagementLedger {
     id                   Int                    @id @default(autoincrement())
     engagement_id        Int
     issued_on_order_id   Int
-    issued_at            DateTime               @default(now())
+    issued_at            DateTime               @default(now()) @db.Timestamptz(3)
     redeemed_on_order_id Int?
-    redeemed_at          DateTime?
+    redeemed_at          DateTime?              @db.Timestamptz(3)
     voided_on_order_id   Int?
-    voided_at            DateTime?
+    voided_at            DateTime?              @db.Timestamptz(3)
     status               EngagementLedgerStatus @default(ISSUED)
     engagement           Engagement             @relation(fields: [engagement_id], references: [id], onDelete: Cascade)
     issued_on_order      Order                  @relation("ledger_issued_on_order", fields: [issued_on_order_id], references: [id])
@@ -205,8 +205,8 @@ model CustomerStats {
     average_order  Float     @default(0)
     /// [RFMCustomerSegment]
     rfm            Json      @default("{}")
-    last_order_at  DateTime?
-    first_order_at DateTime?
+    last_order_at  DateTime? @db.Timestamptz(3)
+    first_order_at DateTime? @db.Timestamptz(3)
     customer       Customer  @relation(fields: [customer_id], references: [id], onDelete: Cascade)
 
     @@index([total_orders])
@@ -225,7 +225,7 @@ model Payment {
     id                 Int          @id @default(autoincrement())
     amount             Float        @default(0)
     order_id           Int
-    created_at         DateTime     @default(now())
+    created_at         DateTime     @default(now()) @db.Timestamptz(3)
     type               PaymentType
     scope              PaymentScope @default(UNKNOWN)
     payment_group_code String?
@@ -241,7 +241,7 @@ model Payment {
 
 model RiceLog {
     id            Int         @id @default(autoincrement())
-    created_at    DateTime    @default(now())
+    created_at    DateTime    @default(now()) @db.Timestamptz(3)
     rice_batch_id Int?
     manual_value  Float?
     type          RiceLogType
@@ -290,7 +290,7 @@ model ProductInOrder {
     order_id              Int
     quantity              Int                    @default(0)
     paid_quantity         Int                    @default(0)
-    created_at            DateTime               @default(now())
+    created_at            DateTime               @default(now()) @db.Timestamptz(3)
     frozen_price          Float                  @default(0)
     status                ProductInOrderStatus   @default(IN_ORDER)
     variation             String?
@@ -353,7 +353,7 @@ model MetaMessageLog {
     home_order_id Int
     template_name String
     template_id   String
-    created_at    DateTime         @default(now())
+    created_at    DateTime         @default(now()) @db.Timestamptz(3)
     direction     MessageDirection
     home_order    HomeOrder        @relation(fields: [home_order_id], references: [id], onDelete: Cascade)
 

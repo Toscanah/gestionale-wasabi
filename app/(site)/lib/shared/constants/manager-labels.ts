@@ -1,0 +1,16 @@
+export const MANAGER_LABELS = {
+  edit: "Modifica",
+  delete: "Elimina",
+  confirmDeleteTitle: "Elimina elemento",
+  confirmDeleteMsg: "Stai per eliminare questo elemento permanentemente. Sei sicuro?",
+  confirmToggleTitle: "Attenzione!",
+  onlyActive: "Solo attivi?",
+  toggledOn: "attivato",
+  toggledOff: "disattivato",
+  error: "Qualcosa è andato storto",
+  deleteError: "Impossibile eliminare l'elemento",
+  editSuccess: "L'elemento è stato modificato correttamente",
+  addSuccess: "Elemento aggiunto correttamente",
+  deleteSuccess: "Elemento eliminato correttamente",
+  exists: "Questo elemento esiste già",
+};

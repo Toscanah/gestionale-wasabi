@@ -1,5 +1,5 @@
 import { CustomerOrigin } from "@prisma/client";
-import WasabiSelect from "./WasabiSelect";
+import WasabiSelect from "../../wasabi/WasabiSelect";
 import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 import { Globe } from "@phosphor-icons/react/dist/ssr";
 import { Phone, QuestionMark, Signpost, Tag, UserSound } from "@phosphor-icons/react";

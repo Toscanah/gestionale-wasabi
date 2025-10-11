@@ -7,14 +7,20 @@ import { uniqueId } from "lodash";
 import joinItemsWithComma, { JoinItemType } from "../../lib/utils/global/string/joinItemsWithComma";
 import { Checkbox } from "@/components/ui/checkbox";
 
+// -----------------------------------------------------------------------------
+// Types & Utilities
+// -----------------------------------------------------------------------------
+
 type Primitive = string | number | boolean | Date | null | undefined;
 
-/**
- * Primitive types allowed in table columns.
- */
-type JoinOptions = {
-  key: JoinItemType;
-  wrapper?: React.ComponentType<{ children: React.ReactNode }>;
+export type BaseColumnProps = {
+  header?: ReactNode;
+  sortable?: boolean;
+  skeleton?: ReactNode;
+};
+
+export type ColumnDefWithSkeleton<T> = ColumnDef<T> & {
+  skeleton?: ReactNode;
 };
 
 const JOIN_HEADERS: Record<JoinItemType, string> = {
@@ -24,11 +30,10 @@ const JOIN_HEADERS: Record<JoinItemType, string> = {
   options: "Opzioni",
 };
 
-/**
- * Builds a table column header with optional sorting button.
- * @param title - The column title.
- * @param sort - Whether the column is sortable.
- */
+function isLoading(meta: TableMeta<any> | undefined): boolean {
+  return Boolean(meta?.isLoading);
+}
+
 function buildHeader<T>(title: ReactNode = "", sort: boolean): ColumnDef<T>["header"] {
   return ({ column }) =>
     sort ? (
@@ -41,182 +46,199 @@ function buildHeader<T>(title: ReactNode = "", sort: boolean): ColumnDef<T>["hea
     );
 }
 
-/**
- * Base props for all table columns.
- * @property header - The column header label.
- * @property sortable - Whether the column is sortable.
- */
-export type BaseColumnProps = {
-  header?: ReactNode;
-  sortable?: boolean;
-};
+// -----------------------------------------------------------------------------
+// 1. IndexColumn
+// -----------------------------------------------------------------------------
 
-/* ------------------------------------------------------
- *  1. IndexColumn
- * ---------------------------------------------------- */
-type IndexColumn = Omit<BaseColumnProps, "sortable">;
+type IndexColumnProps = Omit<BaseColumnProps, "sortable">;
 
-/**
- * Returns a column definition for a row index column (auto-incrementing number).
- * @param header - The column header label (default: "#").
- * @param sortable - Whether the column is sortable (default: true).
- */
-export function IndexColumn<T>({ header = "#" }: IndexColumn): ColumnDef<T> {
+export function IndexColumn<T>({
+  header = "#",
+  skeleton,
+}: IndexColumnProps): ColumnDefWithSkeleton<T> {
   return {
     id: typeof header === "string" ? header : "#",
     header: buildHeader<T>(header, false),
-    cell: ({ row, table }) =>
-      (table.getSortedRowModel()?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) ?? 0) + 1,
+    cell: ({ row, table }) => {
+      const isLoad = isLoading(table.options.meta);
+      if (isLoad && skeleton) return skeleton;
+
+      return (table.getSortedRowModel()?.flatRows?.findIndex((r) => r.id === row.id) ?? 0) + 1;
+    },
+    enableSorting: false,
   };
 }
 
-/* ------------------------------------------------------
- *  2. FieldColumn
- * ---------------------------------------------------- */
-type FieldColumn = BaseColumnProps & {
+// -----------------------------------------------------------------------------
+// 2. FieldColumn
+// -----------------------------------------------------------------------------
+
+type FieldColumnProps = BaseColumnProps & {
   key: string;
 };
 
-/**
- * Returns a column definition for a field value (simple accessor).
- * @param key - The key of the field to display.
- * @param header - The column header label.
- * @param sortable - Whether the column is sortable (default: true).
- */
-export function FieldColumn<T>({ key, header, sortable = true }: FieldColumn): ColumnDef<T> {
+export function FieldColumn<T>({
+  key,
+  header,
+  sortable = true,
+  skeleton,
+}: FieldColumnProps): ColumnDefWithSkeleton<T> {
   return {
     id: key,
     accessorFn: (original) => getNestedValue<T>(original, key),
     header: buildHeader<T>(header, sortable),
     sortingFn: "alphanumeric",
-    cell: ({ getValue }) => <>{String(getValue())}</>, // reuse accessorFn output
+    cell: ({ getValue, table }) => {
+      const isLoad = isLoading(table.options.meta);
+      if (isLoad && skeleton) return skeleton;
+
+      return <>{String(getValue() ?? "")}</>;
+    },
+    enableSorting: sortable,
   };
 }
 
-/* ------------------------------------------------------
- *  3. JoinColumn
- * ---------------------------------------------------- */
-type JoinColumn = BaseColumnProps & {
+// -----------------------------------------------------------------------------
+// 3. JoinColumn
+// -----------------------------------------------------------------------------
+
+type JoinOptions = {
+  key: JoinItemType;
+  wrapper?: React.ComponentType<{ children: React.ReactNode }>;
+};
+
+type JoinColumnProps = BaseColumnProps & {
   options: JoinOptions;
 };
 
-/**
- * Returns a column definition for joining array fields into a single cell.
- * @param options - Join options for the array field.
- * @param header - The column header label.
- * @param sortable - Whether the column is sortable (default: true).
- */
-export function JoinColumn<T>({ options, header, sortable = true }: JoinColumn): ColumnDef<T> {
+export function JoinColumn<T>({
+  options,
+  header,
+  sortable = true,
+  skeleton,
+}: JoinColumnProps): ColumnDefWithSkeleton<T> {
   return {
     id: options.key,
     accessorFn: (original) => joinItemsWithComma(original, options.key),
     header: buildHeader(header ?? JOIN_HEADERS[options.key], sortable),
     sortingFn: "alphanumeric",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
+      const isLoad = isLoading(table.options.meta);
+      if (isLoad && skeleton) return skeleton;
+
       const Wrapper = options.wrapper || Fragment;
       return <Wrapper>{joinItemsWithComma(row.original, options.key)}</Wrapper>;
     },
+    enableSorting: sortable,
   };
 }
 
-/* ------------------------------------------------------
- *  4. ValueColumn (sortable/filterable, accessor required)
- * ---------------------------------------------------- */
-type ValueColumn<T> = BaseColumnProps & {
+// -----------------------------------------------------------------------------
+// 4. ValueColumn
+// -----------------------------------------------------------------------------
+
+type ValueColumnProps<T> = BaseColumnProps & {
   value: (row: Row<T>, meta: TableMeta<T> | undefined) => ReactNode;
   accessor: (row: T) => Primitive;
   sortingFn?: SortingFnOption<T>;
 };
 
-/**
- * Returns a column definition for a value column with custom rendering and accessor.
- * @param accessor - Function to access the value from the row data.
- * @param value - Function to render the cell value.
- * @param header - The column header label.
- * @param sortable - Whether the column is sortable (default: true).
- * @param sortingFn - Function to filter the column values.
- */
 export function ValueColumn<T>({
   accessor,
   value,
   header,
   sortable = true,
   sortingFn = "alphanumeric",
-}: ValueColumn<T>): ColumnDef<T> {
+  skeleton,
+}: ValueColumnProps<T>): ColumnDefWithSkeleton<T> {
   if (typeof header === "string" && header.trim() === "") {
     throw new Error("ValueColumn: 'header' must be a non-empty string.");
   }
 
-  const col: ColumnDef<T> = {
+  const col: ColumnDefWithSkeleton<T> = {
     id: typeof header === "string" ? header : header !== undefined ? uniqueId("col_") : uniqueId(),
     accessorFn: (original) => accessor(original),
     header: buildHeader<T>(header, sortable),
-    cell: ({ row, table }) => value(row, table.options.meta),
+    cell: ({ row, table }) => {
+      const isLoad = isLoading(table.options.meta);
+      if (isLoad && skeleton) return skeleton;
+
+      return value(row, table.options.meta);
+    },
     enableSorting: sortable,
   };
 
-  if (sortable) {
-    // Pass through either the string key or the custom function
-    col.sortingFn = sortingFn;
-  }
-
+  if (sortable) col.sortingFn = sortingFn;
   return col;
 }
 
-/* ------------------------------------------------------
- *  5. ActionColumn (pure actions, no accessor/sorting/filtering)
- * ---------------------------------------------------- */
-type ActionColumn<T> = Pick<BaseColumnProps, "header"> & {
+// -----------------------------------------------------------------------------
+// 5. ActionColumn
+// -----------------------------------------------------------------------------
+
+type ActionColumnProps<T> = Omit<BaseColumnProps, "sortable"> & {
   action: (row: Row<T>, meta: TableMeta<T> | undefined) => ReactNode;
 };
 
-/**
- * Returns a column definition for an action column (e.g., buttons, icons).
- * @param action - Function to render the action cell content.
- * @param header - The column header label.
- */
-export function ActionColumn<T>({ action, header }: ActionColumn<T>): ColumnDef<T> {
+export function ActionColumn<T>({
+  action,
+  header,
+  skeleton,
+}: ActionColumnProps<T>): ColumnDefWithSkeleton<T> {
   return {
-    id: typeof header === "string" && header.trim() !== "" ? header : uniqueId(),
+    id: typeof header === "string" && header.trim() !== "" ? header : uniqueId("action_col_"),
     header: buildHeader(header, false),
     enableSorting: false,
     enableColumnFilter: false,
-    cell: ({ row, table }) => action(row, table.options.meta),
+    cell: ({ row, table }) => {
+      const isLoad = isLoading(table.options.meta);
+      if (isLoad && skeleton) return skeleton;
+
+      return action(row, table.options.meta);
+    },
   };
 }
 
-/* ------------------------------------------------------
- *  5. HybridColumn (hybrid, same as ValueColumn)
- * ---------------------------------------------------- */
+// -----------------------------------------------------------------------------
+// 6. HybridColumn (alias of ValueColumn)
+// -----------------------------------------------------------------------------
+
 export const HybridColumn = ValueColumn;
 
-/**
- * HybridColumn is an alias for ValueColumn, supporting both accessor and custom rendering.
- */
+// -----------------------------------------------------------------------------
+// 7. SelectColumn
+// -----------------------------------------------------------------------------
 
-// type SelectColumn<T> = {
-//   action: (row: Row<T>, meta: TableMeta<T> | undefined) => ReactNode;
-// };
-
-export function SelectColumn<T>(): ColumnDef<T> {
+export function SelectColumn<T>(): ColumnDefWithSkeleton<T> {
   return {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      // const isLoad = isLoading(table.options.meta);
+      // if (isLoad) return <div className="h-5 w-5 rounded bg-muted" />;
+
+      return (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      );
+    },
+    cell: ({ row, table }) => {
+      // const isLoad = isLoading(table.options.meta);
+      // if (isLoad) return <div className="h-5 w-5 rounded bg-muted" />;
+
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      );
+    },
     size: 32,
     enableSorting: false,
     enableHiding: false,

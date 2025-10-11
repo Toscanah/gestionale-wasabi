@@ -31,7 +31,7 @@ export default function When() {
 
   return (
     <WhenSelector
-      className="h-12 text-2xl uppercase w-full"
+      className="h-12 text-2xl uppercase flex-1"
       value={orderTime}
       onValueChange={handleTimeChange}
     />

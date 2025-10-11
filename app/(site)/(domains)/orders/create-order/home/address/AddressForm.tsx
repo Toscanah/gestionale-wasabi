@@ -1,8 +1,6 @@
 import { KeyboardEvent, RefObject, useEffect } from "react";
 import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import FormField from "@/app/(site)/components/ui/FormField";
-import formSchema, { FormValues } from "./form";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
 import { CustomerOrigin } from "@prisma/client";
 import { FormField as RawFormField } from "@/components/ui/form";
@@ -10,6 +8,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
+import { addressFormSchema } from "./form";
+import { WasabiFormField } from "@/app/(site)/components/ui/wasabi/WasabiFormField";
+import { useZodForm } from "@/app/(site)/hooks/useZodForm";
 
 interface AddressFormProps {
   formRef: RefObject<HTMLFormElement>;
@@ -19,10 +20,8 @@ interface AddressFormProps {
 
 export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFormProps) {
   const { onSubmit, extraInfo, selectedAddress, customer, phone } = useCreateHomeOrder();
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: formSchema.parse({}),
-  });
+
+  const form = useZodForm({ schema: addressFormSchema });
 
   const resetForm = () => {
     form.reset({
@@ -41,7 +40,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
       doorbell: selectedAddress?.doorbell || "",
       email: customer?.email || "",
       preferences: customer?.preferences || "",
-      origin: customer?.origin as CustomerOrigin || CustomerOrigin.UNKNOWN,
+      origin: (customer?.origin as CustomerOrigin) || CustomerOrigin.UNKNOWN,
     });
 
     form.clearErrors();
@@ -84,122 +83,137 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             )}
           />
 
-          <FormField
+          <WasabiFormField
             control={form.control}
             name="street"
             ref={refs[0]}
             label="Via"
-            handleKeyDown={handleKeyDown}
-            className="h-14 text-2xl uppercase"
-            example="(es. Via dei Giacinti 41)"
+            onKeyDown={handleKeyDown}
+            className="w-full h-14 text-2xl uppercase"
+            // description="(es. Via dei Giacinti 41)"
           />
 
-          <div className="flex justify-between gap-4">
-            <FormField
+          <div className="w-full flex gap-4">
+            <WasabiFormField
               ref={refs[1]}
               control={form.control}
               name="doorbell"
-              handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl uppercase"
+              onKeyDown={handleKeyDown}
+              className="w-full h-14 text-2xl uppercase"
               label="Campanello"
-              example="(es. Rossi)"
+              // description="(es. Rossi)"
             />
 
-            <FormField
+            <WasabiFormField
               ref={refs[2]}
               control={form.control}
               name="floor"
               label="Piano"
-              handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl uppercase"
+              onKeyDown={handleKeyDown}
+              className="w-full h-14 text-2xl uppercase"
             />
           </div>
 
-          <div className="flex justify-between gap-4">
-            <FormField
+          <div className="w-full flex gap-4">
+            <WasabiFormField
               ref={refs[4]}
               control={form.control}
               name="contact_phone"
               type="number"
-              handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl uppercase"
+              onKeyDown={handleKeyDown}
+              className="w-full h-14 text-2xl uppercase"
               label="Num. telefono alternativo"
             />
 
-            <FormField
+            <WasabiFormField
               ref={refs[3]}
               control={form.control}
               name="stair"
               label="Scala"
-              handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl uppercase"
-              example="(dx / sx)"
+              onKeyDown={handleKeyDown}
+              className="w-full h-14 text-2xl uppercase"
+              // description="(dx / sx)"
             />
           </div>
 
-          <div className="flex justify-between gap-4">
-            <FormField
+          <div className="w-full flex gap-4">
+            <WasabiFormField
               control={form.control}
               name="name"
               ref={refs[5]}
               label="Nome"
-              handleKeyDown={handleKeyDown}
-              className="h-14 text-2xl uppercase"
+              onKeyDown={handleKeyDown}
+              className="w-full h-14 text-2xl uppercase"
             />
 
-            <FormField
+            <WasabiFormField
               control={form.control}
               name="surname"
               ref={refs[6]}
-              handleKeyDown={handleKeyDown}
+              onKeyDown={handleKeyDown}
               label="Cognome"
-              className="h-14 text-2xl uppercase"
+              className="w-full h-14 text-2xl uppercase"
             />
           </div>
 
-          <FormField
+          <WasabiFormField
             control={form.control}
             name="email"
             label="Email"
             ref={refs[7]}
-            handleKeyDown={handleKeyDown}
-            className="h-14 text-2xl uppercase"
-            example="(es. mario.rossi@gmail.com)"
+            onKeyDown={handleKeyDown}
+            className="w-full h-14 text-2xl uppercase"
+            // description="(es. mario.rossi@gmail.com)"
           />
 
-          <div className="flex justify-between gap-4">
-            <FormField
+          <div className="w-full flex gap-4">
+            <WasabiFormField
               control={form.control}
               name="street_info"
               ref={refs[8]}
-              handleKeyDown={handleKeyDown}
+              onKeyDown={handleKeyDown}
               label="Informazioni stradali"
-              example="(es. Arrivare da Via Udine..)"
-            >
-              <Textarea className="resize-none text-xl uppercase" />
-            </FormField>
+              // description="(es. Arrivare da Via Udine..)"
+              render={({ value, onChange }) => (
+                <Textarea
+                  value={value || ""}
+                  onChange={onChange}
+                  className="w-full resize-none text-xl uppercase"
+                />
+              )}
+            />
 
-            <FormField
+            <WasabiFormField
               control={form.control}
               name="order_notes"
               ref={refs[9]}
-              handleKeyDown={handleKeyDown}
+              onKeyDown={handleKeyDown}
               label="Note sull'ordine"
-              example="(es. Extra wasabi, no zenzero)"
-            >
-              <Textarea className="resize-none text-xl uppercase" />
-            </FormField>
+              // description="(es. Extra wasabi, no zenzero)"
+              render={({ value, onChange }) => (
+                <Textarea
+                  value={value || ""}
+                  onChange={onChange}
+                  className="w-full esize-none text-xl uppercase"
+                />
+              )}
+            />
 
-            <FormField
+            <WasabiFormField
               control={form.control}
               name="preferences"
               ref={refs[10]}
-              handleKeyDown={handleKeyDown}
+              onKeyDown={handleKeyDown}
               label="Preferenze cliente"
-              example="(es. Intollerante, coca zero)"
-            >
-              <Textarea className="resize-none text-xl uppercase" />
-            </FormField>
+              // description="(es. Intollerante, coca zero)"
+              render={({ value, onChange }) => (
+                <Textarea
+                  value={value || ""}
+                  onChange={onChange}
+                  className="w-full resize-none text-xl uppercase"
+                />
+              )}
+            />
           </div>
         </form>
       </Form>

@@ -3,7 +3,7 @@ import { HomeOrderSchema } from "@/prisma/generated/schemas";
 import { CustomerOrigin } from "@prisma/client";
 import { z } from "zod";
 
-const formSchema = z.object({
+export const addressFormSchema = z.object({
   street: AddressContracts.Create.Input.shape.address.shape.street.default(""),
   doorbell: AddressContracts.Create.Input.shape.address.shape.doorbell.default(""),
   name: CustomerContracts.Create.Input.shape.customer.shape.name.optional().default(""),
@@ -24,6 +24,4 @@ const formSchema = z.object({
     .default(CustomerOrigin.UNKNOWN),
 });
 
-export default formSchema;
-
-export type FormValues = z.infer<typeof formSchema>;
+export type AddressFormValues = z.infer<typeof addressFormSchema>;

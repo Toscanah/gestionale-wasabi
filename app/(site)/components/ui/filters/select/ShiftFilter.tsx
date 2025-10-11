@@ -1,4 +1,4 @@
-import WasabiSelect from "./WasabiSelect";
+import WasabiSelect from "../../wasabi/WasabiSelect";
 import { OrderFilters } from "@/app/(site)/hooks/statistics/sectionReducer";
 import { SHIFT_LABELS, ShiftFilterValue } from "@/app/(site)/lib/shared";
 import { ForkKnife } from "@phosphor-icons/react";

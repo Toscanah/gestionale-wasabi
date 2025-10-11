@@ -11,15 +11,15 @@ import GoBack from "../../../components/ui/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
-import usePagination from "@/app/(site)/hooks/table/usePagination";
+import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
 import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
 import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
 import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
-import ResetFiltersButton from "@/app/(site)/components/ui/filters/common/ResetFiltersButton";
+import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 
 export default function EngagementPage() {
-  const { page, pageSize, setPage, setPageSize } = usePagination({ initialPageSize: 50 });
+  const { page, pageSize, setPage, setPageSize } = useTablePagination({ initialPageSize: 50 });
 
   const {
     activeTypes,
@@ -53,14 +53,10 @@ export default function EngagementPage() {
     pagination: {
       mode: "server",
       pageSize,
-      pageIndex: page,
-      pageCount: Math.ceil((totalCount || 0) / pageSize),
-      onPaginationChange: (updater) => {
-        const newState =
-          typeof updater === "function" ? updater({ pageIndex: page, pageSize }) : updater;
-
-        setPage(newState.pageIndex);
-      },
+      page,
+      setPage,
+      setPageSize,
+      totalCount,
     },
   });
 
@@ -84,7 +80,7 @@ export default function EngagementPage() {
             disabled={isLoading}
           />
 
-          <ResetFiltersButton
+          <ResetTableControlsBtn
             onReset={handleReset}
             show={!!inputQuery || period !== TODAY_PERIOD}
           />
@@ -113,7 +109,6 @@ export default function EngagementPage() {
           table={leftTable}
           page={page}
           pageSize={pageSize}
-          pageCount={Math.ceil(totalCount / (pageSize ?? totalCount))}
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
           totalCount={totalCount}

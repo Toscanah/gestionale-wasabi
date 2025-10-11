@@ -1,5 +1,5 @@
 import prisma from "../db";
-import getCustomerWithDetails from "./getCustomerWithDetails";
+import getComprehensiveCustomer from "./getComprehensiveCustomer";
 import { CustomerContracts } from "@/app/(site)/lib/shared";
 
 export default async function updateCustomerAddresses({
@@ -46,5 +46,5 @@ export default async function updateCustomerAddresses({
     await Promise.all([...updatePromises, ...createPromises]);
   });
 
-  return getCustomerWithDetails({ customerId });
+  return getComprehensiveCustomer({ customerId });
 }

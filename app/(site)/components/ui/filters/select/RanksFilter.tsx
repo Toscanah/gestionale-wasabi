@@ -1,5 +1,5 @@
 import { Trophy } from "@phosphor-icons/react";
-import WasabiSelect from "./WasabiSelect";
+import WasabiSelect from "../../wasabi/WasabiSelect";
 
 interface RankFilterProps {
   ranks: string[];

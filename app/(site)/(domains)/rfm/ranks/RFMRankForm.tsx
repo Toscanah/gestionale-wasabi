@@ -1,4 +1,4 @@
-import WasabiSingleSelect from "@/app/(site)/components/ui/wasabi/WasabiSingleSelect";
+import WasabiSimpleSelect from "@/app/(site)/components/ui/wasabi/WasabiSimpleSelect";
 import { RFMDimension, RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { Input } from "@/components/ui/input";
@@ -22,14 +22,8 @@ interface RFMFieldEditorProps {
 
 function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProps) {
   const parsedDimension = capitalizeFirstLetter(dimension);
-  const minKey = `min${parsedDimension}` as keyof Omit<
-    RFMRankRule,
-    "rank"
-  >;
-  const maxKey = `max${parsedDimension}` as keyof Omit<
-    RFMRankRule,
-    "rank"
-  >;
+  const minKey = `min${parsedDimension}` as keyof Omit<RFMRankRule, "rank">;
+  const maxKey = `max${parsedDimension}` as keyof Omit<RFMRankRule, "rank">;
 
   // derive initial mode
   const initialMode: Mode =
@@ -97,21 +91,21 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
       <strong className="w-4">{label}</strong>
 
       <div className="w-full flex gap-4 justify-start items-center">
-        <WasabiSingleSelect
+        <WasabiSimpleSelect
           id={`dim-${label.toLowerCase()}`}
           value={mode}
           onValueChange={(v) => handleModeChange(v as Mode)}
-          className="h-10 w-full"
+          triggerClassName="h-10 w-full"
           groups={[
             {
-              items: [
+              options: [
                 { label: "compreso tra", value: "between" },
                 { label: "uguale a", value: "eq" },
               ],
             },
           ]}
         />
-  
+
         {mode === "eq" ? (
           <>
             <span>=</span>
@@ -153,7 +147,6 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
     </div>
   );
 }
-
 
 export default function RFMRankForm({ rank, onChange }: RFMRankEditorProps) {
   return (

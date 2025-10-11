@@ -1,5 +1,5 @@
 import parseAddress from "../../lib/utils/domains/address/parseAddress";
-import { FormValues } from "../../(domains)/orders/create-order/home/address/form";
+import { AddressFormValues } from "../../(domains)/orders/create-order/home/address/form";
 import { ExtraInfo } from "../../context/CreateHomeOrderContext";
 import { toastSuccess } from "../../lib/utils/global/toast";
 import { Dispatch, SetStateAction } from "react";
@@ -38,7 +38,7 @@ export default function useCustomerManager({
 
   const utils = trpc.useUtils();
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: AddressFormValues) {
     const { street, civic } = parseAddress(values.street);
 
     const actionCustomer = getActionType(customer);

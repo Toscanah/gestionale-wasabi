@@ -6,7 +6,7 @@ import productColumns from "../common/productColumns";
 import Table from "../../table/Table";
 import SearchBar from "../../ui/filters/common/SearchBar";
 import useQueryFilter from "@/app/(site)/hooks/table/useQueryFilter";
-import ResetFiltersButton from "../../ui/filters/common/ResetFiltersButton";
+import ResetTableControlsBtn from "../../ui/filters/common/ResetTableControlsBtn";
 import { trpc } from "@/lib/server/client";
 import { useEffect, useState } from "react";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
@@ -92,7 +92,7 @@ export default function AllProductsDialog({ allProducts, owner }: AllProductsDia
             selectedCategoryIds={selectedCategories}
             onCategoryIdsChange={setSelectedCategories}
           /> */}
-          <ResetFiltersButton
+          <ResetTableControlsBtn
             onReset={() => setInputQuery("")}
             show={!!inputQuery || selectedCategories.length > 0}
           />

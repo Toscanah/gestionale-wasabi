@@ -8,7 +8,7 @@ import WasabiPopover from "../../wasabi/WasabiPopover";
 import { CalendarBlank, HashStraight, Lightning } from "@phosphor-icons/react";
 import FilterTrigger from "../common/FilterTrigger";
 import DateShiftButton from "./DateShiftButton";
-import WasabiSelect from "../select/WasabiSelect";
+import WasabiSelect from "../../wasabi/WasabiSelect";
 import { DATE_FILTERING_PRESETS, DatePreset } from "@/app/(site)/lib/shared/enums/date-preset";
 import getDateRangeFromPreset from "@/app/(site)/lib/utils/global/date/getDateRangeForPreset";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
@@ -103,7 +103,7 @@ export default function CalendarFilter({
           <WasabiSelect
             triggerIcon={Lightning}
             mode="transient"
-            triggerClassName="w-full border-solid"
+            triggerClassName="flex-1 border-solid"
             title="Date pronte"
             onChange={(updatedValue) =>
               handleDateFilter(getDateRangeFromPreset(updatedValue as DatePreset))
@@ -123,7 +123,7 @@ export default function CalendarFilter({
           <WasabiSelect
             triggerIcon={HashStraight}
             mode="transient"
-            triggerClassName="w-full border-solid"
+            triggerClassName="flex-1 border-solid"
             title="Anni"
             onChange={(val) => {
               const y = parseInt(val, 10);

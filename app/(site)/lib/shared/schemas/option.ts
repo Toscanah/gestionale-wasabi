@@ -3,7 +3,10 @@ import { z } from "zod";
 import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
 import { NoContentRequestSchema } from "./common/no-content";
 import { OptionWithCategoriesSchema } from "../models/Option";
-import { ToggleDeleteEntityRequestSchema, ToggleEntityResponseSchema } from "./common/toggle-delete-entity";
+import {
+  ToggleDeleteEntityRequestSchema,
+  ToggleEntityResponseSchema,
+} from "./common/toggle-delete-entity";
 
 export namespace OptionContracts {
   export namespace Common {
@@ -53,7 +56,9 @@ export namespace OptionContracts {
   }
 
   export namespace Create {
-    export const Input = wrapSchema("option", createInputSchema(OptionSchema));
+    export const Input = z.object({
+      option: createInputSchema(OptionSchema),
+    });
     export type Input = z.infer<typeof Input>;
 
     export const Output = Common.WithCategories;

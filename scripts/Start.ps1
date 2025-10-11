@@ -28,21 +28,21 @@ Write-Host "[INFO] Rilevato sistema operativo: $OS" -ForegroundColor Magenta
 
 function Update-Dependencies {
     Write-Host "[INFO] Scarico gli aggiornamenti" -ForegroundColor Magenta
-    & git pull
+    git pull
 
     Write-Host "`n[INFO] Installo le librerie necessarie" -ForegroundColor Magenta
-    & npm install --force
-    & npm install prisma@latest
-    & npm install @prisma/client@latest
+    npm install --force
+    npm install prisma@latest
+    npm install @prisma/client@latest
 
     Write-Host "`n[INFO] Imposto il database" -ForegroundColor Magenta
     Push-Location ..
-    & npx prisma db push
-    & npx prisma generate --sql
+    npx prisma db push
+    npx prisma generate --sql
     Pop-Location
 
     Write-Host "`n[INFO] Costruisco il programma" -ForegroundColor Magenta
-    & npm run build
+    npm run build
 }
 
 function Test-Server-Running {
@@ -131,7 +131,7 @@ function Start-App {
     }
 
     Push-Location ..
-    & npm run electron
+    npm run electron
     Pop-Location
 }
 

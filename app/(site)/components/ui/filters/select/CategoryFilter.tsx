@@ -1,12 +1,15 @@
 import { Category } from "@prisma/client";
-import WasabiSelect from "./WasabiSelect";
+import WasabiSelect from "../../wasabi/WasabiSelect";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
+import { useMemo } from "react";
 
 interface CategoryFilterProps {
   selectedCategoryIds: number[];
   onCategoryIdsChange: (updatedCategories: number[]) => void;
   allCategories: Category[];
   disabled?: boolean;
+  categoryCounts?: Record<number, number>;
+  triggerClassName?: string;
 }
 
 export default function CategoryFilter({
@@ -14,10 +17,17 @@ export default function CategoryFilter({
   onCategoryIdsChange,
   allCategories,
   disabled = false,
+  categoryCounts = {},
+  triggerClassName,
 }: CategoryFilterProps) {
+  const extendedCategories = useMemo<Category[]>(
+    () => [{ id: -1, category: "Senza categoria", active: true }, ...allCategories],
+    [allCategories]
+  );
+
   const handleChange = (newValues: string[]) => {
-    if (newValues.length === 0 || newValues.length === allCategories.length) {
-      onCategoryIdsChange(allCategories.map((c) => c.id));
+    if (newValues.length === 0 || newValues.length === extendedCategories.length) {
+      onCategoryIdsChange(extendedCategories.map((c) => c.id));
     } else {
       onCategoryIdsChange(newValues.map(Number));
     }
@@ -25,16 +35,19 @@ export default function CategoryFilter({
 
   return (
     <WasabiSelect
-    disabled={disabled}
+      disabled={disabled}
       allLabel="Tutte"
       title="Categorie"
       mode="multi"
-      shouldClear={selectedCategoryIds.length!== allCategories.length}
+      inputPlaceholder="Cerca categoria..."
+      triggerClassName={triggerClassName}
+      shouldClear={selectedCategoryIds.length !== extendedCategories.length}
       groups={[
         {
-          options: allCategories.map((c) => ({
-            label: capitalizeFirstLetter(c.category),
+          options: extendedCategories.map((c) => ({
+            label: c.id === -1 ? "Senza categoria" : capitalizeFirstLetter(c.category),
             value: c.id.toString(),
+            count: categoryCounts[c.id] ?? undefined,
           })),
         },
       ]}

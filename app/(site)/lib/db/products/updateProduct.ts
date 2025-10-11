@@ -8,9 +8,9 @@ export default async function updateProduct({
   const existingProduct = await prisma.product.findFirst({
     where: {
       code: product.code,
-      id: {
-        not: product.id,
-      },
+      // id: {
+      //   not: product.id,
+      // },
     },
   });
 

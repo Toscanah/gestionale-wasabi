@@ -126,6 +126,8 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     setRanks(ALL_RANKS);
     setPeriod(DEFAULT_DATE);
     setInputQuery("");
+    setActiveSorts([]);
+    setCustomerOrigins(Object.values(CustomerOrigin));
   };
 
   return {

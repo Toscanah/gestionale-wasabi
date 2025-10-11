@@ -1,78 +1,129 @@
 import { useMemo, useState } from "react";
-import { MANAGER_LABELS } from "../../(domains)/backend/Manager";
 import useQueryFilter from "../table/useQueryFilter";
-import useManagerActions, { ManagerDomain } from "./useManagerActions";
-import { trpc } from "@/lib/server/client";
+import { toastError, toastSuccess } from "../../lib/utils/global/toast";
+import { ToggleEntityResponse } from "../../lib/shared";
+import { MANAGER_LABELS } from "../../lib/shared/constants/manager-labels";
 
-interface UseManagerParams<D extends ManagerDomain> {
-  domain: D;
+export type BaseEntity = { id: number; active?: boolean };
+
+interface UseManagerParams<
+  TData extends BaseEntity,
+  TCreate = Partial<TData>,
+  TUpdate = Partial<TData>,
+> {
+  data?: TData[];
+  totalCount?: number;
+  isLoading: boolean;
+  actions: {
+    addItem: (input: TCreate) => Promise<TData>;
+    toggleItem: (input: { id: number }) => Promise<ToggleEntityResponse>;
+    updateItem: (obj: TData, values: TUpdate) => Promise<TData>;
+    deleteItem?: (input: { id: number }) => Promise<void>;
+  };
+  smartUpdate: (updater: (old?: TData[]) => TData[] | undefined) => void;
+  serverFiltering?: {
+    showOnlyActive: boolean;
+    setShowOnlyActive: (v: boolean) => void;
+  };
 }
 
-export default function useManager<D extends ManagerDomain>({ domain }: UseManagerParams<D>) {
+export function useManager<
+  TData extends BaseEntity,
+  TCreate = Partial<TData>,
+  TUpdate = Partial<TData>,
+>({
+  data,
+  isLoading,
+  actions,
+  smartUpdate,
+  totalCount,
+  serverFiltering,
+}: UseManagerParams<TData, TCreate, TUpdate>) {
   const [showOnlyActive, setShowOnlyActive] = useState(true);
   const { debouncedQuery, inputQuery, setInputQuery } = useQueryFilter();
 
-  const queryMap = {
-    products: trpc.products.getAll,
-    customers: trpc.customers.getAllComprehensive,
-    categories: trpc.categories.getAll,
-    options: trpc.options.getAll,
-  }[domain];
+  function handleManagerAction<T>(
+    action: () => Promise<T>,
+    onSuccess: (result: T) => void,
+    successMessage: string
+  ) {
+    action()
+      .then(onSuccess)
+      .then(() => toastSuccess(successMessage))
+      .catch((err: any) => {
+        if (err?.data?.code === "CONFLICT") {
+          toastError(MANAGER_LABELS.exists);
+        } else {
+          toastError(MANAGER_LABELS.error);
+        }
+      });
+  }
 
-  const { data, isLoading } = queryMap.useQuery(undefined);
+  function handleToggle(obj: TData) {
+    handleManagerAction(
+      () => actions.toggleItem({ id: obj.id }),
+      (updated) =>
+        smartUpdate((old) =>
+          old?.map((el) => (el.id === obj.id ? { ...el, active: updated.active } : el))
+        ),
+      `L'elemento è stato ${
+        obj.active ? MANAGER_LABELS.toggledOff : MANAGER_LABELS.toggledOn
+      } correttamente`
+    );
+  }
 
-  const toggle = {
-    products: trpc.products.toggle.useMutation(),
-    customers: trpc.customers.toggle.useMutation(),
-    categories: trpc.categories.toggle.useMutation(),
-    options: trpc.options.toggle.useMutation(),
-  }[domain];
+  function handleUpdate(obj: TData, values: TUpdate) {
+    handleManagerAction(
+      () => actions.updateItem(obj, values),
+      (updated) => smartUpdate((old) => old?.map((el) => (el.id === obj.id ? updated : el))),
+      MANAGER_LABELS.editSuccess
+    );
+  }
 
-  const update = {
-    products: trpc.products.update.useMutation(),
-    customers: trpc.customers.updateFromAdmin.useMutation(),
-    categories: trpc.categories.update.useMutation(),
-    options: trpc.options.update.useMutation(),
-  }[domain];
+  function handleAdd(values: TCreate) {
+    handleManagerAction(
+      () => actions.addItem({ ...values, active: true }),
+      (created) => smartUpdate((old) => (old ? [...old, created] : [created])),
+      MANAGER_LABELS.addSuccess
+    );
+  }
 
-  const add = {
-    products: trpc.products.create.useMutation(),
-    customers: trpc.customers.create.useMutation(),
-    categories: trpc.categories.create.useMutation(),
-    options: trpc.options.create.useMutation(),
-  }[domain];
+  function handleDelete(obj: TData) {
+    if (!actions.deleteItem) return;
+    actions
+      .deleteItem({ id: obj.id })
+      .then(() => {
+        smartUpdate((old) => old?.filter((el) => el.id !== obj.id));
+        toastSuccess(MANAGER_LABELS.deleteSuccess);
+      })
+      .catch(() => toastError(MANAGER_LABELS.error));
+  }
 
-  // const del = {
-  //   products: trpc.products.delete.useMutation(),
-  //   customers: trpc.customers.deleteById.useMutation(),
-  //   categories: trpc.categories.delete.useMutation(),
-  //   options: trpc.options.delete.useMutation(),
-  // }[domain];
+  const isServerFiltering = !!serverFiltering;
 
-  const actions = useManagerActions({
-    domain,
-    labels: MANAGER_LABELS,
-    actions: {
-      toggle: (obj) => toggle.mutateAsync({ id: obj.id }),
-      update: (obj, values) => update.mutateAsync({ id: obj.id, ...values }),
-      add: (values) => add.mutateAsync({ ...values, active: true }),
-      // delete: (obj) => del.mutateAsync({ id: obj.id }).then(() => true),
-    },
-  });
+  const filteredData = useMemo(() => {
+    if (isServerFiltering) return data ?? [];
+    if (showOnlyActive) return data?.filter((d) => d.active) ?? [];
+    return data ?? [];
+  }, [data, showOnlyActive, isServerFiltering]);
 
-  const filteredData = useMemo(
-    () => (showOnlyActive ? (data?.filter((d) => d.active) ?? []) : (data ?? [])),
-    [data, showOnlyActive]
-  );
+  const effectiveShowOnlyActive = serverFiltering?.showOnlyActive ?? showOnlyActive;
+  const effectiveSetShowOnlyActive = serverFiltering?.setShowOnlyActive ?? setShowOnlyActive;
 
   return {
-    filteredData,
+    data: filteredData,
     isLoading,
     debouncedQuery,
     inputQuery,
     setInputQuery,
-    showOnlyActive,
-    setShowOnlyActive,
-    actions,
+    showOnlyActive: effectiveShowOnlyActive,
+    setShowOnlyActive: effectiveSetShowOnlyActive,
+    actions: {
+      handleToggle,
+      handleUpdate,
+      handleAdd,
+      handleDelete,
+    },
+    totalCount: totalCount ?? filteredData.length,
   };
 }

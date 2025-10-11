@@ -1,10 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import formatRice from "../../../lib/utils/domains/rice/formatRice";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
-import { Button } from "@/components/ui/button";
 import TopOptions from "./dialogs/TopOptions";
-import TopCustomers, { TopCustomersProps } from "./dialogs/TopCustomers";
+import TopCustomers from "./dialogs/TopCustomers";
 import {
   ActionColumn,
   FieldColumn,
@@ -14,6 +12,7 @@ import {
 import { ProductWithStats } from "@/app/(site)/lib/shared";
 import { ProductStatsTableMeta } from "./page";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 const columns: ColumnDef<ProductWithStats>[] = [
   IndexColumn({}),
@@ -59,6 +58,11 @@ const columns: ColumnDef<ProductWithStats>[] = [
           product={{ id: row.original.id, name: row.original.desc }}
           filters={(meta as ProductStatsTableMeta).filters}
         />
+      </div>
+    ),
+    skeleton: (
+      <div className="flex items-center gap-2">
+        <Button variant="outline">Skeleton</Button>
       </div>
     ),
   }),

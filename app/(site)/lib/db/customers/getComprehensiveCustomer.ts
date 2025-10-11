@@ -6,12 +6,12 @@ import filterInactiveProducts from "../../services/product-management/filterInac
 /**
  * Retrieves a customer by ID along with related details such as addresses, phone, orders, and engagements.
  *
- * @param {CustomerContracts.GetWithDetails.Input} params - The input object containing the customer ID.
- * @returns {Promise<CustomerContracts.GetWithDetails.Output>} The customer details with related entities, or `null` if not found.
+ * @param {CustomerContracts.GetComprehensive.Input} params - The input object containing the customer ID.
+ * @returns {Promise<CustomerContracts.GetComprehensive.Output>} The customer details with related entities, or `null` if not found.
  */
-export default async function getCustomerWithDetails({
+export default async function getComprehensiveCustomer({
   customerId,
-}: CustomerContracts.GetWithDetails.Input): Promise<CustomerContracts.GetWithDetails.Output> {
+}: CustomerContracts.GetComprehensive.Input): Promise<CustomerContracts.GetComprehensive.Output> {
   const customer = await prisma.customer.findUnique({
     where: {
       id: customerId,

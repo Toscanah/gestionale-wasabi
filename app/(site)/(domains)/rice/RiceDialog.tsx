@@ -5,7 +5,7 @@ import { Gear } from "@phosphor-icons/react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
-import WasabiSingleSelect from "../../components/ui/wasabi/WasabiSingleSelect";
+import WasabiSimpleSelect from "../../components/ui/wasabi/WasabiSimpleSelect";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
 import useFocusOnClick from "../../hooks/focus/useFocusOnClick";
@@ -111,7 +111,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             variant="delete"
             onDelete={handleReset}
             trigger={
-              <Button className="w-full border-red-600 text-red-600 text-xl" variant="outline">
+              <Button className="flex-1 border-red-600 text-red-600 text-xl" variant="outline">
                 Azzera
               </Button>
             }
@@ -119,7 +119,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             Stai per azzerare il riso, sei sicuro?
           </WasabiDialog>
 
-          <Button type="submit" onClick={handleSave} className="w-full text-xl">
+          <Button type="submit" onClick={handleSave} className="flex-1 text-xl">
             Salva
           </Button>
         </>
@@ -130,13 +130,13 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <Label htmlFor="rice" className="text-xl">
             Valori di base
           </Label>
-          <WasabiSingleSelect
+          <WasabiSimpleSelect
             disabled={riceBatches.length === 0}
-            className="h-10 text-xl"
+            triggerClassName="h-10"
             value={selectedRiceBatchId !== null ? String(selectedRiceBatchId) : undefined}
             groups={[
               {
-                items: riceBatches
+                options: riceBatches
                   .sort((a, b) => b.amount - a.amount)
                   .map((batch) => ({
                     label: batch.label || `${batch.amount}`,

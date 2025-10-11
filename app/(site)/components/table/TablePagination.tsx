@@ -1,5 +1,8 @@
+"use client";
+
 import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Select,
   SelectContent,
@@ -8,19 +11,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { CaretDoubleLeft, CaretDoubleRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
+import {
+  CaretDoubleLeft,
+  CaretDoubleLeftIcon,
+  CaretDoubleRight,
+  CaretDoubleRightIcon,
+  CaretLeft,
+  CaretLeftIcon,
+  CaretRight,
+  CaretRightIcon,
+} from "@phosphor-icons/react";
 
 interface TablePaginationProps<TData> {
   table: Table<TData>;
   totalCount?: number;
   page?: number;
   pageSize?: number;
-  pageCount?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
   disabled?: boolean;
-  selectSizeClassName?: string;
-  selectPageClassName?: string;
 }
 
 export default function TablePagination<TData>({
@@ -28,19 +37,14 @@ export default function TablePagination<TData>({
   totalCount,
   page,
   pageSize,
-  pageCount,
   onPageChange,
   onPageSizeChange,
   disabled,
-  selectSizeClassName,
-  selectPageClassName,
 }: TablePaginationProps<TData>) {
   const currentPage = page ?? table.getState().pagination.pageIndex;
   const currentPageSize = pageSize ?? table.getState().pagination.pageSize;
-  const totalPages =
-    currentPageSize === -1
-      ? 1 // only one "page" when showing all
-      : Math.max(1, pageCount ?? table.getPageCount());
+  const pageCount = Math.ceil((totalCount ?? 0) / (pageSize ?? totalCount ?? 1));
+  const totalPages = currentPageSize === -1 ? 1 : Math.max(1, pageCount ?? table.getPageCount());
 
   const handlePageChange = (newPage: number) => {
     if (onPageChange) onPageChange(newPage);
@@ -54,13 +58,14 @@ export default function TablePagination<TData>({
 
   return (
     <div className="flex w-full items-center gap-4">
-      <div className="flex items-center gap-4">
+      {/* Per-page selector */}
+      <div className="flex items-center gap-2">
         <p className="text-sm font-medium">Elementi per pagina</p>
         <Select
           value={`${currentPageSize}`}
           onValueChange={(value) => handlePageSizeChange(Number(value))}
         >
-          <SelectTrigger className={cn("h-8 w-24", selectSizeClassName)} disabled={disabled}>
+          <SelectTrigger className={cn("w-24")} disabled={disabled}>
             <SelectValue placeholder={`${currentPageSize}`} />
           </SelectTrigger>
           <SelectContent side="top">
@@ -69,88 +74,76 @@ export default function TablePagination<TData>({
                 {size}
               </SelectItem>
             ))}
-            <SelectItem key={-1} value={"-1"}>
-              Tutti <span className="text-muted-foreground">(sconsigliato, pesante)</span>
+            <SelectItem key={-1} value="-1">
+              Tutti <span className="text-muted-foreground">(sconsigliato)</span>
             </SelectItem>
           </SelectContent>
         </Select>
       </div>
 
+      {/* Range summary */}
       <span className="text-muted-foreground text-sm">
         {(() => {
           const total = totalCount ?? 0;
           if (currentPageSize === -1) {
-            // Show all records
             if (total === 0) return `0 di 0`;
             return `${total} di ${total}`;
           }
           const start = total === 0 ? 0 : currentPage * currentPageSize + 1;
           const end = Math.min((currentPage + 1) * currentPageSize, total);
-          if (start === end) {
-            return `${end} di ${total}`;
-          }
-          if (end === total && start === 1) {
-            return `${total} di ${total}`;
-          }
+          if (start === end) return `${end} di ${total}`;
+          if (end === total && start === 1) return `${total} di ${total}`;
           return `${start}-${end} di ${total}`;
         })()}
       </span>
 
-      <div className="flex items-center ml-auto">
-        <Button
-          variant="outline"
-          className={cn(
-            "h-8 px-2 border-r-0 rounded-r-none flex items-center",
-            selectPageClassName
-          )}
-          onClick={() => handlePageChange(0)}
-          disabled={currentPage === 0 || disabled}
-        >
-          <CaretDoubleLeft size={20} className="mr-2" />
-          <span className="leading-none text-sm">Prima</span>
-        </Button>
+      {/* Pagination controls */}
+      <div className="ml-auto">
+        <ButtonGroup>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(0)}
+            disabled={currentPage === 0 || disabled}
+            aria-label="Prima pagina"
+          >
+            <CaretDoubleLeftIcon size={18} />
+          </Button>
 
-        <Button
-          variant="outline"
-          className={cn("h-8 px-2 border-r-0 rounded-none flex items-center", selectPageClassName)}
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 0 || disabled}
-        >
-          <CaretLeft size={20} className="mr-2" />
-          <span className="leading-none text-sm">Precedente</span>
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 0 || disabled}
+            aria-label="Pagina precedente"
+          >
+            <CaretLeftIcon size={18} />
+          </Button>
 
-        <span
-          className={cn(
-            "flex flex-col items-center justify-center text-sm border h-8 px-2 leading-none",
-            selectPageClassName
-          )}
-        >
-          Pagina {currentPage + 1} di {totalPages}
-        </span>
+          <Button variant="outline" size="sm" className="pointer-events-none">
+            Pagina {currentPage + 1} di {totalPages}
+          </Button>
 
-        <Button
-          variant="outline"
-          className={cn("h-8 px-2 border-l-0 rounded-none flex items-center", selectPageClassName)}
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage + 1 >= totalPages || disabled}
-        >
-          <span className="leading-none text-sm">Successiva</span>
-          <CaretRight size={20} className="ml-2" />
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage + 1 >= totalPages || disabled}
+            aria-label="Pagina successiva"
+          >
+            <CaretRightIcon size={18} />
+          </Button>
 
-        <Button
-          variant="outline"
-          className={cn(
-            "h-8 px-2 border-l-0 rounded-l-none flex items-center",
-            selectPageClassName
-          )}
-          onClick={() => handlePageChange(totalPages - 1)}
-          disabled={currentPage + 1 >= totalPages || disabled}
-        >
-          <span className="leading-none text-sm">Ultima</span>
-          <CaretDoubleRight size={20} className="ml-2" />
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(totalPages - 1)}
+            disabled={currentPage + 1 >= totalPages || disabled}
+            aria-label="Ultima pagina"
+          >
+            <CaretDoubleRightIcon size={18} />
+          </Button>
+        </ButtonGroup>
       </div>
     </div>
   );

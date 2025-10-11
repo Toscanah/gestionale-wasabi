@@ -2,7 +2,7 @@ import { forwardRef, ElementType } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { XCircle, PlusCircle } from "@phosphor-icons/react";
+import { XCircle, PlusCircle, XCircleIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 interface FilterTriggerProps {
@@ -38,7 +38,7 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
         ref={ref}
         variant="outline"
         className={cn(
-          "h-10 flex gap-2 items-center px-2",
+          "flex gap-2 items-center px-2",
           dashed && "border-dashed",
           disabled && "cursor-not-allowed",
           className
@@ -46,13 +46,17 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
         {...props}
       >
         {valuesCount > 0 && onClear ? (
-          <XCircle
+          <span
+            role="button"
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               onClear?.();
             }}
-            className="h-4 w-4"
-          />
+            className="flex items-center justify-center"
+          >
+            <XCircleIcon className="h-4 w-4" />
+          </span>
         ) : (
           <TriggerIcon className="h-4 w-4" />
         )}
@@ -67,7 +71,7 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
                 {count}
               </Badge>
             )} */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               {valuesCount > 2 ? (
                 <Badge variant="secondary" className="px-1 rounded-lg">
                   {valuesCount} selezionati

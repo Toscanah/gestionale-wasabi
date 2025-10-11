@@ -45,7 +45,7 @@ export default function Discount() {
       id="discount"
       defaultValue={discount}
       onChange={(e) => handleDiscount(e.target.valueAsNumber)}
-      className="w-full text-xl h-12"
+      className="flex-1 text-xl h-12"
       placeholder="Sconto"
       type="number"
     />

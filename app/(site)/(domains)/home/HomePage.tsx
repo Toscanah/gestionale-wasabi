@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Header from "./Header";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import WasabiSidebar from "../../components/sidebar/Sidebar";
 import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 import getOverdrawnOrderIds from "../../lib/services/order-management/getOverdrawnOrderIds";
@@ -56,7 +56,7 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
   return (
     <>
       <WasabiSidebar />
-      <div className="w-full overflow-x-hidden p-4 h-screen flex flex-col gap-4">
+      <div className="w-full overflow-x-hidden p-4 flex flex-col gap-4">
         <div className="w-full flex justify-between items-center">
           <div className="flex items-center gap-4 text-2xl w-[28rem]">
             <SidebarTrigger /> Wasabi Sushi

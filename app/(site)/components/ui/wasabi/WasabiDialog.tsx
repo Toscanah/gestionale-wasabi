@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import {
   Dialog,
   DialogClose,
@@ -16,10 +16,10 @@ import { Warning } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 
 const sizes = {
-  small: "max-w-[25vw] w-[25vw]",
-  medium: "max-w-[40vw] w-[40vw]", //  h-[65vh] max-h-[65vh]
-  mediumPlus: "max-w-[60vw] w-[60vw]",
-  large: "max-w-[97.5vw] w-[97.5vw]",
+  small: "!max-w-[25vw] !w-[25vw]",
+  medium: "!max-w-[40vw] !w-[40vw]",
+  mediumPlus: "!max-w-[60vw] !w-[60vw]",
+  large: "!max-w-[97.5vw] !w-[97.5vw]",
 };
 
 export type WasabiDialogProps = {
@@ -154,24 +154,22 @@ export default function WasabiDialog({
         {children}
 
         {isDeleteVariant && onDelete && (
-          <DialogFooter className="w-full">
-            <div className={cn("w-full flex gap-2", footerClassName)}>
-              <DialogClose asChild>
-                <Button className="w-full" variant={"outline"}>
-                  Ho cambiato idea
-                </Button>
-              </DialogClose>
+          <DialogFooter className={cn("w-full flex gap-2", footerClassName)}>
+            <DialogClose asChild>
+              <Button className="flex-1" variant={"outline"}>
+                Ho cambiato idea
+              </Button>
+            </DialogClose>
 
-              <DialogClose asChild>
-                <Button type="button" className="w-full" variant={"destructive"} onClick={onDelete}>
-                  Confermo
-                </Button>
-              </DialogClose>
-            </div>
+            <DialogClose asChild>
+              <Button type="button" className="flex-1" variant={"destructive"} onClick={onDelete}>
+                Confermo
+              </Button>
+            </DialogClose>
           </DialogFooter>
         )}
 
-        {footer && <DialogFooter className="w-full sm:space-x-4">{footer}</DialogFooter>}
+        {footer && <DialogFooter className="w-full flex gap-4">{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>
   );

@@ -1,4 +1,4 @@
-import WasabiSelect from "./WasabiSelect";
+import WasabiSelect from "../../wasabi/WasabiSelect";
 import { Calendar } from "@phosphor-icons/react";
 
 export type Weekday = 0 | 2 | 3 | 4 | 5 | 6;

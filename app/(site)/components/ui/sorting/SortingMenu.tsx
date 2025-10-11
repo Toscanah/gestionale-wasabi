@@ -1,22 +1,36 @@
 import { Button } from "@/components/ui/button";
 import WasabiPopover from "../wasabi/WasabiPopover";
 import { ArrowsDownUp, X } from "@phosphor-icons/react";
-import WasabiSelect from "../filters/select/WasabiSelect";
-import WasabiSingleSelect from "../wasabi/WasabiSingleSelect";
+import WasabiSimpleSelect from "../wasabi/WasabiSimpleSelect";
 import SortDirectionSelector from "./SortDirectionSelector";
 import { SortDirection } from "@/app/(site)/lib/shared/schemas/common/sorting";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
+export type SortableField = {
+  label: string;
+  value: string; // your external label/key (e.g. "Categoria")
+  type?: "number" | "string" | "date" | "boolean" | "default";
+};
+
 export type SortField = {
   index: number;
-  field: string;
+  field: string; // matches SortableField.value
   direction: SortDirection;
 };
 
+// Default direction by type
+const DEFAULT_DIRECTION_BY_TYPE: Record<NonNullable<SortableField["type"]>, SortDirection> = {
+  number: "desc",
+  string: "asc",
+  date: "desc",
+  boolean: "desc",
+  default: "asc",
+};
+
 interface SortingMenuProps {
-  availableFields: string[];
+  availableFields: SortableField[];
   activeSorts: SortField[];
   onChange: (newSorts: SortField[]) => void;
   triggerClassName?: string;
@@ -31,7 +45,11 @@ export default function SortingMenu({
   disabled,
 }: SortingMenuProps) {
   const usedFields = activeSorts.map((s) => s.field);
-  const remainingFields = availableFields.filter((f) => !usedFields.includes(f));
+  const remainingFields = availableFields.filter((f) => !usedFields.includes(f.value));
+
+  const getType = (val?: string) => availableFields.find((f) => f.value === val)?.type ?? "default";
+
+  const defaultDirFor = (val?: string): SortDirection => DEFAULT_DIRECTION_BY_TYPE[getType(val)];
 
   return (
     <WasabiPopover
@@ -48,11 +66,15 @@ export default function SortingMenu({
             <>
               <Separator orientation="vertical" className="mx-0.5" />
               {activeSorts.length <= 2 ? (
-                activeSorts.map((sort) => (
-                  <Badge key={sort.field} variant="secondary" className="px-1 rounded-lg mx-0.5">
-                    {sort.field}
-                  </Badge>
-                ))
+                activeSorts.map((sort) => {
+                  const label =
+                    availableFields.find((f) => f.value === sort.field)?.label ?? sort.field;
+                  return (
+                    <Badge key={sort.field} variant="secondary" className="px-1 rounded-lg mx-0.5">
+                      {label}
+                    </Badge>
+                  );
+                })
               ) : (
                 <Badge variant="secondary" className="px-1 rounded-lg">
                   {activeSorts.length}
@@ -66,29 +88,39 @@ export default function SortingMenu({
     >
       <span>Ordina per</span>
 
-      <div className="w-full flex gap-4 flex-col">
+      <div className="w-full flex gap-4 flex-col overflow-y-auto max-h-[300px] ">
         {activeSorts.length > 0 ? (
           activeSorts.map((activeField) => {
-            const selectableFields = availableFields.filter(
-              (field) => field === activeField.field || !usedFields.includes(field)
+            const selectable = availableFields.filter(
+              (f) => f.value === activeField.field || !usedFields.includes(f.value)
             );
 
             return (
               <div className="flex gap-4" key={activeField.field}>
-                <WasabiSingleSelect
-                  className="w-full"
+                <WasabiSimpleSelect
+                  triggerClassName="flex-1"
+                  value={activeField.field}
                   onValueChange={(newField) => {
+                    // If the user hasn't changed direction from the old field's default,
+                    // adopt the new field's default. Otherwise, preserve their explicit choice.
+                    const oldDefault = defaultDirFor(activeField.field);
+                    const userChangedDir = activeField.direction !== oldDefault;
+                    const nextDir = userChangedDir
+                      ? activeField.direction
+                      : defaultDirFor(newField);
+
                     const updated = activeSorts.map((s) =>
-                      s.index === activeField.index ? { ...s, field: newField } : s
+                      s.index === activeField.index
+                        ? { ...s, field: newField, direction: nextDir }
+                        : s
                     );
                     onChange(updated);
                   }}
-                  value={activeField.field}
                   groups={[
                     {
-                      items: selectableFields.map((field) => ({
-                        label: field,
-                        value: field,
+                      options: selectable.map((f) => ({
+                        label: f.label,
+                        value: f.value,
                       })),
                     },
                   ]}
@@ -96,6 +128,7 @@ export default function SortingMenu({
 
                 <SortDirectionSelector
                   direction={activeField.direction}
+                  fieldType={getType(activeField.field)}
                   onDirectionChange={(newDirection) => {
                     const updated = activeSorts.map((s) =>
                       s.index === activeField.index ? { ...s, direction: newDirection } : s
@@ -124,22 +157,27 @@ export default function SortingMenu({
       <div className="w-full items-center flex gap-4">
         <Button
           onClick={() => {
+            const first = remainingFields[0];
+            if (!first) return;
+
             const newSort: SortField = {
               index: activeSorts.length,
-              field: remainingFields[0], // pick the first available unused field
-              direction: "desc",
+              field: first.value,
+              direction: DEFAULT_DIRECTION_BY_TYPE[first.type ?? "default"],
             };
             onChange([...activeSorts, newSort]);
           }}
-          className="w-full"
-          disabled={remainingFields.length === 0} // disable if no fields left
+          className="flex-1"
+          disabled={remainingFields.length === 0}
         >
-          Aggiungi ordinamento
+          {remainingFields.length > 0
+            ? "Aggiungi ordinamento"
+            : "Nessun ordinamento disponibile"}
         </Button>
 
-        <Button variant="outline" onClick={() => onChange([])} className="w-full">
+        {/* <Button variant="outline" onClick={() => onChange([])} className="flex-1">
           Reimposta
-        </Button>
+        </Button> */}
       </div>
     </WasabiPopover>
   );

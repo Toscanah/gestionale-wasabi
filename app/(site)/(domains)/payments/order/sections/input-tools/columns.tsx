@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import useGridFocus from "@/app/(site)/hooks/focus/useGridFocus";
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { PaymentCalculation } from "@/app/(site)/context/OrderPaymentContext";
-import { X } from "@phosphor-icons/react";
+import { XIcon } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction } from "react";
 import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 
@@ -73,7 +73,7 @@ export default function getColumns(
     ActionColumn({
       action: (row) =>
         row.original.total !== 0 && (
-          <X
+          <XIcon
             size={24}
             className="hover:cursor-pointer"
             onClick={() =>

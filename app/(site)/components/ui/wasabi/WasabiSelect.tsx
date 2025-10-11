@@ -1,7 +1,7 @@
 import { ElementRef, ElementType, forwardRef, useMemo } from "react";
 import { Fragment } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Circle } from "@phosphor-icons/react"; // Circle for single mode indicator
+import { Circle, CircleIcon } from "@phosphor-icons/react"; // Circle for single mode indicator
 import {
   Command,
   CommandEmpty,
@@ -11,8 +11,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import WasabiPopover from "../../wasabi/WasabiPopover";
-import FilterTrigger from "../common/FilterTrigger";
+import WasabiPopover from "./WasabiPopover";
+import FilterTrigger from "../filters/common/FilterTrigger";
 
 export type CommandOption = {
   icon?: React.FC<React.SVGProps<SVGSVGElement>>;
@@ -145,9 +145,11 @@ const WasabiSelect = forwardRef<ElementRef<typeof WasabiPopover>, WasabiSelectPr
               <Fragment key={groupIdx}>
                 <CommandGroup
                   heading={
-                    <div className="flex gap-2 items-center">
-                      {group.icon && <group.icon className="h-4 w-4" />} {group.label}
-                    </div>
+                    group.label && (
+                      <div className="flex gap-2 items-center">
+                        {group.icon && <group.icon className="h-4 w-4" />} {group.label}
+                      </div>
+                    )
                   }
                 >
                   {group.options.map((option, optionIdx) => {
@@ -161,13 +163,20 @@ const WasabiSelect = forwardRef<ElementRef<typeof WasabiPopover>, WasabiSelectPr
                         {mode === "multi" ? (
                           <Checkbox checked={isSelected} />
                         ) : mode === "single" ? (
-                          <Circle weight={isSelected ? "fill" : "regular"} />
+                          <CircleIcon weight={isSelected ? "fill" : "regular"} />
                         ) : (
                           <></>
                         )}
-                        {option.icon && <option.icon />}
-                        {option.label}
-                        {option.count && <span className="ml-auto font-mono">{option.count}</span>}
+
+                        <div className="flex gap-2 items-center w-full leading-none">
+                          {option.icon && <option.icon />}
+                          {option.label}
+                          {option.count && (
+                            <span className="ml-auto font-mono text-muted-foreground">
+                              {option.count}
+                            </span>
+                          )}
+                        </div>
                       </CommandItem>
                     );
                   })}

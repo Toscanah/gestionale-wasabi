@@ -15,6 +15,12 @@ const columns: ColumnDef<Product>[] = [
   }),
 
   ValueColumn({
+    header: "Categoria",
+    value: (row) => (row.original.category == null ? "Nessuna" : row.original.category?.category),
+    accessor: (product) => product.category?.category,
+  }),
+
+  ValueColumn({
     header: "Tipo di cucina",
     value: (row) => {
       let kitchen = "Nessuna";
@@ -34,32 +40,19 @@ const columns: ColumnDef<Product>[] = [
     accessor: (product) => product.kitchen,
   }),
 
-  ValueColumn({
-    header: "In loco",
-    value: (row) => {
-      return "€ " + row.original.site_price;
-    },
-    accessor: (product) => product.site_price,
+  FieldColumn({
+    header: "Prezzo in loco (€)",
+    key: "site_price",
   }),
 
-  ValueColumn({
-    header: "Asporto",
-    value: (row) => {
-      return "€ " + row.original.home_price;
-    },
-    accessor: (product) => product.home_price,
+  FieldColumn({
+    header: "Prezzo da asporto (€)",
+    key: "home_price",
   }),
 
   FieldColumn({
     key: "rice",
     header: "Riso (g)",
-  }),
-
-  ValueColumn({
-    header: "Categoria",
-    value: (row) =>
-      row.original.category == null ? "Nessuna" : row.original.category?.category,
-    accessor: (product) => product.category?.category,
   }),
 ];
 

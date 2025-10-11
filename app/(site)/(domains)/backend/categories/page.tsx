@@ -1,75 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import fetchRequest from "../../../lib/api/fetchRequest";
 import columns from "./columns";
-import Manager, { FormFieldsProps } from "../Manager";
-import GoBack from "../../../components/ui/misc/GoBack";
-import FormFields from "../FormFields";
-import { formSchema, getCategoryFields } from "./form";
+import Manager, { FormFieldsProps } from "../manager/Manager";
 import { CategoryWithOptions } from "@/app/(site)/lib/shared";
-import { Option } from "@/prisma/generated/schemas";
-import dynamic from "next/dynamic";
+import { FormFields } from "../manager/FormFields";
+import { CategoryFormData, categoryFormSchema, getCategoryFields } from "./form";
+import useCategoriesManager from "@/app/(site)/hooks/backend/base/useCategoriesManager";
+import { optionsAPI } from "@/lib/server/api";
 
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
-  ssr: false,
+const toFormData = (p: CategoryWithOptions): CategoryFormData => ({
+  ...p,
+  options: p.options.map((o) => o.option),
 });
 
-type FormValues = Partial<CategoryWithOptions>;
+const fromFormData = (f: CategoryFormData): Partial<CategoryWithOptions> => ({
+  ...f,
+  options: f.options.map((o) => ({ option: o })),
+});
 
 export default function CategoryDashboard() {
-  const [categories, setCategories] = useState<CategoryWithOptions[]>([]);
-  const [options, setOptions] = useState<Option[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { data: options = [] } = optionsAPI.getAll.useQuery();
 
-  useEffect(() => {
-    fetchRequest<CategoryWithOptions[]>("GET", "/api/categories/", "getCategories").then(
-      (categories) => {
-        setCategories(categories);
-        setLoading(false);
-      }
-    );
-  }, []);
-
-  useEffect(() => {
-    fetchRequest<Option[]>("GET", "/api/options/", "getAllOptions").then((options) =>
-      setOptions(options.filter((o) => o.active))
-    );
-  }, []);
-
-  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<CategoryWithOptions>) => (
-    <FormFields<CategoryWithOptions>
+  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<CategoryFormData>) => (
+    <FormFields
       handleSubmit={handleSubmit}
       submitLabel={submitLabel}
-      defaultValues={{ ...object }}
-      layout={[{ fieldsPerRow: 1 }, { fieldsPerRow: 1 }]}
-      formFields={getCategoryFields(options)}
-      formSchema={formSchema}
+      defaultValues={categoryFormSchema.parse(object || {})}
+      layout={[{ fields: ["category"] }, { fields: ["options"] }]}
+      formFields={getCategoryFields(options.filter((o) => o.active))}
+      formSchema={categoryFormSchema}
     />
   );
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
-        {loading ? (
-          <RandomSpinner isLoading={loading} />
-        ) : (
-          <Manager<CategoryWithOptions>
-            type="category"
-            receivedData={categories}
-            columns={columns}
-            FormFields={Fields}
-            path="/api/categories/"
-            fetchActions={{
-              add: "createNewCategory",
-              toggle: "toggleCategory",
-              update: "updateCategory",
-            }}
-          />
-        )}
-      </div>
-
-      <GoBack path="../../home" />
-    </div>
+    <Manager<CategoryWithOptions, CategoryFormData>
+      columns={columns}
+      useDomainManager={useCategoriesManager}
+      FormFields={Fields}
+      mapToForm={toFormData}
+      mapFromForm={fromFormData}
+      labels={{ singular: "categoria", plural: "categorie" }}
+    />
   );
 }

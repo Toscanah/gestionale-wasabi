@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { ProductContracts } from "../../shared";
 import prisma from "../db";
 import { categoryInclude } from "../includes";
@@ -8,12 +9,28 @@ export default async function createNewProduct({
 }: ProductContracts.Create.Input): Promise<ProductContracts.Create.Output> {
   const existingProduct = await prisma.product.findFirst({
     where: {
-      code: product.code,
+      OR: [
+        {
+          code: {
+            equals: product.code,
+            mode: "insensitive",
+          },
+        },
+        {
+          desc: {
+            equals: product.desc,
+            mode: "insensitive",
+          },
+        },
+      ],
     },
   });
 
   if (existingProduct) {
-    throw new Error("Product with this code already exists");
+    throw new TRPCError({
+      code: "CONFLICT",
+      message: "Product with this code or description already exists.",
+    });
   }
 
   const newProduct = await prisma.product.create({
@@ -28,7 +45,9 @@ export default async function createNewProduct({
       site_price: Number(product.site_price) ?? 0,
       home_price: Number(product.home_price) ?? 0,
       rice: product.rice,
-      category_id: product.category_id ? Number(product.category_id) || null : null,
+      category: {
+        connect: product.category_id ? { id: Number(product.category_id) } : undefined,
+      },
     },
     include: {
       ...categoryInclude,

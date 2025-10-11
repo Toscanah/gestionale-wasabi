@@ -1,5 +1,6 @@
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 
 interface SearchBarProps {
   query: string;
@@ -10,12 +11,16 @@ interface SearchBarProps {
 
 export default function SearchBar({ query, onChange, disabled, className }: SearchBarProps) {
   return (
-    <Input
-      placeholder="Cerca..."
-      disabled={disabled}
-      value={query ?? ""}
-      className={cn("w-60 h-10", className)}
-      onChange={(e) => onChange(e.target.value)}
-    />
+    <InputGroup className={cn("w-96", className)}>
+      <InputGroupInput
+        placeholder="Cerca..."
+        disabled={disabled}
+        value={query ?? ""}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      <InputGroupAddon>
+        <MagnifyingGlassIcon className="text-muted-foreground size-4" />
+      </InputGroupAddon>
+    </InputGroup>
   );
 }

@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ChangeTheme } from "./(site)/components/ui/misc/ChangeTheme";
 import { Toaster } from "@/components/ui/sonner";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { type ThemeProviderProps } from "next-themes";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ReactQueryProvider from "./query-provider";
@@ -33,12 +33,10 @@ export default function RootLayout({
           <ReactQueryProvider>
             <TRPCProvider>
               <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-                <SidebarProvider defaultOpen={false} className="overflow-x-hidden">
+                <SidebarProvider defaultOpen={false}>
                   {children}
                   <Toaster richColors position="bottom-center" duration={1500} />
-                  <div className="fixed bottom-4 right-4 hover:cursor-pointer">
-                    <ChangeTheme />
-                  </div>
+                  <ChangeTheme />
                 </SidebarProvider>
               </ThemeProvider>
             </TRPCProvider>

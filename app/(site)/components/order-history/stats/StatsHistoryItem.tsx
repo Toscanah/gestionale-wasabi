@@ -5,7 +5,7 @@ import useHistoryStats, {
 } from "../../../hooks/order/history/useHistoryStats";
 import { Separator } from "@/components/ui/separator";
 import AllProductsDialog from "./AllProductsDialog";
-import WasabiSelect from "../../ui/filters/select/WasabiSelect";
+import WasabiSelect from "../../ui/wasabi/WasabiSelect";
 
 type HistoryStatsProps = UseHistoryStatsParams & {
   owner: string;

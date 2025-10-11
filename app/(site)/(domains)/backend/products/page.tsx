@@ -1,130 +1,123 @@
 "use client";
 
-import GoBack from "../../../components/ui/misc/GoBack";
-import { Product } from "@/app/(site)/lib/shared";
-import fetchRequest from "../../../lib/api/fetchRequest";
-import Manager, { FormFieldsProps } from "../Manager";
+import Manager, { FormFieldsProps } from "../manager/Manager";
 import columns from "./columns";
 import { useEffect, useState } from "react";
-import FormFields from "../FormFields";
-import { CategoryWithOptions } from "@/app/(site)/lib/shared";
-import { formSchema } from "./form";
-import { getProductFields } from "./form";
-import WasabiSingleSelect from "../../../components/ui/wasabi/WasabiSingleSelect";
-import { Category } from "@prisma/client";
-import dynamic from "next/dynamic";
+import { getProductFields, ProductFormData, productFormSchema } from "./form";
+import useProductsManager from "@/app/(site)/hooks/backend/base/useProductsManager";
+import { Path } from "react-hook-form";
+import { categoriesAPI } from "@/lib/server/api";
+import { FormFields } from "../manager/FormFields";
+import CategoryFilter from "@/app/(site)/components/ui/filters/select/CategoryFilter";
+import { Product, ProductSortField } from "@/app/(site)/lib/shared";
+import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
+import { SortableField, SortField } from "@/app/(site)/components/ui/sorting/SortingMenu";
 
-const RandomSpinner = dynamic(() => import("../../../components/ui/misc/loader/RandomSpinner"), {
-  ssr: false,
-});
+const toFormData = (p: Product): ProductFormData => {
+  const { category, ...rest } = p;
 
-type FormValues = Partial<Product>;
-
-const ALL_CATEGORIES: Category = {
-  id: -1,
-  category: "all",
-  active: true,
+  return {
+    ...rest,
+    category_id: p.category?.id ?? null,
+  };
 };
 
+const fromFormData = (f: ProductFormData): Partial<Product> => ({
+  ...f,
+  category_id: f.category_id ?? null,
+});
+
+const PRODUCT_SORT_MAP: Record<string, { field: ProductSortField; type?: SortableField["type"] }> =
+  {
+    Categoria: { field: "category.category", type: "string" },
+    Codice: { field: "code", type: "string" },
+    Descrizione: { field: "desc", type: "string" },
+    "Prezzo in loco": { field: "home_price", type: "number" },
+    "Prezzo da asporto": { field: "site_price", type: "number" },
+    Cucina: { field: "kitchen", type: "string" },
+    Riso: { field: "rice", type: "number" },
+  };
+
 export default function ProductDashboard() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<CategoryWithOptions[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Category>(ALL_CATEGORIES);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
+  const { page, pageSize, setPage, setPageSize } = useTablePagination();
+
+  const { data: categoryCounts = [] } = categoriesAPI.countProductsByCategory.useQuery();
+  const { data: categories = [] } = categoriesAPI.getAll.useQuery(undefined, {
+    select: (cats) => cats.filter((c) => c.active),
+  });
 
   useEffect(() => {
-    setFilteredProducts(() =>
-      selectedCategory.id === -1
-        ? products
-        : products.filter((product) => product.category_id === selectedCategory.id)
-    );
-  }, [selectedCategory]);
+    if (categories.length > 0 && selectedCategories.length === 0) {
+      setSelectedCategories([...categories.filter((c) => c.active).map((c) => c.id), -1]);
+    }
+  }, [categories, selectedCategories.length]);
 
-  useEffect(() => {
-    fetchRequest<CategoryWithOptions[]>("GET", "/api/categories/", "getCategories").then(
-      (categories) => setCategories(categories.filter((c) => c.active))
-    );
-  }, []);
+  const layout: { fields: Path<ProductFormData>[] }[] = [
+    { fields: ["code", "category_id", "kitchen"] },
+    { fields: ["desc"] },
+    { fields: ["home_price", "site_price"] },
+    { fields: ["rices", "salads", "soups", "rice"] },
+  ];
 
-  useEffect(() => {
-    fetchRequest<Product[]>("GET", "/api/products/", "getProducts").then((products) => {
-      setProducts(products);
-      setFilteredProducts(products);
-      setLoading(false);
-    });
-  }, []);
-
-  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<Product>) => (
+  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<ProductFormData>) => (
     <FormFields
       handleSubmit={handleSubmit}
       submitLabel={submitLabel}
-      defaultValues={{
-        ...object,
-        category_id: object?.category_id ? Number(object?.category_id) : undefined,
-        rices: object?.rices ? Number(object?.rices) : 0,
-        salads: object?.salads ? Number(object?.salads) : 0,
-        soups: object?.soups ? Number(object?.soups) : 0,
-        // home_price: object?.home_price || undefined,
-        // site_price: object?.site_price || undefined,
-      }}
-      layout={[
-        { fieldsPerRow: 2 },
-        { fieldsPerRow: 3 },
-        { fieldsPerRow: 1 },
-        { fieldsPerRow: 3 },
-        { fieldsPerRow: 1 },
-      ]}
+      defaultValues={productFormSchema.parse(object || {})}
+      layout={layout}
+      formSchema={productFormSchema}
       formFields={getProductFields(categories)}
-      formSchema={formSchema}
     />
   );
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
-        {loading ? (
-          <RandomSpinner isLoading={loading} />
-        ) : (
-          <Manager<Product>
-            additionalFilters={[
-              <WasabiSingleSelect
-                defaultValue="all"
-                value={selectedCategory.id.toString()}
-                className="h-10 w-64"
-                onValueChange={(value) =>
-                  setSelectedCategory(
-                    categories.find((c) => c.id.toString() === value) || ALL_CATEGORIES
-                  )
-                }
-                groups={[
-                  {
-                    items: [
-                      { label: "Tutte le categorie", value: "-1" },
-                      ...categories.map((category) => ({
-                        name: category.category,
-                        value: category.id.toString(),
-                      })),
-                    ],
-                  },
-                ]}
-              />,
-            ]}
-            receivedData={filteredProducts}
-            columns={columns}
-            FormFields={Fields}
-            path="/api/products/"
-            type="product"
-            fetchActions={{
-              add: "createNewProduct",
-              toggle: "toggleProduct",
-              update: "updateProduct",
-            }}
-          />
-        )}
-      </div>
-
-      <GoBack path="../../home" />
-    </div>
+    <Manager<Product, ProductFormData>
+      useDomainManager={() =>
+        useProductsManager({
+          categoryIds:
+            selectedCategories.length === categories.length + 1 // +1 for "no category"
+              ? undefined
+              : selectedCategories.includes(-1)
+                ? selectedCategories // 👈 still pass full array (including -1)
+                : selectedCategories,
+          pagination: { page, pageSize },
+          sort: activeSorts.map((s) => ({
+            field: PRODUCT_SORT_MAP[s.field].field,
+            direction: s.direction,
+          })),
+        })
+      }
+      columns={columns}
+      FormFields={Fields}
+      mapToForm={toFormData}
+      mapFromForm={fromFormData}
+      pagination={{ page, pageSize, setPage, setPageSize }}
+      serverSorting={{
+        availableFields: Object.entries(PRODUCT_SORT_MAP).map(([k, v]) => ({
+          label: k,
+          value: k,
+          type: v.type,
+        })),
+        activeSorts,
+        onChange: (sorts) => setActiveSorts(sorts),
+      }}
+      filters={{
+        components: [
+          <CategoryFilter
+            categoryCounts={Object.fromEntries(
+              categoryCounts.map((c) => [c.categoryId ?? -1, c.productCount])
+            )}
+            allCategories={categories}
+            selectedCategoryIds={selectedCategories}
+            onCategoryIdsChange={setSelectedCategories}
+          />,
+        ],
+        onReset: () => setSelectedCategories([]),
+        showReset: selectedCategories.length !== categories.length + 1, // +1 for "no category"
+      }}
+      labels={{ singular: "prodotto", plural: "prodotti" }}
+    />
   );
 }

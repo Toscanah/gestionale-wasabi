@@ -227,12 +227,8 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
           </div>
         )}
 
-        {showGeneral && (
-          <Table table={generalTable} fixedColumnIndex={0} cellClassName={() => "h-20 max-h-20"} />
-        )}
-        {showAverage && (
-          <Table table={averageTable} fixedColumnIndex={0} cellClassName={() => "h-20 max-h-20"} />
-        )}
+        {showGeneral && <Table table={generalTable} fixedColumnIndex={0} />}
+        {showAverage && <Table table={averageTable} fixedColumnIndex={0} />}
       </div>
 
       <div className="flex gap-4">
