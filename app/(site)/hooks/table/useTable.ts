@@ -30,7 +30,7 @@ interface ServerPagination {
 
 type TablePagination = ClientPagination | ServerPagination | undefined;
 
-interface TableProps<T, M extends TableMeta<T> = TableMeta<T>> {
+interface TableProps<T, M extends object | undefined = undefined> {
   data: T[];
   columns: ColumnDef<T>[];
   query?: string;
@@ -41,7 +41,7 @@ interface TableProps<T, M extends TableMeta<T> = TableMeta<T>> {
   meta?: M;
 }
 
-export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
+export default function useTable<T, M extends object | undefined = undefined>({
   data,
   columns,
   query = "",
@@ -54,7 +54,7 @@ export default function useTable<T, M extends TableMeta<T> = TableMeta<T>>({
   const commonConfig: Parameters<typeof useReactTable<T>>[0] = {
     data,
     columns,
-    meta,
+    meta: meta as M & TableMeta<T>,
     state: {
       globalFilter: query,
       rowSelection,

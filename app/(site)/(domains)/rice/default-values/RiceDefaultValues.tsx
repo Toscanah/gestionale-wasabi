@@ -15,6 +15,7 @@ import Table from "@/app/(site)/components/table/Table";
 import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/server/client";
 import { RiceBatchType } from "@/prisma/generated/schemas";
+import { TableMeta } from "@tanstack/react-table";
 
 const DEFAULT_NEW_BATCH: RiceBatchType = { id: -1, amount: 0, label: "" };
 
@@ -64,7 +65,12 @@ export default function RiceDefaultValues() {
     []
   );
 
-  const table = useTable<RiceBatchType>({
+  type RiceTableMeta = {
+    debouncedUpdateBatch: typeof debouncedUpdateBatch;
+    removeRiceBatch: (batchId: number) => Promise<{ id: number }>;
+  } ;
+
+  const table = useTable<RiceBatchType, RiceTableMeta>({
     data: riceBatches,
     columns,
     meta: {

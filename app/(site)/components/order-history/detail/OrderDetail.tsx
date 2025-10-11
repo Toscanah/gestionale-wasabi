@@ -2,6 +2,7 @@ import { ProductInOrder } from "@/app/(site)/lib/shared";
 import useTable from "../../../hooks/table/useTable";
 import productColumns from "../common/productColumns";
 import Table from "../../table/Table";
+import { TableMeta } from "@tanstack/react-table";
 
 interface OrderDetailProps {
   sortedProducts: ProductInOrder[];
@@ -13,7 +14,7 @@ interface OrderDetailProps {
 export type OrderDetailTableMeta = {
   selectedProducts: ProductInOrder[];
   onCheckboxChange: (product: ProductInOrder) => void;
-};
+} & TableMeta<any>;
 
 export default function OrderDetail({
   sortedProducts,
@@ -21,10 +22,10 @@ export default function OrderDetail({
   onCheckboxChange,
   selectedProducts,
 }: OrderDetailProps) {
-  const table = useTable({
+  const table = useTable<(typeof sortedProducts)[number], OrderDetailTableMeta>({
     columns: productColumns(!!onCreate),
     data: sortedProducts,
-    meta: { selectedProducts, onCheckboxChange } as OrderDetailTableMeta,
+    meta: { selectedProducts, onCheckboxChange },
   });
 
   return sortedProducts.length > 0 ? (

@@ -81,7 +81,7 @@ export default function Section({}: SectionProps) {
           }
         />
 
-        <ResetTableControlsBtn show={showReset} onReset={() => dispatch({ type: "RESET" })} />
+        <ResetTableControlsBtn customShow={showReset} onReset={() => dispatch({ type: "RESET" })} />
       </div>
 
       {/* <Separator className="w-full"/> */}

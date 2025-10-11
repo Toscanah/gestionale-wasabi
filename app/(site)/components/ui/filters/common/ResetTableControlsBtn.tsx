@@ -11,21 +11,18 @@ interface ResetTableControlsBtnProps<T> {
   hasServerSorting?: boolean;
   /** Optional table instance to detect client-side sorting */
   table?: Table<T>;
+  /** Force show the button regardless of other conditions */
+  customShow?: boolean;
   className?: string;
   disabled?: boolean;
 }
 
-/**
- * Displays a unified reset button if:
- *  - filters are active (hasFilters)
- *  - OR server-side sorting is active (hasServerSorting)
- *  - OR client-side sorting exists in the TanStack table state
- */
 export default function ResetTableControlsBtn<T>({
   onReset,
   hasFilters = false,
   hasServerSorting = false,
   table,
+  customShow = false,
   className,
   disabled,
 }: ResetTableControlsBtnProps<T>) {
@@ -36,7 +33,7 @@ export default function ResetTableControlsBtn<T>({
   // Count active conditions
   const activeConditions = [hasFilters, hasServerSorting, hasClientSorting].filter(Boolean).length;
 
-  if (activeConditions === 0) return null;
+  if (!customShow && activeConditions === 0) return null;
 
   let label = "Reimposta tutto";
   if (activeConditions === 1) {

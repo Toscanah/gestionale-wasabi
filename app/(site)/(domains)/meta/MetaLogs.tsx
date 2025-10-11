@@ -37,7 +37,7 @@ export default function MetaLogs({ order }: MetaLogsProps) {
         {messages && messages.length > 0 ? (
           messages.map((log, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger canOpen={false} className="hover:no-underline cursor-default">
+              {/* <AccordionTrigger canOpen={false} className="hover:no-underline cursor-default">
                 <div className="w-full justify-between items-center flex">
                   <span className="w-full flex justify-start">
                     #{index + 1}
@@ -65,7 +65,7 @@ export default function MetaLogs({ order }: MetaLogsProps) {
                     {log.direction === MessageDirection.INBOUND ? "Ricevuto" : "Inviato"}
                   </Badge>
                 </div>
-              </AccordionTrigger>
+              </AccordionTrigger> */}
 
               {/* <AccordionContent>
               Messaggio inviato: {log.text || "(nessun contenuto)"}

@@ -24,7 +24,7 @@ export type CustomerStatsTableMeta = {
 };
 
 export default function CustomersStats() {
-  const { page, pageSize, setPage, setPageSize } = useTablePagination({ initialPageSize: 20 });
+  const { page, pageSize, setPage, setPageSize } = useTablePagination({ initialPageSize: 10 });
   const {
     customers,
     totalCount,
@@ -75,8 +75,8 @@ export default function CustomersStats() {
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
-      <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
-        <div className="w-full flex gap-4 items-center">
+      <div className="w-[90%] h-[90%] flex flex-col justify-center max-h-[90%] gap-4">
+        <div className="w-full flex items-center gap-4">
           <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
 
           <CalendarFilter
@@ -116,7 +116,11 @@ export default function CustomersStats() {
             <SortingMenu
               disabled={isLoading}
               onChange={setActiveSorts}
-              availableFields={Object.keys(sortingFields)}
+              availableFields={Object.entries(sortingFields).map(([key, value]) => ({
+                label: key,
+                value: key,
+                type: value.type,
+              }))}
               activeSorts={activeSorts}
             />
           </div>

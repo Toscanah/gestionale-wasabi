@@ -4,7 +4,6 @@ import Table from "../../../components/table/Table";
 import GoBack from "../../../components/ui/misc/GoBack";
 import useTable from "../../../hooks/table/useTable";
 import columns from "./columns";
-import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
 import CategoryFilter from "@/app/(site)/components/ui/filters/select/CategoryFilter";
 import useProductsStats from "@/app/(site)/hooks/statistics/useProductsStats";
@@ -16,12 +15,17 @@ import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/Res
 import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
 import { CustomerContracts } from "@/app/(site)/lib/shared";
 import { TableMeta } from "@tanstack/react-table";
+import TablePagination from "@/app/(site)/components/table/TablePagination";
+import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
+import { useRef } from "react";
+import useTableRowHeight from "@/app/(site)/hooks/table/useTableRowHeight";
 
 export type ProductStatsTableMeta = TableMeta<any> & {
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
 };
 
 export default function ProductsStats() {
+  const { page, pageSize, setPage, setPageSize } = useTablePagination({ initialPageSize: 10 });
   const {
     filteredProducts,
     allCategories,
@@ -39,7 +43,8 @@ export default function ProductsStats() {
     parsedFilters,
     inputQuery,
     setInputQuery,
-  } = useProductsStats();
+    totalCount,
+  } = useProductsStats({ page, pageSize });
 
   const { tableData, tableColumns } = useSkeletonTable({
     isLoading,
@@ -61,9 +66,9 @@ export default function ProductsStats() {
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
-      <div className="w-[90%] h-[90%] flex flex-col max-h-[90%] gap-4">
+      <div className="w-[90%] h-[90%] flex flex-col justify-center max-h-[90%] gap-4">
         <div className="w-full flex items-center gap-4">
-          {/* <span className="font-bold text-xl">Pagamenti</span> */}
+          {/* <span className="font-bold text-xl">Statistica prodotti</span> */}
 
           <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
 
@@ -89,7 +94,7 @@ export default function ProductsStats() {
             <ResetTableControlsBtn
               onReset={handleReset}
               hasFilters={
-                categoryIds.length !== allCategories.length ||
+                categoryIds.length !== allCategories.length + 1 ||
                 period?.from?.getTime() !== TODAY_PERIOD?.from?.getTime() ||
                 period?.to?.getTime() !== TODAY_PERIOD?.to?.getTime() ||
                 !!inputQuery
@@ -101,15 +106,29 @@ export default function ProductsStats() {
             <SortingMenu
               disabled={isLoading}
               onChange={setActiveSorts}
-              availableFields={Object.keys(sortingFields)}
+              availableFields={Object.entries(sortingFields).map(([key, value]) => ({
+                label: key,
+                value: key,
+                type: value.type,
+              }))}
               activeSorts={activeSorts}
             />
           </div>
         </div>
 
-        <Table table={table} />
+        <Table table={table} maxRows={10}/>
 
-        <span>
+        <TablePagination
+          table={table}
+          page={page}
+          pageSize={pageSize}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+          totalCount={totalCount}
+          disabled={isLoading}
+        />
+
+        {/* <span>
           Totale:{" "}
           {!isLoading &&
             roundToTwo(
@@ -118,7 +137,7 @@ export default function ProductsStats() {
                 .rows.reduce((sum, row) => sum + row.original.stats.revenue, 0)
             )}{" "}
           €
-        </span>
+        </span> */}
 
         <GoBack path="/home" />
       </div>

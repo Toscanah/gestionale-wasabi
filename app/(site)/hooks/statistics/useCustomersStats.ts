@@ -4,7 +4,7 @@ import useRfmRanks from "../rfm/useRfmRanks";
 import { useMemo, useState } from "react";
 import { CustomerContracts, CustomerStatsSortField, CustomerWithStats } from "../../lib/shared";
 import useQueryFilter from "../table/useQueryFilter";
-import { SortField } from "../../components/ui/sorting/SortingMenu";
+import { SortableField, SortField } from "../../components/ui/sorting/SortingMenu";
 import { trpc } from "@/lib/server/client";
 import { customersAPI } from "@/lib/server/api";
 import { CustomerOrigin } from "@prisma/client";
@@ -19,14 +19,17 @@ type UseCustomersStatsParams = {
   pageSize: number;
 };
 
-export const CUSTOMER_STATS_SORT_MAP: Record<string, CustomerStatsSortField> = {
-  "Spesa totale": "totalSpent",
-  "Ordine medio": "averageOrder",
-  "Numero ordini": "totalOrders",
-  "Primo ordine": "firstOrderAt",
-  "Ultimo ordine": "lastOrderAt",
-  "Punteggio RFM": "rfm.score.finalScore",
-  "Rank RFM": "rfm.rank",
+export const CUSTOMER_STATS_SORT_MAP: Record<
+  string,
+  { field: CustomerStatsSortField; type?: SortableField["type"] }
+> = {
+  "Spesa totale": { field: "totalSpent", type: "number" },
+  "Ordine medio": { field: "averageOrder", type: "number" },
+  "Numero ordini": { field: "totalOrders", type: "number" },
+  "Primo ordine": { field: "firstOrderAt", type: "date" },
+  "Ultimo ordine": { field: "lastOrderAt", type: "date" },
+  "Punteggio RFM": { field: "rfm.score.finalScore", type: "number" },
+  "Rank RFM": { field: "rfm.rank", type: "string" },
 } as const;
 
 export default function useCustomersStats({ page, pageSize }: UseCustomersStatsParams) {
@@ -73,7 +76,7 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
 
   const sorting = useMemo(() => {
     return activeSorts.map((s) => ({
-      field: CUSTOMER_STATS_SORT_MAP[s.field as CustomerStatsSortField],
+      field: CUSTOMER_STATS_SORT_MAP[s.field as CustomerStatsSortField].field,
       direction: s.direction,
     }));
   }, [activeSorts]);

@@ -94,7 +94,8 @@ export default function AllProductsDialog({ allProducts, owner }: AllProductsDia
           /> */}
           <ResetTableControlsBtn
             onReset={() => setInputQuery("")}
-            show={!!inputQuery || selectedCategories.length > 0}
+            hasFilters={!!inputQuery || selectedCategories.length > 0}
+            table={table}
           />
         </div>
         <Table table={table} />

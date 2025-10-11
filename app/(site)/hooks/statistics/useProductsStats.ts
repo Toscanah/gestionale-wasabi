@@ -8,16 +8,19 @@ import {
 } from "@/app/(site)/lib/shared"; // same enum used elsewhere
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";
 import { trpc } from "@/lib/server/client";
-import { SortField } from "../../components/ui/sorting/SortingMenu";
+import { SortableField, SortField } from "../../components/ui/sorting/SortingMenu";
 import useQueryFilter from "../table/useQueryFilter";
 
-export const PRODUCT_STATS_SORT_MAP: Record<string, ProductStatsSortField> = {
-  Quantità: "unitsSold",
-  Totale: "revenue",
-  "Totale riso": "totalRice",
+export const PRODUCT_STATS_SORT_MAP: Record<
+  string,
+  { field: ProductStatsSortField; type?: SortableField["type"] }
+> = {
+  Quantità: { field: "unitsSold", type: "number" },
+  Totale: { field: "revenue", type: "number" },
+  "Totale riso": { field: "totalRice", type: "number" },
 } as const;
 
-export default function useProductsStats() {
+export default function useProductsStats({ page, pageSize }: { page: number; pageSize: number }) {
   const [period, setPeriod] = useState<DateRange | undefined>(TODAY_PERIOD);
   const [shift, setShift] = useState<ShiftFilterValue>(ShiftFilterValue.ALL);
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
@@ -36,10 +39,14 @@ export default function useProductsStats() {
 
     const shiftFilter = shift === ShiftFilterValue.ALL ? undefined : shift;
 
-    const categoryFilter =
-      categoryIds.length === 0 || categoryIds.length === allCategories.length
-        ? undefined
-        : categoryIds;
+    const extendedCategoryIds = [-1, ...allCategories.map((c) => c.id)];
+
+    const allSelected =
+      categoryIds.length === 0 ||
+      categoryIds.length === extendedCategoryIds.length ||
+      extendedCategoryIds.every((id) => categoryIds.includes(id));
+
+    const categoryFilter = allSelected ? undefined : categoryIds;
 
     const search = debouncedQuery && debouncedQuery.trim() !== "" ? debouncedQuery : undefined;
 
@@ -53,18 +60,20 @@ export default function useProductsStats() {
 
   const sorting = useMemo(() => {
     return activeSorts.map((s) => ({
-      field: PRODUCT_STATS_SORT_MAP[s.field as ProductStatsSortField],
+      field: PRODUCT_STATS_SORT_MAP[s.field as ProductStatsSortField].field,
       direction: s.direction,
     }));
   }, [activeSorts]);
 
   useEffect(() => {
     if (allCategories.length > 0 && categoryIds.length === 0) {
-      setCategoryIds(allCategories.map((c) => c.id));
+      setCategoryIds([-1, ...allCategories.map((c) => c.id)]);
     }
   }, [allCategories, categoryIds.length]);
 
-  const { data: baseProducts, ...baseQuery } = trpc.products.getAll.useQuery();
+  const { data: baseProducts, ...baseQuery } = trpc.products.getAll.useQuery({
+    pagination: { page, pageSize },
+  });
 
   const computeQuery = trpc.products.computeStats.useQuery(
     {
@@ -72,18 +81,20 @@ export default function useProductsStats() {
       sort: sorting.length > 0 ? sorting : undefined,
     },
     {
-      enabled: !!baseProducts,
+      enabled: baseQuery.isSuccess && !!baseProducts?.products?.length,
       select: (data) => {
-        if (!baseProducts) return [] as ProductWithStats[];
+        if (!baseProducts?.products) return [] as ProductWithStats[];
 
-        const baseMap = new Map(baseProducts.map((c) => [c.id, c]));
+        const baseMap = new Map(baseProducts.products.map((c) => [c.id, c]));
 
-        return data.productsStats.flatMap((ps) => {
-          const { productId, ...stats } = ps;
-          const base = baseMap.get(productId);
-          if (!base) return [];
-          return { ...base, stats };
-        }) as ProductWithStats[];
+        return data.productsStats
+          .map((ps) => {
+            const { productId, ...stats } = ps;
+            const base = baseMap.get(productId);
+            if (!base) return null;
+            return { ...base, stats };
+          })
+          .filter(Boolean) as ProductWithStats[];
       },
     }
   );
@@ -120,5 +131,6 @@ export default function useProductsStats() {
     activeSorts,
     setActiveSorts,
     parsedFilters: filters,
+    totalCount: baseProducts?.totalCount ?? 0,
   };
 }

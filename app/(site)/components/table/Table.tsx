@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Table as DataTable,
   TableBody,
@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Cell, flexRender, Row, Table as TanstackTable } from "@tanstack/react-table";
 import { Fragment } from "react";
+import useTableRowHeight from "../../hooks/table/useTableRowHeight";
 
 interface CustomeCellProps<T> {
   cell: Cell<T, any>;
@@ -18,6 +19,8 @@ interface CustomeCellProps<T> {
 
 interface TableProps<T> {
   table: TanstackTable<T>;
+  /** Optional external ref to measure height or scroll */
+  tableRef?: React.RefObject<HTMLTableElement | null>; // ✅ allow null
   tableClassName?: string;
   headerClassName?: string;
   rowClassName?: (row: Row<T>) => string;
@@ -29,10 +32,12 @@ interface TableProps<T> {
   stickyRowIndex?: number;
   showNoResult?: boolean;
   fixedColumnIndex?: number;
+  maxRows?: number;
 }
 
 export default function Table<T>({
   table,
+  tableRef,
   tableClassName,
   rowClassName,
   headerClassName,
@@ -44,58 +49,51 @@ export default function Table<T>({
   forceRowClick = false,
   showNoResult = true,
   fixedColumnIndex,
+  maxRows,
 }: TableProps<T>) {
-  const tableRef = useRef<HTMLDivElement>(null);
+  // internal fallback ref if parent doesn't provide one
+  const internalRef = useRef<HTMLTableElement | null>(null);
+  const resolvedRef = tableRef ?? internalRef; // ✅ both now share same type
 
   useEffect(() => {
     if (stickyRowIndex) {
-      const tableElement = tableRef.current;
-      if (tableElement) {
-        tableElement.scrollTop = tableElement.scrollHeight;
-      }
+      const el = resolvedRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
     }
-  }, [stickyRowIndex]);
+  }, [stickyRowIndex, resolvedRef]);
 
   const handleRowClick = (event: React.MouseEvent, original: T) => {
     const target = event.target as HTMLElement;
-
     if (!forceRowClick) {
-      if (target.closest('[data-state="open"]')) {
-        event.stopPropagation();
-        return;
-      }
-
-      if (target.closest("[data-state='closed']") || target.closest("[data-no-row-click]")) {
+      if (target.closest('[data-state="open"], [data-state="closed"], [data-no-row-click]')) {
         event.stopPropagation();
         return;
       }
     }
-
-    onRowClick && onRowClick(original);
+    onRowClick?.(original);
   };
+
+  const { getTotalHeight } = useTableRowHeight(resolvedRef);
 
   return (
     <div
-      ref={tableRef}
-      className={cn("rounded-md border w-full overflow-y-auto max-h-max", tableClassName)}
+      ref={resolvedRef}
+      className={cn("block rounded-md border w-full overflow-y-auto", tableClassName, maxRows && `max-h-[${maxRows}px]`)}
     >
       {table && (
-        <DataTable className="border-separate border-spacing-0">
-          <TableHeader
-            className={cn("sticky top-0 z-30 bg-background ")}
-          >
+        <DataTable className={cn("border-separate border-spacing-0", maxRows && `max-h-[${maxRows}px]`)}>
+          <TableHeader className={cn("sticky top-0 z-30 bg-background")}>
             {table.getRowModel().rows?.length > 0 &&
               table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="">
+                <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header, index) => {
                     const isFixed = fixedColumnIndex === index;
-
                     return (
                       <TableHead
                         key={header.id}
                         className={cn(
                           headerClassName,
-                          "border-b", 
+                          "border-b",
                           isFixed && "sticky left-0 z-30 bg-foreground text-background"
                         )}
                       >
@@ -113,16 +111,13 @@ export default function Table<T>({
             {table.getRowModel().rows?.length > 0 ? (
               table.getRowModel().rows.map((row, rowIndex) => {
                 const shouldStick = rowIndex === stickyRowIndex;
-
                 return (
                   <TableRow
-                    onClick={(event) => handleRowClick(event, row.original)}
-                    onDoubleClick={(event) =>
-                      double ? handleRowClick(event, row.original) : undefined
-                    }
+                    onClick={(e) => handleRowClick(e, row.original)}
+                    onDoubleClick={(e) => double && handleRowClick(e, row.original)}
                     key={row.id}
                     className={cn(
-                      "h-8 max-h-8 transition ",
+                      "h-8 max-h-8 transition",
                       rowClassName?.(row),
                       shouldStick && "sticky z-10 bottom-0 bg-muted-foreground/20"
                     )}
@@ -139,20 +134,20 @@ export default function Table<T>({
                             CustomCell({
                               cell,
                               className: cn(
-                                cellClassName ? cellClassName(index) : "",
-                                isFixed &&
-                                  `sticky left-0 z-20 bg-foreground text-background ${borderClass}`,
-                                !isFixed && borderClass
+                                cellClassName?.(index),
+                                isFixed
+                                  ? `sticky left-0 z-20 bg-foreground text-background ${borderClass}`
+                                  : borderClass
                               ),
                             })
                           ) : (
                             <TableCell
                               className={cn(
                                 "h-8 max-h-8 truncate max-w-80",
-                                cellClassName ? cellClassName(index) : "",
-                                isFixed &&
-                                  `sticky left-0 z-20 bg-foreground text-background ${borderClass}`,
-                                !isFixed && borderClass
+                                cellClassName?.(index),
+                                isFixed
+                                  ? `sticky left-0 z-20 bg-foreground text-background ${borderClass}`
+                                  : borderClass
                               )}
                             >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
