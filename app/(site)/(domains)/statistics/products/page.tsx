@@ -13,7 +13,7 @@ import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
 import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
 import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
-import { CustomerContracts } from "@/app/(site)/lib/shared";
+import { CustomerContracts, ShiftFilterValue } from "@/app/(site)/lib/shared";
 import { TableMeta } from "@tanstack/react-table";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
 import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
@@ -70,25 +70,27 @@ export default function ProductsStats() {
         <div className="w-full flex items-center gap-4">
           {/* <span className="font-bold text-xl">Statistica prodotti</span> */}
 
-          <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
-
-          <CalendarFilter
-            defaultValue={TODAY_PERIOD}
-            mode="range"
-            dateFilter={period}
-            handleDateFilter={setPeriod}
-            disabled={isLoading}
-            useYears
-          />
-
-          <ShiftFilter selectedShift={shift} onShiftChange={setShift} disabled={isLoading} />
-
-          <CategoryFilter
-            selectedCategoryIds={categoryIds}
-            onCategoryIdsChange={setCategoryIds}
-            allCategories={allCategories}
-            disabled={isLoading}
-          />
+          <div className="flex-1 gap-4 flex items-center">
+            <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
+  
+            <CalendarFilter
+              defaultValue={TODAY_PERIOD}
+              mode="range"
+              dateFilter={period}
+              handleDateFilter={setPeriod}
+              disabled={isLoading}
+              useYears
+            />
+  
+            <ShiftFilter selectedShift={shift} onShiftChange={setShift} disabled={isLoading} />
+  
+            <CategoryFilter
+              selectedCategoryIds={categoryIds}
+              onCategoryIdsChange={setCategoryIds}
+              allCategories={allCategories}
+              disabled={isLoading}
+            />
+          </div>
 
           <div className="w-full flex gap-4 items-center justify-end">
             <ResetTableControlsBtn
@@ -97,7 +99,8 @@ export default function ProductsStats() {
                 categoryIds.length !== allCategories.length + 1 ||
                 period?.from?.getTime() !== TODAY_PERIOD?.from?.getTime() ||
                 period?.to?.getTime() !== TODAY_PERIOD?.to?.getTime() ||
-                !!inputQuery
+                !!inputQuery ||
+                shift !== ShiftFilterValue.ALL
               }
               hasServerSorting={!!activeSorts.length}
               disabled={isLoading}

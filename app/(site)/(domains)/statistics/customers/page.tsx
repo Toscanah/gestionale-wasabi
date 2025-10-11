@@ -17,6 +17,7 @@ import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/Res
 import RanksFilter from "@/app/(site)/components/ui/filters/select/RanksFilter";
 import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
 import CustomerOriginsFilter from "@/app/(site)/components/ui/filters/select/CustomerOriginsFilter";
+import { Separator } from "@/components/ui/separator";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];
@@ -126,7 +127,9 @@ export default function CustomersStats() {
           </div>
         </div>
 
-        <Table table={table} />
+        <Separator className="w-full"/>
+
+        <Table table={table} maxRows={10} />
 
         <TablePagination
           table={table}

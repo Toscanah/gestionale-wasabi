@@ -20,7 +20,7 @@ interface CustomeCellProps<T> {
 interface TableProps<T> {
   table: TanstackTable<T>;
   /** Optional external ref to measure height or scroll */
-  tableRef?: React.RefObject<HTMLTableElement | null>; // ✅ allow null
+  tableRef?: React.RefObject<HTMLDivElement | null>; // ✅ allow null
   tableClassName?: string;
   headerClassName?: string;
   rowClassName?: (row: Row<T>) => string;
@@ -52,7 +52,7 @@ export default function Table<T>({
   maxRows,
 }: TableProps<T>) {
   // internal fallback ref if parent doesn't provide one
-  const internalRef = useRef<HTMLTableElement | null>(null);
+  const internalRef = useRef<HTMLDivElement | null>(null);
   const resolvedRef = tableRef ?? internalRef; // ✅ both now share same type
 
   useEffect(() => {
@@ -78,10 +78,21 @@ export default function Table<T>({
   return (
     <div
       ref={resolvedRef}
-      className={cn("block rounded-md border w-full overflow-y-auto", tableClassName, maxRows && `max-h-[${maxRows}px]`)}
+      style={{
+        maxHeight: maxRows ? getTotalHeight(maxRows) : undefined,
+      }}
+      className={cn("rounded-md border w-full overflow-y-auto", tableClassName)}
     >
       {table && (
-        <DataTable className={cn("border-separate border-spacing-0", maxRows && `max-h-[${maxRows}px]`)}>
+        <DataTable
+          style={{
+            maxHeight: maxRows ? getTotalHeight(maxRows) : undefined,
+          }}
+          className={cn(
+            "border-separate border-spacing-0"
+            // maxRows && `max-h-[${getTotalHeight(maxRows)}px]`
+          )}
+        >
           <TableHeader className={cn("sticky top-0 z-30 bg-background")}>
             {table.getRowModel().rows?.length > 0 &&
               table.getHeaderGroups().map((headerGroup) => (
