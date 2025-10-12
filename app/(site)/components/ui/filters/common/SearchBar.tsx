@@ -11,7 +11,7 @@ interface SearchBarProps {
 
 export default function SearchBar({ query, onChange, disabled, className }: SearchBarProps) {
   return (
-    <InputGroup className={cn("w-96", className)}>
+    <InputGroup className={cn("w-72", className)}>
       <InputGroupInput
         placeholder="Cerca..."
         disabled={disabled}

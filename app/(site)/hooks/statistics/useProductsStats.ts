@@ -32,6 +32,8 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
     select: (categories) => categories.filter((c) => c.active),
   });
 
+  const FULL_CATEGORY_IDS = useMemo(() => [-1, ...allCategories.map((c) => c.id)], [allCategories]);
+
   const filters: NonNullable<ProductContracts.ComputeStats.Input>["filters"] = useMemo(() => {
     const periodFilter = period?.from
       ? { from: period.from, to: period.to ?? period.from }
@@ -39,12 +41,10 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
 
     const shiftFilter = shift === ShiftFilterValue.ALL ? undefined : shift;
 
-    const extendedCategoryIds = [-1, ...allCategories.map((c) => c.id)];
-
     const allSelected =
       categoryIds.length === 0 ||
-      categoryIds.length === extendedCategoryIds.length ||
-      extendedCategoryIds.every((id) => categoryIds.includes(id));
+      categoryIds.length === FULL_CATEGORY_IDS.length ||
+      FULL_CATEGORY_IDS.every((id) => categoryIds.includes(id));
 
     const categoryFilter = allSelected ? undefined : categoryIds;
 
@@ -67,13 +67,11 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
 
   useEffect(() => {
     if (allCategories.length > 0 && categoryIds.length === 0) {
-      setCategoryIds([-1, ...allCategories.map((c) => c.id)]);
+      setCategoryIds(FULL_CATEGORY_IDS);
     }
   }, [allCategories, categoryIds.length]);
 
-  const { data: baseProducts, ...baseQuery } = trpc.products.getAll.useQuery({
-    pagination: { page, pageSize },
-  });
+  const { data: baseProducts, ...baseQuery } = trpc.products.getAll.useQuery();
 
   const computeQuery = trpc.products.computeStats.useQuery(
     {
@@ -102,7 +100,7 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
   const handleReset = () => {
     setPeriod(TODAY_PERIOD);
     setShift(ShiftFilterValue.ALL);
-    setCategoryIds(allCategories.map((c) => c.id));
+    setCategoryIds(FULL_CATEGORY_IDS);
     setInputQuery("");
     setActiveSorts([]);
   };

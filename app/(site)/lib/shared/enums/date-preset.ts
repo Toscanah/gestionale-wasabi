@@ -7,6 +7,7 @@ export enum DatePreset {
   THIS_MONTH = "thisMonth",
   THIS_YEAR = "thisYear",
   TO_TODAY = "toToday",
+  TO_YESTERDAY = "toYesterday",
 }
 
 const presetsName = {
@@ -18,6 +19,7 @@ const presetsName = {
   [DatePreset.THIS_MONTH]: "Questo mese",
   [DatePreset.THIS_YEAR]: "Quest'anno",
   [DatePreset.TO_TODAY]: "Fino ad oggi",
+  [DatePreset.TO_YESTERDAY]: "Fino a ieri",
 } as const;
 
 export const DATE_FILTERING_PRESETS: { name: string; value: DatePreset }[] = Object.entries(

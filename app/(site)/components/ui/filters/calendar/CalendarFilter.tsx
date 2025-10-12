@@ -206,7 +206,6 @@ export default function CalendarFilter({
               onChange={(next) => handleDateFilter(next as DateRange)}
               amount={-1}
             />
-            <Separator className="h-8" orientation="vertical" />
             <DateShiftButton
               mode="range"
               value={dateFilter}

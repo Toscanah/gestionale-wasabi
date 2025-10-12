@@ -17,15 +17,13 @@ import { CustomerContracts, ShiftFilterValue } from "@/app/(site)/lib/shared";
 import { TableMeta } from "@tanstack/react-table";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
 import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
-import { useRef } from "react";
-import useTableRowHeight from "@/app/(site)/hooks/table/useTableRowHeight";
 
 export type ProductStatsTableMeta = TableMeta<any> & {
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
 };
 
 export default function ProductsStats() {
-  const { page, pageSize, setPage, setPageSize } = useTablePagination({ initialPageSize: 10 });
+  const { page, pageSize } = useTablePagination({ initialPageSize: 10 });
   const {
     filteredProducts,
     allCategories,
@@ -57,7 +55,7 @@ export default function ProductsStats() {
     columns: tableColumns,
     query: inputQuery,
     setQuery: setInputQuery,
-    pagination: { mode: "client" },
+    pagination: { mode: "client", pageSize },
     meta: {
       filters: { orders: { period: parsedFilters.period, shift: parsedFilters.shift } },
       isLoading,
@@ -72,7 +70,7 @@ export default function ProductsStats() {
 
           <div className="flex-1 gap-4 flex items-center">
             <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
-  
+
             <CalendarFilter
               defaultValue={TODAY_PERIOD}
               mode="range"
@@ -81,9 +79,9 @@ export default function ProductsStats() {
               disabled={isLoading}
               useYears
             />
-  
+
             <ShiftFilter selectedShift={shift} onShiftChange={setShift} disabled={isLoading} />
-  
+
             <CategoryFilter
               selectedCategoryIds={categoryIds}
               onCategoryIdsChange={setCategoryIds}
@@ -94,9 +92,16 @@ export default function ProductsStats() {
 
           <div className="w-full flex gap-4 items-center justify-end">
             <ResetTableControlsBtn
-              onReset={handleReset}
+              onReset={() => {
+                handleReset();
+                table.resetSorting();
+                table.resetPagination();
+              }}
+              table={table}
               hasFilters={
-                categoryIds.length !== allCategories.length + 1 ||
+                (!isLoading &&
+                  allCategories.length > 0 &&
+                  categoryIds.length !== allCategories.length + 1) ||
                 period?.from?.getTime() !== TODAY_PERIOD?.from?.getTime() ||
                 period?.to?.getTime() !== TODAY_PERIOD?.to?.getTime() ||
                 !!inputQuery ||
@@ -119,15 +124,15 @@ export default function ProductsStats() {
           </div>
         </div>
 
-        <Table table={table} maxRows={10}/>
+        <Table table={table} maxRows={10} />
 
         <TablePagination
+          label="Prodotti"
           table={table}
-          page={page}
-          pageSize={pageSize}
-          onPageChange={setPage}
-          onPageSizeChange={setPageSize}
-          totalCount={totalCount}
+          // page={page}
+          // pageSize={pageSize}
+          // onPageChange={setPage}
+          // onPageSizeChange={setPageSize}
           disabled={isLoading}
         />
 

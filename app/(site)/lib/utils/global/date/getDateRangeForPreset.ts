@@ -40,6 +40,9 @@ export default function getDateRangeFromPreset(
       return { from: startOfYear(today), to: endOfYear(today) };
     case DatePreset.TO_TODAY:
       return { from: STARTING_DAY, to: endOfDay(today) };
+    case DatePreset.TO_YESTERDAY:
+      const toYesterday = subDays(today, 1);
+      return { from: STARTING_DAY, to: endOfDay(toYesterday) };
     default:
       return undefined;
   }

@@ -12,24 +12,23 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
-  CaretDoubleLeft,
   CaretDoubleLeftIcon,
-  CaretDoubleRight,
   CaretDoubleRightIcon,
-  CaretLeft,
   CaretLeftIcon,
-  CaretRight,
   CaretRightIcon,
 } from "@phosphor-icons/react";
+import capitalizeFirstLetter from "../../lib/utils/global/string/capitalizeFirstLetter";
 
 interface TablePaginationProps<TData> {
   table: Table<TData>;
+  /** Total count (for server pagination). Optional in client mode */
   totalCount?: number;
   page?: number;
   pageSize?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
   disabled?: boolean;
+  label?: string;
 }
 
 export default function TablePagination<TData>({
@@ -40,11 +39,21 @@ export default function TablePagination<TData>({
   onPageChange,
   onPageSizeChange,
   disabled,
+  label = "Elementi",
 }: TablePaginationProps<TData>) {
   const currentPage = page ?? table.getState().pagination.pageIndex;
   const currentPageSize = pageSize ?? table.getState().pagination.pageSize;
-  const pageCount = Math.ceil((totalCount ?? 0) / (pageSize ?? totalCount ?? 1));
-  const totalPages = currentPageSize === -1 ? 1 : Math.max(1, pageCount ?? table.getPageCount());
+
+  // ✅ Choose correct total depending on pagination mode
+  const effectiveTotal =
+    totalCount !== undefined
+      ? totalCount
+      : table.getFilteredRowModel().rows.length;
+
+  const totalPages =
+    currentPageSize === -1
+      ? 1
+      : Math.max(1, Math.ceil(effectiveTotal / currentPageSize));
 
   const handlePageChange = (newPage: number) => {
     if (onPageChange) onPageChange(newPage);
@@ -58,9 +67,9 @@ export default function TablePagination<TData>({
 
   return (
     <div className="flex w-full items-center gap-4">
-      {/* Per-page selector */}
+      {/* Rows-per-page selector */}
       <div className="flex items-center gap-2">
-        <p className="text-sm font-medium">Elementi per pagina</p>
+        <p className="text-sm font-medium">{capitalizeFirstLetter(label)} per pagina</p>
         <Select
           value={`${currentPageSize}`}
           onValueChange={(value) => handlePageSizeChange(Number(value))}
@@ -84,10 +93,9 @@ export default function TablePagination<TData>({
       {/* Range summary */}
       <span className="text-muted-foreground text-sm">
         {(() => {
-          const total = totalCount ?? 0;
+          const total = effectiveTotal;
           if (currentPageSize === -1) {
-            if (total === 0) return `0 di 0`;
-            return `${total} di ${total}`;
+            return total === 0 ? `0 di 0` : `${total} di ${total}`;
           }
           const start = total === 0 ? 0 : currentPage * currentPageSize + 1;
           const end = Math.min((currentPage + 1) * currentPageSize, total);

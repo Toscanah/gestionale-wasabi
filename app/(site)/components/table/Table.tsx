@@ -73,23 +73,30 @@ export default function Table<T>({
     onRowClick?.(original);
   };
 
-  const { getTotalHeight } = useTableRowHeight(resolvedRef);
+  const { getStableHeight, getTotalHeight, headerHeight } = useTableRowHeight(resolvedRef);
+
+  const stableHeight = maxRows ? (getStableHeight(maxRows) ?? 0) : undefined;
+  const totalHeight = maxRows ? getTotalHeight(maxRows) : undefined;
 
   return (
     <div
       ref={resolvedRef}
       style={{
-        maxHeight: maxRows ? getTotalHeight(maxRows) : undefined,
+        maxHeight: maxRows && totalHeight ? totalHeight : undefined,
+        height: maxRows && stableHeight ? stableHeight + 1 : undefined,
       }}
       className={cn("rounded-md border w-full overflow-y-auto", tableClassName)}
     >
       {table && (
         <DataTable
-          style={{
-            maxHeight: maxRows ? getTotalHeight(maxRows) : undefined,
-          }}
+          style={
+            {
+              // maxHeight: maxRows ? getTotalHeight(maxRows) : undefined,
+              // height: maxRows ? (getTotalHeight(maxRows) ?? 0) + 1 : undefined,
+            }
+          }
           className={cn(
-            "border-separate border-spacing-0"
+            "border-separate border-spacing-0 h-full"
             // maxRows && `max-h-[${getTotalHeight(maxRows)}px]`
           )}
         >

@@ -24,8 +24,12 @@ export type CustomerStatsTableMeta = {
   theme: string;
 };
 
+const INITIAL_PAGE_SIZE = 10;
+
 export default function CustomersStats() {
-  const { page, pageSize, setPage, setPageSize } = useTablePagination({ initialPageSize: 10 });
+  const { page, pageSize, setPage, setPageSize } = useTablePagination({
+    initialPageSize: INITIAL_PAGE_SIZE,
+  });
   const {
     customers,
     totalCount,
@@ -78,38 +82,45 @@ export default function CustomersStats() {
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex flex-col justify-center max-h-[90%] gap-4">
         <div className="w-full flex items-center gap-4">
-          <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
-
-          <CalendarFilter
-            usePresets
-            disabled={isLoading}
-            dateFilter={period}
-            mode="range"
-            handleDateFilter={setPeriod}
-          />
-
-          <CustomerOriginsFilter
-            onOriginsChange={setCustomerOrigins}
-            origins={customerOrigins}
-            disabled={isLoading}
-          />
-
-          <RanksFilter
-            ranks={ranks}
-            onRanksChange={setRanks}
-            allRanks={allRanks}
-            disabled={isLoading}
-          />
+          <div className="flex-1 gap-4 flex items-center">
+            <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
+  
+            <CalendarFilter
+              usePresets
+              disabled={isLoading}
+              dateFilter={period}
+              mode="range"
+              handleDateFilter={setPeriod}
+            />
+  
+            <CustomerOriginsFilter
+              onOriginsChange={setCustomerOrigins}
+              origins={customerOrigins}
+              disabled={isLoading}
+            />
+  
+            <RanksFilter
+              ranks={ranks}
+              onRanksChange={setRanks}
+              allRanks={allRanks}
+              disabled={isLoading}
+            />
+          </div>
 
           <div className="w-full flex gap-4 items-center justify-end">
             <ResetTableControlsBtn
-              onReset={handleReset}
+              onReset={() => {
+                handleReset();
+                setPage(0);
+                setPageSize(INITIAL_PAGE_SIZE);
+              }}
               hasFilters={
                 ranks.length !== allRanks.length ||
                 !!period?.from ||
                 !!period?.to ||
                 !!debouncedQuery
               }
+              hasServerPagination={page > 0 || pageSize !== INITIAL_PAGE_SIZE}
               hasServerSorting={!!activeSorts.length}
               disabled={isLoading}
             />
@@ -126,8 +137,6 @@ export default function CustomersStats() {
             />
           </div>
         </div>
-
-        <Separator className="w-full"/>
 
         <Table table={table} maxRows={10} />
 
