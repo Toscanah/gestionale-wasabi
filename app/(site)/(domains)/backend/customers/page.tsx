@@ -1,7 +1,6 @@
 "use client";
 
-import FormFields from "../manager/FormFields";
-import { formSchema, getCustomerFields } from "./form";
+import { CustomerFormData, customerFormSchema, getCustomerFields } from "./form";
 import Manager, { FormFieldsProps } from "../manager/Manager";
 import columns from "./columns";
 import GoBack from "../../../components/ui/misc/GoBack";
@@ -10,52 +9,44 @@ import { trpc } from "@/lib/server/client";
 import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
 import useCustomersManager from "@/app/(site)/hooks/backend/base/useCustomersManager";
 import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
+import { FormFields } from "../manager/FormFields";
+import { useState } from "react";
+import { SortField } from "@/app/(site)/components/ui/sorting/SortingMenu";
+import { Path } from "react-hook-form";
 
 export default function CustomersDashboard() {
-  const { data: customers = [], isFetching } = trpc.customers.getAllComprehensive.useQuery();
+  const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
   const { page, pageSize, setPage, setPageSize } = useTablePagination();
 
-  const Fields = ({
-    handleSubmit,
-    object,
-    submitLabel,
-  }: FormFieldsProps<ComprehensiveCustomer>) => (
+  const { data: customers = [], isFetching } = trpc.customers.getAllComprehensive.useQuery();
+
+  const layout: { fields: Path<CustomerFormData>[] }[] = [{ fields: ["name", "phone"] }];
+
+  const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<CustomerFormData>) => (
     <FormFields
       handleSubmit={handleSubmit}
       submitLabel={submitLabel}
-      defaultValues={{
-        ...object,
-        phone: (object?.phone?.phone ?? "") as any,
-        email: object?.email ?? "",
-        preferences: object?.preferences ?? "",
-      }}
-      layout={[
-        { fieldsPerRow: 1 },
-        { fieldsPerRow: 2 },
-        { fieldsPerRow: 1 },
-        { fieldsPerRow: 2 },
-        { fieldsPerRow: 1 },
-      ]}
+      defaultValues={customerFormSchema.parse(object ?? {})}
+      layout={layout}
       formFields={getCustomerFields()}
-      formSchema={formSchema}
+      formSchema={customerFormSchema}
     />
   );
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
-        <Loader isLoading={isFetching}>
-          <Manager<ComprehensiveCustomer>
-            useDomainManager={() => useCustomersManager()}
-            columns={columns(customers)}
-            FormFields={Fields}
-            pagination
-            deleteAction
-          />
-        </Loader>
-      </div>
-
-      <GoBack path="../../home" />
-    </div>
+    <Manager<ComprehensiveCustomer, CustomerFormData>
+      useDomainManager={() =>
+        useCustomersManager({
+          pagination: { page, pageSize },
+        })
+      }
+      labels={{
+        singular: "Cliente",
+        plural: "Clienti",
+      }}
+      columns={columns}
+      FormFields={Fields}
+      pagination={{ page, pageSize, setPage, setPageSize, mode: "server" }}
+    />
   );
 }

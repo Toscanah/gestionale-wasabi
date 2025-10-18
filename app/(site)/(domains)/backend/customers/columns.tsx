@@ -13,7 +13,7 @@ import OrderHistory from "../../../components/order-history/OrderHistory";
 import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 
-const columns = (customers: ComprehensiveCustomer[]): ColumnDef<ComprehensiveCustomer>[] => [
+const columns: ColumnDef<ComprehensiveCustomer>[] = [
   FieldColumn({
     key: "phone.phone",
     header: "Num. di telefono",
@@ -56,7 +56,7 @@ const columns = (customers: ComprehensiveCustomer[]): ColumnDef<ComprehensiveCus
     header: "Indirizzi",
     action: (row) => {
       const customerId = row.original.id;
-      const customer = customers.find((customer) => customer.id === customerId);
+      const customer = row.original;
 
       return (
         <WasabiDialog

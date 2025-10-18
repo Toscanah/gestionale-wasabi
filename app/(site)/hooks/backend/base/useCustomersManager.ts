@@ -3,11 +3,16 @@ import { customersAPI } from "@/lib/server/api";
 import { useManager } from "../useManager";
 import { trpc } from "@/lib/server/client";
 
-export default function useCustomersManager(pagination: PaginationRequest["pagination"]) {
+interface UseCustomersManagerParams extends PaginationRequest {}
+
+export default function useCustomersManager({
+  pagination: { page, pageSize },
+}: UseCustomersManagerParams) {
   const query = customersAPI.getAllComprehensive.useQuery(
-    { pagination },
+    { pagination: { page, pageSize } },
     { placeholderData: (prev) => prev }
   );
+
   const create = customersAPI.create.useMutation();
   const update = customersAPI.updateFromAdmin.useMutation();
   const toggle = customersAPI.toggle.useMutation();

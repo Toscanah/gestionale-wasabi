@@ -3,20 +3,24 @@ import { FormFieldType } from "../manager/FormFields";
 import { Textarea } from "@/components/ui/textarea";
 import { ControllerRenderProps } from "react-hook-form";
 import CustomerOriginSelection from "./CustomerOriginSelection";
+import { CustomerOrigin } from "@prisma/client";
 
-export const formSchema = z.object({
-  // name: getZodField("string", false),
-  // surname: getZodField("string", false),
-  // phone: getZodField("string"),
-  // email: getZodField("string", false),
-  // preferences: getZodField("string", false),
-  // order_notes: getZodField("string", false),
-  // phone_id: getZodField("any", false),
-  // active: getZodField("boolean", false),
-  // origin: getZodField("string", false),
+export const customerFormSchema = z.object({
+  name: z.string().default(""),
+  surname: z.string().default(""),
+  phone: z
+    .string({ error: "Il numero di telefono è obbligatorio" })
+    .min(6, { error: "Il numero di telefono deve contenere almeno 6 caratteri" })
+    .default(""),
+  email: z.string().default(""),
+  preferences: z.string().default(""),
+  order_notes: z.string().default(""),
+  origin: z.enum(CustomerOrigin).default(CustomerOrigin.UNKNOWN),
 });
 
-export function getCustomerFields(): FormFieldType[] {
+export type CustomerFormData = z.infer<typeof customerFormSchema>;
+
+export function getCustomerFields(): FormFieldType<z.input<typeof customerFormSchema>>[] {
   return [
     {
       name: "phone",
@@ -38,28 +42,22 @@ export function getCustomerFields(): FormFieldType[] {
     {
       name: "preferences",
       label: "Preferenze",
-      children: <Textarea className="resize-none" />,
+      render: (field) => <Textarea className="resize-none" {...field} />,
     },
     {
       name: "order_notes",
       label: "Note degli ordini",
-      children: <Textarea className="resize-none" />,
+      render: (field) => <Textarea className="resize-none" {...field} />,
     },
     {
       name: "origin",
       label: "Origine",
-      unique: true,
-      children: ({ field }: { field: ControllerRenderProps }) => {
-        return (
-          <div className="space-y-2 text-center">
-            <CustomerOriginSelection field={field} />
-          </div>
-        );
-      },
+      render: (field) => (
+        // <div className="space-y-2 text-center">
+        <CustomerOriginSelection field={field} />
+        // </div>
+      ),
     },
-    // lasciare questo per ultimo
-    { name: "phone_id", label: "phone_id" },
-
     // {
     //   name: "addresses",
     //   label: "Indirizzi",
