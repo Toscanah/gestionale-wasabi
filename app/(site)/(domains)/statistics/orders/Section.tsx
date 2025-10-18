@@ -121,7 +121,7 @@ export default function Section({}: SectionProps) {
             <div className="w-full flex gap-4 items-center">
               <Label className="text-md">Grafici ({chartSections.length})</Label>
               <Button variant={"outline"} onClick={handleAddChartSection}>
-                <PlusCircleIcon className="h-4 w-4 mr-2" />
+                <PlusCircleIcon className="h-4 w-4 " />
                 Aggiungi
               </Button>
             </div>

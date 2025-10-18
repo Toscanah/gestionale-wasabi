@@ -5,7 +5,7 @@ import debounce from "lodash/debounce";
 import WasabiPopover from "../../wasabi/WasabiPopover";
 import FilterTrigger from "../common/FilterTrigger";
 import TimeInput from "./TimeInput";
-import { Clock } from "@phosphor-icons/react";
+import { ArrowRightIcon, Clock } from "@phosphor-icons/react";
 
 export type TimeValue = { h: string; m: string };
 
@@ -15,8 +15,8 @@ export type TimeWindow = {
 };
 
 interface TimeWindowFilterProps {
-  window: TimeWindow; // pass FULL_DAY_RANGE for “all day”
-  onWindowChange: (updatedWindow: TimeWindow) => void; // controlled
+  window: TimeWindow;
+  onWindowChange: (updatedWindow: TimeWindow) => void;
   labelFrom?: string;
   labelTo?: string;
   className?: string;
@@ -27,12 +27,11 @@ function parseTime(time?: string): TimeValue {
   if (!time || typeof time !== "string" || !time.includes(":")) {
     return { h: "00", m: "00" };
   }
-
   const [h = "00", m = "00"] = time.split(":");
   return { h, m };
 }
-const buildTime = ({ h, m }: TimeValue): string => `${h}:${m}`;
 
+const buildTime = ({ h, m }: TimeValue): string => `${h}:${m}`;
 export const FULL_DAY_RANGE: TimeWindow = { from: "00:00", to: "23:59" };
 
 export default function TimeWindowFilter({
@@ -43,22 +42,15 @@ export default function TimeWindowFilter({
   className,
   disabled,
 }: TimeWindowFilterProps) {
-  // Normalize: we always work against a concrete range; parent can pass FULL_DAY_RANGE for “all day”
   const effective = window ?? FULL_DAY_RANGE;
-
   const isFullDay = effective.from === FULL_DAY_RANGE.from && effective.to === FULL_DAY_RANGE.to;
 
   const fromState = parseTime(effective.from);
   const toState = parseTime(effective.to);
 
-  // Debounce the onWindowChange callback
   const debouncedOnWindowChange = useMemo(() => debounce(onWindowChange, 500), [onWindowChange]);
 
-  useEffect(() => {
-    return () => {
-      debouncedOnWindowChange.cancel();
-    };
-  }, [debouncedOnWindowChange]);
+  useEffect(() => () => debouncedOnWindowChange.cancel(), [debouncedOnWindowChange]);
 
   const commit = (next: TimeWindow) =>
     debouncedOnWindowChange(
@@ -79,7 +71,7 @@ export default function TimeWindowFilter({
 
   return (
     <WasabiPopover
-      contentClassName="p-4"
+      contentClassName="p-5"
       trigger={
         <FilterTrigger
           disabled={disabled}
@@ -90,18 +82,23 @@ export default function TimeWindowFilter({
         />
       }
     >
-      <div className={`flex flex-col gap-2 items-center ${className || ""}`}>
-        <div className="flex gap-4 items-center">
-          <TimeInput
-            label={labelFrom}
-            value={fromState}
-            onChange={(type, val) => update("from", type, val)}
-          />
-          <TimeInput
-            label={labelTo}
-            value={toState}
-            onChange={(type, val) => update("to", type, val)}
-          />
+      <div className={`flex flex-col gap-4 items-center  ${className || ""}`}>
+        <div className="flex flex-col gap-3 w-full">
+          <div className="flex justify-between items-center gap-3">
+            <TimeInput
+              label={labelFrom}
+              value={fromState}
+              onChange={(type, val) => update("from", type, val)}
+            />
+            {/* <span className="text-muted-foreground">
+              <ArrowRightIcon />
+            </span> */}
+            <TimeInput
+              label={labelTo}
+              value={toState}
+              onChange={(type, val) => update("to", type, val)}
+            />
+          </div>
         </div>
       </div>
     </WasabiPopover>
