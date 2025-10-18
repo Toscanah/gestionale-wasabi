@@ -41,5 +41,5 @@ export default async function updateOrderPaymentStatus({
   }
 
   // Return the updated order
-  return await getOrderById({ orderId });
+  return await getOrderById({ orderId, variant: "onlyInOrder" });
 }

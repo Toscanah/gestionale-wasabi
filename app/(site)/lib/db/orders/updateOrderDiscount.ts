@@ -16,5 +16,5 @@ export default async function updateOrderDiscount({
     },
   });
 
-  return await getOrderById({ orderId });
+  return await getOrderById({ orderId, variant: "onlyInOrder" });
 }

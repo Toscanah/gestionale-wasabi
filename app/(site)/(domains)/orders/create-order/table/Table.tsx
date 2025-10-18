@@ -87,7 +87,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
               <Input
                 type="text"
                 id="table"
-                className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+                className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
                 ref={(tableRef) => {
                   addRefs(tableRef);
                 }}
@@ -104,7 +104,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
               <Input
                 type="number"
                 id="ppl"
-                className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+                className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
                 ref={(pplRef) => {
                   addRefs(pplRef);
                 }}

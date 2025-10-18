@@ -41,5 +41,5 @@ export default async function updateOrderTime({
 
   await updateOrderShift({ orderId });
 
-  return await getOrderById({ orderId });
+  return await getOrderById({ orderId, variant: "onlyInOrder" });
 }

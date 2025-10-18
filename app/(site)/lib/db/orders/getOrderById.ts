@@ -65,7 +65,9 @@ export async function getOrderById({
   const filteredProducts =
     variant === "onlyPaid"
       ? existingOrder.products.filter((p) => (p.paid_quantity ?? 0) < p.quantity)
-      : existingOrder.products;
+      : variant === "onlyInOrder"
+        ? existingOrder.products.filter((p) => p.status === "IN_ORDER")
+        : existingOrder.products;
 
   // Build strongly typed object based on discriminator
   let order: OrderByType;

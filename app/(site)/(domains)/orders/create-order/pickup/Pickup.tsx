@@ -83,7 +83,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
             <Input
               type="text"
               id="name"
-              className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+              className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
               ref={(ref) => {
                 addRefs(ref);
                 // if (ref) {
@@ -152,7 +152,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
             <Input
               type="number"
               id="phone"
-              className="w-full text-center text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+              className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
               ref={(ref) => {
                 addRefs(ref);
 

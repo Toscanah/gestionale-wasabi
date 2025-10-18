@@ -56,7 +56,7 @@ export namespace OrderContracts {
   export namespace GetById {
     export const Input = z.object({
       orderId: z.number(),
-      variant: z.enum(["onlyPaid", "allProducts"]).default("onlyPaid").optional(),
+      variant: z.enum(["onlyPaid", "allProducts", "onlyInOrder"]).default("onlyPaid").optional(),
     });
     export type Input = z.infer<typeof Input>;
 
