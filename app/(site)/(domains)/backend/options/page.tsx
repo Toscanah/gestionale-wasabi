@@ -22,6 +22,9 @@ export default function OptionsDashboard() {
   return (
     <Manager<OptionWithCategories, OptionFormData>
       useDomainManager={useOptionsManager}
+      pagination={{
+        mode: "client",
+      }}
       columns={columns}
       FormFields={Fields}
       labels={{ singular: "opzione", plural: "opzioni" }}

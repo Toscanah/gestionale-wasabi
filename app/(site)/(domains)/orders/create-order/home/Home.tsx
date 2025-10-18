@@ -5,8 +5,6 @@ import { useEffect, useRef } from "react";
 import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
 import PossibleCustomers from "./possible-customers/PossibleCustomers";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 
 export default function Home() {
   const { handleKeyDown, addRefs } = useFocusCycle();
@@ -32,8 +30,8 @@ export default function Home() {
   useEffect(
     () =>
       addRefs(
-        phoneRef.current,
-        doorbellSearchRef.current,
+        // phoneRef.current,
+        // doorbellSearchRef.current,
         streetRef.current,
         bellRef.current,
         floorRef.current,
@@ -66,19 +64,19 @@ export default function Home() {
           <AddressForm
             formRef={formRef}
             handleKeyDown={handleKeyDown}
-            refs={[
-              streetRef,
-              bellRef,
-              floorRef,
-              stairRef,
-              contactRef,
-              nameRef,
-              surnameRef,
-              emailRef,
-              infoRef,
-              notesRef,
-              prefRef,
-            ]}
+            refs={{
+              street: streetRef,
+              doorbell: bellRef,
+              floor: floorRef,
+              stair: stairRef,
+              contact_phone: contactRef,
+              name: nameRef,
+              surname: surnameRef,
+              email: emailRef,
+              street_info: infoRef,
+              order_notes: notesRef,
+              preferences: prefRef,
+            }}
           />
         ) : (
           doorbell.length > 0 && possibleCustomers.length > 0 && <PossibleCustomers />

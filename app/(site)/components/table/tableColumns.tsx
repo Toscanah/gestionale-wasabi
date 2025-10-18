@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowsDownUp } from "@phosphor-icons/react";
-import { ColumnDef, Row, SortingFnOption, TableMeta } from "@tanstack/react-table";
+import { ColumnDef, ColumnMeta, Row, SortingFnOption, TableMeta } from "@tanstack/react-table";
 import { Fragment, ReactNode } from "react";
 import getNestedValue from "../../lib/utils/global/getNestedValue";
 import { uniqueId } from "lodash";
@@ -17,6 +17,7 @@ export type BaseColumnProps = {
   header?: ReactNode;
   sortable?: boolean;
   skeleton?: ReactNode;
+  meta?: ColumnMeta<any, any>;
 };
 
 export type ColumnDefWithSkeleton<T> = ColumnDef<T> & {
@@ -63,7 +64,21 @@ export function IndexColumn<T>({
       const isLoad = isLoading(table.options.meta);
       if (isLoad && skeleton) return skeleton;
 
-      return (table.getSortedRowModel()?.flatRows?.findIndex((r) => r.id === row.id) ?? 0) + 1;
+      // Grab pagination state
+      const { pageIndex, pageSize } = table.getState().pagination ?? { pageIndex: 0, pageSize: 0 };
+
+      // Detect pagination mode
+      const paginationMode = table.options.meta?.paginationMode ?? "client";
+
+      // ✅ Server mode: add offset for global numbering
+      if (paginationMode === "server") {
+        return pageIndex * pageSize + (row.index + 1);
+      }
+
+      // ✅ Client mode: use current sorted position
+      const sortedIndex =
+        table.getSortedRowModel()?.flatRows?.findIndex((r) => r.id === row.id) ?? 0;
+      return sortedIndex + 1;
     },
     enableSorting: false,
   };
@@ -82,9 +97,11 @@ export function FieldColumn<T>({
   header,
   sortable = true,
   skeleton,
+  meta,
 }: FieldColumnProps): ColumnDefWithSkeleton<T> {
   return {
     id: key,
+    meta,
     accessorFn: (original) => getNestedValue<T>(original, key),
     header: buildHeader<T>(header, sortable),
     sortingFn: "alphanumeric",
@@ -184,10 +201,12 @@ export function ActionColumn<T>({
   action,
   header,
   skeleton,
+  meta,
 }: ActionColumnProps<T>): ColumnDefWithSkeleton<T> {
   return {
     id: typeof header === "string" && header.trim() !== "" ? header : uniqueId("action_col_"),
     header: buildHeader(header, false),
+    meta,
     enableSorting: false,
     enableColumnFilter: false,
     cell: ({ row, table }) => {

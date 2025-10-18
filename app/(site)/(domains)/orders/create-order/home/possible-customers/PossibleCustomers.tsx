@@ -15,7 +15,7 @@ export default function PossibleCustomers() {
     <Table
       forceRowClick
       table={table}
-      tableClassName="max-w-full "
+      tableClassName="max-w-full overflow-y-auto max-h-full"
       headerClassName="" // *:text-2xl
       double
       onRowClick={(customer) => setPhone(customer.phone?.phone ?? "")}

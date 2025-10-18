@@ -43,7 +43,8 @@ export default function ResetTableControlsBtn<T>({
   const hasClientPagination =
     !!table &&
     (table.getState().pagination.pageIndex > 0 ||
-      table.getState().pagination.pageSize !== table.options.initialState?.pagination?.pageSize);
+      (table.options.initialState?.pagination?.pageSize !== undefined &&
+        table.getState().pagination.pageSize !== table.options.initialState.pagination.pageSize));
 
   const activeConditions = useMemo(
     () =>
@@ -81,9 +82,9 @@ export default function ResetTableControlsBtn<T>({
       onClick={onReset}
       disabled={disabled}
       variant="outline"
-      className={cn("ml-auto border-dashed h-10", className)}
+      className={cn("ml-auto border-dashed flex items-center gap-2", className)}
     >
-      <ArrowCounterClockwiseIcon className="h-4 w-4 mr-2" />
+      <ArrowCounterClockwiseIcon className="h-4 w-4 " />
       {label}
     </Button>
   );

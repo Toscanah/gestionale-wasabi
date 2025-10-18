@@ -10,11 +10,14 @@ const managerColumns = {
   prefix: [
     IndexColumn({}),
     ValueColumn({
+      sortable: false,
       header: "Stato",
       value: (row) => (
         <Badge
           className={cn(
-            row.original.active ? "bg-green-400 text-green-950 dark:text-green-950" : "bg-destructive"
+            row.original.active
+              ? "bg-green-400 text-green-950 dark:text-green-950"
+              : "bg-destructive"
           )}
         >
           {row.original.active ? "Attivo" : "Non attivo"}

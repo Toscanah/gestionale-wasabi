@@ -7,17 +7,20 @@ const columns: ColumnDef<Product>[] = [
   FieldColumn({
     key: "code",
     header: "Codice",
+    sortable: false,
   }),
 
   FieldColumn({
     key: "desc",
     header: "Descrizione",
+    sortable: false,
   }),
 
   ValueColumn({
     header: "Categoria",
     value: (row) => (row.original.category == null ? "Nessuna" : row.original.category?.category),
     accessor: (product) => product.category?.category,
+    sortable: false,
   }),
 
   ValueColumn({
@@ -38,21 +41,25 @@ const columns: ColumnDef<Product>[] = [
       return kitchen;
     },
     accessor: (product) => product.kitchen,
+    sortable: false,
   }),
 
   FieldColumn({
     header: "Prezzo in loco (€)",
     key: "site_price",
+    sortable: false,
   }),
 
   FieldColumn({
     header: "Prezzo da asporto (€)",
     key: "home_price",
+    sortable: false,
   }),
 
   FieldColumn({
     key: "rice",
     header: "Riso (g)",
+    sortable: false,
   }),
 ];
 

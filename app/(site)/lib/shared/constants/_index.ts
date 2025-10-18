@@ -8,3 +8,4 @@ export * from "./today-period";
 export * from "./max-records"
 export * from "./colors"
 export * from "./engagement-types-labels";
+export * from "./weekday-labels";

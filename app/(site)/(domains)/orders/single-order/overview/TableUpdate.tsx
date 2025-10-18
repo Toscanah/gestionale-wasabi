@@ -84,10 +84,10 @@ export default function TableUpdate() {
 
   return (
     <div className="w-full flex gap-6 items-center">
-      <div className="w-full flex flex-col space-y-2">
+      <div className="flex-1 flex flex-col space-y-2">
         <span>Tavolo</span>
         <Input
-          className="text-xl h-12"
+          className="!text-xl h-12"
           id="table"
           disabled={order.payments.some((payment) => payment.scope === PaymentScope.ROMAN)}
           value={table}
@@ -95,12 +95,12 @@ export default function TableUpdate() {
         />
       </div>
 
-      <div className="w-full flex flex-col space-y-2">
+      <div className="flex-1 flex flex-col space-y-2">
         <span>N° persone</span>
         <Input
           id="people"
           disabled={order.payments.some((payment) => payment.scope === PaymentScope.ROMAN)}
-          className="text-xl h-12"
+          className="!text-xl h-12"
           type="number"
           value={people}
           onChange={handlePplUpdate}

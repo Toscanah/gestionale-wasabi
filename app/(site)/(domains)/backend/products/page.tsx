@@ -55,7 +55,8 @@ export default function ProductDashboard() {
   }, [categories, selectedCategories.length]);
 
   const layout: { fields: Path<ProductFormData>[] }[] = [
-    { fields: ["code", "category_id", "kitchen"] },
+    { fields: ["code", "kitchen"] },
+    { fields: ["category_id"] },
     { fields: ["desc"] },
     { fields: ["home_price", "site_price"] },
     { fields: ["rices", "salads", "soups", "rice"] },
@@ -93,7 +94,7 @@ export default function ProductDashboard() {
       FormFields={Fields}
       mapToForm={toFormData}
       mapFromForm={fromFormData}
-      pagination={{ page, pageSize, setPage, setPageSize }}
+      pagination={{ page, pageSize, setPage, setPageSize, mode: "server" }}
       serverSorting={{
         availableFields: Object.entries(PRODUCT_SORT_MAP).map(([k, v]) => ({
           label: k,

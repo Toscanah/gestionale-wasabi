@@ -35,6 +35,9 @@ export default function CategoryDashboard() {
   return (
     <Manager<CategoryWithOptions, CategoryFormData>
       columns={columns}
+      pagination={{
+        mode: "client",
+      }}
       useDomainManager={useCategoriesManager}
       FormFields={Fields}
       mapToForm={toFormData}

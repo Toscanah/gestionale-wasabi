@@ -9,6 +9,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ReactQueryProvider from "./query-provider";
 import { TRPCProvider } from "@/lib/server/provider";
 import { StrictMode } from "react";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,11 +22,14 @@ function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
+
   return (
     <html lang="it" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
@@ -33,7 +37,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <TRPCProvider>
               <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-                <SidebarProvider defaultOpen={false}>
+                <SidebarProvider defaultOpen={defaultOpen}>
                   {children}
                   <Toaster richColors position="bottom-center" duration={1500} />
                   <ChangeTheme />

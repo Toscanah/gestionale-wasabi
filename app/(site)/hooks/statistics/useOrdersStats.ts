@@ -70,11 +70,10 @@ export default function useOrdersStats() {
     };
   }, [state]);
 
-  const shiftBackfill = trpc.orders.updateOrdersShift.useMutation();
-
-  useEffect(() => {
-    // shiftBackfill.mutate(); // runs once on mount
-  }, []);
+  const { data: dailyStats, isLoading: isDailyStatsLoading } =
+    trpc.orders.computeDailyStats.useQuery({
+      filters,
+    });
 
   const { data: ordersStats, isLoading: isOrdersLoading } = trpc.orders.computeStats.useQuery(
     {
@@ -117,5 +116,6 @@ export default function useOrdersStats() {
     filteredResults: ordersStats ?? null,
     isLoading: isOrdersLoading,
     disabledFlags: getDisabledFlags(state),
+    dailyStats: dailyStats ?? null,
   };
 }

@@ -30,6 +30,27 @@ export namespace OrderContracts {
 
     export const NoContentInput = NoContentRequestSchema;
     export type NoContentInput = z.infer<typeof NoContentInput>;
+
+    export const Filters = wrapFilters(
+      APIFiltersSchema.omit({
+        orderTypes: true,
+        query: true,
+        onlyActive: true,
+        customerOrigins: true,
+        engagementTypes: true,
+      })
+    )
+      .partial()
+      .optional();
+    export type Filters = z.infer<typeof Filters>;
+  }
+
+  export namespace ComputeDailyStats {
+    export const Input = Common.Filters;
+    export type Input = Common.Filters;
+
+    export const Output = OrdersStats.DailyResults;
+    export type Output = z.infer<typeof Output>;
   }
 
   export namespace GetById {
@@ -287,16 +308,8 @@ export namespace OrderContracts {
   }
 
   export namespace ComputeStats {
-    export const Input = wrapFilters(
-      APIFiltersSchema.omit({
-        orderTypes: true,
-        query: true,
-      })
-    )
-      .partial()
-      .optional();
-
-    export type Input = z.infer<typeof Input>;
+    export const Input = Common.Filters;
+    export type Input = Common.Filters;
 
     export const Output = OrdersStats.Results;
     export type Output = z.infer<typeof Output>;

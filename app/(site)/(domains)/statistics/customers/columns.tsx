@@ -164,7 +164,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
   }),
 
   ActionColumn({
-    header: "Altro",
+    header: "Storico",
     action: (row) => {
       const customer = row.original;
 

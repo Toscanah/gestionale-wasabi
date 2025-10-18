@@ -44,14 +44,15 @@ export default function TopOptions({ product }: TopOptionsProps) {
     <WasabiDialog
       size="medium"
       trigger={
-        <Button className="w-40" variant="outline">
-          Vedi opzioni usate
+        <Button disabled={tableData.length === 0} variant="outline" className="w-full">
+          {tableData.length === 0 ? "Nessuna opzione trovata" : "Vedi opzioni più usate"}
         </Button>
       }
       title="Opzioni più utilizzate"
       putSeparator
+      desc={`Le opzioni più utilizzate per il prodotto [${product.desc.trim()}]`}
     >
-      <Table table={table} />
+      <Table table={table} maxRows={10} scrollAdjustment={1} tableClassName="max-h-[410px]" />
     </WasabiDialog>
   );
 }

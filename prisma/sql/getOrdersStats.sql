@@ -29,7 +29,7 @@ WITH
         SELECT d.day
         FROM days d
         JOIN order_days od ON od.day = d.day
-        JOIN payment_days pd ON pd.day = d.day
+        -- JOIN payment_days pd ON pd.day = d.day
         WHERE EXTRACT(DOW FROM d.day) <> 1 -- skip Mondays
           AND (
             $3::text IS NULL

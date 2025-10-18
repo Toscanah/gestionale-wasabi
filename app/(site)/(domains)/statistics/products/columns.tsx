@@ -50,21 +50,24 @@ const columns: ColumnDef<ProductWithStats>[] = [
   }),
 
   ActionColumn({
-    header: "Altro",
+    header: "Opzioni",
+    action: (row) => <TopOptions product={row.original} />,
+    skeleton: <Button variant="outline">Skeleton</Button>,
+  }),
+
+  ActionColumn({
+    header: "Clienti migliori",
     action: (row, meta) => (
-      <div className="flex items-center gap-2">
-        {row.original.stats.options.length > 0 && <TopOptions product={row.original} />}
-        <TopCustomers
-          product={{ id: row.original.id, name: row.original.desc }}
-          filters={(meta as ProductStatsTableMeta).filters}
-        />
-      </div>
+      <TopCustomers
+        product={{
+          id: row.original.id,
+          name: row.original.desc,
+          hasTopCustomers: row.original.stats.hasTopCustomers ?? false,
+        }}
+        filters={(meta as ProductStatsTableMeta).filters}
+      />
     ),
-    skeleton: (
-      <div className="flex items-center gap-2">
-        <Button variant="outline">Skeleton</Button>
-      </div>
-    ),
+    skeleton: <Button variant="outline">Skeleton</Button>,
   }),
 ];
 

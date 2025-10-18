@@ -28,6 +28,7 @@ export const ProductStatsOnlySchema = z.object({
   revenue: z.number(),
   totalRice: z.number(),
   options: z.array(OptionStatsOnlySchema),
+  hasTopCustomers: z.boolean().optional().default(false),
 });
 
 export const ProductWithStatsSchema = ProductSchema.extend({

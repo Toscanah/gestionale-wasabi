@@ -43,12 +43,9 @@ export default function CustomerOriginsFilter({
   onOriginsChange,
   disabled,
 }: CustomerOriginsFilterProps) {
-  console.log(origins);
   const allOrigins = Object.values(CustomerOrigin);
 
   const handleChange = (newValues: CustomerOrigin[]) => {
-    console.log("newValues", newValues);
-
     if (newValues.length === 0 || newValues.length === allOrigins.length) {
       onOriginsChange(allOrigins);
     } else {

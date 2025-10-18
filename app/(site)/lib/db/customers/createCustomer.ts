@@ -6,7 +6,7 @@ import { TRPCError } from "@trpc/server";
 export default async function createCustomer({
   customer,
 }: CustomerContracts.Create.Input): Promise<CustomerContracts.Create.Output> {
-  return await prisma.$transaction(async (tx) => {
+  const createdCustomer = await prisma.$transaction(async (tx) => {
     const { phone, ...customerData } = customer;
 
     const phoneExists = await tx.phone.findUnique({
@@ -24,13 +24,13 @@ export default async function createCustomer({
       data: { phone },
     });
 
-    const newCustomer = await tx.customer.create({
+    return await tx.customer.create({
       data: {
         ...customerData,
         phone_id: newPhone.id,
       },
     });
-
-    return await getComprehensiveCustomer({ customerId: newCustomer.id });
   });
+
+  return await getComprehensiveCustomer({ customerId: createdCustomer.id });
 }

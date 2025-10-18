@@ -1,4 +1,4 @@
-import { KeyboardEvent, RefObject, useEffect } from "react";
+import { KeyboardEvent, RefCallback, RefObject, useEffect } from "react";
 import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
@@ -13,15 +13,30 @@ import { WasabiFormField } from "@/app/(site)/components/ui/wasabi/WasabiFormFie
 import { useZodForm } from "@/app/(site)/hooks/useZodForm";
 
 interface AddressFormProps {
-  formRef: RefObject<HTMLFormElement>;
-  refs: RefObject<HTMLInputElement>[];
+  formRef: RefObject<HTMLFormElement | null>;
+  refs: {
+    street: RefObject<HTMLInputElement | null>;
+    doorbell: RefObject<HTMLInputElement | null>;
+    floor: RefObject<HTMLInputElement | null>;
+    stair: RefObject<HTMLInputElement | null>;
+    contact_phone: RefObject<HTMLInputElement | null>;
+    name: RefObject<HTMLInputElement | null>;
+    surname: RefObject<HTMLInputElement | null>;
+    email: RefObject<HTMLInputElement | null>;
+    street_info: RefObject<HTMLInputElement | null>;
+    order_notes: RefObject<HTMLInputElement | null>;
+    preferences: RefObject<HTMLInputElement | null>;
+  };
   handleKeyDown: (e: KeyboardEvent) => void;
 }
 
 export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFormProps) {
   const { onSubmit, extraInfo, selectedAddress, customer, phone } = useCreateHomeOrder();
 
-  const form = useZodForm({ schema: addressFormSchema });
+  const form = useZodForm({
+    schema: addressFormSchema,
+    defaultValues: addressFormSchema.parse({}),
+  });
 
   const resetForm = () => {
     form.reset({
@@ -86,7 +101,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
           <WasabiFormField
             control={form.control}
             name="street"
-            ref={refs[0]}
+            ref={refs.street}
             label="Via"
             onKeyDown={handleKeyDown}
             className="w-full h-14 text-2xl uppercase"
@@ -95,7 +110,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
 
           <div className="w-full flex gap-4">
             <WasabiFormField
-              ref={refs[1]}
+              ref={refs.doorbell}
               control={form.control}
               name="doorbell"
               onKeyDown={handleKeyDown}
@@ -105,7 +120,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             />
 
             <WasabiFormField
-              ref={refs[2]}
+              ref={refs.floor}
               control={form.control}
               name="floor"
               label="Piano"
@@ -116,7 +131,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
 
           <div className="w-full flex gap-4">
             <WasabiFormField
-              ref={refs[4]}
+              ref={refs.contact_phone}
               control={form.control}
               name="contact_phone"
               type="number"
@@ -126,7 +141,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             />
 
             <WasabiFormField
-              ref={refs[3]}
+              ref={refs.stair}
               control={form.control}
               name="stair"
               label="Scala"
@@ -140,7 +155,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             <WasabiFormField
               control={form.control}
               name="name"
-              ref={refs[5]}
+              ref={refs.name}
               label="Nome"
               onKeyDown={handleKeyDown}
               className="w-full h-14 text-2xl uppercase"
@@ -149,7 +164,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             <WasabiFormField
               control={form.control}
               name="surname"
-              ref={refs[6]}
+              ref={refs.surname}
               onKeyDown={handleKeyDown}
               label="Cognome"
               className="w-full h-14 text-2xl uppercase"
@@ -160,7 +175,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             control={form.control}
             name="email"
             label="Email"
-            ref={refs[7]}
+            ref={refs.email}
             onKeyDown={handleKeyDown}
             className="w-full h-14 text-2xl uppercase"
             // description="(es. mario.rossi@gmail.com)"
@@ -170,13 +185,13 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             <WasabiFormField
               control={form.control}
               name="street_info"
-              ref={refs[8]}
               onKeyDown={handleKeyDown}
               label="Informazioni stradali"
               // description="(es. Arrivare da Via Udine..)"
-              render={({ value, onChange }) => (
+              render={({ value, onChange, ref }) => (
                 <Textarea
-                  value={value || ""}
+                  ref={refs.street_info as any}
+                  value={value?.toString() || ""}
                   onChange={onChange}
                   className="w-full resize-none text-xl uppercase"
                 />
@@ -186,13 +201,13 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             <WasabiFormField
               control={form.control}
               name="order_notes"
-              ref={refs[9]}
               onKeyDown={handleKeyDown}
               label="Note sull'ordine"
               // description="(es. Extra wasabi, no zenzero)"
-              render={({ value, onChange }) => (
+              render={({ value, onChange, ref }) => (
                 <Textarea
-                  value={value || ""}
+                  ref={refs.order_notes as any}
+                  value={value?.toString() || ""}
                   onChange={onChange}
                   className="w-full esize-none text-xl uppercase"
                 />
@@ -202,12 +217,12 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             <WasabiFormField
               control={form.control}
               name="preferences"
-              ref={refs[10]}
               onKeyDown={handleKeyDown}
               label="Preferenze cliente"
               // description="(es. Intollerante, coca zero)"
-              render={({ value, onChange }) => (
+              render={({ value, onChange, ref }) => (
                 <Textarea
+                  ref={refs.preferences as any}
                   value={value || ""}
                   onChange={onChange}
                   className="w-full resize-none text-xl uppercase"

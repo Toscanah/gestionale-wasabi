@@ -30,6 +30,14 @@ export interface AdditionalFilters {
   showReset: boolean;
 }
 
+type ClientPagination = {
+  mode: "client";
+};
+
+type ServerPagination = Omit<ReturnType<typeof useTablePagination>, "resetPagination"> & {
+  mode: "server";
+};
+
 interface ManagerProps<TDomain extends BaseEntity, TForm extends FieldValues = TDomain> {
   useDomainManager: () => ReturnType<typeof useManager<TDomain, any, any>>;
   FormFields: ComponentType<FormFieldsProps<TForm>>;
@@ -37,7 +45,7 @@ interface ManagerProps<TDomain extends BaseEntity, TForm extends FieldValues = T
   mapToForm?: (entity: TDomain) => TForm;
   mapFromForm?: (form: TForm) => Partial<TDomain>;
   filters?: AdditionalFilters;
-  pagination?: Omit<ReturnType<typeof useTablePagination>, "resetPagination">;
+  pagination?: ClientPagination | ServerPagination | undefined;
   deleteAction?: boolean;
   serverSorting?: Pick<
     React.ComponentProps<typeof SortingMenu>,
@@ -84,6 +92,7 @@ export default function Manager<TDomain extends BaseEntity, TForm extends FieldV
     inputQuery,
     debouncedQuery,
     setInputQuery,
+    resetQuery,
   } = useDomainManager();
 
   const AdaptedFormFields: ComponentType<FormFieldsProps<TDomain>> = ({
@@ -131,7 +140,7 @@ export default function Manager<TDomain extends BaseEntity, TForm extends FieldV
     isLoading,
     columns: tableColumns,
     data,
-    pageSize: pagination?.pageSize,
+    pageSize: pagination && pagination.mode === "server" ? pagination.pageSize : undefined,
   });
 
   const table = useTable<TDomain, ManagerTableMeta<TDomain>>({
@@ -140,26 +149,32 @@ export default function Manager<TDomain extends BaseEntity, TForm extends FieldV
     query: debouncedQuery,
     setQuery: setInputQuery,
     pagination: pagination
-      ? {
-          mode: "server",
-          page: pagination.page,
-          pageSize: pagination.pageSize,
-          setPage: pagination.setPage,
-          setPageSize: pagination.setPageSize,
-          totalCount,
-        }
+      ? pagination.mode === "server"
+        ? {
+            mode: "server",
+            page: pagination.page,
+            pageSize: pagination.pageSize,
+            setPage: pagination.setPage,
+            setPageSize: pagination.setPageSize,
+            totalCount,
+          }
+        : {
+            mode: "client",
+          }
       : undefined,
     meta: {
       EditComponent,
       ToggleComponent,
       DeleteComponent,
+      isLoading,
+      paginationMode: pagination?.mode ?? "client",
     },
   });
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <div className="w-[90%] h-[90%] flex max-h-[90%] gap-4">
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full flex justify-center flex-col gap-4">
           <Toolbar
             table={table}
             disabled={isLoading}
@@ -168,6 +183,7 @@ export default function Manager<TDomain extends BaseEntity, TForm extends FieldV
             onQueryChange={setInputQuery}
             query={inputQuery}
             filters={filters}
+            debouncedQuery={debouncedQuery}
             showOnlyActive={showOnlyActive}
             onOnlyActiveChange={setShowOnlyActive}
             hasServerSorting={serverSorting?.activeSorts.length! > 0}
@@ -176,6 +192,13 @@ export default function Manager<TDomain extends BaseEntity, TForm extends FieldV
               setShowOnlyActive(true);
               table.resetSorting();
               serverSorting?.onChange([]);
+              resetQuery();
+              if (pagination?.mode === "server") {
+                pagination.setPage(0);
+                pagination.setPageSize(pagination.pageSize);
+              } else {
+                table.resetPagination();
+              }
             }}
           >
             {serverSorting && (
@@ -188,17 +211,18 @@ export default function Manager<TDomain extends BaseEntity, TForm extends FieldV
             )}
           </Toolbar>
 
-          <Table<TDomain> table={table} />
+          <Table<TDomain> table={table} maxRows={10} scrollAdjustment={1} />
 
           {pagination ? (
             <TablePagination
+              label={parsedLabels.plural}
               table={table}
-              totalCount={totalCount}
+              totalCount={pagination?.mode === "server" ? totalCount : undefined}
               disabled={isLoading}
-              onPageChange={pagination.setPage}
-              onPageSizeChange={pagination.setPageSize}
-              page={pagination.page}
-              pageSize={pagination.pageSize}
+              onPageChange={pagination.mode == "server" ? pagination.setPage : undefined}
+              onPageSizeChange={pagination.mode == "server" ? pagination.setPageSize : undefined}
+              page={pagination.mode == "server" ? pagination.page : undefined}
+              pageSize={pagination.mode == "server" ? pagination.pageSize : undefined}
             />
           ) : (
             !isLoading && (

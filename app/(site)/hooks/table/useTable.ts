@@ -12,6 +12,7 @@ import type { TableMeta } from "@tanstack/react-table";
 import { MAX_RECORDS } from "../../lib/shared";
 
 const DEFAULT_PAGE_SIZE = MAX_RECORDS;
+const CLIENT_DEFAULT_PAGE_SIZE = 10;
 const noop = () => {};
 
 interface ClientPagination {
@@ -34,7 +35,7 @@ interface TableProps<T, M extends object | undefined = undefined> {
   data: T[];
   columns: ColumnDef<T>[];
   query?: string;
-  setQuery?: Dispatch<SetStateAction<string>>;
+  setQuery?: (v: string) => void;
   rowSelection?: Record<string, boolean>;
   setRowSelection?: Dispatch<SetStateAction<Record<string, boolean>>>;
   pagination?: TablePagination;
@@ -83,7 +84,15 @@ export default function useTable<T, M extends object | undefined = undefined>({
     return useReactTable({
       ...commonConfig,
       manualPagination: true,
+      manualFiltering: true,
       pageCount: Math.ceil((totalCount || 0) / pageSize),
+      state: {
+        ...commonConfig.state,
+        pagination: {
+          pageIndex: page,
+          pageSize,
+        },
+      },
       onPaginationChange: (updater) => {
         const newState =
           typeof updater === "function" ? updater({ pageIndex: page, pageSize }) : updater;
@@ -94,13 +103,18 @@ export default function useTable<T, M extends object | undefined = undefined>({
     });
   }
 
+  const normalizedPageSize =
+    pagination?.mode === "client" && pagination.pageSize === -1
+      ? data.length || CLIENT_DEFAULT_PAGE_SIZE
+      : pagination?.pageSize || CLIENT_DEFAULT_PAGE_SIZE;
+
   if (pagination?.mode === "client") {
     return useReactTable({
       ...commonConfig,
       getPaginationRowModel: getPaginationRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
       initialState: {
-        pagination: { pageSize: pagination.pageSize || DEFAULT_PAGE_SIZE, pageIndex: 0 },
+        pagination: { pageSize: normalizedPageSize, pageIndex: 0 },
       },
     });
   }

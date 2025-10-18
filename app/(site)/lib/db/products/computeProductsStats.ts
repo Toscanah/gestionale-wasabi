@@ -37,6 +37,7 @@ export default async function computeProductsStats(
         unitsSold: ps.unitsSold ?? 0,
         totalRice: ps.totalRice ?? 0,
         revenue: ps.revenue ?? 0,
+        hasTopCustomers: ps.hasTopCustomers ?? false,
       };
     }),
   };

@@ -3,6 +3,7 @@ import { trpc } from "@/lib/server/client";
 import { useManager } from "../useManager";
 import { productsAPI } from "@/lib/server/api";
 import { useMemo, useState } from "react";
+import useQueryFilter from "../../table/useQueryFilter";
 
 interface UseProductsManagerParams extends PaginationRequest {
   categoryIds?: number[];
@@ -14,14 +15,16 @@ export default function useProductsManager({
   pagination: { page, pageSize },
   sort,
 }: UseProductsManagerParams) {
+  const { debouncedQuery, inputQuery, setInputQuery, resetQuery } = useQueryFilter();
   const [showOnlyActive, setShowOnlyActive] = useState(true);
 
   const filters = useMemo(() => {
     const filterObj: Record<string, any> = {};
+    if (debouncedQuery) filterObj.query = debouncedQuery;
     if (categoryIds) filterObj.categoryIds = categoryIds;
     if (showOnlyActive) filterObj.onlyActive = showOnlyActive;
     return Object.keys(filterObj).length > 0 ? filterObj : undefined;
-  }, [categoryIds, showOnlyActive]);
+  }, [categoryIds, showOnlyActive, debouncedQuery]);
 
   const query = productsAPI.getAll.useQuery(
     {
@@ -55,6 +58,10 @@ export default function useProductsManager({
     serverFiltering: {
       showOnlyActive,
       setShowOnlyActive,
+      debouncedQuery,
+      setInputQuery,
+      inputQuery,
+      resetQuery,
     },
   });
 }

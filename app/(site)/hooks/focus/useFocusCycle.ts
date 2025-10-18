@@ -4,12 +4,14 @@ export default function useFocusCycle() {
   const refs = useRef<Set<HTMLElement>>(new Set());
   const currentRefIndex = useRef(0);
 
-  const addRefs = (...newRefs: (HTMLElement | null)[]) =>
+  const addRefs = (...newRefs: (HTMLElement | null)[]) => {
+    // console.log("Adding refs:", newRefs);
     newRefs.forEach((ref) => {
       if (ref) {
         refs.current.add(ref);
       }
     });
+  }
 
   const cleanRefs = () => refs.current.clear();
 

@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
 import OrderTable from "../../single-order/OrderTable";
 import { OrderByType } from "@/app/(site)/lib/shared";
-import { HandPalm } from "@phosphor-icons/react";
 import Home from "./Home";
 import { toastError } from "@/app/(site)/lib/utils/global/toast";
 import generateEmptyOrder from "@/app/(site)/lib/services/order-management/generateEmptyOrder";

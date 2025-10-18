@@ -28,6 +28,7 @@ export type CommandOption = {
   label: string;
   value: string;
   count?: number;
+  disabled?: boolean;
 };
 
 export type CommandGroupType = {
@@ -285,6 +286,7 @@ const WasabiUniversalSelect = forwardRef<
 
                     return (
                       <CommandItem
+                        disabled={option.disabled}
                         key={option.value}
                         // set value=label for filtering by label
                         value={option.label}

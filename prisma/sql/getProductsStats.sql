@@ -33,6 +33,9 @@ WITH
           )
     ),
 
+    -- -----------------------------------------------
+    -- Pull all paid ProductInOrder rows + customer info
+    -- -----------------------------------------------
     pio_orders AS (
         SELECT
             pio.id AS pio_id,
@@ -41,9 +44,12 @@ WITH
             pio.paid_quantity,
             pio.frozen_price,
             o.shift,
-            o.created_at
+            o.created_at,
+            COALESCE(ho.customer_id, po.customer_id) AS customer_id  -- 👈 either Home or Pickup
         FROM public."ProductInOrder" pio
         JOIN public."Order" o ON o.id = pio.order_id
+        LEFT JOIN public."HomeOrder" ho ON ho.id = o.id
+        LEFT JOIN public."PickupOrder" po ON po.id = o.id
         WHERE pio.status = 'IN_ORDER'
           AND o.status = 'PAID'
           AND ($4::text IS NULL OR o.shift = $4::text::"WorkingShift")
@@ -51,12 +57,16 @@ WITH
           AND ($2::timestamptz IS NULL OR o.created_at <= $2)
     ),
 
+    -- -----------------------------------------------
+    -- Aggregate stats per product
+    -- -----------------------------------------------
     product_stats AS (
         SELECT
             po.product_id,
             SUM(LEAST(po.paid_quantity::double precision, po.quantity::double precision)) AS units_sold,
             SUM(LEAST(po.paid_quantity::double precision, po.quantity::double precision) * po.frozen_price::double precision) AS revenue,
-            SUM(LEAST(po.paid_quantity::double precision, po.quantity::double precision) * bp.rice::double precision) AS total_rice
+            SUM(LEAST(po.paid_quantity::double precision, po.quantity::double precision) * bp.rice::double precision) AS total_rice,
+            BOOL_OR(po.customer_id IS NOT NULL) AS has_top_customers -- 👈 efficient boolean flag
         FROM pio_orders po
         JOIN base_products bp ON bp.id = po.product_id
         GROUP BY po.product_id
@@ -74,11 +84,15 @@ WITH
         GROUP BY po.product_id, oio.option_id, opt.option_name
     )
 
+-- -----------------------------------------------
+-- Final result
+-- -----------------------------------------------
 SELECT
     bp.id AS "productId",
     COALESCE(ps.units_sold, 0)::int AS "unitsSold",
     COALESCE(ps.revenue, 0)::double precision AS "revenue",
     COALESCE(ps.total_rice, 0)::double precision AS "totalRice",
+    COALESCE(ps.has_top_customers, false) AS "hasTopCustomers",  -- 👈 NEW FIELD
     json_agg(
         json_build_object(
             'option', os.option_name,
@@ -90,4 +104,4 @@ FROM base_products bp
 LEFT JOIN product_stats ps ON ps.product_id = bp.id
 LEFT JOIN option_stats os ON os.product_id = bp.id
 GROUP BY
-    bp.id, ps.units_sold, ps.revenue, ps.total_rice;
+    bp.id, ps.units_sold, ps.revenue, ps.total_rice, ps.has_top_customers;

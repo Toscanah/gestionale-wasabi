@@ -18,7 +18,7 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[]
     ValueColumn<ProductInOrder>({
       header: "Descrizione",
       value: (row) => (
-        <div className="flex items-center justify-start overflow-hidden text-ellipsis w-full text-2xl">
+        <div className="flex items-center justify-start overflow-hidden text-ellipsis w-full text-xl">
           {row.original.product?.desc}
         </div>
       ),

@@ -18,9 +18,9 @@ export default function Tools() {
     <div className="w-full h-full flex flex-col justify-between items-center">
       {activeTool === "manual" ? <ManualInput /> : <CalculationTable />}
 
-      <div className="w-full flex gap-2">
+      <div className="w-full flex gap-4">
         <ResetPayment />
-        <Button variant="outline" className="h-16 w-full text-2xl" onClick={toggleTool}>
+        <Button variant="outline" className="h-16 flex-1 text-2xl" onClick={toggleTool}>
           {toggleLabel}
           {/* <ArrowsLeftRight size={48}/> */}
           {/* {activeTool == "manual" ? <ToggleRight size={48}/> : <ToggleLeft size={48}/>} */}

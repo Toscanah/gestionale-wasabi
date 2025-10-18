@@ -2,6 +2,7 @@ import { OrderType } from "@prisma/client";
 import z from "zod";
 
 export namespace OrdersStats {
+  // --- BASE METRICS ---
   export const Metrics = z.object({
     orders: z.number(),
     revenue: z.number(),
@@ -13,25 +14,49 @@ export namespace OrdersStats {
   });
   export type Metrics = z.infer<typeof Metrics>;
 
+  // --- DAILY AVERAGE SUMMARY ---
   export const Daily = z.object({
     perDay: Metrics,
   });
   export type Daily = z.infer<typeof Daily>;
 
+  // --- AVERAGE METRIC (revenue/order) ---
   export const Average = z.object({
     revenuePerOrder: z.number(),
   });
   export type Average = z.infer<typeof Average>;
 
+  // --- AGGREGATED RESULT (used in computeOrdersStats) ---
   export const Result = Metrics.and(Daily).and(Average);
   export type Result = z.infer<typeof Result>;
 
+  // --- ORDER TYPES ENUM ---
   const lowerOrderTypes = Object.values(OrderType).map(
     (t) => t.toLowerCase() as Lowercase<typeof t>
   );
   export const LowerOrderTypeEnum = z.enum(lowerOrderTypes);
   export type LowerOrderTypeEnum = z.infer<typeof LowerOrderTypeEnum>;
 
+  // --- AGGREGATED RESULTS ---
   export const Results = z.record(LowerOrderTypeEnum, Result);
   export type Results = z.infer<typeof Results>;
+
+  // -------------------------------
+  // NEW: DAILY TIME-SERIES STRUCTURE
+  // -------------------------------
+  export const DailyRow = z
+    .object({
+      day: z.date(),
+    })
+    .and(Metrics)
+    .and(Average);
+  export type DailyRow = z.infer<typeof DailyRow>;
+
+  export const DailyResults = z.record(LowerOrderTypeEnum, z.array(DailyRow));
+  export type DailyResults = z.infer<typeof DailyResults>;
+
+  // -------------------------------
+  // UNIFIED TYPE (either summary or daily)
+  // -------------------------------
+  export type AnyResults = Results | DailyResults;
 }

@@ -81,8 +81,9 @@ export default function EngagementPage() {
           />
 
           <ResetTableControlsBtn
+            disabled={isLoading}
             onReset={handleReset}
-            show={!!inputQuery || period !== TODAY_PERIOD}
+            hasFilters={!!inputQuery || period !== TODAY_PERIOD}
           />
         </div>
 
@@ -104,8 +105,6 @@ export default function EngagementPage() {
 
         <TablePagination
           disabled={isLoading}
-          selectSizeClassName="h-10"
-          selectPageClassName="h-10"
           table={leftTable}
           page={page}
           pageSize={pageSize}

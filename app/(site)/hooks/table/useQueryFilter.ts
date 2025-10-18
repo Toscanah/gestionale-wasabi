@@ -15,9 +15,15 @@ export default function useQueryFilter(delay: number = 500) {
     return () => debouncedUpdate.cancel();
   }, [inputQuery, debouncedUpdate]);
 
+  const resetQuery = () => {
+    setInputQuery("");
+    setDebouncedQuery(""); // ← instantly clears both states
+  };
+
   return {
     debouncedQuery,
     inputQuery,
     setInputQuery,
+    resetQuery,
   };
 }

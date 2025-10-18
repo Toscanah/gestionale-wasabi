@@ -13,6 +13,7 @@ interface ToolbarProps {
   AddComponent: React.ReactNode;
   onQueryChange: (value: string) => void;
   query: string;
+  debouncedQuery?: string;
   filters?: AdditionalFilters;
   showOnlyActive: boolean;
   onOnlyActiveChange: (value: boolean) => void;
@@ -28,6 +29,7 @@ export default function Toolbar({
   AddComponent,
   onQueryChange,
   query,
+  debouncedQuery,
   filters,
   showOnlyActive,
   onOnlyActiveChange,
@@ -67,7 +69,8 @@ export default function Toolbar({
           onReset={onReset}
           disabled={disabled}
           table={table}
-          hasFilters={showOnlyActive === false || filters?.showReset}
+          customShow={filters?.showReset}
+          hasFilters={showOnlyActive === false || debouncedQuery?.length! > 0}
           hasServerSorting={hasServerSorting}
         />
         {children}

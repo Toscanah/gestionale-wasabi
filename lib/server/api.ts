@@ -5,6 +5,7 @@ type Hooks<T> = {
 };
 
 export const ordersAPI: Hooks<typeof trpc.orders> = {
+  computeDailyStats: trpc.orders.computeDailyStats,
   getById: trpc.orders.getById,
   getHomeOrders: trpc.orders.getHomeOrders,
   getPickupOrders: trpc.orders.getPickupOrders,

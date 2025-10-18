@@ -132,7 +132,6 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           </Label>
           <WasabiSimpleSelect
             disabled={riceBatches.length === 0}
-            triggerClassName="h-10"
             value={selectedRiceBatchId !== null ? String(selectedRiceBatchId) : undefined}
             groups={[
               {
@@ -155,7 +154,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
               Riso da AGGIUNGERE
             </Label>
             <Input
-              className="h-10 text-2xl"
+              className="text-2xl"
               type="number"
               id="add-rice"
               value={riceToAdd}
@@ -168,7 +167,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
               Riso da TOGLIERE
             </Label>
             <Input
-              className="h-10 text-2xl"
+              className="text-2xl"
               type="number"
               id="rem-rice"
               value={riceToRemove}
@@ -184,7 +183,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
               Soglia avviso
             </Label>
             <Input
-              className="h-10 text-2xl"
+              className="text-2xl"
               type="number"
               id="threshold"
               value={threshold}
@@ -199,7 +198,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
             <div className="flex gap-2">
               <Input
                 disabled
-                className="h-10 text-2xl"
+                className="text-2xl"
                 type="number"
                 id="total"
                 value={rice.total}

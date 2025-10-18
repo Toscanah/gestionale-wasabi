@@ -121,7 +121,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
             className="w-full"
             onClick={createTableOrder}
           >
-            Vai {children}
+            CREA ORDINE
           </Button>
         </>
       ) : (

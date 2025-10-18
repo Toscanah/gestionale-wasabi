@@ -30,9 +30,6 @@ export interface WasabiFieldProps<
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-/**
- * A typed, reusable form field using shadcn/ui's FormField primitives.
- */
 function WasabiFieldInner<T extends FieldValues, TTransformedValues extends T = T>(
   {
     control,

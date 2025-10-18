@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import WasabiPopover from "../wasabi/WasabiPopover";
-import { ArrowsDownUp, X } from "@phosphor-icons/react";
+import { ArrowsDownUp, CaretDownIcon, CaretUpIcon, X } from "@phosphor-icons/react";
 import WasabiSimpleSelect from "../wasabi/WasabiSimpleSelect";
 import SortDirectionSelector from "./SortDirectionSelector";
 import { SortDirection } from "@/app/(site)/lib/shared/schemas/common/sorting";
@@ -37,6 +37,13 @@ interface SortingMenuProps {
   disabled?: boolean;
 }
 
+function moveItem<T>(arr: T[], from: number, to: number): T[] {
+  const updated = [...arr];
+  const [moved] = updated.splice(from, 1);
+  updated.splice(to, 0, moved);
+  return updated.map((item, i) => ({ ...item, index: i }));
+}
+
 export default function SortingMenu({
   activeSorts,
   availableFields,
@@ -58,10 +65,10 @@ export default function SortingMenu({
         <Button
           disabled={disabled}
           variant="outline"
-          className={cn("h-10 flex gap-2 items-center", triggerClassName)}
+          className={cn("flex gap-2 items-center", triggerClassName)}
         >
           <ArrowsDownUp className="h-4 w-4" />
-          Ordina
+          Ordinamento
           {activeSorts.length > 0 && (
             <>
               <Separator orientation="vertical" className="mx-0.5" />
@@ -84,7 +91,7 @@ export default function SortingMenu({
           )}
         </Button>
       }
-      contentClassName="w-[500px] flex flex-col gap-4"
+      contentClassName="w-[600px] flex flex-col gap-4"
     >
       <span>Ordina per</span>
 
@@ -97,6 +104,29 @@ export default function SortingMenu({
 
             return (
               <div className="flex gap-4" key={activeField.field}>
+                <div className="flex gap-2 items-center">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={activeField.index === 0}
+                    onClick={() =>
+                      onChange(moveItem(activeSorts, activeField.index, activeField.index - 1))
+                    }
+                  >
+                    <CaretUpIcon size={18} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={activeField.index === activeSorts.length - 1}
+                    onClick={() =>
+                      onChange(moveItem(activeSorts, activeField.index, activeField.index + 1))
+                    }
+                  >
+                    <CaretDownIcon size={18} />
+                  </Button>
+                </div>
+
                 <WasabiSimpleSelect
                   triggerClassName="flex-1"
                   value={activeField.field}
@@ -137,6 +167,8 @@ export default function SortingMenu({
                   }}
                 />
 
+                <div className="flex flex-col"></div>
+
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -170,14 +202,8 @@ export default function SortingMenu({
           className="flex-1"
           disabled={remainingFields.length === 0}
         >
-          {remainingFields.length > 0
-            ? "Aggiungi ordinamento"
-            : "Nessun ordinamento disponibile"}
+          {remainingFields.length > 0 ? "Aggiungi ordinamento" : "Nessun ordinamento disponibile"}
         </Button>
-
-        {/* <Button variant="outline" onClick={() => onChange([])} className="flex-1">
-          Reimposta
-        </Button> */}
       </div>
     </WasabiPopover>
   );

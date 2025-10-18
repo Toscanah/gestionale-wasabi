@@ -1,7 +1,6 @@
 "use client";
 
-import { endOfDay,startOfDay } from "date-fns";
-import React from "react";
+import { endOfDay, startOfDay } from "date-fns";
 import useTable from "../../../hooks/table/useTable";
 import Table from "../../../components/table/Table";
 import GoBack from "../../../components/ui/misc/GoBack";
@@ -17,6 +16,7 @@ import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
 import OrderTypesFilter from "@/app/(site)/components/ui/filters/select/OrderTypesFilter";
 import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
 import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
+import { Button } from "@/components/ui/button";
 
 export default function PaymentsTable() {
   const { page, pageSize, setPage, setPageSize } = useTablePagination();
@@ -67,7 +67,7 @@ export default function PaymentsTable() {
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
-      <div className="w-[90%] h-[90%] flex flex-col gap-4 max-h-[90%]">
+      <div className="w-[90%] h-[90%] flex flex-col justify-center gap-4 max-h-[90%]">
         <div className="w-full flex items-center gap-4">
           <span className="font-bold text-xl">Pagamenti</span>
 
@@ -93,16 +93,24 @@ export default function PaymentsTable() {
             disabled={isLoading}
           />
 
-          <ResetTableControlsBtn
-            onReset={handleReset}
-            className="ml-auto"
-            show={!isLoading && showReset}
-          />
+          <div className="ml-auto flex items-center gap-2">
+            <ResetTableControlsBtn
+              onReset={handleReset}
+              className="ml-auto"
+              disabled={isLoading}
+              hasFilters={showReset}
+            />
+
+            <Button variant={"outline"} disabled>
+              TODO: Ordinamento
+            </Button>
+          </div>
         </div>
 
-        <Table table={table} tableClassName="max-h-max" cellClassName={() => "h-20 max-h-20"} />
+        <Table table={table} maxRows={10} scrollAdjustment={1} />
 
         <TablePagination
+          label="Pagamenti"
           disabled={isLoading}
           table={table}
           page={page}
@@ -110,12 +118,16 @@ export default function PaymentsTable() {
           onPageChange={setPage}
           onPageSizeChange={setPageSize}
           totalCount={totalCount}
-        />
-
-        <div className="mt-auto flex justify-between">
-          <PaymentsSummary summaryData={summaryData} disabled={isSummaryEmpty} />
-          <PrintSummary summaryData={summaryData} period={period} disabled={isSummaryEmpty} />
-        </div>
+        >
+          <div className="flex justify-between gap-4">
+            <PaymentsSummary summaryData={summaryData} disabled={isSummaryEmpty || isLoading} />
+            <PrintSummary
+              summaryData={summaryData}
+              period={period}
+              disabled={isSummaryEmpty || isLoading}
+            />
+          </div>
+        </TablePagination>
 
         <GoBack path="/home" />
       </div>

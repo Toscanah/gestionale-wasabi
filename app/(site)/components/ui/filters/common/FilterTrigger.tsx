@@ -53,7 +53,7 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
               e.stopPropagation();
               onClear?.();
             }}
-            className="flex items-center justify-center"
+            className="flex items-center justify-center hover:cursor-pointer "
           >
             <XCircleIcon className="h-4 w-4" />
           </span>

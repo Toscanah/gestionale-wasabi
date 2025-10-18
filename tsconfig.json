@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "checkJs": true,
@@ -13,7 +17,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "baseUrl": ".",
     "plugins": [
@@ -22,8 +26,12 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@shared/*": ["app/(site)/lib/shared/*"]
+      "@/*": [
+        "./*"
+      ],
+      "@shared/*": [
+        "app/(site)/lib/shared/*"
+      ]
     }
   },
   "include": [
@@ -33,6 +41,9 @@
     ".next/types/**/*.ts",
     "build/types/**/*.ts",
     "app/(site)/lib/shared/types/**/*.d.ts",
+    "build\\dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

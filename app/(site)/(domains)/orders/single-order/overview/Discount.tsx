@@ -5,6 +5,7 @@ import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import { ordersAPI } from "@/lib/server/api";
+import { Button } from "@/components/ui/button";
 
 export default function Discount() {
   const { order, updateOrder } = useOrderContext();
@@ -45,8 +46,8 @@ export default function Discount() {
       id="discount"
       defaultValue={discount}
       onChange={(e) => handleDiscount(e.target.valueAsNumber)}
-      className="flex-1 text-xl h-12"
-      placeholder="Sconto"
+      className="flex-1 !text-xl h-12 w-full px-4"
+      placeholder="SCONTO"
       type="number"
     />
   );

@@ -1,4 +1,4 @@
-import { LiteOrder, OrderWithProducts } from "../../shared";
+import { LiteOrder } from "../../shared";
 import { getOrderTotal } from "../order-management/getOrderTotal";
 
 export function prepareRFMInputs(lifetimeOrders: LiteOrder[]) {

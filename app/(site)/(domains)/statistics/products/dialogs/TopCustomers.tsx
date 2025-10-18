@@ -14,7 +14,7 @@ import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner"
 import React from "react";
 
 export interface TopCustomersProps {
-  product: { id: number; name: string };
+  product: { id: number; name: string; hasTopCustomers: boolean };
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
 }
 
@@ -45,7 +45,7 @@ export default function TopCustomers({ product, filters }: TopCustomersProps) {
   const { data, isFetching } = customersAPI.getAllComprehensive.useQuery(
     { filters },
     {
-      enabled: open,
+      enabled: open && product.hasTopCustomers,
       select: (allCustomers) =>
         (allCustomers.customers ?? [])
           .map((customer) => {
@@ -79,9 +79,14 @@ export default function TopCustomers({ product, filters }: TopCustomersProps) {
     isLoading: isFetching,
     data: data ?? [],
     columns,
+    pageSize: 50,
   });
 
   const table = useTable({ data: tableData, columns: tableColumns });
+
+  if (isFetching) {
+    // <Butt
+  }
 
   return (
     <WasabiDialog
@@ -89,10 +94,14 @@ export default function TopCustomers({ product, filters }: TopCustomersProps) {
       onOpenChange={setOpen}
       title="Top clienti"
       size="mediumPlus"
-      trigger={<Button variant={"outline"}>Mostra clienti migliori</Button>}
+      trigger={
+        <Button className="w-full" variant="outline" disabled={!product.hasTopCustomers}>
+          {product.hasTopCustomers ? "Vedi clienti migliori" : "Nessun cliente trovato"}
+        </Button>
+      }
       desc={`I 50 clienti che hanno acquistato di più [${product.name.trim()}]`}
     >
-      <Table table={table} tableClassName="max-h-[500px] overflow-y-auto" rowClassName={() => ""} />
+      <Table table={table} maxRows={10} scrollAdjustment={1} tableClassName="max-h-[410px]" />
     </WasabiDialog>
   );
 }

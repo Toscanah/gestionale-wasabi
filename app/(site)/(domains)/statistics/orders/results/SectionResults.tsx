@@ -9,11 +9,11 @@ import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
 import useCsvExport from "@/app/(site)/hooks/useCsvExport";
 import { OrderFilters } from "@/app/(site)/hooks/statistics/sectionReducer";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
-import { Weekday, WEEKDAY_LABELS } from "@/app/(site)/components/ui/filters/select/WeekdaysFilter";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import averageStatsColumns from "./averageStatsColumns";
-import { OrdersStats, SHIFT_LABELS } from "@/app/(site)/lib/shared";
+import { OrdersStats, SHIFT_LABELS, Weekday, WEEKDAY_LABELS } from "@/app/(site)/lib/shared";
+import { Separator } from "@/components/ui/separator";
 
 type MetricsResult = OrdersStats.Metrics;
 
@@ -76,9 +76,6 @@ function flattenAverage(r: AverageResultRecord): AverageResultRecordFlat {
 }
 
 export default function SectionResults({ results, isLoading, filters }: SectionResultsProps) {
-  const [showGeneral, setShowGeneral] = React.useState(false);
-  const [showAverage, setShowAverage] = React.useState(false);
-
   // ----- DATA SPLIT -----
   const { generalSections, averageSections } = React.useMemo(() => {
     if (!results) return { generalSections: [], averageSections: [] };
@@ -220,48 +217,16 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="w-full flex gap-4 items-center">
-        {!showGeneral && !showAverage && (
-          <div className="w-full text-center text-muted-foreground items-center justify-center py-16">
-            Seleziona almeno un tipo di dato
-          </div>
-        )}
-
-        {showGeneral && <Table table={generalTable} fixedColumnIndex={0} />}
-        {showAverage && <Table table={averageTable} fixedColumnIndex={0} />}
-      </div>
-
-      <div className="flex gap-4">
-        <div className="flex gap-2 items-center">
-          <Checkbox
-            id="show-general"
-            checked={showGeneral}
-            onCheckedChange={() => setShowGeneral(!showGeneral)}
-          />
-          <Label className="flex items-center gap-2" htmlFor="show-general">
-            Dati generali
-          </Label>
+      <div className="w-full flex flex-col gap-4">
+        <div className="space-y-4">
+          <Label className="text-md">Dati generali</Label>
+          <Table table={generalTable} fixedColumnIndex={0} />
         </div>
 
-        <div className="flex gap-2 items-center">
-          <Checkbox
-            id="show-average"
-            checked={showAverage}
-            onCheckedChange={() => setShowAverage(!showAverage)}
-          />
-          <Label className="flex items-center gap-2" htmlFor="show-average">
-            Medie
-          </Label>
+        <div className="space-y-4 mt-4">
+          <Label className="text-md">Medie</Label>
+          <Table table={averageTable} fixedColumnIndex={0} />
         </div>
-
-        {/* <Button
-          onClick={() => downloadCsv()}
-          className="ml-auto"
-          // disabled={isLoading || (!showGeneral && !showAverage)}
-          disabled
-        >
-          Scarica dati
-        </Button> */}
       </div>
     </div>
   );

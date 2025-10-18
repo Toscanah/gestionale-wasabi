@@ -9,16 +9,19 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { CaretDown } from "@phosphor-icons/react";
+import { cn } from "@/lib/utils";
 
 export type SidebarMenuGroupLinkItem = {
   type: "link";
   label: string;
   path: string;
+  disabled?: boolean;
 };
 
 export type SidebarMenuGroupComponentItem = {
   type: "component";
   element: React.JSX.Element;
+  disabled?: boolean;
 };
 
 export type SidebarMenuGroupItem = SidebarMenuGroupLinkItem | SidebarMenuGroupComponentItem;
@@ -48,14 +51,22 @@ export function SidebarMenuGroup({ label, icon, items, disabled }: SidebarMenuGr
               {items.map((item, index) =>
                 item.type === "link" ? (
                   <SidebarMenuSubItem key={item.path}>
-                    <SidebarMenuSubButton asChild>
+                    <SidebarMenuSubButton
+                      asChild
+                      className={cn(item.disabled && "pointer-events-none text-muted-foreground")}
+                    >
                       <Link href={item.path}>
                         <span>{item.label}</span>
                       </Link>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 ) : (
-                  <SidebarMenuSubItem key={index}>{item.element}</SidebarMenuSubItem>
+                  <SidebarMenuSubItem
+                    key={index}
+                    className={cn(item.disabled && "pointer-events-none text-muted-foreground")}
+                  >
+                    {item.element}
+                  </SidebarMenuSubItem>
                 )
               )}
             </SidebarMenuSub>

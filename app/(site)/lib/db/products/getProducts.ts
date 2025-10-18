@@ -2,7 +2,8 @@ import { MAX_RECORDS, ProductContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { categoryInclude } from "../includes";
 import sorterFactory from "../../utils/global/sorting/sorterFactory";
-import { Prisma } from "@prisma/client";
+import { KitchenType, Prisma } from "@prisma/client";
+import { KITCHEN_TYPE_LABELS } from "../../shared/constants/kitchen-type-labels";
 
 export default async function getProducts(
   input: ProductContracts.GetAll.Input
@@ -13,16 +14,53 @@ export default async function getProducts(
 
   const where: Prisma.ProductWhereInput = {};
 
-  if (filters?.categoryIds && filters.categoryIds.length > 0 && !filters.categoryIds.includes(-1)) {
-    where.category_id = { in: filters.categoryIds };
+  if (filters?.categoryIds && filters.categoryIds.length > 0) {
+    const hasNoCategory = filters.categoryIds.includes(-1);
+    const validIds = filters.categoryIds.filter((id) => id !== -1);
+
+    if (hasNoCategory && validIds.length > 0) {
+      // Match products that either have no category or one of the selected ones
+      where.OR = [{ category_id: { in: validIds } }, { category_id: null }];
+    } else if (hasNoCategory) {
+      // Only products without a category
+      where.category_id = null;
+    } else {
+      // Normal category filter
+      where.category_id = { in: validIds };
+    }
   }
 
   if (typeof filters?.onlyActive === "boolean") {
     where.active = filters.onlyActive;
   }
 
+  if (filters?.query?.trim()) {
+    const q = filters.query.trim();
+    const qLower = q.toLowerCase();
+
+    const matchedKitchenEnums = Object.entries(KITCHEN_TYPE_LABELS)
+      .filter(([_, label]) => label.toLowerCase().includes(qLower))
+      .map(([enumKey]) => enumKey as KitchenType);
+
+    const hasKitchenMatch = matchedKitchenEnums.length > 0;
+
+    where.OR = [
+      { code: { contains: q, mode: "insensitive" } },
+      { desc: { contains: q, mode: "insensitive" } },
+      { home_price: { equals: Number(q) || undefined } },
+      { site_price: { equals: Number(q) || undefined } },
+      { rice: { equals: Number(q) || undefined } },
+      { kitchen: hasKitchenMatch ? { in: matchedKitchenEnums } : undefined },
+      {
+        category: {
+          category: { contains: q, mode: "insensitive" },
+        },
+      },
+    ];
+  }
+
   const take = pagination?.pageSize ?? MAX_RECORDS;
-  const skip = pagination?.page ? (pagination.page - 1) * take : 0;
+  const skip = pagination?.page ? pagination.page * take : 0;
 
   const filtered = await prisma.product.findMany({
     where,

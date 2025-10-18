@@ -1,7 +1,7 @@
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Backspace } from "@phosphor-icons/react";
+import { Backspace, BackspaceIcon } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 export default function ManualInput() {
@@ -63,7 +63,7 @@ export default function ManualInput() {
           className={`h-16 w-16 text-4xl p-0`}
           onClick={() => handleButtonClick("erase")}
         >
-          <Backspace size={48} weight="regular" />
+          <BackspaceIcon size={48} weight="regular" />
         </Button>
       </div>
     </>

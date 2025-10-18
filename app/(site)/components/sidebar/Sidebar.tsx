@@ -55,7 +55,9 @@ export default function WasabiSidebar() {
               </SidebarGroupContent>
             </SidebarGroup>
 
-            {index < sidebarSections.length - 1 && <SidebarSeparator key={`sep-${index}`} />}
+            {index < sidebarSections.length - 1 && (
+              <SidebarSeparator className="!w-auto" key={`sep-${index}`} />
+            )}
           </Fragment>
         ))}
       </SidebarContent>

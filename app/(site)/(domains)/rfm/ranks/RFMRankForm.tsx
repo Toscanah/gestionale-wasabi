@@ -84,18 +84,18 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
     onChange(updated);
   };
 
-  const COMMON_CLASS_NAME = "w-full";
+  const COMMON_CLASS_NAME = "flex-1";
 
   return (
-    <div className="w-full flex items-center gap-4 p-2">
+    <div className="flex-1 flex items-center gap-4 p-2">
       <strong className="w-4">{label}</strong>
 
-      <div className="w-full flex gap-4 justify-start items-center">
+      <div className="flex-1 flex gap-4 justify-start items-center">
         <WasabiSimpleSelect
           id={`dim-${label.toLowerCase()}`}
           value={mode}
           onValueChange={(v) => handleModeChange(v as Mode)}
-          triggerClassName="h-10 w-full"
+          triggerClassName="flex-1"
           groups={[
             {
               options: [
@@ -108,7 +108,7 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
 
         {mode === "eq" ? (
           <>
-            <span>=</span>
+            <span >=</span>
             <Input
               className={COMMON_CLASS_NAME}
               value={minValue}
@@ -121,7 +121,7 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
           </>
         ) : (
           <>
-            <span>da</span>
+            <span >da</span>
             <Input
               className={COMMON_CLASS_NAME}
               value={minValue}
@@ -152,7 +152,7 @@ export default function RFMRankForm({ rank, onChange }: RFMRankEditorProps) {
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex w-full items-center gap-4">
-        <div className="space-y-2 w-full">
+        <div className="space-y-2 flex-1">
           <Label htmlFor="rank-name">Nome del rank</Label>
           <Input
             id="rank-name"
@@ -161,7 +161,7 @@ export default function RFMRankForm({ rank, onChange }: RFMRankEditorProps) {
           />
         </div>
 
-        <div className="space-y-2 w-full">
+        <div className="space-y-2 flex-1">
           <Label htmlFor="priority">Priorità</Label>
           <Input
             id="priority"

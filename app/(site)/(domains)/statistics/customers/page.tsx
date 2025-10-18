@@ -138,7 +138,7 @@ export default function CustomersStats() {
           </div>
         </div>
 
-        <Table table={table} maxRows={10} />
+        <Table table={table} maxRows={10} scrollAdjustment={1}  />
 
         <TablePagination
           table={table}

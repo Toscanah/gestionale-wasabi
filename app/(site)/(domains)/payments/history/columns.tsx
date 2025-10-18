@@ -13,6 +13,7 @@ import { OrderGuards } from "@/app/(site)/lib/shared/types/order-guards";
 const columns: ColumnDef<OrderWithSummedPayments>[] = [
   ValueColumn({
     header: "Tipo di ordine",
+    sortable: false,
     value: (row) => {
       return (
         <Badge>
@@ -29,22 +30,31 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
 
   ValueColumn({
     header: "Chi",
+    sortable: false,
     value: (row) => {
       const order = row.original;
 
       return (
         (OrderGuards.isTable(order)
-          ? order.table_order?.table
+          ? "Tavolo " + order.table_order?.table
           : OrderGuards.isPickup(order)
             ? order.pickup_order?.name
             : order.home_order?.address.doorbell) || ""
       ).toLocaleUpperCase();
     },
-    accessor: (order) => order.type,
+    accessor: (order) =>
+      (
+        (OrderGuards.isTable(order)
+          ? "Tavolo " + order.table_order?.table
+          : OrderGuards.isPickup(order)
+            ? order.pickup_order?.name
+            : order.home_order?.address.doorbell) || ""
+      ).toLocaleUpperCase(),
   }),
 
   ValueColumn({
     header: "Quando",
+    sortable: false,
     value: (row) => {
       const order = row.original;
       const date = new Date(order.created_at);
@@ -69,24 +79,28 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
 
   ValueColumn({
     header: "Totale contanti",
+    sortable: false,
     value: (row) => roundToTwo(row.original.summedCash),
     accessor: (order) => order.summedCash,
   }),
 
   ValueColumn({
     header: "Totale carta",
+    sortable: false,
     value: (row) => roundToTwo(row.original.summedCard),
     accessor: (order) => order.summedCard,
   }),
 
   ValueColumn({
     header: "Totale buoni",
+    sortable: false,
     value: (row) => roundToTwo(row.original.summedVouch),
     accessor: (order) => order.summedVouch,
   }),
 
   ValueColumn({
     header: "Totale ordine",
+    sortable: false,
     value: (row) => getOrderTotal({ order: row.original, applyDiscount: true, round: true }),
     accessor: (order) => getOrderTotal({ order, applyDiscount: true, round: true }),
   }),

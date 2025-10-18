@@ -22,8 +22,12 @@ interface UseManagerParams<
   };
   smartUpdate: (updater: (old?: TData[]) => TData[] | undefined) => void;
   serverFiltering?: {
-    showOnlyActive: boolean;
-    setShowOnlyActive: (v: boolean) => void;
+    showOnlyActive?: boolean;
+    setShowOnlyActive?: (v: boolean) => void;
+    debouncedQuery?: string;
+    setInputQuery?: (v: string) => void;
+    inputQuery?: string;
+    resetQuery?: () => void;
   };
 }
 
@@ -40,7 +44,7 @@ export function useManager<
   serverFiltering,
 }: UseManagerParams<TData, TCreate, TUpdate>) {
   const [showOnlyActive, setShowOnlyActive] = useState(true);
-  const { debouncedQuery, inputQuery, setInputQuery } = useQueryFilter();
+  const { debouncedQuery, inputQuery, setInputQuery, resetQuery } = useQueryFilter();
 
   function handleManagerAction<T>(
     action: () => Promise<T>,
@@ -110,12 +114,18 @@ export function useManager<
   const effectiveShowOnlyActive = serverFiltering?.showOnlyActive ?? showOnlyActive;
   const effectiveSetShowOnlyActive = serverFiltering?.setShowOnlyActive ?? setShowOnlyActive;
 
+  const effectiveDebouncedQuery = serverFiltering?.debouncedQuery ?? debouncedQuery;
+  const effectiveSetInputQuery = serverFiltering?.setInputQuery ?? setInputQuery;
+  const effectiveInputQuery = serverFiltering?.inputQuery ?? inputQuery;
+  const effectiveResetQuery = serverFiltering?.resetQuery ?? resetQuery;
+
   return {
     data: filteredData,
     isLoading,
-    debouncedQuery,
-    inputQuery,
-    setInputQuery,
+    debouncedQuery: effectiveDebouncedQuery,
+    inputQuery: effectiveInputQuery,
+    setInputQuery: effectiveSetInputQuery,
+    resetQuery: effectiveResetQuery,
     showOnlyActive: effectiveShowOnlyActive,
     setShowOnlyActive: effectiveSetShowOnlyActive,
     actions: {

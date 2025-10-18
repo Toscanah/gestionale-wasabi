@@ -3,9 +3,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { PlannedPayment } from "@prisma/client";
-import { PaymentStatus } from "./OrderOverview";
 import { trpc } from "@/lib/server/client";
-import WasabiSimpleSelect from "../../../../components/ui/wasabi/WasabiSimpleSelect";
+
+type PaymentStatus = {
+  prepaid: boolean;
+  plannedPayment: PlannedPayment;
+};
 
 interface PaymentStatusSelectionProps {
   paymentStatus: PaymentStatus;
@@ -21,15 +24,14 @@ export default function PaymentStatusSelection({
   const { order, updateOrder } = useOrderContext();
   const { prepaid, plannedPayment } = paymentStatus;
 
-  // Decide initial toggle option
   const [selectedOption, setSelectedOption] = useState<StatusOptions>(
     prepaid ? "ALREADY_PAID" : plannedPayment
   );
 
   const paymentOptions: { value: StatusOptions; label: string }[] = [
-    { value: "ALREADY_PAID", label: "Già pagato" },
-    { value: "CASH", label: "Contanti" },
-    { value: "CARD", label: "Carta" },
+    { value: "ALREADY_PAID", label: "GIÀ PAGATO" },
+    { value: "CASH", label: "CONTANTI" },
+    { value: "CARD", label: "CARTA" },
   ];
 
   const updatePaymentStatusMutation = trpc.orders.updatePaymentStatus.useMutation({

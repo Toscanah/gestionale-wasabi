@@ -132,7 +132,7 @@ export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps
           shouldClear={yearsFilter.length !== yearOptions.length}
           mode="multi"
           allLabel="Tutti gli anni"
-          triggerClassName="w-full"
+          triggerClassName="flex-1"
           selectedValues={yearsFilter}
           onChange={setYearsFilter}
           title="Anno"
@@ -146,7 +146,7 @@ export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps
         <WasabiSelect
           mode="multi"
           shouldClear={monthsFilter.length !== 12}
-          triggerClassName="w-full"
+          triggerClassName="flex-1"
           selectedValues={monthsFilter}
           allLabel="Tutti i mesi"
           onChange={setMonthsFilter}

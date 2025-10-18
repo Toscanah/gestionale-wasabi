@@ -11,11 +11,11 @@ import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext"
 import { debounce } from "lodash";
 
 interface OverviewProps {
-  phoneRef: RefObject<HTMLInputElement>;
-  doorbellRef: RefObject<HTMLInputElement>;
-  formRef: any;
+  phoneRef: RefObject<HTMLInputElement | null>;
+  doorbellRef: RefObject<HTMLInputElement | null>;
+  formRef: RefObject<HTMLFormElement | null>;
+  createOrderRef: RefObject<HTMLButtonElement | null>;
   handleKeyDown: (e: KeyboardEvent) => void;
-  createOrderRef: RefObject<HTMLButtonElement>;
 }
 
 export default function Overview({
@@ -181,7 +181,7 @@ export default function Overview({
               selectedAddress == undefined && selectedOption !== "new" && selectedOption !== "temp"
             }
             onClick={() =>
-              formRef.current.dispatchEvent(
+              formRef.current?.dispatchEvent(
                 new Event("submit", { cancelable: true, bubbles: true })
               )
             }

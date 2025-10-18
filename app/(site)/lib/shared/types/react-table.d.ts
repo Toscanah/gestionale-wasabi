@@ -8,5 +8,15 @@ declare module "@tanstack/react-table" {
 
     /** Generic theme key */
     theme?: string;
+
+    paginationMode?: "client" | "server";
+  }
+}
+
+declare module "@tanstack/table-core" {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    style: {
+      textAlign: "left" | "center" | "right";
+    };
   }
 }

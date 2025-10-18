@@ -108,7 +108,7 @@ export default function RFMDimensionEditor({
           />
         </div>
 
-        <Button onClick={addRule} variant="default" size="sm" className="">
+        <Button onClick={addRule} variant="default"  className="">
           <Plus size={16} className="mr-1" /> Aggiungi regola
         </Button>
       </div>

@@ -52,13 +52,11 @@ export default function CustomerLookup() {
     }
   );
 
-  console.log("AA?????")
   if (!customer) return null;
 
   const hasOrders =
     (customer.home_orders?.length ?? 0) > 0 || (customer.pickup_orders?.length ?? 0) > 0;
   if (!hasOrders) return null;
-
 
   // ---- RFM calculation ----
   const { lifetimeOrders } = extractCustomerOrders(customer);
@@ -69,7 +67,8 @@ export default function CustomerLookup() {
     lifetimeOrders[0]
   );
 
-  const rfm = calculateRFM(mostRecent.created_at, rfmInputs.orderCount, rfmInputs.averageSpending);
+
+  const rfm = calculateRFM(mostRecent.created_at, rfmInputs.orderCount, rfmInputs.totalSpending);
   const rfmScore = calculateRfmScore(rfm, rfmRules);
   const rfmRank = calculateRfmRank(rfmScore, ranks);
 
@@ -79,6 +78,7 @@ export default function CustomerLookup() {
     : OrderGuards.isPickup(order)
       ? (order.pickup_order.customer?.origin ?? "UNKNOWN")
       : "UNKNOWN";
+
 
   return (
     <span>

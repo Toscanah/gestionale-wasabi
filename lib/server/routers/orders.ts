@@ -24,12 +24,18 @@ import {
   getTableOrders,
 } from "@/app/(site)/lib/db/orders/getOrdersByType";
 import { getOrderById } from "@/app/(site)/lib/db/orders/getOrderById";
+import computeOrdersDailyStats from "@/app/(site)/lib/db/orders/computeDailyOrdersStats";
 
 export const ordersRouter = createTRPCRouter({
   getById: publicProcedure
     .input(OrderContracts.GetById.Input)
     .output(OrderContracts.GetById.Output)
     .query(({ input }) => getOrderById(input)),
+
+  computeDailyStats: publicProcedure
+    .input(OrderContracts.ComputeDailyStats.Input)
+    .output(OrderContracts.ComputeDailyStats.Output)
+    .query(({ input }) => computeOrdersDailyStats(input)),
 
   getHomeOrders: publicProcedure
     .input(OrderContracts.GetHomeOrders.Input)

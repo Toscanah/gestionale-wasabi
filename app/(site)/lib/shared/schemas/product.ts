@@ -56,6 +56,7 @@ export namespace ProductContracts {
       APIFiltersSchema.pick({
         categoryIds: true,
         onlyActive: true,
+        query: true,
       })
     )
       .extend(PaginationSchema.shape)

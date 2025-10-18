@@ -30,7 +30,7 @@ export default function AddAction<TDomain extends BaseEntity>({
         trigger={
           <Button disabled={disabled} className="ml-auto flex items-center gap-2">
             <PlusIcon size={20} />
-            {addWord} {title}
+            {/* {addWord} {title} */}
           </Button>
         }
       >
