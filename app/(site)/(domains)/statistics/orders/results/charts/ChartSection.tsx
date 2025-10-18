@@ -64,7 +64,6 @@ export default function ChartSection({
     "total",
   ]);
 
-  // ⚙️ If switching to "pie" while showing "revenuePerOrder", fallback to first metric
   useEffect(() => {
     if (type === "pie" && metric === "revenuePerOrder") {
       setMetric(METRICS[0].metric); // fallback to first available field (Ordini)
@@ -187,7 +186,16 @@ export default function ChartSection({
                 groups={[
                   {
                     options: [
-                      { label: "Totale", value: "total" },
+                      {
+                        label: "Totale",
+                        value: "total",
+                        disabled:
+                          type === "pie" || // pie → always disabled
+                          (selectedOrderTypes.length === 1 && // only one active type (not total)
+                            selectedOrderTypes[0] !== "total") ||
+                          (selectedOrderTypes.length === 2 && // total + one → invalid
+                            selectedOrderTypes.includes("total")),
+                      },
                       { label: "Domicilio", value: "home" },
                       { label: "Asporto", value: "pickup" },
                       { label: "Tavoli", value: "table" },

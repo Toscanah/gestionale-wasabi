@@ -141,14 +141,18 @@ export default function DailyChart({
     const home = seriesMaps.home[k] ?? 0;
     const pickup = seriesMaps.pickup[k] ?? 0;
     const table = seriesMaps.table[k] ?? 0;
-    return {
-      index: idx,
-      day: k,
-      home,
-      pickup,
-      table,
-      total: home + pickup + table,
-    };
+
+    const shouldComputeTotal =
+      visibleTypes.includes("total") ||
+      visibleTypes.some((t) => ["home", "pickup", "table"].includes(t));
+
+    const total = shouldComputeTotal
+      ? (visibleTypes.includes("home") ? home : 0) +
+        (visibleTypes.includes("pickup") ? pickup : 0) +
+        (visibleTypes.includes("table") ? table : 0)
+      : 0;
+
+    return { index: idx, day: k, home, pickup, table, total };
   });
 
   // --- TREND DATA ---
