@@ -38,7 +38,7 @@ const ExtraItem = ({ label, computedValue, stateValue, onValueChange }: ExtraIte
               id={"computed-" + label}
               value={computedValue}
               disabled
-              className="h-10 text-center text-xl max-w-40"
+              className="h-10 text-center !text-xl max-w-40"
             />
           </td>
         </tr>
@@ -60,7 +60,7 @@ const ExtraItem = ({ label, computedValue, stateValue, onValueChange }: ExtraIte
                 id={label}
                 value={stateValue}
                 onChange={(e) => onValueChange(Number(e.target.value) || 0)}
-                className="h-10 w-16 text-center text-xl"
+                className="h-10 w-16 text-center !text-xl"
               />
 
               <Button

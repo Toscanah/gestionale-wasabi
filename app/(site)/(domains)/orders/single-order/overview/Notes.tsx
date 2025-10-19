@@ -77,7 +77,7 @@ export default function Notes() {
 
   return (
     <Input
-      className="h-12 text-xl w-full"
+      className="h-12 !text-xl w-full"
       placeholder="Note dell'ordine"
       id="notes-field"
       value={additionalNotes}
