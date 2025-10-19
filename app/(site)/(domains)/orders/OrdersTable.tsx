@@ -51,7 +51,7 @@ export default function OrdersTable({
   };
 
   return (
-    <div className="w-full h-full ">
+    <div className="w-full h-full">
       <Table
         showNoResult={false}
         table={table}
@@ -63,7 +63,18 @@ export default function OrdersTable({
             // isOverdrawn && "!border !border-2 !border-red-500"
           );
         }}
-        cellClassName={(index) => (index == 3 && type == OrderType.HOME ? "max-w-42 truncate" : "")}
+        cellClassName={(index) => {
+          if (type === OrderType.TABLE) {
+            if (index == 2) {
+              return "max-w-32 w-32";
+            } else if (index == 4) {
+              return "max-w-42 w-42";
+            }
+            return "";
+          } else {
+            return "";
+          }
+        }}
         CustomCell={isLoading ? undefined : CustomCell}
       />
     </div>

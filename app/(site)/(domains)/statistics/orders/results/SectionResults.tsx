@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import averageStatsColumns from "./averageStatsColumns";
 import { OrdersStats, SHIFT_LABELS, Weekday, WEEKDAY_LABELS } from "@/app/(site)/lib/shared";
 import { Separator } from "@/components/ui/separator";
-import TableVisibility from "@/app/(site)/components/table/TableVisibility";
+import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
 
 type MetricsResult = OrdersStats.Metrics;
 
@@ -219,14 +219,23 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="w-full flex flex-col gap-4">
-        <div className="space-y-4">
-          <Label className="text-md">Dati generali</Label>
-          {/* <TableVisibility table={generalTable} /> */}
+        <Separator />
+
+        <div className="space-y-4 mt-4">
+          <div className="flex justify-between items-center">
+            <Label className="text-md self-end">Dati generali</Label>
+            <TableColumnsVisibility table={generalTable} blacklist={["title"]} />
+          </div>
           <Table table={generalTable} fixedColumnIndex={0} />
         </div>
 
+        <Separator />
+
         <div className="space-y-4 mt-4">
-          <Label className="text-md">Medie</Label>
+          <div className="flex justify-between items-center">
+            <Label className="text-md self-end">Medie</Label>
+            <TableColumnsVisibility table={averageTable} />
+          </div>
           <Table table={averageTable} fixedColumnIndex={0} />
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { Weekday, WEEKDAY_LABELS } from "@/app/(site)/lib/shared";
 import WasabiSelect from "../../wasabi/WasabiSelect";
-import { Calendar } from "@phosphor-icons/react";
+import { Calendar, CalendarDotsIcon } from "@phosphor-icons/react";
 
 
 export const ALL_WEEKDAYS: Weekday[] = [2, 3, 4, 5, 6, 0];
@@ -32,7 +32,7 @@ export default function WeekdaysFilter({
       title="Giorni settimana"
       selectedValues={weekdays.map(String)}
       onChange={handleChange}
-      triggerIcon={Calendar}
+      triggerIcon={CalendarDotsIcon}
       shouldClear={weekdays.length !== ALL_WEEKDAYS.length}
       groups={[
         {

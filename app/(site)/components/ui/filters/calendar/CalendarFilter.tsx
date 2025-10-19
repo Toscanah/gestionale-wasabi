@@ -1,11 +1,11 @@
 "use client";
 
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
-import { startOfYear, endOfYear } from "date-fns";
+import { startOfYear, endOfYear, startOfMonth, endOfMonth } from "date-fns";
 import { it } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
 import WasabiPopover from "../../wasabi/WasabiPopover";
-import { CalendarBlank, HashStraight, Lightning } from "@phosphor-icons/react";
+import { CalendarBlank, CalendarIcon, HashStraight, Lightning } from "@phosphor-icons/react";
 import FilterTrigger from "../common/FilterTrigger";
 import DateShiftButton from "./DateShiftButton";
 import WasabiSelect from "../../wasabi/WasabiSelect";
@@ -14,22 +14,30 @@ import getDateRangeFromPreset from "@/app/(site)/lib/utils/global/date/getDateRa
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
 import { Separator } from "@/components/ui/separator";
 import { YEARS_SINCE_START } from "@/app/(site)/lib/shared/constants/starting-periods";
+import { ITALIAN_MONTHS } from "@/app/(site)/lib/shared";
+import WasabiUniversalSelect from "../../wasabi/WasabiUniversalSelect ";
+import { useEffect, useState } from "react";
+import DatePresets from "./presets/DatePresets";
+import YearPresets from "./presets/YearPresets";
+import MonthPresets from "./presets/MonthPresets";
 
 type SingleModeProps = {
   mode: "single";
   dateFilter: Date | undefined;
   handleDateFilter: (range: Date | undefined) => void;
-  usePresets: never;
+  usePresets?: never;
   useYears?: never;
+  useMonths?: never;
   defaultValue?: Date | undefined;
 };
 
-type RangeModeProps = {
+export type RangeModeProps = {
   mode: "range";
   dateFilter: DateRange | undefined;
   handleDateFilter: (range: DateRange | undefined) => void;
   useYears?: boolean;
   usePresets?: boolean;
+  useMonths?: boolean;
   defaultValue?: DateRange | undefined;
 };
 
@@ -38,6 +46,8 @@ type CalendarProps = {
   title?: string;
 } & (SingleModeProps | RangeModeProps);
 
+const PRESETS_CLASSNAME = "flex-1 border-solid";
+
 export default function CalendarFilter({
   dateFilter,
   handleDateFilter,
@@ -45,11 +55,18 @@ export default function CalendarFilter({
   useYears,
   disabled = false,
   usePresets = true,
+  useMonths = true,
   defaultValue,
   title,
 }: CalendarProps) {
   const label = formatDateFilter(mode, dateFilter);
   const values = label ? [label] : [];
+
+  const [visibleMonth, setVisibleMonth] = useState<Date>(
+    mode === "range"
+      ? ((dateFilter as DateRange)?.from ?? new Date())
+      : ((dateFilter as Date) ?? new Date())
+  );
 
   function normalizeDateFilter(val: Date | DateRange | undefined): [number?, number?] | undefined {
     if (!val) return undefined;
@@ -57,7 +74,7 @@ export default function CalendarFilter({
       const t = val.getTime();
       return [t, t];
     }
-    if (!val.from && !val.to) return undefined; // treat empty range as undefined
+    if (!val.from && !val.to) return undefined;
     return [val.from?.getTime(), val.to?.getTime()];
   }
 
@@ -85,6 +102,26 @@ export default function CalendarFilter({
                 : (defaultValue as DateRange)
             );
 
+  useEffect(() => {
+    if (mode === "range" && dateFilter?.from) {
+      setVisibleMonth(dateFilter.from);
+    } else if (mode === "single" && dateFilter) {
+      setVisibleMonth(dateFilter as Date);
+    }
+  }, [dateFilter, mode]);
+
+  const handleCalendarSelect = (selected: Date | DateRange | undefined) => {
+    if (mode === "range") {
+      if (selected && "from" in selected && "to" in selected) {
+        handleDateFilter(selected as DateRange);
+      } else {
+        handleDateFilter(undefined);
+      }
+    } else {
+      handleDateFilter(selected as Date);
+    }
+  };
+
   return (
     <WasabiPopover
       contentClassName="flex flex-col gap-2 p-2"
@@ -100,46 +137,18 @@ export default function CalendarFilter({
     >
       <div className="w-full flex gap-2 items-center">
         {usePresets && mode === "range" && (
-          <WasabiSelect
-            triggerIcon={Lightning}
-            mode="transient"
-            triggerClassName="flex-1 border-solid"
-            title="Date pronte"
-            onChange={(updatedValue) =>
-              handleDateFilter(getDateRangeFromPreset(updatedValue as DatePreset))
-            }
-            groups={[
-              {
-                options: DATE_FILTERING_PRESETS.map((preset) => ({
-                  label: preset.name,
-                  value: preset.value,
-                })),
-              },
-            ]}
-          />
+          <DatePresets handleDateFilter={handleDateFilter} triggerClassName={PRESETS_CLASSNAME} />
         )}
 
         {useYears && mode === "range" && (
-          <WasabiSelect
-            triggerIcon={HashStraight}
-            mode="transient"
-            triggerClassName="flex-1 border-solid"
-            title="Anni"
-            onChange={(val) => {
-              const y = parseInt(val, 10);
-              handleDateFilter({
-                from: startOfYear(new Date(y, 0, 1)),
-                to: endOfYear(new Date(y, 11, 31)),
-              });
-            }}
-            groups={[
-              {
-                options: [...YEARS_SINCE_START].map((y) => ({
-                  label: String(y),
-                  value: String(y),
-                })),
-              },
-            ]}
+          <YearPresets handleDateFilter={handleDateFilter} triggerClassName={PRESETS_CLASSNAME} />
+        )}
+
+        {useMonths && mode === "range" && (
+          <MonthPresets
+            handleDateFilter={handleDateFilter}
+            triggerClassName={PRESETS_CLASSNAME}
+            setVisibleMonth={setVisibleMonth}
           />
         )}
       </div>
@@ -148,24 +157,15 @@ export default function CalendarFilter({
         <ShadCalendar
           locale={it}
           mode={mode as any}
-          initialFocus
+          month={visibleMonth}
+          onMonthChange={setVisibleMonth}
           defaultMonth={
             mode === "range"
               ? ((dateFilter as DateRange)?.from ?? new Date())
               : ((dateFilter as Date) ?? new Date())
           }
           selected={dateFilter}
-          onSelect={(range: any) => {
-            if (mode === "range") {
-              if (range && "from" in range && "to" in range) {
-                handleDateFilter(range as DateRange);
-              } else {
-                handleDateFilter(undefined);
-              }
-            } else {
-              handleDateFilter(range as Date);
-            }
-          }}
+          onSelect={handleCalendarSelect}
           numberOfMonths={3}
         />
       </div>

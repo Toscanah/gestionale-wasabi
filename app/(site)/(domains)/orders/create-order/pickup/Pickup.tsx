@@ -106,7 +106,6 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               }}
               className="h-16 text-6xl w-full"
               value={when}
-              source="pickup"
               onValueChange={(value) => setWhen(value)}
               onKeyDown={handleKeyDown}
             />

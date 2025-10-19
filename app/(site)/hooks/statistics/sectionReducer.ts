@@ -5,6 +5,7 @@ import { FULL_DAY_RANGE, TimeWindow } from "../../components/ui/filters/time/Tim
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";
 import { Weekday } from "../../lib/shared";
 import { ALL_WEEKDAYS } from "../../components/ui/filters/select/WeekdaysFilter";
+import { ALL_ORDER_TYPES } from "../../components/ui/filters/select/OrderTypesFilter";
 
 export interface OrderFilters {
   // date selection
@@ -36,7 +37,7 @@ export const INITIAL_STATE: SectionState = {
   shift: ShiftFilterValue.ALL,
   weekdays: ALL_WEEKDAYS, // no weekday restriction
   timeWindow: FULL_DAY_RANGE, // no custom time
-  orderTypes: [...Object.values(OrderType)],
+  orderTypes: ALL_ORDER_TYPES,
 };
 
 // reducer implementation

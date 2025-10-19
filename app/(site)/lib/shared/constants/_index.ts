@@ -9,3 +9,4 @@ export * from "./max-records"
 export * from "./colors"
 export * from "./engagement-types-labels";
 export * from "./weekday-labels";
+export * from "./italian-months";

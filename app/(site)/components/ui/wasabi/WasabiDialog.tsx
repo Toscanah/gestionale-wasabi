@@ -116,7 +116,7 @@ export default function WasabiDialog({
       <DialogContent
         onOpenAutoFocus={(e) => !autoFocus && e.preventDefault()}
         className={cn(
-          "w-auto max-h-screen",
+          "w-auto max-h-screen duration-75",
           sizes[size],
           isDeleteVariant && "border-t-4 border-t-red-600",
           isWarningVariant && "border-t-4 border-t-warning-500",

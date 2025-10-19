@@ -45,7 +45,8 @@ export default async function computeOrdersStats(
       weekdaysStr,
       shift === ShiftFilterValue.ALL ? null : (shift as WorkingShift),
       timeWindow?.from ?? null,
-      timeWindow?.to ?? null
+      timeWindow?.to ?? null,
+      null
     )
   );
 

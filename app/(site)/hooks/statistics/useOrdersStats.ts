@@ -38,7 +38,7 @@ export default function useOrdersStats() {
       weekdays: disableWeekdays,
       shift: false,
       timeWindow: disableTimeWindow,
-      type: false,
+      orderTypes: false,
       search: false,
       reset: false,
     };

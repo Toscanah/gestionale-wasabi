@@ -40,7 +40,7 @@ export type CommandGroupType = {
 /* ------------------------------ Mode props -------------------------------- */
 
 interface BaseModeSingle {
-  mode?: "single"; // default
+  mode: "single"; // default
   selectedValue?: string;
   onChange: (value: string) => void;
 }
@@ -64,6 +64,7 @@ interface CommonSelectProps {
   groups: CommandGroupType[];
   disabled?: boolean;
   showInput?: boolean;
+  shouldSort?: boolean;
   searchPlaceholder?: string;
   contentClassName?: string;
   itemClassName?: string;
@@ -143,6 +144,7 @@ const WasabiUniversalSelect = forwardRef<
     itemClassName,
     labelClassName,
     allLabel,
+    shouldSort = true,
     open,
     onOpenChange,
     filterFn,
@@ -166,9 +168,11 @@ const WasabiUniversalSelect = forwardRef<
   const selectedOptions =
     isMulti(props) && allLabel && normalizedSelection.length === allOptions.length
       ? [{ label: allLabel, value: "ALL" } as CommandOption]
-      : allOptions
-          .filter((o) => normalizedSelection.includes(o.value))
-          .sort((a, b) => a.label.localeCompare(b.label));
+      : shouldSort
+        ? [...allOptions]
+            .filter((o) => normalizedSelection.includes(o.value))
+            .sort((a, b) => a.label.localeCompare(b.label))
+        : allOptions.filter((o) => normalizedSelection.includes(o.value));
 
   /* -------------------------------- Handlers -------------------------------- */
 
@@ -232,7 +236,6 @@ const WasabiUniversalSelect = forwardRef<
           triggerClassName
         )}
       >
-        {/* FORM + MULTI: show all selected labels */}
         {isMulti(props) ? (
           selectedOptions.length > 0 ? (
             <span className="truncate">
@@ -281,48 +284,47 @@ const WasabiUniversalSelect = forwardRef<
                   ) : undefined
                 }
               >
-                {group.options
-                  .sort((a, b) => a.label.localeCompare(b.label))
-                  .map((option) => {
-                    const isSelected = normalizedSelection.includes(option.value);
+                {(shouldSort
+                  ? [...group.options].sort((a, b) => a.label.localeCompare(b.label))
+                  : group.options
+                ).map((option) => {
+                  const isSelected = normalizedSelection.includes(option.value);
 
-                    return (
-                      <CommandItem
-                        disabled={option.disabled}
-                        key={option.value}
-                        // set value=label for filtering by label
-                        value={option.label}
-                        onSelect={() => handleSelect(option)}
-                        className={cn(
-                          "w-full flex items-center justify-between text-sm",
-                          itemClassName
+                  return (
+                    <CommandItem
+                      disabled={option.disabled}
+                      key={option.value}
+                      value={option.label} // used for filtering by label
+                      onSelect={() => handleSelect(option)}
+                      className={cn(
+                        "w-full flex items-center justify-between text-sm",
+                        itemClassName
+                      )}
+                    >
+                      {/* Selection indicator */}
+                      {isMulti(props) ? (
+                        <Checkbox checked={isSelected} />
+                      ) : isSingle(props) ? (
+                        <CircleIcon weight={isSelected ? "fill" : "regular"} />
+                      ) : null}
+
+                      <div className="flex gap-2 items-center w-full leading-none">
+                        {option.icon && <option.icon />}
+                        {normalizeCase(option.label)}
+                        {option.count && (
+                          <span className="ml-auto font-mono text-muted-foreground">
+                            {option.count}
+                          </span>
                         )}
-                      >
-                        {/* Selection indicator */}
-                        {isMulti(props) ? (
-                          <Checkbox checked={isSelected} />
-                        ) : isSingle(props) ? (
-                          <CircleIcon weight={isSelected ? "fill" : "regular"} />
-                        ) : null}
+                      </div>
 
-                        <div className="flex gap-2 items-center w-full leading-none">
-                          {option.icon && <option.icon />}
-                          {normalizeCase(option.label)}
-                          {option.count && (
-                            <span className="ml-auto font-mono text-muted-foreground">
-                              {option.count}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Extra checkmark for form/single */}
-                        {props.appearance === "form" &&
-                          isSingle(props) &&
-                          isSelected &&
-                          !option.count && <Check className="ml-auto h-4 w-4 opacity-70" />}
-                      </CommandItem>
-                    );
-                  })}
+                      {props.appearance === "form" &&
+                        isSingle(props) &&
+                        isSelected &&
+                        !option.count && <Check className="ml-auto h-4 w-4 opacity-70" />}
+                    </CommandItem>
+                  );
+                })}
               </CommandGroup>
               {idx < groups.length - 1 && <CommandSeparator />}
             </Fragment>

@@ -12,7 +12,10 @@ import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal
 import MetaLogs from "../meta/MetaLogs";
 import formatWhenLabel from "../../lib/utils/domains/order/formatWhenLabel";
 
-export default function getColumns(type: OrderType, useWhatsapp: boolean): ColumnDef<OrderByType>[] {
+export default function getColumns(
+  type: OrderType,
+  useWhatsapp: boolean
+): ColumnDef<OrderByType>[] {
   const columns: ColumnDef<OrderByType>[] = [
     // {
     //   accessorKey: "#",
@@ -53,7 +56,11 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
         switch (type) {
           case OrderType.TABLE: {
             const parsedRow = row.original as TableOrder;
-            return parsedRow.table_order?.table.toLocaleUpperCase();
+            return (
+              <div className="w-full h-full whitespace-break-spaces">
+                {parsedRow.table_order?.table.toLocaleUpperCase()}
+              </div>
+            );
           }
           case OrderType.PICKUP: {
             const parsedRow = row.original as PickupOrder;
@@ -66,7 +73,11 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
 
           case OrderType.HOME: {
             const homeOrder = row.original as HomeOrder;
-            return (homeOrder.home_order?.address?.doorbell || "").toLocaleUpperCase();
+            return (
+              <div className="w-full h-full whitespace-break-spaces">
+                {(homeOrder.home_order?.address?.doorbell || "").toLocaleUpperCase()}
+              </div>
+            );
           }
         }
       },
@@ -101,7 +112,7 @@ export default function getColumns(type: OrderType, useWhatsapp: boolean): Colum
             const homeOrder = row.original as HomeOrder;
 
             return (
-              <div className="w-52 max-w-52">{`${(
+              <div className="w-full h-full whitespace-break-spaces">{`${(
                 homeOrder.home_order?.address?.street ?? ""
               ).toUpperCase()} ${(homeOrder.home_order?.address?.civic ?? "").toUpperCase()}`}</div>
             );

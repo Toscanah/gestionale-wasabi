@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import ChartsDashboard from "./results/charts/ChartsDashboard";
 import { Button } from "@/components/ui/button";
-import { PlusCircleIcon } from "@phosphor-icons/react";
+import { MinusIcon, PlusCircleIcon } from "@phosphor-icons/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 
@@ -66,7 +66,17 @@ export default function Section({}: SectionProps) {
 
   return (
     <div className="flex flex-col gap-4 w-full p-4 h-full">
-      <div className="w-full flex flex-wrap gap-4">
+      <div className="w-full flex flex-wrap gap-4 items-center">
+        <OrderTypesFilter
+          selectedTypes={state.orderTypes}
+          onTypesChange={(updatedTypes) =>
+            dispatch({ type: "SET_ORDER_TYPES", payload: updatedTypes })
+          }
+          disabled={disabledFlags.orderTypes || true}
+        />
+
+        <MinusIcon />
+
         <CalendarFilter
           usePresets
           useYears
@@ -88,6 +98,8 @@ export default function Section({}: SectionProps) {
           }
           disabled={disabledFlags.weekdays}
         />
+
+        <MinusIcon />
 
         <ShiftFilter
           selectedShift={state.shift}

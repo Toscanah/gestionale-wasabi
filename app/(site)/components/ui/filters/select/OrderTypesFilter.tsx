@@ -9,7 +9,7 @@ interface OrderTypeFilterProps {
   disabled?: boolean;
 }
 
-const ALL_ORDER_TYPES = Object.values(OrderType);
+export const ALL_ORDER_TYPES = Object.values(OrderType);
 
 export default function OrderTypesFilter({
   selectedTypes,
