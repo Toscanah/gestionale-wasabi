@@ -45,6 +45,7 @@ export default function TableColumnsVisibility<TData>({
       shouldClear={columns.length !== selected.length}
       triggerIcon={SlidersHorizontalIcon}
       selectedValues={selected}
+      triggerClassName="border-solid"
       onChange={(updated) => {
         // if the selection was cleared (empty array),
         // reset all columns to visible instead of hiding everything

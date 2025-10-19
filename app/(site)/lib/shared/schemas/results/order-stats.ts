@@ -37,8 +37,11 @@ export namespace OrdersStats {
   export const LowerOrderTypeEnum = z.enum(lowerOrderTypes);
   export type LowerOrderTypeEnum = z.infer<typeof LowerOrderTypeEnum>;
 
+  export const ResultsKeyEnum = z.union([LowerOrderTypeEnum, z.literal("tutti")]);
+  export type ResultsKeyEnum = z.infer<typeof ResultsKeyEnum>;
+
   // --- AGGREGATED RESULTS ---
-  export const Results = z.record(LowerOrderTypeEnum, Result);
+  export const Results = z.record(ResultsKeyEnum, Result.nullable());
   export type Results = z.infer<typeof Results>;
 
   // -------------------------------

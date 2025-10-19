@@ -33,11 +33,12 @@ export namespace OrderContracts {
 
     export const Filters = wrapFilters(
       APIFiltersSchema.omit({
-        orderTypes: true,
         query: true,
         onlyActive: true,
         customerOrigins: true,
         engagementTypes: true,
+        categoryIds: true,
+        ranks: true,
       })
     )
       .partial()

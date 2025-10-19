@@ -8,10 +8,11 @@ export default async function computeOrdersDailyStats(
   input: OrderContracts.ComputeDailyStats.Input
 ): Promise<OrderContracts.ComputeDailyStats.Output> {
   const { filters } = input ?? {};
-  const { period, shift, weekdays, timeWindow } = filters ?? {};
+  const { period, shift, weekdays, timeWindow, orderTypes } = filters ?? {};
   const normalizedPeriod = normalizePeriod(period);
 
   const weekdaysStr = weekdays && weekdays.length > 0 ? weekdays.join(",") : null;
+  const orderTypesStr = orderTypes?.length ? orderTypes.join(",") : null;
 
   const raw = await prisma.$queryRawTyped(
     getOrdersDailyStats(
@@ -20,7 +21,8 @@ export default async function computeOrdersDailyStats(
       weekdaysStr,
       shift === ShiftFilterValue.ALL ? null : (shift as WorkingShift),
       timeWindow?.from ?? null,
-      timeWindow?.to ?? null
+      timeWindow?.to ?? null,
+      orderTypesStr
     )
   );
 

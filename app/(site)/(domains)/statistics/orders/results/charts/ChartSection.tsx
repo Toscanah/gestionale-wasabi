@@ -10,18 +10,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { OrderType } from "@prisma/client";
 import { ChartLineIcon, CompassToolIcon, GearIcon, PackageIcon } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Switch } from "@/components/ui/switch";
 
 export type Metric = keyof OrdersStats.DailyRow;
 
 export const METRICS: { label: string; metric: Metric; format?: "currency" }[] = [
   { label: "Ordini", metric: "orders" },
-  { label: "Fatturato (€)", metric: "revenue", format: "currency" },
+  { label: "Incasso (€)", metric: "revenue", format: "currency" },
   { label: "Prodotti", metric: "products" },
   { label: "Zuppe", metric: "soups" },
   { label: "Porzioni riso", metric: "rices" },
   { label: "Insalate", metric: "salads" },
   { label: "Riso", metric: "rice" },
-  { label: "Fatturato per ordine (€)", metric: "revenuePerOrder", format: "currency" },
+  { label: "Scontrino medio (€)", metric: "revenuePerOrder", format: "currency" },
 ];
 
 function filterByWeekday(
@@ -39,34 +40,30 @@ function filterByWeekday(
 type ChartSectionProps = {
   data: OrderContracts.ComputeDailyStats.Output;
   selectedWeekdays: Weekday[];
+  selectedOrderTypes: OrdersStats.LowerOrderTypeEnum[];
   onDelete: () => void;
   isLoading?: boolean;
+  showAll: boolean;
 };
 
 export type ChartMode = "esplicito" | "andamento";
 export type ChartType = "line" | "pie";
-export type SelectableTypes = Lowercase<OrderType> | "total";
 
 export default function ChartSection({
   data,
   selectedWeekdays,
+  selectedOrderTypes,
   onDelete,
   isLoading,
+  showAll,
 }: ChartSectionProps) {
   const [metric, setMetric] = useState<Metric>("orders");
   const [mode, setMode] = useState<ChartMode>("esplicito");
   const [type, setType] = useState<ChartType>("line");
 
-  const [selectedOrderTypes, setSelectedOrderTypes] = useState<SelectableTypes[]>([
-    "home",
-    "pickup",
-    "table",
-    "total",
-  ]);
-
   useEffect(() => {
     if (type === "pie" && metric === "revenuePerOrder") {
-      setMetric(METRICS[0].metric); // fallback to first available field (Ordini)
+      setMetric(METRICS[0].metric);
     }
   }, [type, metric]);
 
@@ -79,9 +76,14 @@ export default function ChartSection({
     : metricLabel;
   const chartData = isSingleWeekday ? filterByWeekday(data, selectedWeekdays[0]) : data;
 
+  const mergedVisibleTypes: OrdersStats.ResultsKeyEnum[] =
+    showAll && selectedOrderTypes.length > 1 && type !== "pie"
+      ? [...selectedOrderTypes, "tutti"]
+      : selectedOrderTypes;
+
   const allChart = (
     <DailyChart
-      visibleTypes={selectedOrderTypes}
+      visibleTypes={mergedVisibleTypes}
       isLoading={isLoading}
       label={chartLabel}
       key="all"
@@ -99,7 +101,7 @@ export default function ChartSection({
 
   const weekdayCharts = selectedWeekdays.map((dayNum) => (
     <DailyChart
-      visibleTypes={selectedOrderTypes}
+      visibleTypes={mergedVisibleTypes}
       id="weekday"
       isLoading={isLoading}
       type={type}
@@ -115,12 +117,11 @@ export default function ChartSection({
   return (
     <Card>
       <CardHeader className="gap-0">
-        <CardTitle className="flex gap-4 items-center">
+        <CardTitle className="flex gap-6 items-center">
           {isLoading ? (
             <Skeleton className="h-9 w-full rounded-lg" />
           ) : (
             <>
-              {/* --- Metric selector --- */}
               <WasabiUniversalSelect
                 searchPlaceholder="Cerca campo..."
                 triggerIcon={CompassToolIcon}
@@ -137,13 +138,12 @@ export default function ChartSection({
                     options: METRICS.map((m) => ({
                       label: m.label,
                       value: m.metric,
-                      disabled: type === "pie" && m.metric === "revenuePerOrder", // ⛔ Disable this metric for pie charts
+                      disabled: type === "pie" && m.metric === "revenuePerOrder",
                     })),
                   },
                 ]}
               />
 
-              {/* --- Chart type selector --- */}
               <WasabiUniversalSelect
                 disabled={isLoading}
                 triggerIcon={ChartLineIcon}
@@ -165,46 +165,6 @@ export default function ChartSection({
                 ]}
               />
 
-              <WasabiUniversalSelect
-                triggerIcon={PackageIcon}
-                disabled={isLoading}
-                shouldClear={selectedOrderTypes.length !== 4}
-                triggerClassName="flex-1"
-                appearance="filter"
-                searchPlaceholder="Cerca tipo..."
-                title="Tipi di ordine"
-                mode="multi"
-                allLabel="Tutti"
-                selectedValues={selectedOrderTypes}
-                onChange={(values) => {
-                  if (!values.length) {
-                    setSelectedOrderTypes(["home", "pickup", "table", "total"]);
-                  } else {
-                    setSelectedOrderTypes(values as SelectableTypes[]);
-                  }
-                }}
-                groups={[
-                  {
-                    options: [
-                      {
-                        label: "Totale",
-                        value: "total",
-                        disabled:
-                          type === "pie" || // pie → always disabled
-                          (selectedOrderTypes.length === 1 && // only one active type (not total)
-                            selectedOrderTypes[0] !== "total") ||
-                          (selectedOrderTypes.length === 2 && // total + one → invalid
-                            selectedOrderTypes.includes("total")),
-                      },
-                      { label: "Domicilio", value: "home" },
-                      { label: "Asporto", value: "pickup" },
-                      { label: "Tavoli", value: "table" },
-                    ],
-                  },
-                ]}
-              />
-
-              {/* --- Mode selector --- */}
               <WasabiUniversalSelect
                 triggerIcon={GearIcon}
                 disabled={type === "pie" || isLoading}

@@ -1,23 +1,25 @@
-import { OrderContracts, Weekday } from "@/app/(site)/lib/shared";
-import { useState } from "react";
+import { OrderContracts, OrdersStats, Weekday } from "@/app/(site)/lib/shared";
 import ChartSection from "./ChartSection";
-import { Button } from "@/components/ui/button";
-import { PlusCircleIcon } from "@phosphor-icons/react";
+import { OrderType } from "@prisma/client";
 
 type ChartsDashboardProps = {
   data: OrderContracts.ComputeDailyStats.Output;
   selectedWeekdays: Weekday[];
+  selectedOrderTypes: OrderType[];
   sections: { id: number }[];
   setSections: React.Dispatch<React.SetStateAction<{ id: number }[]>>;
   isLoading?: boolean;
+  showAll: boolean;
 };
 
 export default function ChartsDashboard({
   data,
   selectedWeekdays,
+  selectedOrderTypes,
   sections,
   setSections,
   isLoading,
+  showAll
 }: ChartsDashboardProps) {
   const handleDeleteSection = (id: number) => {
     setSections((prev) => prev.filter((section) => section.id !== id));
@@ -30,8 +32,12 @@ export default function ChartsDashboard({
           {sections.map((section) => (
             <div key={section.id} className="flex-shrink-0 w-full max-w-full">
               <ChartSection
+                showAll={showAll}
                 isLoading={isLoading}
                 data={data}
+                selectedOrderTypes={selectedOrderTypes.map(
+                  (type) => type.toLowerCase() as OrdersStats.LowerOrderTypeEnum
+                )}
                 selectedWeekdays={selectedWeekdays}
                 onDelete={() => handleDeleteSection(section.id)}
               />

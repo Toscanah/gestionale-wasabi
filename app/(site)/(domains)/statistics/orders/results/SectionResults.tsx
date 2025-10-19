@@ -22,6 +22,7 @@ interface SectionResultsProps {
   results: OrdersStats.Results | null;
   isLoading: boolean;
   filters: OrderFilters;
+  showAll: boolean;
 }
 
 export type GeneralResultRecord = {
@@ -41,57 +42,64 @@ type AverageResultRecordFlat = Omit<AverageResultRecord, "perDay"> & {
 
 type CSVCombinedResultRecord = GeneralResultRecord & AverageResultRecordFlat;
 
-const CSV_HEADERS: Record<keyof CSVCombinedResultRecord, string> = {
-  title: "Tipo ordine",
-  orders: "Ordini",
-  ordersPct: "% Ordini",
-  revenue: "Incasso",
-  revenuePct: "% Incasso",
-  avgPerOrder: "Scontrino medio",
-  ordersPerDay: "Ordini/giorno",
-  revenuePerDay: "Incasso/giorno",
-  productsPerDay: "Prodotti/giorno",
-  products: "Prodotti",
-  soups: "Zuppe",
-  rices: "Porzioni riso",
-  salads: "Insalate",
-  rice: "Riso cucinato",
-  soupsPerDay: "Zuppe/giorno",
-  ricesPerDay: "Porzioni riso/giorno",
-  saladsPerDay: "Insalate/giorno",
-  ricePerDay: "Riso cucinato/giorno",
-};
+// const CSV_HEADERS: Record<keyof CSVCombinedResultRecord, string> = {
+//   title: "Tipo ordine",
+//   orders: "Ordini",
+//   ordersPct: "% Ordini",
+//   revenue: "Incasso",
+//   revenuePct: "% Incasso",
+//   avgPerOrder: "Scontrino medio",
+//   ordersPerDay: "Ordini/giorno",
+//   revenuePerDay: "Incasso/giorno",
+//   productsPerDay: "Prodotti/giorno",
+//   products: "Prodotti",
+//   soups: "Zuppe",
+//   rices: "Porzioni riso",
+//   salads: "Insalate",
+//   rice: "Riso cucinato",
+//   soupsPerDay: "Zuppe/giorno",
+//   ricesPerDay: "Porzioni riso/giorno",
+//   saladsPerDay: "Insalate/giorno",
+//   ricePerDay: "Riso cucinato/giorno",
+// };
 
-function flattenAverage(r: AverageResultRecord): AverageResultRecordFlat {
-  return {
-    title: r.title,
-    avgPerOrder: r.avgPerOrder,
-    ordersPerDay: r.perDay.orders,
-    revenuePerDay: r.perDay.revenue,
-    productsPerDay: r.perDay.products,
-    soupsPerDay: r.perDay.soups,
-    ricesPerDay: r.perDay.rices,
-    saladsPerDay: r.perDay.salads,
-    ricePerDay: r.perDay.rice,
-  };
-}
+// function flattenAverage(r: AverageResultRecord): AverageResultRecordFlat {
+//   return {
+//     title: r.title,
+//     avgPerOrder: r.avgPerOrder,
+//     ordersPerDay: r.perDay.orders,
+//     revenuePerDay: r.perDay.revenue,
+//     productsPerDay: r.perDay.products,
+//     soupsPerDay: r.perDay.soups,
+//     ricesPerDay: r.perDay.rices,
+//     saladsPerDay: r.perDay.salads,
+//     ricePerDay: r.perDay.rice,
+//   };
+// }
 
-export default function SectionResults({ results, isLoading, filters }: SectionResultsProps) {
-  // ----- DATA SPLIT -----
+export default function SectionResults({
+  results,
+  isLoading,
+  filters,
+  showAll,
+}: SectionResultsProps) {
   const { generalSections, averageSections } = React.useMemo(() => {
     if (!results) return { generalSections: [], averageSections: [] };
 
-    const {} = results;
+    const safeResults = {
+      table: results.table ?? null,
+      pickup: results.pickup ?? null,
+      home: results.home ?? null,
+      tutti: results.tutti ?? null,
+    };
 
-    const totalOrders = results.home.orders + results.pickup.orders + results.table.orders;
-    const totalRevenue = results.home.revenue + results.pickup.revenue + results.table.revenue;
-    const totalSoups = results.home.soups + results.pickup.soups + results.table.soups;
-    const totalRices = results.home.rices + results.pickup.rices + results.table.rices;
-    const totalSalads = results.home.salads + results.pickup.salads + results.table.salads;
-    const totalRice = results.home.rice + results.pickup.rice + results.table.rice;
-    const totalProducts = results.home.products + results.pickup.products + results.table.products;
+    const nonNull = Object.entries(safeResults).filter(
+      (entry): entry is [string, OrdersStats.Result] => entry[1] !== null
+    );
 
-    // helper for percentage
+    const totalOrders = nonNull.reduce((sum, [_, r]) => sum + r.orders, 0);
+    const totalRevenue = nonNull.reduce((sum, [_, r]) => sum + r.revenue, 0);
+
     const pct = (part: number, total: number) =>
       total > 0 ? `${roundToTwo((part / total) * 100)}%` : "0%";
 
@@ -108,103 +116,72 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
       rice: r.rice,
     });
 
-    // General stats
-    const generalSections: GeneralResultRecord[] = [
-      makeGeneral("Tavoli", results.table),
-      makeGeneral("Asporto", results.pickup),
-      makeGeneral("Domicilio", results.home),
-      {
-        title: "Tutti",
-        orders: totalOrders,
-        ordersPct: "100%",
-        revenue: totalRevenue,
-        revenuePct: "100%",
-        products: totalProducts,
-        soups: totalSoups,
-        rices: totalRices,
-        salads: totalSalads,
-        rice: totalRice,
-      },
-    ];
-
     const makeAverage = (title: string, r: OrdersStats.Result): AverageResultRecord => ({
       title,
       avgPerOrder: r.revenuePerOrder,
-      perDay: {
-        ...r.perDay,
-      },
+      perDay: { ...r.perDay },
     });
 
-    // Average stats
-    const averageSections: AverageResultRecord[] = [
-      makeAverage("Tavoli", results.table),
-      makeAverage("Asporto", results.pickup),
-      makeAverage("Domicilio", results.home),
-      {
-        title: "Tutti",
-        avgPerOrder: totalOrders > 0 ? totalRevenue / totalOrders : 0,
-        perDay: {
-          orders:
-            results.home.perDay.orders + results.pickup.perDay.orders + results.table.perDay.orders,
-          revenue:
-            results.home.perDay.revenue +
-            results.pickup.perDay.revenue +
-            results.table.perDay.revenue,
-          products:
-            results.home.perDay.products +
-            results.pickup.perDay.products +
-            results.table.perDay.products,
-          soups:
-            results.home.perDay.soups + results.pickup.perDay.soups + results.table.perDay.soups,
-          rices:
-            results.home.perDay.rices + results.pickup.perDay.rices + results.table.perDay.rices,
-          salads:
-            results.home.perDay.salads + results.pickup.perDay.salads + results.table.perDay.salads,
-          rice: results.home.perDay.rice + results.pickup.perDay.rice + results.table.perDay.rice,
-        },
-      },
-    ];
+    const generalSections: GeneralResultRecord[] = [];
+    const averageSections: AverageResultRecord[] = [];
+
+    if (safeResults.table)
+      (generalSections.push(makeGeneral("Tavoli", safeResults.table)),
+        averageSections.push(makeAverage("Tavoli", safeResults.table)));
+
+    if (safeResults.pickup)
+      (generalSections.push(makeGeneral("Asporto", safeResults.pickup)),
+        averageSections.push(makeAverage("Asporto", safeResults.pickup)));
+
+    if (safeResults.home)
+      (generalSections.push(makeGeneral("Domicilio", safeResults.home)),
+        averageSections.push(makeAverage("Domicilio", safeResults.home)));
+
+    if (safeResults.tutti && showAll)
+      (generalSections.push(makeGeneral("Tutti", safeResults.tutti)),
+        averageSections.push(makeAverage("Tutti", safeResults.tutti)));
 
     return { generalSections, averageSections };
-  }, [results]);
+  }, [results, showAll]);
 
-  // filters just for CSV (still present but unused elsewhere)
-  const parsedWeekdays =
-    filters.weekdays.length >= 6
-      ? "Tutti"
-      : filters.weekdays
-          .map((n: number) => {
-            const idx = (n - 1) as Weekday;
-            return WEEKDAY_LABELS[idx] || "";
-          })
-          .filter(Boolean)
-          .join(", ");
+  // const parsedWeekdays =
+  //   filters.weekdays.length >= 6
+  //     ? "Tutti"
+  //     : filters.weekdays
+  //         .map((n: number) => {
+  //           const idx = (n - 1) as Weekday;
+  //           return WEEKDAY_LABELS[idx] || "";
+  //         })
+  //         .filter(Boolean)
+  //         .join(", ");
 
-  const formatTimeWindow = (timeWindow?: { from: string; to: string }) => {
-    if (!timeWindow || !timeWindow.from || !timeWindow.to) return undefined;
-    return `dalle ${timeWindow.from} alle ${timeWindow.to}`;
-  };
+  // const formatTimeWindow = (timeWindow?: { from: string; to: string }) => {
+  //   if (!timeWindow || !timeWindow.from || !timeWindow.to) return undefined;
+  //   return `dalle ${timeWindow.from} alle ${timeWindow.to}`;
+  // };
 
-  const parsedFilters: Record<string, string | number | null | undefined> = {
-    Periodo: formatDateFilter("range", filters.period),
-    Turno: SHIFT_LABELS[filters.shift],
-    Giorni: parsedWeekdays,
-    Orario: formatTimeWindow(filters.timeWindow),
-  };
+  // const parsedFilters: Record<string, string | number | null | undefined> = {
+  //   Periodo: formatDateFilter("range", filters.period),
+  //   Turno: SHIFT_LABELS[filters.shift],
+  //   Giorni: parsedWeekdays,
+  //   Orario: formatTimeWindow(filters.timeWindow),
+  // };
 
-  const flatAverageSections: AverageResultRecordFlat[] = averageSections.map(flattenAverage);
+  // const flatAverageSections: AverageResultRecordFlat[] = averageSections.map(flattenAverage);
 
   // const { downloadCsv } = useCsvExport<CSVCombinedResultRecord>(
   //   [...generalSections, ...flatAverageSections],
   //   CSV_HEADERS,
   //   parsedFilters
   // );
-  // ----- TABLES -----
+
+  const pageSize = filters.orderTypes.length == 1 ? 1 : filters.orderTypes.length + 1;
+
   const { tableData: generalData, tableColumns: generalColumns } = useSkeletonTable({
     isLoading,
     data: generalSections,
     columns: generalStatsColumns,
-    pageSize: generalSections.length || 4,
+    pageSize,
   });
   const generalTable = useTable({ data: generalData, columns: generalColumns });
 
@@ -212,7 +189,7 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
     isLoading,
     data: averageSections,
     columns: averageStatsColumns,
-    pageSize: averageSections.length || 4,
+    pageSize,
   });
   const averageTable = useTable({ data: averageData, columns: averageColumns });
 

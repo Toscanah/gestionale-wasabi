@@ -1,5 +1,5 @@
 import { OrderContracts, OrdersStats } from "@/app/(site)/lib/shared";
-import { ChartMode, ChartType, Metric, SelectableTypes } from "./ChartSection";
+import { ChartMode, ChartType, Metric } from "./ChartSection";
 import {
   ChartConfig,
   ChartContainer,
@@ -43,7 +43,7 @@ type DailyChartProps = {
   description?: ReactNode;
   isLoading?: boolean;
   id?: string;
-  visibleTypes: SelectableTypes[];
+  visibleTypes: OrdersStats.ResultsKeyEnum[];
 };
 
 // ----------------- CONFIG -----------------
@@ -51,7 +51,7 @@ const CHART_CONFIG = {
   home: { label: "Domicilio", color: "var(--chart-1)" },
   pickup: { label: "Asporto", color: "var(--chart-2)" },
   table: { label: "Tavoli", color: "var(--chart-3)" },
-  total: { label: "Totale", color: "var(--chart-4)" },
+  tutti: { label: "Totale", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
 const dayKey = (d: Date | string) => {
@@ -142,21 +142,14 @@ export default function DailyChart({
     const pickup = seriesMaps.pickup[k] ?? 0;
     const table = seriesMaps.table[k] ?? 0;
 
-    const shouldComputeTotal =
-      visibleTypes.includes("total") ||
-      visibleTypes.some((t) => ["home", "pickup", "table"].includes(t));
+    const shouldComputeTutti = visibleTypes.includes("tutti");
+    const tutti = shouldComputeTutti ? home + pickup + table : 0;
 
-    const total = shouldComputeTotal
-      ? (visibleTypes.includes("home") ? home : 0) +
-        (visibleTypes.includes("pickup") ? pickup : 0) +
-        (visibleTypes.includes("table") ? table : 0)
-      : 0;
-
-    return { index: idx, day: k, home, pickup, table, total };
+    return { index: idx, day: k, home, pickup, table, tutti };
   });
 
   // --- TREND DATA ---
-  const makeTrend = (key: "home" | "pickup" | "table" | "total") => {
+  const makeTrend = (key: "home" | "pickup" | "table" | "tutti") => {
     const xs: number[] = [];
     const ys: number[] = [];
     chartData.forEach((row) => {
@@ -177,81 +170,59 @@ export default function DailyChart({
   const homeTrend = makeTrend("home");
   const pickupTrend = makeTrend("pickup");
   const tableTrend = makeTrend("table");
-  const totalTrend = makeTrend("total");
+  const tuttiTrend = makeTrend("tutti");
 
   const trendData = chartData.map((row) => ({
     ...row,
     homeTrend: homeTrend.preds[row.day],
     pickupTrend: pickupTrend.preds[row.day],
     tableTrend: tableTrend.preds[row.day],
-    totalTrend: totalTrend.preds[row.day],
+    tuttiTrend: tuttiTrend.preds[row.day],
   }));
 
   // --- STATS SUMMARY ---
   const stats =
     mode === "andamento" && type === "line"
       ? (() => {
-          const totals = chartData
-            .map((d) => d.total)
-            .filter((v) => typeof v === "number" && v > 0);
-          if (!totals.length) return null;
+          // pick the visible key(s)
+          const activeKeys = visibleTypes.filter((t) => t !== "tutti");
 
-          const avg = totals.reduce((a, b) => a + b, 0) / totals.length;
-          const min = Math.min(...totals);
-          const max = Math.max(...totals);
+          // sum up the values of all visible series (excluding "tutti")
+          const totals = chartData.map((d) => activeKeys.reduce((sum, k) => sum + (d[k] ?? 0), 0));
 
-          const { slope } = totalTrend;
+          const validTotals = totals.filter((v) => typeof v === "number" && v > 0);
+          if (!validTotals.length) return null;
+
+          const avg = validTotals.reduce((a, b) => a + b, 0) / validTotals.length;
+          const min = Math.min(...validTotals);
+          const max = Math.max(...validTotals);
+
+          const { slope } = tuttiTrend; // you could replace this with one computed over `activeKeys`
           const trendPct = (slope / avg) * 100;
+
           return { avg, min, max, trendPct };
         })()
       : null;
 
-  let pieData: {
-    name: string;
-    key: string;
-    value: number;
-    color: string;
-  }[] = [];
-
   const homeValue = chartData.reduce((s, d) => s + (d.home ?? 0), 0);
   const pickupValue = chartData.reduce((s, d) => s + (d.pickup ?? 0), 0);
   const tableValue = chartData.reduce((s, d) => s + (d.table ?? 0), 0);
-  const totalValue = homeValue + pickupValue + tableValue;
 
-  if (
-    visibleTypes.includes("total") &&
-    !visibleTypes.some((t) => ["home", "pickup", "table"].includes(t))
-  ) {
-    pieData = [
-      {
-        name: CHART_CONFIG.total.label,
-        key: "total",
-        value: totalValue,
-        color: CHART_CONFIG.total.color,
-      },
-    ];
-  } else {
-    pieData = [
-      {
-        name: CHART_CONFIG.home.label,
-        key: "home",
-        value: homeValue,
-        color: CHART_CONFIG.home.color,
-      },
-      {
-        name: CHART_CONFIG.pickup.label,
-        key: "pickup",
-        value: pickupValue,
-        color: CHART_CONFIG.pickup.color,
-      },
-      {
-        name: CHART_CONFIG.table.label,
-        key: "table",
-        value: tableValue,
-        color: CHART_CONFIG.table.color,
-      },
-    ].filter((entry) => visibleTypes.includes(entry.key as SelectableTypes));
-  }
+  const pieData = (["home", "pickup", "table", "tutti"] as const)
+    .filter((key) => visibleTypes.includes(key))
+    .map((key) => ({
+      name: CHART_CONFIG[key].label,
+      key,
+      value:
+        key === "tutti"
+          ? homeValue + pickupValue + tableValue
+          : key === "home"
+            ? homeValue
+            : key === "pickup"
+              ? pickupValue
+              : tableValue,
+      color: CHART_CONFIG[key].color,
+    }));
 
   if (isLoading) {
     return (
@@ -337,29 +308,25 @@ export default function DailyChart({
 
               <Legend verticalAlign="top" height={36} />
 
-              {(
-                [
-                  ["home", "homeTrend", "Domicilio"],
-                  ["pickup", "pickupTrend", "Asporto"],
-                  ["table", "tableTrend", "Tavoli"],
-                  ["total", "totalTrend", "Totale"],
-                ] as const
-              )
-                // Show only selected lines; show "total" only if user selected it explicitly
-                .filter(([key]) => visibleTypes.includes(key as SelectableTypes))
-                .map(([baseKey, trendKey, label]) => (
-                  <Line
-                    key={baseKey}
-                    name={label}
-                    dataKey={mode === "esplicito" ? baseKey : trendKey}
-                    type="linear"
-                    dot={false}
-                    connectNulls
-                    stroke={`var(--color-${baseKey})`}
-                    strokeWidth={mode === "esplicito" ? 2 : 3}
-                    strokeOpacity={mode === "esplicito" ? 0.8 : 1}
-                  />
-                ))}
+              {(Object.keys(CHART_CONFIG) as (keyof typeof CHART_CONFIG)[])
+                .filter((key) => visibleTypes.includes(key))
+                .map((key) => {
+                  const label = CHART_CONFIG[key].label;
+                  const trendKey = `${key}Trend`;
+                  return (
+                    <Line
+                      key={key}
+                      name={label}
+                      dataKey={mode === "esplicito" ? key : trendKey}
+                      type="linear"
+                      dot={false}
+                      connectNulls
+                      stroke={`var(--color-${key})`}
+                      strokeWidth={mode === "esplicito" ? 2 : 3}
+                      strokeOpacity={mode === "esplicito" ? 0.8 : 1}
+                    />
+                  );
+                })}
             </LineChart>
           ) : (
             <PieChart syncId={"cake"}>
@@ -429,20 +396,29 @@ export default function DailyChart({
           <div>
             Minimo: {FORMATTERS[metric](stats.min)} | Massimo: {FORMATTERS[metric](stats.max)}
           </div>
-          <div
-            className={`font-medium flex gap-2 ${
-              stats.trendPct > 0 ? "text-green-500" : stats.trendPct < 0 ? "text-red-500" : ""
-            }`}
-          >
-            {stats.trendPct > 0 ? (
-              <TrendUpIcon />
-            ) : stats.trendPct < 0 ? (
-              <TrendDownIcon />
-            ) : (
-              <EqualIcon />
-            )}{" "}
-            {Math.abs(stats.trendPct).toFixed(3)}% rispetto alla media
-          </div>
+
+          {visibleTypes.includes("tutti") ? (
+            <>
+              <div
+                className={`font-medium items-center flex gap-2 ${
+                  stats.trendPct > 0 ? "text-green-500" : stats.trendPct < 0 ? "text-red-500" : ""
+                }`}
+              >
+                {stats.trendPct > 0 ? (
+                  <TrendUpIcon />
+                ) : stats.trendPct < 0 ? (
+                  <TrendDownIcon />
+                ) : (
+                  <EqualIcon />
+                )}{" "}
+                {Math.abs(stats.trendPct).toFixed(3)}% rispetto alla media
+              </div>
+            </>
+          ) : (
+            <div className="italic text-muted-foreground/80">
+              Per ottenere una media, attiva “Tutti”
+            </div>
+          )}
         </CardFooter>
       )}
     </Card>

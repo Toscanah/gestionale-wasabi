@@ -4,6 +4,7 @@
 -- @param {WorkingShift} $4:shift? Working shift filter (nullable, 'ALL' means ignore)
 -- @param {String}       $5:from_time? Start time of day "HH:mm" (nullable)
 -- @param {String}       $6:to_time? End time of day "HH:mm" (nullable)
+-- @param {String}       $7:order_types? Allowed order types as comma-separated string (nullable, e.g. 'HOME,PICKUP')
 
 WITH
     -- ✅ Generate all calendar days in the selected range
@@ -32,6 +33,10 @@ WITH
           AND (
             $5::text IS NULL OR $6::text IS NULL
             OR o.created_at::time BETWEEN $5::time AND $6::time
+          )
+          AND (
+            $7::text IS NULL
+            OR o.type = ANY (string_to_array($7::text, ',')::"OrderType"[])
           )
     ),
 
@@ -107,5 +112,9 @@ WHERE EXTRACT(DOW FROM d.day) <> 1 -- still skip Mondays
   AND (
     $3::text IS NULL
     OR EXTRACT(DOW FROM d.day)::int = ANY (string_to_array($3::text, ',')::int[])
+  )
+  AND (
+    $7::text IS NULL
+    OR ot.type = ANY (string_to_array($7::text, ',')::"OrderType"[])
   )
 ORDER BY d.day, ot.type;

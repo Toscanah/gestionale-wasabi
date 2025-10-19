@@ -5,6 +5,7 @@ import { ALL_WEEKDAYS } from "../../components/ui/filters/select/WeekdaysFilter"
 import { FULL_DAY_RANGE } from "../../components/ui/filters/time/TimeWindowFilter";
 import { trpc } from "@/lib/server/client";
 import { OrderContracts } from "../../lib/shared";
+import { OrderType } from "@prisma/client";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",
@@ -62,11 +63,15 @@ export default function useOrdersStats() {
         ? undefined
         : state.timeWindow;
 
+    const orderTypes =
+      state.orderTypes.length === Object.entries(OrderType).length ? undefined : state.orderTypes;
+
     return {
       period,
       weekdays,
       shift,
       timeWindow,
+      orderTypes,
     };
   }, [state]);
 
@@ -85,28 +90,32 @@ export default function useOrdersStats() {
   );
 
   function isDefaultState(state: SectionState): boolean {
-    const init_state = INITIAL_STATE;
+    const initState = INITIAL_STATE;
 
     const sameRange =
-      state.period == undefined && init_state.period == undefined
+      state.period == undefined && initState.period == undefined
         ? true
         : state.period != undefined &&
-          init_state.period != undefined &&
+          initState.period != undefined &&
           (state.period.from?.getTime?.() ?? undefined) ===
-            (init_state.period.from?.getTime?.() ?? undefined) &&
+            (initState.period.from?.getTime?.() ?? undefined) &&
           (state.period.to?.getTime?.() ?? undefined) ===
-            (init_state.period.to?.getTime?.() ?? undefined);
+            (initState.period.to?.getTime?.() ?? undefined);
 
-    const sameShift = state.shift === init_state.shift;
+    const sameShift = state.shift === initState.shift;
     const sameWeekdays =
-      state.weekdays.length === init_state.weekdays.length &&
-      state.weekdays.every((w) => init_state.weekdays.includes(w));
+      state.weekdays.length === initState.weekdays.length &&
+      state.weekdays.every((w) => initState.weekdays.includes(w));
 
     const sameTimeRange =
-      state.timeWindow.from === init_state.timeWindow.from &&
-      state.timeWindow.to === init_state.timeWindow.to;
+      state.timeWindow.from === initState.timeWindow.from &&
+      state.timeWindow.to === initState.timeWindow.to;
 
-    return sameRange && sameShift && sameWeekdays && sameTimeRange;
+    const sameOrderTypes =
+      state.orderTypes.length === initState.orderTypes.length &&
+      state.orderTypes.every((ot) => initState.orderTypes.includes(ot));
+
+    return sameRange && sameShift && sameWeekdays && sameTimeRange && sameOrderTypes;
   }
 
   return {
