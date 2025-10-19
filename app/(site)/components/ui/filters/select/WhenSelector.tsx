@@ -34,19 +34,15 @@ interface WhenSelectorProps {
 const whenSelectorFilter = (value: string, search: string) => {
   if (!search) return 1;
 
-  const normalizedValue = value.replace(/[^0-9]/g, ""); // "21:00" → "2100"
-  const normalizedSearch = search.replace(/[^0-9]/g, ""); // "21" → "21"
+  const normalizedValue = value.replace(/[^0-9]/g, "");
+  const normalizedSearch = search.replace(/[^0-9]/g, "");
 
-  // Exact normalized match (e.g. "2100" === "2100")
   if (normalizedValue === normalizedSearch) return 1;
 
-  // If user types "20" or "200" → match values that start with "20"
   if (normalizedValue.startsWith(normalizedSearch)) return 0.9;
 
-  // Allow 2-digit hour partial match (e.g. "20" matches "2000" but "200" shouldn't match "1200")
   if (normalizedSearch.length <= 2 && normalizedValue.startsWith(normalizedSearch)) return 0.8;
 
-  // Otherwise, ignore matches that are inside another number
   return 0;
 };
 
