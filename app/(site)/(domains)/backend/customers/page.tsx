@@ -14,19 +14,35 @@ import { useState } from "react";
 import { SortField } from "@/app/(site)/components/ui/sorting/SortingMenu";
 import { Path } from "react-hook-form";
 
+const toFormData = (c: ComprehensiveCustomer): CustomerFormData => {
+  return {
+    ...c,
+    name: c.name || "",
+    surname: c.surname || "",
+    email: c.email || "",
+    preferences: c.preferences || "",
+    order_notes: c.order_notes || "",
+    phone: c.phone?.phone || "",
+  };
+};
+
 export default function CustomersDashboard() {
   const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
   const { page, pageSize, setPage, setPageSize } = useTablePagination();
 
-  const { data: customers = [], isFetching } = trpc.customers.getAllComprehensive.useQuery();
-
-  const layout: { fields: Path<CustomerFormData>[] }[] = [{ fields: ["name", "phone"] }];
+  const layout: { fields: Path<CustomerFormData>[] }[] = [
+    { fields: ["name", "phone"] },
+    { fields: ["surname", "email"] },
+    { fields: ["preferences", "order_notes"] },
+    { fields: ["origin"] },
+    // { fields: ["addresses"] },
+  ];
 
   const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<CustomerFormData>) => (
     <FormFields
       handleSubmit={handleSubmit}
       submitLabel={submitLabel}
-      defaultValues={customerFormSchema.parse(object ?? {})}
+      defaultValues={customerFormSchema.parse(object || {})}
       layout={layout}
       formFields={getCustomerFields()}
       formSchema={customerFormSchema}
@@ -44,6 +60,7 @@ export default function CustomersDashboard() {
         singular: "Cliente",
         plural: "Clienti",
       }}
+      mapToForm={toFormData}
       columns={columns}
       FormFields={Fields}
       pagination={{ page, pageSize, setPage, setPageSize, mode: "server" }}

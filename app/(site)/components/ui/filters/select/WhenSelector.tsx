@@ -21,15 +21,34 @@ import {
 } from "@/app/(site)/lib/shared/constants/default-when";
 import { ShiftBoundaries } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
+import WasabiUniversalSelect from "../../wasabi/WasabiUniversalSelect ";
 
 interface WhenSelectorProps {
   className?: string;
   value?: string;
-  field?: ControllerRenderProps;
   onValueChange?: (value: string) => void;
   onKeyDown?: (e: KeyboardEvent<any>) => void;
-  source?: string;
 }
+
+// For WhenSelector: prioritizes exact and normalized time matches
+const whenSelectorFilter = (value: string, search: string) => {
+  if (!search) return 1;
+
+  const normalizedValue = value.replace(/[^0-9]/g, ""); // "21:00" → "2100"
+  const normalizedSearch = search.replace(/[^0-9]/g, ""); // "21" → "21"
+
+  // Exact normalized match (e.g. "2100" === "2100")
+  if (normalizedValue === normalizedSearch) return 1;
+
+  // If user types "20" or "200" → match values that start with "20"
+  if (normalizedValue.startsWith(normalizedSearch)) return 0.9;
+
+  // Allow 2-digit hour partial match (e.g. "20" matches "2000" but "200" shouldn't match "1200")
+  if (normalizedSearch.length <= 2 && normalizedValue.startsWith(normalizedSearch)) return 0.8;
+
+  // Otherwise, ignore matches that are inside another number
+  return 0;
+};
 
 function floatToHourMinute(value: number, minuteOffset = 0): [number, number] {
   const hour = Math.floor(value);
@@ -45,7 +64,7 @@ function floatToHourMinute(value: number, minuteOffset = 0): [number, number] {
 }
 
 const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorProps>(
-  ({ className, field, value, onValueChange, onKeyDown, source = "" }, ref) => {
+  ({ className, value, onValueChange, onKeyDown }, ref) => {
     const [open, setOpen] = useState<boolean>(false);
     const [oneTimeValue, setOneTimeValue] = useState<string>("");
 
@@ -139,12 +158,17 @@ const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorPro
     };
 
     return (
-      <WasabiSelect
-        title="Quando"
+      <WasabiUniversalSelect
+        appearance="form"
+        groups={groups}
+        searchPlaceholder="Cerca un orario..."
+        onChange={(value) => {
+          if (onValueChange) onValueChange(value);
+          setOneTimeValue(value);
+          setOpen(false);
+        }}
+        filterFn={whenSelectorFilter}
         mode="single"
-        open={open}
-        onOpenChange={handleOpenChange}
-        ref={ref}
         trigger={(selected) => (
           <Button
             onKeyDown={handleOneKeyDown}
@@ -154,16 +178,10 @@ const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorPro
             {selected ? selected.label : ""}
           </Button>
         )}
-        inputPlaceholder="Cerca un orario..."
-        onChange={(value) => {
-          if (onValueChange) onValueChange(value);
-          if (field) field.onChange(value);
-          setOneTimeValue(value);
-          setOpen(false);
-        }}
-        allLabel="Tutti"
-        groups={groups}
         selectedValue={value || ""}
+        ref={ref}
+        open={open}
+        onOpenChange={handleOpenChange}
       />
     );
   }

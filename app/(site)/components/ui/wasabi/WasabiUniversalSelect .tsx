@@ -68,9 +68,10 @@ interface CommonSelectProps {
   contentClassName?: string;
   itemClassName?: string;
   labelClassName?: string;
-  allLabel?: string; // multi: show "all" badge when all selected
+  allLabel?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  filterFn?: (value: string, search: string) => number;
 }
 
 /* ------------------------------- FILTER props ----------------------------- */
@@ -144,6 +145,7 @@ const WasabiUniversalSelect = forwardRef<
     allLabel,
     open,
     onOpenChange,
+    filterFn,
   } = props;
 
   // Controlled/uncontrolled open
@@ -258,7 +260,7 @@ const WasabiUniversalSelect = forwardRef<
       trigger={triggerNode}
       contentClassName={cn("p-0", contentClassName)}
     >
-      <Command>
+      <Command filter={filterFn}>
         {showInput && <CommandInput placeholder={searchPlaceholder} className="h-9" />}
         <CommandList>
           <CommandEmpty>Nessun risultato trovato.</CommandEmpty>

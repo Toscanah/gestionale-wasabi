@@ -16,17 +16,19 @@ import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
 import { toastError, toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { trpc } from "@/lib/server/client";
 import { AddressType } from "@/prisma/generated/schemas";
+import { ControllerRenderProps } from "react-hook-form";
+import z from "zod";
+import { customerFormSchema } from "../form";
 
 interface CustomerAddressesProps {
-  addresses: AddressType[];
-  customerId: number;
+  field: ControllerRenderProps<z.input<typeof customerFormSchema>, "addresses">;
 }
 
-export default function CustomerAddresses({
-  addresses,
-  customerId,
-}: CustomerAddressesProps) {
-  const [currentAddresses, setCurrentAddresses] = useState<AddressType[]>(addresses ?? []);
+export default function CustomerAddresses({ field }: CustomerAddressesProps) {
+  return <></>;
+  const [currentAddresses, setCurrentAddresses] = useState<AddressType[]>(
+    (field.value as any) ?? []
+  );
 
   const utils = trpc.useUtils();
 
@@ -42,14 +44,14 @@ export default function CustomerAddresses({
     if (currentAddresses.some((address) => !address.civic?.trim())) {
       return toastError("Tutti gli indirizzi devono avere almeno un civico e via validi");
     }
-    updateAddresses.mutate({ addresses: currentAddresses, customerId });
+    // updateAddresses.mutate({ addresses: currentAddresses, customerId });
   };
 
   const addAddress = () =>
     setCurrentAddresses((prevAddresses) => [
       {
         civic: "",
-        customer_id: customerId,
+        customer_id: 0,
         doorbell: "",
         floor: "",
         stair: "",
@@ -91,9 +93,9 @@ export default function CustomerAddresses({
         Aggiungi indirizzo
       </Button>
 
-      <div className="text-muted-foreground text-sm">
+      {/* <div className="text-muted-foreground text-sm">
         NB: Gli indirizzi non attivi non potranno venir utilizzati negli ordini
-      </div>
+      </div> */}
 
       <Accordion
         type="single"

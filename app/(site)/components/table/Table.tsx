@@ -143,7 +143,7 @@ export default function Table<T>({
                       className={cn(
                         "h-8 max-h-8 transition",
                         rowClassName?.(row),
-                        shouldStick && "sticky z-10 bottom-0 bg-muted-foreground/30"
+                        shouldStick && "sticky z-10 bottom-0 bg-muted-foreground/10"
                       )}
                       data-state={row.getIsSelected() && "selected"}
                     >

@@ -62,6 +62,7 @@ export function FormFields<TSchema extends z.ZodObject<Record<string, ZodType>>>
   submitLabel,
   handleSubmit,
 }: FormFieldsProps<TSchema>) {
+  console.log("Rendering FormFields with defaultValues:", defaultValues);
   const form = useZodForm({
     schema: formSchema,
     defaultValues,

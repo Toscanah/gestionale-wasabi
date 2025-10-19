@@ -4,18 +4,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { ControllerRenderProps } from "react-hook-form";
 import CustomerOriginSelection from "./CustomerOriginSelection";
 import { CustomerOrigin } from "@prisma/client";
+import CustomerAddresses from "./addresses/CustomerAddresses";
+import { AddressSchema } from "@/prisma/generated/schemas";
 
 export const customerFormSchema = z.object({
-  name: z.string().default(""),
-  surname: z.string().default(""),
+  name: z.string().default("").optional(),
+  surname: z.string().default("").optional(),
   phone: z
     .string({ error: "Il numero di telefono è obbligatorio" })
     .min(6, { error: "Il numero di telefono deve contenere almeno 6 caratteri" })
     .default(""),
-  email: z.string().default(""),
-  preferences: z.string().default(""),
-  order_notes: z.string().default(""),
+  email: z.string().default("").optional(),
+  preferences: z.string().default("").optional(),
+  order_notes: z.string().default("").optional(),
   origin: z.enum(CustomerOrigin).default(CustomerOrigin.UNKNOWN),
+  addresses: z.array(AddressSchema).default([]).optional(),
 });
 
 export type CustomerFormData = z.infer<typeof customerFormSchema>;
@@ -42,12 +45,12 @@ export function getCustomerFields(): FormFieldType<z.input<typeof customerFormSc
     {
       name: "preferences",
       label: "Preferenze",
-      render: (field) => <Textarea className="resize-none" {...field} />,
+      render: (field) => <Textarea className="resize-none" {...(field as any)} />,
     },
     {
       name: "order_notes",
       label: "Note degli ordini",
-      render: (field) => <Textarea className="resize-none" {...field} />,
+      render: (field) => <Textarea className="resize-none" {...(field as any)} />,
     },
     {
       name: "origin",
@@ -61,8 +64,7 @@ export function getCustomerFields(): FormFieldType<z.input<typeof customerFormSc
     // {
     //   name: "addresses",
     //   label: "Indirizzi",
-    //   unique: true,
-    //   children: ({ field }: { field: ControllerRenderProps }) => {
+    //   render: (field) => {
     //     return <CustomerAddresses field={field} />;
     //   },
     // },

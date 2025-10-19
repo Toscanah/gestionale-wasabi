@@ -67,7 +67,7 @@ export default function getColumns(
           disabled={!interactionReady}
           onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 0 })}
           ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 0 })}
-          className="max-w-32 w-32 text-2xl uppercase"
+          className="max-w-32 w-32 !text-2xl uppercase"
           defaultValue={row.original.product?.code ?? ""}
           autoFocus={row.original.product_id == -1}
           onKeyDown={(e: any) => {
@@ -114,7 +114,7 @@ export default function getColumns(
             ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 1 })}
             onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 1 })}
             type="text"
-            className="max-w-20 text-2xl uppercase"
+            className="max-w-20 !text-2xl uppercase"
             autoFocus={focusedInput.rowIndex === row.index && focusedInput.colIndex === 1}
             defaultValue={row.original.quantity == 0 ? 1 : row.original.quantity}
             onKeyDown={(e: any) => {
