@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import averageStatsColumns from "./averageStatsColumns";
 import { OrdersStats, SHIFT_LABELS, Weekday, WEEKDAY_LABELS } from "@/app/(site)/lib/shared";
 import { Separator } from "@/components/ui/separator";
+import TableVisibility from "@/app/(site)/components/table/TableVisibility";
 
 type MetricsResult = OrdersStats.Metrics;
 
@@ -220,6 +221,7 @@ export default function SectionResults({ results, isLoading, filters }: SectionR
       <div className="w-full flex flex-col gap-4">
         <div className="space-y-4">
           <Label className="text-md">Dati generali</Label>
+          {/* <TableVisibility table={generalTable} /> */}
           <Table table={generalTable} fixedColumnIndex={0} />
         </div>
 

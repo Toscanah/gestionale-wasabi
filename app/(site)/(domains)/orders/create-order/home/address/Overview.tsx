@@ -78,7 +78,7 @@ export default function Overview({
         <Input
           id="phone"
           ref={phoneRef}
-          className="w-full text-center text-3xl h-16"
+          className="w-full text-center !text-3xl h-16"
           defaultValue={phone}
           type="number"
           onKeyDown={handleKeyDown}
@@ -92,7 +92,7 @@ export default function Overview({
         <Input
           id="customer-name"
           ref={doorbellRef}
-          className="w-full text-center text-3xl h-16"
+          className="w-full text-center !text-3xl h-16"
           defaultValue={doorbell}
           type="text"
           disabled

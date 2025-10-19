@@ -104,7 +104,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             ref={refs.street}
             label="Via"
             onKeyDown={handleKeyDown}
-            className="w-full h-14 text-2xl uppercase"
+            className="w-full h-14 !text-2xl uppercase"
             // description="(es. Via dei Giacinti 41)"
           />
 
@@ -114,7 +114,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
               control={form.control}
               name="doorbell"
               onKeyDown={handleKeyDown}
-              className="w-full h-14 text-2xl uppercase"
+              className="w-full h-14 !text-2xl uppercase"
               label="Campanello"
               // description="(es. Rossi)"
             />
@@ -125,7 +125,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
               name="floor"
               label="Piano"
               onKeyDown={handleKeyDown}
-              className="w-full h-14 text-2xl uppercase"
+              className="w-full h-14 !text-2xl uppercase"
             />
           </div>
 
@@ -136,7 +136,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
               name="contact_phone"
               type="number"
               onKeyDown={handleKeyDown}
-              className="w-full h-14 text-2xl uppercase"
+              className="w-full h-14 !text-2xl uppercase"
               label="Num. telefono alternativo"
             />
 
@@ -146,7 +146,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
               name="stair"
               label="Scala"
               onKeyDown={handleKeyDown}
-              className="w-full h-14 text-2xl uppercase"
+              className="w-full h-14 !text-2xl uppercase"
               // description="(dx / sx)"
             />
           </div>
@@ -158,7 +158,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
               ref={refs.name}
               label="Nome"
               onKeyDown={handleKeyDown}
-              className="w-full h-14 text-2xl uppercase"
+              className="w-full h-14 !text-2xl uppercase"
             />
 
             <WasabiFormField
@@ -167,7 +167,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
               ref={refs.surname}
               onKeyDown={handleKeyDown}
               label="Cognome"
-              className="w-full h-14 text-2xl uppercase"
+              className="w-full h-14 !text-2xl uppercase"
             />
           </div>
 
@@ -177,7 +177,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
             label="Email"
             ref={refs.email}
             onKeyDown={handleKeyDown}
-            className="w-full h-14 text-2xl uppercase"
+            className="w-full h-14 !text-2xl uppercase"
             // description="(es. mario.rossi@gmail.com)"
           />
 
@@ -193,7 +193,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
                   ref={refs.street_info as any}
                   value={value?.toString() || ""}
                   onChange={onChange}
-                  className="w-full resize-none text-xl uppercase"
+                  className="w-full resize-none !text-xl uppercase"
                 />
               )}
             />
@@ -209,7 +209,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
                   ref={refs.order_notes as any}
                   value={value?.toString() || ""}
                   onChange={onChange}
-                  className="w-full esize-none text-xl uppercase"
+                  className="w-full resize-none !text-xl uppercase"
                 />
               )}
             />
@@ -225,7 +225,7 @@ export default function AddressForm({ formRef, refs, handleKeyDown }: AddressFor
                   ref={refs.preferences as any}
                   value={value || ""}
                   onChange={onChange}
-                  className="w-full resize-none text-xl uppercase"
+                  className="w-full resize-none !text-xl uppercase"
                 />
               )}
             />

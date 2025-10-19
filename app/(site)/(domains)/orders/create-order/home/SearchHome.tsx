@@ -68,7 +68,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
           <Input
             placeholder="Telefono"
             type="text"
-            className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+            className="w-full text-center !text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
             ref={phoneRef}
             value={phone}
             onChange={(e) => {
@@ -83,7 +83,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
           <Input
             placeholder="Campanello"
             type="text"
-            className="w-full text-center text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
+            className="w-full text-center !text-lg rounded-none border-foreground focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
             ref={doorbellRef}
             value={doorbell}
             onChange={(e) => {

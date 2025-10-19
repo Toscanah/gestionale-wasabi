@@ -101,7 +101,10 @@ export function FieldColumn<T>({
 }: FieldColumnProps): ColumnDefWithSkeleton<T> {
   return {
     id: key,
-    meta,
+    meta: {
+      ...meta,
+      label: typeof header === "string" ? header : meta?.label,
+    },
     accessorFn: (original) => getNestedValue<T>(original, key),
     header: buildHeader<T>(header, sortable),
     sortingFn: "alphanumeric",
@@ -135,6 +138,9 @@ export function JoinColumn<T>({
   skeleton,
 }: JoinColumnProps): ColumnDefWithSkeleton<T> {
   return {
+    meta: {
+      label: typeof header === "string" ? header : options.key,
+    },
     id: options.key,
     accessorFn: (original) => joinItemsWithComma(original, options.key),
     header: buildHeader(header ?? JOIN_HEADERS[options.key], sortable),
@@ -173,6 +179,9 @@ export function ValueColumn<T>({
   }
 
   const col: ColumnDefWithSkeleton<T> = {
+    meta: {
+      label: typeof header === "string" ? header : undefined,
+    },
     id: typeof header === "string" ? header : header !== undefined ? uniqueId("col_") : uniqueId(),
     accessorFn: (original) => accessor(original),
     header: buildHeader<T>(header, sortable),
@@ -204,9 +213,12 @@ export function ActionColumn<T>({
   meta,
 }: ActionColumnProps<T>): ColumnDefWithSkeleton<T> {
   return {
+    meta: {
+      ...meta,
+      label: typeof header === "string" ? header : undefined,
+    },
     id: typeof header === "string" && header.trim() !== "" ? header : uniqueId("action_col_"),
     header: buildHeader(header, false),
-    meta,
     enableSorting: false,
     enableColumnFilter: false,
     cell: ({ row, table }) => {
