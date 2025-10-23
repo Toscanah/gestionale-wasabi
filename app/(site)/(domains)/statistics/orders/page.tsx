@@ -34,7 +34,7 @@ export default function OrdersStats() {
       <div className="flex flex-col gap-4">
         <div className="flex gap-2 items-center">
           <Button onClick={addSection}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className=" h-4 w-4" />
             Aggiungi sezione
           </Button>
         </div>

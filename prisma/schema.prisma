@@ -47,6 +47,7 @@ model Order {
     pickup_order                PickupOrder?
     products                    ProductInOrder[]
     table_order                 TableOrder?
+    // coupon_usages               CouponUsage[]
 
     @@index([created_at])
     @@index([status, created_at])
@@ -362,6 +363,34 @@ model MetaMessageLog {
     @@index([home_order_id, created_at])
     @@index([home_order_id, direction, created_at])
 }
+
+// model Coupon {
+//     id                Int             @id @default(autoincrement())
+//     code              String          @unique
+//     label             String?
+//     value_type        CouponValueType
+//     percentage_amount Float?          @default(0)
+//     fixed_amount      Float?          @default(0)
+//     created_at        DateTime        @default(now()) @db.Timestamptz(3)
+//     expires_at        DateTime?       @db.Timestamptz(3)
+//     unlimited         Boolean         @default(false)
+//     usages            CouponUsage[]
+// }
+
+// model CouponUsage {
+//     id        Int      @id @default(autoincrement())
+//     coupon_id Int
+//     order_id  Int
+//     amount    Float    @default(0)
+//     used_at   DateTime @default(now()) @db.Timestamptz(3)
+//     coupon    Coupon   @relation(fields: [coupon_id], references: [id], onDelete: Cascade)
+//     order     Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+// }
+
+// enum CouponValueType {
+//     FIXED
+//     PERCENTAGE
+// }
 
 enum WorkingShift {
     UNSPECIFIED

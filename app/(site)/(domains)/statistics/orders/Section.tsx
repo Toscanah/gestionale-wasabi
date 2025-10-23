@@ -58,6 +58,9 @@ export default function Section({}: SectionProps) {
       });
     });
 
+  console.log("hasNormal:", hasNormal);
+  console.log("hasDaily:", hasDaily);
+
   return (
     <div className="flex flex-col gap-4 w-full p-4 h-full ">
       <div className="w-full flex flex-wrap gap-4 items-center">
@@ -133,7 +136,7 @@ export default function Section({}: SectionProps) {
         />
       </div>
 
-      {(hasNormal == true && hasDaily == true) || isLoading ? (
+      {(hasNormal == true ) || isLoading ? (
         <>
           <SectionResults
             filters={state}

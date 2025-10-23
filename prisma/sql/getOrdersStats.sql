@@ -48,8 +48,9 @@ WITH
         FROM "Order" o
         WHERE o.status = 'PAID'
           AND o.suborder_of IS NULL                 -- ✅ only parent orders
-          AND ($1::timestamptz IS NULL OR o.created_at >= $1)
-          AND ($2::timestamptz IS NULL OR o.created_at <= $2)
+          AND ($1::timestamptz IS NULL OR (o.created_at AT TIME ZONE 'Europe/Rome')::date >= $1::date)
+            AND ($2::timestamptz IS NULL OR (o.created_at AT TIME ZONE 'Europe/Rome')::date <= $2::date)
+
           AND EXTRACT(DOW FROM o.created_at) <> 1
           AND (
             $3::text IS NULL
@@ -58,8 +59,13 @@ WITH
           AND ($4::"WorkingShift" IS NULL OR o.shift = $4::"WorkingShift")
           AND (
             $5::text IS NULL OR $6::text IS NULL
-            OR o.created_at::time BETWEEN $5::time AND $6::time
-          )
+            OR (
+                (
+                    (o.created_at AT TIME ZONE 'Europe/Rome')::time
+                    BETWEEN $5::time AND $6::time
+                )
+            )
+        )
           AND (
             $7::text IS NULL
             OR o.type = ANY (string_to_array($7::text, ',')::"OrderType"[])

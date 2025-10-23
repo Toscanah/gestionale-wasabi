@@ -17,6 +17,7 @@ import { CustomerContracts, ShiftFilterValue } from "@/app/(site)/lib/shared";
 import { TableMeta } from "@tanstack/react-table";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
 import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
+import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
 
 export type ProductStatsTableMeta = TableMeta<any> & {
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
@@ -68,7 +69,7 @@ export default function ProductsStats() {
         <div className="w-full flex items-center gap-4">
           {/* <span className="font-bold text-xl">Statistica prodotti</span> */}
 
-          <div className="flex-1 gap-4 flex items-center">
+          <div className="flex-1 gap-4 flex items-center ">
             <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
 
             <CalendarFilter
@@ -90,7 +91,7 @@ export default function ProductsStats() {
             />
           </div>
 
-          <div className="w-full flex gap-4 items-center justify-end">
+          <div className="w-full flex gap-4 items-center justify-end flex-wrap">
             <ResetTableControlsBtn
               onReset={() => {
                 handleReset();
@@ -121,6 +122,8 @@ export default function ProductsStats() {
               }))}
               activeSorts={activeSorts}
             />
+
+            <TableColumnsVisibility table={table} disabled={isLoading} />
           </div>
         </div>
 

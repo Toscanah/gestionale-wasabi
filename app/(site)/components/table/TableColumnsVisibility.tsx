@@ -2,17 +2,19 @@
 
 import React from "react";
 import type { Table } from "@tanstack/react-table";
-import { SlidersHorizontalIcon } from "@phosphor-icons/react";
+import { EyeIcon, SlidersHorizontalIcon } from "@phosphor-icons/react";
 import WasabiUniversalSelect, { CommandGroupType } from "../ui/wasabi/WasabiUniversalSelect ";
 
 interface TableVisibilityProps<TData> {
   table: Table<TData>;
   blacklist?: string[];
+  disabled?: boolean;
 }
 
 export default function TableColumnsVisibility<TData>({
   table,
   blacklist = [],
+  disabled = false,
 }: TableVisibilityProps<TData>) {
   const columns = React.useMemo(
     () =>
@@ -39,11 +41,12 @@ export default function TableColumnsVisibility<TData>({
 
   return (
     <WasabiUniversalSelect
+      disabled={disabled}
       appearance="filter"
       title="Colonne"
       mode="multi"
       shouldClear={columns.length !== selected.length}
-      triggerIcon={SlidersHorizontalIcon}
+      triggerIcon={EyeIcon}
       selectedValues={selected}
       triggerClassName="border-solid"
       onChange={(updated) => {

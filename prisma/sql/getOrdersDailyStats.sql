@@ -6,8 +6,10 @@
 -- @param {String}       $6:to_time? End time of day "HH:mm" (nullable)
 -- @param {String}       $7:order_types? Allowed order types as comma-separated string (nullable, e.g. 'HOME,PICKUP')
 
+SET TIME ZONE 'Europe/Rome';
+
 WITH
-    -- ✅ Generate all calendar days in the selected range
+    -- ✅ Generate all calendar days in the selected range (Rome-local)
     days AS (
         SELECT generate_series(
             COALESCE($1::timestamptz, (SELECT MIN(created_at) FROM "Order")),
@@ -16,24 +18,37 @@ WITH
         )::date AS day
     ),
 
-    -- ✅ Filter orders according to inputs
+    -- ✅ Filter orders according to inputs (Rome-local)
     filtered_orders AS (
         SELECT o.*
         FROM "Order" o
         WHERE o.status = 'PAID'
-          AND o.suborder_of IS NULL                 -- only parent orders
-          AND ($1::timestamptz IS NULL OR o.created_at >= $1)
-          AND ($2::timestamptz IS NULL OR o.created_at <= $2)
-          AND EXTRACT(DOW FROM o.created_at) <> 1   -- skip Mondays
+          AND o.suborder_of IS NULL  -- only parent orders
+
+          -- Rome-local date range
+          AND ($1::timestamptz IS NULL OR (o.created_at AT TIME ZONE 'Europe/Rome')::date >= ($1 AT TIME ZONE 'Europe/Rome')::date)
+          AND ($2::timestamptz IS NULL OR (o.created_at AT TIME ZONE 'Europe/Rome')::date <= ($2 AT TIME ZONE 'Europe/Rome')::date)
+
+          -- Rome-local weekday (skip Mondays)
+          AND EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome')) <> 1
           AND (
             $3::text IS NULL
-            OR EXTRACT(DOW FROM o.created_at)::int = ANY (string_to_array($3::text, ',')::int[])
+            OR EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome'))::int = ANY (string_to_array($3::text, ',')::int[])
           )
+
+          -- Shift filter
           AND ($4::"WorkingShift" IS NULL OR o.shift = $4::"WorkingShift")
+
+          -- Rome-local time-of-day window
           AND (
             $5::text IS NULL OR $6::text IS NULL
-            OR o.created_at::time BETWEEN $5::time AND $6::time
+            OR (
+                 ($5::time <= $6::time AND (o.created_at AT TIME ZONE 'Europe/Rome')::time BETWEEN $5::time AND $6::time)
+              OR ($5::time >  $6::time AND ((o.created_at AT TIME ZONE 'Europe/Rome')::time >= $5::time OR (o.created_at AT TIME ZONE 'Europe/Rome')::time <= $6::time))
+            )
           )
+
+          -- Order types
           AND (
             $7::text IS NULL
             OR o.type = ANY (string_to_array($7::text, ',')::"OrderType"[])
@@ -62,10 +77,10 @@ WITH
         GROUP BY COALESCE(o.suborder_of, o.id)
     ),
 
-    -- ✅ Aggregate daily stats for existing orders
+    -- ✅ Aggregate daily stats (Rome-local day)
     raw_daily AS (
         SELECT
-            DATE_TRUNC('day', fo.created_at)::date        AS day,
+            DATE_TRUNC('day', (fo.created_at AT TIME ZONE 'Europe/Rome'))::date AS day,
             fo.type                                       AS type,
             COUNT(DISTINCT fo.id)::int                    AS orders,
             COALESCE(SUM(pl.line_revenue), 0)::double precision   AS revenue,

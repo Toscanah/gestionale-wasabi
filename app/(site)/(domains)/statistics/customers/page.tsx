@@ -142,6 +142,7 @@ export default function CustomersStats() {
 
         <TablePagination
           table={table}
+          label="Clienti"
           page={page}
           pageSize={pageSize}
           onPageChange={setPage}

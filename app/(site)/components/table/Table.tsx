@@ -168,7 +168,7 @@ export default function Table<T>({
                             ) : (
                               <TableCell
                                 className={cn(
-                                  "h-8 max-h-8 truncate max-w-80",
+                                  "h-8 max-h-8 truncate max-w-80 text-cente",
                                   cellClassName?.(index),
                                   isFixed
                                     ? `sticky left-0 z-20 bg-foreground text-background ${borderClass} border-b-background`

@@ -6,7 +6,7 @@ import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
 
 const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
   FieldColumn({
-    header: "Tipo ordine",
+    header: "Tipo di ordine",
     key: "title",
     sortable: false,
   }),

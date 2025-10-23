@@ -17,6 +17,7 @@ import OrderTypesFilter from "@/app/(site)/components/ui/filters/select/OrderTyp
 import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
 import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
 import { Button } from "@/components/ui/button";
+import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
 
 export default function PaymentsTable() {
   const { page, pageSize, setPage, setPageSize } = useTablePagination();
@@ -93,13 +94,15 @@ export default function PaymentsTable() {
             disabled={isLoading}
           />
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-4">
             <ResetTableControlsBtn
               onReset={handleReset}
               className="ml-auto"
               disabled={isLoading}
               hasFilters={showReset}
             />
+
+            <TableColumnsVisibility table={table} disabled={isLoading} />
 
             <Button variant={"outline"} disabled>
               TODO: Ordinamento

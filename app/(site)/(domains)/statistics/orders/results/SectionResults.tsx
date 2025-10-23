@@ -93,12 +93,13 @@ export default function SectionResults({
       tutti: results.tutti ?? null,
     };
 
-    const nonNull = Object.entries(safeResults).filter(
-      (entry): entry is [string, OrdersStats.Result] => entry[1] !== null
+    // ✅ Exclude "tutti" when computing totals
+    const entriesForTotals = Object.entries(safeResults).filter(
+      ([key, val]) => val !== null && key !== "tutti"
     );
 
-    const totalOrders = nonNull.reduce((sum, [_, r]) => sum + r.orders, 0);
-    const totalRevenue = nonNull.reduce((sum, [_, r]) => sum + r.revenue, 0);
+    const totalOrders = entriesForTotals.reduce((sum, [_key, r]) => sum + (r?.orders ?? 0), 0);
+    const totalRevenue = entriesForTotals.reduce((sum, [_key, r]) => sum + (r?.revenue ?? 0), 0);
 
     const pct = (part: number, total: number) =>
       total > 0 ? `${roundToTwo((part / total) * 100)}%` : "0%";
@@ -106,9 +107,9 @@ export default function SectionResults({
     const makeGeneral = (title: string, r: OrdersStats.Result): GeneralResultRecord => ({
       title,
       orders: r.orders,
-      ordersPct: pct(r.orders, totalOrders),
+      ordersPct: title === "Tutti" ? "100%" : pct(r.orders, totalOrders),
       revenue: r.revenue,
-      revenuePct: pct(r.revenue, totalRevenue),
+      revenuePct: title === "Tutti" ? "100%" : pct(r.revenue, totalRevenue),
       products: r.products,
       soups: r.soups,
       rices: r.rices,
@@ -137,6 +138,7 @@ export default function SectionResults({
       (generalSections.push(makeGeneral("Domicilio", safeResults.home)),
         averageSections.push(makeAverage("Domicilio", safeResults.home)));
 
+    // ✅ Force "Tutti" to 100%
     if (safeResults.tutti && showAll)
       (generalSections.push(makeGeneral("Tutti", safeResults.tutti)),
         averageSections.push(makeAverage("Tutti", safeResults.tutti)));
