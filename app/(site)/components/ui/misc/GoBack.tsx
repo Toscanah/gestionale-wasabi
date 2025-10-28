@@ -18,9 +18,9 @@ export default function GoBack({ path }: GoBackProps) {
     <div className="absolute text-4xl top-4 left-4">
       <Link href={path}>
         <Icon
-          size={32}
-          className={`hover:cursor-pointer transition-transform duration-700 ease-in-out ${
-            hovered ? "rotate-[-720deg]" : "rotate-0"
+          size={hovered ? 36 : 32}
+          className={`hover:cursor-pointer transition-all duration-300 ease-in-out ${
+            hovered ? "rotate-[10deg]" : "rotate-0"
           }`}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}

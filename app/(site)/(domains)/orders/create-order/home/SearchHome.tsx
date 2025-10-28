@@ -101,7 +101,7 @@ export default function SearchHome({ children, setOrder, open, setOpen, order }:
         className="w-52 text-3xl rounded-none h-24"
         onClick={searchHome}
       >
-        Vai {children}
+        Cerca {children}
       </Button>
 
       <WasabiDialog

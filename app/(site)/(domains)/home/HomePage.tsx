@@ -56,10 +56,10 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
   return (
     <>
       <WasabiSidebar />
-      <div className="w-full overflow-x-hidden p-4 flex flex-col gap-4">
+      <div className="h-screen overflow-hidden w-full overflow-x-hidden p-4 flex flex-col gap-4">
         <div className="w-full flex justify-between items-center">
           <div className="flex items-center gap-4 text-2xl w-[28rem]">
-            <SidebarTrigger size={"icon-lg"} /> Wasabi Sushi
+            <SidebarTrigger /> Wasabi Sushi
           </div>
 
           <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />

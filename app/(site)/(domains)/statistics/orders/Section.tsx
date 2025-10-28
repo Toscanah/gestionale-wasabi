@@ -1,6 +1,6 @@
 import { DateRange } from "react-day-picker";
 import useOrdersStats from "../../../hooks/statistics/useOrdersStats";
-import { ReducerActions } from "../../../hooks/statistics/sectionReducer";
+import { INITIAL_STATE, ReducerActions } from "../../../hooks/statistics/sectionReducer";
 import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
 import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
 import WeekdaysFilter from "../../../components/ui/filters/select/WeekdaysFilter";
@@ -127,7 +127,15 @@ export default function Section({}: SectionProps) {
         />
 
         <ResetTableControlsBtn
-          customShow={showReset || showAll === false}
+          // customShow={showReset || showAll === false}
+          hasFilters={
+            INITIAL_STATE.period !== state.period ||
+            INITIAL_STATE.weekdays !== state.weekdays ||
+            INITIAL_STATE.shift !== state.shift ||
+            INITIAL_STATE.timeWindow !== state.timeWindow ||
+            INITIAL_STATE.orderTypes !== state.orderTypes ||
+            showAll === false
+          }
           onReset={() => {
             dispatch({ type: "RESET" });
             setShowAll(true);
@@ -136,7 +144,7 @@ export default function Section({}: SectionProps) {
         />
       </div>
 
-      {(hasNormal == true ) || isLoading ? (
+      {hasNormal == true || isLoading ? (
         <>
           <SectionResults
             filters={state}

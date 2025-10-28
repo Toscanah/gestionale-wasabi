@@ -24,6 +24,7 @@ export default function generateEmptyOrder(orderType: OrderType): OrderByType {
     products: [],
     payments: [],
     type: orderType,
+    promotion_usages: [],
   };
 
   switch (orderType) {

@@ -5,6 +5,7 @@ import {
   OrderSchema,
   PaymentSchema,
   PickupOrderSchema,
+  PromotionUsageSchema,
   TableOrderSchema,
 } from "@/prisma/generated/schemas";
 import { z } from "zod";
@@ -12,6 +13,7 @@ import { MinimalProductInOrderSchema, ProductInOrderWithOptionsSchema } from "./
 import { CustomerWithPhoneAndEngagementSchema } from "./Customer";
 import { OrderType } from "@prisma/client";
 import { EngagementWithDetailsSchema } from "./Engagement";
+import { PromotionWithUsagesSchema } from "./Promotion";
 
 /** ---------- Shared “base” enrichments (no relations yet) ---------- */
 
@@ -27,12 +29,22 @@ export const OrderWithEngagementsSchema = OrderSchema.extend({
   engagements: z.array(EngagementWithDetailsSchema),
 });
 
+export const OrderWithPromotionsSchema = OrderSchema.extend({
+  promotion_usages: z.array(
+    PromotionUsageSchema.extend({
+      promotion: PromotionWithUsagesSchema,
+    })
+  ),
+});
+
 /** Full base (no per-type relation yet) */
 export const FullOrderSchema = OrderWithProducts.extend(
   OrderWithEngagementsSchema.pick({
     engagements: true,
   }).shape
-).extend(OrderWithPaymentsSchema.pick({ payments: true }).shape);
+)
+  .extend(OrderWithPaymentsSchema.pick({ payments: true }).shape)
+  .extend(OrderWithPromotionsSchema.pick({ promotion_usages: true }).shape);
 
 export const OrderFullPaymentContextSchema = OrderWithProducts.extend(
   OrderWithPaymentsSchema.pick({

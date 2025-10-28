@@ -51,7 +51,7 @@ export default function OrdersTable({
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full max-h-full">
       <Table
         showNoResult={false}
         table={table}

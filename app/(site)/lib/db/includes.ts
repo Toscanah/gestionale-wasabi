@@ -8,6 +8,18 @@ export const engagementsInclude = {
   },
 };
 
+export const promotionUsagesInclude = {
+  promotion_usages: {
+    include: {
+      promotion: {
+        include: {
+          usages: true,
+        },
+      },
+    },
+  },
+};
+
 export const optionsInclude = {
   options: {
     include: {
@@ -52,6 +64,7 @@ export const orderInclude = {
     include: {
       ...productsInOrderInclude,
       ...engagementsInclude,
+      ...promotionUsagesInclude,
     },
   },
 };

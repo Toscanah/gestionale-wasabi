@@ -6,6 +6,7 @@ import {
   startOfYear,
   endOfYear,
   endOfDay,
+  subMonths,
 } from "date-fns";
 import { DatePreset } from "../../../shared/enums/date-preset";
 import { DateRange } from "react-day-picker";
@@ -28,12 +29,11 @@ export default function getDateRangeFromPreset(
       const last30 = subDays(today, 29);
       return { from: startOfDay(last30), to: endOfDay(today) };
     case DatePreset.LAST_MONTH:
-      const lastMonth = subDays(today, 30);
+      const lastMonth = subMonths(today, 1);
       return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
     case DatePreset.THIS_MONTH:
       return { from: startOfMonth(today), to: endOfMonth(today) };
     case DatePreset.THIS_YEAR:
-      // If today is in the STARTING_YEAR, use STARTING_DAY as the "from" date
       if (today.getFullYear() === STARTING_YEAR) {
         return { from: STARTING_DAY, to: endOfYear(today) };
       }

@@ -1,7 +1,7 @@
 import { OrderStatus, OrderType } from "@prisma/client";
 import prisma from "../../db";
 import { OrderContracts, TableOrder } from "@/app/(site)/lib/shared";
-import { engagementsInclude, productsInOrderInclude } from "../../includes";
+import { engagementsInclude, productsInOrderInclude, promotionUsagesInclude } from "../../includes";
 import { updateOrderShift } from "../updateOrderShift";
 
 export default async function createTableOrder({
@@ -20,6 +20,7 @@ export default async function createTableOrder({
       table_order: true,
       ...productsInOrderInclude,
       ...engagementsInclude,
+      ...promotionUsagesInclude,
     },
   });
 
@@ -48,6 +49,7 @@ export default async function createTableOrder({
       table_order: true,
       ...productsInOrderInclude,
       ...engagementsInclude,
+      ...promotionUsagesInclude,
     },
   });
 

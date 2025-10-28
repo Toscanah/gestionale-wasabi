@@ -18,6 +18,7 @@ import { TableMeta } from "@tanstack/react-table";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
 import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
 import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
+import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 
 export type ProductStatsTableMeta = TableMeta<any> & {
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
@@ -137,18 +138,20 @@ export default function ProductsStats() {
           // onPageChange={setPage}
           // onPageSizeChange={setPageSize}
           disabled={isLoading}
-        />
-
-        {/* <span>
-          Totale:{" "}
-          {!isLoading &&
-            roundToTwo(
-              table
-                .getFilteredRowModel()
-                .rows.reduce((sum, row) => sum + row.original.stats.revenue, 0)
-            )}{" "}
-          €
-        </span> */}
+        >
+          {isLoading ? (
+            <span>Totale: ... €</span>
+          ) : (
+            <span>
+              Totale:{" "}
+              {!isLoading &&
+                roundToTwo(
+                  table.getPrePaginationRowModel().rows.reduce((sum, row) => sum + row.original.stats.revenue, 0)
+                )}{" "}
+              €
+            </span>
+          )}
+        </TablePagination>
 
         <GoBack path="/home" />
       </div>

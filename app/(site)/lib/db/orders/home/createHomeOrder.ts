@@ -1,6 +1,6 @@
 import { OrderType } from "@prisma/client";
 import prisma from "../../db";
-import { engagementsInclude, homeOrderInclude, productsInOrderInclude } from "../../includes";
+import { engagementsInclude, homeOrderInclude, productsInOrderInclude, promotionUsagesInclude } from "../../includes";
 import { HomeOrder, OrderContracts } from "@/app/(site)/lib/shared";
 import { updateOrderShift } from "../updateOrderShift";
 
@@ -37,6 +37,7 @@ export default async function createHomeOrder({
         ...productsInOrderInclude,
         ...engagementsInclude,
         ...homeOrderInclude,
+        ...promotionUsagesInclude,
       },
     });
 

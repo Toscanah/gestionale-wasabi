@@ -45,7 +45,7 @@ const columns: ColumnDef<ProductWithStats>[] = [
   ValueColumn({
     header: "Totale riso",
     sortable: false,
-    value: (row) => formatRice(row.original.stats.totalRice),
+    value: (row) => (row.original.rice != 0 ? formatRice(row.original.stats.totalRice) : "N/A"),
     accessor: (product) => product.stats.totalRice,
   }),
 

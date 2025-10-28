@@ -6,8 +6,6 @@
 -- @param {String}       $6:to_time? End time of day "HH:mm" (nullable)
 -- @param {String}       $7:order_types? Allowed order types as comma-separated string (nullable, e.g. 'HOME,PICKUP')
 
-SET TIME ZONE 'Europe/Rome';
-
 WITH
     -- ✅ Generate all calendar days in the selected range (Rome-local)
     days AS (
@@ -26,8 +24,14 @@ WITH
           AND o.suborder_of IS NULL  -- only parent orders
 
           -- Rome-local date range
-          AND ($1::timestamptz IS NULL OR (o.created_at AT TIME ZONE 'Europe/Rome')::date >= ($1 AT TIME ZONE 'Europe/Rome')::date)
-          AND ($2::timestamptz IS NULL OR (o.created_at AT TIME ZONE 'Europe/Rome')::date <= ($2 AT TIME ZONE 'Europe/Rome')::date)
+          AND (
+            $1::timestamptz IS NULL OR
+            (o.created_at AT TIME ZONE 'Europe/Rome')::date >= ($1 AT TIME ZONE 'Europe/Rome')::date
+          )
+          AND (
+            $2::timestamptz IS NULL OR
+            (o.created_at AT TIME ZONE 'Europe/Rome')::date <= ($2 AT TIME ZONE 'Europe/Rome')::date
+          )
 
           -- Rome-local weekday (skip Mondays)
           AND EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome')) <> 1

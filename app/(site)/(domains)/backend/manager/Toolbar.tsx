@@ -7,6 +7,7 @@ import React, { Fragment } from "react";
 import { AdditionalFilters } from "./Manager";
 import { Switch } from "@/components/ui/switch";
 import { Table } from "@tanstack/react-table";
+import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
 
 interface ToolbarProps {
   title: string;
@@ -73,6 +74,9 @@ export default function Toolbar({
           hasFilters={showOnlyActive === false || debouncedQuery?.length! > 0}
           hasServerSorting={hasServerSorting}
         />
+
+        <TableColumnsVisibility table={table} disabled={disabled} />
+
         {children}
 
         {AddComponent}

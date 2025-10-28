@@ -57,9 +57,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
       open={open}
       trigger={
         <div className="w-full pl-4 pb-4">
-          <Button className="w-full text-3xl h-24 rounded-none">
-            <Plus className="mr-2 h-5 w-5" /> Ordine per asporto {children}
-          </Button>
+          <Button className="w-full text-3xl h-24 rounded-none">Asporto {children}</Button>
         </div>
       }
       onOpenChange={() => {
@@ -154,7 +152,6 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
               ref={(ref) => {
                 addRefs(ref);
-
               }}
               defaultValue={phone}
               onChange={(e) => setPhone(e.target.value)}

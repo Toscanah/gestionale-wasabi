@@ -1,7 +1,11 @@
 import { CalendarIcon } from "@phosphor-icons/react";
 import WasabiUniversalSelect from "../../../wasabi/WasabiUniversalSelect ";
 import { RangeModeProps } from "../CalendarFilter";
-import { ITALIAN_MONTHS } from "@/app/(site)/lib/shared/constants/_index";
+import {
+  ITALIAN_MONTHS,
+  STARTING_DAY,
+  STARTING_YEAR,
+} from "@/app/(site)/lib/shared/constants/_index";
 import { endOfMonth, startOfMonth } from "date-fns";
 
 interface MonthPresetsProps {
@@ -19,8 +23,12 @@ export default function MonthPresets({
     const monthIndex = ITALIAN_MONTHS.indexOf(val);
     const year = new Date().getFullYear();
 
-    const from = startOfMonth(new Date(year, monthIndex));
+    let from = startOfMonth(new Date(year, monthIndex));
     const to = endOfMonth(new Date(year, monthIndex));
+
+    if (year === STARTING_YEAR && monthIndex === 0) {
+      from = STARTING_DAY;
+    }
 
     handleDateFilter({ from, to });
     setVisibleMonth(from);

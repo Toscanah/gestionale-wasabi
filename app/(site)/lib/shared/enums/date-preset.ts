@@ -18,8 +18,8 @@ const presetsName = {
   [DatePreset.LAST_MONTH]: "Mese scorso",
   [DatePreset.THIS_MONTH]: "Questo mese",
   [DatePreset.THIS_YEAR]: "Quest'anno",
-  [DatePreset.TO_TODAY]: "Fino ad oggi",
   [DatePreset.TO_YESTERDAY]: "Fino a ieri",
+  [DatePreset.TO_TODAY]: "Fino ad oggi",
 } as const;
 
 export const DATE_FILTERING_PRESETS: { name: string; value: DatePreset }[] = Object.entries(

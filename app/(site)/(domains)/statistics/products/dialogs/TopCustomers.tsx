@@ -35,7 +35,7 @@ const columns: ColumnDef<TopCustomer>[] = [
 
   FieldColumn({
     key: "productCount",
-    header: "Qtà",
+    header: "Quantità acquistata",
   }),
 ];
 

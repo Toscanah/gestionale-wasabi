@@ -201,6 +201,7 @@ export default function Manager<TDomain extends BaseEntity, TForm extends FieldV
               }
             }}
           >
+            
             {serverSorting && (
               <SortingMenu
                 disabled={isLoading}

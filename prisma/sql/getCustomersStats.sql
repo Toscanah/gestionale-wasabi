@@ -5,8 +5,6 @@
 -- @param {Int} $5:limit? Pagination limit (nullable, no limit if null)
 -- @param {String} $6:customerOrigins? Comma separated string of origins (nullable)
 
-SET TIME ZONE 'Europe/Rome';
-
 WITH
     -- ✅ Collect all customer–order relationships (both Home and Pickup)
     customer_orders AS (
@@ -69,7 +67,7 @@ SELECT
     COALESCE(
         CASE
             WHEN os.last_order_at IS NOT NULL THEN
-                EXTRACT(DAY FROM (CURRENT_DATE - (os.last_order_at AT TIME ZONE 'Europe/Rome')::date))::int
+                (CURRENT_DATE - (os.last_order_at AT TIME ZONE 'Europe/Rome')::date)
         END,
         0
     ) AS "recency",

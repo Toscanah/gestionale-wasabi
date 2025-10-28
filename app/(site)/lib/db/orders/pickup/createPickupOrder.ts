@@ -1,7 +1,7 @@
 import { OrderStatus, OrderType } from "@prisma/client";
 import prisma from "../../db";
 import { OrderContracts, PickupOrder } from "@/app/(site)/lib/shared";
-import { engagementsInclude, productsInOrderInclude } from "../../includes";
+import { engagementsInclude, productsInOrderInclude, promotionUsagesInclude } from "../../includes";
 import { updateOrderShift } from "../updateOrderShift";
 
 export default async function createPickupOrder({
@@ -53,6 +53,7 @@ export default async function createPickupOrder({
           },
         },
         ...productsInOrderInclude,
+        ...promotionUsagesInclude,
       },
     });
 
@@ -93,6 +94,7 @@ export default async function createPickupOrder({
         },
         ...productsInOrderInclude,
         ...engagementsInclude,
+        ...promotionUsagesInclude,
       },
     });
 

@@ -8,7 +8,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import WasabiUniversalSelect from "@/app/(site)/components/ui/wasabi/WasabiUniversalSelect ";
 import { Skeleton } from "@/components/ui/skeleton";
 import { OrderType } from "@prisma/client";
-import { ChartLineIcon, CompassToolIcon, GearIcon, PackageIcon } from "@phosphor-icons/react";
+import {
+  ChartLineIcon,
+  CompassToolIcon,
+  GearIcon,
+  PackageIcon,
+  TrashIcon,
+} from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Switch } from "@/components/ui/switch";
 
@@ -186,7 +192,9 @@ export default function ChartSection({
                 ]}
               />
 
-              <Button onClick={onDelete}>Rimuovi grafico</Button>
+              <Button onClick={onDelete}>
+                <TrashIcon className="h-4 w-4" /> Rimuovi grafico
+              </Button>
             </>
           )}
         </CardTitle>

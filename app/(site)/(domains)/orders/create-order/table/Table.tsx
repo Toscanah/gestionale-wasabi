@@ -61,7 +61,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
       trigger={
         <div className="w-full pr-4 pb-4">
           <Button className="w-full text-3xl h-24 rounded-none">
-            <PlusIcon className="mr-2 h-5 w-5" /> Ordine al tavolo {children}
+            Tavolo {children}
           </Button>
         </div>
       }

@@ -2,6 +2,7 @@ import { OrderType } from "@prisma/client";
 import WasabiSelect from "../../wasabi/WasabiSelect";
 import { ORDER_TYPE_LABELS } from "@/app/(site)/lib/shared/constants/order-labels";
 import { PackageIcon } from "@phosphor-icons/react";
+import WasabiUniversalSelect from "../../wasabi/WasabiUniversalSelect ";
 
 interface OrderTypeFilterProps {
   selectedTypes: OrderType[];
@@ -25,7 +26,8 @@ export default function OrderTypesFilter({
   };
 
   return (
-    <WasabiSelect
+    <WasabiUniversalSelect
+      appearance="filter"
       triggerIcon={PackageIcon}
       allLabel="Tutti"
       disabled={disabled}

@@ -5,6 +5,7 @@ import {
 } from "@/app/(site)/lib/shared";
 import capitalizeFirstLetter from "./capitalizeFirstLetter";
 import normalizeCase from "./normalizeCase";
+import normalizeAddressCase from "../../domains/address/normalizeAddressCase";
 
 export type JoinItemType = "addresses" | "options" | "categories" | "doorbells";
 
@@ -45,7 +46,7 @@ export default function joinItemsWithComma(
       "addresses",
       (item) =>
         (item as ComprehensiveCustomer)?.addresses?.map?.(
-          (address) => normalizeCase(truncate(address.street)) + " " + address.civic
+          (address) => normalizeAddressCase(truncate(address.street)) + " " + address.civic
         ) ?? [],
     ],
     [

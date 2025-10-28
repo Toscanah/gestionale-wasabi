@@ -7,3 +7,4 @@ export * from "./Product";
 export * from "./Rice";
 export * from "./Meta";
 export * from "./RFM";
+export * from "./Promotion";
