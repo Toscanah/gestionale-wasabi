@@ -1,4 +1,4 @@
-import WasabiSimpleSelect from "@/app/(site)/components/ui/wasabi/WasabiSimpleSelect";
+import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
 import { RFMDimension, RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { Input } from "@/components/ui/input";
@@ -91,10 +91,12 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
       <strong className="w-4">{label}</strong>
 
       <div className="flex-1 flex gap-4 justify-start items-center">
-        <WasabiSimpleSelect
+        <WasabiSelect
+          appearance="form"
+          mode="single"
           id={`dim-${label.toLowerCase()}`}
-          value={mode}
-          onValueChange={(v) => handleModeChange(v as Mode)}
+          selectedValue={mode}
+          onChange={(v) => handleModeChange(v as Mode)}
           triggerClassName="flex-1"
           groups={[
             {
@@ -108,7 +110,7 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
 
         {mode === "eq" ? (
           <>
-            <span >=</span>
+            <span>=</span>
             <Input
               className={COMMON_CLASS_NAME}
               value={minValue}
@@ -121,7 +123,7 @@ function RFMFieldEditor({ label, dimension, rank, onChange }: RFMFieldEditorProp
           </>
         ) : (
           <>
-            <span >da</span>
+            <span>da</span>
             <Input
               className={COMMON_CLASS_NAME}
               value={minValue}

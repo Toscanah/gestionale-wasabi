@@ -129,6 +129,7 @@ export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps
       {/* Filters */}
       <div className="flex gap-4 items-center w-full">
         <WasabiSelect
+          appearance="filter"
           shouldClear={yearsFilter.length !== yearOptions.length}
           mode="multi"
           allLabel="Tutti gli anni"
@@ -144,6 +145,7 @@ export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps
         />
 
         <WasabiSelect
+          appearance="filter"
           mode="multi"
           shouldClear={monthsFilter.length !== 12}
           triggerClassName="flex-1"

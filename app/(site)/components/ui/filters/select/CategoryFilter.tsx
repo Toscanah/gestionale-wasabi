@@ -1,8 +1,8 @@
 import { Category } from "@prisma/client";
-import WasabiSelect from "../../wasabi/WasabiSelect";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { useMemo } from "react";
 import { TagIcon } from "@phosphor-icons/react";
+import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
 
 interface CategoryFilterProps {
   selectedCategoryIds: number[];
@@ -36,12 +36,13 @@ export default function CategoryFilter({
 
   return (
     <WasabiSelect
+      appearance="filter"
+      searchPlaceholder="Cerca categoria..."
       disabled={disabled}
       allLabel="Tutte"
       title="Categorie"
       triggerIcon={TagIcon}
       mode="multi"
-      inputPlaceholder="Cerca categoria..."
       triggerClassName={triggerClassName}
       shouldClear={selectedCategoryIds.length !== extendedCategories.length}
       groups={[

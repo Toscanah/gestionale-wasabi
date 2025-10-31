@@ -1,7 +1,6 @@
 import { Weekday, WEEKDAY_LABELS } from "@/app/(site)/lib/shared";
-import WasabiSelect from "../../wasabi/WasabiSelect";
 import { Calendar, CalendarDotsIcon } from "@phosphor-icons/react";
-
+import WasabiSelect from "../../wasabi/WasabiSelect";
 
 export const ALL_WEEKDAYS: Weekday[] = [2, 3, 4, 5, 6, 0];
 
@@ -26,6 +25,8 @@ export default function WeekdaysFilter({
 
   return (
     <WasabiSelect
+      appearance="filter"
+      searchPlaceholder="Cerca giorni..."
       disabled={disabled}
       mode="multi"
       allLabel="Tutti"

@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import WasabiPopover from "../wasabi/WasabiPopover";
 import { ArrowsDownUp, CaretDownIcon, CaretUpIcon, X } from "@phosphor-icons/react";
-import WasabiSimpleSelect from "../wasabi/WasabiSimpleSelect";
 import SortDirectionSelector from "./SortDirectionSelector";
 import { SortDirection } from "@/app/(site)/lib/shared/schemas/common/sorting";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import WasabiSelect from "../wasabi/WasabiSelect";
 
 export type SortableField = {
   label: string;
@@ -127,10 +127,12 @@ export default function SortingMenu({
                   </Button>
                 </div>
 
-                <WasabiSimpleSelect
+                <WasabiSelect
+                  appearance="form"
+                  mode="single"
                   triggerClassName="flex-1"
-                  value={activeField.field}
-                  onValueChange={(newField) => {
+                  selectedValue={activeField.field}
+                  onChange={(newField) => {
                     // If the user hasn't changed direction from the old field's default,
                     // adopt the new field's default. Otherwise, preserve their explicit choice.
                     const oldDefault = defaultDirFor(activeField.field);

@@ -4,11 +4,11 @@ import { ProductInOrderWithOptionsSchema } from "../models/Product";
 import { OrderByTypeSchema } from "../models/Order";
 import { PaymentType } from "@prisma/client";
 import { OrderContracts } from "./order";
-import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
+import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 
 export namespace PaymentContracts {
   export namespace GetSummary {
-    export const Input = wrapFilters(
+    export const Input = wrapAsFilters(
       APIFiltersSchema.pick({
         orderTypes: true,
         shift: true,

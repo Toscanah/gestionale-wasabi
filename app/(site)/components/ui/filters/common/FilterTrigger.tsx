@@ -74,7 +74,7 @@ const FilterTrigger = forwardRef<HTMLButtonElement, FilterTriggerProps>(
             <div className="flex items-center gap-2">
               {valuesCount > 2 ? (
                 <Badge variant="secondary" className="px-1 rounded-lg">
-                  {valuesCount} selezionati
+                  {valuesCount} attivi
                 </Badge>
               ) : (
                 parsedValues.map((label) => (

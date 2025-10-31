@@ -366,7 +366,7 @@ model MetaMessageLog {
 
 model Promotion {
     id               Int              @id @default(autoincrement())
-    code             String           @unique
+    code             String
     label            String?
     type             PromotionType
     percentage_value Float?           @default(0)
@@ -375,6 +375,9 @@ model Promotion {
     expires_at       DateTime?        @db.Timestamptz(3)
     never_expires    Boolean          @default(false)
     usages           PromotionUsage[]
+
+    @@index([code])
+    @@index([type])
 }
 
 model PromotionUsage {

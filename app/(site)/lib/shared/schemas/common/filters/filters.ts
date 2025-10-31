@@ -10,6 +10,9 @@ import { EngagementTypesFilterSchema } from "./engagement-types";
 import { CategoriesFilterSchema } from "./categories";
 import { CustomerOriginFilterSchema } from "./customer-origin";
 import { OnlyActiveFilterSchema } from "./only-active";
+import { PromotionPeriodRequestSchema } from "./promotion-periods";
+import { PromotionTypesFilterSchema } from "./promotion-types";
+import { extend } from "lodash";
 
 export const APIFiltersSchema = ShiftFilterSchema.extend(OrderTypesFilterSchema.shape)
   .extend(PeriodRequestSchema.shape)
@@ -20,10 +23,19 @@ export const APIFiltersSchema = ShiftFilterSchema.extend(OrderTypesFilterSchema.
   .extend(EngagementTypesFilterSchema.shape)
   .extend(CategoriesFilterSchema.shape)
   .extend(CustomerOriginFilterSchema.shape)
-  .extend(OnlyActiveFilterSchema.shape);
+  .extend(OnlyActiveFilterSchema.shape)
+  .extend(PromotionTypesFilterSchema.shape);
 
-export function wrapFilters<T extends z.ZodRawShape>(schema: z.ZodObject<T>) {
+export type APIFilters = z.infer<typeof APIFiltersSchema>;
+
+export function wrapAsFilters<T extends z.ZodRawShape>(schema: z.ZodObject<T>) {
   return z.object({ filters: schema.partial() });
 }
 
-export type APIFilters = z.infer<typeof APIFiltersSchema>;
+export const PromotionFiltersSchema = wrapAsFilters(
+  APIFiltersSchema.omit({ period: true })
+    .extend(PromotionPeriodRequestSchema.shape)
+    .pick({ periods: true, promotionTypes: true })
+);
+
+// TODO: plus many more ...

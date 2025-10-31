@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Option } from "@prisma/client";
-import WasabiUniversalSelect from "@/app/(site)/components/ui/wasabi/WasabiUniversalSelect ";
+import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
 
 interface CategoryOptionsProps {
   onChange: (value: Option[]) => void;
@@ -14,7 +14,7 @@ export default function CategoryOptions({ allOptions, onChange, options }: Categ
   const [currentOptions, setCurrentOptions] = useState<Option[]>(options ?? []);
 
   return (
-    <WasabiUniversalSelect
+    <WasabiSelect
       appearance="form"
       mode="multi"
       triggerClassName="max-w-full"

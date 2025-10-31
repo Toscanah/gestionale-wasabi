@@ -54,7 +54,7 @@ export const PromotionByTypeSchema = z.discriminatedUnion("type", [
 /** ---------- Optional: PromotionUsage enriched with order ---------- */
 export const PromotionUsageWithOrderSchema = PromotionUsageSchema.extend({
   order: OrderSchema, // maybe more detailed order schema can be used here
-  promotion: PromotionSchema,
+  // promotion: PromotionSchema,
 });
 
 export type PromotionWithUsages = z.infer<typeof PromotionWithUsagesSchema>;

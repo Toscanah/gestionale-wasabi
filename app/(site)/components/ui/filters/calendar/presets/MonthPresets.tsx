@@ -1,5 +1,5 @@
 import { CalendarIcon } from "@phosphor-icons/react";
-import WasabiUniversalSelect from "../../../wasabi/WasabiUniversalSelect ";
+import WasabiSelect from "../../../wasabi/WasabiSelect";
 import { RangeModeProps } from "../CalendarFilter";
 import {
   ITALIAN_MONTHS,
@@ -44,7 +44,8 @@ export default function MonthPresets({
   ];
 
   return (
-    <WasabiUniversalSelect
+    <WasabiSelect
+      searchPlaceholder="Cerca mese"
       triggerIcon={CalendarIcon}
       shouldSort={false}
       appearance="filter"

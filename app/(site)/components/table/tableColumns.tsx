@@ -88,7 +88,7 @@ export function IndexColumn<T>({
 // 2. FieldColumn
 // -----------------------------------------------------------------------------
 
-type FieldColumnProps = BaseColumnProps & {
+type FieldColumnProps<T> = BaseColumnProps & {
   key: string;
 };
 
@@ -98,7 +98,7 @@ export function FieldColumn<T>({
   sortable = true,
   skeleton,
   meta,
-}: FieldColumnProps): ColumnDefWithSkeleton<T> {
+}: FieldColumnProps<T>): ColumnDefWithSkeleton<T> {
   return {
     id: key,
     meta: {
@@ -187,6 +187,7 @@ export function ValueColumn<T>({
     header: buildHeader<T>(header, sortable),
     cell: ({ row, table }) => {
       const isLoad = isLoading(table.options.meta);
+
       if (isLoad && skeleton) return skeleton;
 
       return value(row, table.options.meta);
@@ -219,6 +220,10 @@ export function ActionColumn<T>({
     },
     id: typeof header === "string" && header.trim() !== "" ? header : uniqueId("action_col_"),
     header: buildHeader(header, false),
+    // ⬇️ allow appearing in visibility dropdown
+    accessorFn: (row: T) => row, // dummy accessor to pass filter
+    enableHiding: true,
+
     enableSorting: false,
     enableColumnFilter: false,
     cell: ({ row, table }) => {

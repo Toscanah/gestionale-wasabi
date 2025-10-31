@@ -15,6 +15,7 @@ import SettingsSection from "./sections/SettingsSection";
 import { Fragment } from "react";
 import EngagementSection from "./sections/EngagementSection";
 import RfmSection from "./sections/RfmSection";
+import PromotionSection from "./sections/PromotionSection";
 
 type SidebarSection = {
   label: string;
@@ -28,7 +29,7 @@ const sidebarSections: SidebarSection[] = [
   },
   {
     label: "Marketing",
-    components: [EngagementSection, RfmSection],
+    components: [PromotionSection, EngagementSection, RfmSection],
   },
   {
     label: "Riso",

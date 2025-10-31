@@ -10,3 +10,4 @@ export * from "./rice";
 export * from "./meta";
 export * from "./common/_index";
 export * from "./results/_index";
+export * from "./promotion";

@@ -18,7 +18,7 @@ import { NoContentRequestSchema } from "./common/no-content";
 import SortingSchema from "./common/sorting";
 import { HomeOrderInOrderSchema, PickupOrderInOrderSchema } from "../models/Order";
 import { DottedKeys } from "../types/DottedKeys";
-import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
+import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 
 export const CUSTOMER_STATS_SORT_FIELDS = [
   "rfm.rank",
@@ -60,7 +60,7 @@ export namespace CustomerContracts {
   }
 
   export namespace GetAllComprehensive {
-    export const Input = wrapFilters(
+    export const Input = wrapAsFilters(
       z
         .object({
           orders: APIFiltersSchema.pick({
@@ -168,7 +168,7 @@ export namespace CustomerContracts {
   }
 
   export namespace ComputeStats {
-    export const Input = wrapFilters(
+    export const Input = wrapAsFilters(
       APIFiltersSchema.pick({
         ranks: true,
         period: true,

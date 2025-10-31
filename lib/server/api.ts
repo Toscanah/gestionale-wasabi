@@ -117,3 +117,11 @@ export const paymentsAPI: Hooks<typeof trpc.payments> = {
   getRomanPaymentsByOrder: trpc.payments.getRomanPaymentsByOrder,
   getSummary: trpc.payments.getSummary,
 };
+
+export const promotionsAPI: Hooks<typeof trpc.promotions> = {
+  getAll: trpc.promotions.getAll,
+  countsByType: trpc.promotions.countsByType,
+  getUsagesByPromotion: trpc.promotions.getUsagesByPromotion,
+  // create: trpc.promotions.create,
+  // update: trpc.promotions.update,
+};

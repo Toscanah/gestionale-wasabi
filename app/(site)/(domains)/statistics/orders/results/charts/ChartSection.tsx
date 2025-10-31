@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import WasabiUniversalSelect from "@/app/(site)/components/ui/wasabi/WasabiUniversalSelect ";
+import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
 import { Skeleton } from "@/components/ui/skeleton";
 import { OrderType } from "@prisma/client";
 import {
@@ -128,7 +128,7 @@ export default function ChartSection({
             <Skeleton className="h-9 w-full rounded-lg" />
           ) : (
             <>
-              <WasabiUniversalSelect
+              <WasabiSelect
                 searchPlaceholder="Cerca campo..."
                 triggerIcon={CompassToolIcon}
                 disabled={isLoading}
@@ -150,7 +150,7 @@ export default function ChartSection({
                 ]}
               />
 
-              <WasabiUniversalSelect
+              <WasabiSelect
                 disabled={isLoading}
                 triggerIcon={ChartLineIcon}
                 shouldClear={false}
@@ -171,7 +171,7 @@ export default function ChartSection({
                 ]}
               />
 
-              <WasabiUniversalSelect
+              <WasabiSelect
                 triggerIcon={GearIcon}
                 disabled={type === "pie" || isLoading}
                 shouldClear={false}

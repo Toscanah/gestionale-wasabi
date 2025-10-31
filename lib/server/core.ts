@@ -9,6 +9,7 @@ import {
   paymentsRouter,
   productsRouter,
   riceRouter,
+  promotionsRouter,
 } from "./routers/_index";
 import { createTRPCRouter } from "./trpc";
 
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
   payments: paymentsRouter,
   products: productsRouter,
   rice: riceRouter,
+  promotions: promotionsRouter,
 });
 
 export type AppRouter = typeof appRouter;

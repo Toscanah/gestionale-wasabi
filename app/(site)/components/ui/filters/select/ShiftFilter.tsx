@@ -1,7 +1,6 @@
-import WasabiSelect from "../../wasabi/WasabiSelect";
-import { OrderFilters } from "@/app/(site)/hooks/statistics/sectionReducer";
 import { SHIFT_LABELS, ShiftFilterValue } from "@/app/(site)/lib/shared";
-import { ForkKnife } from "@phosphor-icons/react";
+import { ForkKnife, ForkKnifeIcon } from "@phosphor-icons/react";
+import WasabiSelect from "../../wasabi/WasabiSelect";
 
 interface ShiftFilterProps {
   selectedShift: ShiftFilterValue;
@@ -12,10 +11,12 @@ interface ShiftFilterProps {
 export default function ShiftFilter({ selectedShift, onShiftChange, disabled }: ShiftFilterProps) {
   return (
     <WasabiSelect
+      searchPlaceholder="Cerca turno"
+      appearance="filter"
       mode="single"
       title="Turno"
       disabled={disabled}
-      triggerIcon={ForkKnife}
+      triggerIcon={ForkKnifeIcon}
       shouldClear={selectedShift !== ShiftFilterValue.ALL}
       selectedValue={selectedShift}
       onChange={(updatedShift) =>

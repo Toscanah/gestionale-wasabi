@@ -1,27 +1,18 @@
-import { ElementRef, forwardRef, KeyboardEvent, useEffect, useState } from "react";
-import { ControllerRenderProps } from "react-hook-form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ComponentRef, ElementRef, forwardRef, KeyboardEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "@/components/ui/command";
-import { Check, Clock, Moon, PuzzlePiece, Sun } from "@phosphor-icons/react";
+import { Check, Clock, Moon, PuzzlePiece, RocketLaunchIcon, Sun, WineIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import generateTimeSlots from "@/app/(site)/lib/utils/global/time/generateTimeSlots";
-import WasabiSelect, { CommandGroupType, CommandOption } from "../../wasabi/WasabiSelect";
 import {
   DEFAULT_WHEN_LABEL,
   DEFAULT_WHEN_VALUE,
 } from "@/app/(site)/lib/shared/constants/default-when";
 import { ShiftBoundaries } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import WasabiUniversalSelect from "../../wasabi/WasabiUniversalSelect ";
+import WasabiSelect, {
+  CommandGroupType,
+  CommandOption,
+} from "../../wasabi/WasabiSelect";
 
 interface WhenSelectorProps {
   className?: string;
@@ -59,7 +50,7 @@ function floatToHourMinute(value: number, minuteOffset = 0): [number, number] {
   return [adjustedHour, minute];
 }
 
-const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorProps>(
+const WhenSelector = forwardRef<ComponentRef<typeof WasabiSelect>, WhenSelectorProps>(
   ({ className, value, onValueChange, onKeyDown }, ref) => {
     const [open, setOpen] = useState<boolean>(false);
     const [oneTimeValue, setOneTimeValue] = useState<string>("");
@@ -118,7 +109,7 @@ const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorPro
 
     groups.push({
       label: DEFAULT_WHEN_LABEL,
-      icon: Clock,
+      icon: RocketLaunchIcon,
       options: [{ label: DEFAULT_WHEN_LABEL, value: DEFAULT_WHEN_VALUE }],
     });
 
@@ -133,7 +124,7 @@ const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorPro
     if (dinnerTimes.length > 0) {
       groups.push({
         label: "Cena",
-        icon: Moon,
+        icon: WineIcon,
         options: dinnerTimes.map((time) => ({ label: time, value: time })),
       });
     }
@@ -154,7 +145,7 @@ const WhenSelector = forwardRef<ElementRef<typeof WasabiSelect>, WhenSelectorPro
     };
 
     return (
-      <WasabiUniversalSelect
+      <WasabiSelect
         appearance="form"
         groups={groups}
         searchPlaceholder="Cerca un orario..."

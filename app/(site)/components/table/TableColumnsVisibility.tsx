@@ -3,7 +3,7 @@
 import React from "react";
 import type { Table } from "@tanstack/react-table";
 import { EyeIcon, SlidersHorizontalIcon } from "@phosphor-icons/react";
-import WasabiUniversalSelect, { CommandGroupType } from "../ui/wasabi/WasabiUniversalSelect ";
+import WasabiSelect, { CommandGroupType } from "../ui/wasabi/WasabiSelect";
 
 interface TableVisibilityProps<TData> {
   table: Table<TData>;
@@ -40,7 +40,7 @@ export default function TableColumnsVisibility<TData>({
   const selected = columns.filter((c) => c.getIsVisible()).map((c) => c.id);
 
   return (
-    <WasabiUniversalSelect
+    <WasabiSelect
       disabled={disabled}
       appearance="filter"
       title="Colonne"

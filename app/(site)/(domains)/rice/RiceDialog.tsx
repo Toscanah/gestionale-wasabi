@@ -5,11 +5,11 @@ import { Gear } from "@phosphor-icons/react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { useEffect, useState } from "react";
 import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
-import WasabiSimpleSelect from "../../components/ui/wasabi/WasabiSimpleSelect";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
 import useFocusOnClick from "../../hooks/focus/useFocusOnClick";
 import { trpc } from "@/lib/server/client";
+import WasabiSelect from "../../components/ui/wasabi/WasabiSelect";
 
 interface RiceDialogProps {
   variant: "header" | "sidebar";
@@ -130,9 +130,12 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <Label htmlFor="rice" className="text-xl">
             Valori di base
           </Label>
-          <WasabiSimpleSelect
+
+          <WasabiSelect
+            appearance="form"
+            mode="single"
             disabled={riceBatches.length === 0}
-            value={selectedRiceBatchId !== null ? String(selectedRiceBatchId) : undefined}
+            selectedValue={selectedRiceBatchId !== null ? String(selectedRiceBatchId) : undefined}
             groups={[
               {
                 options: riceBatches
@@ -143,7 +146,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
                   })),
               },
             ]}
-            onValueChange={handleSelectChange}
+            onChange={handleSelectChange}
           />
         </div>
 
@@ -196,13 +199,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
               Riso totale fin ad ora
             </Label>
             <div className="flex gap-2">
-              <Input
-                disabled
-                className="text-2xl"
-                type="number"
-                id="total"
-                value={rice.total}
-              />
+              <Input disabled className="text-2xl" type="number" id="total" value={rice.total} />
 
               <RiceHistory />
             </div>

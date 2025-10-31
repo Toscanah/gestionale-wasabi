@@ -2,7 +2,7 @@ import { endOfYear, startOfYear } from "date-fns";
 import { RangeModeProps } from "../CalendarFilter";
 import { HashStraightIcon } from "@phosphor-icons/react";
 import { STARTING_DAY, STARTING_YEAR, YEARS_SINCE_START } from "@/app/(site)/lib/shared";
-import WasabiUniversalSelect from "../../../wasabi/WasabiUniversalSelect ";
+import WasabiSelect from "../../../wasabi/WasabiSelect";
 
 interface YearPresetsProps {
   handleDateFilter: RangeModeProps["handleDateFilter"];
@@ -33,7 +33,8 @@ export default function YearPresets({ handleDateFilter, triggerClassName }: Year
   ];
 
   return (
-    <WasabiUniversalSelect
+    <WasabiSelect
+      searchPlaceholder="Cerca anno"  
       appearance="filter"
       shouldSort={false}
       triggerIcon={HashStraightIcon}

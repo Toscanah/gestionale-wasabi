@@ -1,24 +1,42 @@
-import { ElementRef, ElementType, forwardRef, useMemo } from "react";
-import { Fragment } from "react";
+"use client";
+
+import React, {
+  forwardRef,
+  useState,
+  useMemo,
+  Fragment,
+  ElementRef,
+  ElementType,
+  ComponentRef,
+} from "react";
+import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Circle, CircleIcon } from "@phosphor-icons/react"; // Circle for single mode indicator
+import { Button } from "@/components/ui/button";
+import { Check, Circle as CircleIcon } from "@phosphor-icons/react";
 import {
   Command,
+  CommandInput,
+  CommandList,
+  CommandItem,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
 import WasabiPopover from "./WasabiPopover";
 import FilterTrigger from "../filters/common/FilterTrigger";
+import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
+import normalizeCase from "@/app/(site)/lib/utils/global/string/normalizeCase";
+
+/* -------------------------------------------------------------------------- */
+/*                                   Types                                    */
+/* -------------------------------------------------------------------------- */
 
 export type CommandOption = {
   icon?: React.FC<React.SVGProps<SVGSVGElement>>;
   label: string;
   value: string;
   count?: number;
+  disabled?: boolean;
 };
 
 export type CommandGroupType = {
@@ -27,161 +45,304 @@ export type CommandGroupType = {
   options: CommandOption[];
 };
 
-interface WasabiSelectPropsMulti {
+/* ------------------------------ Mode props -------------------------------- */
+
+interface BaseModeSingle {
+  mode: "single"; // default
+  selectedValue?: string;
+  onChange: (value: string) => void;
+}
+
+interface BaseModeMulti {
   mode: "multi";
   selectedValues: string[];
-  onChange: (updatedValues: string[]) => void;
+  onChange: (values: string[]) => void;
 }
 
-interface WasabiSelectPropsTransient {
+interface BaseModeTransient {
   mode: "transient";
-  onChange: (updatedValue: string) => void;
+  onChange: (value: string) => void;
 }
 
-interface WasabiSelectPropsSingle {
-  mode: "single";
-  selectedValue: string;
-  onChange: (updatedValue: string) => void;
-}
+type ModeProps = BaseModeSingle | BaseModeMulti | BaseModeTransient;
 
-type WasabiSelectProps = (
-  | WasabiSelectPropsSingle
-  | WasabiSelectPropsMulti
-  | WasabiSelectPropsTransient
-) & {
-  title: string;
+/* -------------------------- Common select props --------------------------- */
+
+interface CommonSelectProps {
   groups: CommandGroupType[];
-  inputPlaceholder?: string;
-  showInput?: boolean;
-  contentClassName?: string;
-  triggerClassName?: string;
-  triggerIcon?: ElementType;
   disabled?: boolean;
-  shouldClear?: boolean;
+  showInput?: boolean;
+  shouldSort?: boolean;
+  searchPlaceholder?: string;
+  contentClassName?: string;
+  itemClassName?: string;
+  labelClassName?: string;
   allLabel?: string;
-  trigger?: (selected: CommandOption | undefined) => React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-};
+  filterFn?: (value: string, search: string) => number;
+  id?: string;
+}
 
-const WasabiSelect = forwardRef<ElementRef<typeof WasabiPopover>, WasabiSelectProps>(
+/* ------------------------------- FILTER props ----------------------------- */
+
+interface FilterAppearanceProps {
+  appearance: "filter";
+  title: string;
+  triggerIcon?: ElementType;
+  triggerClassName?: string;
+  shouldClear?: boolean;
+  trigger?: (selected: CommandOption | undefined) => React.ReactNode;
+}
+
+/* -------------------------------- FORM props ------------------------------ */
+
+interface FormAppearanceProps {
+  appearance: "form";
+  placeholder?: string;
+  triggerClassName?: string;
+  triggerIcon?: ElementType;
+  trigger?: (selected: CommandOption | undefined) => React.ReactNode;
+}
+
+/* ----------------------------- Combined variants -------------------------- */
+
+export type WasabiFilterSelectProps = CommonSelectProps & FilterAppearanceProps & ModeProps;
+
+export type WasabiFormSelectProps = CommonSelectProps & FormAppearanceProps & ModeProps;
+
+export type WasabiSelectProps = WasabiFilterSelectProps | WasabiFormSelectProps;
+
+/* ------------------------------ Type guards -------------------------------- */
+
+function isMulti(
+  p: WasabiSelectProps
+): p is (WasabiFilterSelectProps & BaseModeMulti) | (WasabiFormSelectProps & BaseModeMulti) {
+  return p.mode === "multi";
+}
+
+function isTransient(
+  p: WasabiSelectProps
+): p is
+  | (WasabiFilterSelectProps & BaseModeTransient)
+  | (WasabiFormSelectProps & BaseModeTransient) {
+  return p.mode === "transient";
+}
+
+function isSingle(
+  p: WasabiSelectProps
+): p is (WasabiFilterSelectProps & BaseModeSingle) | (WasabiFormSelectProps & BaseModeSingle) {
+  // Treat undefined as "single" for DX
+  return p.mode === "single" || p.mode === undefined;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Component Impl                                 */
+/* -------------------------------------------------------------------------- */
+
+const WasabiSelect = forwardRef<ComponentRef<typeof WasabiPopover>, WasabiSelectProps>(
   (props, ref) => {
     const {
-      mode,
       groups,
-      title,
-      contentClassName,
-      inputPlaceholder,
-      triggerClassName,
-      showInput = true,
-      triggerIcon,
       disabled,
-      shouldClear = true,
-      trigger,
+      showInput = true,
+      searchPlaceholder = "Cerca...",
+      contentClassName,
+      itemClassName,
+      labelClassName,
+      allLabel,
+      shouldSort = true,
+      open,
+      onOpenChange,
+      filterFn,
     } = props;
 
-    const normalizedSelection = (
-      mode === "multi" ? props.selectedValues : mode === "single" ? [props.selectedValue] : []
-    ).filter(Boolean);
+    // Controlled/uncontrolled open
+    const [internalOpen, setInternalOpen] = useState(false);
+    const isOpen = open ?? internalOpen;
+    const setOpen = onOpenChange ?? setInternalOpen;
+
+    /* ------------------------------- Selection -------------------------------- */
 
     const allOptions = useMemo(() => groups.flatMap((g) => g.options), [groups]);
 
-    const handleOptionSelect = (option: CommandOption) => {
-      if (mode === "single" || mode === "transient") {
-        props.onChange(option.value);
+    const normalizedSelection: string[] = isMulti(props)
+      ? props.selectedValues
+      : isSingle(props)
+        ? [props.selectedValue ?? ""]
+        : [];
+
+    const selectedOptions =
+      isMulti(props) && allLabel && normalizedSelection.length === allOptions.length
+        ? [{ label: allLabel, value: "ALL" } as CommandOption]
+        : shouldSort
+          ? [...allOptions]
+              .filter((o) => normalizedSelection.includes(o.value))
+              .sort((a, b) => a.label.localeCompare(b.label))
+          : allOptions.filter((o) => normalizedSelection.includes(o.value));
+
+    /* -------------------------------- Handlers -------------------------------- */
+
+    const handleSelect = (option: CommandOption) => {
+      if (isMulti(props)) {
+        const current = props.selectedValues;
+        const updated = current.includes(option.value)
+          ? current.filter((v) => v !== option.value)
+          : [...current, option.value];
+        props.onChange(updated);
         return;
       }
 
-      const current = props.selectedValues;
-      const updatedValues = current.includes(option.value)
-        ? current.filter((v) => v !== option.value)
-        : [...current, option.value];
+      // single or transient
+      props.onChange(option.value);
 
-      props.onChange(updatedValues);
+      // Close only for FORM appearance (filter typically stays open)
+      // if (props.appearance === "form") {
+      //   setOpen(false);
+      // }
     };
 
     const handleReset = () => {
-      if (mode === "single" || mode === "transient") {
-        props.onChange("");
-      } else {
-        props.onChange([]);
-      }
+      if (isMulti(props)) props.onChange([]);
+      else props.onChange("");
     };
 
-    const selectedLabels =
-      mode === "multi" && props.allLabel && normalizedSelection.length === allOptions.length
-        ? [{ label: props.allLabel, value: "ALL" }]
-        : allOptions.filter((o) => normalizedSelection.includes(o.value));
+    /* -------------------------------- Trigger UI ------------------------------ */
+
+    let triggerNode: React.ReactNode;
+
+    if (props.appearance === "filter") {
+      const { title, triggerIcon, triggerClassName, shouldClear = true, trigger } = props;
+
+      triggerNode = trigger ? (
+        trigger(selectedOptions[0])
+      ) : (
+        <FilterTrigger
+          onClear={isTransient(props) ? undefined : shouldClear ? handleReset : undefined}
+          disabled={disabled}
+          triggerIcon={triggerIcon}
+          title={title}
+          values={selectedOptions.map((o) => o.label)}
+          className={triggerClassName}
+        />
+      );
+    } else {
+      const { placeholder = "Seleziona...", triggerClassName, triggerIcon, trigger } = props;
+      const TriggerIcon = triggerIcon;
+
+      triggerNode = trigger ? (
+        trigger(selectedOptions[0])
+      ) : (
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={isOpen}
+          disabled={disabled}
+          className={cn(
+            "justify-between w-full text-sm overflow-hidden text-ellipsis whitespace-nowrap",
+            triggerClassName
+          )}
+        >
+          {isMulti(props) ? (
+            selectedOptions.length > 0 ? (
+              <span className="truncate">
+                {selectedOptions.map((o) => normalizeCase(o.label)).join(", ")}
+              </span>
+            ) : (
+              <span className="text-muted-foreground">{placeholder}</span>
+            )
+          ) : (
+            <span>{normalizeCase(selectedOptions[0]?.label ?? placeholder)}</span>
+          )}
+
+          {TriggerIcon ? <TriggerIcon className="ml-2 h-4 w-4 opacity-60 flex-shrink-0" /> : null}
+        </Button>
+      );
+    }
+
+    /* --------------------------------- Render --------------------------------- */
 
     return (
       <WasabiPopover
         ref={ref}
-        open={props.open}
-        onOpenChange={props.onOpenChange}
-        contentClassName={`p-0 ${contentClassName || ""}`}
-        trigger={
-          trigger ? (
-            trigger(selectedLabels[0] ?? undefined)
-          ) : (
-            <FilterTrigger
-              onClear={mode == "transient" ? undefined : shouldClear ? handleReset : undefined}
-              disabled={disabled}
-              triggerIcon={triggerIcon}
-              title={title}
-              values={selectedLabels.map((o) => o.label)}
-              className={triggerClassName}
-            />
-          )
-        }
+        open={isOpen}
+        onOpenChange={setOpen}
+        trigger={triggerNode}
+        contentClassName={cn("p-0", contentClassName)}
       >
-        <Command>
+        <Command filter={filterFn}>
           {showInput && (
-            <CommandInput className="h-10" placeholder={inputPlaceholder || "Cerca..."} />
+            <CommandInput
+              placeholder={
+                searchPlaceholder.endsWith("...")
+                  ? searchPlaceholder
+                  : searchPlaceholder.concat("...")
+              }
+              className="h-9"
+            />
           )}
           <CommandList>
             <CommandEmpty>Nessun risultato trovato.</CommandEmpty>
 
-            {groups.map((group, groupIdx) => (
-              <Fragment key={groupIdx}>
+            {groups.map((group, idx) => (
+              <Fragment key={idx}>
                 <CommandGroup
                   heading={
-                    group.label && (
-                      <div className="flex gap-2 items-center">
+                    group.label ? (
+                      <div
+                        className={cn(
+                          "flex gap-2 items-center text-xs font-medium text-muted-foreground",
+                          labelClassName
+                        )}
+                      >
                         {group.icon && <group.icon className="h-4 w-4" />} {group.label}
                       </div>
-                    )
+                    ) : undefined
                   }
                 >
-                  {group.options.map((option, optionIdx) => {
+                  {(shouldSort
+                    ? [...group.options].sort((a, b) => a.label.localeCompare(b.label))
+                    : group.options
+                  ).map((option) => {
                     const isSelected = normalizedSelection.includes(option.value);
+
                     return (
                       <CommandItem
-                        key={optionIdx}
-                        onSelect={() => handleOptionSelect(option)}
-                        className="w-full flex gap-2 items-center"
-                      >
-                        {mode === "multi" ? (
-                          <Checkbox checked={isSelected} />
-                        ) : mode === "single" ? (
-                          <CircleIcon weight={isSelected ? "fill" : "regular"} />
-                        ) : (
-                          <></>
+                        disabled={option.disabled}
+                        key={option.value}
+                        value={option.label} // used for filtering by label
+                        onSelect={() => handleSelect(option)}
+                        className={cn(
+                          "w-full flex items-center justify-between text-sm",
+                          itemClassName
                         )}
+                      >
+                        {/* Selection indicator */}
+                        {isMulti(props) ? (
+                          <Checkbox checked={isSelected} />
+                        ) : isSingle(props) ? (
+                          <CircleIcon weight={isSelected ? "fill" : "regular"} />
+                        ) : null}
 
                         <div className="flex gap-2 items-center w-full leading-none">
                           {option.icon && <option.icon />}
-                          {option.label}
+                          {normalizeCase(option.label)}
                           {option.count && (
                             <span className="ml-auto font-mono text-muted-foreground">
                               {option.count}
                             </span>
                           )}
                         </div>
+
+                        {props.appearance === "form" &&
+                          isSingle(props) &&
+                          isSelected &&
+                          !option.count && <Check className="ml-auto h-4 w-4 opacity-70" />}
                       </CommandItem>
                     );
                   })}
                 </CommandGroup>
-                {groupIdx < groups.length - 1 && <CommandSeparator />}
+                {idx < groups.length - 1 && <CommandSeparator />}
               </Fragment>
             ))}
           </CommandList>
@@ -192,5 +353,4 @@ const WasabiSelect = forwardRef<ElementRef<typeof WasabiPopover>, WasabiSelectPr
 );
 
 WasabiSelect.displayName = "WasabiSelect";
-
 export default WasabiSelect;

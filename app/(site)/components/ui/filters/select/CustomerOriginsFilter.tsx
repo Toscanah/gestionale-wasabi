@@ -1,8 +1,8 @@
 import { CustomerOrigin } from "@prisma/client";
-import WasabiSelect from "../../wasabi/WasabiSelect";
 import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 import { Globe } from "@phosphor-icons/react/dist/ssr";
-import { Phone, QuestionMark, Signpost, Tag, UserSound } from "@phosphor-icons/react";
+import { Phone, QuestionMark, Signpost, SignpostIcon, Tag, UserSound } from "@phosphor-icons/react";
+import WasabiSelect from "../../wasabi/WasabiSelect";
 
 interface CustomerOriginsFilterProps {
   origins: CustomerOrigin[];
@@ -55,11 +55,12 @@ export default function CustomerOriginsFilter({
 
   return (
     <WasabiSelect
+      appearance="filter"
       title="Origini"
       mode="multi"
       disabled={disabled}
-      triggerIcon={Signpost}
-      inputPlaceholder="Cerca origine..."
+      triggerIcon={SignpostIcon}
+      searchPlaceholder="Cerca origine..."
       onChange={(updatedOrigins) => handleChange(updatedOrigins as CustomerOrigin[])}
       shouldClear={origins.length !== allOrigins.length}
       allLabel="Tutte"

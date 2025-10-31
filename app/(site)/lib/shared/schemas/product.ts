@@ -15,7 +15,7 @@ import {
 import { OptionInProductOrderWithOptionSchema } from "../models/Option";
 import SortingSchema from "./common/sorting";
 import { DottedKeys } from "../types/DottedKeys";
-import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
+import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 import { PaginationResponseSchema, PaginationSchema } from "./common/pagination";
 
 export const PRODUCT_STATS_SORT_FIELDS = [
@@ -52,7 +52,7 @@ export namespace ProductContracts {
   }
 
   export namespace GetAll {
-    export const Input = wrapFilters(
+    export const Input = wrapAsFilters(
       APIFiltersSchema.pick({
         categoryIds: true,
         onlyActive: true,
@@ -76,7 +76,7 @@ export namespace ProductContracts {
   }
 
   export namespace ComputeStats {
-    export const Input = wrapFilters(
+    export const Input = wrapAsFilters(
       APIFiltersSchema.pick({
         period: true,
         query: true,

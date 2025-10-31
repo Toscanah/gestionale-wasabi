@@ -12,7 +12,7 @@ import { NoContentRequestSchema } from "./common/no-content";
 import { wrapSchema } from "./common/utils";
 import { PaginationSchema, PaginationResponseSchema } from "./common/pagination";
 import { OrdersStats } from "./results/order-stats";
-import { APIFiltersSchema, wrapFilters } from "./common/filters/filters";
+import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 
 export namespace OrderContracts {
   export namespace Common {
@@ -31,7 +31,7 @@ export namespace OrderContracts {
     export const NoContentInput = NoContentRequestSchema;
     export type NoContentInput = z.infer<typeof NoContentInput>;
 
-    export const Filters = wrapFilters(
+    export const Filters = wrapAsFilters(
       APIFiltersSchema.omit({
         query: true,
         onlyActive: true,
@@ -90,7 +90,7 @@ export namespace OrderContracts {
   }
 
   export namespace GetWithPayments {
-    export const Input = wrapFilters(
+    export const Input = wrapAsFilters(
       APIFiltersSchema.omit({
         weekdays: true,
         timeWindow: true,

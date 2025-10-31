@@ -1,21 +1,13 @@
 "use client";
 
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
-import { startOfYear, endOfYear, startOfMonth, endOfMonth } from "date-fns";
 import { it } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
 import WasabiPopover from "../../wasabi/WasabiPopover";
 import { CalendarBlank, CalendarIcon, HashStraight, Lightning } from "@phosphor-icons/react";
 import FilterTrigger from "../common/FilterTrigger";
 import DateShiftButton from "./DateShiftButton";
-import WasabiSelect from "../../wasabi/WasabiSelect";
-import { DATE_FILTERING_PRESETS, DatePreset } from "@/app/(site)/lib/shared/enums/date-preset";
-import getDateRangeFromPreset from "@/app/(site)/lib/utils/global/date/getDateRangeForPreset";
 import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
-import { Separator } from "@/components/ui/separator";
-import { YEARS_SINCE_START } from "@/app/(site)/lib/shared/constants/starting-periods";
-import { ITALIAN_MONTHS } from "@/app/(site)/lib/shared";
-import WasabiUniversalSelect from "../../wasabi/WasabiUniversalSelect ";
 import { useEffect, useState } from "react";
 import DatePresets from "./presets/DatePresets";
 import YearPresets from "./presets/YearPresets";
@@ -44,6 +36,8 @@ export type RangeModeProps = {
 type CalendarProps = {
   disabled?: boolean;
   title?: string;
+  dashed?: boolean;
+  triggerClassName?: string;
 } & (SingleModeProps | RangeModeProps);
 
 const PRESETS_CLASSNAME = "flex-1 border-solid";
@@ -58,6 +52,8 @@ export default function CalendarFilter({
   useMonths = true,
   defaultValue,
   title,
+  dashed = true,
+  triggerClassName,
 }: CalendarProps) {
   const label = formatDateFilter(mode, dateFilter);
   const values = label ? [label] : [];
@@ -127,8 +123,10 @@ export default function CalendarFilter({
       contentClassName="flex flex-col gap-2 p-2"
       trigger={
         <FilterTrigger
+          dashed={dashed}
           triggerIcon={CalendarBlank}
           disabled={disabled}
+          className={triggerClassName}
           title={title ? title : mode === "single" ? "Data" : "Intervallo"}
           onClear={onClear}
           values={values}

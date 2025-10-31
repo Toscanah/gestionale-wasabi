@@ -1,11 +1,9 @@
 import { z } from "zod";
-import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import { Textarea } from "@/components/ui/textarea";
 import { FormFieldType } from "../manager/FormFields";
 import { CategoryContracts, CategoryWithOptions } from "@/app/(site)/lib/shared";
-import WasabiSimpleSelect from "../../../components/ui/wasabi/WasabiSimpleSelect";
 import { KitchenTypeSchema } from "@/prisma/generated/schemas";
 import KitchenType from "./KitchenType";
+import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
 
 export const productFormSchema = z.object({
   code: z
@@ -27,11 +25,11 @@ export const productFormSchema = z.object({
     .default(0),
   site_price: z.coerce
     .number({ error: "Inserisci un numero" })
-    .min(0, { error: "Il prezzo in loco deve essere un numero positivo" })
+    .gt(0, { error: "Il prezzo in loco deve essere maggiore di zero" })
     .default(0),
   home_price: z.coerce
     .number({ error: "Inserisci un numero" })
-    .min(0, { error: "Il prezzo asporto deve essere un numero positivo" })
+    .gt(0, { error: "Il prezzo asporto deve essere maggiore di zero" })
     .default(0),
   rice: z.coerce
     .number({ error: "Inserisci un numero" })
@@ -101,18 +99,17 @@ export function getProductFields(
         </span>
       ),
       render: (field) => (
-        <WasabiSimpleSelect
+        <WasabiSelect
           searchPlaceholder="Cerca categoria..."
           placeholder="Seleziona una categoria"
           triggerClassName="h-9"
-          field={{
-            ...field,
-            value: field.value?.toString() ?? "-1",
-            onChange: (val: string) => {
-              const parsed = val === "-1" ? null : Number(val);
-              field.onChange(parsed);
-            },
+          appearance="form"
+          mode="single"
+          onChange={(val: string) => {
+            const parsed = val === "-1" ? null : Number(val);
+            field.onChange(parsed);
           }}
+          selectedValue={field.value?.toString() ?? "-1"}
           groups={[
             {
               options: [
