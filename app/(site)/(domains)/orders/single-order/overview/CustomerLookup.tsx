@@ -67,9 +67,9 @@ export default function CustomerLookup() {
     lifetimeOrders[0]
   );
 
-
   const rfm = calculateRFM(mostRecent.created_at, rfmInputs.orderCount, rfmInputs.totalSpending);
   const rfmScore = calculateRfmScore(rfm, rfmRules);
+  console.log(rfmScore)
   const rfmRank = calculateRfmRank(rfmScore, ranks);
 
   // ---- Render ----
@@ -79,6 +79,8 @@ export default function CustomerLookup() {
       ? (order.pickup_order.customer?.origin ?? "UNKNOWN")
       : "UNKNOWN";
 
+
+  console.log(rfmRank)
 
   return (
     <span>

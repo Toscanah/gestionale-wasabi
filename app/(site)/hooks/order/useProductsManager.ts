@@ -8,6 +8,7 @@ import useProductCrud from "./products/useProductCrud";
 import useProductMods from "./products/useProductMods";
 import useProductPrinting from "./products/useProductPrinting";
 import useProductExtras from "./products/useProductExtras";
+import { useCachedDataContext } from "../../context/CachedDataContext";
 
 export type UpdateProductsListFunction = (params: {
   addedProducts?: ProductInOrder[];
@@ -22,6 +23,8 @@ export function useProductsManager(
   order: OrderByType,
   updateOrder: (order: RecursivePartial<OrderByType>) => void
 ) {
+  const { products: cachedProducts } = useCachedDataContext();
+
   const updateProductsList: UpdateProductsListFunction = ({
     addedProducts = [],
     updatedProducts = [],

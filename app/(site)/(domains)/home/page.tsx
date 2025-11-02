@@ -6,6 +6,7 @@ import { TableOrder, HomeOrder, PickupOrder, OrderByType } from "@/app/(site)/li
 import HomePage from "./HomePage";
 import { trpc } from "@/lib/server/client";
 import { ordersAPI } from "@/lib/server/api";
+import { CachedDataProvider } from "../../context/CachedDataContext";
 
 export type BuildOrderState<TTable, THome, TPickup> = {
   [OrderType.TABLE]: TTable;
@@ -73,8 +74,10 @@ export default function HomeWrapper() {
   };
 
   return (
-    <WasabiProvider updateGlobalState={updateGlobalState}>
-      <HomePage orders={orders} loadings={loadings} />
-    </WasabiProvider>
+    <CachedDataProvider>
+      <WasabiProvider updateGlobalState={updateGlobalState}>
+        <HomePage orders={orders} loadings={loadings} />
+      </WasabiProvider>
+    </CachedDataProvider>
   );
 }

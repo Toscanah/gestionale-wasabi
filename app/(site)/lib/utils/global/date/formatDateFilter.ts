@@ -8,6 +8,7 @@ export default function formatDateFilter(
   locale = it
 ): string {
   if (mode === "single") {
+    console.log(dateFilter)
     return format((dateFilter as Date) ?? new Date(), "PPP", { locale });
   }
 

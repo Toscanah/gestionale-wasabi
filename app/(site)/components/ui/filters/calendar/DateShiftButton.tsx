@@ -6,39 +6,34 @@ import { DateRange } from "react-day-picker";
 type Mode = "single" | "range";
 
 interface DateShiftButtonProps {
-  mode: Mode;
   value: Date | DateRange | undefined;
   onChange: (next: Date | DateRange) => void;
   amount: number;
 }
 
-export default function DateShiftButton({
-  mode,
-  value,
-  onChange,
-  amount,
-}: DateShiftButtonProps) {
+export default function DateShiftButton({ value, onChange, amount }: DateShiftButtonProps) {
   const Icon = amount < 0 ? Minus : Plus;
   const absAmount = Math.abs(amount);
 
   const handleClick = () => {
-    if (mode === "single") {
-      const date = (value as Date | undefined) ?? new Date();
-      onChange(addDays(date, amount));
-    } else {
-      const range = value as DateRange | undefined;
-      const from = range?.from ?? new Date();
-      const to = range?.to ?? new Date();
-      onChange({
-        from: addDays(from, amount),
-        to: addDays(to, amount),
-      });
+    if (!value) return;
+
+    // RANGE: { from, to }
+    if (typeof value === "object" && "from" in value) {
+      const from = value.from ? addDays(value.from, amount) : undefined;
+      const to = value.to ? addDays(value.to, amount) : undefined;
+      onChange({ from, to } as DateRange);
+    }
+
+    // SINGLE: Date
+    else if (value instanceof Date) {
+      onChange(addDays(value, amount));
     }
   };
 
   return (
     <Button className="h-8 flex-1" variant="outline" onClick={handleClick}>
-      <Icon className="h-4 w-4 mr-2" />
+      <Icon className="h-4 w-4 " />
       {absAmount} giorni
     </Button>
   );

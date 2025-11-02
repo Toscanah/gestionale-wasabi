@@ -15,6 +15,7 @@ import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/li
 import getOverdrawnOrderIds from "../../lib/services/order-management/getOverdrawnOrderIds";
 import { BuildOrderState } from "./page";
 import dynamic from "next/dynamic";
+import { useCachedDataContext } from "../../context/CachedDataContext";
 
 const RandomSpinner = dynamic(() => import("../../components/ui/misc/loader/RandomSpinner"), {
   ssr: false,
@@ -26,6 +27,7 @@ interface HomePageProps {
 }
 
 export default function HomePage({ orders, loadings }: HomePageProps) {
+  const { isLoading: isLoadingCachedData } = useCachedDataContext();
   const { rice } = useWasabiContext();
 
   const [activeOrders, setActiveOrders] = useState<BuildOrderState<boolean, boolean, boolean>>({
@@ -105,7 +107,7 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
                   </div>
 
                   <OrdersTable
-                    isLoading={isLoading}
+                    isLoading={isLoading || isLoadingCachedData}
                     overdrawnOrderIds={overdrawnOrderIds}
                     data={orders[type].sort(
                       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()

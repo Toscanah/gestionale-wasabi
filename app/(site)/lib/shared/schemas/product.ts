@@ -89,7 +89,6 @@ export namespace ProductContracts {
       })
       .partial()
       .optional();
-
     export type Input = z.infer<typeof Input>;
 
     export const Output = z.object({
@@ -102,7 +101,6 @@ export namespace ProductContracts {
     export const Input = z.object({
       product: createInputSchema(ProductSchema),
     });
-
     export type Input = z.infer<typeof Input>;
 
     export const Output = Common.WithCategory;

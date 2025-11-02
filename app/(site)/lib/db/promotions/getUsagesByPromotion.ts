@@ -9,7 +9,12 @@ export default async function getUsagesByPromotion(
   // Fetch the usages by promotion from the database
   const usages = await prisma.promotionUsage.findMany({
     where: { promotion_id: promotionId },
-    include: { order: true },
+    include: {
+      order: true,
+      promotion: {
+        include: { usages: true },
+      },
+    },
   });
 
   return usages;

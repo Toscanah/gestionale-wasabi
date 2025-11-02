@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { HomeOrder, OrderWithSummedPayments } from "@/app/(site)/lib/shared";
+import { HomeOrder, ORDER_TYPE_COLORS, OrderWithSummedPayments } from "@/app/(site)/lib/shared";
 import { Badge } from "@/components/ui/badge";
 import { OrderType, PlannedPayment } from "@prisma/client";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
     sortable: false,
     value: (row) => {
       return (
-        <Badge>
+        <Badge className={ORDER_TYPE_COLORS[row.original.type]}>
           {OrderGuards.isHome(row.original)
             ? "Domicilio"
             : OrderGuards.isPickup(row.original)

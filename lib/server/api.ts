@@ -122,6 +122,6 @@ export const promotionsAPI: Hooks<typeof trpc.promotions> = {
   getAll: trpc.promotions.getAll,
   countsByType: trpc.promotions.countsByType,
   getUsagesByPromotion: trpc.promotions.getUsagesByPromotion,
-  // create: trpc.promotions.create,
+  create: trpc.promotions.create,
   // update: trpc.promotions.update,
 };

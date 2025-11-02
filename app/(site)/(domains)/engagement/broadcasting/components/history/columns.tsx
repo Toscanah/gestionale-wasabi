@@ -6,11 +6,13 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { EngagementHistoryTableMeta } from "./EngagementHistory";
 import { Badge } from "@/components/ui/badge";
-import LEDGER_LABELS from "@/app/(site)/lib/shared/constants/engagement-ledger-labels";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ArrowCounterClockwise, Check } from "@phosphor-icons/react";
-import { useTheme } from "next-themes";
+import {
+  ENG_LEDGER_COLORS,
+  ENG_LEDGER_LABELS,
+} from "@/app/(site)/lib/shared/constants/engagement-ledger-labels";
 
 const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
   IndexColumn({}),
@@ -47,12 +49,6 @@ const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
 
       const ledger = row.original;
 
-      const colors = {
-        [EngagementLedgerStatus.ISSUED]: "bg-standard-500",
-        [EngagementLedgerStatus.REDEEMED]: "bg-success-500",
-        [EngagementLedgerStatus.VOID]: "bg-destructive",
-      };
-
       const isFromCurrentOrder =
         ledger.issued_on_order_id === (meta as EngagementHistoryTableMeta).orderId;
 
@@ -72,7 +68,7 @@ const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
           defaultValue={ledger.status}
           className="w-full flex gap-8"
         >
-          {Object.entries(LEDGER_LABELS).map(([value, label]) => {
+          {Object.entries(ENG_LEDGER_LABELS).map(([value, label]) => {
             const isSelected = ledger.status === value;
             return (
               <div key={value} className="flex items-center space-x-2 transition">
@@ -81,7 +77,7 @@ const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
                   <Badge
                     className={cn(
                       "transition-colors px-3 py-1",
-                      isSelected ? colors[value as EngagementLedgerStatus] : ""
+                      isSelected ? ENG_LEDGER_COLORS[value as EngagementLedgerStatus] : ""
                     )}
                   >
                     {label +

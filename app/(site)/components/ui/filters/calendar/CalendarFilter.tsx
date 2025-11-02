@@ -143,11 +143,7 @@ export default function CalendarFilter({
         )}
 
         {useMonths && mode === "range" && (
-          <MonthPresets
-            handleDateFilter={handleDateFilter}
-            triggerClassName={PRESETS_CLASSNAME}
-            setVisibleMonth={setVisibleMonth}
-          />
+          <MonthPresets handleDateFilter={handleDateFilter} triggerClassName={PRESETS_CLASSNAME} />
         )}
       </div>
 
@@ -169,61 +165,36 @@ export default function CalendarFilter({
       </div>
 
       <div className="flex gap-2">
-        {mode === "single" ? (
-          <>
-            <DateShiftButton
-              mode="single"
-              value={dateFilter}
-              onChange={(next) => handleDateFilter(next as Date)}
-              amount={-1}
-            />
-            <DateShiftButton
-              mode="single"
-              value={dateFilter}
-              onChange={(next) => handleDateFilter(next as Date)}
-              amount={+1}
-            />
-          </>
-        ) : (
-          <>
-            <DateShiftButton
-              mode="range"
-              value={dateFilter}
-              onChange={(next) => handleDateFilter(next as DateRange)}
-              amount={-30}
-            />
-            <DateShiftButton
-              mode="range"
-              value={dateFilter}
-              onChange={(next) => handleDateFilter(next as DateRange)}
-              amount={-7}
-            />
-            <DateShiftButton
-              mode="range"
-              value={dateFilter}
-              onChange={(next) => handleDateFilter(next as DateRange)}
-              amount={-1}
-            />
-            <DateShiftButton
-              mode="range"
-              value={dateFilter}
-              onChange={(next) => handleDateFilter(next as DateRange)}
-              amount={+1}
-            />
-            <DateShiftButton
-              mode="range"
-              value={dateFilter}
-              onChange={(next) => handleDateFilter(next as DateRange)}
-              amount={+7}
-            />
-            <DateShiftButton
-              mode="range"
-              value={dateFilter}
-              onChange={(next) => handleDateFilter(next as DateRange)}
-              amount={30}
-            />
-          </>
-        )}
+        <DateShiftButton
+          value={dateFilter}
+          onChange={(next) => handleDateFilter(next as any)}
+          amount={-30}
+        />
+        <DateShiftButton
+          value={dateFilter}
+          onChange={(next) => handleDateFilter(next as any)}
+          amount={-7}
+        />
+        <DateShiftButton
+          value={dateFilter}
+          onChange={(next) => handleDateFilter(next as any)}
+          amount={-1}
+        />
+        <DateShiftButton
+          value={dateFilter}
+          onChange={(next) => handleDateFilter(next as any)}
+          amount={+1}
+        />
+        <DateShiftButton
+          value={dateFilter}
+          onChange={(next) => handleDateFilter(next as any)}
+          amount={+7}
+        />
+        <DateShiftButton
+          value={dateFilter}
+          onChange={(next) => handleDateFilter(next as any)}
+          amount={30}
+        />
       </div>
     </WasabiPopover>
   );

@@ -374,10 +374,9 @@ model Promotion {
     created_at       DateTime         @default(now()) @db.Timestamptz(3)
     expires_at       DateTime?        @db.Timestamptz(3)
     never_expires    Boolean          @default(false)
+    reusable         Boolean          @default(false)
+    max_usages       Int? // for % discounts
     usages           PromotionUsage[]
-
-    @@index([code])
-    @@index([type])
 }
 
 model PromotionUsage {
@@ -385,7 +384,7 @@ model PromotionUsage {
     promotion_id Int
     order_id     Int
     amount       Float     @default(0)
-    used_at      DateTime  @default(now()) @db.Timestamptz(3)
+    created_at   DateTime  @default(now()) @db.Timestamptz(3)
     promotion    Promotion @relation(fields: [promotion_id], references: [id], onDelete: Cascade)
     order        Order     @relation(fields: [order_id], references: [id], onDelete: Cascade)
 }

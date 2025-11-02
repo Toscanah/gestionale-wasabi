@@ -34,9 +34,13 @@ export default function normalizeCase(input: string): string {
     // Otherwise → capitalize first, rest lower
     const words = trimmed.split(/\s+/);
     const normalized = words.map((word, index) => {
+      // 🔹 Force "RFM" normalization (case-insensitive)
+      if (word.toLowerCase() === "rfm") return "RFM";
+
       const lower = word.toLowerCase();
       return index === 0 ? capitalizeFirstLetter(lower) : lower;
     });
+
     return normalized.join(" ");
   }
 }

@@ -3,6 +3,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { PromotionContracts } from "@/app/(site)/lib/shared";
 import countPromotionsByType from "@/app/(site)/lib/db/promotions/countPromotionsByType";
 import getUsagesByPromotion from "@/app/(site)/lib/db/promotions/getUsagesByPromotion";
+import createNewPromotion from "@/app/(site)/lib/db/promotions/createNewPromotion";
 
 export const promotionsRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -20,10 +21,10 @@ export const promotionsRouter = createTRPCRouter({
     .output(PromotionContracts.GetUsagesByPromotion.Output)
     .query(({ input }) => getUsagesByPromotion(input)),
 
-  // create: publicProcedure
-  //   .input(PromotionContracts.Create.Input)
-  //   .output(PromotionContracts.Create.Output)
-  //   .mutation(({ input }) => createPromotion(input)),
+  create: publicProcedure
+    .input(PromotionContracts.Create.Input)
+    .output(PromotionContracts.Create.Output)
+    .mutation(({ input }) => createNewPromotion(input)),
 
   // update: publicProcedure
   //   .input(PromotionContracts.Update.Input)

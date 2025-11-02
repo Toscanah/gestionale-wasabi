@@ -29,7 +29,7 @@ export const CUSTOMER_STATS_SORT_MAP: Record<
   "Primo ordine": { field: "firstOrderAt", type: "date" },
   "Ultimo ordine": { field: "lastOrderAt", type: "date" },
   "Punteggio RFM": { field: "rfm.score.finalScore", type: "number" },
-  "Rank RFM": { field: "rfm.rank", type: "string" },
+  "Rank RFM": { field: "rfm.rank", type: "number" },
 } as const;
 
 export default function useCustomersStats({ page, pageSize }: UseCustomersStatsParams) {

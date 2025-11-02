@@ -212,7 +212,7 @@ export default function Table<T>({
                             )}
                           >
                             {/* invisible content keeps column width consistent */}
-                            <div className="opacity-0">
+                            <div className="opacity-0 *:pointer-events-none">
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </div>
                           </TableCell>

@@ -181,7 +181,14 @@ export default function TablePagination<TData>({
             <CaretLeftIcon size={18} />
           </Button>
 
-          <Button variant="outline" size="sm" className="pointer-events-none">
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(
+              "pointer-events-none",
+              (currentPage === 0 || disabled || totalPages <= 1) && "!border-l-1"
+            )}
+          >
             Pagina {currentPage + 1} di {totalPages}
           </Button>
 

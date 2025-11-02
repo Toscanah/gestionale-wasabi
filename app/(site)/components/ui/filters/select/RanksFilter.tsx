@@ -19,6 +19,7 @@ export default function RanksFilter({ ranks, onRanksChange, allRanks, disabled }
 
   return (
     <WasabiSelect
+      shouldSort={false}
       appearance="filter"
       triggerIcon={TrophyIcon}
       title="Rank"

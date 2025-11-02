@@ -1,10 +1,42 @@
 import z from "zod";
 import { APIFiltersSchema, PromotionFiltersSchema, wrapAsFilters } from "./common/filters/filters";
-import { PromotionByTypeSchema, PromotionUsageWithOrderSchema } from "../models/Promotion";
+import {
+  FixedDiscountPromotionSchema,
+  GiftCardPromotionSchema,
+  PercentageDiscountPromotionSchema,
+  PromotionByTypeSchema,
+  PromotionUsageWithOrderSchema,
+} from "../models/Promotion";
 import { NoContentRequestSchema } from "./_index";
 import { PromotionType } from "@prisma/client";
 
 export namespace PromotionContracts {
+  export namespace Common {
+    export const FixedDiscountPromotionCreateSchema = FixedDiscountPromotionSchema.omit({
+      id: true,
+      usages: true,
+      created_at: true,
+    });
+
+    export const GiftCardPromotionCreateSchema = GiftCardPromotionSchema.omit({
+      id: true,
+      usages: true,
+      created_at: true,
+    });
+
+    export const PercentageDiscountPromotionCreateSchema = PercentageDiscountPromotionSchema.omit({
+      id: true,
+      usages: true,
+      created_at: true,
+    });
+
+    export const PromotionCreateSchema = z.discriminatedUnion("type", [
+      FixedDiscountPromotionCreateSchema,
+      GiftCardPromotionCreateSchema,
+      PercentageDiscountPromotionCreateSchema,
+    ]);
+    export type PromotionCreateSchema = z.infer<typeof PromotionCreateSchema>;
+  }
   export namespace GetAll {
     export const Input = PromotionFiltersSchema.partial().optional();
     export type Input = z.infer<typeof Input>;
@@ -31,7 +63,15 @@ export namespace PromotionContracts {
     export type Output = z.infer<typeof Output>;
   }
 
-  export namespace Create {}
+  export namespace Create {
+    export const Input = z.object({
+      promotion: Common.PromotionCreateSchema,
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = PromotionByTypeSchema;
+    export type Output = z.infer<typeof Output>;
+  }
 
   export namespace Update {}
 }

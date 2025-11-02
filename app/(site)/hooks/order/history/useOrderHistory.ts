@@ -3,7 +3,7 @@ import {
   OrderInputWithoutDiscount,
 } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus, OrderType } from "@prisma/client";
 import { useEffect, useState } from "react";
 import useHistoryStats from "./useHistoryStats";
 
@@ -18,11 +18,11 @@ export default function useOrderHistory({ customer }: UseOrderHistoryParams) {
 
   const orderTypes = [
     {
-      type: "Domicilio",
+      type: OrderType.HOME,
       orders: customer.home_orders.filter((order) => shouldCountOrder(order.order)),
     },
     {
-      type: "Asporto",
+      type: OrderType.PICKUP,
       orders: customer.pickup_orders.filter((order) => shouldCountOrder(order.order)),
     },
   ];

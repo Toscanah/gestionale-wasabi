@@ -11,13 +11,11 @@ import { endOfMonth, startOfMonth } from "date-fns";
 interface MonthPresetsProps {
   handleDateFilter: RangeModeProps["handleDateFilter"];
   triggerClassName?: string;
-  setVisibleMonth: (date: Date) => void;
 }
 
 export default function MonthPresets({
   handleDateFilter,
   triggerClassName,
-  setVisibleMonth,
 }: MonthPresetsProps) {
   const handleMonthChange = (val: string) => {
     const monthIndex = ITALIAN_MONTHS.indexOf(val);
@@ -31,7 +29,6 @@ export default function MonthPresets({
     }
 
     handleDateFilter({ from, to });
-    setVisibleMonth(from);
   };
 
   const GROUPS = [

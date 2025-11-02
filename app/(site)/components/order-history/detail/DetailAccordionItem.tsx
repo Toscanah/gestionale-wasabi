@@ -9,12 +9,13 @@ import { getOrderTotal } from "../../../lib/services/order-management/getOrderTo
 import OrderDetail from "./OrderDetail";
 import { Button } from "@/components/ui/button";
 import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
-import { OrderWithProducts, ProductInOrder } from "../../../lib/shared";
+import { ORDER_TYPE_COLORS, ORDER_TYPE_LABELS, OrderWithProducts, ProductInOrder } from "../../../lib/shared";
 import filterDeletedProducts from "../../../lib/services/product-management/filterDeletedProducts";
 import { useEffect } from "react";
+import { OrderType } from "@prisma/client";
 
 type OrderAccordionItemProps = {
-  type: string;
+  type: OrderType;
   id: number;
   order: OrderWithProducts;
   onCheckboxChange: (pio: ProductInOrder) => void;
@@ -68,7 +69,7 @@ export default function DetailAccordionItem({
       <AccordionTrigger className="text-2xl">
         <div className="flex gap-4 items-center justify-between">
           <span className="flex items-center gap-2">
-            <Badge className="text-base">{type}</Badge>
+            <Badge className={"text-base " + ORDER_TYPE_COLORS[type]}>{ORDER_TYPE_LABELS[type]}</Badge>
             {orderDate} - {"€ " + orderTotal}
             {orderDiscount}
           </span>

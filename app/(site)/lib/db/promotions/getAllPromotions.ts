@@ -21,7 +21,7 @@ export default async function getAllPromotions(
 
         case "usage":
           dateConditions.push({
-            usages: { some: { used_at: { gte: f.from, lte: f.to } } },
+            usages: { some: { created_at: { gte: f.from, lte: f.to } } },
           });
           break;
 

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { Badge } from "@/components/ui/badge";
 import { OrderType } from "@prisma/client";
-import { OrderGuards, OrderWithSummedPayments } from "@/app/(site)/lib/shared";
+import { ORDER_TYPE_COLORS, OrderGuards, OrderWithSummedPayments } from "@/app/(site)/lib/shared";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import joinItemsWithComma from "@/app/(site)/lib/utils/global/string/joinItemsWithComma";
 
@@ -17,7 +17,7 @@ export default function OrderSummary({ order }: OrderSummaryProps) {
       trigger={<Button type="button">Vedi ordine</Button>}
       title={
         <div className="flex gap-2 items-center">
-          <Badge>
+          <Badge className={ORDER_TYPE_COLORS[order.type]}>
             {OrderGuards.isHome(order)
               ? "Domicilio"
               : OrderGuards.isTable(order)

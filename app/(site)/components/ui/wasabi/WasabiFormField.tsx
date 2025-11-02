@@ -19,8 +19,9 @@ export interface WasabiFieldProps<
   K extends Path<T> = Path<T>,
 > {
   control: Control<T, any, TTransformedValues>;
+  disabled?: boolean;
   name: K;
-  label: string;
+  label?: string;
   description?: ReactNode;
   placeholder?: string;
   type?: string;
@@ -42,6 +43,7 @@ function WasabiFieldInner<T extends FieldValues, TTransformedValues extends T = 
     className,
     autoFocus = false,
     onKeyDown,
+    disabled = false,
   }: WasabiFieldProps<T, TTransformedValues>,
   ref: React.ForwardedRef<HTMLInputElement>
 ) {
@@ -51,14 +53,16 @@ function WasabiFieldInner<T extends FieldValues, TTransformedValues extends T = 
       name={name}
       render={({ field }) => (
         <FormItem className="w-full">
-          <FormLabel htmlFor={name}>{label}</FormLabel>
+          {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
           <FormControl>
             {render ? (
               render(field, ref, onKeyDown)
             ) : (
               <Input
                 {...field}
+                value={field.value ?? ""}
                 id={name}
+                disabled={disabled}
                 type={type}
                 placeholder={placeholder}
                 className={className}
