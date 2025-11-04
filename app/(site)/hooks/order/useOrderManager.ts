@@ -7,16 +7,18 @@ import { toastError, toastSuccess } from "../../lib/utils/global/toast";
 import { OrderStatus, OrderType } from "@prisma/client";
 import { trpc, trpcClient } from "@/lib/server/client";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";
+import useOrderDiscount from "./useOrderDiscount";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends object ? RecursivePartial<T[P]> | null : T[P] | null;
 };
 
 export function useOrderManager(
-  orderId: number,
+  order: OrderByType,
   setOrder: Dispatch<SetStateAction<OrderByType>>,
   dialogOpen: boolean
 ) {
+  const orderId = order.id;
   const { updateGlobalState, updateRemainingRice } = useWasabiContext();
   const [joinedTables, setJoinedTables] = useState<TableOrder[]>([]);
 
@@ -114,5 +116,6 @@ export function useOrderManager(
     createSubOrder,
     joinTableOrders,
     issueLedgers,
+    ...useOrderDiscount(order, updateOrder),
   };
 }

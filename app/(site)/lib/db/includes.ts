@@ -1,5 +1,9 @@
 import { Prisma } from "@prisma/client";
 
+export const promotionUsagesInclude = {
+  usages: true,
+};
+
 export const engagementsInclude = {
   engagements: {
     include: {
@@ -8,7 +12,7 @@ export const engagementsInclude = {
   },
 };
 
-export const promotionUsagesInclude = {
+export const orderPromotionUsagesInclude = {
   promotion_usages: {
     include: {
       promotion: {
@@ -64,7 +68,7 @@ export const orderInclude = {
     include: {
       ...productsInOrderInclude,
       ...engagementsInclude,
-      ...promotionUsagesInclude,
+      ...orderPromotionUsagesInclude,
     },
   },
 };

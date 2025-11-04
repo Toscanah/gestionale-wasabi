@@ -32,7 +32,15 @@ WITH
             COUNT(DISTINCT co.parent_order_id) AS total_orders,
             COALESCE(SUM(pio.quantity::double precision * pio.frozen_price::double precision), 0) AS total_spent,
             MIN(co.created_at) AS first_order_at,
-            MAX(co.created_at) AS last_order_at
+            MAX(co.created_at) AS last_order_at,
+            
+            -- ✅ Count orders only in the last 30 days (Rome-local)
+            COUNT(
+                DISTINCT CASE
+                    WHEN (co.created_at AT TIME ZONE 'Europe/Rome')::date >= ((CURRENT_DATE - INTERVAL '30 days') AT TIME ZONE 'Europe/Rome')::date
+                    THEN co.parent_order_id
+                END
+            ) AS recent_orders_30d
         FROM
             customer_orders co
             JOIN public."ProductInOrder" pio 
@@ -72,7 +80,10 @@ SELECT
         0
     ) AS "recency",
 
-    COALESCE(os.total_orders, 0)::int AS "frequency",
+    -- ✅ Frequency = orders in the last 30 days
+    COALESCE(os.recent_orders_30d, 0)::int AS "frequency",
+
+    -- ✅ Monetary = lifetime total spent
     COALESCE(os.total_spent, 0)::double precision AS "monetary"
 
 FROM public."Customer" c
@@ -106,6 +117,7 @@ GROUP BY
     os.total_orders,
     os.total_spent,
     os.first_order_at,
-    os.last_order_at
+    os.last_order_at,
+    os.recent_orders_30d
 OFFSET $4
 LIMIT $5;

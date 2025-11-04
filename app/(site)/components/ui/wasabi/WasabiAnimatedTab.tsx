@@ -6,12 +6,14 @@ interface WasabiAnimatedTabProps {
   value: string;
   currentValue: string;
   children: React.ReactNode;
+  className?: string;
 }
 
 export default function WasabiAnimatedTab({
   value,
   currentValue,
   children,
+  className,
 }: WasabiAnimatedTabProps) {
   const isActive = currentValue === value;
 
@@ -25,7 +27,7 @@ export default function WasabiAnimatedTab({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -40 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="overflow-hidden"
+            className={cn("overflow-hidden", className)}
           >
             {children}
           </motion.div>

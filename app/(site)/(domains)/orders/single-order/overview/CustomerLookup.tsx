@@ -15,10 +15,8 @@ export default function CustomerLookup() {
   const { rfmRules } = useRfmRules();
   const { ranks } = useRfmRanks();
 
-  // No RFM for table orders
   if (OrderGuards.isTable(order)) return null;
 
-  // ---- Helpers ----
   const getCustomerId = () => {
     if (OrderGuards.isPickup(order)) return order.pickup_order?.customer_id;
     if (OrderGuards.isHome(order)) return order.home_order?.customer_id;
@@ -41,7 +39,6 @@ export default function CustomerLookup() {
     return customer;
   };
 
-  // ---- Fetch customer ----
   const customerId = getCustomerId();
   const { data: customer } = trpc.customers.getComprehensive.useQuery(
     { customerId: customerId! },
@@ -58,29 +55,18 @@ export default function CustomerLookup() {
     (customer.home_orders?.length ?? 0) > 0 || (customer.pickup_orders?.length ?? 0) > 0;
   if (!hasOrders) return null;
 
-  // ---- RFM calculation ----
   const { lifetimeOrders } = extractCustomerOrders(customer);
-  const rfmInputs = prepareRFMInputs(lifetimeOrders);
 
-  const mostRecent = lifetimeOrders.reduce(
-    (latest, o) => (o.created_at > latest.created_at ? o : latest),
-    lifetimeOrders[0]
-  );
-
-  const rfm = calculateRFM(mostRecent.created_at, rfmInputs.orderCount, rfmInputs.totalSpending);
+  const rfm = calculateRFM(lifetimeOrders);
+  console.log("RFM for customer", customer.id, rfm);
   const rfmScore = calculateRfmScore(rfm, rfmRules);
-  console.log(rfmScore)
   const rfmRank = calculateRfmRank(rfmScore, ranks);
 
-  // ---- Render ----
   const origin = OrderGuards.isHome(order)
     ? order.home_order.customer.origin
     : OrderGuards.isPickup(order)
       ? (order.pickup_order.customer?.origin ?? "UNKNOWN")
       : "UNKNOWN";
-
-
-  console.log(rfmRank)
 
   return (
     <span>

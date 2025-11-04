@@ -247,7 +247,7 @@ export const HybridColumn = ValueColumn;
 
 export function SelectColumn<T>(): ColumnDefWithSkeleton<T> {
   return {
-    id: "select",
+    id: "select_" + uniqueId(),
     header: ({ table }) => {
       // const isLoad = isLoading(table.options.meta);
       // if (isLoad) return <div className="h-5 w-5 rounded bg-muted" />;

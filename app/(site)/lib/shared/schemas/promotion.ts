@@ -1,5 +1,5 @@
 import z from "zod";
-import { APIFiltersSchema, PromotionFiltersSchema, wrapAsFilters } from "./common/filters/filters";
+import { PromotionFiltersSchema } from "./common/filters/filters";
 import {
   FixedDiscountPromotionSchema,
   GiftCardPromotionSchema,
@@ -9,6 +9,7 @@ import {
 } from "../models/Promotion";
 import { NoContentRequestSchema } from "./_index";
 import { PromotionType } from "@prisma/client";
+import { PromotionUsageSchema } from "@/prisma/generated/schemas";
 
 export namespace PromotionContracts {
   export namespace Common {
@@ -73,5 +74,24 @@ export namespace PromotionContracts {
     export type Output = z.infer<typeof Output>;
   }
 
-  export namespace Update {}
+  export namespace ApplyPromotion {
+    export const Input = z.object({
+      orderId: z.coerce.number(),
+      code: z.string(),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = PromotionUsageSchema;
+    export type Output = z.infer<typeof Output>;
+  }
+
+  export namespace GetByCode {
+    export const Input = z.object({
+      code: z.string(),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = PromotionByTypeSchema.nullable();
+    export type Output = z.infer<typeof Output>;
+  }
 }

@@ -5,7 +5,7 @@ import {
   homeOrderInclude,
   pickupOrderInclude,
   productInOrderInclude,
-  promotionUsagesInclude,
+  orderPromotionUsagesInclude,
 } from "../includes";
 import {
   TableOrder,
@@ -56,7 +56,7 @@ export async function getOrderById({
       ...pickupOrderInclude,
       table_order: true,
       ...engagementsInclude,
-      ...promotionUsagesInclude,
+      ...orderPromotionUsagesInclude,
     },
   });
 

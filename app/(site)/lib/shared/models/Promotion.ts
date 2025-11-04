@@ -12,9 +12,12 @@ export const PromotionWithUsagesSchema = PromotionSchema.extend({
 /**
  * PromotionUsage with its related order and promotion
  */
+export const PromotionUsageWithPromotion = PromotionUsageSchema.extend({
+  promotion: PromotionWithUsagesSchema,
+});
+
 export const PromotionUsageWithOrderSchema = PromotionUsageSchema.extend({
   order: OrderSchema,
-  promotion: PromotionWithUsagesSchema,
 });
 
 /**
@@ -80,6 +83,7 @@ export const PromotionByTypeSchema = z.discriminatedUnion("type", [
  * 🔠 Type exports
  */
 export type PromotionWithUsages = z.infer<typeof PromotionWithUsagesSchema>;
+export type PromotionUsageWithPromotion = z.infer<typeof PromotionUsageWithPromotion>;
 export type PromotionUsageWithOrder = z.infer<typeof PromotionUsageWithOrderSchema>;
 
 export type FixedDiscountPromotion = z.infer<typeof FixedDiscountPromotionSchema>;

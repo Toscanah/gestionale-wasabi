@@ -35,7 +35,7 @@ interface OrderContextType {
   deleteProducts: (table: Table<any>, cooked: boolean) => void;
   updateProductOption: (productInOrderId: number, optionId: number) => void;
   updatePrintedProducts: () => Promise<ProductInOrder[]>;
-  updateOrder: (order: RecursivePartial<OrderByType> ) => void;
+  updateOrder: (order: RecursivePartial<OrderByType>) => void;
   updatePrintedFlag: () => Promise<OrderContracts.UpdatePrintedFlag.Output>;
   joinTableOrders: (tableToJoin: string) => void;
   updateProductVariation: (variation: string, productInOrderId: number) => void;
@@ -65,7 +65,7 @@ export const OrderProvider = ({
     createSubOrder,
     joinTableOrders,
     issueLedgers,
-  } = useOrderManager(order.id, setOrder, dialogOpen);
+  } = useOrderManager(order, setOrder, dialogOpen);
 
   const {
     addProduct,

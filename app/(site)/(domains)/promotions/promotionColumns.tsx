@@ -13,7 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { PromotionByType, PromotionGuards } from "../../lib/shared";
 import roundToTwo from "../../lib/utils/global/number/roundToTwo";
-import UsagesDialog from "./dialogs/UsagesDialog";
+import UsagesDialog from "./usages/UsagesDialog";
 
 function calcDiscountRaw(promotion: PromotionByType): number | null {
   if (PromotionGuards.isPercentageDiscount(promotion)) {

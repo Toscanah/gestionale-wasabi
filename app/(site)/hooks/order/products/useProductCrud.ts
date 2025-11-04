@@ -170,14 +170,18 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
     if (productToUpdate.id < 0) {
       return toastError("Attendi il salvataggio del prodotto prima di modificarlo.");
     }
-    if (key === "quantity" && value < 0) {
+
+    // 🩹 convert quantity string → number
+    const coercedValue = key === "quantity" ? Number(value) : value;
+
+    if (key === "quantity" && coercedValue < 0) {
       return toastError("La quantità non può essere negativa");
     }
 
     updateProductMutation.mutateAsync({
       orderId: order.id,
       key,
-      value,
+      value: coercedValue,
       productInOrder: productToUpdate,
     });
   };

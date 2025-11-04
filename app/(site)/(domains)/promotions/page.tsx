@@ -12,7 +12,7 @@ import usePromotionsManager from "../../hooks/promotions/usePromotionsManager";
 import useQueryFilter from "../../hooks/table/useQueryFilter";
 import useSkeletonTable from "../../hooks/table/useSkeletonTable";
 import useTable from "../../hooks/table/useTable";
-import CreatePromotionDialog from "./dialogs/create/CreatePromotionDialog";
+import CreatePromotionDialog from "./create/CreatePromotionDialog";
 import promotionColumns from "./promotionColumns";
 
 export default function PromotionsPage() {

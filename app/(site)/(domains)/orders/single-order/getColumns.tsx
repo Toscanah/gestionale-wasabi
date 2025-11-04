@@ -102,7 +102,7 @@ export default function getColumns(
         <div className="flex gap-2 items-center">
           <Button
             disabled={!interactionReady}
-            className="p-0 h-10 w-10"
+            className="p-0 h-9 w-9"
             variant="outline"
             onClick={() => handleQuantityArrows("down", row.index)}
           >
@@ -114,7 +114,7 @@ export default function getColumns(
             ref={(ref) => addInputRef(ref, { rowIndex: row.index, colIndex: 1 })}
             onClick={() => setFocusedInput({ rowIndex: row.index, colIndex: 1 })}
             type="text"
-            className="max-w-20 !text-2xl uppercase"
+            className="max-w-20 !text-2xl uppercase w-20"
             autoFocus={focusedInput.rowIndex === row.index && focusedInput.colIndex === 1}
             defaultValue={row.original.quantity == 0 ? 1 : row.original.quantity}
             onKeyDown={(e: any) => {
@@ -133,7 +133,7 @@ export default function getColumns(
 
           <Button
             disabled={!interactionReady}
-            className="p-0 h-10 w-10"
+            className="p-0 h-9 w-9"
             variant="outline"
             onClick={() => handleQuantityArrows("up", row.index)}
           >

@@ -46,7 +46,7 @@ export default function PromotionTypesFilter({
       ]}
       mode="multi"
       selectedValues={selectedTypes}
-      title="Tipo di promozione"
+      title="Tipi di promozioni"
       onChange={handleChange}
       shouldClear={selectedTypes.length !== ALL_PROMOTION_TYPES.length}
     />

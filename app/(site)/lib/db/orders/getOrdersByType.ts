@@ -5,7 +5,7 @@ import {
   homeOrderInclude,
   pickupOrderInclude,
   productInOrderInclude,
-  promotionUsagesInclude,
+  orderPromotionUsagesInclude,
 } from "../includes";
 import { HomeOrder, OrderByType, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
 
@@ -21,7 +21,7 @@ async function fetchOrdersByType(type: OrderType): Promise<OrderByType[]> {
       ...pickupOrderInclude,
       table_order: true,
       ...engagementsInclude,
-      ...promotionUsagesInclude,
+      ...orderPromotionUsagesInclude,
     },
     where: { type, status: OrderStatus.ACTIVE },
     orderBy: { created_at: "asc" },

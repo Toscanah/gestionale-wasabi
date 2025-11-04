@@ -23,8 +23,6 @@ export function useProductsManager(
   order: OrderByType,
   updateOrder: (order: RecursivePartial<OrderByType>) => void
 ) {
-  const { products: cachedProducts } = useCachedDataContext();
-
   const updateProductsList: UpdateProductsListFunction = ({
     addedProducts = [],
     updatedProducts = [],

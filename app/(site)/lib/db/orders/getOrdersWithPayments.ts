@@ -4,7 +4,7 @@ import {
   homeOrderInclude,
   pickupOrderInclude,
   productsInOrderInclude,
-  promotionUsagesInclude,
+  orderPromotionUsagesInclude,
 } from "../includes";
 import { OrderType, PaymentType, Prisma } from "@prisma/client";
 import { endOfDay, parse, startOfDay } from "date-fns";
@@ -38,7 +38,7 @@ export default async function getOrdersWithPayments(
       table_order: true,
       ...productsInOrderInclude,
       ...engagementsInclude,
-      ...promotionUsagesInclude,
+      ...orderPromotionUsagesInclude,
     },
     orderBy: { created_at: "desc" },
     skip: canPaginate ? page * pageSize : undefined,

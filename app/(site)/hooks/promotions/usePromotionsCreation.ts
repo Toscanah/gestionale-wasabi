@@ -2,7 +2,7 @@ import { PromotionType } from "@prisma/client";
 import { useState } from "react";
 import { PromotionContracts } from "../../lib/shared";
 import { addMonths } from "date-fns";
-import { CreatePromotionFormSchemaType } from "../../(domains)/promotions/dialogs/create/CreatePromotionForm";
+import { CreatePromotionFormSchemaType } from "../../(domains)/promotions/create/CreatePromotionForm";
 import { promotionsAPI } from "@/lib/server/api";
 import { trpc } from "@/lib/server/client";
 
