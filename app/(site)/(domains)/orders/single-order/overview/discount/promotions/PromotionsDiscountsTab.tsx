@@ -42,6 +42,7 @@ import { cn } from "@/lib/utils";
 import QuickPromoPreview from "./QuickPromoPreview";
 import { Badge } from "@/components/ui/badge";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
+import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 
 interface PromotionsDiscountsTabProps {
   activeTab: DiscountTabs;
@@ -265,34 +266,79 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
 
                 <ArrowRightIcon />
 
-                {PromotionGuards.isFixedDiscount(foundPromo) && (
-                  <p>
-                    Sconto di{" "}
-                    <span className="font-mono">{toEuro(foundPromo.fixed_amount ?? 0)}</span>{" "}
-                    applicato al totale.
-                  </p>
-                )}
+                {PromotionGuards.isFixedDiscount(foundPromo) &&
+                  (() => {
+                    const discount = foundPromo.fixed_amount ?? 0;
+                    const baseTotal = getOrderTotal({ order: order, applyDiscounts: false });
+                    const newTotal = Math.max(baseTotal - discount, 0);
 
-                {PromotionGuards.isPercentageDiscount(foundPromo) && (
-                  <p>
-                    Sconto del <span className="font-mono">{foundPromo.percentage_value}%</span> sul
-                    totale.{" "}
-                    {foundPromo.max_usages &&
-                      `${foundPromo.usages.length} usi rimanenti su ${foundPromo.max_usages}`}
-                  </p>
-                )}
+                    return (
+                      <p>
+                        Sconto di{" "}
+                        <span className="font-mono font-semibold">{toEuro(discount)}</span>
+                      </p>
+                    );
+                  })()}
 
-                {PromotionGuards.isGiftCard(foundPromo) && (
-                  <p>
-                    Saldo disponibile:{" "}
-                    <span className="font-mono">
-                      {toEuro(
-                        (foundPromo.fixed_amount ?? 0) -
-                          foundPromo.usages.reduce((sum, u) => sum + u.amount, 0)
-                      )}
-                    </span>
-                  </p>
-                )}
+                {PromotionGuards.isPercentageDiscount(foundPromo) &&
+                  (() => {
+                    const total = foundPromo.max_usages ?? null;
+                    const used = foundPromo.usages.length;
+                    const remaining = total ? Math.max(total - used, 0) : null;
+                    const afterApply = total ? Math.max(total - used - 1, 0) : null;
+
+                    // Compute discounted amount preview
+                    const percent = foundPromo.percentage_value ?? 0;
+                    const baseTotal = getOrderTotal({ order: order, applyDiscounts: false });
+                    const discountValue = (baseTotal * percent) / 100;
+
+                    return (
+                      <>
+                        <p>
+                          Sconto del{" "}
+                          <span className="font-mono font-semibold">
+                            {foundPromo.percentage_value}%
+                          </span>{" "}
+                          {total && (
+                            <span className="text-muted-foreground text-xs">
+                              (da {remaining} a {afterApply} usi)
+                            </span>
+                          )}
+                        </p>
+
+                        <ArrowRightIcon />
+
+                        <span className="font-mono font-semibold">−{toEuro(discountValue)}</span>
+                      </>
+                    );
+                  })()}
+
+                {PromotionGuards.isGiftCard(foundPromo) &&
+                  (() => {
+                    const totalUsed = foundPromo.usages.reduce((sum, u) => sum + u.amount, 0);
+                    const initial = foundPromo.fixed_amount ?? 0;
+                    const remaining = initial - totalUsed;
+                    const newRemaining = remaining - (Number(promoAmount) || 0);
+
+                    return (
+                      <p className="flex gap-2 items-center">
+                        Saldo disponibile:{" "}
+                        <span className="font-mono font-semibold">{toEuro(remaining)}</span>
+                        {promoAmount !== "" && promoAmount > 0 && (
+                          <>
+                            <ArrowRightIcon />
+                            Saldo dopo l'applicazione:{" "}
+                            <span className="font-mono font-semibold">
+                              {toEuro(Math.max(newRemaining, 0))}
+                            </span>{" "}
+                            {/* <span className="text-muted-foreground text-sm">
+                              (−{toEuro(Number(promoAmount))})
+                            </span> */}
+                          </>
+                        )}
+                      </p>
+                    );
+                  })()}
               </>
             ) : null}
           </CardContent>
