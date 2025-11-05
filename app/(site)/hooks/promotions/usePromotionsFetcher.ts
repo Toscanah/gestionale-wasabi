@@ -5,7 +5,7 @@ import { ALL_PROMOTION_TYPES } from "../../components/ui/filters/select/Promotio
 import { PromotionContracts } from "../../lib/shared";
 import { PromotionPeriodCondition } from "../../lib/shared/schemas/common/filters/promotion-periods";
 
-export default function usePromotionsManager() {
+export default function usePromotionsFetcher() {
   const [selectedPromotionTypes, setSelectedPromotionTypes] =
     useState<PromotionType[]>(ALL_PROMOTION_TYPES);
   const [periods, setPeriods] = useState<PromotionPeriodCondition[] | undefined>(undefined);

@@ -25,7 +25,7 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
   const [shift, setShift] = useState<ShiftFilterValue>(ShiftFilterValue.ALL);
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
 
-  const { inputQuery, setInputQuery, debouncedQuery } = useQueryFilter();
+  const { inputQuery, setInputQuery, debouncedQuery, resetQuery } = useQueryFilter();
   const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
 
   const { data: allCategories = [], ...catQuery } = trpc.categories.getAll.useQuery(undefined, {
@@ -89,7 +89,10 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
           .map((ps) => {
             const { productId, ...stats } = ps;
             const base = baseMap.get(productId);
+            if (base?.code.toLocaleLowerCase() === "cfd") {
+            }
             if (!base) return null;
+
             return { ...base, stats };
           })
           .filter(Boolean) as ProductWithStats[];
@@ -129,6 +132,6 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
     activeSorts,
     setActiveSorts,
     parsedFilters: filters,
-    totalCount: baseProducts?.totalCount ?? 0,
+    resetQuery
   };
 }

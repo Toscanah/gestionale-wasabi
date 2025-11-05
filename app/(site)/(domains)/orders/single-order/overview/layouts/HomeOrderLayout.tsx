@@ -4,13 +4,13 @@ import PaymentStatusSelection from "../PaymentStatusSelection";
 import OldOrders from "../OldOrders";
 import When from "../When";
 import Engagement from "../Engagement";
-import Discount from "../Discount";
 import Rice from "../Rice";
 import Total from "../Total";
 import CustomerLookup from "../CustomerLookup";
 import NormalActions from "../NormalActions";
 import { HomeOrder } from "@/app/(site)/lib/shared";
 import { PayingAction } from "../../OrderTable";
+import DiscountsDialog from "../discount/DiscountsDialog";
 
 interface HomeOrderLayoutProps {
   order: HomeOrder;
@@ -31,7 +31,7 @@ export default function HomeOrderLayout({ order, setAction }: HomeOrderLayoutPro
       <div className="w-full flex gap-6 items-center">
         <When />
         <Engagement />
-        <Discount />
+        <DiscountsDialog />
       </div>
 
       <Rice />

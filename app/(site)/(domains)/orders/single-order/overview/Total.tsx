@@ -11,7 +11,7 @@ export default function Total() {
         TOTALE
       </div>
       <div className="w-full text-center text-2xl h-12 font-bold border-x border-b rounded-b-lg flex flex-col justify-center">
-        € {roundToTwo(getOrderTotal({ order, applyDiscount: true }))}
+        € {roundToTwo(getOrderTotal({ order, applyDiscounts: true }))}
       </div>
     </div>
   );

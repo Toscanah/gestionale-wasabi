@@ -15,7 +15,7 @@ export const ordersAPI: Hooks<typeof trpc.orders> = {
   createPickup: trpc.orders.createPickup,
   createHome: trpc.orders.createHome,
   createSub: trpc.orders.createSub,
-  updateDiscount: trpc.orders.updateDiscount,
+  updateManualDiscount: trpc.orders.updateManualDiscount,
   updatePaymentStatus: trpc.orders.updatePaymentStatus,
   updateTime: trpc.orders.updateTime,
   updatePrintedFlag: trpc.orders.updatePrintedFlag,
@@ -123,7 +123,8 @@ export const promotionsAPI: Hooks<typeof trpc.promotions> = {
   countsByType: trpc.promotions.countsByType,
   getUsagesByPromotion: trpc.promotions.getUsagesByPromotion,
   create: trpc.promotions.create,
-  applyPromotion: trpc.promotions.applyPromotion,
+  applyToOrder: trpc.promotions.applyToOrder,
   getByCode: trpc.promotions.getByCode,
+  removeFromOrder: trpc.promotions.removeFromOrder,
   // update: trpc.promotions.update,
 };

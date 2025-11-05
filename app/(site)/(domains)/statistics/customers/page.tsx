@@ -5,7 +5,7 @@ import Table from "../../../components/table/Table";
 import columns from "./columns";
 import GoBack from "../../../components/ui/misc/GoBack";
 import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
-import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
+import { RFMConfig, RFMRankRule, RFMRules } from "@/app/(site)/lib/shared/types/RFM";
 import { useTheme } from "next-themes";
 import useCustomersStats from "@/app/(site)/hooks/statistics/useCustomersStats";
 import TablePagination from "@/app/(site)/components/table/TablePagination";
@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];
+  rfmRules: RFMRules;
   theme: string;
 };
 
@@ -49,6 +50,8 @@ export default function CustomersStats() {
     setActiveSorts,
     customerOrigins,
     setCustomerOrigins,
+    rfmRules,
+    resetQuery,
   } = useCustomersStats({ page, pageSize });
   const { theme } = useTheme();
 
@@ -75,6 +78,7 @@ export default function CustomersStats() {
     meta: {
       ranks: rfmRanks,
       theme: theme ?? "light",
+      rfmRules,
     },
   });
 
@@ -83,8 +87,8 @@ export default function CustomersStats() {
       <div className="w-[90%] h-[90%] flex flex-col justify-center max-h-[90%] gap-4">
         <div className="w-full flex items-center gap-4">
           <div className="flex-1 gap-4 flex items-center">
-            <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
-  
+            <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} onReset={resetQuery} />
+
             <CalendarFilter
               usePresets
               disabled={isLoading}
@@ -92,13 +96,13 @@ export default function CustomersStats() {
               mode="range"
               handleDateFilter={setPeriod}
             />
-  
+
             <CustomerOriginsFilter
               onOriginsChange={setCustomerOrigins}
               origins={customerOrigins}
               disabled={isLoading}
             />
-  
+
             <RanksFilter
               ranks={ranks}
               onRanksChange={setRanks}
@@ -138,7 +142,7 @@ export default function CustomersStats() {
           </div>
         </div>
 
-        <Table table={table} maxRows={10} scrollAdjustment={1}  />
+        <Table table={table} maxRows={10} scrollAdjustment={1} />
 
         <TablePagination
           table={table}

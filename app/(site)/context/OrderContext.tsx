@@ -5,6 +5,7 @@ import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { Table } from "@tanstack/react-table";
 import generateDummyProduct from "../lib/services/product-management/generateDummyProduct";
 import { RecursivePartial, useOrderManager } from "../hooks/order/useOrderManager";
+import applyPromotionToOrder from "@/app/(site)/lib/db/promotions/applyPromotionToOrder";
 
 interface OrderProviderProps {
   order: OrderByType;
@@ -40,6 +41,9 @@ interface OrderContextType {
   joinTableOrders: (tableToJoin: string) => void;
   updateProductVariation: (variation: string, productInOrderId: number) => void;
   issueLedgers: (order: OrderByType) => Promise<void>;
+  updateOrderDiscount: (discount: number) => void;
+  applyPromotionToOrder: (promoCode: string, amount?: number) => void;
+  removePromotionFromOrder: (usageId: number) => void;
 }
 
 export const OrderProvider = ({
@@ -65,6 +69,9 @@ export const OrderProvider = ({
     createSubOrder,
     joinTableOrders,
     issueLedgers,
+    updateOrderDiscount,
+    applyPromotionToOrder,
+    removePromotionFromOrder,
   } = useOrderManager(order, setOrder, dialogOpen);
 
   const {
@@ -103,6 +110,9 @@ export const OrderProvider = ({
         updatePrintedFlag,
         updateProductVariation,
         issueLedgers,
+        updateOrderDiscount,
+        applyPromotionToOrder,
+        removePromotionFromOrder,
       }}
     >
       {children}

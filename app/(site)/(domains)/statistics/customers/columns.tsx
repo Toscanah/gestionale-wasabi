@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Warning } from "@phosphor-icons/react";
 import { differenceInCalendarDays, format } from "date-fns";
 import { DARK_SCALE_3, LIGHT_SCALE_3 } from "@/app/(site)/lib/shared/constants/colors";
+import { Separator } from "@/components/ui/separator";
 
 const QuickTooltip = ({ title, label }: { title: string; label: string }) => (
   <Tooltip delayDuration={0}>
@@ -60,7 +61,52 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
   ValueColumn({
     header: <QuickTooltip title="RFM" label="L'indice RFM" />,
-    value: (row) => roundToTwo(row.original.stats.rfm.score.finalScore),
+    value: (row, meta) => {
+      const rfmScore = roundToTwo(row.original.stats.rfm.score.finalScore);
+      const rfm = row.original.stats.rfm.score;
+      const cfg = (meta as CustomerStatsTableMeta).rfmRules;
+
+      const recencyW = cfg.recency.weight;
+      const frequencyW = cfg.frequency.weight;
+      const monetaryW = cfg.monetary.weight;
+
+      const rPart = roundToTwo(rfm.recency * recencyW);
+      const fPart = roundToTwo(rfm.frequency * frequencyW);
+      const mPart = roundToTwo(rfm.monetary * monetaryW);
+
+      return (
+        <WasabiDialog
+          title={"Dettagli RFM per " + row.original.phone.phone}
+          putSeparator
+          putUpperBorder
+          size="small"
+          trigger={<Button variant="outline">{rfmScore}</Button>}
+        >
+          <div className="flex flex-col gap-2">
+            <span>
+              R - Recenza: <span className="font-mono">{roundToTwo(rfm.recency)}</span>
+            </span>
+            <span>
+              F - Frequenza: <span className="font-mono">{roundToTwo(rfm.frequency)}</span>
+            </span>
+            <span>
+              M - Monetario: <span className="font-mono">{roundToTwo(rfm.monetary)}</span>
+            </span>
+
+            <Separator />
+
+            <div>
+              <span className="font-semibold">Calcolo punteggio finale:</span>
+              <pre className="whitespace-pre">
+                {`= (${roundToTwo(rfm.recency)} × ${recencyW}) + (${roundToTwo(rfm.frequency)} × ${frequencyW}) + (${roundToTwo(rfm.monetary)} × ${monetaryW})
+                  = ${rPart} + ${fPart} + ${mPart}
+                  = ${rfmScore}`}
+              </pre>
+            </div>
+          </div>
+        </WasabiDialog>
+      );
+    },
     accessor: (customer) => customer.stats.rfm.score.finalScore,
     sortable: false,
   }),

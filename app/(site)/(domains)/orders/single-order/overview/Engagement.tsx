@@ -9,7 +9,7 @@ export default function Engagement() {
   const [open, setOpen] = useState(false);
 
   const MarketingTrigger = (
-    <Button className="h-12 text-xl flex-1 w-full px-4" variant={"outline"}>
+    <Button className="h-12 text-xl flex-1 w-full " variant={"outline"}>
       MARKETING
     </Button>
   );

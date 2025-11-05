@@ -1,0 +1,358 @@
+"use client";
+
+import WasabiAnimatedTab from "@/app/(site)/components/ui/wasabi/WasabiAnimatedTab";
+import { DiscountsSummary, DiscountTabs } from "../DiscountsDialog";
+import { Label } from "@/components/ui/label";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import { PromotionType } from "@prisma/client";
+import { Separator } from "@/components/ui/separator";
+import { useEffect, useMemo, useState } from "react";
+import {
+  PromotionByType,
+  PromotionGuards,
+  PromotionUsageWithPromotion,
+} from "@/app/(site)/lib/shared";
+import {
+  PROMOTION_TYPES_COLORS,
+  PROMOTION_TYPES_LABELS,
+} from "@/app/(site)/lib/shared/constants/promotion-labels";
+import usePromotionsFetcher from "@/app/(site)/hooks/promotions/usePromotionsFetcher";
+import { ArrowRightIcon, CheckIcon, XIcon } from "@phosphor-icons/react";
+import { Card, CardContent } from "@/components/ui/card";
+import { debounce } from "lodash";
+import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { TrashIcon } from "@phosphor-icons/react/dist/ssr";
+import { trpc } from "@/lib/server/client";
+import { cn } from "@/lib/utils";
+import QuickPromoPreview from "./QuickPromoPreview";
+import { Badge } from "@/components/ui/badge";
+import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
+
+interface PromotionsDiscountsTabProps {
+  activeTab: DiscountTabs;
+}
+
+export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscountsTabProps) {
+  const { applyPromotionToOrder, order, removePromotionFromOrder } = useOrderContext();
+  const { promotions = [] } = usePromotionsFetcher();
+
+  const [promoCode, setPromoCode] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [foundPromo, setFoundPromo] = useState<PromotionByType | null>(null);
+  const [promoAmount, setPromoAmount] = useState<number | "">("");
+
+  const sortedUsages = [...(order.promotion_usages ?? [])].sort((a, b) => {
+    const orderMap: Record<PromotionType, number> = {
+      [PromotionType.PERCENTAGE_DISCOUNT]: 1,
+      [PromotionType.FIXED_DISCOUNT]: 2,
+      [PromotionType.GIFT_CARD]: 3,
+    };
+    return orderMap[a.promotion.type] - orderMap[b.promotion.type];
+  });
+
+  useEffect(() => {
+    setPromoCode("");
+    setFoundPromo(null);
+    setIsSearching(false);
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (!promoCode.trim()) {
+      setFoundPromo(null);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const performSearch = debounce((code: string) => {
+      setPromoAmount("");
+      const match = promotions.find((p) => p.code.toLowerCase() === code.trim().toLowerCase());
+      setFoundPromo(match ?? null);
+      setIsSearching(false);
+    }, 500);
+
+    performSearch(promoCode);
+    return () => performSearch.cancel();
+  }, [promoCode, promotions]);
+
+  const utils = trpc.useUtils();
+
+  const handleApplyClick = async () => {
+    if (!foundPromo) return;
+
+    if (foundPromo.type === PromotionType.GIFT_CARD) {
+      const amount = Number(promoAmount) || 0;
+      applyPromotionToOrder(foundPromo.code, amount);
+    } else {
+      applyPromotionToOrder(foundPromo.code);
+    }
+
+    await utils.promotions.getAll.invalidate();
+    await utils.promotions.getAll.refetch();
+    setPromoCode("");
+    setPromoAmount("");
+    setFoundPromo(null);
+  };
+
+  // --- Build live order including pending promo (optimistic)
+  const liveOrder = useMemo(() => {
+    if (!foundPromo) return order;
+
+    const pendingUsage: PromotionUsageWithPromotion = {
+      id: -1,
+      promotion_id: foundPromo.id,
+      order_id: order.id,
+      amount: Number(promoAmount),
+      created_at: new Date(),
+      promotion: foundPromo,
+    };
+
+    return {
+      ...order,
+      promotion_usages: [...sortedUsages, pendingUsage],
+    };
+  }, [order, sortedUsages, foundPromo, promoAmount]);
+
+  useFocusOnClick(["promo-code-input", "promo-amount-input"]);
+
+  return (
+    <WasabiAnimatedTab
+      value="promotions-discounts"
+      currentValue={activeTab}
+      className="flex flex-col gap-4 mt-2"
+    >
+      <div className="grid w-full gap-2">
+        <ButtonGroup className="w-full py-1">
+          <ButtonGroupText asChild>
+            <Label htmlFor="promo-code-input">Codice</Label>
+          </ButtonGroupText>
+
+          <InputGroup>
+            <InputGroupInput
+              id="promo-code-input"
+              type="text"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+            />
+            <InputGroupAddon align="inline-end">
+              {isSearching ? (
+                <Spinner />
+              ) : promoCode.trim() ? (
+                foundPromo ? (
+                  <InputGroupText className="text-green-600 font-medium">
+                    <CheckIcon weight="bold" />
+                  </InputGroupText>
+                ) : (
+                  <InputGroupText className="text-red-600 font-medium">
+                    <XIcon weight="bold" />
+                  </InputGroupText>
+                )
+              ) : null}
+            </InputGroupAddon>
+          </InputGroup>
+
+          {foundPromo && (
+            <>
+              <ButtonGroupText asChild>
+                <Label htmlFor="promo-amount-input">Importo</Label>
+              </ButtonGroupText>
+
+              <InputGroup className="w-52">
+                <InputGroupInput
+                  id="promo-amount-input"
+                  type="number"
+                  value={(function () {
+                    if (!foundPromo) return "";
+                    if (PromotionGuards.isFixedDiscount(foundPromo)) return foundPromo.fixed_amount;
+                    if (PromotionGuards.isGiftCard(foundPromo)) return promoAmount;
+                    if (PromotionGuards.isPercentageDiscount(foundPromo))
+                      return foundPromo.percentage_value;
+                  })()}
+                  min={0}
+                  step={0.01}
+                  max={
+                    PromotionGuards.isGiftCard(foundPromo)
+                      ? Math.max(
+                          (foundPromo.fixed_amount ?? 0) -
+                            foundPromo.usages.reduce((sum, u) => sum + u.amount, 0),
+                          0
+                        )
+                      : undefined
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value;
+
+                    // Allow clearing the input
+                    if (val === "") {
+                      setPromoAmount("");
+                      return;
+                    }
+
+                    const rawValue = Number(val);
+
+                    if (PromotionGuards.isGiftCard(foundPromo)) {
+                      const remaining =
+                        (foundPromo.fixed_amount ?? 0) -
+                        foundPromo.usages.reduce((sum, u) => sum + u.amount, 0);
+
+                      // Clamp value only if it's numeric
+                      if (!isNaN(rawValue)) {
+                        const safeValue = Math.min(Math.max(rawValue, 0), remaining);
+                        setPromoAmount(safeValue);
+                      }
+                    } else {
+                      setPromoAmount(rawValue);
+                    }
+                  }}
+                  disabled={!foundPromo || foundPromo.type !== PromotionType.GIFT_CARD}
+                />
+
+                <InputGroupAddon align="inline-start">
+                  <InputGroupText>
+                    {PromotionGuards.isPercentageDiscount(foundPromo) ? "%" : "€"}
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
+            </>
+          )}
+
+          <Button onClick={handleApplyClick} disabled={!foundPromo || isSearching}>
+            Applica
+          </Button>
+        </ButtonGroup>
+      </div>
+
+      {/* promo info card */}
+      {!isSearching && promoCode.trim() && (
+        <Card className="p-1">
+          <CardContent className="p-2 text-sm flex gap-2 items-center">
+            {!isSearching && promoCode && foundPromo == null ? (
+              <span className="text-red-600 font-semibold">
+                Nessuna promozione trovata con il codice "{promoCode}"
+              </span>
+            ) : foundPromo ? (
+              <>
+                <span
+                  className={cn(
+                    "font-semibold",
+                    PROMOTION_TYPES_COLORS[foundPromo.type],
+                    "bg-background"
+                  )}
+                >
+                  {PromotionGuards.isFixedDiscount(foundPromo)
+                    ? "Sconto fisso"
+                    : PromotionGuards.isPercentageDiscount(foundPromo)
+                      ? "Sconto Percentuale"
+                      : PromotionGuards.isGiftCard(foundPromo)
+                        ? "Gift Card"
+                        : null}
+                </span>
+
+                <ArrowRightIcon />
+
+                {PromotionGuards.isFixedDiscount(foundPromo) && (
+                  <p>
+                    Sconto di{" "}
+                    <span className="font-mono">{toEuro(foundPromo.fixed_amount ?? 0)}</span>{" "}
+                    applicato al totale.
+                  </p>
+                )}
+
+                {PromotionGuards.isPercentageDiscount(foundPromo) && (
+                  <p>
+                    Sconto del <span className="font-mono">{foundPromo.percentage_value}%</span> sul
+                    totale.{" "}
+                    {foundPromo.max_usages &&
+                      `${foundPromo.usages.length} usi rimanenti su ${foundPromo.max_usages}`}
+                  </p>
+                )}
+
+                {PromotionGuards.isGiftCard(foundPromo) && (
+                  <p>
+                    Saldo disponibile:{" "}
+                    <span className="font-mono">
+                      {toEuro(
+                        (foundPromo.fixed_amount ?? 0) -
+                          foundPromo.usages.reduce((sum, u) => sum + u.amount, 0)
+                      )}
+                    </span>
+                  </p>
+                )}
+              </>
+            ) : null}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* applied promotions */}
+      {sortedUsages.length !== 0 && (
+        <>
+          <Separator />
+          <Accordion type="single" collapsible className="w-full">
+            {sortedUsages.map((usage, idx) => (
+              <div className="flex gap-2 items-center w-full" key={`${usage.promotion_id}-${idx}`}>
+                <AccordionItem value={`promotion-${usage.promotion_id}`} className="w-full">
+                  <AccordionTrigger className="py-2">
+                    <div className="flex justify-between w-full items-center">
+                      <Badge className={cn(PROMOTION_TYPES_COLORS[usage.promotion.type])}>
+                        {PROMOTION_TYPES_LABELS[usage.promotion.type]} ({usage.promotion.code})
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">
+                        {formatPromotionSummary(usage)}
+                      </span>
+                    </div>
+                  </AccordionTrigger>
+
+                  <AccordionContent>
+                    <QuickPromoPreview usage={usage} />
+                  </AccordionContent>
+                </AccordionItem>
+
+                <Button
+                  variant={"destructive"}
+                  className="h-8 w-8"
+                  onClick={() => removePromotionFromOrder(usage.id)}
+                >
+                  <TrashIcon size={18} />
+                </Button>
+              </div>
+            ))}
+          </Accordion>
+        </>
+      )}
+
+      {order.promotion_usages.length == 0 && <Separator />}
+
+      <DiscountsSummary liveOrder={liveOrder} />
+    </WasabiAnimatedTab>
+  );
+}
+
+function formatPromotionSummary(usage: PromotionUsageWithPromotion): string {
+  const promo = usage.promotion;
+  switch (promo.type) {
+    case PromotionType.FIXED_DISCOUNT:
+      return `−${toEuro(promo.fixed_amount ?? 0)}`;
+    case PromotionType.GIFT_CARD:
+      return `${toEuro(usage.amount ?? 0)} di ${toEuro(promo.fixed_amount ?? 0)}`;
+    case PromotionType.PERCENTAGE_DISCOUNT:
+      return `−${promo.percentage_value}%`;
+    default:
+      return "";
+  }
+}

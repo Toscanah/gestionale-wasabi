@@ -4,29 +4,38 @@ import { getOrderById } from "../orders/getOrderById";
 import getPromotionByCode from "./getPromotionByCode";
 import { getOrderTotal } from "../../services/order-management/getOrderTotal";
 import { PromotionType } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 export default async function applyPromotionToOrder(
-  input: PromotionContracts.ApplyPromotion.Input
-): Promise<PromotionContracts.ApplyPromotion.Output> {
-  const { orderId, code } = input;
+  input: PromotionContracts.ApplyToOrder.Input
+): Promise<PromotionContracts.ApplyToOrder.Output> {
+  const { orderId, code, amount } = input;
 
   const order = await getOrderById({ orderId });
 
   if (!order) {
-    throw new Error("Ordine con ID " + orderId + " non trovato");
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: `Ordine con ID ${orderId} non trovato`,
+    });
   }
 
   const promotion = await getPromotionByCode({ code });
 
   if (!promotion) {
-    throw new Error("Promozione con codice " + code + " non trovata");
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: `Promozione con codice ${code} non trovata`,
+    });
   }
 
   if (order.promotion_usages.some((pu) => pu.promotion_id === promotion.id)) {
-    throw new Error("La promozione è già stata applicata a questo ordine");
+    throw new TRPCError({
+      code: "CONFLICT",
+      message: "La promozione è già stata applicata a questo ordine",
+    });
   }
 
-  // Current total before applying promo
   const currentTotal = getOrderTotal({
     order,
     applyDiscounts: true,
@@ -35,13 +44,15 @@ export default async function applyPromotionToOrder(
 
   let usageAmount = 0;
 
-  // --- Type-specific logic ---
   switch (promotion.type) {
     case PromotionType.FIXED_DISCOUNT: {
       const discountValue = promotion.fixed_amount ?? 0;
-      if (discountValue <= 0) throw new Error("Importo dello sconto non valido");
+      if (discountValue <= 0)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Importo dello sconto non valido",
+        });
 
-      // Use at most the current total (prevent negative)
       usageAmount = Math.min(discountValue, currentTotal);
       break;
     }
@@ -53,37 +64,58 @@ export default async function applyPromotionToOrder(
       });
 
       const remaining = (promotion.fixed_amount ?? 0) - (totalUsed._sum.amount ?? 0);
-      if (remaining <= 0) throw new Error("Saldo della gift card esaurito");
 
-      // Use at most remaining balance or current total
-      usageAmount = Math.min(remaining, currentTotal);
+      if (remaining <= 0)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Saldo della gift card esaurito",
+        });
+
+      // ✅ Use user-specified amount if provided, else default to remaining
+      const requestedAmount = typeof amount === "number" ? amount : remaining;
+
+      if (requestedAmount <= 0)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Importo non valido per la gift card",
+        });
+
+      // ✅ Clamp to remaining and current total (safety)
+      usageAmount = Math.min(requestedAmount, remaining, currentTotal);
       break;
     }
 
     case PromotionType.PERCENTAGE_DISCOUNT: {
       const percent = promotion.percentage_value ?? 0;
-      if (percent <= 0 || percent > 100) throw new Error("Percentuale di sconto non valida");
+      if (percent <= 0 || percent > 100)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Percentuale di sconto non valida",
+        });
 
-      // Check for max usages
       if (promotion.max_usages) {
         const existingUsages = await prisma.promotionUsage.count({
           where: { promotion_id: promotion.id },
         });
         if (existingUsages >= promotion.max_usages) {
-          throw new Error("La promozione ha raggiunto il numero massimo di utilizzi");
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "La promozione ha raggiunto il numero massimo di utilizzi",
+          });
         }
       }
 
-      // Calculate how much € is discounted
       usageAmount = (currentTotal * percent) / 100;
       break;
     }
 
     default:
-      throw new Error("Tipo di promozione non riconosciuto");
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Tipo di promozione non riconosciuto",
+      });
   }
 
-  // --- Simulate application ---
   const simulatedOrder: OrderByType = {
     ...order,
     products: order.products,
@@ -106,15 +138,14 @@ export default async function applyPromotionToOrder(
     applyDiscounts: true,
   });
 
-  // --- Validate total ---
   if (simulatedTotal < 0) {
-    throw new Error(
-      "L'applicazione di questa promozione porterebbe il totale dell'ordine sotto zero"
-    );
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "L'applicazione di questa promozione porterebbe il totale dell'ordine sotto zero",
+    });
   }
 
-  // --- Create promotion usage ---
-  const usage = await prisma.promotionUsage.create({
+  await prisma.promotionUsage.create({
     data: {
       order_id: orderId,
       promotion_id: promotion.id,
@@ -123,5 +154,5 @@ export default async function applyPromotionToOrder(
     include: { promotion: true },
   });
 
-  return usage;
+  return await getOrderById({ orderId });
 }

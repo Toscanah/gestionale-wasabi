@@ -7,8 +7,8 @@ import {
 } from "../../components/table/TableColumns";
 import { ColumnDef } from "@tanstack/react-table";
 import {
-  PROMOTION_COLORS,
-  PROMOTION_TYPE_LABELS,
+  PROMOTION_TYPES_COLORS,
+  PROMOTION_TYPES_LABELS,
 } from "../../lib/shared/constants/promotion-labels";
 import { Badge } from "@/components/ui/badge";
 import { PromotionByType, PromotionGuards } from "../../lib/shared";
@@ -118,7 +118,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
     accessor: (promotion) => promotion.type,
     value: (row) => {
       const type = row.original.type;
-      return <Badge className={PROMOTION_COLORS[type]}>{PROMOTION_TYPE_LABELS[type]}</Badge>;
+      return <Badge className={PROMOTION_TYPES_COLORS[type]}>{PROMOTION_TYPES_LABELS[type]}</Badge>;
     },
     skeleton: (
       <Badge className="bg-muted text-muted-foreground border-muted">Sconto percentuale</Badge>

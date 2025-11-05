@@ -76,10 +76,11 @@ export default async function getComprehensiveCustomers(
 
   const baseWhere: Prisma.CustomerWhereInput = andFilters.length > 0 ? { AND: andFilters } : {};
 
+
   // --- DB query ---
   const customers: ComprehensiveCustomer[] = await prisma.customer.findMany({
     skip: page !== undefined && pageSize !== undefined ? page * pageSize : undefined,
-    take: pageSize,
+    take: 10,
     where: baseWhere,
     include: {
       addresses: true,

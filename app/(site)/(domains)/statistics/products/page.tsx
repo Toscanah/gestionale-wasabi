@@ -43,7 +43,8 @@ export default function ProductsStats() {
     parsedFilters,
     inputQuery,
     setInputQuery,
-    totalCount,
+    resetQuery,
+    debouncedQuery,
   } = useProductsStats({ page, pageSize });
 
   const { tableData, tableColumns } = useSkeletonTable({
@@ -55,7 +56,7 @@ export default function ProductsStats() {
   const table = useTable<(typeof tableData)[number], ProductStatsTableMeta>({
     data: tableData,
     columns: tableColumns,
-    query: inputQuery,
+    query: debouncedQuery,
     setQuery: setInputQuery,
     pagination: { mode: "client", pageSize },
     meta: {
@@ -71,7 +72,12 @@ export default function ProductsStats() {
           {/* <span className="font-bold text-xl">Statistica prodotti</span> */}
 
           <div className="flex-1 gap-4 flex items-center ">
-            <SearchBar disabled={isLoading} query={inputQuery} onChange={setInputQuery} />
+            <SearchBar
+              disabled={isLoading}
+              query={inputQuery}
+              onChange={setInputQuery}
+              onReset={resetQuery}
+            />
 
             <CalendarFilter
               defaultValue={TODAY_PERIOD}
@@ -146,7 +152,9 @@ export default function ProductsStats() {
               Totale:{" "}
               {!isLoading &&
                 roundToTwo(
-                  table.getPrePaginationRowModel().rows.reduce((sum, row) => sum + row.original.stats.revenue, 0)
+                  table
+                    .getPrePaginationRowModel()
+                    .rows.reduce((sum, row) => sum + row.original.stats.revenue, 0)
                 )}{" "}
               €
             </span>

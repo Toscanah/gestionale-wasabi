@@ -5,7 +5,7 @@ import createTableOrder from "@/app/(site)/lib/db/orders/table/createTableOrder"
 import createPickupOrder from "@/app/(site)/lib/db/orders/pickup/createPickupOrder";
 import createHomeOrder from "@/app/(site)/lib/db/orders/home/createHomeOrder";
 import createSubOrder from "@/app/(site)/lib/db/orders/sub/createSubOrder";
-import updateOrderDiscount from "@/app/(site)/lib/db/orders/updateOrderDiscount";
+import updateOrderManualDiscount from "@/app/(site)/lib/db/orders/updateOrderManualDiscount";
 import updateOrderPaymentStatus from "@/app/(site)/lib/db/orders/updateOrderPaymentStatus";
 import updateOrderTime from "@/app/(site)/lib/db/orders/updateOrderTime";
 import updateOrderPrintedFlag from "@/app/(site)/lib/db/orders/updateOrderPrintedFlag";
@@ -77,10 +77,10 @@ export const ordersRouter = createTRPCRouter({
     .output(OrderContracts.CreateSub.Output)
     .mutation(({ input }) => createSubOrder(input)),
 
-  updateDiscount: publicProcedure
-    .input(OrderContracts.UpdateDiscount.Input)
-    .output(OrderContracts.UpdateDiscount.Output)
-    .mutation(({ input }) => updateOrderDiscount(input)),
+  updateManualDiscount: publicProcedure
+    .input(OrderContracts.UpdateManualDiscount.Input)
+    .output(OrderContracts.UpdateManualDiscount.Output)
+    .mutation(({ input }) => updateOrderManualDiscount(input)),
 
   updatePaymentStatus: publicProcedure
     .input(OrderContracts.UpdatePaymentStatus.Input)

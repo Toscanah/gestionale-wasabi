@@ -8,7 +8,7 @@ import SearchBar from "../../components/ui/filters/common/SearchBar";
 import PromotionPeriodsMenu from "../../components/ui/filters/PromotionPeriodsMenu";
 import PromotionTypesFilter from "../../components/ui/filters/select/PromotionTypesFilter";
 import GoBack from "../../components/ui/misc/GoBack";
-import usePromotionsManager from "../../hooks/promotions/usePromotionsManager";
+import usePromotionsFetcher from "../../hooks/promotions/usePromotionsFetcher";
 import useQueryFilter from "../../hooks/table/useQueryFilter";
 import useSkeletonTable from "../../hooks/table/useSkeletonTable";
 import useTable from "../../hooks/table/useTable";
@@ -24,7 +24,7 @@ export default function PromotionsPage() {
     promotionCounts,
     periods,
     setPeriods,
-  } = usePromotionsManager();
+  } = usePromotionsFetcher();
   const { inputQuery, setInputQuery } = useQueryFilter();
 
   const { tableData, tableColumns } = useSkeletonTable({

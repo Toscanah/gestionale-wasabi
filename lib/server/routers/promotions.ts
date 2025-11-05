@@ -6,6 +6,7 @@ import getUsagesByPromotion from "@/app/(site)/lib/db/promotions/getUsagesByProm
 import createNewPromotion from "@/app/(site)/lib/db/promotions/createNewPromotion";
 import getPromotionByCode from "@/app/(site)/lib/db/promotions/getPromotionByCode";
 import applyPromotionToOrder from "@/app/(site)/lib/db/promotions/applyPromotionToOrder";
+import removePromotionFromOrder from "@/app/(site)/lib/db/promotions/removePromotionFromOrder";
 
 export const promotionsRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -28,9 +29,9 @@ export const promotionsRouter = createTRPCRouter({
     .output(PromotionContracts.Create.Output)
     .mutation(({ input }) => createNewPromotion(input)),
 
-  applyPromotion: publicProcedure
-    .input(PromotionContracts.ApplyPromotion.Input)
-    .output(PromotionContracts.ApplyPromotion.Output)
+  applyToOrder: publicProcedure
+    .input(PromotionContracts.ApplyToOrder.Input)
+    .output(PromotionContracts.ApplyToOrder.Output)
     .mutation(({ input }) => applyPromotionToOrder(input)),
 
   getByCode: publicProcedure
@@ -38,8 +39,8 @@ export const promotionsRouter = createTRPCRouter({
     .output(PromotionContracts.GetByCode.Output)
     .query(({ input }) => getPromotionByCode(input)),
 
-  // update: publicProcedure
-  //   .input(PromotionContracts.Update.Input)
-  //   .output(PromotionContracts.Update.Output)
-  //   .mutation(({ input }) => updatePromotion(input)),
+  removeFromOrder: publicProcedure
+    .input(PromotionContracts.RemoveFromOrder.Input)
+    .output(PromotionContracts.RemoveFromOrder.Output)
+    .mutation(async ({ input }) => removePromotionFromOrder(input)),
 });

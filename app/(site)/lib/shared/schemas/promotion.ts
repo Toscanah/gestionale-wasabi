@@ -10,6 +10,7 @@ import {
 import { NoContentRequestSchema } from "./_index";
 import { PromotionType } from "@prisma/client";
 import { PromotionUsageSchema } from "@/prisma/generated/schemas";
+import { OrderByTypeSchema } from "../models/Order";
 
 export namespace PromotionContracts {
   export namespace Common {
@@ -74,14 +75,15 @@ export namespace PromotionContracts {
     export type Output = z.infer<typeof Output>;
   }
 
-  export namespace ApplyPromotion {
+  export namespace ApplyToOrder {
     export const Input = z.object({
       orderId: z.coerce.number(),
       code: z.string(),
+      amount: z.number().optional(),
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = PromotionUsageSchema;
+    export const Output = OrderByTypeSchema;
     export type Output = z.infer<typeof Output>;
   }
 
@@ -92,6 +94,16 @@ export namespace PromotionContracts {
     export type Input = z.infer<typeof Input>;
 
     export const Output = PromotionByTypeSchema.nullable();
+    export type Output = z.infer<typeof Output>;
+  }
+
+  export namespace RemoveFromOrder {
+    export const Input = z.object({
+      usageId: z.coerce.number(),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = OrderByTypeSchema;
     export type Output = z.infer<typeof Output>;
   }
 }

@@ -5,13 +5,18 @@ import { MagnifyingGlassIcon, XCircleIcon } from "@phosphor-icons/react";
 interface SearchBarProps {
   query: string;
   onChange: (query: string) => void;
+  onReset?: () => void;
   disabled?: boolean;
   className?: string;
 }
 
-export default function SearchBar({ query, onChange, disabled, className }: SearchBarProps) {
+export default function SearchBar({ query, onChange, disabled, className, onReset }: SearchBarProps) {
   const handleReset = () => {
-    onChange("");
+    if (onReset) {
+      onReset();
+    } else {
+      onChange("");
+    }
   };
 
   return (

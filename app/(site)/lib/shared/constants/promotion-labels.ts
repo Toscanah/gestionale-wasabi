@@ -1,12 +1,12 @@
 import { PromotionType } from "@prisma/client";
 
-export const PROMOTION_TYPE_LABELS: Record<PromotionType, string> = {
+export const PROMOTION_TYPES_LABELS: Record<PromotionType, string> = {
   [PromotionType.FIXED_DISCOUNT]: "Sconto fisso",
   [PromotionType.GIFT_CARD]: "Gift card",
   [PromotionType.PERCENTAGE_DISCOUNT]: "Sconto percentuale",
 };
 
-export const PROMOTION_COLORS: Record<PromotionType, string> = {
+export const PROMOTION_TYPES_COLORS: Record<PromotionType, string> = {
   [PromotionType.FIXED_DISCOUNT]:
     "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
   [PromotionType.GIFT_CARD]:

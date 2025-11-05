@@ -1,7 +1,7 @@
 import { PromotionType } from "@prisma/client";
 import WasabiSelect from "../../wasabi/WasabiSelect";
 import { StarIcon, WalletIcon } from "@phosphor-icons/react";
-import { PROMOTION_TYPE_LABELS } from "../../../../lib/shared/constants/promotion-labels";
+import { PROMOTION_TYPES_LABELS } from "../../../../lib/shared/constants/promotion-labels";
 import { ALL_ORDER_TYPES } from "./OrderTypesFilter";
 import { PromotionContracts } from "@/app/(site)/lib/shared";
 
@@ -39,7 +39,7 @@ export default function PromotionTypesFilter({
         {
           options: Object.values(PromotionType).map((type) => ({
             value: type,
-            label: PROMOTION_TYPE_LABELS[type],
+            label: PROMOTION_TYPES_LABELS[type],
             count: typeCounts?.[type] ?? 0,
           })),
         },

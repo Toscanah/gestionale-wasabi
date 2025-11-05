@@ -9,6 +9,7 @@ type Options<T> = {
   pageSize?: number;
 };
 
+// useSkeletonTable.tsx
 export default function useSkeletonTable<T>({
   isLoading,
   data,
@@ -25,11 +26,9 @@ export default function useSkeletonTable<T>({
   const tableColumns = React.useMemo<ColumnDef<T>[]>(() => {
     if (!isLoading) return columns;
 
-    // 🔒 Safe wrapper: avoid runtime errors from undefined nested props
     const safeCellWrapper = (cellFn: any) => (info: any) => {
       try {
         const value = typeof cellFn === "function" ? cellFn(info) : null;
-        // If it rendered fine, hide it under the skeleton overlay
         return (
           <div className="relative w-full h-full">
             <div className="opacity-0 select-none pointer-events-none">{value}</div>
@@ -39,7 +38,6 @@ export default function useSkeletonTable<T>({
           </div>
         );
       } catch {
-        // If the cellFn threw (because of undefined), just render a skeleton
         return (
           <div className="flex items-center justify-center w-full h-full">
             <Skeleton className="w-full h-full" />
@@ -48,10 +46,16 @@ export default function useSkeletonTable<T>({
       }
     };
 
-    // Apply wrapper to every column
+    // ⬇️ While loading:
+    // - wrap cell
+    // - replace accessorFn with a noop returning undefined
+    // - disable sorting to avoid calling sortingFns on undefined data
     return columns.map((col) => ({
       ...col,
       cell: safeCellWrapper(col.cell),
+      accessorFn: () => undefined, // <-- key line
+      enableSorting: false, // optional but safer
+      sortingFn: undefined, // optional
     }));
   }, [isLoading, columns]);
 

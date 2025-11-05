@@ -163,7 +163,7 @@ export namespace OrderContracts {
     export type Output = Common.DiscrimOrder;
   }
 
-  export namespace UpdateDiscount {
+  export namespace UpdateManualDiscount {
     export const Input = z.object({
       orderId: z.number(),
       discount: z.number().optional(),

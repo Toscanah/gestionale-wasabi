@@ -1,5 +1,4 @@
 import { TableOrder } from "@/app/(site)/lib/shared";
-import Discount from "../Discount";
 import Engagement from "../Engagement";
 import NormalActions from "../NormalActions";
 import Rice from "../Rice";
@@ -8,6 +7,7 @@ import Total from "../Total";
 import { PayingAction } from "../../OrderTable";
 import { Dispatch, SetStateAction } from "react";
 import { PlannedPayment } from "@prisma/client";
+import DiscountsDialog from "../discount/DiscountsDialog";
 
 interface TableOrderLayoutProps {
   setAction: Dispatch<SetStateAction<PayingAction>>;
@@ -18,7 +18,7 @@ export default function TableOrderLayout({ setAction }: TableOrderLayoutProps) {
     <>
       <div className="w-full flex gap-6  items-center">
         <Engagement />
-        <Discount />
+        <DiscountsDialog />
       </div>
 
       <TableUpdate />

@@ -37,7 +37,7 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
   const { ranks: rfmRanks } = useRfmRanks();
   const ALL_RANKS = rfmRanks.map((r) => r.rank);
 
-  const { debouncedQuery, inputQuery, setInputQuery } = useQueryFilter();
+  const { debouncedQuery, inputQuery, setInputQuery, resetQuery } = useQueryFilter();
   const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
   const [period, setPeriod] = useState<DateRange | undefined>(DEFAULT_DATE);
   const [ranks, setRanks] = useState<string[]>(ALL_RANKS);
@@ -156,5 +156,7 @@ export default function useCustomersStats({ page, pageSize }: UseCustomersStatsP
     sortingFields: CUSTOMER_STATS_SORT_MAP,
     activeSorts,
     setActiveSorts,
+    rfmRules,
+    resetQuery
   };
 }

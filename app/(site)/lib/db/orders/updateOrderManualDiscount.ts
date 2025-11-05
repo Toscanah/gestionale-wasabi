@@ -2,10 +2,10 @@ import { OrderContracts } from "@/app/(site)/lib/shared";
 import prisma from "../db";
 import { getOrderById } from "./getOrderById";
 
-export default async function updateOrderDiscount({
+export default async function updateOrderManualDiscount({
   orderId,
   discount,
-}: OrderContracts.UpdateDiscount.Input): Promise<OrderContracts.UpdateDiscount.Output> {
+}: OrderContracts.UpdateManualDiscount.Input): Promise<OrderContracts.UpdateManualDiscount.Output> {
   await prisma.order.update({
     where: {
       id: orderId,
