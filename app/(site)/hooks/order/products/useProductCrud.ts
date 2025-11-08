@@ -171,11 +171,24 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
       return toastError("Attendi il salvataggio del prodotto prima di modificarlo.");
     }
 
-    // 🩹 convert quantity string → number
     const coercedValue = key === "quantity" ? Number(value) : value;
 
-    if (key === "quantity" && coercedValue < 0) {
-      return toastError("La quantità non può essere negativa");
+    if (key === "quantity") {
+      if (coercedValue < 0) {
+        return toastError("La quantità non può essere negativa");
+      }
+
+      if (coercedValue === 0) {
+        updateProductsList({ deletedProducts: [productToUpdate] });
+
+        deleteProductsMutation.mutateAsync({
+          productIds: [productToUpdate.id],
+          orderId: order.id,
+          cooked: false,
+        });
+
+        return;
+      }
     }
 
     updateProductMutation.mutateAsync({
