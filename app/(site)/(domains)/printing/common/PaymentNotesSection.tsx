@@ -1,7 +1,7 @@
 import sanitizeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import { PlannedPayment } from "@prisma/client";
 import { Text } from "react-thermal-printer";
-import { SMALL_PRINT } from "../constants";
+import { SMALL_PRINT } from "../../../lib/shared/constants/printing";
 
 interface PaymentNotesSectionProps {
   plannedPayment: PlannedPayment;

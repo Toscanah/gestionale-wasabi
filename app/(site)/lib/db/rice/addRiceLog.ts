@@ -1,5 +1,5 @@
 import { RiceLogType } from "@prisma/client";
-import prisma from "../db";
+import prisma from "../prisma";
 import { RiceContracts } from "../../shared";
 
 export default async function addRiceLog({

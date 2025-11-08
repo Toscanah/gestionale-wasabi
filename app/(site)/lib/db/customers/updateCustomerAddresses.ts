@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import getComprehensiveCustomer from "./getComprehensiveCustomer";
 import { CustomerContracts } from "@/app/(site)/lib/shared";
 

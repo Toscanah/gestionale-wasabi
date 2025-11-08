@@ -5,11 +5,16 @@ import { useState } from "react";
 import { IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import useTable from "@/app/(site)/hooks/table/useTable";
-import { PromotionGuards, PromotionUsageWithOrder, PromotionWithUsages } from "@/app/(site)/lib/shared";
+import {
+  ComprehensivePromotionUsage,
+  PromotionGuards,
+  PromotionUsageWithOrder,
+  PromotionWithUsages,
+} from "@/app/(site)/lib/shared";
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import Table from "@/app/(site)/components/table/Table";
 
-const usagesColumns: ColumnDef<PromotionUsageWithOrder>[] = [
+const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
   IndexColumn({}),
 
   ValueColumn({
@@ -119,7 +124,7 @@ const usagesColumns: ColumnDef<PromotionUsageWithOrder>[] = [
       );
 
       const index = sorted.findIndex((u) => u.id === row.original.id);
-      if (index <= 0) return "N/A";
+      if (index <= 0) return "Primo utilizzo";
 
       const prevUsage = sorted[index - 1];
       const diffDays = (usageTs - new Date(prevUsage.created_at).getTime()) / (1000 * 60 * 60 * 24);

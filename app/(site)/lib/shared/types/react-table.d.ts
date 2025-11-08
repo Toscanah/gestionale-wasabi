@@ -15,5 +15,6 @@ declare module "@tanstack/table-core" {
       textAlign: "left" | "center" | "right";
     };
     label?: string;
+    exportValue?: (row: TData) => Primitive;
   }
 }

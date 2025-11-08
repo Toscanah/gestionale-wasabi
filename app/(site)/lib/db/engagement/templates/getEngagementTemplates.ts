@@ -1,4 +1,4 @@
-import prisma from "../../db";
+import prisma from "../../prisma";
 import normalizeTemplatePayload from "@/app/(site)/lib/services/engagement/normalizeTemplatePayload";
 import { EngagementContracts } from "../../../shared";
 

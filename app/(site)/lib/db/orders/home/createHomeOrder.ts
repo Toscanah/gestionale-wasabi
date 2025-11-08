@@ -1,5 +1,5 @@
 import { OrderType } from "@prisma/client";
-import prisma from "../../db";
+import prisma from "../../prisma";
 import { engagementsInclude, homeOrderInclude, productsInOrderInclude, orderPromotionUsagesInclude } from "../../includes";
 import { HomeOrder, OrderContracts } from "@/app/(site)/lib/shared";
 import { updateOrderShift } from "../updateOrderShift";

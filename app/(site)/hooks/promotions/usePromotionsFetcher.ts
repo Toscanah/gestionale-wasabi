@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ALL_PROMOTION_TYPES } from "../../components/ui/filters/select/PromotionTypesFilter";
 import { PromotionContracts } from "../../lib/shared";
 import { PromotionPeriodCondition } from "../../lib/shared/schemas/common/filters/promotion-periods";
+import { trpc } from "@/lib/server/client";
 
 export default function usePromotionsFetcher() {
   const [selectedPromotionTypes, setSelectedPromotionTypes] =
@@ -45,6 +46,18 @@ export default function usePromotionsFetcher() {
     }
   );
 
+  const deletePromotionMutation = promotionsAPI.deleteById.useMutation();
+
+  const utils = trpc.useUtils();
+
+  const deletePromotionById = async (promotionId: number) => {
+    await deletePromotionMutation.mutateAsync({ id: promotionId });
+    utils.promotions.getAll.setData({ filters }, (old) =>
+      old ? old.filter((promotion) => promotion.id !== promotionId) : []
+    );
+    await utils.promotions.countsByType.invalidate();
+  };
+
   return {
     promotions,
     promotionCounts,
@@ -53,5 +66,6 @@ export default function usePromotionsFetcher() {
     setSelectedPromotionTypes,
     periods,
     setPeriods,
+    deletePromotionById,
   };
 }

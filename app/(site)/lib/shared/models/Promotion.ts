@@ -20,6 +20,11 @@ export const PromotionUsageWithOrderSchema = PromotionUsageSchema.extend({
   order: OrderSchema,
 });
 
+export const ComprehensivePromotionUsageSchema = PromotionUsageSchema.extend({
+  promotion: PromotionWithUsagesSchema,
+  order: OrderSchema,
+});
+
 /**
  * 🪙 Fixed Discount
  * - Single-use, fixed amount
@@ -85,6 +90,7 @@ export const PromotionByTypeSchema = z.discriminatedUnion("type", [
 export type PromotionWithUsages = z.infer<typeof PromotionWithUsagesSchema>;
 export type PromotionUsageWithPromotion = z.infer<typeof PromotionUsageWithPromotion>;
 export type PromotionUsageWithOrder = z.infer<typeof PromotionUsageWithOrderSchema>;
+export type ComprehensivePromotionUsage = z.infer<typeof ComprehensivePromotionUsageSchema>;
 
 export type FixedDiscountPromotion = z.infer<typeof FixedDiscountPromotionSchema>;
 export type PercentageDiscountPromotion = z.infer<typeof PercentageDiscountPromotionSchema>;

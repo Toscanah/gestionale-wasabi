@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { cancelProductInOrder } from "../products/product-in-order/cancelProductInOrder";
 import { OrderStatus } from "@prisma/client";
 import { OrderContracts } from "../../shared";

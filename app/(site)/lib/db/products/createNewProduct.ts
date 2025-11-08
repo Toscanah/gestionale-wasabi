@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { ProductContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { categoryInclude } from "../includes";
 import { KitchenType } from "@prisma/client";
 

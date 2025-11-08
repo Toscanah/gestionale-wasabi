@@ -1,5 +1,5 @@
 import { PromotionContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { promotionUsagesInclude } from "../includes";
 
 export default async function getPromotionByCode(

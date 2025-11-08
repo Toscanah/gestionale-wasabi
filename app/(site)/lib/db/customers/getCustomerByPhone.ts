@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { CustomerContracts } from "../../shared";
 
 export default async function getCustomerByPhone({

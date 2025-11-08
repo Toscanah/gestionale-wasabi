@@ -1,5 +1,5 @@
 import { ProductContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { productInOrderInclude } from "../includes";
 import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
 

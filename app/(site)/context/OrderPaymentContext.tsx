@@ -66,7 +66,7 @@ export const OrderPaymentProvider = ({
   const { order: contextOrder } = useOrderContext();
   const payingOrder = partialOrder || contextOrder;
   const orderTotal = roundToCents(
-    manualTotalAmount ?? getOrderTotal({ order: payingOrder, applyDiscount: true })
+    manualTotalAmount ?? getOrderTotal({ order: payingOrder, applyDiscounts: true })
   );
 
   const [activeTool, setActiveTool] = useState<"manual" | "table">("manual");

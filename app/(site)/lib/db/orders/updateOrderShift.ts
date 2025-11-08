@@ -1,5 +1,5 @@
 import { Prisma, WorkingShift } from "@prisma/client";
-import prisma from "../db";
+import prisma from "../prisma";
 import { getEffectiveOrderShift } from "../../services/order-management/shift/getEffectiveOrderShift";
 import { ShiftEvaluableOrder } from "../../shared";
 

@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { PromotionContracts } from "../../shared";
 import { TRPCError } from "@trpc/server";
 import { getOrderById } from "../orders/getOrderById";

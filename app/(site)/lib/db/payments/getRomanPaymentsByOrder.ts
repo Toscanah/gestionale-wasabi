@@ -1,5 +1,5 @@
 import { PaymentContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { PaymentScope } from "@prisma/client";
 
 export default async function getRomanPaymentsByOrder({

@@ -1,4 +1,5 @@
-// components/RfmDimensionEditor.tsx
+import { useEffect, useMemo, useState } from "react";
+import { debounce } from "lodash";
 import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/app/(site)/lib/shared/types/RFM";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,8 @@ import { Plus } from "@phosphor-icons/react";
 import useTable from "@/app/(site)/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
-import { useMemo } from "react";
 import { Label } from "@/components/ui/label";
+import { toastError } from "@/app/(site)/lib/utils/global/toast";
 
 export type RFMTableMeta = {
   updateCell: (rowIndex: number, columnId: keyof RFMRangeRule, value: number | "") => void;
@@ -27,42 +28,88 @@ export default function RFMDimensionEditor({
   onUpdateRules,
   onUpdateWeight,
 }: RFMDimensionEditorProps) {
-  const addRule = () => {
-    onUpdateRules(dimensionKey, [...config.rules, { min: 0, max: undefined, points: 0 }]);
+  const [localRules, setLocalRules] = useState<RFMRangeRule[]>(config.rules);
+
+  useEffect(() => {
+    setLocalRules(config.rules);
+  }, [config.rules]);
+
+  const debouncedValidate = useMemo(
+    () =>
+      debounce((nextRules: RFMRangeRule[], index: number) => {
+        const curr = nextRules[index];
+
+        // basic checks moved here
+        // if (curr.min < 0) {
+        //   setLocalRules(config.rules);
+        //   toastError("Il valore minimo non può essere negativo.");
+        //   return;
+        // }
+        // if (curr.max !== undefined && curr.min > curr.max) {
+        //   setLocalRules(config.rules);
+        //   toastError("Il massimo deve essere ≥ del minimo.");
+        //   return;
+        // }
+
+        // overlap check
+        // if (hasOverlap(nextRules, index)) {
+        //   setLocalRules(config.rules);
+        //   toastError("Il valore inserito sovrappone le regole esistenti.");
+        //   return;
+        // }
+
+        onUpdateRules(dimensionKey, nextRules);
+      }, 500),
+    [dimensionKey, onUpdateRules, config.rules]
+  );
+
+  const hasOverlap = (rules: RFMRangeRule[], changedIndex: number) => {
+    const curr = rules[changedIndex];
+    const aMin = curr.min;
+    const aMax = curr.max ?? Infinity;
+
+    return rules.some((r, i) => {
+      if (i === changedIndex) return false;
+      const bMin = r.min;
+      const bMax = r.max ?? Infinity;
+      return aMin <= bMax && aMax >= bMin;
+    });
   };
 
-  const updateDimensionRule = (index: number, patch: Partial<RFMRangeRule>) => {
-    const next = [...config.rules];
-    const current = { ...next[index], ...patch };
-
-    // --- Validation rules ---
-    if (current.max !== undefined && current.min > current.max) {
-      current.max = current.min; // clamp so it's never < min
-    }
-    if (current.min < 0) {
-      current.min = 0; // clamp min to non-negative
-    }
-
-    next[index] = current;
+  const addRule = () => {
+    const next = [...localRules, { min: 0, max: undefined, points: 0 }];
+    setLocalRules(next);
     onUpdateRules(dimensionKey, next);
   };
 
+  const updateDimensionRule = (index: number, patch: Partial<RFMRangeRule>) => {
+    const next = [...localRules];
+    const current = { ...next[index], ...patch };
+
+    // no clamping here — allow temporary invalid while typing
+    next[index] = current;
+
+    setLocalRules(next);
+    debouncedValidate(next, index);
+  };
+
   const removeRule = (index: number) => {
-    onUpdateRules(
-      dimensionKey,
-      config.rules.filter((_, i) => i !== index)
-    );
+    const next = localRules.filter((_, i) => i !== index);
+    setLocalRules(next);
+    onUpdateRules(dimensionKey, next);
   };
 
   const cols = useMemo(() => columns(dimensionKey), [dimensionKey]);
 
   const table = useTable<RFMRangeRule, RFMTableMeta>({
-    data: config.rules,
+    data: localRules,
     columns: cols,
     meta: {
       updateCell: (rowIndex, columnId, value) => {
         if (columnId === "min" || columnId === "max" || columnId === "points") {
-          updateDimensionRule(rowIndex, { [columnId]: value === "" ? undefined : value });
+          updateDimensionRule(rowIndex, {
+            [columnId]: value === "" ? undefined : Number(value), // ✅ Number handles floats fine
+          });
         }
       },
       removeRule,
@@ -71,18 +118,8 @@ export default function RFMDimensionEditor({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Weight input */}
+      <Table table={table} />
 
-      {/* Rules table */}
-      {config.rules.length > 0 ? (
-        <Table table={table} />
-      ) : (
-        <span className="flex w-full items-center justify-center text-muted-foreground">
-          Nessuna regola disponibile
-        </span>
-      )}
-
-      {/* Add new rule */}
       <div className="w-full flex justify-between">
         <div className="flex w-full items-center gap-2">
           <Label htmlFor={`weight-${dimensionKey}`} className="text-sm font-medium">
@@ -101,15 +138,14 @@ export default function RFMDimensionEditor({
                 onUpdateWeight(dimensionKey, 0);
                 return;
               }
-
               onUpdateWeight(dimensionKey, Math.min(1, Math.max(0, val)));
             }}
             className="w-24"
           />
         </div>
 
-        <Button onClick={addRule} variant="default"  className="">
-          <Plus size={16} className="mr-1" /> Aggiungi regola
+        <Button onClick={addRule} variant="default">
+          <Plus size={16} /> Aggiungi regola
         </Button>
       </div>
     </div>

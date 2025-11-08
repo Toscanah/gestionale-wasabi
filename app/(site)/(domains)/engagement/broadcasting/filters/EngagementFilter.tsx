@@ -25,7 +25,8 @@ export default function EngagementFilter({ activeTypes, setActiveTypes }: Engage
       }
     >
       <div className="grid grid-cols-3 gap-3">
-        {ENGAGEMENT_TYPES_LABELS.slice()
+        {Object.entries(ENGAGEMENT_TYPES_LABELS)
+          .map(([value, label]) => ({ value: value as EngagementType, label }))
           .sort((a, b) => a.label.localeCompare(b.label))
           .map((type) => (
             <div key={type.label} className="flex items-center gap-2">

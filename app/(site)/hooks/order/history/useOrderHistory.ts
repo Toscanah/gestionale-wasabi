@@ -1,8 +1,5 @@
-import {
-  getOrderTotal,
-  OrderInputWithoutDiscount,
-} from "@/app/(site)/lib/services/order-management/getOrderTotal";
-import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
+import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
+import { ComprehensiveCustomer, LiteOrder } from "@/app/(site)/lib/shared";
 import { OrderStatus, OrderType } from "@prisma/client";
 import { useEffect, useState } from "react";
 import useHistoryStats from "./useHistoryStats";
@@ -11,9 +8,8 @@ interface UseOrderHistoryParams {
   customer: ComprehensiveCustomer;
 }
 
-
 export default function useOrderHistory({ customer }: UseOrderHistoryParams) {
-  const shouldCountOrder = (order: OrderInputWithoutDiscount & { status: OrderStatus }) =>
+  const shouldCountOrder = (order: LiteOrder & { status: OrderStatus }) =>
     getOrderTotal({ order }) > 0 && order.status === OrderStatus.PAID;
 
   const orderTypes = [
@@ -34,5 +30,5 @@ export default function useOrderHistory({ customer }: UseOrderHistoryParams) {
   return {
     orderTypes,
     allOrders,
-  }
+  };
 }

@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { categoriesInclude } from "../includes";
 import { OptionContracts } from "../../shared";
 

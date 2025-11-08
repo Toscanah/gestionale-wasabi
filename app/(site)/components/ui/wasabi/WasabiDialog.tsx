@@ -154,7 +154,7 @@ export default function WasabiDialog({
         {children}
 
         {isDeleteVariant && onDelete && (
-          <DialogFooter className={cn("w-full flex gap-2", footerClassName)}>
+          <DialogFooter className={cn("w-full flex gap-4", footerClassName)}>
             <DialogClose asChild>
               <Button className="flex-1" variant={"outline"}>
                 Ho cambiato idea

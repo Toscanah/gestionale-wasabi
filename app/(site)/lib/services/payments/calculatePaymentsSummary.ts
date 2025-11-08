@@ -31,8 +31,8 @@ export default function calculatePaymentsSummary(
   let centsDifference = 0;
 
   orders.forEach((order) => {
-    const rawOrderTotal = getOrderTotal({ order, applyDiscount: false, onlyPaid: true });
-    const discountedOrderTotal = getOrderTotal({ order, applyDiscount: true, onlyPaid: true });
+    const rawOrderTotal = getOrderTotal({ order, applyDiscounts: false, onlyPaid: true });
+    const discountedOrderTotal = getOrderTotal({ order, applyDiscounts: true, onlyPaid: true });
     const paidTotal = order.payments.reduce((sum, p) => sum + p.amount, 0);
 
     const isCloseEnough = Math.abs(paidTotal - discountedOrderTotal) <= TOLERANCE;

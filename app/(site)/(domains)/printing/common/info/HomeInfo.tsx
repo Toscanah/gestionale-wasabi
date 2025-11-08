@@ -1,5 +1,5 @@
 import { Br, Line, Text } from "react-thermal-printer";
-import { BIG_PRINT, SMALL_PRINT } from "../../constants";
+import { BIG_PRINT, SMALL_PRINT } from "../../../../lib/shared/constants/printing";
 import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import splitIntoLines from "@/app/(site)/lib/utils/global/string/splitIntoLines";
 import { AddressType } from "@/prisma/generated/schemas";

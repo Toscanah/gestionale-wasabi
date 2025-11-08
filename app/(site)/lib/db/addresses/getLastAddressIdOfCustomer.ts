@@ -1,6 +1,6 @@
 import { AddressContracts } from "../../shared";
 import getCustomerByPhone from "../customers/getCustomerByPhone";
-import prisma from "../db";
+import prisma from "../prisma";
 
 export default async function getLastAddressIdOfCustomer({
   phone,

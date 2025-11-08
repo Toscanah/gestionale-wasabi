@@ -1,5 +1,5 @@
 import { ProductContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 
 export default async function toggleProduct({
   id,

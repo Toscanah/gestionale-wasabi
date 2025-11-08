@@ -1,6 +1,6 @@
 import { PromotionType } from "@prisma/client";
 import { PromotionContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 
 export default async function countPromotionsByType(
   input: PromotionContracts.CountsByType.Input

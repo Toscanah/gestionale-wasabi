@@ -5,7 +5,7 @@ import {
   ProductInOrderStatus,
 } from "@prisma/client";
 import roundToTwo from "../../utils/global/number/roundToTwo";
-import prisma from "../db";
+import prisma from "../prisma";
 import { randomUUID } from "crypto";
 import { PaymentContracts } from "../../shared";
 import { getOrderById } from "../orders/getOrderById";

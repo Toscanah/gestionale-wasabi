@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../../db";
+import prisma from "../../prisma";
 import { CommonQueryFilter } from "../../../shared/schemas/common/filters/query";
 import customerWhereQuery from "./customerWhereQuery";
 

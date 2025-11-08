@@ -1,5 +1,5 @@
 import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
-import prisma from "../../db";
+import prisma from "../../prisma";
 import createPickupOrder from "../pickup/createPickupOrder";
 import createTableOrder from "../table/createTableOrder";
 import addProductsToOrder from "../../products/addProductsToOrder";

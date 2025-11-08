@@ -1,5 +1,5 @@
 import { CategoryContracts } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { optionsInclude } from "../includes";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";

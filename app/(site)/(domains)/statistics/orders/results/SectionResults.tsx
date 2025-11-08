@@ -1,20 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import roundToTwo from "../../../../lib/utils/global/number/roundToTwo";
 import useTable from "@/app/(site)/hooks/table/useTable";
 import generalStatsColumns from "./generalStatsColumns";
 import Table from "@/app/(site)/components/table/Table";
 import { Button } from "@/components/ui/button";
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
-import useCsvExport from "@/app/(site)/hooks/useCsvExport";
 import { OrderFilters } from "@/app/(site)/hooks/statistics/sectionReducer";
-import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import averageStatsColumns from "./averageStatsColumns";
-import { OrdersStats, SHIFT_LABELS, Weekday, WEEKDAY_LABELS } from "@/app/(site)/lib/shared";
+import { OrdersStats } from "@/app/(site)/lib/shared";
 import { Separator } from "@/components/ui/separator";
 import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
+import useCsvExport from "@/app/(site)/hooks/csv-export/useCsvExport";
+import { MinusIcon } from "@phosphor-icons/react";
+import CsvExportButton from "@/app/(site)/components/ui/misc/CsvExportButton";
 
 type MetricsResult = OrdersStats.Metrics;
 
@@ -39,43 +38,6 @@ export type AverageResultRecord = {
 type AverageResultRecordFlat = Omit<AverageResultRecord, "perDay"> & {
   [K in keyof OrdersStats.Daily["perDay"] as `${K & string}PerDay`]: OrdersStats.Daily["perDay"][K];
 };
-
-type CSVCombinedResultRecord = GeneralResultRecord & AverageResultRecordFlat;
-
-// const CSV_HEADERS: Record<keyof CSVCombinedResultRecord, string> = {
-//   title: "Tipo ordine",
-//   orders: "Ordini",
-//   ordersPct: "% Ordini",
-//   revenue: "Incasso",
-//   revenuePct: "% Incasso",
-//   avgPerOrder: "Scontrino medio",
-//   ordersPerDay: "Ordini/giorno",
-//   revenuePerDay: "Incasso/giorno",
-//   productsPerDay: "Prodotti/giorno",
-//   products: "Prodotti",
-//   soups: "Zuppe",
-//   rices: "Porzioni riso",
-//   salads: "Insalate",
-//   rice: "Riso cucinato",
-//   soupsPerDay: "Zuppe/giorno",
-//   ricesPerDay: "Porzioni riso/giorno",
-//   saladsPerDay: "Insalate/giorno",
-//   ricePerDay: "Riso cucinato/giorno",
-// };
-
-// function flattenAverage(r: AverageResultRecord): AverageResultRecordFlat {
-//   return {
-//     title: r.title,
-//     avgPerOrder: r.avgPerOrder,
-//     ordersPerDay: r.perDay.orders,
-//     revenuePerDay: r.perDay.revenue,
-//     productsPerDay: r.perDay.products,
-//     soupsPerDay: r.perDay.soups,
-//     ricesPerDay: r.perDay.rices,
-//     saladsPerDay: r.perDay.salads,
-//     ricePerDay: r.perDay.rice,
-//   };
-// }
 
 export default function SectionResults({
   results,
@@ -138,44 +100,12 @@ export default function SectionResults({
       (generalSections.push(makeGeneral("Domicilio", safeResults.home)),
         averageSections.push(makeAverage("Domicilio", safeResults.home)));
 
-    // ✅ Force "Tutti" to 100%
     if (safeResults.tutti && showAll)
       (generalSections.push(makeGeneral("Tutti", safeResults.tutti)),
         averageSections.push(makeAverage("Tutti", safeResults.tutti)));
 
     return { generalSections, averageSections };
   }, [results, showAll]);
-
-  // const parsedWeekdays =
-  //   filters.weekdays.length >= 6
-  //     ? "Tutti"
-  //     : filters.weekdays
-  //         .map((n: number) => {
-  //           const idx = (n - 1) as Weekday;
-  //           return WEEKDAY_LABELS[idx] || "";
-  //         })
-  //         .filter(Boolean)
-  //         .join(", ");
-
-  // const formatTimeWindow = (timeWindow?: { from: string; to: string }) => {
-  //   if (!timeWindow || !timeWindow.from || !timeWindow.to) return undefined;
-  //   return `dalle ${timeWindow.from} alle ${timeWindow.to}`;
-  // };
-
-  // const parsedFilters: Record<string, string | number | null | undefined> = {
-  //   Periodo: formatDateFilter("range", filters.period),
-  //   Turno: SHIFT_LABELS[filters.shift],
-  //   Giorni: parsedWeekdays,
-  //   Orario: formatTimeWindow(filters.timeWindow),
-  // };
-
-  // const flatAverageSections: AverageResultRecordFlat[] = averageSections.map(flattenAverage);
-
-  // const { downloadCsv } = useCsvExport<CSVCombinedResultRecord>(
-  //   [...generalSections, ...flatAverageSections],
-  //   CSV_HEADERS,
-  //   parsedFilters
-  // );
 
   const pageSize = filters.orderTypes.length == 1 ? 1 : filters.orderTypes.length + 1;
 
@@ -195,6 +125,19 @@ export default function SectionResults({
   });
   const averageTable = useTable({ data: averageData, columns: averageColumns });
 
+  const { exportCsv: exportCsvGeneral } = useCsvExport(generalTable);
+  const { exportCsv: exportCsvAverage } = useCsvExport(averageTable);
+
+  const parsedFilters = {
+    orderBase: {
+      period: filters.period as any,
+      shift: filters.shift,
+      weekdays: filters.weekdays,
+      orderTypes: filters.orderTypes,
+      timeWindow: filters.timeWindow,
+    },
+  };
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="w-full flex flex-col gap-4">
@@ -202,7 +145,16 @@ export default function SectionResults({
 
         <div className="space-y-4 mt-4">
           <div className="flex justify-between items-center">
-            <Label className="text-md self-end">Dati generali</Label>
+            <div className="flex gap-4 items-center">
+              <CsvExportButton
+                disabled={isLoading}
+                onClick={() => exportCsvGeneral({ filters: parsedFilters })}
+              />
+
+              <MinusIcon />
+
+              <Label className="text-lg self-center uppercase">Dati generali</Label>
+            </div>
             <TableColumnsVisibility table={generalTable} blacklist={["title"]} />
           </div>
           <Table table={generalTable} fixedColumnIndex={0} />
@@ -212,7 +164,16 @@ export default function SectionResults({
 
         <div className="space-y-4 mt-4">
           <div className="flex justify-between items-center">
-            <Label className="text-md self-end">Medie</Label>
+            <div className="flex gap-4 items-center">
+              <CsvExportButton
+                disabled={isLoading}
+                onClick={() => exportCsvAverage({ filters: parsedFilters })}
+              />
+
+              <MinusIcon />
+
+              <Label className="text-lg self-center uppercase">Medie</Label>
+            </div>
             <TableColumnsVisibility table={averageTable} />
           </div>
           <Table table={averageTable} fixedColumnIndex={0} />

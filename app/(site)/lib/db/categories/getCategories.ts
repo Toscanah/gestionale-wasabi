@@ -1,5 +1,5 @@
 import { CategoryContracts } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { optionsInclude } from "../includes";
 
 export default async function getCategories(

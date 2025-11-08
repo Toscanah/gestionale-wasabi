@@ -133,7 +133,7 @@ export default function OrderTable() {
     <OrderPayment
       manualTotalAmount={
         order.payments.some((p) => p.scope === PaymentScope.ROMAN)
-          ? getOrderTotal({ order, applyDiscount: true }) -
+          ? getOrderTotal({ order, applyDiscounts: true }) -
             order.payments
               .filter((p) => p.scope === PaymentScope.ROMAN)
               .reduce((sum, p) => sum + p.amount, 0)

@@ -12,7 +12,7 @@ import OrderInfoSection from "../common/info/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
 import { OrderType, PlannedPayment } from "@prisma/client";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
-import { BIG_PRINT } from "../constants";
+import { BIG_PRINT } from "../../../lib/shared/constants/printing";
 import SingleEngagement from "../common/SingleEngagement";
 import { Fragment } from "react";
 

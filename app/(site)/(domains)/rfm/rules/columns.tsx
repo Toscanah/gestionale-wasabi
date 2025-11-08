@@ -56,7 +56,7 @@ export default function columns(dimension: RFMDimension): ColumnDef<RFMRangeRule
                 (meta as RFMTableMeta).updateCell(
                   row.index,
                   "max",
-                  e.target.value === "" ? "" : parseInt(e.target.value)
+                  e.target.value === "" ? "" : parseFloat(e.target.value)
                 )
               }
               className="w-[4.5rem] text-center"
@@ -79,7 +79,7 @@ export default function columns(dimension: RFMDimension): ColumnDef<RFMRangeRule
             (meta as RFMTableMeta).updateCell(
               row.index,
               "points",
-              e.target.value === "" ? "" : parseInt(e.target.value)
+              e.target.value === "" ? "" : parseFloat(e.target.value)
             )
           }
           className="w-16"

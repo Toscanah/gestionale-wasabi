@@ -15,33 +15,30 @@ import { DEFAULT_RANK_RULE } from "@/app/(site)/lib/shared/constants/default-rfm
 import { Trash } from "@phosphor-icons/react";
 import { toastError, toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import clsx from "clsx";
+import useHasOverflow from "@/app/(site)/hooks/useHasOverflow";
 
 export default function RFMRanksDialog() {
   const { ranks, updateRankRule, addRankRule, removeRankRule, resetRanks } = useRfmRanks();
   const [newRank, setNewRank] = useState<RFMRankRule>({ rank: "", ...DEFAULT_RANK_RULE });
+  const [open, setOpen] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
-  const [hasOverflow, setHasOverflow] = useState(false);
-
-  useEffect(() => {
-    if (ref.current) {
-      const el = ref.current;
-      setHasOverflow(el.scrollHeight > el.clientHeight);
-    }
-  }, []);
+  const { vertical } = useHasOverflow(open ? ref : null);
 
   return (
     <WasabiDialog
       title="Rank RFM"
       putSeparator
       putUpperBorder
+      open={open}
+      onOpenChange={setOpen}
       trigger={<SidebarMenuSubButton className="hover:cursor-pointer">Rank</SidebarMenuSubButton>}
     >
       <Accordion
         type="single"
         collapsible
-        className={clsx("w-full max-h-80 overflow-y-auto", hasOverflow && "pr-4")}
-        ref={ref}
+        className={clsx("w-full max-h-80 overflow-y-auto", vertical && "pr-14")}
+        ref={open ? ref : undefined}
       >
         <AccordionItem key="create" value="create">
           <AccordionTrigger className="flex items-center">
@@ -72,7 +69,7 @@ export default function RFMRanksDialog() {
 
         {ranks.map((rank, i) => (
           <div className="w-full flex gap-4 items-center" key={i}>
-            <AccordionItem key={rank.rank} value={rank.rank} className="w-full">
+            <AccordionItem value={`item-${i}`} className="w-full">
               <AccordionTrigger className="flex items-center">
                 <span>
                   {i + 1} - {rank.rank}
@@ -84,8 +81,8 @@ export default function RFMRanksDialog() {
               </AccordionContent>
             </AccordionItem>
 
-            <Button variant="destructive" size="icon">
-              <Trash className="" onClick={() => removeRankRule(i)} size={24} />
+            <Button variant="destructive" size="icon" onClick={() => removeRankRule(i)}>
+              <Trash size={24} />
             </Button>
           </div>
         ))}

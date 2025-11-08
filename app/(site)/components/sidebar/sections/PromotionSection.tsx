@@ -6,7 +6,7 @@ export default function PromotionSection() {
   return (
     <SidebarMenu key={"promotions"}>
       <SidebarMenuItem>
-        <SidebarMenuButton className="pointer-events-none text-muted-foreground" asChild>
+        <SidebarMenuButton asChild>
           <Link href={"/promotions"}>
             <StarIcon />
             <span>Promozioni</span>

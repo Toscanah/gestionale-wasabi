@@ -15,6 +15,10 @@ import useTable from "../../hooks/table/useTable";
 import CreatePromotionDialog from "./create/CreatePromotionDialog";
 import promotionColumns from "./promotionColumns";
 
+export type PromotionTableMeta = {
+  deletePromotionById: (promotionId: number) => Promise<void>;
+};
+
 export default function PromotionsPage() {
   const {
     promotions,
@@ -24,6 +28,7 @@ export default function PromotionsPage() {
     promotionCounts,
     periods,
     setPeriods,
+    deletePromotionById,
   } = usePromotionsFetcher();
   const { inputQuery, setInputQuery } = useQueryFilter();
 
@@ -41,6 +46,7 @@ export default function PromotionsPage() {
     pagination: { mode: "client", pageSize: 10 },
     meta: {
       isLoading,
+      deletePromotionById,
     },
   });
 
@@ -69,11 +75,11 @@ export default function PromotionsPage() {
               disabled={isLoading}
             />
 
-            <PromotionPeriodsMenu
+            {/* <PromotionPeriodsMenu
               disabled={isLoading}
               activePeriods={periods ?? []}
               onChange={setPeriods}
-            />
+            /> */}
           </div>
 
           <div className="w-full flex gap-4 items-center justify-end flex-wrap">

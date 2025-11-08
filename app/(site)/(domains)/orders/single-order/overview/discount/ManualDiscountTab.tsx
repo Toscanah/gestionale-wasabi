@@ -32,8 +32,6 @@ export default function ManualDiscountTab({ activeTab }: ManualDiscountTabProps)
   const cappedDiscount = Math.min(Math.max(Number(manualDiscount), 0), 100);
   const discountValue = Math.min((subtotal * cappedDiscount) / 100, subtotal);
 
-  // Final total (manual discount + promos)
-
   useEffect(() => {
     setManualDiscount(order.discount ?? 0);
   }, [activeTab]);
@@ -43,7 +41,7 @@ export default function ManualDiscountTab({ activeTab }: ManualDiscountTabProps)
     [order, cappedDiscount]
   );
 
-  useFocusOnClick(["manual-discount-input"])
+  useFocusOnClick(["manual-discount-input"]);
 
   return (
     <WasabiAnimatedTab
@@ -77,7 +75,11 @@ export default function ManualDiscountTab({ activeTab }: ManualDiscountTabProps)
 
         <Button
           onClick={() => updateOrderDiscount(Number(manualDiscount) || 0)}
-          disabled={isNaN(Number(manualDiscount))}
+          disabled={
+            manualDiscount === "" ||
+            isNaN(Number(manualDiscount)) ||
+            Number(manualDiscount) === (order.discount ?? 0)
+          }
         >
           Applica
         </Button>
@@ -85,7 +87,6 @@ export default function ManualDiscountTab({ activeTab }: ManualDiscountTabProps)
 
       {manualDiscount == 0 && <Separator />}
 
-      {/* --- Totals --- */}
       {discountValue > 0 && (
         <>
           <Card className="p-2">

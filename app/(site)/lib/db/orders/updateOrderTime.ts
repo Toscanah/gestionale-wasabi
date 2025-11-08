@@ -1,5 +1,5 @@
 import { OrderType } from "@prisma/client";
-import prisma from "../db";
+import prisma from "../prisma";
 import formatWhenLabel from "../../utils/domains/order/formatWhenLabel";
 import { updateOrderShift } from "./updateOrderShift";
 import { OrderContracts } from "../../shared";

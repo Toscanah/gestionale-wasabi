@@ -1,5 +1,5 @@
 import { OrderContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { updateOrderShift } from "./updateOrderShift";
 
 export default async function updateOrdersShift(

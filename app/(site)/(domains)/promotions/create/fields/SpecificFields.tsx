@@ -15,7 +15,9 @@ export interface SpecificFieldsProps {
 }
 
 export function FixedDiscountFields({ form }: SpecificFieldsProps) {
-  return <WasabiFormField control={form.control} name="fixed_amount" label="Importo (€)" />;
+  return (
+    <WasabiFormField control={form.control} type="number" name="fixed_amount" label="Importo (€)" />
+  );
 }
 
 export function PercentageDiscountFields({ form }: SpecificFieldsProps) {
@@ -31,7 +33,7 @@ export function PercentageDiscountFields({ form }: SpecificFieldsProps) {
     <>
       <WasabiFormField control={form.control} name="percentage_value" label="Percentuale (%)" />
 
-      <div className="flex gap-2 self-start">
+      <div className="flex gap-2 self-start ">
         <RawFormField
           control={form.control}
           name="reusable"

@@ -101,8 +101,8 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
   ValueColumn({
     header: "Totale ordine",
     sortable: false,
-    value: (row) => getOrderTotal({ order: row.original, applyDiscount: true, round: true }),
-    accessor: (order) => getOrderTotal({ order, applyDiscount: true, round: true }),
+    value: (row) => getOrderTotal({ order: row.original, applyDiscounts: true, round: true }),
+    accessor: (order) => getOrderTotal({ order, applyDiscounts: true, round: true }),
   }),
 
   ActionColumn({

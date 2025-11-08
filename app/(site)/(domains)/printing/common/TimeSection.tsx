@@ -1,6 +1,6 @@
 import { Row, Text } from "react-thermal-printer";
 import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
-import { DATE_FORMAT_OPTIONS } from "../constants";
+import { PRINTING_DATE_FORMAT } from "../../../lib/shared/constants/printing";
 
 interface TimeSectionProps {
   orderDate?: Date;
@@ -8,7 +8,7 @@ interface TimeSectionProps {
 
 export default function TimeSection({ orderDate }: TimeSectionProps) {
   const finalDate = orderDate ?? new Date();
-  const formattedDate = finalDate.toLocaleDateString("it-IT", DATE_FORMAT_OPTIONS);
+  const formattedDate = finalDate.toLocaleDateString("it-IT", PRINTING_DATE_FORMAT);
 
   return (
     <Row

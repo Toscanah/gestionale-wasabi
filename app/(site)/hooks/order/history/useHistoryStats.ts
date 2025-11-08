@@ -200,7 +200,7 @@ export default function useHistoryStats({
     for (const wrapper of filtered) {
       const { order } = wrapper;
 
-      totalSpent += getOrderTotal({ order, applyDiscount: true });
+      totalSpent += getOrderTotal({ order, applyDiscounts: true });
 
       const date = new Date(order.created_at);
       ordersCount.push(date);

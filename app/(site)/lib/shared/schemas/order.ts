@@ -31,16 +31,7 @@ export namespace OrderContracts {
     export const NoContentInput = NoContentRequestSchema;
     export type NoContentInput = z.infer<typeof NoContentInput>;
 
-    export const Filters = wrapAsFilters(
-      APIFiltersSchema.omit({
-        query: true,
-        onlyActive: true,
-        customerOrigins: true,
-        engagementTypes: true,
-        categoryIds: true,
-        ranks: true,
-      })
-    )
+    export const Filters = wrapAsFilters(APIFiltersSchema.shape.order.shape.base)
       .partial()
       .optional();
     export type Filters = z.infer<typeof Filters>;
@@ -90,12 +81,7 @@ export namespace OrderContracts {
   }
 
   export namespace GetWithPayments {
-    export const Input = wrapAsFilters(
-      APIFiltersSchema.omit({
-        weekdays: true,
-        timeWindow: true,
-      })
-    )
+    export const Input = wrapAsFilters(APIFiltersSchema.shape.order.shape.payments)
       .extend(PaginationSchema.shape)
       .partial()
       .optional();

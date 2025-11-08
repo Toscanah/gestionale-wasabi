@@ -95,13 +95,11 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
             <Separator />
 
-            <div>
+            <div className="flex flex-col gap-1">
               <span className="font-semibold">Calcolo punteggio finale:</span>
-              <pre className="whitespace-pre">
-                {`= (${roundToTwo(rfm.recency)} × ${recencyW}) + (${roundToTwo(rfm.frequency)} × ${frequencyW}) + (${roundToTwo(rfm.monetary)} × ${monetaryW})
-                  = ${rPart} + ${fPart} + ${mPart}
-                  = ${rfmScore}`}
-              </pre>
+              <span className="font-mono text-sm">{`= (${roundToTwo(rfm.recency)} × ${recencyW}) + (${roundToTwo(rfm.frequency)} × ${frequencyW}) + (${roundToTwo(rfm.monetary)} × ${monetaryW})`}</span>
+              <span className="font-mono text-sm">{`= ${rPart} + ${fPart} + ${mPart}`}</span>
+              <span className="font-mono text-sm">{`= ${rfmScore}`}</span>
             </div>
           </div>
         </WasabiDialog>

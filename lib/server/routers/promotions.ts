@@ -7,6 +7,7 @@ import createNewPromotion from "@/app/(site)/lib/db/promotions/createNewPromotio
 import getPromotionByCode from "@/app/(site)/lib/db/promotions/getPromotionByCode";
 import applyPromotionToOrder from "@/app/(site)/lib/db/promotions/applyPromotionToOrder";
 import removePromotionFromOrder from "@/app/(site)/lib/db/promotions/removePromotionFromOrder";
+import deletePromotionById from "@/app/(site)/lib/db/promotions/deletePromotionById";
 
 export const promotionsRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -18,6 +19,11 @@ export const promotionsRouter = createTRPCRouter({
     .input(PromotionContracts.CountsByType.Input)
     .output(PromotionContracts.CountsByType.Output)
     .query(({ input }) => countPromotionsByType(input)),
+
+  deleteById: publicProcedure
+    .input(PromotionContracts.DeleteById.Input)
+    .output(PromotionContracts.DeleteById.Output)
+    .mutation(({ input }) => deletePromotionById(input)),
 
   getUsagesByPromotion: publicProcedure
     .input(PromotionContracts.GetUsagesByPromotion.Input)

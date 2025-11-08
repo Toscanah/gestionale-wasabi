@@ -1,4 +1,4 @@
-import prisma from "./db";
+import prisma from "./prisma";
 import { PaymentScope } from "@prisma/client";
 
 type PaymentReport = {

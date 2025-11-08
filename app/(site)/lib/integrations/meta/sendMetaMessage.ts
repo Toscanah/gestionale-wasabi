@@ -1,5 +1,5 @@
 import axios from "axios";
-import prisma from "../../db/db";
+import prisma from "../../db/prisma";
 import { MetaContracts } from "../../shared";
 import { MessageDirection } from "@prisma/client";
 import getMetaSecrets from "../../services/meta/getMetaSecrets";

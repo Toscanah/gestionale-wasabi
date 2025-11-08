@@ -1,5 +1,6 @@
 import { PromotionContracts } from "../../shared";
-import prisma from "../db";
+import { promotionInclude } from "../includes";
+import prisma from "../prisma";
 
 export default async function getUsagesByPromotion(
   input: PromotionContracts.GetUsagesByPromotion.Input
@@ -11,9 +12,7 @@ export default async function getUsagesByPromotion(
     where: { promotion_id: promotionId },
     include: {
       order: true,
-      promotion: {
-        include: { usages: true },
-      },
+      ...promotionInclude
     },
   });
 

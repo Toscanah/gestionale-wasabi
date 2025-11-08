@@ -26,7 +26,7 @@ export default function RomanStyle({ handleBackButton, handleOrderPaid }: RomanS
   const [amountToPay, setAmountToPay] = useState<number>(0);
   const [paidAmount, setPaidAmount] = useState<number>(0);
 
-  const total = getOrderTotal({ order, applyDiscount: true });
+  const total = getOrderTotal({ order, applyDiscounts: true });
 
   const utils = trpc.useUtils();
 

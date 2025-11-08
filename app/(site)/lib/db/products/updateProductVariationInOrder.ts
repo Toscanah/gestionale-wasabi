@@ -1,5 +1,5 @@
 import { ProductContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { productInOrderInclude } from "../includes";
 
 export default async function updateProductVariationInOrder({

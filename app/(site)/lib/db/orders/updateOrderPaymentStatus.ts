@@ -1,5 +1,5 @@
 import { OrderType } from "@prisma/client";
-import prisma from "../db";
+import prisma from "../prisma";
 import { OrderContracts } from "../../shared";
 import { getOrderById } from "./getOrderById";
 

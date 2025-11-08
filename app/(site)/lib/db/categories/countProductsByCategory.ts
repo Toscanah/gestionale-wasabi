@@ -1,5 +1,5 @@
 import { CategoryContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 
 export default async function countProductsByCategory(
   input: CategoryContracts.CountProductsByCategory.Input

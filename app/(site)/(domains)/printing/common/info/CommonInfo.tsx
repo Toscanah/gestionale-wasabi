@@ -2,10 +2,9 @@ import { OrderByType } from "@/app/(site)/lib/shared";
 import { PlannedPayment } from "@prisma/client";
 import ExtraItemsSection from "../ExtraItemsSection";
 import { Line, Text } from "react-thermal-printer";
-import { SMALL_PRINT } from "../../constants";
+import { SMALL_PRINT } from "../../../../lib/shared/constants/printing";
 import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import PaymentNotesSection from "../PaymentNotesSection";
-import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
 
 interface CommonInfoProps {
   order: OrderByType;
@@ -44,7 +43,7 @@ export default function CommonInfo({
               <Text bold inline size={SMALL_PRINT}>
                 Note ordine:{" "}
               </Text>
-              <Text size={SMALL_PRINT}>{fitReceiptText(sanitazeReceiptText(orderNotes), 35)}</Text>
+              <Text size={SMALL_PRINT}>{sanitazeReceiptText(orderNotes)}</Text>
             </>
           )}
 

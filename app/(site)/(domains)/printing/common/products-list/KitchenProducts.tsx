@@ -4,7 +4,7 @@ import { Line, Text } from "react-thermal-printer";
 import { uniqueId } from "lodash";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
 import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
-import { BIG_PRINT, SMALL_PRINT } from "../../constants";
+import { BIG_PRINT, SMALL_PRINT } from "../../../../lib/shared/constants/printing";
 import splitOptionsInLines from "@/app/(site)/lib/utils/domains/printing/splitOptionsIntoLines";
 
 interface KitchenProductsProps {

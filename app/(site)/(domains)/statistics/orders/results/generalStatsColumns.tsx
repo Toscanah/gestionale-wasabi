@@ -61,6 +61,9 @@ const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
     header: "Riso cucinato",
     value: (row) => formatRice(row.original.rice),
     accessor: (stats) => stats.rice,
+    meta: {
+      exportValue: (row) => formatRice(row.rice),
+    },
   }),
 ];
 

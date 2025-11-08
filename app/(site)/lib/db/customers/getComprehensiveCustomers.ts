@@ -3,7 +3,7 @@ import {
   ComprehensiveCustomer,
   ShiftFilterValue,
 } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { engagementsInclude, orderInclude } from "../includes";
 import filterInactiveProducts from "../../services/product-management/filterInactiveProducts";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
@@ -80,7 +80,7 @@ export default async function getComprehensiveCustomers(
   // --- DB query ---
   const customers: ComprehensiveCustomer[] = await prisma.customer.findMany({
     skip: page !== undefined && pageSize !== undefined ? page * pageSize : undefined,
-    take: 10,
+    take: pageSize,
     where: baseWhere,
     include: {
       addresses: true,

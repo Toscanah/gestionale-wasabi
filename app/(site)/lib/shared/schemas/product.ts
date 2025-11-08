@@ -52,13 +52,7 @@ export namespace ProductContracts {
   }
 
   export namespace GetAll {
-    export const Input = wrapAsFilters(
-      APIFiltersSchema.pick({
-        categoryIds: true,
-        onlyActive: true,
-        query: true,
-      })
-    )
+    export const Input = wrapAsFilters(APIFiltersSchema.shape.product.shape.base)
       .extend(PaginationSchema.shape)
       .extend({
         sort: z.array(ProductSortingSchema),
@@ -76,14 +70,7 @@ export namespace ProductContracts {
   }
 
   export namespace ComputeStats {
-    export const Input = wrapAsFilters(
-      APIFiltersSchema.pick({
-        period: true,
-        query: true,
-        shift: true,
-        categoryIds: true,
-      })
-    )
+    export const Input = wrapAsFilters(APIFiltersSchema.shape.product.shape.stats)
       .extend({
         sort: z.array(ProductStatsSortingSchema),
       })

@@ -1,5 +1,5 @@
 import { OrderContracts } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { getOrderById } from "./getOrderById";
 
 export default async function updateOrderManualDiscount({

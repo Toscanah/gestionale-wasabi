@@ -1,6 +1,6 @@
 import { Br, Text } from "react-thermal-printer";
 import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
-import { DATE_FORMAT_OPTIONS } from "../constants";
+import { PRINTING_DATE_FORMAT } from "../../../lib/shared/constants/printing";
 
 interface FooterSection {
   orderId: number;
@@ -8,7 +8,7 @@ interface FooterSection {
 
 export default function FooterSection({ orderId }: FooterSection) {
   const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleDateString("it-IT", DATE_FORMAT_OPTIONS);
+  const formattedDate = currentDate.toLocaleDateString("it-IT", PRINTING_DATE_FORMAT);
 
   return (
     <>

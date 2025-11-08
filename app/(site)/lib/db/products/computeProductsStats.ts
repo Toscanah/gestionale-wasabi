@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { endOfDay, startOfDay } from "date-fns";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
 import { ProductContracts, ProductStatsOnlySchema, ShiftFilterValue } from "../../shared";

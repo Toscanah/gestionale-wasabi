@@ -1,5 +1,5 @@
 import { OrderStatus, OrderType } from "@prisma/client";
-import prisma from "../../db";
+import prisma from "../../prisma";
 import { OrderContracts, PickupOrder } from "@/app/(site)/lib/shared";
 import { engagementsInclude, productsInOrderInclude, orderPromotionUsagesInclude } from "../../includes";
 import { updateOrderShift } from "../updateOrderShift";

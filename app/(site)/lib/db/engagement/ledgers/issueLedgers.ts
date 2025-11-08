@@ -1,5 +1,5 @@
 import { EngagementLedgerStatus, OrderType } from "@prisma/client";
-import prisma from "../../db";
+import prisma from "../../prisma";
 import { EngagementContracts } from "../../../shared";
 
 export default async function issueLedgers({

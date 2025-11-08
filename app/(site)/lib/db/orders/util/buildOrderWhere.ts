@@ -3,18 +3,16 @@ import { ORDER_TYPE_LABELS, ShiftFilterValue } from "../../../shared";
 import normalizePeriod from "../../../utils/global/date/normalizePeriod";
 import { endOfDay, startOfDay } from "date-fns";
 import z from "zod";
-import { APIFiltersSchema } from "../../../shared/schemas/common/filters/filters";
+import { BaseAPIFiltersSchema } from "../../../shared/schemas/common/filters/filters";
 
-type PossibleFilters = z.infer<
-  ReturnType<
-    typeof APIFiltersSchema.pick<{
-      orderTypes: true;
-      shift: true;
-      period: true;
-      query: true;
-    }>
-  >
->;
+const OrderFiltersSubset = BaseAPIFiltersSchema.pick({
+  orderTypes: true,
+  shift: true,
+  period: true,
+  query: true,
+});
+
+type PossibleFilters = z.infer<typeof OrderFiltersSubset>;
 
 export default function buildOrderWhere(
   filters: Partial<PossibleFilters> | undefined

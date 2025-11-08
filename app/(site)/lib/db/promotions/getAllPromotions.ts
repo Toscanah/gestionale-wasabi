@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { PromotionContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 
 export default async function getAllPromotions(
   input: PromotionContracts.GetAll.Input
@@ -8,6 +8,7 @@ export default async function getAllPromotions(
   const filters = input?.filters;
   const where: Prisma.PromotionWhereInput = {};
 
+  // --- Period Filters ---
   if (filters?.periods?.length) {
     const dateConditions: Prisma.PromotionWhereInput[] = [];
 
@@ -36,6 +37,11 @@ export default async function getAllPromotions(
     if (dateConditions.length > 0) {
       where.AND = dateConditions;
     }
+  }
+
+  // --- Promotion Type Filters ---
+  if (filters?.promotionTypes?.length) {
+    where.type = { in: filters.promotionTypes };
   }
 
   const promotions = await prisma.promotion.findMany({

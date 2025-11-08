@@ -1,5 +1,5 @@
 import { EngagementContracts } from "../../../shared";
-import prisma from "../../db";
+import prisma from "../../prisma";
 import { EngagementLedgerStatus, Prisma } from "@prisma/client";
 
 export default async function updateLedgerStatus({

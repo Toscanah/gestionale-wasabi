@@ -1,7 +1,7 @@
 import { Br, Text } from "react-thermal-printer";
 import calculateExtraItems from "../../../lib/services/order-management/calculateExtraItems";
 import { OrderByType } from "@/app/(site)/lib/shared";
-import { SMALL_PRINT } from "../constants";
+import { SMALL_PRINT } from "../../../lib/shared/constants/printing";
 
 interface ExtraItemsProps {
   order: OrderByType;

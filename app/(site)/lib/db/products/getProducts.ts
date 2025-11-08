@@ -1,5 +1,5 @@
 import { MAX_RECORDS, ProductContracts } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { categoryInclude } from "../includes";
 import sorterFactory from "../../utils/global/sorting/sorterFactory";
 import { KitchenType, Prisma } from "@prisma/client";

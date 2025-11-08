@@ -1,5 +1,5 @@
 import { OptionContracts, OptionWithCategories } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { categoriesInclude } from "../includes";
 
 export default async function getAllOptionsWithCategories(

@@ -1,5 +1,5 @@
 import { AddressContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 
 export default async function updateAddress(
   {address}: AddressContracts.Update.Input

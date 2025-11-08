@@ -26,7 +26,7 @@ export default function useOrderPayment({
   const { updateOrder, order: originalOrder } = useOrderContext();
   const { paymentAmounts } = payment;
   const orderTotal =
-    manualTotalAmount ?? getOrderTotal({ order: payingOrder, applyDiscount: true });
+    manualTotalAmount ?? getOrderTotal({ order: payingOrder, applyDiscounts: true });
 
   useEffect(() => {
     const totalPaid = Object.values(paymentAmounts).reduce((sum, amount) => sum + (amount ?? 0), 0);

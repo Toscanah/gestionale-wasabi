@@ -32,11 +32,11 @@ export default function calculateRFM(orders: LiteOrder[]): {
   const THIRTY_DAYS_AGO = Date.now() - 30 * MS_PER_DAY;
   const frequency = orders.filter((o) => o.created_at.getTime() >= THIRTY_DAYS_AGO).length;
 
-  console.log(orders.length);
   const monetary =
     orders.length > 0
       ? orders.reduce((sum, o) => sum + getOrderTotal({ order: o, applyDiscounts: true }), 0)
       : 0;
+
   return {
     recency,
     frequency,

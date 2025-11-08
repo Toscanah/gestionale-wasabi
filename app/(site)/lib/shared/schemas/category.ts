@@ -1,4 +1,3 @@
-import { CategorySchema } from "@/prisma/generated/schemas";
 import { CategoryWithOptionsSchema } from "../models/_index";
 import { NoContentRequestSchema } from "./common/no-content";
 import {

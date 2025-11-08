@@ -1,5 +1,5 @@
 import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
-import prisma from "../db";
+import prisma from "../prisma";
 import {
   engagementsInclude,
   homeOrderInclude,

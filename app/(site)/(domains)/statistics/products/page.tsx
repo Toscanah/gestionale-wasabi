@@ -19,6 +19,8 @@ import TablePagination from "@/app/(site)/components/table/TablePagination";
 import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
 import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
+import CsvExportButton from "@/app/(site)/components/ui/misc/CsvExportButton";
+import useCsvExport from "@/app/(site)/hooks/csv-export/useCsvExport";
 
 export type ProductStatsTableMeta = TableMeta<any> & {
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
@@ -64,6 +66,10 @@ export default function ProductsStats() {
       isLoading,
     },
   });
+
+  console.log(table.getAllColumns())
+
+  const { exportCsv } = useCsvExport(table);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
@@ -131,6 +137,8 @@ export default function ProductsStats() {
             />
 
             <TableColumnsVisibility table={table} disabled={isLoading} />
+
+            <CsvExportButton disabled={isLoading} onClick={() => exportCsv({})} />
           </div>
         </div>
 

@@ -14,6 +14,10 @@ import { Badge } from "@/components/ui/badge";
 import { PromotionByType, PromotionGuards } from "../../lib/shared";
 import roundToTwo from "../../lib/utils/global/number/roundToTwo";
 import UsagesDialog from "./usages/UsagesDialog";
+import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
+import { TrashIcon } from "@phosphor-icons/react";
+import { PromotionTableMeta } from "./page";
+import { differenceInDays } from "date-fns";
 
 function calcDiscountRaw(promotion: PromotionByType): number | null {
   if (PromotionGuards.isPercentageDiscount(promotion)) {
@@ -153,17 +157,26 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
   ValueColumn({
     header: "Data scadenza",
     value: (row) => {
-      if (row.original.never_expires) return "Nessuna scadenza";
-      if (!row.original.expires_at) return "N/A";
+      const { never_expires, expires_at } = row.original;
 
-      const date = new Date(row.original.expires_at);
-      return date.toLocaleString("it-IT", {
+      if (never_expires) return "Nessuna scadenza";
+      if (!expires_at) return "N/A";
+
+      const date = new Date(expires_at);
+      const formatted = date.toLocaleString("it-IT", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
       });
+
+      const daysLeft = differenceInDays(date, new Date());
+
+      // Choose badge variant
+      const variant = daysLeft < 0 ? "destructive" : daysLeft <= 5 ? "destructive" : "secondary";
+
+      return <Badge variant={variant}>{formatted}</Badge>;
     },
     accessor: (promotion) =>
       promotion.expires_at || (promotion.never_expires ? "Nessuna scadenza" : "N/A"),
@@ -228,10 +241,19 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
   ValueColumn({
     header: "Giorni fino alla scadenza",
     value: (row) => {
+      const { never_expires } = row.original;
       const diff = calcDaysUntilExpirationRaw(row.original);
-      if (row.original.never_expires) return "Nessuna scadenza";
+
+      if (never_expires) return "Nessuna scadenza";
       if (diff == null) return "N/A";
-      return `${diff} giorni`;
+
+      const isExpired = diff < 0;
+      const isSoon = diff <= 5;
+
+      const variant = isExpired || isSoon ? "destructive" : "secondary";
+      const label = isExpired ? "Scaduta" : `${diff} ${diff === 1 ? "giorno" : "giorni"}`;
+
+      return <Badge variant={variant}>{label}</Badge>;
     },
     accessor: (promotion) => calcDaysUntilExpirationRaw(promotion) ?? 0,
   }),
@@ -260,6 +282,35 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
     skeleton: (
       <Button disabled variant={"outline"} className="w-full">
         Skeleton utilizzi
+      </Button>
+    ),
+  }),
+
+  ActionColumn({
+    header: "Azioni",
+    action: (row, meta) => (
+      <WasabiDialog
+        onDelete={() => (meta as PromotionTableMeta).deletePromotionById(row.original.id)}
+        variant="delete"
+        trigger={
+          <Button variant={"destructive"} className="w-full">
+            <TrashIcon />
+          </Button>
+        }
+        putSeparator
+        title="Azioni promozione"
+      >
+        <span className="text-lg">
+          Stai per eliminare la promozione{" "}
+          <strong>{row.original.label || row.original.code}</strong>. Questa azione non può essere
+          annullata ed è irreversibile.
+        </span>
+        <span className="text-lg">Sei sicuro di voler eliminare questa promozione?</span>
+      </WasabiDialog>
+    ),
+    skeleton: (
+      <Button disabled variant={"outline"} className="w-full">
+        Skeleton azioni
       </Button>
     ),
   }),

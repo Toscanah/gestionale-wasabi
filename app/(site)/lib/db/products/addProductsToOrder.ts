@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { productInOrderInclude } from "../includes";
 import { getProductPrice } from "../../services/product-management/getProductPrice";
 import { ProductContracts } from "../../shared";

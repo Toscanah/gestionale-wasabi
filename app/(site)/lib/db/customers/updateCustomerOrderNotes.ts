@@ -1,5 +1,5 @@
 import { CustomerContracts } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { getOrderById } from "../orders/getOrderById";
 import { OrderGuards } from "../../shared/types/order-guards";
 

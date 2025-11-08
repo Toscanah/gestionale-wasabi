@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { AddressContracts } from "../../shared";
 
 export default async function getAddressesByCustomer({

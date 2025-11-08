@@ -12,14 +12,18 @@ export const engagementsInclude = {
   },
 };
 
+export const promotionInclude = {
+  promotion: {
+    include: {
+      ...promotionUsagesInclude,
+    },
+  },
+};
+
 export const orderPromotionUsagesInclude = {
   promotion_usages: {
     include: {
-      promotion: {
-        include: {
-          usages: true,
-        },
-      },
+      ...promotionInclude,
     },
   },
 };

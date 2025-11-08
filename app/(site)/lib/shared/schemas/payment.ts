@@ -3,22 +3,11 @@ import { z } from "zod";
 import { ProductInOrderWithOptionsSchema } from "../models/Product";
 import { OrderByTypeSchema } from "../models/Order";
 import { PaymentType } from "@prisma/client";
-import { OrderContracts } from "./order";
 import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 
 export namespace PaymentContracts {
   export namespace GetSummary {
-    export const Input = wrapAsFilters(
-      APIFiltersSchema.pick({
-        orderTypes: true,
-        shift: true,
-        period: true,
-        query: true,
-      })
-    )
-      .partial()
-      .optional();
-
+    export const Input = wrapAsFilters(APIFiltersSchema.shape.payment).partial().optional();
     export type Input = z.infer<typeof Input>;
 
     export const PaymentTotalSchema = z.object({

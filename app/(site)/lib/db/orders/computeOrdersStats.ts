@@ -1,5 +1,5 @@
 import { getOrdersStats } from "@prisma/client/sql";
-import prisma from "../db";
+import prisma from "../prisma";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
 import { OrderType, WorkingShift } from "@prisma/client";
 import { OrderContracts, OrdersStats, ShiftFilterValue } from "../../shared";

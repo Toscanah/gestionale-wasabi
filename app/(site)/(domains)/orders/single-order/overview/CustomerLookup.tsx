@@ -60,6 +60,7 @@ export default function CustomerLookup() {
   const rfm = calculateRFM(lifetimeOrders);
   console.log("RFM for customer", customer.id, rfm);
   const rfmScore = calculateRfmScore(rfm, rfmRules);
+  console.log("RFM Score for customer", customer.id, rfmScore);
   const rfmRank = calculateRfmRank(rfmScore, ranks);
 
   const origin = OrderGuards.isHome(order)

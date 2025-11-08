@@ -93,6 +93,14 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
 
   const utils = trpc.useUtils();
 
+  const reset = async () => {
+    await utils.promotions.getAll.invalidate({});
+    await utils.promotions.getAll.refetch({});
+    setPromoCode("");
+    setFoundPromo(null);
+    setPromoAmount("");
+  };
+
   const handleApplyClick = async () => {
     if (!foundPromo) return;
 
@@ -103,14 +111,14 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
       applyPromotionToOrder(foundPromo.code);
     }
 
-    await utils.promotions.getAll.invalidate();
-    await utils.promotions.getAll.refetch();
-    setPromoCode("");
-    setPromoAmount("");
-    setFoundPromo(null);
+    await reset();
   };
 
-  // --- Build live order including pending promo (optimistic)
+  const handleRemoveClick = async (usageId: number) => {
+    removePromotionFromOrder(usageId);
+    await reset();
+  };
+
   const liveOrder = useMemo(() => {
     if (!foundPromo) return order;
 
@@ -232,13 +240,21 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
             </>
           )}
 
-          <Button onClick={handleApplyClick} disabled={!foundPromo || isSearching}>
-            Applica
+          <Button
+            onClick={handleApplyClick}
+            disabled={
+              !foundPromo ||
+              isSearching ||
+              order.promotion_usages.some((u) => u.promotion_id === foundPromo?.id)
+            }
+          >
+            {foundPromo && order.promotion_usages.some((u) => u.promotion_id === foundPromo.id)
+              ? "Già applicata"
+              : "Applica"}
           </Button>
         </ButtonGroup>
       </div>
 
-      {/* promo info card */}
       {!isSearching && promoCode.trim() && (
         <Card className="p-1">
           <CardContent className="p-2 text-sm flex gap-2 items-center">
@@ -247,99 +263,107 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
                 Nessuna promozione trovata con il codice "{promoCode}"
               </span>
             ) : foundPromo ? (
-              <>
-                <span
-                  className={cn(
-                    "font-semibold",
-                    PROMOTION_TYPES_COLORS[foundPromo.type],
-                    "bg-background"
-                  )}
-                >
-                  {PromotionGuards.isFixedDiscount(foundPromo)
-                    ? "Sconto fisso"
-                    : PromotionGuards.isPercentageDiscount(foundPromo)
-                      ? "Sconto Percentuale"
-                      : PromotionGuards.isGiftCard(foundPromo)
-                        ? "Gift Card"
-                        : null}
-                </span>
+              (() => {
+                // ✅ Check if the promotion is already applied
+                const alreadyUsed = order.promotion_usages.some(
+                  (u) => u.promotion_id === foundPromo.id
+                );
 
-                <ArrowRightIcon />
+                if (alreadyUsed) {
+                  return (
+                    <span className="text-orange-600 font-semibold">
+                      Promozione già usata per questo ordine
+                    </span>
+                  );
+                }
 
-                {PromotionGuards.isFixedDiscount(foundPromo) &&
-                  (() => {
-                    const discount = foundPromo.fixed_amount ?? 0;
-                    const baseTotal = getOrderTotal({ order: order, applyDiscounts: false });
-                    const newTotal = Math.max(baseTotal - discount, 0);
+                // ✅ Otherwise, render your existing badge + details
+                return (
+                  <>
+                    <Badge className={cn(PROMOTION_TYPES_COLORS[foundPromo.type])}>
+                      {PromotionGuards.isFixedDiscount(foundPromo)
+                        ? "Sconto fisso"
+                        : PromotionGuards.isPercentageDiscount(foundPromo)
+                          ? "Sconto Percentuale"
+                          : PromotionGuards.isGiftCard(foundPromo)
+                            ? "Gift Card"
+                            : null}
+                    </Badge>
 
-                    return (
-                      <p>
-                        Sconto di{" "}
-                        <span className="font-mono font-semibold">{toEuro(discount)}</span>
-                      </p>
-                    );
-                  })()}
+                    <ArrowRightIcon />
 
-                {PromotionGuards.isPercentageDiscount(foundPromo) &&
-                  (() => {
-                    const total = foundPromo.max_usages ?? null;
-                    const used = foundPromo.usages.length;
-                    const remaining = total ? Math.max(total - used, 0) : null;
-                    const afterApply = total ? Math.max(total - used - 1, 0) : null;
+                    {PromotionGuards.isFixedDiscount(foundPromo) &&
+                      (() => {
+                        const discount = foundPromo.fixed_amount ?? 0;
+                        const baseTotal = getOrderTotal({ order: order, applyDiscounts: false });
+                        return (
+                          <p>
+                            Sconto di{" "}
+                            <span className="font-mono font-semibold">{toEuro(discount)}</span>
+                          </p>
+                        );
+                      })()}
 
-                    // Compute discounted amount preview
-                    const percent = foundPromo.percentage_value ?? 0;
-                    const baseTotal = getOrderTotal({ order: order, applyDiscounts: false });
-                    const discountValue = (baseTotal * percent) / 100;
+                    {PromotionGuards.isPercentageDiscount(foundPromo) &&
+                      (() => {
+                        const total = foundPromo.max_usages ?? null;
+                        const used = foundPromo.usages.length;
+                        const remaining = total ? Math.max(total - used, 0) : null;
+                        const afterApply = total ? Math.max(total - used - 1, 0) : null;
 
-                    return (
-                      <>
-                        <p>
-                          Sconto del{" "}
-                          <span className="font-mono font-semibold">
-                            {foundPromo.percentage_value}%
-                          </span>{" "}
-                          {total && (
-                            <span className="text-muted-foreground text-xs">
-                              (da {remaining} a {afterApply} usi)
-                            </span>
-                          )}
-                        </p>
+                        const percent = foundPromo.percentage_value ?? 0;
+                        const baseTotal = getOrderTotal({ order: order, applyDiscounts: false });
+                        const discountValue = (baseTotal * percent) / 100;
 
-                        <ArrowRightIcon />
-
-                        <span className="font-mono font-semibold">−{toEuro(discountValue)}</span>
-                      </>
-                    );
-                  })()}
-
-                {PromotionGuards.isGiftCard(foundPromo) &&
-                  (() => {
-                    const totalUsed = foundPromo.usages.reduce((sum, u) => sum + u.amount, 0);
-                    const initial = foundPromo.fixed_amount ?? 0;
-                    const remaining = initial - totalUsed;
-                    const newRemaining = remaining - (Number(promoAmount) || 0);
-
-                    return (
-                      <p className="flex gap-2 items-center">
-                        Saldo disponibile:{" "}
-                        <span className="font-mono font-semibold">{toEuro(remaining)}</span>
-                        {promoAmount !== "" && promoAmount > 0 && (
+                        return (
                           <>
+                            <p>
+                              Sconto del{" "}
+                              <span className="font-mono font-semibold">
+                                {foundPromo.percentage_value}%
+                              </span>{" "}
+                              {total && (
+                                <span className="text-muted-foreground text-xs">
+                                  (da {remaining} a {afterApply} usi)
+                                </span>
+                              )}
+                            </p>
+
                             <ArrowRightIcon />
-                            Saldo dopo l'applicazione:{" "}
+
                             <span className="font-mono font-semibold">
-                              {toEuro(Math.max(newRemaining, 0))}
-                            </span>{" "}
-                            {/* <span className="text-muted-foreground text-sm">
-                              (−{toEuro(Number(promoAmount))})
-                            </span> */}
+                              −{toEuro(discountValue)}
+                            </span>
                           </>
-                        )}
-                      </p>
-                    );
-                  })()}
-              </>
+                        );
+                      })()}
+
+                    {PromotionGuards.isGiftCard(foundPromo) &&
+                      (() => {
+                        const totalUsed = foundPromo.usages.reduce((sum, u) => sum + u.amount, 0);
+                        const initial = foundPromo.fixed_amount ?? 0;
+                        const remaining = initial - totalUsed;
+                        const newRemaining = remaining - (Number(promoAmount) || 0);
+
+                        return (
+                          <p className="flex gap-2 items-center">
+                            Saldo disponibile:{" "}
+                            <span className="font-mono font-semibold">{toEuro(remaining)}</span>
+                            {promoAmount !== "" && promoAmount > 0 && (
+                              <>
+                                <ArrowRightIcon />
+                                Saldo dopo l'applicazione:{" "}
+                                <span className="font-mono font-semibold">
+                                  {toEuro(Math.max(newRemaining, 0))}
+                                </span>
+                              </>
+                            )}
+                          </p>
+                        );
+                      })()}
+                  </>
+                );
+              })()
             ) : null}
           </CardContent>
         </Card>
@@ -348,7 +372,8 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
       {/* applied promotions */}
       {sortedUsages.length !== 0 && (
         <>
-          <Separator />
+          <Separator className="-mb-4" />
+
           <Accordion type="single" collapsible className="w-full">
             {sortedUsages.map((usage, idx) => (
               <div className="flex gap-2 items-center w-full" key={`${usage.promotion_id}-${idx}`}>
@@ -358,7 +383,7 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
                       <Badge className={cn(PROMOTION_TYPES_COLORS[usage.promotion.type])}>
                         {PROMOTION_TYPES_LABELS[usage.promotion.type]} ({usage.promotion.code})
                       </Badge>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-muted-foreground font-mono">
                         {formatPromotionSummary(usage)}
                       </span>
                     </div>
@@ -372,7 +397,7 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
                 <Button
                   variant={"destructive"}
                   className="h-8 w-8"
-                  onClick={() => removePromotionFromOrder(usage.id)}
+                  onClick={() => handleRemoveClick(usage.id)}
                 >
                   <TrashIcon size={18} />
                 </Button>

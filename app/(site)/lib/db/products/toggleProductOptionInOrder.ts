@@ -1,5 +1,5 @@
 import { ProductContracts } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 
 export default async function toggleProductOptionInOrder({
   productInOrderId,

@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { CustomerContracts } from "@/app/(site)/lib/shared";
 import getComprehensiveCustomer from "./getComprehensiveCustomer";
 import { TRPCError } from "@trpc/server";

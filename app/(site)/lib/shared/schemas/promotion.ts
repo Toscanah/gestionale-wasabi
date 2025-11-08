@@ -1,13 +1,14 @@
 import z from "zod";
-import { PromotionFiltersSchema } from "./common/filters/filters";
+import { PromotionFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 import {
+  ComprehensivePromotionUsageSchema,
   FixedDiscountPromotionSchema,
   GiftCardPromotionSchema,
   PercentageDiscountPromotionSchema,
   PromotionByTypeSchema,
   PromotionUsageWithOrderSchema,
 } from "../models/Promotion";
-import { NoContentRequestSchema } from "./_index";
+import { DeleteEntityResponseSchema, NoContentRequestSchema } from "./_index";
 import { PromotionType } from "@prisma/client";
 import { PromotionUsageSchema } from "@/prisma/generated/schemas";
 import { OrderByTypeSchema } from "../models/Order";
@@ -40,7 +41,7 @@ export namespace PromotionContracts {
     export type PromotionCreateSchema = z.infer<typeof PromotionCreateSchema>;
   }
   export namespace GetAll {
-    export const Input = PromotionFiltersSchema.partial().optional();
+    export const Input = wrapAsFilters(PromotionFiltersSchema).partial().optional();
     export type Input = z.infer<typeof Input>;
 
     export const Output = z.array(PromotionByTypeSchema);
@@ -55,13 +56,23 @@ export namespace PromotionContracts {
     export type Output = z.infer<typeof Output>;
   }
 
+  export namespace DeleteById {
+    export const Input = z.object({
+      id: z.coerce.number(),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = DeleteEntityResponseSchema;
+    export type Output = z.infer<typeof Output>;
+  }
+
   export namespace GetUsagesByPromotion {
     export const Input = z.object({
       promotionId: z.coerce.number(),
     });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = z.array(PromotionUsageWithOrderSchema);
+    export const Output = z.array(ComprehensivePromotionUsageSchema);
     export type Output = z.infer<typeof Output>;
   }
 

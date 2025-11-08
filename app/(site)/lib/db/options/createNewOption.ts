@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { OptionContracts, OptionWithCategories } from "@/app/(site)/lib/shared";
 import { categoriesInclude } from "../includes";
 import { TRPCError } from "@trpc/server";

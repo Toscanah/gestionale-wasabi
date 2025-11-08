@@ -173,6 +173,7 @@ export function ValueColumn<T>({
   sortable = true,
   sortingFn = "alphanumeric",
   skeleton,
+  meta,
 }: ValueColumnProps<T>): ColumnDefWithSkeleton<T> {
   if (typeof header === "string" && header.trim() === "") {
     throw new Error("ValueColumn: 'header' must be a non-empty string.");
@@ -180,6 +181,8 @@ export function ValueColumn<T>({
 
   const col: ColumnDefWithSkeleton<T> = {
     meta: {
+      ...meta,
+      exportValue: meta?.exportValue,
       label: typeof header === "string" ? header : undefined,
     },
     id: typeof header === "string" ? header : header !== undefined ? uniqueId("col_") : uniqueId(),
@@ -205,6 +208,7 @@ export function ValueColumn<T>({
 
 type ActionColumnProps<T> = Omit<BaseColumnProps, "sortable"> & {
   action: (row: Row<T>, meta: TableMeta<T> | undefined) => ReactNode;
+  exportValue?: (row: T) => Primitive;
 };
 
 export function ActionColumn<T>({
@@ -218,12 +222,11 @@ export function ActionColumn<T>({
       ...meta,
       label: typeof header === "string" ? header : undefined,
     },
-    id: typeof header === "string" && header.trim() !== "" ? header : uniqueId("action_col_"),
+    id: uniqueId("action_col_"),
     header: buildHeader(header, false),
     // ⬇️ allow appearing in visibility dropdown
     accessorFn: (row: T) => row, // dummy accessor to pass filter
     enableHiding: true,
-
     enableSorting: false,
     enableColumnFilter: false,
     cell: ({ row, table }) => {

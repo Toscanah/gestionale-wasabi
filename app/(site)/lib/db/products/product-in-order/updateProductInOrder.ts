@@ -1,4 +1,4 @@
-import prisma from "../../db";
+import prisma from "../../prisma";
 import { ProductContracts, ProductInOrder } from "@/app/(site)/lib/shared";
 import handleProductCodeChange from "./handleCodeChange";
 import handleQuantityChange from "./handleQuantityChange";

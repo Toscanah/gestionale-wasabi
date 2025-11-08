@@ -50,7 +50,7 @@ export default function DetailAccordionItem({
   const canCreate = selectedProducts.length > 0;
 
   const orderDate = formatDateWithDay(order.created_at);
-  const orderTotal = getOrderTotal({ order, applyDiscount: true });
+  const orderTotal = getOrderTotal({ order, applyDiscounts: true });
   const orderDiscount = order.discount !== 0 ? <> (sconto {order.discount}%)</> : <></>;
 
   const OrderRecreation = () =>

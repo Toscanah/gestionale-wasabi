@@ -22,7 +22,7 @@ export default function PromotionTypesFilter({
 }: PromotionTypesFilterProps) {
   const handleChange = (newValues: string[]) => {
     if (newValues.length === 0 || newValues.length === ALL_PROMOTION_TYPES.length) {
-      onTypesChange(newValues as PromotionType[]);
+      onTypesChange(ALL_PROMOTION_TYPES);
     } else {
       onTypesChange(newValues as PromotionType[]);
     }

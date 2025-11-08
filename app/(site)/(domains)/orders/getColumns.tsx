@@ -166,8 +166,8 @@ export default function getColumns(
     ValueColumn<OrderByType>({
       header: "Totale",
       value: (row) =>
-        `€ ${roundToTwo(getOrderTotal({ order: row.original, applyDiscount: true }))}`,
-      accessor: (order) => `€ ${roundToTwo(getOrderTotal({ order, applyDiscount: true }))}`,
+        `€ ${roundToTwo(getOrderTotal({ order: row.original, applyDiscounts: true }))}`,
+      accessor: (order) => `€ ${roundToTwo(getOrderTotal({ order, applyDiscounts: true }))}`,
     })
   );
 

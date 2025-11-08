@@ -60,22 +60,10 @@ export namespace CustomerContracts {
   }
 
   export namespace GetAllComprehensive {
-    export const Input = wrapAsFilters(
-      z
-        .object({
-          orders: APIFiltersSchema.pick({
-            shift: true,
-            period: true,
-          }).partial(),
-        })
-        .extend(
-          APIFiltersSchema.pick({ query: true, engagementTypes: true, customerOrigins: true }).shape
-        )
-    )
+    export const Input = wrapAsFilters(APIFiltersSchema.shape.customer.shape.base)
       .extend(PaginationSchema.shape)
       .partial()
       .optional();
-
     export type Input = z.infer<typeof Input>;
 
     export const Output = z
@@ -168,14 +156,7 @@ export namespace CustomerContracts {
   }
 
   export namespace ComputeStats {
-    export const Input = wrapAsFilters(
-      APIFiltersSchema.pick({
-        ranks: true,
-        period: true,
-        query: true,
-        customerOrigins: true,
-      })
-    )
+    export const Input = wrapAsFilters(APIFiltersSchema.shape.customer.shape.stats)
       .extend(PaginationSchema.shape)
       .extend({
         rfmConfig: RFMConfigSchema,

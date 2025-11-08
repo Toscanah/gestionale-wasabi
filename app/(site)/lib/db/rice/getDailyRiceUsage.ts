@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import orderMatchesShift from "../../services/order-management/shift/orderMatchesShift";
 import { ProductInOrderStatus } from "@prisma/client";
 import { startOfDay, endOfDay } from "date-fns";

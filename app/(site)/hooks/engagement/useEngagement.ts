@@ -10,7 +10,7 @@ import useQueryFilter from "../table/useQueryFilter";
 function filterRightCustomers(customers: ComprehensiveCustomer[], activeTypes: EngagementType[]) {
   return customers.filter((c) =>
     c.engagements.length === 0
-      ? activeTypes.length === ENGAGEMENT_TYPES_LABELS.length
+      ? activeTypes.length === Object.keys(ENGAGEMENT_TYPES_LABELS).length
       : c.engagements.some((e) => activeTypes.includes(e.template.type))
   );
 }
@@ -27,18 +27,19 @@ export default function useEngagement({ page, pageSize }: UseEngagementParams) {
 
   const [activeTypes, setActiveTypes] = useState<EngagementType[]>(Object.values(EngagementType));
 
-  const filters: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"] = useMemo(() => {
-    const periodFilter = period?.from
-      ? { from: period.from, to: period.to ?? period.from }
-      : undefined;
+  const filters: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"] =
+    useMemo(() => {
+      const periodFilter = period?.from
+        ? { from: period.from, to: period.to ?? period.from }
+        : undefined;
 
-    const search = debouncedQuery && debouncedQuery.trim() !== "" ? debouncedQuery : undefined;
+      const search = debouncedQuery && debouncedQuery.trim() !== "" ? debouncedQuery : undefined;
 
-    return {
-      orders: { period: periodFilter },
-      query: search,
-    };
-  }, [period, debouncedQuery]);
+      return {
+        orders: { period: periodFilter },
+        query: search,
+      };
+    }, [period, debouncedQuery]);
 
   const utils = trpc.useUtils();
   const { data, isLoading, isFetching } = trpc.customers.getAllComprehensive.useQuery(

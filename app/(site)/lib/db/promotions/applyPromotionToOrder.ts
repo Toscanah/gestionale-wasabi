@@ -1,5 +1,5 @@
 import { OrderByType, PromotionContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { getOrderById } from "../orders/getOrderById";
 import getPromotionByCode from "./getPromotionByCode";
 import { getOrderTotal } from "../../services/order-management/getOrderTotal";

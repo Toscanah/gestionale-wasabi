@@ -1,5 +1,5 @@
 import { ProductContracts } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { categoryInclude } from "../includes";
 
 export default async function updateProduct({

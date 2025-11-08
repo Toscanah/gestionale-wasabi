@@ -1,5 +1,5 @@
 import { CustomerContracts, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import getComprehensiveCustomer from "./getComprehensiveCustomer";
 
 export default async function getCustomersByDoorbell({

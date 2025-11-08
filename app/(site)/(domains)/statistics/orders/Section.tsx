@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusCircleIcon } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import formatCsvFilters from "@/app/(site)/hooks/csv-export/useCsvExport";
 
 interface SectionProps {
   id: string;
@@ -57,6 +58,7 @@ export default function Section({}: SectionProps) {
         return typeof value === "number" && value > 0;
       });
     });
+
 
   return (
     <div className="flex flex-col gap-4 w-full p-4 h-full ">
@@ -154,7 +156,7 @@ export default function Section({}: SectionProps) {
 
           <div className="space-y-4 mt-4">
             <div className="w-full flex gap-4 items-center">
-              <Label className="text-md">Grafici ({chartSections.length})</Label>
+              <Label className="text-lg uppercase">Grafici ({chartSections.length})</Label>
               <Button variant={"outline"} onClick={handleAddChartSection} className="ml-auto">
                 <PlusCircleIcon className="h-4 w-4 " />
                 Aggiungi

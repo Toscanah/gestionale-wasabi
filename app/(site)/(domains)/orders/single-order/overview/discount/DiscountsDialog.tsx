@@ -31,7 +31,7 @@ export const DiscountsSummary = ({ liveOrder }: { liveOrder: OrderByType }) => {
 
   return (
     <div className="text-lg flex">
-      <span>Totale con sconto e promozioni</span>
+      <span>Totale in diretta con sconto e promozioni</span>
       <span className="font-mono ml-auto font-semibold">{toEuro(finalTotal)}</span>
     </div>
   );

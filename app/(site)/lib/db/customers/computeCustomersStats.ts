@@ -1,7 +1,7 @@
 import calculateRfmRank from "../../services/rfm/calculateRfmRank";
 import calculateRfmScore from "../../services/rfm/calculateRfmScore";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
-import prisma from "../db";
+import prisma from "../prisma";
 import { getCustomersStats } from "@prisma/client/sql";
 import countCustomers from "./util/countCustomers";
 import { CustomerContracts, CustomerStats, SortDirection } from "../../shared";
@@ -79,11 +79,17 @@ export default async function computeCustomersStats(
       totalSpent,
     } = c;
 
+    
+
     const rfmScore = calculateRfmScore(
       { recency: recency ?? 0, frequency: frequency ?? 0, monetary: monetary ?? 0 },
       rfmConfig.rules
     );
     const rank = calculateRfmRank(rfmScore, rfmConfig.ranks) ?? "";
+
+    if (customerId === 651) {
+      console.log("RFM for customer", customerId, c, rfmScore, rank);
+    }
 
     return {
       averageOrder: averageOrder ?? 0,

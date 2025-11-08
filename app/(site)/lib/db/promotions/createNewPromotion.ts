@@ -1,6 +1,7 @@
 import { PromotionType } from "@prisma/client";
 import { PromotionContracts } from "../../shared";
-import prisma from "../db";
+import prisma from "../prisma";
+import { endOfDay } from "date-fns";
 
 export default async function createNewPromotion(
   input: PromotionContracts.Create.Input
@@ -12,7 +13,7 @@ export default async function createNewPromotion(
       code: promotion.code,
       type: promotion.type,
       label: promotion.label,
-      expires_at: promotion.expires_at,
+      expires_at: promotion.expires_at ? endOfDay(promotion.expires_at) : null,
       never_expires: promotion.never_expires,
       fixed_amount:
         promotion.type === PromotionType.FIXED_DISCOUNT ||

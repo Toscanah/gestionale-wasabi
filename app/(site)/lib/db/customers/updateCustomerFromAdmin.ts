@@ -1,5 +1,5 @@
 import { CustomerContracts } from "@/app/(site)/lib/shared";
-import prisma from "../db";
+import prisma from "../prisma";
 import { engagementsInclude, homeAndPickupOrdersInclude } from "../includes";
 
 export default async function updateCustomerFromAdmin({

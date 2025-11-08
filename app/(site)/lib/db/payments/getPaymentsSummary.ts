@@ -1,4 +1,4 @@
-import prisma from "../db";
+import prisma from "../prisma";
 import { PaymentContracts, OrderContracts } from "../../shared";
 import { OrderType, PaymentType, Prisma } from "@prisma/client";
 import calculatePaymentsSummary from "../../services/payments/calculatePaymentsSummary";

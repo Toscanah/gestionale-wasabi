@@ -126,5 +126,5 @@ export const promotionsAPI: Hooks<typeof trpc.promotions> = {
   applyToOrder: trpc.promotions.applyToOrder,
   getByCode: trpc.promotions.getByCode,
   removeFromOrder: trpc.promotions.removeFromOrder,
-  // update: trpc.promotions.update,
+  deleteById: trpc.promotions.deleteById,
 };
