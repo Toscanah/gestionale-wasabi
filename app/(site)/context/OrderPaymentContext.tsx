@@ -30,12 +30,7 @@ interface OrderPaymentProviderProps extends Omit<OrderPaymentProps, "onBackButto
 const OrderPaymentContext = createContext<OrderPaymentContextProps | undefined>(undefined);
 
 export type Payment = {
-  paymentAmounts: {
-    [PaymentType.CASH]?: number;
-    [PaymentType.CARD]?: number;
-    [PaymentType.VOUCH]?: number;
-    [PaymentType.CREDIT]?: number;
-  };
+  paymentAmounts: Partial<Record<PaymentType, number>>;
   paidAmount: number;
   remainingAmount: number;
 };

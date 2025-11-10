@@ -278,7 +278,12 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
 
   ActionColumn({
     header: "Utilizzi",
-    action: (row) => <UsagesDialog promotion={row.original} />,
+    action: (row, meta) => (
+      <UsagesDialog
+        promotion={row.original}
+        invalidatePromotions={(meta as PromotionTableMeta).invalidatePromotions}
+      />
+    ),
     skeleton: (
       <Button disabled variant={"outline"} className="w-full">
         Skeleton utilizzi

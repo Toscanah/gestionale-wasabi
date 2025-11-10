@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { PromotionSchema, PromotionUsageSchema, OrderSchema } from "@/prisma/generated/schemas";
 import { PromotionType } from "@prisma/client";
+import { OrderByTypeSchema } from "./Order";
 
 /**
  * Base: Promotion with usages loaded
@@ -21,8 +22,8 @@ export const PromotionUsageWithOrderSchema = PromotionUsageSchema.extend({
 });
 
 export const ComprehensivePromotionUsageSchema = PromotionUsageSchema.extend({
-  promotion: PromotionWithUsagesSchema,
-  order: OrderSchema,
+  promotion: z.lazy(() => PromotionByTypeSchema),
+  order: z.lazy(() => OrderByTypeSchema),
 });
 
 /**

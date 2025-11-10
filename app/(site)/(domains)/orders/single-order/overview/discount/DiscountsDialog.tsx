@@ -50,7 +50,11 @@ export default function DiscountsDialog() {
     <WasabiDialog
       onOpenChange={() => setActiveTab("manual-discount")}
       trigger={
-        <Button className="h-12 flex-1 text-xl" variant={"outline"}>
+        <Button
+          className="h-12 flex-1 text-xl"
+          variant={"outline"}
+          disabled={order.payments.length > 0}
+        >
           SCONTI
         </Button>
       }

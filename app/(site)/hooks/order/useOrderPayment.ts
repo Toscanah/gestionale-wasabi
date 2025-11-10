@@ -58,9 +58,14 @@ export default function useOrderPayment({
 
   const payOrderMutation = trpc.payments.payOrder.useMutation({
     onSuccess: (updatedOrder) => {
+      const isPromoPaid =
+        updatedOrder.payments.length === 1 &&
+        updatedOrder.payments[0].amount === 0 &&
+        updatedOrder.payments[0].type === PaymentType.PROMOTION;
+
       onOrderPaid([...updatedOrder.payments]);
 
-      if (stage === "FINAL") {
+      if (isPromoPaid || stage === "FINAL") {
         updateOrder({ status: OrderStatus.PAID });
         return;
       }

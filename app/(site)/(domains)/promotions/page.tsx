@@ -17,6 +17,7 @@ import promotionColumns from "./promotionColumns";
 
 export type PromotionTableMeta = {
   deletePromotionById: (promotionId: number) => Promise<void>;
+  invalidatePromotions: () => Promise<void>;
 };
 
 export default function PromotionsPage() {
@@ -29,6 +30,7 @@ export default function PromotionsPage() {
     periods,
     setPeriods,
     deletePromotionById,
+    invalidatePromotions,
   } = usePromotionsFetcher();
   const { inputQuery, setInputQuery } = useQueryFilter();
 
@@ -47,6 +49,7 @@ export default function PromotionsPage() {
     meta: {
       isLoading,
       deletePromotionById,
+      invalidatePromotions,
     },
   });
 

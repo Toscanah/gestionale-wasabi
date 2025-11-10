@@ -58,6 +58,12 @@ export default function usePromotionsFetcher() {
     await utils.promotions.countsByType.invalidate();
   };
 
+  const invalidatePromotions = async () => {
+    await utils.promotions.invalidate();
+    await utils.promotions.getAll.refetch();
+    await utils.promotions.countsByType.refetch();
+  };
+
   return {
     promotions,
     promotionCounts,
@@ -67,5 +73,6 @@ export default function usePromotionsFetcher() {
     periods,
     setPeriods,
     deletePromotionById,
+    invalidatePromotions,
   };
 }

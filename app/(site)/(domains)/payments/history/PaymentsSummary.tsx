@@ -34,12 +34,9 @@ export default function PaymentsSummary({
             <td className="text-left">Totale buoni pasto</td>
             <td className="text-left">€{roundToTwo(totals.VOUCH.total)}</td>
           </tr>
-          {/* <tr>
-        <td className="text-left">Totale credito:</td>
-        <td className="text-right">€{roundToTwo(totals.CREDIT.total)}</td>
-      </tr> */}
+
           <tr>
-            <td className="text-left">Totale lordo (no sconti)</td>
+            <td className="text-left">Totale lordo (no sconti/promozioni)</td>
             <td className="text-left">€{roundToTwo(rawTotalAmount)}</td>
           </tr>
           {/* <tr>

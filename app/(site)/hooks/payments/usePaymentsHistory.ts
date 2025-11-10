@@ -17,6 +17,7 @@ const DEFAULT_PAYMENTS_SUMMARY: PaymentContracts.GetSummary.Output = {
     [PaymentType.CARD]: { label: "Carta", total: 0 },
     [PaymentType.VOUCH]: { label: "Buoni", total: 0 },
     [PaymentType.CREDIT]: { label: "Crediti", total: 0 },
+    [PaymentType.PROMOTION]: { label: "Promozioni", total: 0 },
   },
   inPlaceAmount: 0,
   takeawayAmount: 0,

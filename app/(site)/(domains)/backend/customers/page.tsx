@@ -27,7 +27,6 @@ const toFormData = (c: ComprehensiveCustomer): CustomerFormData => {
 };
 
 export default function CustomersDashboard() {
-  const [activeSorts, setActiveSorts] = useState<SortField[]>([]);
   const { page, pageSize, setPage, setPageSize } = useTablePagination();
 
   const layout: { fields: Path<CustomerFormData>[] }[] = [

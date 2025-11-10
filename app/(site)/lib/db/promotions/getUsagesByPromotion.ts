@@ -1,5 +1,12 @@
-import { PromotionContracts } from "../../shared";
+import {
+  OrderByType,
+  OrderByTypeSchema,
+  PromotionByType,
+  PromotionByTypeSchema,
+  PromotionContracts,
+} from "../../shared";
 import { promotionInclude } from "../includes";
+import { getOrderById } from "../orders/getOrderById";
 import prisma from "../prisma";
 
 export default async function getUsagesByPromotion(
@@ -7,14 +14,21 @@ export default async function getUsagesByPromotion(
 ): Promise<PromotionContracts.GetUsagesByPromotion.Output> {
   const { promotionId } = input;
 
-  // Fetch the usages by promotion from the database
   const usages = await prisma.promotionUsage.findMany({
     where: { promotion_id: promotionId },
     include: {
-      order: true,
-      ...promotionInclude
+      ...promotionInclude,
     },
+    orderBy: { created_at: "asc" },
   });
 
-  return usages;
+  const usagesWithOrders = await Promise.all(
+    usages.map(async (usage) => ({
+      ...usage,
+      promotion: usage.promotion as PromotionByType,
+      order: (await getOrderById({ orderId: usage.order_id })) as OrderByType,
+    }))
+  );
+
+  return usagesWithOrders;
 }

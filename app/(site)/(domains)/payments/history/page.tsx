@@ -64,7 +64,11 @@ export default function PaymentsTable() {
     },
   });
 
-  const isSummaryEmpty = Object.values(summaryData.totals).every(({ total }) => total === 0);
+  const hasAnyPayment = Object.values(summaryData.totals).some(({ total }) => total > 0);
+  const hasAnyGross = summaryData.rawTotalAmount > 0;
+  const hasAnyNet = summaryData.totalAmount > 0;
+
+  const isSummaryEmpty = !hasAnyPayment && !hasAnyGross && !hasAnyNet;
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">

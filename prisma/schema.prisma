@@ -412,6 +412,7 @@ enum PaymentType {
     CARD
     VOUCH
     CREDIT
+    PROMOTION
 }
 
 enum KitchenType {

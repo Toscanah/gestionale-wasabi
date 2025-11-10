@@ -44,6 +44,7 @@ export default async function getPaymentsSummary(
     [PaymentType.CARD]: { label: "Carta", total: 0 },
     [PaymentType.VOUCH]: { label: "Buoni", total: 0 },
     [PaymentType.CREDIT]: { label: "Crediti", total: 0 },
+    [PaymentType.PROMOTION]: { label: "Promozioni", total: 0 },
   };
   paymentsByType.forEach((p) => {
     totals[p.type].total = p._sum.amount ?? 0;
