@@ -78,7 +78,7 @@ export default function PaymentsSummary({
             <td className="text-left">{toEuro(rawTotalAmount)}</td>
           </tr>
           <tr>
-            <td className="font-bold text-left">Totale giornaliero</td>
+            <td className="font-bold text-left">Totale netto</td>
             <td className="font-bold text-left">
               {total}{" "}
               {parsedCentsDifference !== "0.00" && (

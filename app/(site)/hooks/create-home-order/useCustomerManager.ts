@@ -7,6 +7,7 @@ import { AddressContracts, ComprehensiveCustomer, CustomerContracts } from "../.
 import { trpc } from "@/lib/server/client";
 import { AddressType, CustomerType } from "@/prisma/generated/schemas";
 import { useCachedDataContext } from "@/app/(site)/context/CachedDataContext";
+import { CustomerOrigin } from "@prisma/client";
 
 function getActionType(object: object | undefined): "create" | "update" {
   return object === undefined ? "create" : "update";
@@ -78,7 +79,7 @@ export default function useCustomerManager({
           id: Math.floor(Math.random() * -1000),
           phone_id: -1,
           active: true,
-          origin: customerContent.origin ?? "UNKNOWN",
+          origin: customerContent.origin ?? CustomerOrigin.UNKNOWN,
           name: customerContent.name ?? null,
           surname: customerContent.surname ?? null,
           email: customerContent.email ?? null,

@@ -10,6 +10,7 @@ import { prepareRFMInputs } from "@/app/(site)/lib/services/rfm/prepareRFMInputs
 import { ComprehensiveCustomer, CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 import { OrderGuards } from "@/app/(site)/lib/shared/types/_index";
 import { trpc } from "@/lib/server/client";
+import { CustomerOrigin } from "@prisma/client";
 
 export default function CustomerLookup() {
   const { order } = useOrderContext();
@@ -67,8 +68,8 @@ export default function CustomerLookup() {
   const origin = OrderGuards.isHome(order)
     ? order.home_order.customer.origin
     : OrderGuards.isPickup(order)
-      ? (order.pickup_order.customer?.origin ?? "UNKNOWN")
-      : "UNKNOWN";
+      ? (order.pickup_order.customer?.origin ?? CustomerOrigin.UNKNOWN)
+      : CustomerOrigin.UNKNOWN;
 
   return (
     <div className="w-full h-12 text-lg border rounded-lg p-2 flex justify-around items-center">
