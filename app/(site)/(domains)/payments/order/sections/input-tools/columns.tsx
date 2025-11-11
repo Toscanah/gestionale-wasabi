@@ -6,6 +6,7 @@ import { PaymentCalculation } from "@/app/(site)/context/OrderPaymentContext";
 import { XIcon } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction } from "react";
 import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 export default function getColumns(
   handleFieldChange: (key: keyof PaymentCalculation, value: number, rowIndex: number) => void,
@@ -66,7 +67,7 @@ export default function getColumns(
 
     ValueColumn({
       header: "Totale",
-      value: (row) => <span>{roundToTwo(row.original.total)}</span>,
+      value: (row) => toEuro(row.original.total),
       accessor: (pay) => pay.total,
     }),
 

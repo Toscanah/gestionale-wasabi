@@ -58,6 +58,7 @@ export default function CustomerOriginsFilter({
       appearance="filter"
       title="Origini"
       mode="multi"
+      shouldSort={false}
       disabled={disabled}
       triggerIcon={SignpostIcon}
       searchPlaceholder="Cerca origine..."

@@ -41,6 +41,7 @@ export default function TableColumnsVisibility<TData>({
 
   return (
     <WasabiSelect
+    shouldSort={false}
       disabled={disabled}
       appearance="filter"
       title="Colonne"

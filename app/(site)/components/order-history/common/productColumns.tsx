@@ -1,11 +1,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CustomerOrdersStats } from "../../../hooks/order/history/useHistoryStats";
-import { ActionColumn, FieldColumn, IndexColumn, ValueColumn } from "../../table/TableColumns";
+import {
+  ActionColumn,
+  FieldColumn,
+  IndexColumn,
+  JoinColumn,
+  ValueColumn,
+} from "../../table/TableColumns";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import joinItemsWithComma from "@/app/(site)/lib/utils/global/string/joinItemsWithComma";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OrderDetailTableMeta } from "../detail/OrderDetail";
+import { EnDash } from "../../ui/misc/Placeholders";
 
 export default function productColumns(selectable = false): ColumnDef<ProductInOrder>[] {
   const columns: ColumnDef<ProductInOrder>[] = [
@@ -24,19 +31,25 @@ export default function productColumns(selectable = false): ColumnDef<ProductInO
       key: "product.desc",
     }),
 
-    FieldColumn({
+    ValueColumn({
       header: "Variazione",
-      key: "variation",
+      value: (row) => row.original.variation || <EnDash />,
+      accessor: (row) => row.variation || "",
     }),
 
-    ValueColumn({
+    JoinColumn({
       header: "Opzioni",
-      value: (row) =>
-        row.original.options.length > 0 ? (
-          <span>({joinItemsWithComma(row.original, "options")})</span>
-        ) : null,
-      accessor: (row) => row.options.join(", "),
+      options: { key: "options" },
     }),
+
+    // ValueColumn({
+    //   header: "Opzioni",
+    //   value: (row) =>
+    //     row.original.options.length > 0 ? (
+    //       <span>({joinItemsWithComma(row.original, "options")})</span>
+    //     ) : null,
+    //   accessor: (row) => row.options.join(", "),
+    // }),
   ];
 
   if (selectable) {
