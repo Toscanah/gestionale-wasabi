@@ -71,7 +71,7 @@ export default function CustomerLookup() {
       : "UNKNOWN";
 
   return (
-    <div className="w-full border rounded-lg p-2 flex justify-around items-center">
+    <div className="w-full h-12 text-lg border rounded-lg p-2 flex justify-around items-center">
       <span>
         <strong>Origine:</strong> {CUSTOMER_ORIGIN_LABELS[origin]}
       </span>
