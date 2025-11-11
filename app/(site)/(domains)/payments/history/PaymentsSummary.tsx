@@ -12,9 +12,6 @@ export default function PaymentsSummary({
   const { totals, totalAmount, rawTotalAmount, centsDifference, discountsAndPromotions } =
     summaryData;
 
-  const total = toEuro(totalAmount);
-  const parsedCentsDifference = toEuro(centsDifference);
-
   return (
     <WasabiDialog
       title="Riepilogo generale"
@@ -78,12 +75,12 @@ export default function PaymentsSummary({
             <td className="text-left">{toEuro(rawTotalAmount)}</td>
           </tr>
           <tr>
-            <td className="font-bold text-left">Totale netto</td>
+            <td className="font-bold text-left">Totale giornaliero</td>
             <td className="font-bold text-left">
-              {total}{" "}
-              {parsedCentsDifference !== "0.00" && (
+              {toEuro(totalAmount)}{" "}
+              {summaryData.centsDifference !== 0 && (
                 <span className="text-muted-foreground">
-                  (+ {summaryData.centsDifference.toFixed(2)})
+                  (+ {toEuro(summaryData.centsDifference)})
                 </span>
               )}
             </td>
