@@ -17,9 +17,11 @@ import { EmDash } from "../ui/misc/Placeholders";
 // const fixMutation = trpc.orders.updateOrdersShift.useMutation();
 
 export default function Footer() {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
+    // Initialize clock only on the client
+    setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -37,6 +39,15 @@ export default function Footer() {
       minute: "2-digit",
       second: "2-digit",
     });
+
+  if (!currentTime)
+    return (
+      <SidebarFooter>
+        <SidebarMenu className="flex-row flex justify-between text-sm text-muted-foreground">
+          —
+        </SidebarMenu>
+      </SidebarFooter>
+    );
 
   return (
     <SidebarFooter>

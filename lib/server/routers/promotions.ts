@@ -8,6 +8,7 @@ import getPromotionByCode from "@/app/(site)/lib/db/promotions/getPromotionByCod
 import applyPromotionToOrder from "@/app/(site)/lib/db/promotions/applyPromotionToOrder";
 import removePromotionFromOrder from "@/app/(site)/lib/db/promotions/removePromotionFromOrder";
 import deletePromotionById from "@/app/(site)/lib/db/promotions/deletePromotionById";
+import { rebalanceOrderPromotions } from "@/app/(site)/lib/db/promotions/rebalanceOrderPromotions";
 
 export const promotionsRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -49,4 +50,9 @@ export const promotionsRouter = createTRPCRouter({
     .input(PromotionContracts.RemoveFromOrder.Input)
     .output(PromotionContracts.RemoveFromOrder.Output)
     .mutation(async ({ input }) => removePromotionFromOrder(input)),
+
+  rebalanceOrderPromotions: publicProcedure
+    .input(PromotionContracts.RebalanceOrderPromotions.Input)
+    .output(PromotionContracts.RebalanceOrderPromotions.Output)
+    .mutation(({ input }) => rebalanceOrderPromotions(input)),
 });

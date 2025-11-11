@@ -9,6 +9,7 @@ import useProductMods from "./products/useProductMods";
 import useProductPrinting from "./products/useProductPrinting";
 import useProductExtras from "./products/useProductExtras";
 import { useCachedDataContext } from "../../context/CachedDataContext";
+import { promotionsAPI } from "@/lib/server/api";
 
 export type UpdateProductsListFunction = (params: {
   addedProducts?: ProductInOrder[];
@@ -23,6 +24,12 @@ export function useProductsManager(
   order: OrderByType,
   updateOrder: (order: RecursivePartial<OrderByType>) => void
 ) {
+  const rebalanceMutation = promotionsAPI.rebalanceOrderPromotions.useMutation({
+    onSuccess: async (updatedOrder) => {
+      updateOrder(updatedOrder);
+    },
+  });
+
   const updateProductsList: UpdateProductsListFunction = ({
     addedProducts = [],
     updatedProducts = [],
@@ -55,6 +62,8 @@ export function useProductsManager(
       ...extraUpdates,
       is_receipt_printed: updateFlag ? false : undefined,
     });
+
+    rebalanceMutation.mutate({ orderId: order.id });
 
     if (toast) toastSuccess("Prodotti aggiornati correttamente");
   };

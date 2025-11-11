@@ -12,7 +12,13 @@ import { OrderGuards } from "@/app/(site)/lib/shared/types/order-guards";
 import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 import { MinusIcon } from "@phosphor-icons/react";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
-import { EmDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";
+import { EmDash, EnDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";
+import WasabiPopover from "@/app/(site)/components/ui/wasabi/WasabiPopover";
+import {
+  PROMOTION_TYPES_COLORS,
+  PROMOTION_TYPES_LABELS,
+} from "@/app/(site)/lib/shared/constants/promotion-labels";
+import { Separator } from "@/components/ui/separator";
 
 const columns: ColumnDef<OrderWithSummedPayments>[] = [
   ValueColumn({
@@ -78,23 +84,73 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
   }),
 
   ValueColumn({
-    header: "Promo?",
+    header: "Sconti applicati",
     sortable: false,
     value: (row) => {
       const order = row.original;
+      const hasPromotions =
+        order.payments.some((p) => p.type === "PROMOTION") &&
+        order.promotion_usages &&
+        order.promotion_usages.length > 0;
+      const hasManualDiscount = order.discount && order.discount > 0;
 
-      const total = getOrderTotal({ order, applyDiscounts: true, round: true });
-      const isPromoPaid = total === 0 && order.payments.every((p) => p.type === "PROMOTION");
+      // no discounts or promotions
+      // if (!hasPromotions && !hasManualDiscount) return <EnDash />;
 
-      return isPromoPaid ? (
-        <Badge variant="secondary" className="bg-green-600">
-          Sì
-        </Badge>
-      ) : (
-        <EmDash />
+      const originalTotal = getOrderTotal({ order, applyDiscounts: false, round: true });
+      const discountedTotal = getOrderTotal({ order, applyDiscounts: true, round: true });
+      const manualDiscountAmount = hasManualDiscount
+        ? ((originalTotal * order.discount) / 100).toFixed(2)
+        : null;
+
+      const hasDiscounts = !hasPromotions && !hasManualDiscount;
+
+      return (
+        <WasabiPopover
+          trigger={
+            <Button variant="outline" disabled={hasDiscounts}>
+              {hasDiscounts ? "Nessuno sconto" : "Dettagli"}
+            </Button>
+          }
+        >
+          <div className="flex flex-col gap-2 text-sm">
+            <span>
+              <strong>Totale originale:</strong> {toEuro(originalTotal)}
+            </span>
+
+            <Separator />
+
+            {hasManualDiscount && (
+              <div>
+                <strong>Sconto manuale:</strong> −{order.discount}% ({manualDiscountAmount} €)
+              </div>
+            )}
+
+            {hasPromotions && (
+              <>
+                {order.promotion_usages.map((u, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <Badge className={PROMOTION_TYPES_COLORS[u.promotion.type]}>
+                      {PROMOTION_TYPES_LABELS[u.promotion.type]}
+                    </Badge>
+                    {u.promotion?.label ?? u.promotion?.code ?? "Promozione"}: -
+                    {toEuro(u.amount) ?? "0.00 €"}
+                  </div>
+                ))}
+              </>
+            )}
+
+            <Separator />
+
+            <div className="">
+              <strong>Totale finale:</strong> €{discountedTotal.toFixed(2)}
+            </div>
+          </div>
+        </WasabiPopover>
       );
     },
-    accessor: (order) => order.payments.some((p) => p.type === "PROMOTION"),
+    accessor: (order) =>
+      (order.discount ?? 0) > 0 || order.payments.some((p) => p.type === "PROMOTION"),
   }),
 
   ValueColumn({

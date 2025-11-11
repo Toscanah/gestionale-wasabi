@@ -76,6 +76,16 @@ export namespace PromotionContracts {
     export type Output = z.infer<typeof Output>;
   }
 
+  export namespace RebalanceOrderPromotions {
+    export const Input = z.object({
+      orderId: z.coerce.number(),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = OrderByTypeSchema;
+    export type Output = z.infer<typeof Output>;
+  }
+
   export namespace Create {
     export const Input = z.object({
       promotion: Common.PromotionCreateSchema,
