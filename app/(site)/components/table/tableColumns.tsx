@@ -6,6 +6,7 @@ import getNestedValue from "../../lib/utils/global/getNestedValue";
 import { uniqueId } from "lodash";
 import joinItemsWithComma, { JoinItemType } from "../../lib/utils/global/string/joinItemsWithComma";
 import { Checkbox } from "@/components/ui/checkbox";
+import { EnDash, NA } from "../ui/misc/Placeholders";
 
 // -----------------------------------------------------------------------------
 // Types & Utilities
@@ -150,7 +151,9 @@ export function JoinColumn<T>({
       if (isLoad && skeleton) return skeleton;
 
       const Wrapper = options.wrapper || Fragment;
-      return <Wrapper>{joinItemsWithComma(row.original, options.key)}</Wrapper>;
+      const joinedItems = joinItemsWithComma(row.original, options.key);
+
+      return <Wrapper>{joinedItems.length ? joinedItems : <EnDash />}</Wrapper>;
     },
     enableSorting: sortable,
   };

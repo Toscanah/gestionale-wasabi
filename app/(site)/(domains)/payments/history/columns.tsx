@@ -10,6 +10,9 @@ import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableCo
 import { trpcClient } from "@/lib/server/client";
 import { OrderGuards } from "@/app/(site)/lib/shared/types/order-guards";
 import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { MinusIcon } from "@phosphor-icons/react";
+import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
+import { EmDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";
 
 const columns: ColumnDef<OrderWithSummedPayments>[] = [
   ValueColumn({
@@ -69,11 +72,7 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
         hour12: false,
       };
 
-      const formatter = new Intl.DateTimeFormat("it-IT", options);
-      const formattedDate = formatter.format(date);
-      const [datePart, timePart] = formattedDate.split(" alle ");
-
-      return `${datePart.charAt(0).toUpperCase() + datePart.substring(1)}, alle ${timePart}`;
+      return capitalizeFirstLetter(new Intl.DateTimeFormat("it-IT", options).format(date));
     },
     accessor: (order) => order.created_at,
   }),
@@ -92,7 +91,7 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
           Sì
         </Badge>
       ) : (
-        <span className="text-muted-foreground">—</span>
+        <EmDash />
       );
     },
     accessor: (order) => order.payments.some((p) => p.type === "PROMOTION"),
@@ -101,21 +100,39 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
   ValueColumn({
     header: "Totale contanti",
     sortable: false,
-    value: (row) => toEuro(row.original.summedCash),
+    value: (row) => {
+      const order = row.original;
+      const total = getOrderTotal({ order, applyDiscounts: true, round: true });
+      const isPromoPaid = total === 0 && order.payments.every((p) => p.type === "PROMOTION");
+
+      return isPromoPaid ? <NA /> : toEuro(order.summedCash);
+    },
     accessor: (order) => order.summedCash,
   }),
 
   ValueColumn({
     header: "Totale carta",
     sortable: false,
-    value: (row) => toEuro(row.original.summedCard),
+    value: (row) => {
+      const order = row.original;
+      const total = getOrderTotal({ order, applyDiscounts: true, round: true });
+      const isPromoPaid = total === 0 && order.payments.every((p) => p.type === "PROMOTION");
+
+      return isPromoPaid ? <NA /> : toEuro(order.summedCard);
+    },
     accessor: (order) => order.summedCard,
   }),
 
   ValueColumn({
     header: "Totale buoni",
     sortable: false,
-    value: (row) => toEuro(row.original.summedVouch),
+    value: (row) => {
+      const order = row.original;
+      const total = getOrderTotal({ order, applyDiscounts: true, round: true });
+      const isPromoPaid = total === 0 && order.payments.every((p) => p.type === "PROMOTION");
+
+      return isPromoPaid ? <NA /> : toEuro(order.summedVouch);
+    },
     accessor: (order) => order.summedVouch,
   }),
 
@@ -162,5 +179,9 @@ function ReprintCell({ orderId }: { orderId: number }) {
     await printOrder({ order, plannedPayment, putInfo: true, forceCut: true });
   };
 
-  return <Button onClick={handleClick}>Stampa</Button>;
+  return (
+    <Button className="w-full" variant={"outline"} onClick={handleClick}>
+      Stampa
+    </Button>
+  );
 }

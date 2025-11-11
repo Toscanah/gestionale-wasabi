@@ -30,7 +30,7 @@ interface TableProps<T> {
   double?: boolean;
   stickyRowIndex?: number;
   showNoResult?: boolean;
-  fixedColumnIndex?: number;
+  fixedColumnIndexes?: number[];
   maxRows?: number;
   scrollAdjustment?: number;
 }
@@ -48,13 +48,34 @@ export default function Table<T>({
   double = false,
   forceRowClick = false,
   showNoResult = true,
-  fixedColumnIndex,
+  fixedColumnIndexes,
   maxRows,
   scrollAdjustment,
 }: TableProps<T>) {
   // internal fallback ref if parent doesn't provide one
   const internalRef = useRef<HTMLDivElement | null>(null);
   const resolvedRef = tableRef ?? internalRef;
+
+  const headerRefs = useRef<(HTMLTableCellElement | null)[]>([]);
+
+  const [leftOffsets, setLeftOffsets] = React.useState<number[]>([]);
+
+  useEffect(() => {
+    if (!fixedColumnIndexes?.length) return;
+
+    const offsets: number[] = [];
+    let currentLeft = 0;
+
+    fixedColumnIndexes.forEach((index) => {
+      const cell = headerRefs.current[index];
+      if (cell) {
+        offsets[index] = currentLeft;
+        currentLeft += cell.offsetWidth;
+      }
+    });
+
+    setLeftOffsets(offsets);
+  }, [fixedColumnIndexes, table.getState().columnSizing]); // recalc if layout changes
 
   useEffect(() => {
     if (stickyRowIndex != null) {
@@ -108,20 +129,22 @@ export default function Table<T>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header, index) => {
-                  const isFixed = fixedColumnIndex === index;
+                  const isFixed = fixedColumnIndexes?.includes(index);
+                  const left = isFixed ? (leftOffsets[index] ?? 0) : undefined;
                   return (
                     <TableHead
+                      ref={(el) => {
+                        headerRefs.current[index] = el;
+                      }}
                       key={header.id}
+                      style={isFixed ? { left } : undefined}
                       className={cn(
                         headerClassName,
-                        "border-b text-center z-50",
-                        isFixed &&
-                          "sticky left-0 z-30 bg-foreground text-background border-b-background"
+                        "border-b text-center",
+                        isFixed && "sticky z-30 bg-foreground text-background border-b-background"
                       )}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -148,7 +171,8 @@ export default function Table<T>({
                       data-state={row.getIsSelected() && "selected"}
                     >
                       {row.getVisibleCells().map((cell, index) => {
-                        const isFixed = index === fixedColumnIndex;
+                        const isFixed = fixedColumnIndexes?.includes(index);
+                        const left = isFixed ? (leftOffsets[index] ?? 0) : undefined;
                         const isLastRow = rowIndex === actualRows - 1;
 
                         const borderClass = isLastRow && fillerCount === 0 ? "" : "border-b";
@@ -167,6 +191,8 @@ export default function Table<T>({
                               })
                             ) : (
                               <TableCell
+                                key={cell.id}
+                                style={isFixed ? { left } : undefined}
                                 className={cn(
                                   "h-8 max-h-8 truncate max-w-80 text-cente",
                                   cellClassName?.(index),
@@ -198,10 +224,12 @@ export default function Table<T>({
                       className="h-8 max-h-8"
                     >
                       {lastRow.getVisibleCells().map((cell, index) => {
-                        const isFixed = index === fixedColumnIndex;
+                        const isFixed = fixedColumnIndexes?.includes(index);
+                        const left = isFixed ? (leftOffsets[index] ?? 0) : undefined;
 
                         return (
                           <TableCell
+                            style={isFixed ? { left } : undefined}
                             key={`filler_${index}`}
                             className={cn(
                               "h-8 max-h-8 truncate max-w-80",

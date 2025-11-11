@@ -13,6 +13,8 @@ import { ProductWithStats } from "@/app/(site)/lib/shared";
 import { ProductStatsTableMeta } from "./page";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { NA } from "@/app/(site)/components/ui/misc/Placeholders";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 const columns: ColumnDef<ProductWithStats>[] = [
   IndexColumn({}),
@@ -38,14 +40,14 @@ const columns: ColumnDef<ProductWithStats>[] = [
   ValueColumn({
     header: "Totale",
     sortable: false,
-    value: (row) => "€ " + roundToTwo(row.original.stats.revenue),
+    value: (row) => toEuro(row.original.stats.revenue),
     accessor: (product) => product.stats.revenue,
   }),
 
   ValueColumn({
     header: "Totale riso",
     sortable: false,
-    value: (row) => (row.original.rice != 0 ? formatRice(row.original.stats.totalRice) : "N/A"),
+    value: (row) => (row.original.rice != 0 ? formatRice(row.original.stats.totalRice) : <NA />),
     accessor: (product) => product.stats.totalRice,
   }),
 

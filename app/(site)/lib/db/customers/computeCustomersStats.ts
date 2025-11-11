@@ -79,8 +79,6 @@ export default async function computeCustomersStats(
       totalSpent,
     } = c;
 
-    
-
     const rfmScore = calculateRfmScore(
       { recency: recency ?? 0, frequency: frequency ?? 0, monetary: monetary ?? 0 },
       rfmConfig.rules

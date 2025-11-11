@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Trash } from "@phosphor-icons/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { RFMTableMeta } from "./RFMDimensionEditor";
+import { EnDash } from "@/app/(site)/components/ui/misc/Placeholders";
 
 const getRfmLabel = (dimension: RFMDimension, value: number | null | undefined) => {
   switch (dimension) {
@@ -15,7 +16,7 @@ const getRfmLabel = (dimension: RFMDimension, value: number | null | undefined) 
     case "monetary":
       return value === 1 ? "euro" : "euro"; // euro is invariant
     default:
-      return "";
+      return <EnDash />;
   }
 };
 

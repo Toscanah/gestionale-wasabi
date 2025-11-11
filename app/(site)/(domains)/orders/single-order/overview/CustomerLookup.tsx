@@ -1,3 +1,4 @@
+import { EnDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import useRfmRanks from "@/app/(site)/hooks/rfm/useRfmRanks";
 import useRfmRules from "@/app/(site)/hooks/rfm/useRfmRules";
@@ -70,8 +71,14 @@ export default function CustomerLookup() {
       : "UNKNOWN";
 
   return (
-    <span>
-      {CUSTOMER_ORIGIN_LABELS[origin]} {rfmRank}
-    </span>
+    <div className="w-full border rounded-lg p-2 flex justify-around items-center">
+      <span>
+        <strong>Origine:</strong> {CUSTOMER_ORIGIN_LABELS[origin]}
+      </span>
+
+      <span>
+        <strong>Rank RFM:</strong> {rfmRank ? rfmRank : <EnDash />}
+      </span>
+    </div>
   );
 }

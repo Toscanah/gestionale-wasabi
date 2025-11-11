@@ -26,6 +26,7 @@ import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrd
 import { OrderStatus, WorkingShift } from "@prisma/client";
 import { TrashIcon } from "@phosphor-icons/react";
 import { trpc } from "@/lib/server/client";
+import { EnDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";
 
 function canDeleteUsage(usage: ComprehensivePromotionUsage): boolean {
   const order = usage.order;
@@ -51,7 +52,7 @@ const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
       if (OrderGuards.isTable(order)) {
         specificInfo = (
           <>
-            <li>Nome: {order.table_order.res_name || "N/A"}</li>
+            <li>Nome: {order.table_order.res_name || <EnDash />}</li>
             <li>Tavolo: {order.table_order.table}</li>
             <li>Persone: {order.table_order.people}</li>
           </>
@@ -68,14 +69,14 @@ const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
       } else if (OrderGuards.isPickup(order)) {
         specificInfo = (
           <>
-            <li>Telefono: {order.pickup_order.customer?.phone.phone ?? "N/A"}</li>
+            <li>Telefono: {order.pickup_order.customer?.phone.phone || <EnDash />}</li>
             <li>Nome: {order.pickup_order.name}</li>
           </>
         );
       }
 
       return (
-        <WasabiPopover trigger={<Button variant="outline">Dettagli ordine</Button>}>
+        <WasabiPopover trigger={<Button variant="outline">Dettagli</Button>}>
           <div className="flex flex-col gap-2 text-sm">
             <div className="flex gap-2 items-center">
               <Badge className={ORDER_TYPE_COLORS[order.type]}>
@@ -133,10 +134,8 @@ const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
     value: (row) => {
       const promotion = row.original.promotion;
 
-      // 🧩 Handle each promo type explicitly
       if (PromotionGuards.isPercentageDiscount(promotion)) {
-        // % discounts don't have a fixed amount → no "remaining" concept
-        return "N/A";
+        return <NA />;
       }
 
       if (PromotionGuards.isFixedDiscount(promotion) || PromotionGuards.isGiftCard(promotion)) {
@@ -179,12 +178,12 @@ const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
       const promotion = row.original.promotion;
 
       if (PromotionGuards.isPercentageDiscount(promotion)) {
-        return "N/A";
+        return <NA />;
       }
 
       if (PromotionGuards.isFixedDiscount(promotion) || PromotionGuards.isGiftCard(promotion)) {
         const fixedAmount = promotion.fixed_amount;
-        if (fixedAmount <= 0) return "N/A";
+        if (fixedAmount <= 0) return <NA />;
 
         const usageTs = new Date(row.original.created_at).getTime();
         const usages = promotion.usages ?? [];
@@ -210,13 +209,12 @@ const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
 
       if (PromotionGuards.isPercentageDiscount(promotion)) {
         // Percentage promos have no fixed balance
-        return "N/A";
+        return <NA />;
       }
 
       if (PromotionGuards.isFixedDiscount(promotion) || PromotionGuards.isGiftCard(promotion)) {
         const fixedAmount = promotion.fixed_amount;
-        if (fixedAmount <= 0) return "N/A";
-
+        if (fixedAmount <= 0) return <NA />;
         const usageTs = new Date(row.original.created_at).getTime();
         const usages = promotion.usages ?? [];
 

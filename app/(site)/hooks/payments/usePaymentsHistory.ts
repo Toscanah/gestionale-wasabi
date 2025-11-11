@@ -31,6 +31,12 @@ const DEFAULT_PAYMENTS_SUMMARY: PaymentContracts.GetSummary.Output = {
   totalAmount: 0,
   rawTotalAmount: 0,
   centsDifference: 0,
+  discountsAndPromotions: {
+    manual: 0,
+    fixed_promotions: 0,
+    percentage_promotions: 0,
+    gift_cards: 0,
+  },
 };
 
 export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistoryParams) {

@@ -17,6 +17,7 @@ import { MinusIcon, PlusCircleIcon } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import formatCsvFilters from "@/app/(site)/hooks/csv-export/useCsvExport";
+import { EmDash } from "@/app/(site)/components/ui/misc/Placeholders";
 
 interface SectionProps {
   id: string;
@@ -59,7 +60,6 @@ export default function Section({}: SectionProps) {
       });
     });
 
-
   return (
     <div className="flex flex-col gap-4 w-full p-4 h-full ">
       <div className="w-full flex flex-wrap gap-4 items-center">
@@ -78,7 +78,7 @@ export default function Section({}: SectionProps) {
           disabled={disabledFlags.orderTypes}
         />
 
-        <MinusIcon />
+        <EmDash />
 
         <CalendarFilter
           usePresets
@@ -102,7 +102,7 @@ export default function Section({}: SectionProps) {
           disabled={disabledFlags.weekdays}
         />
 
-        <MinusIcon />
+        <EmDash />
 
         <ShiftFilter
           selectedShift={state.shift}

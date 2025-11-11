@@ -114,7 +114,7 @@ export default function PromotionsPage() {
           </div>
         </div>
 
-        <Table table={table} maxRows={10} scrollAdjustment={1} />
+        <Table table={table} maxRows={10} scrollAdjustment={1} fixedColumnIndexes={[2, 3]} />
 
         <TablePagination label="Promozioni" table={table} disabled={isLoading} />
 

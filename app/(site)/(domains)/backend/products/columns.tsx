@@ -2,6 +2,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/app/(site)/lib/shared";
 import { KitchenType } from "@prisma/client";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
+import { NA } from "@/app/(site)/components/ui/misc/Placeholders";
 
 const columns: ColumnDef<Product>[] = [
   FieldColumn({
@@ -44,21 +47,24 @@ const columns: ColumnDef<Product>[] = [
     sortable: false,
   }),
 
-  FieldColumn({
-    header: "Prezzo in loco (€)",
-    key: "site_price",
+  ValueColumn({
+    header: "Prezzo in loco",
+    value: (row) => toEuro(row.original.site_price),
+    accessor: (product) => product.site_price,
     sortable: false,
   }),
 
-  FieldColumn({
-    header: "Prezzo da asporto (€)",
-    key: "home_price",
+  ValueColumn({
+    header: "Prezzo da asporto",
+    value: (row) => toEuro(row.original.home_price),
+    accessor: (product) => product.home_price,
     sortable: false,
   }),
 
-  FieldColumn({
-    key: "rice",
-    header: "Riso (g)",
+  ValueColumn({
+    header: "Riso",
+    value: (row) => (row.original.rice != 0 ? formatRice(row.original.rice) : <NA />),
+    accessor: (product) => product.rice,
     sortable: false,
   }),
 ];

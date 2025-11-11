@@ -18,6 +18,7 @@ import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
 import { TrashIcon } from "@phosphor-icons/react";
 import { PromotionTableMeta } from "./page";
 import { differenceInDays } from "date-fns";
+import { EnDash, NA } from "../../components/ui/misc/Placeholders";
 
 function calcDiscountRaw(promotion: PromotionByType): number | null {
   if (PromotionGuards.isPercentageDiscount(promotion)) {
@@ -58,14 +59,13 @@ function calcAvgTimeBetweenUsagesRaw(promotion: PromotionByType): number | null 
     (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
   );
 
-  const totalDiffDays =
-    sorted.slice(1).reduce((sum, u, i) => {
-      const prev = sorted[i];
-      return sum + (new Date(u.created_at).getTime() - new Date(prev.created_at).getTime());
-    }, 0) /
-    (1000 * 60 * 60 * 24);
+  const totalDiffMs = sorted.slice(1).reduce((sum, u, i) => {
+    const prev = sorted[i];
+    const diff = new Date(u.created_at).getTime() - new Date(prev.created_at).getTime();
+    return isFinite(diff) ? sum + diff : sum;
+  }, 0);
 
-  return totalDiffDays / (sorted.length - 1);
+  return totalDiffMs / (1000 * 60 * 60 * 24) / (sorted.length - 1);
 }
 
 function calcDaysUntilExpirationRaw(promotion: PromotionByType): number | null {
@@ -96,10 +96,14 @@ function calcProjectedDepletionDateRaw(promotion: PromotionByType): number | nul
 
   const fixedAmount = Number(promotion.fixed_amount ?? 0);
   const usages = promotion.usages ?? [];
-  if (usages.length === 0 || fixedAmount <= 0) return null;
+  if (usages.length < 2 || fixedAmount <= 0) return null;
 
-  const firstTs = Math.min(...usages.map((u) => new Date(u.created_at).getTime()));
-  const lastTs = Math.max(...usages.map((u) => new Date(u.created_at).getTime()));
+  const sorted = [...usages].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+
+  const firstTs = new Date(sorted[0].created_at).getTime();
+  const lastTs = new Date(sorted.at(-1)!.created_at).getTime();
   const daysElapsed = Math.max(1, (lastTs - firstTs) / (1000 * 60 * 60 * 24));
 
   const totalUsed = usages.reduce((sum, u) => sum + (u.amount ?? 0), 0);
@@ -160,7 +164,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
       const { never_expires, expires_at } = row.original;
 
       if (never_expires) return "Nessuna scadenza";
-      if (!expires_at) return "N/A";
+      if (!expires_at) return <NA />;
 
       const date = new Date(expires_at);
       const formatted = date.toLocaleString("it-IT", {
@@ -173,7 +177,6 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
 
       const daysLeft = differenceInDays(date, new Date());
 
-      // Choose badge variant
       const variant = daysLeft < 0 ? "destructive" : daysLeft <= 5 ? "destructive" : "secondary";
 
       return <Badge variant={variant}>{formatted}</Badge>;
@@ -192,7 +195,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
       if (PromotionGuards.isFixedDiscount(promotion) || PromotionGuards.isGiftCard(promotion)) {
         return `€ ${roundToTwo(promotion.fixed_amount) ?? 0}`;
       }
-      return "N/A";
+      return <NA />;
     },
     accessor: (promotion) => calcDiscountRaw(promotion) ?? 0,
   }),
@@ -200,7 +203,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
   ValueColumn({
     header: "Usaggio",
     value: (row) => {
-      if (!PromotionGuards.isPercentageDiscount(row.original)) return "N/A";
+      if (!PromotionGuards.isPercentageDiscount(row.original)) return <NA />;
 
       const isReusable = row.original.reusable;
       const maxUsages = row.original.max_usages;
@@ -224,7 +227,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
     header: "Importo residuo medio stimato",
     value: (row) => {
       const avgResidual = calcAvgResidualRaw(row.original);
-      return avgResidual != null ? `${roundToTwo(avgResidual)} €` : "N/A";
+      return avgResidual != null ? `${roundToTwo(avgResidual)} €` : <NA />;
     },
     accessor: (promotion) => calcAvgResidualRaw(promotion) ?? 0,
   }),
@@ -232,8 +235,14 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
   ValueColumn({
     header: "Intervallo medio tra usi",
     value: (row) => {
+      const usagesCount = row.original.usages?.length ?? 0;
       const avgDays = calcAvgTimeBetweenUsagesRaw(row.original);
-      return avgDays != null ? `${avgDays.toFixed(1)} giorni` : "-";
+
+      if (usagesCount === 0) return <NA />;
+      if (usagesCount === 1) return <EnDash />;
+      if (avgDays == null || isNaN(avgDays)) return <EnDash />;
+
+      return `${avgDays.toFixed(1)} giorni`;
     },
     accessor: (promotion) => calcAvgTimeBetweenUsagesRaw(promotion) ?? 0,
   }),
@@ -245,7 +254,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
       const diff = calcDaysUntilExpirationRaw(row.original);
 
       if (never_expires) return "Nessuna scadenza";
-      if (diff == null) return "N/A";
+      if (diff == null) return <NA />;
 
       const isExpired = diff < 0;
       const isSoon = diff <= 5;
@@ -270,10 +279,20 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
   ValueColumn({
     header: "Proiezione data esaurimento",
     value: (row) => {
-      const depletionTs = calcProjectedDepletionDateRaw(row.original);
-      return depletionTs != null ? new Date(depletionTs).toLocaleDateString("it-IT") : "-";
+      const promotion = row.original;
+
+      if (!PromotionGuards.isGiftCard(promotion)) return <NA />;
+
+      const usagesCount = promotion.usages?.length ?? 0;
+      if (usagesCount < 2) return <EnDash />;
+
+      const depletionTs = calcProjectedDepletionDateRaw(promotion);
+
+      if (depletionTs == null || isNaN(depletionTs)) return <EnDash />;
+
+      return new Date(depletionTs).toLocaleDateString("it-IT");
     },
-    accessor: (promotion) => calcProjectedDepletionDateRaw(promotion) ?? null,
+    accessor: (promotion) => calcProjectedDepletionDateRaw(promotion) ?? 0,
   }),
 
   ActionColumn({

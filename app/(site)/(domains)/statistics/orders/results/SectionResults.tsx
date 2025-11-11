@@ -14,6 +14,7 @@ import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVi
 import useCsvExport from "@/app/(site)/hooks/csv-export/useCsvExport";
 import { MinusIcon } from "@phosphor-icons/react";
 import CsvExportButton from "@/app/(site)/components/ui/misc/CsvExportButton";
+import { EmDash } from "@/app/(site)/components/ui/misc/Placeholders";
 
 type MetricsResult = OrdersStats.Metrics;
 
@@ -151,13 +152,13 @@ export default function SectionResults({
                 onClick={() => exportCsvGeneral({ filters: parsedFilters })}
               />
 
-              <MinusIcon />
+              <EmDash />
 
               <Label className="text-lg self-center uppercase">Dati generali</Label>
             </div>
             <TableColumnsVisibility table={generalTable} blacklist={["title"]} />
           </div>
-          <Table table={generalTable} fixedColumnIndex={0} />
+          <Table table={generalTable} fixedColumnIndexes={[0]} />
         </div>
 
         <Separator />
@@ -170,13 +171,13 @@ export default function SectionResults({
                 onClick={() => exportCsvAverage({ filters: parsedFilters })}
               />
 
-              <MinusIcon />
+              <EmDash />
 
               <Label className="text-lg self-center uppercase">Medie</Label>
             </div>
             <TableColumnsVisibility table={averageTable} />
           </div>
-          <Table table={averageTable} fixedColumnIndex={0} />
+          <Table table={averageTable} fixedColumnIndexes={[0]} />
         </div>
       </div>
     </div>

@@ -21,6 +21,7 @@ import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVi
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import CsvExportButton from "@/app/(site)/components/ui/misc/CsvExportButton";
 import useCsvExport from "@/app/(site)/hooks/csv-export/useCsvExport";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 export type ProductStatsTableMeta = TableMeta<any> & {
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];
@@ -67,7 +68,7 @@ export default function ProductsStats() {
     },
   });
 
-  console.log(table.getAllColumns())
+  console.log(table.getAllColumns());
 
   const { exportCsv } = useCsvExport(table);
 
@@ -138,7 +139,7 @@ export default function ProductsStats() {
 
             <TableColumnsVisibility table={table} disabled={isLoading} />
 
-            <CsvExportButton disabled={isLoading} onClick={() => exportCsv({})} />
+            {/* <CsvExportButton disabled={isLoading} onClick={() => exportCsv({})} /> */}
           </div>
         </div>
 
@@ -159,12 +160,11 @@ export default function ProductsStats() {
             <span>
               Totale:{" "}
               {!isLoading &&
-                roundToTwo(
+                toEuro(
                   table
                     .getPrePaginationRowModel()
                     .rows.reduce((sum, row) => sum + row.original.stats.revenue, 0)
-                )}{" "}
-              €
+                )}
             </span>
           )}
         </TablePagination>

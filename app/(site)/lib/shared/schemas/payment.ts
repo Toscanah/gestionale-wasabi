@@ -1,9 +1,14 @@
-import { PaymentSchema } from "@/prisma/generated/schemas";
+import { OrderSchema, PaymentSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
 import { ProductInOrderWithOptionsSchema } from "../models/Product";
 import { OrderByTypeSchema } from "../models/Order";
 import { PaymentType } from "@prisma/client";
 import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
+import {
+  FixedDiscountPromotionSchema,
+  GiftCardPromotionSchema,
+  PercentageDiscountPromotionSchema,
+} from "../models/Promotion";
 
 export namespace PaymentContracts {
   export namespace GetSummary {
@@ -16,6 +21,13 @@ export namespace PaymentContracts {
     });
 
     export const PaymentTotalsSchema = z.record(z.enum(PaymentType), PaymentTotalSchema);
+
+    export const DiscountsAndPromotionsSchema = z.object({
+      manual: z.number().default(0),
+      fixed_promotions: z.number().default(0),
+      percentage_promotions: z.number().default(0),
+      gift_cards: z.number().default(0),
+    });
 
     export const PaymentsSummaryDataSchema = z.object({
       totals: PaymentTotalsSchema,
@@ -31,6 +43,7 @@ export namespace PaymentContracts {
       totalAmount: z.number(),
       rawTotalAmount: z.number(),
       centsDifference: z.number(),
+      discountsAndPromotions: DiscountsAndPromotionsSchema,
     });
 
     export type PaymentsSummaryData = z.infer<typeof PaymentsSummaryDataSchema>;

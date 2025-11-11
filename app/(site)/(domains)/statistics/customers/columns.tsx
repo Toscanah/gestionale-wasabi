@@ -18,6 +18,8 @@ import { Warning } from "@phosphor-icons/react";
 import { differenceInCalendarDays, format } from "date-fns";
 import { DARK_SCALE_3, LIGHT_SCALE_3 } from "@/app/(site)/lib/shared/constants/colors";
 import { Separator } from "@/components/ui/separator";
+import { EnDash } from "@/app/(site)/components/ui/misc/Placeholders";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 const QuickTooltip = ({ title, label }: { title: string; label: string }) => (
   <Tooltip delayDuration={0}>
@@ -124,7 +126,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
         (r) => r.rank.trim().toLowerCase() === currentRank?.trim().toLowerCase()
       );
 
-      if (index === -1) return "-";
+      if (index === -1) return <EnDash />;
 
       const scale = chroma.scale(colorArray).colors(sorted.length);
       const color = scale[index];
@@ -139,6 +141,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
     value: (row) => {
       if (row.original.stats.firstOrderAt) {
         const firstOrderDate = row.original.stats.firstOrderAt;
+
         const formattedDate = format(firstOrderDate, "dd-MM-yyyy");
         const daysSince = differenceInCalendarDays(new Date(), firstOrderDate);
 
@@ -154,7 +157,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
         );
       }
 
-      return "";
+      return <EnDash />;
     },
     accessor: (customer) => customer.stats.firstOrderAt,
     sortable: false,
@@ -180,7 +183,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
         );
       }
 
-      return "";
+      return <EnDash />;
     },
     accessor: (customer) => customer.stats.lastOrderAt,
     sortable: false,
@@ -188,14 +191,14 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
   ValueColumn({
     header: "Spesa media",
-    value: (row) => "€ " + roundToTwo(row.original.stats.averageOrder ?? 0),
+    value: (row) => toEuro(row.original.stats.averageOrder ?? 0),
     accessor: (customer) => customer.stats.averageOrder,
     sortable: false,
   }),
 
   ValueColumn({
     header: "Spesa totale",
-    value: (row) => "€ " + roundToTwo(row.original.stats.totalSpent ?? 0),
+    value: (row) => toEuro(row.original.stats.totalSpent ?? 0),
     accessor: (customer) => customer.stats.totalSpent,
     sortable: false,
   }),
@@ -218,7 +221,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
           title="Storico cliente"
           putUpperBorder
           trigger={
-            <Button type="button" variant={"outline"}>
+            <Button type="button" variant={"outline"} className="w-full">
               Vedi ordini precedenti
             </Button>
           }

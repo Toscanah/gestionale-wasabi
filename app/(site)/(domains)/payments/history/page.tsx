@@ -108,9 +108,9 @@ export default function PaymentsTable() {
 
             <TableColumnsVisibility table={table} disabled={isLoading} />
 
-            <Button variant={"outline"} disabled>
+            {/* <Button variant={"outline"} disabled>
               TODO: Ordinamento
-            </Button>
+            </Button> */}
           </div>
         </div>
 

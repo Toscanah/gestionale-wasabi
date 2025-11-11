@@ -53,7 +53,6 @@ export default function QuickPromoPreview({ usage }: QuickPromoPreviewProps) {
         {promo.reusable && <li>Riutilizzabile su più ordini.</li>}
       </ul>
 
-      {/* Type–specific details */}
       {PromotionGuards.isFixedDiscount(promo) && (
         <div>
           <p>

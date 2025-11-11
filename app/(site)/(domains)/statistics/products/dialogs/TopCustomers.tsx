@@ -12,6 +12,7 @@ import AddressesColumn from "@/app/(site)/components/table/common/AddressesColum
 import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
 import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
 import React from "react";
+import { EnDash } from "@/app/(site)/components/ui/misc/Placeholders";
 
 export interface TopCustomersProps {
   product: { id: number; name: string; hasTopCustomers: boolean };
@@ -25,7 +26,7 @@ const columns: ColumnDef<TopCustomer>[] = [
 
   ValueColumn({
     header: "Telefono",
-    value: (row) => row.original.phone?.phone ?? "–",
+    value: (row) => row.original.phone?.phone ?? <EnDash />,
     accessor: (customer) => customer.phone?.phone ?? "–",
   }),
 
