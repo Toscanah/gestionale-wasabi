@@ -58,7 +58,7 @@ const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
   }),
 
   ValueColumn({
-    header: "Riso cucinato",
+    header: "Riso consumato",
     value: (row) => formatRice(row.original.rice),
     accessor: (stats) => stats.rice,
     meta: {

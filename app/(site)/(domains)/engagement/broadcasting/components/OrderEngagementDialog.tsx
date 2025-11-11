@@ -43,6 +43,8 @@ export default function OrderEngagementDialog({
       title="Marketing per ordine"
       trigger={trigger}
       size="mediumPlus"
+      putSeparator
+      putUpperBorder
       open={open}
       onOpenChange={setOpen}
     >

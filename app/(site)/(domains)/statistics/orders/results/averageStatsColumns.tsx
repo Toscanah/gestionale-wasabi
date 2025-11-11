@@ -54,7 +54,7 @@ const averageStatsColumns: ColumnDef<AverageResultRecord>[] = [
   }),
 
   ValueColumn({
-    header: "Riso cucinato/giorno",
+    header: "Riso consumato/giorno",
     value: (row) => formatRice(row.original.perDay.rice),
     accessor: (stats) => stats.perDay.rice,
   }),

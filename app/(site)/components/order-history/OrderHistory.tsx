@@ -95,7 +95,7 @@ export default function OrderHistory({ customer, onCreate, noStatistics }: Order
             onValueChange={handleAccordionChange}
             type="single"
             collapsible
-            className="max-h-[35rem] overflow-y-auto px-4 pb-4"
+            className="max-h-[35rem] overflow-y-auto px-4 "
           >
             {orderTypes.map(({ type, orders }) =>
               orders

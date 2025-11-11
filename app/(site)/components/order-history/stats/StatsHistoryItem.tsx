@@ -6,6 +6,7 @@ import useHistoryStats, {
 import { Separator } from "@/components/ui/separator";
 import AllProductsDialog from "./AllProductsDialog";
 import WasabiSelect from "../../ui/wasabi/WasabiSelect";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 type HistoryStatsProps = UseHistoryStatsParams & {
   owner: string;
@@ -77,11 +78,11 @@ export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps
   const statsRows = [
     {
       label: "Spesa totale",
-      value: `€ ${roundToTwo(stats.totalSpent)}`,
+      value: `${toEuro(stats.totalSpent)}`,
     },
     {
       label: "Costo medio ordine",
-      value: `€ ${roundToTwo(stats.avgCost)}`,
+      value: `${toEuro(stats.avgCost)}`,
     },
     {
       label: "Giorni della settimana più comuni",
