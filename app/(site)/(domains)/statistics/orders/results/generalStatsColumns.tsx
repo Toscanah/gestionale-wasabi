@@ -3,6 +3,7 @@ import { GeneralResultRecord } from "./SectionResults";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
   FieldColumn({
@@ -24,7 +25,7 @@ const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
 
   ValueColumn({
     header: "Incasso",
-    value: (row) => `€ ${roundToTwo(row.original.revenue)}`,
+    value: (row) => toEuro(row.original.revenue),
     accessor: (stats) => stats.revenue,
   }),
 

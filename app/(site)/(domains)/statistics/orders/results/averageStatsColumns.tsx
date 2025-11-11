@@ -3,6 +3,7 @@ import { AverageResultRecord } from "./SectionResults";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 const averageStatsColumns: ColumnDef<AverageResultRecord>[] = [
   FieldColumn({
@@ -13,13 +14,13 @@ const averageStatsColumns: ColumnDef<AverageResultRecord>[] = [
 
   ValueColumn({
     header: "Scontrino medio",
-    value: (row) => `€ ${roundToTwo(row.original.avgPerOrder)}`,
+    value: (row) => toEuro(row.original.avgPerOrder),
     accessor: (stats) => stats.avgPerOrder,
   }),
 
   ValueColumn({
     header: "Incasso/giorno",
-    value: (row) => `€ ${roundToTwo(row.original.perDay.revenue)}`,
+    value: (row) => toEuro(row.original.perDay.revenue),
     accessor: (stats) => stats.perDay.revenue,
   }),
 

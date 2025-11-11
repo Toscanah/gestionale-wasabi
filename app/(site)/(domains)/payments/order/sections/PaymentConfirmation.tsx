@@ -1,5 +1,6 @@
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 import { Button } from "@/components/ui/button";
 import { debounce } from "lodash";
 import { useRef, useState } from "react";
@@ -20,7 +21,7 @@ export default function PaymentConfirmation() {
     <div className="flex flex-col gap-6 text-4xl items-center text-center h-full justify-center w-[55%]">
       <h1>
         <span>
-          Vuoi procedere con l'incasso di <b>€ {roundToTwo(orderTotal)}</b>?
+          Vuoi procedere con l'incasso di <b>{toEuro(orderTotal)}</b>?
         </span>
       </h1>
       <div className="w-full flex gap-6 items-center justify-center">

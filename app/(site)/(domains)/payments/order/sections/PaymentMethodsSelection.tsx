@@ -8,6 +8,7 @@ import {
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 const paymentMethods: PaymentMethod[] = [
   { type: PaymentType.VOUCH, label: "Buoni pasto 饭票", icon: ForkKnife },
@@ -77,7 +78,7 @@ export default function PaymentMethodsSelection() {
               </div>
 
               <span className="border rounded-b-lg w-full flex p-2 justify-center items-center text-xl">
-                € {roundToTwo(payment.paymentAmounts[type])}
+                {toEuro(payment.paymentAmounts[type] ?? 0)}
               </span>
             </div>
           </div>

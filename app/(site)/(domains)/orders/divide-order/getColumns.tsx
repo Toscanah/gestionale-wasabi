@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { OrderType } from "@prisma/client";
 import { FieldColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {
   return [
@@ -40,7 +41,7 @@ export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[]
         <>
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
-            : `€ ${row.original.frozen_price}`}
+            : toEuro(row.original.frozen_price)}
         </>
       ),
       accessor: (pio) => pio.frozen_price,

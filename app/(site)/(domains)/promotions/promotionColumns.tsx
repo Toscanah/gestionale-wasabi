@@ -19,6 +19,7 @@ import { TrashIcon } from "@phosphor-icons/react";
 import { PromotionTableMeta } from "./page";
 import { differenceInDays } from "date-fns";
 import { EnDash, NA } from "../../components/ui/misc/Placeholders";
+import toEuro from "../../lib/utils/global/string/toEuro";
 
 function calcDiscountRaw(promotion: PromotionByType): number | null {
   if (PromotionGuards.isPercentageDiscount(promotion)) {
@@ -193,7 +194,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
         return `${promotion.percentage_value?.toFixed(0) ?? 0}%`;
       }
       if (PromotionGuards.isFixedDiscount(promotion) || PromotionGuards.isGiftCard(promotion)) {
-        return `€ ${roundToTwo(promotion.fixed_amount) ?? 0}`;
+        return toEuro(promotion.fixed_amount);
       }
       return <NA />;
     },
@@ -218,7 +219,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
     header: "Valore medio per utilizzo",
     value: (row) => {
       const avg = calcAvgUseRaw(row.original);
-      return avg != null ? `${roundToTwo(avg)} €` : "-";
+      return avg != null ? toEuro(avg) : <EnDash />;
     },
     accessor: (promotion) => calcAvgUseRaw(promotion) ?? 0,
   }),
@@ -227,7 +228,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
     header: "Importo residuo medio stimato",
     value: (row) => {
       const avgResidual = calcAvgResidualRaw(row.original);
-      return avgResidual != null ? `${roundToTwo(avgResidual)} €` : <NA />;
+      return avgResidual != null ? toEuro(avgResidual) : <NA />;
     },
     accessor: (promotion) => calcAvgResidualRaw(promotion) ?? 0,
   }),
@@ -271,7 +272,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
     header: "Velocità di utilizzo",
     value: (row) => {
       const speed = calcUsageSpeedRaw(row.original);
-      return speed != null ? `${roundToTwo(speed)} €/giorno` : "-";
+      return speed != null ? `${toEuro(speed)}/giorno` : "-";
     },
     accessor: (promotion) => calcUsageSpeedRaw(promotion) ?? 0,
   }),

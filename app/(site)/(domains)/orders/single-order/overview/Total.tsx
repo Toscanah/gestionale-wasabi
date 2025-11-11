@@ -1,6 +1,7 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 export default function Total() {
   const { order } = useOrderContext();
@@ -11,7 +12,7 @@ export default function Total() {
         TOTALE
       </div>
       <div className="w-full text-center text-2xl h-12 font-bold border-x border-b rounded-b-lg flex flex-col justify-center">
-        € {roundToTwo(getOrderTotal({ order, applyDiscounts: true }))}
+        {toEuro(getOrderTotal({ order, applyDiscounts: true }))}
       </div>
     </div>
   );

@@ -134,6 +134,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <WasabiSelect
             appearance="form"
             mode="single"
+            shouldSort={false}
             disabled={riceBatches.length === 0}
             selectedValue={selectedRiceBatchId !== null ? String(selectedRiceBatchId) : undefined}
             groups={[

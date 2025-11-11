@@ -11,6 +11,7 @@ import { OrdersTableProps } from "./OrdersTable";
 import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
 import MetaLogs from "../meta/MetaLogs";
 import formatWhenLabel from "../../lib/utils/domains/order/formatWhenLabel";
+import toEuro from "../../lib/utils/global/string/toEuro";
 
 export default function getColumns(
   type: OrderType,
@@ -165,9 +166,8 @@ export default function getColumns(
   columns.push(
     ValueColumn<OrderByType>({
       header: "Totale",
-      value: (row) =>
-        `€ ${roundToTwo(getOrderTotal({ order: row.original, applyDiscounts: true }))}`,
-      accessor: (order) => `€ ${roundToTwo(getOrderTotal({ order, applyDiscounts: true }))}`,
+      value: (row) => toEuro(getOrderTotal({ order: row.original, applyDiscounts: true })),
+      accessor: (order) => getOrderTotal({ order, applyDiscounts: true }),
     })
   );
 

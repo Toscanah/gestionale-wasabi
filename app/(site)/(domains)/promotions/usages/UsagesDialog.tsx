@@ -125,7 +125,7 @@ const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
 
   ValueColumn({
     header: "Ammontare usato",
-    value: (row) => row.original.amount.toFixed(2) + " €",
+    value: (row) => toEuro(row.original.amount),
     accessor: (usage) => usage.amount,
   }),
 
@@ -148,7 +148,7 @@ const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
           .reduce((sum, u) => sum + (u.amount ?? 0), 0);
 
         const remaining = Math.max(0, fixedAmount - usedUntil);
-        return `${remaining.toFixed(2)} €`;
+        return toEuro(remaining);
       }
 
       return "—";
@@ -167,7 +167,7 @@ const usagesColumns: ColumnDef<ComprehensivePromotionUsage>[] = [
         .filter((u) => new Date(u.created_at).getTime() <= usageTs)
         .reduce((sum, u) => sum + (u.amount ?? 0), 0);
 
-      return `${usedUntil.toFixed(2)} €`;
+      return toEuro(usedUntil);
     },
     accessor: (usage) => usage.amount,
   }),

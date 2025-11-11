@@ -4,6 +4,7 @@ import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { OrderType } from "@prisma/client";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import { BIG_PRINT } from "../../../lib/shared/constants/printing";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 interface TotalSectionProps {
   products: ProductInOrder[];
@@ -17,12 +18,12 @@ export default function TotalSection({ products, discount, orderType }: TotalSec
       <Br />
 
       <Text size={BIG_PRINT} align="center" bold>
-        {`TOTALE: ${roundToTwo(
+        {`TOTALE: ${toEuro(
           getOrderTotal({
             order: { products, discount, type: orderType },
             applyDiscounts: true,
           })
-        )} €`}
+        )}`}
       </Text>
     </>
   );

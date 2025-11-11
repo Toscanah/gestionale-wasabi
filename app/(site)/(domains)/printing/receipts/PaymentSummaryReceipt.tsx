@@ -4,6 +4,7 @@ import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeRec
 import { SMALL_PRINT } from "../../../lib/shared/constants/printing";
 import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
 import { PaymentContracts } from "@/app/(site)/lib/shared";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 export interface PaymentSummaryReceiptProps {
   summaryData: PaymentContracts.GetSummary.Output;
@@ -46,7 +47,7 @@ export default function PaymentSummaryReceipt({ summaryData, period }: PaymentSu
           }
           right={
             <Text bold size={SMALL_PRINT}>
-              {roundToTwo(data.total)} €
+              {toEuro(data.total)}
             </Text>
           }
         />
@@ -64,7 +65,7 @@ export default function PaymentSummaryReceipt({ summaryData, period }: PaymentSu
         }
         right={
           <Text bold size={SMALL_PRINT}>
-            {roundToTwo(homeOrdersAmount)} €
+            {toEuro(homeOrdersAmount)}
           </Text>
         }
       />
@@ -77,7 +78,7 @@ export default function PaymentSummaryReceipt({ summaryData, period }: PaymentSu
         }
         right={
           <Text bold size={SMALL_PRINT}>
-            {roundToTwo(pickupOrdersAmount)} €
+            {toEuro(pickupOrdersAmount)}
           </Text>
         }
       />
@@ -90,7 +91,7 @@ export default function PaymentSummaryReceipt({ summaryData, period }: PaymentSu
         }
         right={
           <Text bold size={SMALL_PRINT}>
-            {roundToTwo(tableOrdersAmount)} €
+            {toEuro(tableOrdersAmount)}
           </Text>
         }
       />
@@ -159,7 +160,7 @@ export default function PaymentSummaryReceipt({ summaryData, period }: PaymentSu
         }
         right={
           <Text bold size={SMALL_PRINT}>
-            {roundToTwo(totalAmount)} €
+            {toEuro(totalAmount)}
           </Text>
         }
       />
@@ -172,7 +173,7 @@ export default function PaymentSummaryReceipt({ summaryData, period }: PaymentSu
         }
         right={
           <Text bold size={SMALL_PRINT}>
-            {roundToTwo(rawTotalAmount)} €
+            {toEuro(rawTotalAmount)}
           </Text>
         }
       />
@@ -185,7 +186,7 @@ export default function PaymentSummaryReceipt({ summaryData, period }: PaymentSu
         }
         right={
           <Text bold size={SMALL_PRINT}>
-            {roundToTwo(centsDifference)} €
+            {toEuro(centsDifference)}
           </Text>
         }
       />

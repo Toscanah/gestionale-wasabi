@@ -10,6 +10,7 @@ import { debounce } from "lodash";
 import { useOrderContext } from "../../../context/OrderContext";
 import capitalizeFirstLetter from "../../../lib/utils/global/string/capitalizeFirstLetter";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 export default function getColumns(
   handleFieldChange: (key: "code" | "quantity", value: any, index: number) => void,
@@ -213,7 +214,7 @@ export default function getColumns(
         <span className="text-2xl">
           {row.original.product?.home_price == 0 && row.original.product.site_price == 0
             ? ""
-            : `€ ${roundToTwo(row.original.frozen_price)}`}
+            : toEuro(row.original.frozen_price)}
         </span>
       ),
       accessor: (pio) => pio.frozen_price,
@@ -228,13 +229,13 @@ export default function getColumns(
 
         return (
           <span className="text-2xl">
-            {productTotal == 0 ? "" : `€ ${roundToTwo(productTotal)}`}
+            {productTotal == 0 ? "" : toEuro(productTotal)}
           </span>
         );
       },
       accessor: (pio) => {
         const productTotal = pio.frozen_price * pio.quantity;
-        return productTotal == 0 ? "" : `€ ${roundToTwo(productTotal)}`;
+        return productTotal == 0 ? "" : toEuro(productTotal);
       },
     }),
   ];

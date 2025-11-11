@@ -100,7 +100,7 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
       const originalTotal = getOrderTotal({ order, applyDiscounts: false, round: true });
       const discountedTotal = getOrderTotal({ order, applyDiscounts: true, round: true });
       const manualDiscountAmount = hasManualDiscount
-        ? ((originalTotal * order.discount) / 100).toFixed(2)
+        ? (originalTotal * order.discount) / 100
         : null;
 
       const hasDiscounts = !hasPromotions && !hasManualDiscount;
@@ -122,7 +122,8 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
 
             {hasManualDiscount && (
               <div>
-                <strong>Sconto manuale:</strong> −{order.discount}% ({manualDiscountAmount} €)
+                <strong>Sconto manuale:</strong> −{order.discount}% (
+                {toEuro(manualDiscountAmount || 0)})
               </div>
             )}
 
@@ -133,8 +134,7 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
                     <Badge className={PROMOTION_TYPES_COLORS[u.promotion.type]}>
                       {PROMOTION_TYPES_LABELS[u.promotion.type]}
                     </Badge>
-                    {u.promotion?.label ?? u.promotion?.code ?? "Promozione"}: -
-                    {toEuro(u.amount) ?? "0.00 €"}
+                    {u.promotion?.label ?? u.promotion?.code ?? "Promozione"}: -{toEuro(u.amount)}
                   </div>
                 ))}
               </>
@@ -143,7 +143,7 @@ const columns: ColumnDef<OrderWithSummedPayments>[] = [
             <Separator />
 
             <div className="">
-              <strong>Totale finale:</strong> €{discountedTotal.toFixed(2)}
+              <strong>Totale finale:</strong> {toEuro(discountedTotal)}
             </div>
           </div>
         </WasabiPopover>

@@ -6,6 +6,7 @@ import { PaymentType } from "@prisma/client";
 import getDiscountedTotal from "@/app/(site)/lib/services/order-management/getDiscountedTotal";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 import roundToCents from "@/app/(site)/lib/utils/global/number/roundToCents";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 export default function PaymentSummary() {
   const { payment, orderTotal } = useOrderPaymentContext();
@@ -42,11 +43,11 @@ export default function PaymentSummary() {
         <tbody>
           <tr>
             <td className="text-left">Subtotale:</td>
-            <td className="text-right">€ {roundToCents(payment.paidAmount)}</td>
+            <td className="text-right">{toEuro(payment.paidAmount)}</td>
           </tr>
           <tr>
             <td className="text-left">Rimanente (resto):</td>
-            <td className="text-right">€ {roundToCents(payment.remainingAmount)}</td>
+            <td className="text-right">{toEuro(payment.remainingAmount)}</td>
           </tr>
         </tbody>
       </table>
@@ -58,7 +59,7 @@ export default function PaymentSummary() {
         <tbody>
           <tr>
             <td className="text-left font-bold">Totale da Pagare:</td>
-            <td className="text-right font-bold">€ {roundToCents(orderTotal)}</td>
+            <td className="text-right font-bold">{toEuro(orderTotal)}</td>
           </tr>
         </tbody>
       </table>

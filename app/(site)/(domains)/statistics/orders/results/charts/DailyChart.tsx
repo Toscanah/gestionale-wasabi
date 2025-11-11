@@ -31,6 +31,7 @@ import { TrendDownIcon, TrendUpIcon } from "@phosphor-icons/react/dist/ssr";
 import { EqualIcon } from "lucide-react";
 import { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 // ----------------- TYPES -----------------
 type DailyChartProps = {
@@ -64,13 +65,13 @@ const dayKey = (d: Date | string) => {
 
 const FORMATTERS: Record<Metric, (value: number) => any> = {
   orders: (v) => v.toLocaleString("it-IT"),
-  revenue: (v) => `€ ${v.toLocaleString("it-IT", { minimumFractionDigits: 2 })}`,
+  revenue: (v) => toEuro(v),
   products: (v) => v.toLocaleString("it-IT"),
   soups: (v) => v.toLocaleString("it-IT"),
   rices: (v) => `${v.toLocaleString("it-IT")}`,
   salads: (v) => v.toLocaleString("it-IT"),
   rice: (v) => formatRice(v),
-  revenuePerOrder: (v) => `€ ${v.toLocaleString("it-IT", { minimumFractionDigits: 2 })}`,
+  revenuePerOrder: (v) => toEuro(v),
   day: (v) => v,
 };
 
