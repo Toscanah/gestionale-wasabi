@@ -165,7 +165,7 @@ export default function getColumns(
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
 
         return (
-          <div className="space-y-2 h-24 overflow-y-auto">
+          <div className="flex flex-col justify-center gap-2 h-24 overflow-y-auto">
             {avalOptions &&
               avalOptions.map((option) => (
                 <div

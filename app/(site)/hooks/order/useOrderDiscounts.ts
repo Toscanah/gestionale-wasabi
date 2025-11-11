@@ -10,6 +10,7 @@ export default function useOrderDiscounts(
   const { mutate: updateDiscountMutation } = ordersAPI.updateManualDiscount.useMutation();
   const { mutate: applyPromoMutation } = promotionsAPI.applyToOrder.useMutation();
   const { mutate: removePromoMutation } = promotionsAPI.removeFromOrder.useMutation();
+  const { mutateAsync: rebalanceMutation } = promotionsAPI.rebalanceOrderPromotions.useMutation();
 
   const updateOrderDiscount = (discount: number) => {
     const safeDiscount = Math.min(Math.max(discount, 0), 100);
@@ -24,17 +25,16 @@ export default function useOrderDiscounts(
             is_receipt_printed: false,
           });
         },
+        onError: (err) => {
+          toastError(err.message ?? "Errore durante l'aggiornamento dello sconto");
+        },
       }
     );
   };
 
   const applyPromotionToOrder = (promoCode: string, amount?: number) => {
     applyPromoMutation(
-      {
-        orderId: order.id,
-        code: promoCode,
-        amount,
-      },
+      { orderId: order.id, code: promoCode.trim(), amount },
       {
         onSuccess: (updatedOrder) => {
           updateOrder({
@@ -52,10 +52,7 @@ export default function useOrderDiscounts(
 
   const removePromotionFromOrder = (usageId: number) => {
     removePromoMutation(
-      {
-        usageId,
-      },
-
+      { usageId },
       {
         onSuccess: (updatedOrder) => {
           updateOrder({
@@ -65,15 +62,21 @@ export default function useOrderDiscounts(
           toastSuccess("Promozione rimossa correttamente");
         },
         onError: (err) => {
-          toastError(err.message ?? "Errore durante l'applicazione della promozione");
+          toastError(err.message ?? "Errore durante la rimozione della promozione");
         },
       }
     );
+  };
+
+  const rebalanceOrderPromotions = async () => {
+    const updatedOrder = await rebalanceMutation({ orderId: order.id });
+    return updatedOrder;
   };
 
   return {
     updateOrderDiscount,
     applyPromotionToOrder,
     removePromotionFromOrder,
+    rebalanceOrderPromotions,
   };
 }

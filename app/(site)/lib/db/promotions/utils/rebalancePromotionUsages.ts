@@ -2,6 +2,11 @@ import { PromotionType, Prisma } from "@prisma/client";
 import { getOrderTotal } from "../../../services/order-management/getOrderTotal";
 import { OrderByType } from "../../../shared";
 
+/**
+ * Rebalances all promotion usages on an order.
+ * - Clamps each usage downwards if the order total or balance decreased.
+ * - Never increases any promotion usage automatically (fair for gift cards, etc.).
+ */
 export default async function rebalancePromotionUsages(
   tx: Prisma.TransactionClient,
   order: OrderByType
@@ -28,7 +33,11 @@ export default async function rebalancePromotionUsages(
   // 2️⃣ Percentage promos first
   for (const u of usages.filter((u) => u.promotion.type === PromotionType.PERCENTAGE_DISCOUNT)) {
     const percent = u.promotion.percentage_value ?? 0;
-    const newAmount = Math.min((remaining * percent) / 100, remaining);
+    const computed = Math.min((remaining * percent) / 100, remaining);
+
+    // ⬇️ Only allow downward adjustments
+    const newAmount = Math.min(u.amount, computed);
+
     remaining -= newAmount;
     updates.push({
       id: u.id,
@@ -40,7 +49,11 @@ export default async function rebalancePromotionUsages(
   // 3️⃣ Fixed promos next
   for (const u of usages.filter((u) => u.promotion.type === PromotionType.FIXED_DISCOUNT)) {
     const fixed = u.promotion.fixed_amount ?? 0;
-    const newAmount = Math.min(fixed, remaining);
+    const computed = Math.min(fixed, remaining);
+
+    // ⬇️ Only allow downward adjustments
+    const newAmount = Math.min(u.amount, computed);
+
     remaining -= newAmount;
     updates.push({
       id: u.id,
@@ -49,17 +62,20 @@ export default async function rebalancePromotionUsages(
     });
   }
 
-  // 4️⃣ Gift cards last
+  // 4️⃣ Gift cards last (special handling)
   for (const u of usages.filter((u) => u.promotion.type === PromotionType.GIFT_CARD)) {
     const totalUsed =
       u.promotion.usages
         ?.filter((x) => x.id !== u.id)
         ?.reduce((sum, x) => sum + (x.amount ?? 0), 0) ?? 0;
 
-    const remainingCardBalance = (u.promotion.fixed_amount ?? 0) - totalUsed;
-    const newAmount = Math.min(remaining, remainingCardBalance);
-    remaining -= newAmount;
+    const remainingCardBalance = Math.max(0, (u.promotion.fixed_amount ?? 0) - totalUsed);
+    const computed = Math.min(remaining, remainingCardBalance);
 
+    // ⬇️ Only allow downward adjustment (no auto-increase)
+    const newAmount = Math.min(u.amount, computed);
+
+    remaining -= newAmount;
     updates.push({
       id: u.id,
       newAmount: Number(newAmount.toFixed(2)),
@@ -67,6 +83,7 @@ export default async function rebalancePromotionUsages(
     });
   }
 
+  // 5️⃣ Persist updates
   for (const usage of updates) {
     if (usage.shouldUpdate) {
       await tx.promotionUsage.update({
@@ -75,4 +92,6 @@ export default async function rebalancePromotionUsages(
       });
     }
   }
+
+  return updates.filter((u) => u.shouldUpdate);
 }

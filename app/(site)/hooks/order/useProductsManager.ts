@@ -22,15 +22,10 @@ export type UpdateProductsListFunction = (params: {
 
 export function useProductsManager(
   order: OrderByType,
-  updateOrder: (order: RecursivePartial<OrderByType>) => void
+  updateOrder: (order: RecursivePartial<OrderByType>) => void,
+  rebalanceOrderPromotions: () => Promise<OrderByType>
 ) {
-  const rebalanceMutation = promotionsAPI.rebalanceOrderPromotions.useMutation({
-    onSuccess: async (updatedOrder) => {
-      updateOrder(updatedOrder);
-    },
-  });
-
-  const updateProductsList: UpdateProductsListFunction = ({
+  const updateProductsList: UpdateProductsListFunction = async ({
     addedProducts = [],
     updatedProducts = [],
     deletedProducts = [],
@@ -57,13 +52,14 @@ export function useProductsManager(
 
     const extraUpdates = extras.computeAndUpdateExtras(finalProducts);
 
+    const updatedOrder = await rebalanceOrderPromotions();
+
     updateOrder({
       products: finalProducts,
       ...extraUpdates,
       is_receipt_printed: updateFlag ? false : undefined,
+      promotion_usages: updatedOrder.promotion_usages,
     });
-
-    rebalanceMutation.mutate({ orderId: order.id });
 
     if (toast) toastSuccess("Prodotti aggiornati correttamente");
   };

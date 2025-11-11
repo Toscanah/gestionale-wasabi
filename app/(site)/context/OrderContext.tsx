@@ -72,6 +72,7 @@ export const OrderProvider = ({
     updateOrderDiscount,
     applyPromotionToOrder,
     removePromotionFromOrder,
+    rebalanceOrderPromotions,
   } = useOrderManager(order, setOrder, dialogOpen);
 
   const {
@@ -85,7 +86,7 @@ export const OrderProvider = ({
     updateProductOption,
     updatePrintedProducts,
     updateProductVariation,
-  } = useProductsManager(order, updateOrder);
+  } = useProductsManager(order, updateOrder, rebalanceOrderPromotions);
 
   return (
     <OrderContext.Provider
