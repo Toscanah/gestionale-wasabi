@@ -39,6 +39,8 @@ export default function useCustomerManager({
 
   const { customers, setCustomers } = useCachedDataContext();
 
+  const utils = trpc.useUtils();
+
   async function onSubmit(values: AddressFormValues) {
     try {
       const { street, civic } = parseAddress(values.street);
@@ -117,6 +119,8 @@ export default function useCustomerManager({
         });
       }
 
+      utils.customers.getByPhone.setData({ phone }, updatedCustomer);
+
       // Replace optimistic with real one
       setCustomers((prev) =>
         prev.map((c) => {
@@ -142,6 +146,14 @@ export default function useCustomerManager({
           address: { ...addressContent, customer_id: updatedCustomer.id, id: selectedAddress.id },
         });
       }
+
+      utils.addresses.getByCustomer.setData({ customerId: updatedCustomer.id }, (prev) => {
+        if (!prev) return [updatedAddress];
+        const exists = prev.some((addr) => addr.id === updatedAddress.id);
+        return exists
+          ? prev.map((addr) => (addr.id === updatedAddress.id ? updatedAddress : addr))
+          : [...prev, updatedAddress];
+      });
 
       // Merge new/updated address into cached customer
       setCustomers((prev) =>

@@ -15,6 +15,7 @@ export default function ShiftFilter({ selectedShift, onShiftChange, disabled }: 
       appearance="filter"
       mode="single"
       title="Turno"
+      shouldSort={false}
       disabled={disabled}
       triggerIcon={ForkKnifeIcon}
       shouldClear={selectedShift !== ShiftFilterValue.ALL}

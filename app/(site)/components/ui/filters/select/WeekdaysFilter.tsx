@@ -30,6 +30,7 @@ export default function WeekdaysFilter({
       disabled={disabled}
       mode="multi"
       allLabel="Tutti"
+      shouldSort={false}
       title="Giorni settimana"
       selectedValues={weekdays.map(String)}
       onChange={handleChange}
