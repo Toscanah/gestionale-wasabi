@@ -241,6 +241,15 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
           )}
 
           <Button
+            disabled={!promoCode.trim() && !foundPromo}
+            className="text-red-600 hover:text-red-600"
+            variant="outline"
+            onClick={reset}
+          >
+            Cancella
+          </Button>
+
+          <Button
             onClick={handleApplyClick}
             disabled={
               !foundPromo ||

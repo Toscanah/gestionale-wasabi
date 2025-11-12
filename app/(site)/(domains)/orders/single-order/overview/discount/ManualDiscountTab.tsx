@@ -74,11 +74,24 @@ export default function ManualDiscountTab({ activeTab }: ManualDiscountTabProps)
         </InputGroup>
 
         <Button
-          onClick={() => updateOrderDiscount(Number(manualDiscount) || 0)}
+          variant="outline"
+          className="text-red-600 hover:text-red-600"
+          onClick={() => {
+            updateOrderDiscount(0);
+            setManualDiscount(0);
+          }}
+          disabled={manualDiscount === 0}
+        >
+          Azzera
+        </Button>
+
+        <Button
+          onClick={() => {
+            updateOrderDiscount(Number(manualDiscount) || 0);
+            if (manualDiscount === "") setManualDiscount(0);
+          }}
           disabled={
-            manualDiscount === "" ||
-            isNaN(Number(manualDiscount)) ||
-            Number(manualDiscount) === (order.discount ?? 0)
+            isNaN(Number(manualDiscount)) || Number(manualDiscount) === (order.discount ?? 0)
           }
         >
           Applica
