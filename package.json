@@ -35,7 +35,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@phosphor-icons/react": "^2.1.10",
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^6.19.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
@@ -151,7 +151,7 @@
     "electron": "^38.2.2",
     "electron-builder": "^26.0.12",
     "postcss": "^8.5.6",
-    "prisma": "^6.17.1",
+    "prisma": "^6.19.0",
     "prisma-json-types-generator": "^3.6.2",
     "prisma-zod-generator": "^1.27.3",
     "tailwindcss": "^4.1.14",

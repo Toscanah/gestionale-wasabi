@@ -1,4 +1,4 @@
-import { OrderType, PaymentType } from "@prisma/client";
+import { OrderType } from "@prisma/client";
 import { getOrderTotal } from "../order-management/getOrderTotal";
 import roundToCents from "../../utils/global/number/roundToCents";
 import { OrderFullPaymentContext } from "../../shared";
@@ -30,16 +30,24 @@ export default function calculatePaymentsSummary(
   let totalAmount = 0;
   let centsDifference = 0;
 
+  let i = 0;
+
   orders.forEach((order) => {
     const rawOrderTotal = getOrderTotal({ order, applyDiscounts: false, onlyPaid: true });
     const discountedOrderTotal = getOrderTotal({ order, applyDiscounts: true, onlyPaid: true });
     const paidTotal = order.payments.reduce((sum, p) => sum + p.amount, 0);
 
-    const isCloseEnough = Math.abs(paidTotal - discountedOrderTotal) <= TOLERANCE;
+    const diff = paidTotal - discountedOrderTotal;
+    const isCloseEnough = Math.abs(diff) <= TOLERANCE;
     const effectivePaidTotal = isCloseEnough ? discountedOrderTotal : paidTotal;
 
-    if (isCloseEnough) {
-      const diff = roundToCents(paidTotal - discountedOrderTotal);
+    if (!isCloseEnough) {
+      i++;
+      const direction = diff > 0 ? "overpaid" : "underpaid";
+      console.warn(
+        `⚠️ Order ${order.id} (${order.type}) created on ${order.created_at.toLocaleDateString()} appears to be ${direction} by ${Math.abs(diff).toFixed(2)}`
+      );
+    } else {
       centsDifference += diff;
     }
 
@@ -57,6 +65,8 @@ export default function calculatePaymentsSummary(
       pickupOrdersAmount += discountedOrderTotal;
     }
   });
+
+  console.log(`Adjusted cents difference for ${i} orders.`);
 
   return {
     inPlaceAmount,

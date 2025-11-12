@@ -163,10 +163,14 @@ export default function getColumns(
         if (row.original.product_id == -1) return <></>;
 
         const avalOptions = row.original.product?.category?.options ?? [];
+
+        console.log(avalOptions);
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
 
+        console.log(selectedOptions);
+
         return (
-          <div className="flex flex-col justify-center gap-2 h-24 overflow-y-auto">
+          <div className="flex flex-col  gap-2 h-24 overflow-y-auto">
             {avalOptions &&
               avalOptions.map((option) => (
                 <div
@@ -191,6 +195,7 @@ export default function getColumns(
               ))}
 
             <Input
+              className={avalOptions.length == 0 ? "my-auto" : ""}
               type="text"
               defaultValue={row.original.variation ?? ""}
               onChange={(e) => debouncedVariationChange(e.target.value, row.original.id)}
@@ -227,11 +232,7 @@ export default function getColumns(
         const product = row.original;
         const productTotal = product.frozen_price * product.quantity;
 
-        return (
-          <span className="text-2xl">
-            {productTotal == 0 ? "" : toEuro(productTotal)}
-          </span>
-        );
+        return <span className="text-2xl">{productTotal == 0 ? "" : toEuro(productTotal)}</span>;
       },
       accessor: (pio) => {
         const productTotal = pio.frozen_price * pio.quantity;
