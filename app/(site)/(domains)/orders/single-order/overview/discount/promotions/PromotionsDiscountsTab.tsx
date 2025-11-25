@@ -20,7 +20,7 @@ import {
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { PromotionType } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   PromotionByType,
   PromotionGuards,
@@ -157,6 +157,9 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
               type="text"
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleApplyClick();
+              }}
             />
             <InputGroupAddon align="inline-end">
               {isSearching ? (
