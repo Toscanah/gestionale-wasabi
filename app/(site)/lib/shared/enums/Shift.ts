@@ -12,7 +12,7 @@ export const SHIFT_LABELS: Record<ShiftFilterValue, string> = {
 
 export enum ShiftBoundaries {
   LUNCH_FROM = 8.0,
-  LUNCH_TO = 14.5,
-  DINNER_FROM = 14.5,
+  LUNCH_TO = 15.0,
+  DINNER_FROM = 15.0,
   DINNER_TO = 22.5,
 }

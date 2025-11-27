@@ -122,11 +122,19 @@ export default function getColumns(
               const currentInput = getInputRef({ rowIndex: row.index, colIndex: 1 });
               const inputValue = Number(currentInput?.value) || 0;
 
-              handleKeyNavigation(e, { rowIndex: row.index, colIndex: 1 });
+              const isEnter = e.key === "Enter" || e.key === "ArrowRight";
+
               if (
-                (e.key === "Enter" || e.key === "ArrowRight") &&
-                row.original.quantity !== inputValue
+                (isEnter ||
+                  e.key === "ArrowLeft" ||
+                  e.key === "ArrowUp" ||
+                  e.key === "ArrowDown") &&
+                row.original.quantity === inputValue
               ) {
+                handleKeyNavigation(e, { rowIndex: row.index, colIndex: 1 });
+              }
+
+              if (isEnter && row.original.quantity !== inputValue) {
                 handleFieldChange("quantity", e.target.value, row.index);
               }
             }}
@@ -163,11 +171,7 @@ export default function getColumns(
         if (row.original.product_id == -1) return <></>;
 
         const avalOptions = row.original.product?.category?.options ?? [];
-
-        console.log(avalOptions);
         const selectedOptions = row.original.options?.map((el) => el.option.id) ?? [];
-
-        console.log(selectedOptions);
 
         return (
           <div className="flex flex-col  gap-2 h-24 overflow-y-auto">

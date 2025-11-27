@@ -1,13 +1,10 @@
 import generateDummyProduct from "@/app/(site)/lib/services/product-management/generateDummyProduct";
-import { OrderByType, ProductContracts, ProductInOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, ProductInOrder } from "@/app/(site)/lib/shared";
 import { toastError } from "@/app/(site)/lib/utils/global/toast";
 import { productsAPI } from "@/lib/server/api";
 import { Table } from "@tanstack/react-table";
 import { useState } from "react";
 import { UpdateProductsListFunction } from "../useProductsManager";
-import { useCachedDataContext } from "@/app/(site)/context/CachedDataContext";
-import { ProductInOrderStatus } from "@prisma/client";
-import { trpc } from "@/lib/server/client";
 
 type UseProductCrudParams = {
   order: OrderByType;
@@ -18,53 +15,33 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
   const [newCode, setNewCode] = useState<string>("");
   const [newQuantity, setNewQuantity] = useState<number>(0);
 
-  const { products: cachedProducts } = useCachedDataContext();
-
   const resetInputs = () => {
     setNewCode("");
     setNewQuantity(0);
   };
 
-  // ----------------------------------------------------------
-  // ADD PRODUCT (NO OPTIMISTIC UPDATE)
-  // ----------------------------------------------------------
   const addProductMutation = productsAPI.addToOrder.useMutation({
     onSuccess: (newProduct) => {
       updateProductsList({ addedProducts: [newProduct] });
       resetInputs();
     },
     onError: () => {
-      toastError(`Il prodotto ${newCode} non è stato trovato`, "Errore");
+      updateProductsList({ updatedProducts: [generateDummyProduct()] });
       resetInputs();
+      toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
     },
   });
 
-  const addProduct = async () => {
-    const productInCache = cachedProducts.find(
-      (p) => p.code?.toLowerCase() === newCode.toLowerCase()
-    );
-
-    if (!productInCache) {
-      toastError(`Il prodotto ${newCode} non è stato trovato`, "Errore");
-      return resetInputs();
-    }
-
-    await addProductMutation.mutateAsync({
+  const addProduct = () =>
+    addProductMutation.mutateAsync({
       order: { id: order.id, type: order.type },
       productCode: newCode,
       quantity: Number(newQuantity),
     });
-  };
 
-  // ----------------------------------------------------------
-  // ADD MULTIPLE PRODUCTS (NO OPTIMISTIC UPDATE)
-  // ----------------------------------------------------------
-  const addProductsMutation = trpc.products.addMultipleToOrder.useMutation({
-    onSuccess: (data) => {
-      updateProductsList({ addedProducts: data.addedProducts });
-    },
-    onError: () => {
-      toastError("Errore nell'aggiungere i prodotti.", "Errore");
+  const addProductsMutation = productsAPI.addMultipleToOrder.useMutation({
+    onSuccess: (newProducts) => {
+      updateProductsList({ addedProducts: newProducts.addedProducts });
     },
   });
 
@@ -74,81 +51,67 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
       products,
     });
 
-  // ----------------------------------------------------------
-  // UPDATE PRODUCT (NO OPTIMISTIC UPDATE)
-  // ----------------------------------------------------------
   const updateProductMutation = productsAPI.updateInOrder.useMutation({
-    onSuccess: ({ updatedProductInOrder }) => {
-      updateProductsList({ updatedProducts: [updatedProductInOrder] });
+    onSuccess: ({ updatedProductInOrder: updatedProduct, isDeleted }) => {
+      if (isDeleted) {
+        return updateProductsList({ deletedProducts: [updatedProduct] });
+      }
+
+      updateProductsList({ updatedProducts: [updatedProduct] });
     },
     onError: () => {
-      toastError("Errore nell'aggiornare il prodotto", "Errore");
+      toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
+      resetInputs();
     },
   });
 
   const updateProduct = (key: "quantity" | "code", value: any, index: number) => {
-    const productToUpdate = order.products[index];
+    let productToUpdate = order.products[index];
 
-    const coercedValue = key === "quantity" ? Number(value) : value;
-
-    if (key === "quantity") {
-      if (coercedValue < 0) {
-        return toastError("La quantità non può essere negativa");
-      }
-
-      if (coercedValue === 0) {
-        // delete
-        deleteProducts([productToUpdate.id], false);
-        return;
-      }
+    if (key == "quantity" && value < 0) {
+      return toastError("La quantità non può essere negativa");
     }
 
     updateProductMutation.mutateAsync({
       orderId: order.id,
       key,
-      value: coercedValue,
+      value,
       productInOrder: productToUpdate,
     });
   };
 
-  // ----------------------------------------------------------
-  // DELETE PRODUCT (NO OPTIMISM)
-  // ----------------------------------------------------------
-  const deleteProductsMutation = productsAPI.deleteFromOrder.useMutation({
-    onSuccess: (_, vars) => {
-      updateProductsList({
-        deletedProducts: order.products.filter((p) => vars.productIds.includes(p.id)),
-      });
-    },
-    onError: () => {
-      toastError("Errore nell'eliminare i prodotti", "Errore");
+  const deletedProductsMutation = productsAPI.deleteFromOrder.useMutation({
+    onSuccess: (deletedProducts) => {
+      updateProductsList({ deletedProducts });
     },
   });
 
-  const deleteProducts = (productIds: number[], cooked: boolean) => {
-    deleteProductsMutation.mutateAsync({
-      productIds,
-      orderId: order.id,
-      cooked,
-    });
-  };
-
-  const deleteProductsFromTable = (table: Table<ProductInOrder>, cooked: boolean) => {
+  const deleteProducts = (table: Table<ProductInOrder>, cooked: boolean) => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     const selectedProductIds = selectedRows.map((row) => row.original.id);
 
     if (selectedProductIds.length > 0) {
-      deleteProducts(selectedProductIds, cooked);
+      deletedProductsMutation.mutateAsync({
+        productIds: selectedProductIds,
+        orderId: order.id,
+        cooked,
+      });
       table.resetRowSelection();
     }
   };
 
-  // ----------------------------------------------------------
-  // LOCAL INPUT ON CHANGE (NO OPTIMISM)
-  // ----------------------------------------------------------
   const updateProductField = (key: string, value: any, index: number) => {
-    if (key === "code") setNewCode(value);
-    else if (key === "quantity") setNewQuantity(value);
+    const updatedProducts = [...order.products];
+
+    if (key === "code") {
+      updatedProducts[index].product.code = value;
+      setNewCode(value);
+    } else if (key === "quantity") {
+      updatedProducts[index].quantity = value;
+      setNewQuantity(value);
+    }
+
+    updateProductsList({ updatedProducts, isDummyUpdate: true });
   };
 
   return {
@@ -158,6 +121,6 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
     newQuantity,
     updateProduct,
     updateProductField,
-    deleteProducts: deleteProductsFromTable,
+    deleteProducts,
   };
 }
