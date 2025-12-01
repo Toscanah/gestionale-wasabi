@@ -123,14 +123,10 @@ export default function getColumns(
               const inputValue = Number(currentInput?.value) || 0;
 
               const isEnter = e.key === "Enter" || e.key === "ArrowRight";
+              const isArrows =
+                e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft";
 
-              if (
-                (isEnter ||
-                  e.key === "ArrowLeft" ||
-                  e.key === "ArrowUp" ||
-                  e.key === "ArrowDown") &&
-                row.original.quantity === inputValue
-              ) {
+              if ((isEnter || isArrows) && row.original.quantity === inputValue) {
                 handleKeyNavigation(e, { rowIndex: row.index, colIndex: 1 });
               }
 

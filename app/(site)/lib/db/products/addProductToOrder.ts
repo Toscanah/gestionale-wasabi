@@ -14,6 +14,9 @@ export default async function addProductToOrder({
       select: { id: true, rice: true, ...categoryInclude, home_price: true, site_price: true },
     });
 
+    console.log(productCode)
+    console.log(product)
+
     if (!product) {
       throw new Error("Product not found");
     }

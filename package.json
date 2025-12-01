@@ -150,6 +150,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "app-builder-bin": "^5.0.0-alpha.10",
+    "baseline-browser-mapping": "^2.8.32",
     "electron": "^38.2.2",
     "electron-builder": "^26.0.12",
     "postcss": "^8.5.6",
