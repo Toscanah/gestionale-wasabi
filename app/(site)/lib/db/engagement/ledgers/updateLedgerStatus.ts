@@ -1,4 +1,5 @@
-import { EngagementLedgerStatus, Prisma } from "@/prisma/generated/client/client";
+import { Prisma } from "@/prisma/generated/client/client";
+import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
 import { EngagementContracts } from "../../../shared";
 import prisma from "../../prisma";
 

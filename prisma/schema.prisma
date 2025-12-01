@@ -1,7 +1,10 @@
 generator client {
-    provider        = "prisma-client"
-    output          = "../prisma/generated/client"
-    previewFeatures = ["typedSql"]
+    provider               = "prisma-client"
+    output                 = "../prisma/generated/client"
+    moduleFormat           = "esm"
+    generatedFileExtension = "ts"
+    importFileExtension    = "ts"
+    previewFeatures        = ["typedSql"]
 }
 
 generator json {
