@@ -1,6 +1,6 @@
 import { ProductContracts, ProductInOrder } from "@/app/(site)/lib/shared";
-import { Prisma } from "@prisma/client";
 import { productInOrderInclude } from "../../includes";
+import { Prisma } from "@/prisma/generated/client/browser";
 
 export default async function handleDeletion({
   tx,

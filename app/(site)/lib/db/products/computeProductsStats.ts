@@ -2,8 +2,8 @@ import prisma from "../prisma";
 import { endOfDay, startOfDay } from "date-fns";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
 import { ProductContracts, ProductStatsOnlySchema, ShiftFilterValue } from "../../shared";
-import { getProductsStats } from "@prisma/client/sql";
 import sorterFactory from "../../utils/global/sorting/sorterFactory";
+import { getProductsStats } from "@/prisma/generated/client/sql";
 
 export default async function computeProductsStats(
   input: ProductContracts.ComputeStats.Input

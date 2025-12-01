@@ -1,8 +1,8 @@
-import { getOrdersStats } from "@prisma/client/sql";
 import prisma from "../prisma";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
-import { OrderType, WorkingShift } from "@prisma/client";
+import { OrderType, WorkingShift } from "@/prisma/generated/client/enums";
 import { OrderContracts, OrdersStats, ShiftFilterValue } from "../../shared";
+import { getOrdersStats } from "@/prisma/generated/client/sql";
 
 const EMPTY_RESULT: OrdersStats.Result = {
   orders: 0,

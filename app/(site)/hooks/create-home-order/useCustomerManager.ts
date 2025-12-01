@@ -7,7 +7,7 @@ import { AddressContracts, ComprehensiveCustomer, CustomerContracts } from "../.
 import { trpc } from "@/lib/server/client";
 import { AddressType, CustomerType } from "@/prisma/generated/schemas";
 import { useCachedDataContext } from "@/app/(site)/context/CachedDataContext";
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 
 function getActionType(object: object | undefined): "create" | "update" {
   return object === undefined ? "create" : "update";

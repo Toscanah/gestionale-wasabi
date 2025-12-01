@@ -2,7 +2,7 @@ import WasabiAnimatedTab from "@/app/(site)/components/ui/wasabi/WasabiAnimatedT
 import { useZodForm } from "@/app/(site)/hooks/useZodForm";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 import { CreatePromotionFormSchema, CreatePromotionFormSchemaType } from "./CreatePromotionForm";
 import { Button } from "@/components/ui/button";
 import CommonFields from "./fields/CommonFields";

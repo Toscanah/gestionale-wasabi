@@ -1,6 +1,6 @@
+import { EngagementLedgerStatus, Prisma } from "@/prisma/generated/client/client";
 import { EngagementContracts } from "../../../shared";
 import prisma from "../../prisma";
-import { EngagementLedgerStatus, Prisma } from "@prisma/client";
 
 export default async function updateLedgerStatus({
   ledgerId,

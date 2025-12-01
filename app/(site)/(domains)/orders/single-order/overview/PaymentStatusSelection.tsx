@@ -2,7 +2,7 @@ import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { PlannedPayment } from "@prisma/client";
+import { PlannedPayment } from "@/prisma/generated/client/enums";
 import { trpc } from "@/lib/server/client";
 
 type PaymentStatus = {

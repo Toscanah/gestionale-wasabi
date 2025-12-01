@@ -1,6 +1,6 @@
 import { AddressContracts, CustomerContracts } from "@/app/(site)/lib/shared";
 import { HomeOrderSchema } from "@/prisma/generated/schemas";
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import { z } from "zod";
 
 export const addressFormSchema = z.object({

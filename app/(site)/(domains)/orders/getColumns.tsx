@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { OrderByType, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
 import { ActionColumn, FieldColumn, ValueColumn } from "../../components/table/TableColumns";
 import roundToTwo from "../../lib/utils/global/number/roundToTwo";

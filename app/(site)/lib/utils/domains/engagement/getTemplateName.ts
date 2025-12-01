@@ -1,4 +1,4 @@
-import { EngagementType } from "@prisma/client";
+import { EngagementType } from "@/prisma/generated/client/enums";
 
 export default function getTemplateName(type: EngagementType) {
   switch (type) {

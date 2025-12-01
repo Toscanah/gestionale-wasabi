@@ -1,7 +1,7 @@
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
 import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { Button } from "@/components/ui/button";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { trpc } from "@/lib/server/client";

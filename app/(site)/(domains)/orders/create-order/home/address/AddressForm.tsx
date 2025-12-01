@@ -2,7 +2,7 @@ import { KeyboardEvent, RefCallback, RefObject, useEffect } from "react";
 import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import { FormField as RawFormField } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useForm } from "react-hook-form";

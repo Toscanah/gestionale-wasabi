@@ -11,7 +11,7 @@ import {
 import { z } from "zod";
 import { MinimalProductInOrderSchema, ProductInOrderWithOptionsSchema } from "./Product";
 import { CustomerWithPhoneAndEngagementSchema } from "./Customer";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { EngagementWithDetailsSchema } from "./Engagement";
 import { PromotionWithUsagesSchema } from "./Promotion";
 

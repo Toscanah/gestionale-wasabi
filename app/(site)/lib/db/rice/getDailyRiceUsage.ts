@@ -1,6 +1,6 @@
 import prisma from "../prisma";
 import orderMatchesShift from "../../services/order-management/shift/orderMatchesShift";
-import { ProductInOrderStatus } from "@prisma/client";
+import { ProductInOrderStatus } from "@/prisma/generated/client/enums";
 import { startOfDay, endOfDay } from "date-fns";
 import { RiceContracts } from "../../shared";
 

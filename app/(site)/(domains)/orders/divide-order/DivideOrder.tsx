@@ -6,8 +6,8 @@ import { PayingAction } from "../single-order/OrderTable";
 import { useOrderContext } from "../../../context/OrderContext";
 import DivideTable from "./DivideTable";
 import moveProductsInDivideOrder from "../../../lib/services/order-management/moveProductsInDivideOrder";
-import { OrderStatus, PaymentScope, PlannedPayment } from "@prisma/client";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
+import { OrderStatus, PaymentScope, PlannedPayment } from "@/prisma/generated/client/enums";
 
 interface DividerOrderProps {
   setPayingAction: Dispatch<SetStateAction<PayingAction>>;

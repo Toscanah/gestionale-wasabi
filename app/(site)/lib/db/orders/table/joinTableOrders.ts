@@ -1,6 +1,6 @@
 import { OrderContracts } from "@/app/(site)/lib/shared";
 import prisma from "../../prisma";
-import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
+import { OrderStatus, OrderType, ProductInOrderStatus } from "@/prisma/generated/client/enums";
 import addProductsToOrder from "../../products/addProductsToOrder";
 import { getOrderById } from "../getOrderById";
 

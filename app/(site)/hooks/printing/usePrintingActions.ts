@@ -1,4 +1,4 @@
-import { OrderType, PlannedPayment } from "@prisma/client";
+import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
 import { OrderByType, HomeOrder, OrderGuards } from "../../lib/shared";
 import KitchenReceipt from "../../(domains)/printing/receipts/KitchenReceipt";
 import OrderReceipt from "../../(domains)/printing/receipts/OrderReceipt";

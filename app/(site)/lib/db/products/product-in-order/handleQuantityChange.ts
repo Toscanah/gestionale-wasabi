@@ -1,7 +1,7 @@
-import { OrderType, Prisma } from "@prisma/client";
 import { productInOrderInclude } from "../../includes";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import handleDeletion from "./handleDeletion";
+import { OrderType, Prisma } from "@/prisma/generated/client/client";
 
 export default async function handleQuantityChange({
   tx,

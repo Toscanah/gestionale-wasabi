@@ -1,4 +1,4 @@
-import { OrderType, WorkingShift } from "@prisma/client";
+import { OrderType, WorkingShift } from "@/prisma/generated/client/enums";
 import { ShiftBoundaries } from "../../../shared/enums/Shift";
 import timeToDecimal from "../../../utils/global/time/timeToDecimal";
 import { ShiftEvaluableOrder } from "../../../shared";

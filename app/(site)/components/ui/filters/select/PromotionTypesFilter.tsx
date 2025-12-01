@@ -1,4 +1,4 @@
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 import WasabiSelect from "../../wasabi/WasabiSelect";
 import { StarIcon, WalletIcon } from "@phosphor-icons/react";
 import { PROMOTION_TYPES_LABELS } from "../../../../lib/shared/constants/promotion-labels";

@@ -3,7 +3,7 @@ import Table from "../../../components/table/Table";
 import useTable from "../../../hooks/table/useTable";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import getColumns from "./getColumns";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";

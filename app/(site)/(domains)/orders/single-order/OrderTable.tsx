@@ -11,7 +11,7 @@ import DangerActions from "./overview/DangerActions";
 import { useOrderContext } from "../../../context/OrderContext";
 import Notes from "./overview/Notes";
 import ExtraItems from "./overview/ExtraItems";
-import { OrderStatus, OrderType, PaymentScope } from "@prisma/client";
+import { OrderStatus, OrderType, PaymentScope } from "@/prisma/generated/client/enums";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 

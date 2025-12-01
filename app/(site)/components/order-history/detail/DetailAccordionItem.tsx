@@ -17,7 +17,7 @@ import {
 } from "../../../lib/shared";
 import filterDeletedProducts from "../../../lib/services/product-management/filterDeletedProducts";
 import { useEffect } from "react";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 
 type OrderAccordionItemProps = {

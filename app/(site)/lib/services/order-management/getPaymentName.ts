@@ -1,4 +1,4 @@
-import { PaymentType } from "@prisma/client";
+import { PaymentType } from "@/prisma/generated/client/enums";
 
 export default function getPaymentName(type: PaymentType) {
   switch (type) {

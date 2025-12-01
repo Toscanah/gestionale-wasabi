@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { OrderContracts } from "../../../shared";
 import prisma from "../../prisma";
 import { getOrderById } from "../getOrderById";

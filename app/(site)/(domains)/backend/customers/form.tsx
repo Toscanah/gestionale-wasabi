@@ -3,7 +3,7 @@ import { FormFieldType } from "../manager/FormFields";
 import { Textarea } from "@/components/ui/textarea";
 import { ControllerRenderProps } from "react-hook-form";
 import CustomerOriginSelection from "./CustomerOriginSelection";
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { AddressSchema } from "@/prisma/generated/schemas";
 

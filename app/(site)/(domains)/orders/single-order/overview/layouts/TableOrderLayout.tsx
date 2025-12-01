@@ -6,7 +6,7 @@ import TableUpdate from "../TableUpdate";
 import Total from "../Total";
 import { PayingAction } from "../../OrderTable";
 import { Dispatch, SetStateAction } from "react";
-import { PlannedPayment } from "@prisma/client";
+import { PlannedPayment } from "@/prisma/generated/client/enums";
 import DiscountsDialog from "../discount/DiscountsDialog";
 
 interface TableOrderLayoutProps {

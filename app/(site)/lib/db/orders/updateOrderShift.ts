@@ -1,7 +1,7 @@
-import { Prisma, WorkingShift } from "@prisma/client";
 import prisma from "../prisma";
 import { getEffectiveOrderShift } from "../../services/order-management/shift/getEffectiveOrderShift";
 import { ShiftEvaluableOrder } from "../../shared";
+import { Prisma, WorkingShift } from "@/prisma/generated/client/client";
 
 export async function updateOrderShift({
   orderId,

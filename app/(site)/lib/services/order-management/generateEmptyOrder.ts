@@ -4,7 +4,7 @@ import {
   OrderType,
   PlannedPayment,
   WorkingShift,
-} from "@prisma/client";
+} from "@/prisma/generated/client/enums";
 import { DEFAULT_WHEN_VALUE, OrderByType } from "@/app/(site)/lib/shared";
 
 export default function generateEmptyOrder(orderType: OrderType): OrderByType {

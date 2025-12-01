@@ -1,4 +1,4 @@
-import { KitchenType } from "@prisma/client";
+import { KitchenType } from "@/prisma/generated/client/enums";
 
 export const KITCHEN_TYPE_LABELS: Record<KitchenType, string> = {
   [KitchenType.NONE]: "Nessuna",

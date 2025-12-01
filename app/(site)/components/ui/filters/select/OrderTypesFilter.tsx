@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { ORDER_TYPE_LABELS } from "@/app/(site)/lib/shared/constants/order-labels";
 import { PackageIcon } from "@phosphor-icons/react";
 import WasabiSelect from "../../wasabi/WasabiSelect";

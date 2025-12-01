@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 
 interface OrderProps {
   cell: Cell<OrderByType, unknown>;

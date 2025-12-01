@@ -4,7 +4,7 @@ import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "../../context/WasabiContext";
 import generateDummyProduct from "../../lib/services/product-management/generateDummyProduct";
 import { toastError, toastSuccess } from "../../lib/utils/global/toast";
-import { OrderStatus, OrderType } from "@prisma/client";
+import { OrderStatus, OrderType } from "@/prisma/generated/client/enums";
 import { trpc, trpcClient } from "@/lib/server/client";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";
 import useOrderDiscounts from "./useOrderDiscounts";

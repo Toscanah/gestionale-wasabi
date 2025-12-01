@@ -1,4 +1,4 @@
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 
 export const CUSTOMER_ORIGIN_LABELS: Record<CustomerOrigin, string> = {
   [CustomerOrigin.PHONE]: "Telefono",

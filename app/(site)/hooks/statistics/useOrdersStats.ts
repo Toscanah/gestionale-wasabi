@@ -5,7 +5,7 @@ import { ALL_WEEKDAYS } from "../../components/ui/filters/select/WeekdaysFilter"
 import { FULL_DAY_RANGE } from "../../components/ui/filters/time/TimeWindowFilter";
 import { trpc } from "@/lib/server/client";
 import { OrderContracts } from "../../lib/shared";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 
 export enum DAYS_OF_WEEK {
   TUESDAY = "Martedì",

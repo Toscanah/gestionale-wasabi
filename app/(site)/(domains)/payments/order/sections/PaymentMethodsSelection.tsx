@@ -1,4 +1,4 @@
-import { PaymentType } from "@prisma/client";
+import { PaymentType } from "@/prisma/generated/client/enums";
 import { PaymentMethod } from "../OrderPayment";
 import { Coins, CreditCard, ForkKnife, Money } from "@phosphor-icons/react";
 import {

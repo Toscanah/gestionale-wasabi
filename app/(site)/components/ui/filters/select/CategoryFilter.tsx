@@ -1,8 +1,8 @@
-import { Category } from "@prisma/client";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { useMemo } from "react";
 import { TagIcon } from "@phosphor-icons/react";
 import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
+import { Category } from "@/prisma/generated/client/browser";
 
 interface CategoryFilterProps {
   selectedCategoryIds: number[];

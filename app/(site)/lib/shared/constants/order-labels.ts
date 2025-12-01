@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 
 export const ORDER_TYPE_LABELS: Record<OrderType, string> = {
   [OrderType.HOME]: "Domicilio",

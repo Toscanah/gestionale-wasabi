@@ -1,7 +1,7 @@
 import { ProductContracts, ProductInOrder } from "@/app/(site)/lib/shared";
-import { OrderType, Prisma } from "@prisma/client";
 import { categoryInclude, productInOrderInclude } from "../../includes";
 import { getProductPrice } from "@/app/(site)/lib/services/product-management/getProductPrice";
+import { OrderType, Prisma } from "@/prisma/generated/client/client";
 
 export default async function handleProductCodeChange({
   tx,

@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import prisma from "../prisma";
 import {
   engagementsInclude,

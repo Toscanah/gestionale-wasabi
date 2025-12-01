@@ -7,7 +7,7 @@ import {
 } from "@/app/(site)/lib/shared";
 import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 import { Separator } from "@/components/ui/separator";
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 
 interface QuickPromoPreviewProps {
   usage: PromotionUsageWithPromotion;

@@ -1,5 +1,5 @@
 import prisma from "./prisma";
-import { PaymentScope } from "@prisma/client";
+import { PaymentScope } from "@/prisma/generated/client/enums";
 
 function groupByRoundedAmount(amounts: number[], epsilon = 0.01): Map<number, number[]> {
   const clusters = new Map<number, number[]>();

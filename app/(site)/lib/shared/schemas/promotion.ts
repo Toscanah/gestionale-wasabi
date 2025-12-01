@@ -9,7 +9,7 @@ import {
   PromotionUsageWithOrderSchema,
 } from "../models/Promotion";
 import { DeleteEntityResponseSchema, NoContentRequestSchema } from "./_index";
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 import { PromotionUsageSchema } from "@/prisma/generated/schemas";
 import { OrderByTypeSchema } from "../models/Order";
 

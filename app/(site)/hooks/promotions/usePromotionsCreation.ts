@@ -1,4 +1,4 @@
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 import { useState } from "react";
 import { PromotionContracts } from "../../lib/shared";
 import { addMonths } from "date-fns";

@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import getPaymentName from "../../../../lib/services/order-management/getPaymentName";
 import roundToTwo from "../../../../lib/utils/global/number/roundToTwo";
 import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
-import { PaymentType } from "@prisma/client";
+import { PaymentType } from "@/prisma/generated/client/enums";
 import getDiscountedTotal from "@/app/(site)/lib/services/order-management/getDiscountedTotal";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 import roundToCents from "@/app/(site)/lib/utils/global/number/roundToCents";

@@ -1,4 +1,4 @@
-import { OrderStatus, OrderType, ProductInOrderStatus } from "@prisma/client";
+import { OrderStatus, OrderType, ProductInOrderStatus } from "@/prisma/generated/client/enums";
 import prisma from "../../prisma";
 import createPickupOrder from "../pickup/createPickupOrder";
 import createTableOrder from "../table/createTableOrder";

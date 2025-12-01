@@ -1,6 +1,6 @@
 import prisma from "../prisma";
 import { cancelProductInOrder } from "../products/product-in-order/cancelProductInOrder";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@/prisma/generated/client/enums";
 import { OrderContracts } from "../../shared";
 import { getOrderById } from "./getOrderById";
 

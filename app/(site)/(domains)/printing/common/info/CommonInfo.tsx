@@ -1,5 +1,5 @@
 import { OrderByType } from "@/app/(site)/lib/shared";
-import { PlannedPayment } from "@prisma/client";
+import { PlannedPayment } from "@/prisma/generated/client/enums";
 import ExtraItemsSection from "../ExtraItemsSection";
 import { Line, Text } from "react-thermal-printer";
 import { SMALL_PRINT } from "../../../../lib/shared/constants/printing";

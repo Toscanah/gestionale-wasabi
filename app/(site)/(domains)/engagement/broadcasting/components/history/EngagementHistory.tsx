@@ -2,7 +2,7 @@ import useEngagementsLedgers from "@/app/(site)/hooks/engagement/history/useEnga
 import useTable from "@/app/(site)/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/app/(site)/components/table/Table";
-import { EngagementLedgerStatus } from "@prisma/client";
+import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
 import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
 
 interface EngagementHistoryProps {

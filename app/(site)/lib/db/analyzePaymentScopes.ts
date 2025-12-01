@@ -1,5 +1,5 @@
+import { PaymentScope } from "@/prisma/generated/client/enums";
 import prisma from "./prisma";
-import { PaymentScope } from "@prisma/client";
 
 type PaymentReport = {
   orderId: number;

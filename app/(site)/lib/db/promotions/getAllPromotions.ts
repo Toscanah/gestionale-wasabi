@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/prisma/generated/client/client";
 import { PromotionContracts } from "../../shared";
 import prisma from "../prisma";
 

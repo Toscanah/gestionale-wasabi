@@ -1,4 +1,4 @@
-import { OrderStatus, OrderType } from "@prisma/client";
+import { OrderStatus, OrderType } from "@/prisma/generated/client/enums";
 import prisma from "../../prisma";
 import { OrderContracts, TableOrder } from "@/app/(site)/lib/shared";
 import { engagementsInclude, productsInOrderInclude, orderPromotionUsagesInclude } from "../../includes";

@@ -1,7 +1,7 @@
 import uploadImage from "@/app/(site)/lib/integrations/images/uploadImage";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { ParsedEngagementPayload, EngagementContracts } from "@/app/(site)/lib/shared";
-import { EngagementType } from "@prisma/client";
+import { EngagementType } from "@/prisma/generated/client/enums";
 import { useState } from "react";
 import { trpc } from "@/lib/server/client";
 

@@ -1,8 +1,8 @@
 import { CategoryContracts } from "@/app/(site)/lib/shared";
 import prisma from "../prisma";
 import { optionsInclude } from "../includes";
-import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { Prisma } from "@/prisma/generated/client/client";
 
 export default async function createNewCategory({
   category,

@@ -1,4 +1,4 @@
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 import { Globe } from "@phosphor-icons/react/dist/ssr";
 import { Phone, QuestionMark, Signpost, SignpostIcon, Tag, UserSound } from "@phosphor-icons/react";

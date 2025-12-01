@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
 import { Skeleton } from "@/components/ui/skeleton";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import {
   ChartLineIcon,
   CompassToolIcon,

@@ -1,7 +1,7 @@
 import { ProductContracts } from "../../shared";
 import prisma from "../prisma";
 import { productInOrderInclude } from "../includes";
-import { OrderStatus, ProductInOrderStatus } from "@prisma/client";
+import { OrderStatus, ProductInOrderStatus } from "@/prisma/generated/client/enums";
 
 export default async function updatePrintedProducts({
   orderId,

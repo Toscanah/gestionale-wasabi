@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { OrderByType } from "@/app/(site)/lib/shared";
-import { OrderStatus, PaymentScope, PaymentType } from "@prisma/client";
+import { OrderStatus, PaymentScope, PaymentType } from "@/prisma/generated/client/enums";
 import { DEFAULT_PAYMENT, Payment } from "../../context/OrderPaymentContext";
 import { useOrderContext } from "../../context/OrderContext";
 import scaleProducts from "../../lib/services/product-management/scaleProducts";

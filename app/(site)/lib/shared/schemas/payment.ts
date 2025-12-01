@@ -2,7 +2,7 @@ import { OrderSchema, PaymentSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
 import { ProductInOrderWithOptionsSchema } from "../models/Product";
 import { OrderByTypeSchema } from "../models/Order";
-import { PaymentType } from "@prisma/client";
+import { PaymentType } from "@/prisma/generated/client/enums";
 import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 import {
   FixedDiscountPromotionSchema,

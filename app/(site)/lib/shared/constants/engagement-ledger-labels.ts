@@ -1,4 +1,4 @@
-import { EngagementLedgerStatus } from "@prisma/client";
+import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
 
 export const ENG_LEDGER_LABELS: Record<EngagementLedgerStatus, string> = {
   [EngagementLedgerStatus.ISSUED]: "Emesso",

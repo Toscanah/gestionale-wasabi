@@ -1,7 +1,6 @@
 import normalizeTemplatePayload from "../../../services/engagement/normalizeTemplatePayload";
 import { EngagementContracts } from "../../../shared";
 import prisma from "../../prisma";
-import { EngagementTemplate } from "@prisma/client";
 
 export default async function createEngagementTemplate({
   type,

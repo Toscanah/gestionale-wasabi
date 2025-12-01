@@ -1,4 +1,4 @@
-import { EngagementLedgerStatus, EngagementType } from "@prisma/client";
+import { EngagementLedgerStatus, EngagementType } from "@/prisma/generated/client/enums";
 import { z } from "zod";
 import {
   EngagementLedgerWithDetailsSchema,
@@ -52,7 +52,7 @@ export namespace EngagementContracts {
     }).omit({ type: true });
     export type Input = z.infer<typeof Input>;
 
-    export const Output = Common.ParsedTemplate
+    export const Output = Common.ParsedTemplate;
     export type Output = Common.ParsedTemplate;
   }
 

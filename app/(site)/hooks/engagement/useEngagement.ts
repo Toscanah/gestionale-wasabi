@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { ComprehensiveCustomer, CustomerContracts } from "../../lib/shared";
-import { EngagementType } from "@prisma/client";
+import { EngagementType } from "@/prisma/generated/client/enums";
 import { trpc } from "@/lib/server/client";
 import { DateRange } from "react-day-picker";
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";

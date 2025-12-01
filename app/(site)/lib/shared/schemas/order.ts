@@ -1,4 +1,4 @@
-import { OrderType, PlannedPayment, WorkingShift } from "@prisma/client";
+import { OrderType, PlannedPayment, WorkingShift } from "@/prisma/generated/client/enums";
 import { z } from "zod";
 import {
   OrderByTypeSchema,

@@ -1,4 +1,4 @@
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 
 export const PROMOTION_TYPES_LABELS: Record<PromotionType, string> = {
   [PromotionType.FIXED_DISCOUNT]: "Sconto fisso",

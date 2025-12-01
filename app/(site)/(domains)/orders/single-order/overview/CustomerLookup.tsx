@@ -10,7 +10,7 @@ import { prepareRFMInputs } from "@/app/(site)/lib/services/rfm/prepareRFMInputs
 import { ComprehensiveCustomer, CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
 import { OrderGuards } from "@/app/(site)/lib/shared/types/_index";
 import { trpc } from "@/lib/server/client";
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 
 export default function CustomerLookup() {
   const { order } = useOrderContext();

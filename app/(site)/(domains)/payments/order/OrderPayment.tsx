@@ -4,7 +4,7 @@ import getDiscountedTotal from "../../../lib/services/order-management/getDiscou
 import { Icon } from "@phosphor-icons/react";
 import PaymentSummary from "./sections/PaymentSummary";
 import { Button } from "@/components/ui/button";
-import { PaymentScope, PaymentType } from "@prisma/client";
+import { PaymentScope, PaymentType } from "@/prisma/generated/client/enums";
 import { OrderPaymentProvider } from "../../../context/OrderPaymentContext";
 import PaymentMethodsSelection from "./sections/PaymentMethodsSelection";
 import PaymentConfirmationAndTools from "./sections/PaymentConfirmationAndTools";

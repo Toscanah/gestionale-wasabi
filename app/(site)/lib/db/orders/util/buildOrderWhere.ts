@@ -1,9 +1,10 @@
-import { OrderType, Prisma } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { ORDER_TYPE_LABELS, ShiftFilterValue } from "../../../shared";
 import normalizePeriod from "../../../utils/global/date/normalizePeriod";
 import { endOfDay, startOfDay } from "date-fns";
 import z from "zod";
 import { BaseAPIFiltersSchema } from "../../../shared/schemas/common/filters/filters";
+import { Prisma } from "@/prisma/generated/client/client";
 
 const OrderFiltersSubset = BaseAPIFiltersSchema.pick({
   orderTypes: true,

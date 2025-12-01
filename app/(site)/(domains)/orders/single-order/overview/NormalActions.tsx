@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "reac
 import { PayingAction } from "../OrderTable";
 import print from "@/app/(site)/(domains)/printing/print";
 import OrderReceipt from "@/app/(site)/(domains)/printing/receipts/OrderReceipt";
-import { OrderType, PaymentScope, PlannedPayment } from "@prisma/client";
+import { OrderType, PaymentScope, PlannedPayment } from "@/prisma/generated/client/enums";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";

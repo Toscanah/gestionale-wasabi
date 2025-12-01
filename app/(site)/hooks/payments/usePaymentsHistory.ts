@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { OrderContracts, PaymentContracts, ShiftFilterValue } from "@/app/(site)/lib/shared";
-import { OrderType, PaymentType } from "@prisma/client";
+import { OrderType, PaymentType } from "@/prisma/generated/client/enums";
 import useQueryFilter from "../table/useQueryFilter";
 import TODAY_PERIOD from "../../lib/shared/constants/today-period";
 import { ordersAPI, paymentsAPI } from "@/lib/server/api";

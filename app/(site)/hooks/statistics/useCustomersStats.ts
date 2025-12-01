@@ -7,7 +7,7 @@ import useQueryFilter from "../table/useQueryFilter";
 import { SortableField, SortField } from "../../components/ui/sorting/SortingMenu";
 import { trpc } from "@/lib/server/client";
 import { customersAPI } from "@/lib/server/api";
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 
 const DEFAULT_DATE: DateRange = {
   from: undefined,

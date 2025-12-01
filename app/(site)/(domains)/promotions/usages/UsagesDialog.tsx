@@ -23,7 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
-import { OrderStatus, WorkingShift } from "@prisma/client";
+import { OrderStatus, WorkingShift } from "@/prisma/generated/client/enums";
 import { TrashIcon } from "@phosphor-icons/react";
 import { trpc } from "@/lib/server/client";
 import { EnDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";

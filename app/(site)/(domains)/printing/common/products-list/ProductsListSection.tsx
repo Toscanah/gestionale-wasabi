@@ -1,5 +1,5 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import { OrderType, ProductInOrderStatus } from "@prisma/client";
+import { OrderType, ProductInOrderStatus } from "@/prisma/generated/client/enums";
 import aggregateProducts from "../../../../lib/services/product-management/printing/aggregateProducts";
 import CustomerProducts from "./CustomerProducts";
 import KitchenProducts from "./KitchenProducts";

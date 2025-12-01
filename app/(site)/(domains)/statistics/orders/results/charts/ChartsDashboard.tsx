@@ -1,6 +1,6 @@
 import { OrderContracts, OrdersStats, Weekday } from "@/app/(site)/lib/shared";
 import ChartSection from "./ChartSection";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 
 type ChartsDashboardProps = {
   data: OrderContracts.ComputeDailyStats.Output;

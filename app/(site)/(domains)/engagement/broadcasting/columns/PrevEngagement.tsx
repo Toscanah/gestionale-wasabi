@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Trash } from "@phosphor-icons/react";
-import { Engagement, EngagementType } from "@prisma/client";
 import Link from "next/link";
+import { Engagement, EngagementType } from "@/prisma/generated/client/browser";
 
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat("it-IT", {

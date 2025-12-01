@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, Fragment, useMemo } from "react";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { useWasabiContext } from "../../context/WasabiContext";
 import OrdersTable from "../orders/OrdersTable";
 import CreateOrder from "../orders/create-order/CreateOrder";

@@ -3,7 +3,7 @@ import { OrderByType } from "@/app/(site)/lib/shared";
 import useRice, { UpdateRiceInput } from "../hooks/rice/useRice";
 import useSettings from "../hooks/useSettings";
 import { GlobalSettings } from "../lib/shared/types/Settings";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { Rice } from "../hooks/rice/useRiceState";
 
 export interface WasabiContextProps {

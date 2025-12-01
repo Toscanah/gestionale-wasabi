@@ -4,7 +4,7 @@ import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
-import { PaymentScope } from "@prisma/client";
+import { PaymentScope } from "@/prisma/generated/client/enums";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
 import { trpc } from "@/lib/server/client";
 

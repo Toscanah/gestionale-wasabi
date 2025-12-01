@@ -1,4 +1,4 @@
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 import z from "zod";
 
 export const CreatePromotionFormSchema = z

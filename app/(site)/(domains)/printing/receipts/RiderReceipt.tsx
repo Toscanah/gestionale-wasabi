@@ -3,7 +3,7 @@ import { HomeOrder } from "@/app/(site)/lib/shared";
 import OrderInfoSection from "../common/info/OrderInfoSection";
 import TimeSection from "../common/TimeSection";
 import TotalSection from "../common/TotalSection";
-import { PlannedPayment } from "@prisma/client";
+import { PlannedPayment } from "@/prisma/generated/client/enums";
 
 export interface RiderReceiptProps {
   order: HomeOrder;

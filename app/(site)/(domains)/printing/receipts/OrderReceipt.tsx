@@ -10,7 +10,7 @@ import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/info/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
-import { OrderType, PlannedPayment } from "@prisma/client";
+import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
 import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
 import { BIG_PRINT } from "../../../lib/shared/constants/printing";
 import SingleEngagement from "../common/SingleEngagement";

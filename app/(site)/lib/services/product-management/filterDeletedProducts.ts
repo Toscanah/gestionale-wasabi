@@ -1,4 +1,4 @@
-import { ProductInOrderStatus } from "@prisma/client";
+import { ProductInOrderStatus } from "@/prisma/generated/client/enums";
 
 /**
  * Filters out products that are not in the `IN_ORDER` status.

@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { OrderByType, HomeOrder, PickupOrder, Riders } from "../../shared";
 
 type CalculateETAParams = {

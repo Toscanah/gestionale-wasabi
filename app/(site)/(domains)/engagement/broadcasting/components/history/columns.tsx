@@ -1,6 +1,6 @@
 import { ActionColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import { EngagementLedgerWithDetails } from "@/app/(site)/lib/shared";
-import { EngagementLedgerStatus } from "@prisma/client";
+import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
 import { ColumnDef } from "@tanstack/react-table";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";

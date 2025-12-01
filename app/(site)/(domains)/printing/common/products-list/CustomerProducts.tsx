@@ -5,7 +5,7 @@ import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptTe
 import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
 import { Fragment } from "react";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { uniqueId } from "lodash";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
 import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";

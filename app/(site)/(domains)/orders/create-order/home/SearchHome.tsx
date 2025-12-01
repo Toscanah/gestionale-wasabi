@@ -9,7 +9,7 @@ import { OrderByType } from "@/app/(site)/lib/shared";
 import Home from "./Home";
 import { toastError } from "@/app/(site)/lib/utils/global/toast";
 import generateEmptyOrder from "@/app/(site)/lib/services/order-management/generateEmptyOrder";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { CreateHomeOrderProvider } from "@/app/(site)/context/CreateHomeOrderContext";
 
 interface SearchHomeProps {

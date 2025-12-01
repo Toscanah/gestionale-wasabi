@@ -1,5 +1,5 @@
 import WhenSelector from "@/app/(site)/components/ui/filters/select/WhenSelector";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import { useState } from "react";

@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { FieldColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 

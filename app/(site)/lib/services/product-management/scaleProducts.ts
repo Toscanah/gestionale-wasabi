@@ -1,5 +1,5 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 
 type ScaleProductsParams = {
   originalProducts: ProductInOrder[];

@@ -8,7 +8,7 @@ import {
   PickupOrder,
   OrderGuards,
 } from "../../../../lib/shared";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import MarketingTemplates from "../../templates/MarketingTemplates";

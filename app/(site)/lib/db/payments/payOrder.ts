@@ -4,14 +4,14 @@ import {
   PaymentScope,
   ProductInOrderStatus,
   PaymentType,
-  Prisma,
-} from "@prisma/client";
+} from "@/prisma/generated/client/enums";
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import prisma from "../prisma";
 import { randomUUID } from "crypto";
 import { PaymentContracts } from "../../shared";
 import { getOrderById } from "../orders/getOrderById";
 import { getOrderTotal } from "../../services/order-management/getOrderTotal";
+import { Prisma } from "@/prisma/generated/client/client";
 
 /**
  * Pay an order, handling:

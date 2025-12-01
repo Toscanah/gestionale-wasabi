@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 
 type ProductInOrderWithPrice = Partial<ProductInOrder> & {

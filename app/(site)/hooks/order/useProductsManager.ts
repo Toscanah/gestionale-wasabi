@@ -3,7 +3,7 @@ import generateDummyProduct from "../../lib/services/product-management/generate
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import { toastSuccess } from "../../lib/utils/global/toast";
 import { RecursivePartial } from "./useOrderManager";
-import { ProductInOrderStatus } from "@prisma/client";
+import { ProductInOrderStatus } from "@/prisma/generated/client/enums";
 import useProductCrud from "./products/useProductCrud";
 import useProductMods from "./products/useProductMods";
 import useProductPrinting from "./products/useProductPrinting";

@@ -1,5 +1,5 @@
 import { ProductInOrder } from "@/app/(site)/lib/shared";
-import { KitchenType, ProductInOrderStatus } from "@prisma/client";
+import { KitchenType, ProductInOrderStatus } from "@/prisma/generated/client/enums";
 import { last } from "lodash";
 
 /**

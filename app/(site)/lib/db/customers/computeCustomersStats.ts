@@ -2,7 +2,6 @@ import calculateRfmRank from "../../services/rfm/calculateRfmRank";
 import calculateRfmScore from "../../services/rfm/calculateRfmScore";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
 import prisma from "../prisma";
-import { getCustomersStats } from "@prisma/client/sql";
 import countCustomers from "./util/countCustomers";
 import { CustomerContracts, CustomerStats, SortDirection } from "../../shared";
 import { GetCustomersStats } from "../../shared/schemas/results/getCustomersStats.schema";
@@ -11,6 +10,7 @@ import { Comparator } from "../../utils/global/sorting/defaultComparator";
 import sorterFactory from "../../utils/global/sorting/sorterFactory";
 import { MAX_RECORDS } from "../../shared/constants/max-records";
 import customerWhereQuery from "./util/customerWhereQuery";
+import { getCustomersStats } from "@/prisma/generated/client/sql";
 
 export default async function computeCustomersStats(
   input: CustomerContracts.ComputeStats.Input

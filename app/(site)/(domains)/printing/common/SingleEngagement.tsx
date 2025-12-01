@@ -9,7 +9,7 @@ import {
 import { Fragment } from "react";
 import { Br, Cut, Image, QRCode, Text } from "react-thermal-printer";
 import { BIG_PRINT, SMALL_PRINT } from "../../../lib/shared/constants/printing";
-import { EngagementType } from "@prisma/client";
+import { EngagementType } from "@/prisma/generated/client/enums";
 import wrapTextCentered from "@/app/(site)/lib/utils/domains/printing/wrapTextCentered";
 
 export interface EngagementPrintProps {

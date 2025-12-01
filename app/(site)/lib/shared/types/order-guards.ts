@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { HomeOrder, OrderByType, PickupOrder, TableOrder } from "../models/Order";
 
 export const OrderGuards = {

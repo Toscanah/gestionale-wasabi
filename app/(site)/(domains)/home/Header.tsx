@@ -4,7 +4,7 @@ import RiceDialog from "../rice/RiceDialog";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import RiceSummary from "../rice/RiceSummary";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { useWasabiContext } from "../../context/WasabiContext";
 import DeleteOrdersBulk from "../orders/components/DeleteOrdersBulk";
 import { BuildOrderState } from "./page";

@@ -1,7 +1,7 @@
 import { ENGAGEMENT_TYPES_LABELS } from "@/app/(site)/lib/shared";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { EngagementType } from "@prisma/client";
+import { EngagementType } from "@/prisma/generated/client/enums";
 
 interface EngagementChoiceProps {
   selectedType: EngagementType;

@@ -3,7 +3,7 @@ import prisma from "../prisma";
 import { getOrderById } from "../orders/getOrderById";
 import getPromotionByCode from "./getPromotionByCode";
 import { getOrderTotal } from "../../services/order-management/getOrderTotal";
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 import { TRPCError } from "@trpc/server";
 import rebalancePromotionUsages from "./utils/rebalancePromotionUsages";
 

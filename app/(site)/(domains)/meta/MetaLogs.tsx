@@ -8,7 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { MessageDirection } from "@prisma/client";
+import { MessageDirection } from "@/prisma/generated/client/enums";
 import { cn } from "@/lib/utils";
 
 type MetaLogsProps = {

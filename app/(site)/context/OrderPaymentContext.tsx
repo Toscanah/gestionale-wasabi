@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { PaymentType } from "@prisma/client";
+import { PaymentType } from "@/prisma/generated/client/enums";
 import { OrderByType } from "@/app/(site)/lib/shared";
 import useOrderPayment from "../hooks/order/useOrderPayment";
 import roundToTwo from "../lib/utils/global/number/roundToTwo";

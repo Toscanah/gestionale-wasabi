@@ -1,7 +1,7 @@
 "use client";
 
 import { WasabiProvider } from "../../context/WasabiContext";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { TableOrder, HomeOrder, PickupOrder, OrderByType } from "@/app/(site)/lib/shared";
 import HomePage from "./HomePage";
 import { trpc } from "@/lib/server/client";

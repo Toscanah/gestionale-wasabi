@@ -4,7 +4,7 @@ import {
   ParsedEngagementTemplate,
   QrPayload,
 } from "@/app/(site)/lib/shared";
-import { EngagementTemplate, EngagementType } from "@prisma/client";
+import { EngagementTemplate, EngagementType } from "@/prisma/generated/client/client";
 
 export default function normalizeTemplatePayload(
   template: EngagementTemplate

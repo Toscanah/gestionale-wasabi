@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { RiceLog } from "../../lib/shared/models/Rice";
 import { isToday } from "date-fns";
-import { RiceLogType } from "@prisma/client";
+import { RiceLogType } from "@/prisma/generated/client/enums";
 import useRiceState from "./useRiceState";
 import { toastSuccess } from "../../lib/utils/global/toast";
 import { ShiftFilterValue } from "../../lib/shared";

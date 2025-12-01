@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import z from "zod";
 
 export const OrderTypesFilterSchema = z.object({

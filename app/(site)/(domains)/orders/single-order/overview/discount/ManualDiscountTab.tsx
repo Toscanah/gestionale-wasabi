@@ -12,7 +12,7 @@ import { useMemo, useState, useEffect } from "react";
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 import { Button } from "@/components/ui/button";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 import { PromotionByType, PromotionGuards } from "@/app/(site)/lib/shared";
 import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
 import { Card, CardContent } from "@/components/ui/card";

@@ -1,7 +1,7 @@
 "use client";
 
 import getColumns from "./getColumns";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { Cell } from "@tanstack/react-table";
 import { OrderByType } from "@/app/(site)/lib/shared";
 import Order from "./single-order/Order";

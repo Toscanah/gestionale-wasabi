@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { HomeOrder, ORDER_TYPE_COLORS, OrderWithSummedPayments } from "@/app/(site)/lib/shared";
 import { Badge } from "@/components/ui/badge";
-import { OrderType, PlannedPayment } from "@prisma/client";
+import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
 import { Button } from "@/components/ui/button";
 import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";

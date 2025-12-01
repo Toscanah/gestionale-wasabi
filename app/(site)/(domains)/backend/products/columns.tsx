@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/app/(site)/lib/shared";
-import { KitchenType } from "@prisma/client";
+import { KitchenType } from "@/prisma/generated/client/enums";
 import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
 import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
 import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";

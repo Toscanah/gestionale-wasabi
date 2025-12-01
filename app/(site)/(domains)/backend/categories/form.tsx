@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { AnyFieldDef, FormFieldType } from "../manager/FormFields";
 import CategoryOptions from "./CategoryOptions";
-import { Option } from "@prisma/client";
+import { Option } from "@/prisma/generated/client/browser";
 import { OptionSchema } from "@/prisma/generated/schemas";
 
 export const categoryFormSchema = z.object({

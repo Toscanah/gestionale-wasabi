@@ -1,6 +1,6 @@
 import prisma from "../prisma";
 import { PaymentContracts } from "../../shared";
-import { OrderType, PaymentType, PromotionType } from "@prisma/client";
+import { OrderType, PaymentType, PromotionType } from "@/prisma/generated/client/enums";
 import calculatePaymentsSummary from "../../services/payments/calculatePaymentsSummary";
 import { productsInOrderInclude } from "../includes";
 import buildOrderWhere from "../orders/util/buildOrderWhere";

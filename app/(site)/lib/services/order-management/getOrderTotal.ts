@@ -2,7 +2,7 @@ import getDiscountedTotal from "./getDiscountedTotal";
 import roundToTwo from "../../utils/global/number/roundToTwo";
 import filterDeletedProducts from "../../services/product-management/filterDeletedProducts";
 import { LiteOrder, PromotionUsageWithPromotion } from "../../shared";
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 
 type BaseOrderInput = Pick<LiteOrder, "products" | "type">;
 

@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import prisma from "../prisma";
 import formatWhenLabel from "../../utils/domains/order/formatWhenLabel";
 import { updateOrderShift } from "./updateOrderShift";

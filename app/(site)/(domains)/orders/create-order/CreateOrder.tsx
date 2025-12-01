@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import Table from "./table/Table";
 import { OrderByType } from "@/app/(site)/lib/shared";
 import generateEmptyOrder from "../../../lib/services/order-management/generateEmptyOrder";

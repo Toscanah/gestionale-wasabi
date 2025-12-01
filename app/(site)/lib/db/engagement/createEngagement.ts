@@ -1,4 +1,4 @@
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@/prisma/generated/client/enums";
 import prisma from "../prisma";
 import normalizeTemplatePayload from "@/app/(site)/lib/services/engagement/normalizeTemplatePayload";
 import { EngagementContracts } from "../../shared";

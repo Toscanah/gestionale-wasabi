@@ -1,6 +1,6 @@
 import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
 import { ComprehensiveCustomer, LiteOrder } from "@/app/(site)/lib/shared";
-import { OrderStatus, OrderType } from "@prisma/client";
+import { OrderStatus, OrderType } from "@/prisma/generated/client/enums";
 import { useEffect, useState } from "react";
 import useHistoryStats from "./useHistoryStats";
 

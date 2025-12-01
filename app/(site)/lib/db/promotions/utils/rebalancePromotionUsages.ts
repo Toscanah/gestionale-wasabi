@@ -1,4 +1,4 @@
-import { PromotionType, Prisma } from "@prisma/client";
+import { Prisma, PromotionType } from "@/prisma/generated/client/client";
 import { getOrderTotal } from "../../../services/order-management/getOrderTotal";
 import { OrderByType } from "../../../shared";
 

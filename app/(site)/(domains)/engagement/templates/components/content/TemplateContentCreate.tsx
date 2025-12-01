@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import TemplateWrapper from "../TemplateWrapper";
 import { EngagementContracts, ParsedEngagementPayload } from "@/app/(site)/lib/shared";
 import renderByType from "../../types/renderByType";
-import { EngagementType } from "@prisma/client";
+import { EngagementType } from "@/prisma/generated/client/enums";
 
 type TemplatePayloadDraft = EngagementContracts.TemplatePayloadDraft;
 

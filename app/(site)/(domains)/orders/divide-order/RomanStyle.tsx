@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { OrderType, PaymentScope } from "@prisma/client";
+import { OrderType, PaymentScope } from "@/prisma/generated/client/enums";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

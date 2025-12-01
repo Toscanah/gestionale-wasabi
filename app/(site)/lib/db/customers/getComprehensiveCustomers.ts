@@ -8,7 +8,7 @@ import { engagementsInclude, orderInclude } from "../includes";
 import filterInactiveProducts from "../../services/product-management/filterInactiveProducts";
 import normalizePeriod from "../../utils/global/date/normalizePeriod";
 import customerWhereQuery from "./util/customerWhereQuery";
-import { EngagementType, OrderStatus, Prisma } from "@prisma/client";
+import { EngagementType, OrderStatus, Prisma } from "@/prisma/generated/client/client";
 
 export default async function getComprehensiveCustomers(
   input: CustomerContracts.GetAllComprehensive.Input

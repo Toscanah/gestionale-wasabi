@@ -3,7 +3,7 @@ import { useZodForm } from "@/app/(site)/hooks/useZodForm";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusIcon } from "@phosphor-icons/react";
-import { PromotionType } from "@prisma/client";
+import { PromotionType } from "@/prisma/generated/client/enums";
 import CreatePromotionTab from "./CreatePromotionTab";
 import {
   FixedDiscountFields,

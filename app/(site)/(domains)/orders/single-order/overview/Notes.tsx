@@ -4,7 +4,7 @@ import { debounce } from "lodash";
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
 import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
 import { trpc } from "@/lib/server/client";
 

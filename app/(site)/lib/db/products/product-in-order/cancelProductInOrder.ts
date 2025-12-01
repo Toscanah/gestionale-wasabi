@@ -1,4 +1,5 @@
-import { Prisma, ProductInOrder, ProductInOrderStatus } from "@prisma/client";
+import { Prisma, ProductInOrder } from "@/prisma/generated/client/client";
+import { ProductInOrderStatus } from "@/prisma/generated/client/enums";
 
 type PIO = Partial<ProductInOrder> & {
   id: number;

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { PlannedPayment } from "@prisma/client";
+import { PlannedPayment } from "@/prisma/generated/client/enums";
 import PaymentStatusSelection from "../PaymentStatusSelection";
 import OldOrders from "../OldOrders";
 import When from "../When";

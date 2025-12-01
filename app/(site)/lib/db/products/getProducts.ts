@@ -2,8 +2,9 @@ import { MAX_RECORDS, ProductContracts } from "@/app/(site)/lib/shared";
 import prisma from "../prisma";
 import { categoryInclude } from "../includes";
 import sorterFactory from "../../utils/global/sorting/sorterFactory";
-import { KitchenType, Prisma } from "@prisma/client";
+import { KitchenType } from "@/prisma/generated/client/enums";
 import { KITCHEN_TYPE_LABELS } from "../../shared/constants/kitchen-type-labels";
+import { Prisma } from "@/prisma/generated/client/client";
 
 export default async function getProducts(
   input: ProductContracts.GetAll.Input

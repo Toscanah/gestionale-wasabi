@@ -1,7 +1,7 @@
 import axios from "axios";
 import prisma from "../../db/prisma";
 import { MetaContracts } from "../../shared";
-import { MessageDirection } from "@prisma/client";
+import { MessageDirection } from "@/prisma/generated/client/enums";
 import getMetaSecrets from "../../services/meta/getMetaSecrets";
 import { getOrderById } from "../../db/orders/getOrderById";
 

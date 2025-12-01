@@ -1,6 +1,6 @@
 import { useOrderContext } from "@/app/(site)/context/OrderContext";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { WorkingShift } from "@prisma/client";
+import { WorkingShift } from "@/prisma/generated/client/enums";
 
 export default function ShiftSelection() {
   return <></>

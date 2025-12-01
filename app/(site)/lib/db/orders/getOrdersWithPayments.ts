@@ -6,7 +6,7 @@ import {
   productsInOrderInclude,
   orderPromotionUsagesInclude,
 } from "../includes";
-import { OrderType, PaymentType, Prisma } from "@prisma/client";
+import { OrderType, PaymentType, } from "@/prisma/generated/client/enums";
 import { endOfDay, parse, startOfDay } from "date-fns";
 import { ORDER_TYPE_LABELS } from "../../shared/constants/order-labels";
 import {

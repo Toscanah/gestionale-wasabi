@@ -1,7 +1,7 @@
-import { Prisma } from "@prisma/client";
 import prisma from "../../prisma";
 import { CommonQueryFilter } from "../../../shared/schemas/common/filters/query";
 import customerWhereQuery from "./customerWhereQuery";
+import { Prisma } from "@/prisma/generated/client/client";
 
 type CountCustomersArgs = { query: string | undefined } | { where: Prisma.CustomerWhereInput };
 

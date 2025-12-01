@@ -1,4 +1,4 @@
-import { RiceLogType } from "@prisma/client";
+import { RiceLogType } from "@/prisma/generated/client/enums";
 import prisma from "../prisma";
 import { RiceContracts } from "../../shared";
 

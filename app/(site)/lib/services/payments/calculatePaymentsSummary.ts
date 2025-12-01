@@ -1,4 +1,4 @@
-import { OrderType } from "@prisma/client";
+import { OrderType } from "@/prisma/generated/client/enums";
 import { getOrderTotal } from "../order-management/getOrderTotal";
 import roundToCents from "../../utils/global/number/roundToCents";
 import { OrderFullPaymentContext } from "../../shared";

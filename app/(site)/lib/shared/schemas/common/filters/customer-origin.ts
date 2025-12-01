@@ -1,4 +1,4 @@
-import { CustomerOrigin } from "@prisma/client";
+import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import z from "zod";
 
 export const CustomerOriginFilterSchema = z.object({
