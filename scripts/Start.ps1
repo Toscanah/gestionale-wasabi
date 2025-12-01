@@ -31,9 +31,9 @@ function Update-Dependencies {
     git pull
 
     Write-Host "`n[INFO] Installo le librerie necessarie" -ForegroundColor Magenta
-    npm install
-    npm install prisma@latest
-    npm install @prisma/client@latest
+    npm install --force
+    npm install prisma@latest --force
+    npm install @prisma/client@latest --force
 
     Write-Host "`n[INFO] Imposto il database" -ForegroundColor Magenta
     Push-Location ..
