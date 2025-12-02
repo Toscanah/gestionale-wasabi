@@ -8,16 +8,10 @@ import { useEffect, useState } from "react";
 import capitalizeFirstLetter from "../../lib/utils/global/string/capitalizeFirstLetter";
 import { EmDash } from "../ui/misc/Placeholders";
 
-{
-  /* <Button disabled variant={"destructive"} onClick={() => fixMutation.mutate()}>
-          no touchy
-        </Button> */
-}
-
-// const fixMutation = trpc.orders.updateOrdersShift.useMutation();
-
 export default function Footer() {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
+
+  const fixMutation = trpc.orders.updateOrdersShift.useMutation();
 
   useEffect(() => {
     // Initialize clock only on the client
@@ -40,10 +34,16 @@ export default function Footer() {
       second: "2-digit",
     });
 
+  return (
+    <Button variant={"destructive"} onClick={() => fixMutation.mutate()}>
+      Refresh order shifts
+    </Button>
+  );
+
   if (!currentTime)
     return (
       <SidebarFooter>
-        <SidebarMenu className="flex-row flex justify-between text-sm text-muted-foreground">
+        <SidebarMenu className="flex-row flex justify-evenly text-sm text-muted-foreground">
           —
         </SidebarMenu>
       </SidebarFooter>
@@ -51,7 +51,7 @@ export default function Footer() {
 
   return (
     <SidebarFooter>
-      <SidebarMenu className="flex-row flex justify-between text-sm text-muted-foreground">
+      <SidebarMenu className="flex-row flex justify-evenly text-sm text-muted-foreground">
         {capitalizeFirstLetter(formatDate(currentTime))}
         <EmDash />
         {formatTime(currentTime)}
