@@ -18,6 +18,8 @@ import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
 export default function OrderTable() {
+  const [pendingCode, setPendingCode] = useState<{ index: number; value: string } | null>(null);
+
   const {
     order,
     toggleDialog,

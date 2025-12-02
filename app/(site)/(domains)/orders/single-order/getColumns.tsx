@@ -75,20 +75,27 @@ export default function getColumns(
             const currentInput = getInputRef({ rowIndex: row.index, colIndex: 0 });
             const inputValue = currentInput?.value || "";
 
+            const isEnter = e.key === "Enter";
+            const isRight = e.key === "ArrowRight";
+
+            // 🔥 1. BLOCK Enter + ArrowRight when input is empty
             if (inputValue === "") {
-              if (e.key !== "Enter") {
-                handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
+              if (isEnter || isRight) {
+                e.preventDefault(); // Block navigation
+                return;
               }
+
+              // Allow all other keys
+              handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
+              return;
+            }
+
+            // 🔥 2. When input has a value → your original logic
+            if ((isEnter || isRight) && row.original.product.code !== inputValue) {
+              handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
+              handleFieldChange("code", e.target.value, row.index);
             } else {
-              if (
-                (e.key === "Enter" || e.key === "ArrowRight") &&
-                row.original.product.code !== inputValue
-              ) {
-                handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
-                handleFieldChange("code", e.target.value, row.index);
-              } else {
-                handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
-              }
+              handleKeyNavigation(e, { rowIndex: row.index, colIndex: 0 });
             }
           }}
         />
@@ -126,11 +133,18 @@ export default function getColumns(
               const isArrows =
                 e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft";
 
-              if ((isEnter || isArrows) && row.original.quantity === inputValue) {
+              const rowQuantity = Number(row.original.quantity);
+
+              console.log(isArrows, row.original.quantity, inputValue);
+
+              // Normalize quantity to treat 0 as 1 for navigation purposes
+              const normalize = (q: number) => (q === 0 ? 1 : q);
+
+              if ((isEnter || isArrows) && normalize(rowQuantity) === inputValue) {
                 handleKeyNavigation(e, { rowIndex: row.index, colIndex: 1 });
               }
 
-              if (isEnter && row.original.quantity !== inputValue) {
+              if (isEnter && rowQuantity !== inputValue) {
                 handleFieldChange("quantity", e.target.value, row.index);
               }
             }}

@@ -34,11 +34,11 @@ export default function Footer() {
       second: "2-digit",
     });
 
-  return (
-    <Button variant={"destructive"} onClick={() => fixMutation.mutate()}>
-      Refresh order shifts
-    </Button>
-  );
+  // return (
+  //   <Button variant={"destructive"} onClick={() => fixMutation.mutate()}>
+  //     Refresh order shifts
+  //   </Button>
+  // );
 
   if (!currentTime)
     return (
