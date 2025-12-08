@@ -105,6 +105,8 @@ export default function SectionResults({
       (generalSections.push(makeGeneral("Tutti", safeResults.tutti)),
         averageSections.push(makeAverage("Tutti", safeResults.tutti)));
 
+    console.log({ generalSections, averageSections });
+
     return { generalSections, averageSections };
   }, [results, showAll]);
 

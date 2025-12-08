@@ -9,8 +9,15 @@
 WITH
     days AS (
         SELECT generate_series(
-            COALESCE($1::timestamptz, (SELECT MIN(created_at) FROM "Order")),
-            COALESCE($2::timestamptz, NOW()),
+            -- 🔥 convert bounds to Europe/Rome local dates BEFORE series
+            COALESCE(
+              ($1::timestamptz AT TIME ZONE 'Europe/Rome')::date,
+              (SELECT MIN(created_at AT TIME ZONE 'Europe/Rome')::date FROM "Order")
+            ),
+            COALESCE(
+              ($2::timestamptz AT TIME ZONE 'Europe/Rome')::date,
+              (NOW() AT TIME ZONE 'Europe/Rome')::date
+            ),
             interval '1 day'
         )::date AS day
     ),
@@ -29,7 +36,7 @@ WITH
     worked_days AS (
         SELECT d.day
         FROM days d
-        JOIN order_days od ON od.day = d.day
+        -- JOIN order_days od ON od.day = d.day          -- ❌ removed: it excluded days with 0 orders
         -- JOIN payment_days pd ON pd.day = d.day
         WHERE EXTRACT(DOW FROM d.day) <> 1 -- skip Mondays
           AND (
@@ -135,6 +142,9 @@ SELECT
     os.rices,
     os.salads,
     os.rice,
+
+    nd.cnt AS num_days,
+
     (os.revenue::double precision / NULLIF(os.orders,0)::double precision)      AS "revenuePerOrder",
     (os.orders::double precision / nd.cnt::double precision)                    AS "ordersPerDay",
     (os.revenue::double precision / nd.cnt::double precision)                   AS "revenuePerDay",

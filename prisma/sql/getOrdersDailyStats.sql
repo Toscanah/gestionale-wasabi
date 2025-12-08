@@ -10,10 +10,16 @@ WITH
     -- ✅ Generate all calendar days in the selected range (Rome-local)
     days AS (
         SELECT generate_series(
-            COALESCE($1::timestamptz, (SELECT MIN(created_at) FROM "Order")),
-            COALESCE($2::timestamptz, NOW()),
+            COALESCE(
+                ($1::timestamptz AT TIME ZONE 'Europe/Rome')::date,
+                (SELECT MIN(created_at AT TIME ZONE 'Europe/Rome')::date FROM "Order")
+            ),
+            COALESCE(
+                ($2::timestamptz AT TIME ZONE 'Europe/Rome')::date,
+                (NOW() AT TIME ZONE 'Europe/Rome')::date
+            ),
             interval '1 day'
-        )::date AS day
+        ) AS day
     ),
 
     -- ✅ Filter orders according to inputs (Rome-local)

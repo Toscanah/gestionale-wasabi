@@ -38,6 +38,8 @@ export default async function computeOrdersStats(
   const weekdaysStr = weekdays?.length ? weekdays.join(",") : null;
   const orderTypesStr = orderTypes?.length ? orderTypes.join(",") : null;
 
+  console.log(normalizedPeriod)
+
   const rawStats = await prisma.$queryRawTyped(
     getOrdersStats(
       normalizedPeriod?.from ? new Date(normalizedPeriod.from) : null,
@@ -49,6 +51,11 @@ export default async function computeOrdersStats(
       orderTypesStr
     )
   );
+
+  console.log(rawStats);
+
+  // 🟢 Read num_days from SQL (same for all rows)
+  const numDays = rawStats[0]?.num_days ?? 1;
 
   const results: OrdersStats.Results = Object.values(OrderType).reduce((acc, type) => {
     const key = type.toLowerCase() as OrdersStats.LowerOrderTypeEnum;
@@ -80,7 +87,7 @@ export default async function computeOrdersStats(
     };
   }
 
-  // ✅ Compute "tutti" only when it makes sense
+  // If only one type is selected → no "tutti"
   const shouldComputeTutti = !orderTypes || orderTypes.length > 1;
 
   if (!shouldComputeTutti) {
@@ -90,7 +97,8 @@ export default async function computeOrdersStats(
     };
   }
 
-  const tutti = Object.values(results)
+  // 🟢 SUM TOTALS ONLY (not perDay!)
+  const total = Object.values(results)
     .filter((r): r is OrdersStats.Result => r !== null)
     .reduce((acc, r) => {
       acc.orders += r.orders;
@@ -100,20 +108,27 @@ export default async function computeOrdersStats(
       acc.rices += r.rices;
       acc.salads += r.salads;
       acc.rice += r.rice;
-      acc.perDay.orders += r.perDay.orders;
-      acc.perDay.revenue += r.perDay.revenue;
-      acc.perDay.products += r.perDay.products;
-      acc.perDay.soups += r.perDay.soups;
-      acc.perDay.rices += r.perDay.rices;
-      acc.perDay.salads += r.perDay.salads;
-      acc.perDay.rice += r.perDay.rice;
       return acc;
     }, cloneEmpty());
 
-  tutti.revenuePerOrder = tutti.orders > 0 ? tutti.revenue / tutti.orders : 0;
+  // 🟢 Compute per-day correctly using numDays
+  total.perDay = {
+    orders: total.orders / numDays,
+    revenue: total.revenue / numDays,
+    products: total.products / numDays,
+    soups: total.soups / numDays,
+    rices: total.rices / numDays,
+    salads: total.salads / numDays,
+    rice: total.rice / numDays,
+  };
+
+  // 🟢 revenuePerOrder
+  total.revenuePerOrder = total.orders > 0 ? total.revenue / total.orders : 0;
+
+  console.log({ ...results, tutti: total });
 
   return {
     ...results,
-    tutti,
+    tutti: total,
   };
 }
