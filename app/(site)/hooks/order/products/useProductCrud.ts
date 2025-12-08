@@ -3,8 +3,8 @@ import { OrderByType, ProductInOrder } from "@/app/(site)/lib/shared";
 import { toastError } from "@/app/(site)/lib/utils/global/toast";
 import { productsAPI } from "@/lib/server/api";
 import { Table } from "@tanstack/react-table";
-import { useState } from "react";
 import { UpdateProductsListFunction } from "../useProductsManager";
+import { useState } from "react";
 
 type UseProductCrudParams = {
   order: OrderByType;
@@ -12,115 +12,127 @@ type UseProductCrudParams = {
 };
 
 export default function useProductCrud({ order, updateProductsList }: UseProductCrudParams) {
-  const [newCode, setNewCode] = useState<string>("");
-  const [newQuantity, setNewQuantity] = useState<number>(0);
+  const [rows, setRows] = useState<Record<number, { code?: string; quantity?: number }>>({});
 
-  const resetInputs = () => {
-    setNewCode("");
-    setNewQuantity(0);
+  const setRowValue = (rowIndex: number, field: "code" | "quantity", value: string | number) => {
+    setRows((prev) => ({
+      ...prev,
+      [rowIndex]: {
+        ...prev[rowIndex],
+        [field]: value,
+      },
+    }));
+  };
+
+  const getRowEdits = (rowIndex: number) => rows[rowIndex] ?? {};
+
+  const clearRow = (rowIndex: number) => {
+    setRows((prev) => {
+      const clone = { ...prev };
+      delete clone[rowIndex];
+      return clone;
+    });
+  };
+
+  const clearRows = () => {
+    setRows({});
   };
 
   const addProductMutation = productsAPI.addToOrder.useMutation({
     onSuccess: (newProduct) => {
       updateProductsList({ addedProducts: [newProduct] });
-      resetInputs();
     },
-    onError: () => {
-      updateProductsList({ updatedProducts: [generateDummyProduct()] });
-      resetInputs();
-      toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
+    onError: (_, vars) => {
+      toastError(`Prodotto ${vars.productCode} non trovato`, "Prodotto non trovato");
+      clearRows();
+      updateProductsList({ updatedProducts: [generateDummyProduct()], toast: false });
     },
   });
 
-  const addProduct = () =>
-    addProductMutation.mutateAsync({
+  const addProductToOrder = (code: string, quantity: number) => {
+    return addProductMutation.mutateAsync({
       order: { id: order.id, type: order.type },
-      productCode: newCode,
-      quantity: Number(newQuantity),
-    });
-
-  const addProductsMutation = productsAPI.addMultipleToOrder.useMutation({
-    onSuccess: (newProducts) => {
-      updateProductsList({ addedProducts: newProducts.addedProducts });
-    },
-  });
-
-  const addProducts = (products: ProductInOrder[]) =>
-    addProductsMutation.mutateAsync({
-      orderId: order.id,
-      products,
-    });
-
-  const updateProductMutation = productsAPI.updateInOrder.useMutation({
-    onSuccess: ({ updatedProductInOrder: updatedProduct, isDeleted }) => {
-      if (isDeleted) {
-        return updateProductsList({ deletedProducts: [updatedProduct] });
-      }
-
-      updateProductsList({ updatedProducts: [updatedProduct] });
-    },
-    onError: () => {
-      toastError(`Il prodotto con codice ${newCode} non è stato trovato`, "Prodotto non trovato");
-      resetInputs();
-    },
-  });
-
-  const updateProduct = (key: "quantity" | "code", value: any, index: number) => {
-    let productToUpdate = order.products[index];
-
-    if (key == "quantity" && value < 0) {
-      return toastError("La quantità non può essere negativa");
-    }
-
-    updateProductMutation.mutateAsync({
-      orderId: order.id,
-      key,
-      value,
-      productInOrder: productToUpdate,
+      productCode: code,
+      quantity,
     });
   };
 
-  const deletedProductsMutation = productsAPI.deleteFromOrder.useMutation({
+  const updateMutation = productsAPI.updateInOrder.useMutation({
+    onSuccess: ({ updatedProductInOrder, isDeleted }) => {
+      if (isDeleted) {
+        return updateProductsList({ deletedProducts: [updatedProductInOrder] });
+      }
+      updateProductsList({ updatedProducts: [updatedProductInOrder] });
+    },
+    onError: () => {
+      toastError(`Aggiornamento prodotto fallito`, "Prodotto non trovato");
+      clearRows();
+    },
+  });
+
+  const finalizeRowUpdate = async (rowIndex: number, quantity?: number) => {
+    const row = order.products[rowIndex];
+    if (!row) return;
+
+    const pending = getRowEdits(rowIndex);
+
+    const code = pending.code ?? row.product.code;
+    const finalQuantity = quantity ?? pending.quantity ?? row.quantity;
+
+    const isDummy = row.product_id === -1;
+
+    if (isDummy) {
+      if (!code || finalQuantity === undefined || finalQuantity <= 0) return;
+
+      await addProductToOrder(code, finalQuantity);
+
+      clearRow(rowIndex);
+      return;
+    }
+
+    const hasChanged = code !== row.product.code || finalQuantity !== row.quantity;
+
+    if (!hasChanged) {
+      clearRow(rowIndex);
+      return;
+    }
+
+    await updateMutation.mutateAsync({
+      orderId: order.id,
+      updates: { code, quantity: finalQuantity },
+      productInOrder: row,
+    });
+
+    clearRow(rowIndex);
+  };
+
+  const deleteProductsMutation = productsAPI.deleteFromOrder.useMutation({
     onSuccess: (deletedProducts) => {
       updateProductsList({ deletedProducts });
     },
   });
 
   const deleteProducts = (table: Table<ProductInOrder>, cooked: boolean) => {
-    const selectedRows = table.getFilteredSelectedRowModel().rows;
-    const selectedProductIds = selectedRows.map((row) => row.original.id);
+    const selected = table.getFilteredSelectedRowModel().rows;
+    const ids = selected.map((r) => r.original.id);
 
-    if (selectedProductIds.length > 0) {
-      deletedProductsMutation.mutateAsync({
-        productIds: selectedProductIds,
-        orderId: order.id,
-        cooked,
-      });
-      table.resetRowSelection();
-    }
-  };
+    if (ids.length === 0) return;
 
-  const updateProductField = (key: string, value: any, index: number) => {
-    const updatedProducts = [...order.products];
+    deleteProductsMutation.mutateAsync({
+      productIds: ids,
+      orderId: order.id,
+      cooked,
+    });
 
-    if (key === "code") {
-      updatedProducts[index].product.code = value;
-      setNewCode(value);
-    } else if (key === "quantity") {
-      updatedProducts[index].quantity = value;
-      setNewQuantity(value);
-    }
-
-    updateProductsList({ updatedProducts, isDummyUpdate: true });
+    table.resetRowSelection();
   };
 
   return {
-    addProduct,
-    addProducts,
-    newCode,
-    newQuantity,
-    updateProduct,
-    updateProductField,
+    rows,
+    setRowValue,
+    getRowEdits,
+    clearRow,
+    finalizeRowUpdate,
     deleteProducts,
   };
 }

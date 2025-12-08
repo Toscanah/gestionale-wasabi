@@ -37,7 +37,7 @@ WITH
             -- ✅ Count orders only in the last 30 days (Rome-local)
             COUNT(
                 DISTINCT CASE
-                    WHEN (co.created_at AT TIME ZONE 'Europe/Rome')::date >= ((CURRENT_DATE - INTERVAL '30 days') AT TIME ZONE 'Europe/Rome')::date
+                    WHEN co.created_at >= (CURRENT_TIMESTAMP - INTERVAL '30 days')
                     THEN co.parent_order_id
                 END
             ) AS recent_orders_30d
@@ -47,10 +47,9 @@ WITH
               ON pio.order_id = co.parent_order_id
              AND pio.status = 'IN_ORDER'
         WHERE
-            -- ✅ Rome-local date filtering
-            ($1::timestamptz IS NULL OR (co.created_at AT TIME ZONE 'Europe/Rome')::date >= ($1 AT TIME ZONE 'Europe/Rome')::date)
-            AND ($2::timestamptz IS NULL OR (co.created_at AT TIME ZONE 'Europe/Rome')::date <= ($2 AT TIME ZONE 'Europe/Rome')::date)
-        GROUP BY
+    ($1::timestamptz IS NULL OR co.created_at >= $1)
+    AND ($2::timestamptz IS NULL OR co.created_at <= $2)
+    GROUP BY
             co.customer_id
     )
 

@@ -38,7 +38,7 @@ export default function generateDummyProduct(): ProductInOrder {
     options: [],
     product_id: -1,
     order_id: -1,
-    quantity: 0,
+    quantity: 1,
     id: -1,
     paid_quantity: 0,
   };

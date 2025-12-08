@@ -119,8 +119,10 @@ export namespace ProductContracts {
   export namespace UpdateInOrder {
     export const Input = z.object({
       orderId: z.number(),
-      key: z.enum(["quantity", "code"]),
-      value: z.any(),
+      updates: z.object({
+        code: z.string().optional(),
+        quantity: z.number().optional(),
+      }),
       productInOrder: Common.InOrder,
     });
     export type Input = z.infer<typeof Input>;

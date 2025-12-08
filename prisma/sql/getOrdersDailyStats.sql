@@ -23,15 +23,9 @@ WITH
         WHERE o.status = 'PAID'
           AND o.suborder_of IS NULL  -- only parent orders
 
-          -- Rome-local date range
-          AND (
-            $1::timestamptz IS NULL OR
-            (o.created_at AT TIME ZONE 'Europe/Rome')::date >= ($1 AT TIME ZONE 'Europe/Rome')::date
-          )
-          AND (
-            $2::timestamptz IS NULL OR
-            (o.created_at AT TIME ZONE 'Europe/Rome')::date <= ($2 AT TIME ZONE 'Europe/Rome')::date
-          )
+          -- ⭐ FIXED: use UTC timestamp range comparison
+          AND ($1::timestamptz IS NULL OR o.created_at >= $1::timestamptz)
+          AND ($2::timestamptz IS NULL OR o.created_at <= $2::timestamptz)
 
           -- Rome-local weekday (skip Mondays)
           AND EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome')) <> 1

@@ -48,31 +48,38 @@ WITH
         FROM "Order" o
         WHERE o.status = 'PAID'
           AND o.suborder_of IS NULL                 -- ✅ only parent orders
-          AND ($1::timestamptz IS NULL OR (o.created_at AT TIME ZONE 'Europe/Rome')::date >= $1::date)
-            AND ($2::timestamptz IS NULL OR (o.created_at AT TIME ZONE 'Europe/Rome')::date <= $2::date)
 
-          AND EXTRACT(DOW FROM o.created_at) <> 1
+          -- ⭐ OPTION 1: pure timestamp comparison (no timezone/date truncation!)
+          AND ($1::timestamptz IS NULL OR o.created_at >= $1::timestamptz)
+          AND ($2::timestamptz IS NULL OR o.created_at <= $2::timestamptz)
+
+          -- Rome weekday filter still correct
+          AND EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome')) <> 1
           AND (
             $3::text IS NULL
-            OR EXTRACT(DOW FROM o.created_at)::int = ANY (string_to_array($3::text, ',')::int[])
+            OR EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome'))::int =
+               ANY (string_to_array($3::text, ',')::int[])
           )
+
+          -- Shift
           AND ($4::"WorkingShift" IS NULL OR o.shift = $4::"WorkingShift")
+
+          -- Time window (uses local Rome time)
           AND (
             $5::text IS NULL OR $6::text IS NULL
             OR (
-                (
-                    (o.created_at AT TIME ZONE 'Europe/Rome')::time
-                    BETWEEN $5::time AND $6::time
-                )
+                (o.created_at AT TIME ZONE 'Europe/Rome')::time
+                BETWEEN $5::time AND $6::time
             )
-        )
+          )
+
+          -- Order type filter
           AND (
             $7::text IS NULL
             OR o.type = ANY (string_to_array($7::text, ',')::"OrderType"[])
-            )
+          )
     ),
 
-    -- ✅ aggregate products by *parent* order id, so suborder items roll up
     product_lines AS (
         SELECT
             COALESCE(o.suborder_of, o.id) AS parent_order_id,
@@ -97,9 +104,10 @@ WITH
     order_stats AS (
         SELECT
             fo.type,
-            COUNT(DISTINCT fo.id)::int                         AS orders,            -- ✅ parents only
-            COALESCE(SUM(pl.line_revenue), 0::double precision)   AS revenue,         -- ✅ suborders included via roll-up
-            COALESCE(SUM(pl.total_products), 0::double precision) AS products,        -- ✅ suborders included via roll-up
+            COUNT(DISTINCT fo.id)::int                         AS orders,
+            COALESCE(SUM(pl.line_revenue), 0::double precision)   AS revenue,
+            COALESCE(SUM(pl.total_products), 0::double precision) AS products,
+
             SUM(
               CASE WHEN fo.soups IS NOT NULL AND fo.soups <> 0 THEN fo.soups::double precision
                    ELSE pl.soups END
@@ -114,7 +122,7 @@ WITH
             ) AS salads,
             SUM(pl.rice_mass) AS rice
         FROM filtered_orders fo
-        LEFT JOIN product_lines pl ON pl.parent_order_id = fo.id   -- ✅ join by parent id
+        LEFT JOIN product_lines pl ON pl.parent_order_id = fo.id
         GROUP BY fo.type
     )
 

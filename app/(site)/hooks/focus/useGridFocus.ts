@@ -31,8 +31,8 @@ export default function useGridFocus(defaultFocusedInput: FocussableInput, maxCo
   };
 
   const getNextInputToFocus = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>, currentInput: FocussableInput) => {
-      const { rowIndex, colIndex } = currentInput;
+    (e: KeyboardEvent<HTMLInputElement>, currentFocus: FocussableInput) => {
+      const { rowIndex, colIndex } = currentFocus;
 
       const keyMap = new Map<string, () => FocussableInput | null>([
         [
@@ -69,9 +69,9 @@ export default function useGridFocus(defaultFocusedInput: FocussableInput, maxCo
 
   const handleKeyNavigation = (
     e: KeyboardEvent<HTMLInputElement>,
-    currentInput: FocussableInput
+    currentFocus: FocussableInput
   ) => {
-    const nextInput = getNextInputToFocus(e, currentInput);
+    const nextInput = getNextInputToFocus(e, currentFocus);
 
     if (nextInput) {
       setFocusedInput(nextInput);

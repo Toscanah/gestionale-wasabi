@@ -1,12 +1,11 @@
 import prisma from "../../prisma";
-import { ProductContracts, ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductContracts } from "@/app/(site)/lib/shared";
 import handleProductCodeChange from "./handleCodeChange";
 import handleQuantityChange from "./handleQuantityChange";
 
 export default async function updateProductInOrder({
   orderId,
-  key,
-  value,
+  updates,
   productInOrder,
 }: ProductContracts.UpdateInOrder.Input): Promise<ProductContracts.UpdateInOrder.Output> {
   return await prisma.$transaction(async (tx) => {
@@ -19,12 +18,43 @@ export default async function updateProductInOrder({
       throw new Error("Order not found");
     }
 
-    if (key === "code") {
-      return handleProductCodeChange({ tx, currentOrder, newProductCode: value, productInOrder });
-    } else if (key === "quantity") {
-      return handleQuantityChange({ tx, currentOrder, newQuantity: Number(value), productInOrder });
+    let updatedProduct = productInOrder;
+    let isDeleted = false;
+
+    if (updates.code !== undefined && updates.code !== productInOrder.product.code) {
+      const result = await handleProductCodeChange({
+        tx,
+        currentOrder,
+        newProductCode: updates.code,
+        productInOrder: updatedProduct,
+      });
+
+      updatedProduct = result.updatedProductInOrder;
+      isDeleted = result.isDeleted ?? false;
     }
 
-    throw new Error("Invalid key provided");
+    if (
+      !isDeleted &&
+      updates.quantity !== undefined &&
+      updates.quantity !== updatedProduct.quantity
+    ) {
+
+      const result = await handleQuantityChange({
+        tx,
+        currentOrder,
+        newQuantity: updates.quantity,
+        productInOrder: updatedProduct,
+      });
+
+      updatedProduct = result.updatedProductInOrder;
+      isDeleted = result.isDeleted ?? false;
+    }
+
+    console.log(isDeleted);
+
+    return {
+      updatedProductInOrder: updatedProduct,
+      isDeleted,
+    };
   });
 }

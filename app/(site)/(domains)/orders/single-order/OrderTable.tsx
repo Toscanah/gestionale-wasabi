@@ -1,5 +1,4 @@
-import getColumns from "./getColumns";
-import { OrderGuards, PickupOrder, ProductInOrder } from "@/app/(site)/lib/shared";
+import { OrderGuards, ProductInOrder } from "@/app/(site)/lib/shared";
 import { useEffect, useState } from "react";
 import Table from "../../../components/table/Table";
 import useTable from "../../../hooks/table/useTable";
@@ -11,26 +10,30 @@ import DangerActions from "./overview/DangerActions";
 import { useOrderContext } from "../../../context/OrderContext";
 import Notes from "./overview/Notes";
 import ExtraItems from "./overview/ExtraItems";
-import { OrderStatus, OrderType, PaymentScope } from "@/prisma/generated/client/enums";
+import { OrderStatus, PaymentScope } from "@/prisma/generated/client/enums";
 import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
 import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
+import orderColumns from "./columns/orderColumns";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";
 
-export default function OrderTable() {
-  const [pendingCode, setPendingCode] = useState<{ index: number; value: string } | null>(null);
+export type OrderTableMeta = {
+  finalizeRowUpdate: (rowIndex: number, quantity?: number) => Promise<any>;
+  interactionReady: boolean;
+};
 
+export default function OrderTable() {
   const {
     order,
+    rows,
+    setRowValue,
+    finalizeRowUpdate,
+    deleteProducts,
     toggleDialog,
     dialogOpen,
-    addProduct,
-    newCode,
-    newQuantity,
-    updateProduct,
-    updateProductField,
     updatePrintedProducts,
   } = useOrderContext();
+
   const { printKitchen } = usePrinter();
 
   const [payingAction, setPayingAction] = useState<PayingAction>("none");
@@ -40,68 +43,48 @@ export default function OrderTable() {
   useEffect(() => {
     if (dialogOpen) {
       setInteractionReady(false);
-      const timeout = setTimeout(() => {
-        setInteractionReady(true);
-      }, 400);
+      const timeout = setTimeout(() => setInteractionReady(true), 400);
       return () => clearTimeout(timeout);
     }
   }, [dialogOpen]);
 
-  useEffect(() => {
-    if (newCode !== "" && newQuantity > 0) {
-      addProduct();
-    }
-  }, [newCode, newQuantity]);
-
-  const handleFieldChange = (key: "code" | "quantity", value: any, index: number) => {
-    if (key === "quantity" && isNaN(Number(value))) {
-      return;
-    }
-
-    const productToUpdate = order.products[index];
-
-    if (productToUpdate.product_id !== -1) {
-      updateProduct(key, value, index);
-    } else {
-      updateProductField(key, value, index);
-    }
-  };
-
-  const columns = getColumns(handleFieldChange, interactionReady, {
-    rowIndex: order.products.length - 1,
-    colIndex: 0,
+  const columns = orderColumns({
+    rows,
+    setRowValue,
+    defaultFocusedInput: {
+      rowIndex: order.products.length - 1,
+      colIndex: 0,
+    },
   });
 
-  const table = useTable<ProductInOrder>({
+  const table = useTable<ProductInOrder, OrderTableMeta>({
     data: order.products.sort(
       (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
     ),
     columns,
     rowSelection,
     setRowSelection,
+    meta: {
+      finalizeRowUpdate,
+      interactionReady,
+    },
   });
 
   useEffect(() => {
-    if (payingAction === "paidFull") {
-      toggleDialog(false);
-    }
+    if (payingAction === "paidFull") toggleDialog(false);
   }, [payingAction]);
 
+  // Auto-print
   useEffect(() => {
-    const printKitchenRec = async () => {
-      const updatedProducts = await updatePrintedProducts();
-
-      if (updatedProducts.length > 0) {
-        await printKitchen({ order: { ...order, products: updatedProducts } });
+    const rec = async () => {
+      const updated = await updatePrintedProducts();
+      if (updated.length > 0) {
+        await printKitchen({ order: { ...order, products: updated } });
       }
     };
 
     if (!dialogOpen && !order.suborder_of && order.status !== OrderStatus.CANCELLED) {
-      if (payingAction === "payPart") {
-        setTimeout(printKitchenRec, 500);
-      } else {
-        printKitchenRec();
-      }
+      payingAction === "payPart" ? setTimeout(rec, 500) : rec();
     }
   }, [dialogOpen]);
 
