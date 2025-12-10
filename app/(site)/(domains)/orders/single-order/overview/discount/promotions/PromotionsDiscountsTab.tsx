@@ -106,6 +106,7 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
 
     if (foundPromo.type === PromotionType.GIFT_CARD) {
       const amount = Number(promoAmount) || 0;
+      console.log("Applying gift card with amount:", amount);
       applyPromotionToOrder(foundPromo.code, amount);
     } else {
       applyPromotionToOrder(foundPromo.code);

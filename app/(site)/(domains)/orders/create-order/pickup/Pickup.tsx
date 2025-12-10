@@ -8,13 +8,14 @@ import { useWasabiContext } from "../../../../context/WasabiContext";
 import useFocusCycle from "../../../../hooks/focus/useFocusCycle";
 import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Plus, Question } from "@phosphor-icons/react";
+import { Question } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/server/client";
+
 interface PickupProps {
   setOrder: Dispatch<SetStateAction<OrderByType>>;
   order: OrderByType;
@@ -27,9 +28,9 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
   const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
 
-  const [name, setName] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [when, setWhen] = useState<string>("immediate");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [when, setWhen] = useState("immediate");
 
   const createPickupMutation = trpc.orders.createPickup.useMutation({
     onSuccess: (pickupOrder) => {
@@ -39,9 +40,15 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
       }
       setOrder(pickupOrder.order);
     },
+    onError: () => {
+      toastError("Errore nella creazione dell'ordine");
+    },
   });
 
   const createPickupOrder = () => {
+    // ⛔ Prevent multiple submissions
+    if (createPickupMutation.isPending) return;
+
     if (name === "") {
       return toastError("L'ordine deve avere un nome di un cliente");
     }
@@ -81,13 +88,8 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
             <Input
               type="text"
               id="name"
-              className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-              ref={(ref) => {
-                addRefs(ref);
-                // if (ref) {
-                //   ref.value = "";
-                // }
-              }}
+              className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0"
+              ref={(ref) => addRefs(ref)}
               defaultValue={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -99,9 +101,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               Quando?
             </Label>
             <WhenSelector
-              ref={(ref) => {
-                addRefs(ref);
-              }}
+              ref={(ref) => addRefs(ref)}
               className="h-16 text-6xl w-full"
               value={when}
               onValueChange={(value) => setWhen(value)}
@@ -121,24 +121,14 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
                 <HoverCardContent className="max-w-[400px] w-[400px]">
                   <div className="space-y-2">
                     <h4 className="text-sm font-bold flex gap-2 items-center">Nota bene:</h4>
-                    <Separator orientation="horizontal" />
+                    <Separator />
                     <ul className="text-sm list-disc ml-4 space-y-1">
                       <li>
                         Se viene inserito un numero di telefono, il programma controlla se esiste
-                        già un cliente con questo numero:
-                        <ul className="list-disc ml-4">
-                          <li>
-                            Se esiste, utilizzerà il cognome del cliente esistente per l'ordine.
-                          </li>
-                          <li>
-                            Altrimenti, creerà un nuovo cliente con il numero di telefono inserito e
-                            utilizzerà il nome.
-                          </li>
-                        </ul>
+                        già un cliente associato.
                       </li>
                       <li>
-                        Se non viene inserito un numero di telefono, il programma utilizzerà il nome
-                        inserito per l'ordine.
+                        Se non viene inserito un numero, verrà utilizzato il nome specificato.
                       </li>
                     </ul>
                   </div>
@@ -149,10 +139,8 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
             <Input
               type="number"
               id="phone"
-              className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-              ref={(ref) => {
-                addRefs(ref);
-              }}
+              className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0"
+              ref={(ref) => addRefs(ref)}
               defaultValue={phone}
               onChange={(e) => setPhone(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -162,10 +150,12 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
           <Button
             type="submit"
             className="w-full"
-            onClick={createPickupOrder}
             ref={(ref) => addRefs(ref)}
+            onClick={createPickupOrder}
+            onKeyDown={handleKeyDown}
+            disabled={createPickupMutation.isPending} // ⛔ hard block
           >
-            CREA ORDINE
+            {createPickupMutation.isPending ? "..." : "CREA ORDINE"}
           </Button>
         </div>
       ) : (

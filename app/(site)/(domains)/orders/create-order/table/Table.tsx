@@ -10,7 +10,6 @@ import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
 import { cn } from "@/lib/utils";
 import { OrderProvider } from "@/app/(site)/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
-import { PlusIcon } from "@phosphor-icons/react";
 import { trpc } from "@/lib/server/client";
 
 interface TableProps {
@@ -43,7 +42,9 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
   });
 
   const createTableOrder = () => {
-    if (table == "") {
+    if (createTableMutation.isPending) return;
+
+    if (table === "") {
       return toastError("Assicurati di aver inserito un tavolo");
     }
 
@@ -60,16 +61,13 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
       open={open}
       trigger={
         <div className="w-full pr-4 pb-4">
-          <Button className="w-full text-3xl h-24 rounded-none">
-            Tavolo {children}
-          </Button>
+          <Button className="w-full text-3xl h-24 rounded-none">Tavolo {children}</Button>
         </div>
       }
       onOpenChange={() => {
         setTable("");
         setPeople(undefined);
         setResName("");
-
         setOpen(!open);
       }}
       contentClassName={cn(
@@ -77,7 +75,7 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
         order.id !== -1 && "h-[95vh]"
       )}
     >
-      {order.id == -1 ? (
+      {order.id === -1 ? (
         <>
           <div className="w-full flex flex-col gap-4">
             <div className="w-full space-y-2">
@@ -87,10 +85,8 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
               <Input
                 type="text"
                 id="table"
-                className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-                ref={(tableRef) => {
-                  addRefs(tableRef);
-                }}
+                className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0"
+                ref={(tableRef) => addRefs(tableRef)}
                 defaultValue={table}
                 onChange={(e) => setTable(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -104,10 +100,8 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
               <Input
                 type="number"
                 id="ppl"
-                className="w-full text-center !text-6xl h-16 uppercase focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-                ref={(pplRef) => {
-                  addRefs(pplRef);
-                }}
+                className="w-full text-center !text-6xl h-16 focus-visible:ring-0"
+                ref={(pplRef) => addRefs(pplRef)}
                 defaultValue={people}
                 onChange={(e) => setPeople(Number(e.target.value))}
                 onKeyDown={handleKeyDown}
@@ -120,8 +114,9 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
             type="submit"
             className="w-full"
             onClick={createTableOrder}
+            disabled={createTableMutation.isPending}
           >
-            CREA ORDINE
+            {createTableMutation.isPending ? "..." : "CREA ORDINE"}
           </Button>
         </>
       ) : (

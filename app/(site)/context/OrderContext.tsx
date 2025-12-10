@@ -64,11 +64,13 @@ export const OrderProvider = ({
     updateProductOption,
     updatePrintedProducts,
     updateProductVariation,
+    addProducts
   } = useProductsManager(order, updateOrder, rebalanceOrderPromotions);
 
   return (
     <OrderContext.Provider
       value={{
+        addProducts,
         dialogOpen,
         order,
         setOrder,

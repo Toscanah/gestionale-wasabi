@@ -18,6 +18,7 @@ export type UpdateProductsListFunction = (params: {
   isDummyUpdate?: boolean;
   toast?: boolean;
   updateFlag?: boolean;
+  onUpdate?: () => void;
 }) => void;
 
 export function useProductsManager(
@@ -32,6 +33,7 @@ export function useProductsManager(
     isDummyUpdate = false,
     toast = true,
     updateFlag = true,
+    onUpdate,
   }) => {
     if (isDummyUpdate) return;
 
@@ -60,6 +62,8 @@ export function useProductsManager(
       is_receipt_printed: updateFlag ? false : undefined,
       promotion_usages: updatedOrder.promotion_usages,
     });
+
+    onUpdate?.();
 
     if (toast) toastSuccess("Prodotti aggiornati correttamente");
   };

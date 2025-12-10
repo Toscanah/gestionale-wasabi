@@ -40,14 +40,30 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
 
   const addProductMutation = productsAPI.addToOrder.useMutation({
     onSuccess: (newProduct) => {
-      updateProductsList({ addedProducts: [newProduct] });
+      updateProductsList({ addedProducts: [newProduct], onUpdate: clearRows });
     },
     onError: (_, vars) => {
       toastError(`Prodotto ${vars.productCode} non trovato`, "Prodotto non trovato");
       clearRows();
-      updateProductsList({ updatedProducts: [generateDummyProduct()], toast: false });
+      updateProductsList({
+        updatedProducts: [generateDummyProduct()],
+        toast: false,
+        onUpdate: clearRows,
+      });
     },
   });
+
+  const addProductsMutation = productsAPI.addMultipleToOrder.useMutation({
+    onSuccess: (newProducts) => {
+      updateProductsList({ addedProducts: newProducts.addedProducts, onUpdate: clearRows });
+    },
+  });
+
+  const addProducts = (products: ProductInOrder[]) =>
+    addProductsMutation.mutateAsync({
+      orderId: order.id,
+      products,
+    });
 
   const addProductToOrder = (code: string, quantity: number) => {
     return addProductMutation.mutateAsync({
@@ -60,9 +76,12 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
   const updateMutation = productsAPI.updateInOrder.useMutation({
     onSuccess: ({ updatedProductInOrder, isDeleted }) => {
       if (isDeleted) {
-        return updateProductsList({ deletedProducts: [updatedProductInOrder] });
+        return updateProductsList({
+          deletedProducts: [updatedProductInOrder],
+          onUpdate: clearRows,
+        });
       }
-      updateProductsList({ updatedProducts: [updatedProductInOrder] });
+      updateProductsList({ updatedProducts: [updatedProductInOrder], onUpdate: clearRows });
     },
     onError: () => {
       toastError(`Aggiornamento prodotto fallito`, "Prodotto non trovato");
@@ -108,7 +127,7 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
 
   const deleteProductsMutation = productsAPI.deleteFromOrder.useMutation({
     onSuccess: (deletedProducts) => {
-      updateProductsList({ deletedProducts });
+      updateProductsList({ deletedProducts, onUpdate: clearRows });
     },
   });
 
@@ -134,5 +153,6 @@ export default function useProductCrud({ order, updateProductsList }: UseProduct
     clearRow,
     finalizeRowUpdate,
     deleteProducts,
+    addProducts,
   };
 }
