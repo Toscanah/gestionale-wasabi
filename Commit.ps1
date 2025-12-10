@@ -45,7 +45,7 @@ if ([string]::IsNullOrEmpty($diff)) {
     exit
 }
 
-$systemPrompt = "Generate a concise and meaningful Git commit message from the provided code diff. Keep it under 15 words."
+$systemPrompt = "Generate a concise and meaningful Git commit message from the provided code diff. Keep it under 15 words. Don't focus on a single feature; consider the overall changes. Use imperative mood."
 
 if ($h) {
     $systemPrompt += " Hint: $h"
