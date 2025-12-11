@@ -38,8 +38,6 @@ export default async function computeOrdersStats(
   const weekdaysStr = weekdays?.length ? weekdays.join(",") : null;
   const orderTypesStr = orderTypes?.length ? orderTypes.join(",") : null;
 
-  console.log(normalizedPeriod)
-
   const rawStats = await prisma.$queryRawTyped(
     getOrdersStats(
       normalizedPeriod?.from ? new Date(normalizedPeriod.from) : null,
@@ -51,8 +49,6 @@ export default async function computeOrdersStats(
       orderTypesStr
     )
   );
-
-  console.log(rawStats);
 
   // 🟢 Read num_days from SQL (same for all rows)
   const numDays = rawStats[0]?.num_days ?? 1;
@@ -124,8 +120,6 @@ export default async function computeOrdersStats(
 
   // 🟢 revenuePerOrder
   total.revenuePerOrder = total.orders > 0 ? total.revenue / total.orders : 0;
-
-  console.log({ ...results, tutti: total });
 
   return {
     ...results,
