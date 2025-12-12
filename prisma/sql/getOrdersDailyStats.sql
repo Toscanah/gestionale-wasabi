@@ -7,59 +7,60 @@
 -- @param {String}       $7:order_types? Allowed order types as comma-separated string (nullable, e.g. 'HOME,PICKUP')
 
 WITH
-    -- ✅ Generate all calendar days in the selected range (Rome-local)
+    -- ✅ Generate all Rome-local calendar days for the period
     days AS (
         SELECT generate_series(
             COALESCE(
-                ($1::timestamptz AT TIME ZONE 'Europe/Rome')::date,
-                (SELECT MIN(created_at AT TIME ZONE 'Europe/Rome')::date FROM "Order")
+                timezone('Europe/Rome', $1)::date,
+                (SELECT MIN(timezone('Europe/Rome', created_at))::date FROM "Order")
             ),
             COALESCE(
-                ($2::timestamptz AT TIME ZONE 'Europe/Rome')::date,
-                (NOW() AT TIME ZONE 'Europe/Rome')::date
+                timezone('Europe/Rome', $2)::date,
+                timezone('Europe/Rome', now())::date
             ),
             interval '1 day'
         ) AS day
     ),
 
-    -- ✅ Filter orders according to inputs (Rome-local)
+    -- ✅ Filter orders by UTC timestamps and Rome-local conditions
     filtered_orders AS (
         SELECT o.*
         FROM "Order" o
         WHERE o.status = 'PAID'
-          AND o.suborder_of IS NULL  -- only parent orders
+          AND o.suborder_of IS NULL
 
-          -- ⭐ FIXED: use UTC timestamp range comparison
+          -- Correct: compare timestamps in UTC
           AND ($1::timestamptz IS NULL OR o.created_at >= $1::timestamptz)
           AND ($2::timestamptz IS NULL OR o.created_at <= $2::timestamptz)
 
-          -- Rome-local weekday (skip Mondays)
-          AND EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome')) <> 1
+          -- Rome weekday
+          AND EXTRACT(DOW FROM timezone('Europe/Rome', o.created_at)) <> 1
           AND (
-            $3::text IS NULL
-            OR EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome'))::int = ANY (string_to_array($3::text, ',')::int[])
+            $3::text IS NULL OR
+            EXTRACT(DOW FROM timezone('Europe/Rome', o.created_at))::int =
+                 ANY (string_to_array($3::text, ',')::int[])
           )
 
-          -- Shift filter
+          -- Shift
           AND ($4::"WorkingShift" IS NULL OR o.shift = $4::"WorkingShift")
 
-          -- Rome-local time-of-day window
+          -- Rome-local time window (supports wrap-around)
           AND (
             $5::text IS NULL OR $6::text IS NULL
             OR (
-                 ($5::time <= $6::time AND (o.created_at AT TIME ZONE 'Europe/Rome')::time BETWEEN $5::time AND $6::time)
-              OR ($5::time >  $6::time AND ((o.created_at AT TIME ZONE 'Europe/Rome')::time >= $5::time OR (o.created_at AT TIME ZONE 'Europe/Rome')::time <= $6::time))
+                 ($5::time <= $6::time AND (timezone('Europe/Rome', o.created_at))::time BETWEEN $5::time AND $6::time)
+              OR ($5::time >  $6::time AND ((timezone('Europe/Rome', o.created_at))::time >= $5::time OR (timezone('Europe/Rome', o.created_at))::time <= $6::time))
             )
           )
 
-          -- Order types
+          -- Order type filter
           AND (
             $7::text IS NULL
             OR o.type = ANY (string_to_array($7::text, ',')::"OrderType"[])
           )
     ),
 
-    -- ✅ Aggregate products by *parent* order id (suborders roll up)
+    -- (unchanged)
     product_lines AS (
         SELECT
             COALESCE(o.suborder_of, o.id) AS parent_order_id,
@@ -81,14 +82,14 @@ WITH
         GROUP BY COALESCE(o.suborder_of, o.id)
     ),
 
-    -- ✅ Aggregate daily stats (Rome-local day)
+    -- (unchanged)
     raw_daily AS (
         SELECT
-            DATE_TRUNC('day', (fo.created_at AT TIME ZONE 'Europe/Rome'))::date AS day,
-            fo.type                                       AS type,
-            COUNT(DISTINCT fo.id)::int                    AS orders,
-            COALESCE(SUM(pl.line_revenue), 0)::double precision   AS revenue,
-            COALESCE(SUM(pl.total_products), 0)::double precision AS products,
+            DATE_TRUNC('day', timezone('Europe/Rome', fo.created_at))::date AS day,
+            fo.type                                                        AS type,
+            COUNT(DISTINCT fo.id)::int                                     AS orders,
+            COALESCE(SUM(pl.line_revenue), 0)::double precision            AS revenue,
+            COALESCE(SUM(pl.total_products), 0)::double precision          AS products,
             SUM(
               CASE WHEN fo.soups IS NOT NULL AND fo.soups <> 0 THEN fo.soups::double precision
                    ELSE pl.soups END
@@ -107,7 +108,7 @@ WITH
         GROUP BY 1, 2
     )
 
--- ✅ FINAL OUTPUT: include all calendar days (0 values if no orders)
+-- FINAL OUTPUT — unchanged
 SELECT
     d.day,
     ot.type,
@@ -127,7 +128,7 @@ CROSS JOIN (
     VALUES ('HOME'::"OrderType"), ('PICKUP'::"OrderType"), ('TABLE'::"OrderType")
 ) AS ot(type)
 LEFT JOIN raw_daily rd ON rd.day = d.day AND rd.type = ot.type
-WHERE EXTRACT(DOW FROM d.day) <> 1 -- still skip Mondays
+WHERE EXTRACT(DOW FROM d.day) <> 1
   AND (
     $3::text IS NULL
     OR EXTRACT(DOW FROM d.day)::int = ANY (string_to_array($3::text, ',')::int[])

@@ -9,14 +9,14 @@
 WITH
     days AS (
         SELECT generate_series(
-            -- 🔥 convert bounds to Europe/Rome local dates BEFORE series
+            -- Correct: Convert bounds to Rome local DATE before create series
             COALESCE(
-              ($1::timestamptz AT TIME ZONE 'Europe/Rome')::date,
-              (SELECT MIN(created_at AT TIME ZONE 'Europe/Rome')::date FROM "Order")
+                timezone('Europe/Rome', $1)::date,
+                (SELECT MIN(timezone('Europe/Rome', created_at))::date FROM "Order")
             ),
             COALESCE(
-              ($2::timestamptz AT TIME ZONE 'Europe/Rome')::date,
-              (NOW() AT TIME ZONE 'Europe/Rome')::date
+                timezone('Europe/Rome', $2)::date,
+                timezone('Europe/Rome', now())::date
             ),
             interval '1 day'
         )::date AS day
@@ -36,8 +36,6 @@ WITH
     worked_days AS (
         SELECT d.day
         FROM days d
-        -- JOIN order_days od ON od.day = d.day          -- ❌ removed: it excluded days with 0 orders
-        -- JOIN payment_days pd ON pd.day = d.day
         WHERE EXTRACT(DOW FROM d.day) <> 1 -- skip Mondays
           AND (
             $3::text IS NULL
@@ -54,28 +52,28 @@ WITH
         SELECT o.*
         FROM "Order" o
         WHERE o.status = 'PAID'
-          AND o.suborder_of IS NULL                 -- ✅ only parent orders
+          AND o.suborder_of IS NULL
 
-          -- ⭐ OPTION 1: pure timestamp comparison (no timezone/date truncation!)
+          -- Direct timestamp compare (UTC safe)
           AND ($1::timestamptz IS NULL OR o.created_at >= $1::timestamptz)
           AND ($2::timestamptz IS NULL OR o.created_at <= $2::timestamptz)
 
-          -- Rome weekday filter still correct
-          AND EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome')) <> 1
+          -- Rome weekday filter
+          AND EXTRACT(DOW FROM timezone('Europe/Rome', o.created_at)) <> 1
           AND (
             $3::text IS NULL
-            OR EXTRACT(DOW FROM (o.created_at AT TIME ZONE 'Europe/Rome'))::int =
+            OR EXTRACT(DOW FROM timezone('Europe/Rome', o.created_at))::int =
                ANY (string_to_array($3::text, ',')::int[])
           )
 
           -- Shift
           AND ($4::"WorkingShift" IS NULL OR o.shift = $4::"WorkingShift")
 
-          -- Time window (uses local Rome time)
+          -- Time window (Rome local time)
           AND (
             $5::text IS NULL OR $6::text IS NULL
             OR (
-                (o.created_at AT TIME ZONE 'Europe/Rome')::time
+                timezone('Europe/Rome', o.created_at)::time
                 BETWEEN $5::time AND $6::time
             )
           )

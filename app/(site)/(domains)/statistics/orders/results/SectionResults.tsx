@@ -15,6 +15,7 @@ import useCsvExport from "@/app/(site)/hooks/csv-export/useCsvExport";
 import { MinusIcon } from "@phosphor-icons/react";
 import CsvExportButton from "@/app/(site)/components/ui/misc/CsvExportButton";
 import { EmDash } from "@/app/(site)/components/ui/misc/Placeholders";
+import { isSameDay, startOfDay } from "date-fns";
 
 type MetricsResult = OrdersStats.Metrics;
 
@@ -105,8 +106,6 @@ export default function SectionResults({
       (generalSections.push(makeGeneral("Tutti", safeResults.tutti)),
         averageSections.push(makeAverage("Tutti", safeResults.tutti)));
 
-    console.log({ generalSections, averageSections });
-
     return { generalSections, averageSections };
   }, [results, showAll]);
 
@@ -163,24 +162,30 @@ export default function SectionResults({
           <Table table={generalTable} fixedColumnIndexes={[0]} />
         </div>
 
-        <Separator />
+        {filters.period?.from &&
+          filters.period?.to &&
+          !isSameDay(filters.period.from, filters.period.to) && (
+            <>
+              <Separator />
 
-        <div className="space-y-4 mt-4">
-          <div className="flex justify-between items-center">
-            <div className="flex gap-4 items-center">
-              <CsvExportButton
-                disabled={isLoading}
-                onClick={() => exportCsvAverage({ filters: parsedFilters })}
-              />
+              <div className="space-y-4 mt-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-4 items-center">
+                    <CsvExportButton
+                      disabled={isLoading}
+                      onClick={() => exportCsvAverage({ filters: parsedFilters })}
+                    />
 
-              <EmDash />
+                    <EmDash />
 
-              <Label className="text-lg self-center uppercase">Medie</Label>
-            </div>
-            <TableColumnsVisibility table={averageTable} />
-          </div>
-          <Table table={averageTable} fixedColumnIndexes={[0]} />
-        </div>
+                    <Label className="text-lg self-center uppercase">Medie</Label>
+                  </div>
+                  <TableColumnsVisibility table={averageTable} />
+                </div>
+                <Table table={averageTable} fixedColumnIndexes={[0]} />
+              </div>
+            </>
+          )}
       </div>
     </div>
   );
