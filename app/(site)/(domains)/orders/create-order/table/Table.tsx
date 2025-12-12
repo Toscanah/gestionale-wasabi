@@ -110,10 +110,12 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
           </div>
 
           <Button
-            ref={(buttonRef) => addRefs(buttonRef)}
             type="submit"
             className="w-full"
+            ref={(buttonRef) => addRefs(buttonRef)}
             onClick={createTableOrder}
+            // onKeyDown={handleKeyDown}
+          
             disabled={createTableMutation.isPending}
           >
             {createTableMutation.isPending ? "..." : "CREA ORDINE"}

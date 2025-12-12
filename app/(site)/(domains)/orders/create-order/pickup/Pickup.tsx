@@ -46,7 +46,6 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
   });
 
   const createPickupOrder = () => {
-    // ⛔ Prevent multiple submissions
     if (createPickupMutation.isPending) return;
 
     if (name === "") {
@@ -59,6 +58,8 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
 
   return (
     <WasabiDialog
+      putSeparator
+      putUpperBorder
       title={order.id !== -1 ? "" : "Ordine per asporto"}
       size={order.id !== -1 ? "large" : "medium"}
       open={open}
@@ -71,7 +72,6 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
         setName("");
         setPhone("");
         setWhen("immediate");
-
         setOpen(!open);
       }}
       contentClassName={cn(
@@ -152,7 +152,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
             className="w-full"
             ref={(ref) => addRefs(ref)}
             onClick={createPickupOrder}
-            onKeyDown={handleKeyDown}
+            // onKeyDown={handleKeyDown}
             disabled={createPickupMutation.isPending} // ⛔ hard block
           >
             {createPickupMutation.isPending ? "..." : "CREA ORDINE"}

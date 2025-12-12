@@ -116,6 +116,8 @@ export default async function print(...content: PrintContent[]): Promise<boolean
     return false;
   }
 
+  // console.log(new TextDecoder().decode(data))
+
   try {
     await selectedPort.open({ baudRate: 19200 });
     const writer = selectedPort.writable?.getWriter();

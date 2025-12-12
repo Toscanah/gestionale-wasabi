@@ -56,20 +56,16 @@ function Test-Server-Running {
 }
 
 function Start-Server {
-    if (Test-Server-Running) {
-        Write-Host "[INFO] Il server e' gia' avviato" -ForegroundColor Magenta
-        return
-    }
-
     Write-Host "`n[INFO] Avvio il server locale" -ForegroundColor Magenta
 
-    if ($OS -eq "Windows") {
-        $serverProcess = Start-Process -WindowStyle Minimized -FilePath "cmd.exe" -ArgumentList "/k npm run start" -PassThru
-        $serverProcess.Id | Set-Content "$PSScriptRoot\server.pid"
-    }
-    else {
-        Write-Host "TODO: MacOS later"
-    }
+    # Always kill whatever is on 3000 (dev or prod)
+    try { npx kill-port 3000 | Out-Null } catch {}
+
+    # Start prod server
+    $serverProcess = Start-Process -WindowStyle Minimized -FilePath "cmd.exe" `
+      -ArgumentList "/c set NODE_ENV=production && npm run start" -PassThru
+
+    $serverProcess.Id | Set-Content "$PSScriptRoot\server.pid"
 
     Wait-Server
 }

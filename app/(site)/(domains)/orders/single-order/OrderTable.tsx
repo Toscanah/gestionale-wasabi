@@ -65,7 +65,10 @@ export default function OrderTable() {
     rowSelection,
     setRowSelection,
     meta: {
-      finalizeRowUpdate,
+      finalizeRowUpdate: (rowIndex: number, quantity?: number) => {
+        setInteractionReady(false);
+        return finalizeRowUpdate(rowIndex, quantity).finally(() => setInteractionReady(true));
+      },
       interactionReady,
     },
   });
