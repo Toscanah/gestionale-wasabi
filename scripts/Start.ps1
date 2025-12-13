@@ -63,7 +63,7 @@ function Start-Server {
 
     # Start prod server
     $serverProcess = Start-Process -WindowStyle Minimized -FilePath "cmd.exe" `
-      -ArgumentList "/c set NODE_ENV=production && npm run start" -PassThru
+      -ArgumentList "/c npm run start" -PassThru
 
     $serverProcess.Id | Set-Content "$PSScriptRoot\server.pid"
 
