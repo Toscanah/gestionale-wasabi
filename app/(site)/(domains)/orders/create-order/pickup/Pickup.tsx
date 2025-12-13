@@ -153,7 +153,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
             ref={(ref) => addRefs(ref)}
             onClick={createPickupOrder}
             // onKeyDown={handleKeyDown}
-            disabled={createPickupMutation.isPending} // ⛔ hard block
+            disabled={createPickupMutation.isPending}
           >
             {createPickupMutation.isPending ? "..." : "CREA ORDINE"}
           </Button>

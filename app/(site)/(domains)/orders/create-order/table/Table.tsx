@@ -115,7 +115,6 @@ export default function Table({ setOrder, open, setOpen, order, children }: Tabl
             ref={(buttonRef) => addRefs(buttonRef)}
             onClick={createTableOrder}
             // onKeyDown={handleKeyDown}
-          
             disabled={createTableMutation.isPending}
           >
             {createTableMutation.isPending ? "..." : "CREA ORDINE"}
