@@ -122,8 +122,6 @@ export default async function getPaymentsSummary(
     tableOrdersAmount,
   } = calculatePaymentsSummary(filteredOrders);
 
-  console.log(rawTotalAmount, totalAmount, centsDifference);
-
   // --- Return final summary ---
   return {
     totals,
