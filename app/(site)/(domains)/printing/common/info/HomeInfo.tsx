@@ -25,6 +25,14 @@ export default function HomeInfo({
     24,
     " "
   );
+
+  const streetInfoLabel = "Informazioni strad: ";
+  const labelLength = streetInfoLabel.length;
+
+  const splittedStreetInfo = street_info
+    ? splitIntoLines(sanitazeReceiptText(street_info ?? "").split(/\s+/), 48 - labelLength, " ")
+    : [];
+
   return (
     <>
       {splittedDoorbell.map((line, idx) => (
@@ -42,13 +50,13 @@ export default function HomeInfo({
       </Text>
       <Br />
 
-      {street_info && (
+      {splittedStreetInfo.length > 0 && (
         <>
           <Text bold inline size={SMALL_PRINT}>
-            Informazioni strad:{" "}
+            {streetInfoLabel}
           </Text>
           <Text inline size={SMALL_PRINT}>
-            {sanitazeReceiptText(street_info)}
+            {sanitazeReceiptText(splittedStreetInfo.join(" "))}
           </Text>
           <Br />
         </>

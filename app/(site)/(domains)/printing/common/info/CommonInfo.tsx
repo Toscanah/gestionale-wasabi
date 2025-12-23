@@ -23,36 +23,35 @@ export default function CommonInfo({
   orderNotes,
   prepaid,
 }: CommonInfoProps) {
+  const hasPreferences = preferences && preferences.trim().length > 0;
+  const hasOrderNotes = orderNotes && orderNotes.trim().length > 0;
+  const hasPaymentNotes = prepaid || (!prepaid && plannedPayment !== PlannedPayment.UNKNOWN);
+
   return (
     <>
       {putExtraItems && ExtraItemsSection({ order })}
 
-      {(preferences || orderNotes) && (
+      {hasPreferences && (
         <>
-          {preferences && (
-            <>
-              <Text bold inline size={SMALL_PRINT}>
-                Preferenze:{" "}
-              </Text>
-              <Text size={SMALL_PRINT}>{sanitazeReceiptText(preferences)}</Text>
-            </>
-          )}
-
-          {orderNotes && (
-            <>
-              <Text bold inline size={SMALL_PRINT}>
-                Note ordine:{" "}
-              </Text>
-              <Text size={SMALL_PRINT}>{sanitazeReceiptText(orderNotes)}</Text>
-            </>
-          )}
-
-          {(prepaid || (!prepaid && plannedPayment !== PlannedPayment.UNKNOWN)) &&
-            PaymentNotesSection({ plannedPayment, prepaid })}
-
-          <Line />
+          <Text bold inline size={SMALL_PRINT}>
+            Preferenze:{" "}
+          </Text>
+          <Text size={SMALL_PRINT}>{sanitazeReceiptText(preferences)}</Text>
         </>
       )}
+
+      {hasOrderNotes && (
+        <>
+          <Text bold inline size={SMALL_PRINT}>
+            Note ordine:{" "}
+          </Text>
+          <Text size={SMALL_PRINT}>{sanitazeReceiptText(orderNotes)}</Text>
+        </>
+      )}
+
+      {hasPaymentNotes && PaymentNotesSection({ plannedPayment, prepaid })}
+
+      {hasPreferences || hasOrderNotes || (hasPaymentNotes && <Line />)}
     </>
   );
 }
