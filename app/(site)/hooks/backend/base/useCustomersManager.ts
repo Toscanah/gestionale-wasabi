@@ -5,12 +5,18 @@ import { trpc } from "@/lib/server/client";
 import { useMemo, useState } from "react";
 import useQueryFilter from "../../table/useQueryFilter";
 
-interface UseCustomersManagerParams extends PaginationRequest {}
+interface UseCustomersManagerParams extends PaginationRequest {
+  initialQuery?: string;
+}
 
 export default function useCustomersManager({
   pagination: { page, pageSize },
+  initialQuery,
 }: UseCustomersManagerParams) {
-  const { debouncedQuery, inputQuery, setInputQuery, resetQuery } = useQueryFilter();
+  const { debouncedQuery, inputQuery, setInputQuery, resetQuery } = useQueryFilter(
+    500,
+    initialQuery
+  );
   const [showOnlyActive, setShowOnlyActive] = useState(true);
 
   const filters = useMemo(() => {

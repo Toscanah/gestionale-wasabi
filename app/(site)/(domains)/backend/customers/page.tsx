@@ -13,6 +13,7 @@ import { FormFields } from "../manager/FormFields";
 import { useState } from "react";
 import { SortField } from "@/app/(site)/components/ui/sorting/SortingMenu";
 import { Path } from "react-hook-form";
+import { useSearchParams } from "next/navigation";
 
 const toFormData = (c: ComprehensiveCustomer): CustomerFormData => {
   return {
@@ -35,6 +36,8 @@ const fromFormData = (c: CustomerFormData): Partial<ComprehensiveCustomer> => ({
 });
 
 export default function CustomersDashboard() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("initialQuery") || "";
   const { page, pageSize, setPage, setPageSize } = useTablePagination();
 
   const layout: { fields: Path<CustomerFormData>[] }[] = [
@@ -61,6 +64,7 @@ export default function CustomersDashboard() {
       useDomainManager={() =>
         useCustomersManager({
           pagination: { page, pageSize },
+          initialQuery,
         })
       }
       labels={{

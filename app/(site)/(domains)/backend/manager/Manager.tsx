@@ -124,6 +124,7 @@ export default function Manager<TDomain extends BaseEntity, TForm extends FieldV
 
   const ToggleComponent = ToggleAction({
     handleToggle: actions.handleToggle,
+    title: parsedLabels.singular,
   });
 
   const DeleteComponent = deleteAction

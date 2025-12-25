@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
 import { debounce } from "lodash";
+import { PowerIcon, PowerOff } from "lucide-react";
 
 interface OverviewProps {
   phoneRef: RefObject<HTMLInputElement | null>;
@@ -113,30 +114,40 @@ export default function Overview({
           <Separator className="my-4" />
 
           {permAddresses.map((address, index) => (
-            <div
-              key={index}
-              className={cn(
-                "flex items-center w-full p-3 rounded gap-4 justify-between",
-                selectedOption === address.id.toString() ? "bg-muted-foreground/15" : "bg-none",
-                !address.active && "*:text-muted-foreground hover:cursor-not-allowed"
-              )}
-            >
-              <span>{`${index + 1} domicilio:`}</span>
-
+            <div key={index} className="flex gap-2 w-full items-center">
               <Button
-                className={cn("max-w-[70%] w-[70%]", !address.active && "border-red-600")}
-                variant={"outline"}
-                disabled={!address.active}
-                onClick={() => setSelectedOption(address.id.toString())}
+                onClick={() => (window.location.href = `/backend/customers?initialQuery=${phone}`)}
+                variant="ghost"
+                className={cn(address.active ? "text-destructive" : "text-green-600")}
               >
-                <span className="truncate flex gap-2 items-center font-bold uppercase">
-                  {!address.active && <Badge variant={"destructive"}>Non attivo</Badge>}
-                  {address.street.charAt(0).toUpperCase() + address.street.substring(1)}{" "}
-                  {address.civic}
-                </span>
+                {address.active ? <PowerOff size={20} /> : <PowerIcon size={20} />}
               </Button>
 
-              <RadioGroupItem value={address.id.toString()} disabled={!address.active} />
+              <div
+                key={index}
+                className={cn(
+                  "flex items-center w-full p-3 rounded gap-4 justify-between",
+                  selectedOption === address.id.toString() ? "bg-muted-foreground/15" : "bg-none",
+                  !address.active && "*:text-muted-foreground hover:cursor-not-allowed"
+                )}
+              >
+                <span>{`${index + 1} domicilio:`}</span>
+
+                <Button
+                  className={cn("max-w-[70%] w-[70%]", !address.active && "border-red-600")}
+                  variant={"outline"}
+                  disabled={!address.active}
+                  onClick={() => setSelectedOption(address.id.toString())}
+                >
+                  <span className="truncate flex gap-2 items-center font-bold uppercase">
+                    {!address.active && <Badge variant={"destructive"}>Non attivo</Badge>}
+                    {address.street.charAt(0).toUpperCase() + address.street.substring(1)}{" "}
+                    {address.civic}
+                  </span>
+                </Button>
+
+                <RadioGroupItem value={address.id.toString()} disabled={!address.active} />
+              </div>
             </div>
           ))}
 

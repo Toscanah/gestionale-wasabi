@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
 import debounce from "lodash/debounce";
 
-export default function useQueryFilter(delay: number = 500) {
-  const [inputQuery, setInputQuery] = useState<string>("");
-  const [debouncedQuery, setDebouncedQuery] = useState<string>("");
+export default function useQueryFilter(delay: number = 500, initialQuery: string = "") {
+  const [inputQuery, setInputQuery] = useState<string>(initialQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState<string>(initialQuery);
 
   const debouncedUpdate = useMemo(
     () => debounce((val: string) => setDebouncedQuery(val), delay),

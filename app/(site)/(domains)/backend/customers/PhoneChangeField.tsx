@@ -60,77 +60,79 @@ export default function PhoneChangeField({ field }: { field: ControllerRenderPro
             exists && "border-destructive ring-destructive"
           )}
         >
-          <InputGroupInput {...field} id="phone-input" />
+          <InputGroupInput {...field} id="phone-input" aria-invalid={exists} />
 
-          <InputGroupAddon align="inline-end">
-            <HoverCard openDelay={100} closeDelay={100}>
-              <HoverCardTrigger asChild>
-                <InputGroupText className="cursor-help justify-center">
-                  {showSpinner ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                  ) : exists ? (
-                    <AlertCircle className="h-4 w-4 text-destructive" />
-                  ) : available ? (
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                  ) : (
-                    <Info className="h-4 w-4 text-muted-foreground/30" />
-                  )}
-                </InputGroupText>
-              </HoverCardTrigger>
+          {(showSpinner || exists || available) && (
+            <InputGroupAddon align="inline-end">
+              <HoverCard openDelay={100} closeDelay={100}>
+                <HoverCardTrigger asChild>
+                  <InputGroupText className="cursor-help justify-center">
+                    {showSpinner ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    ) : exists ? (
+                      <AlertCircle className="h-4 w-4 text-destructive" />
+                    ) : available ? (
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Info className="h-4 w-4 text-muted-foreground/30" />
+                    )}
+                  </InputGroupText>
+                </HoverCardTrigger>
 
-              <HoverCardContent align="end" className="w-80">
-                <div className="space-y-2">
-                  <h4 className="text-base font-semibold">Stato Numero</h4>
+                <HoverCardContent align="end" className="w-80">
+                  <div className="space-y-2">
+                    <h4 className="text-base font-semibold">Stato Numero</h4>
 
-                  <Separator />
+                    <Separator />
 
-                  {isOriginalValue && (
-                    <p className="text-sm text-muted-foreground">
-                      Questo è il numero attualmente salvato per questo cliente.
-                    </p>
-                  )}
-
-                  {showSpinner && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      Verifica in corso...
-                    </div>
-                  )}
-
-                  {exists && (
-                    <div className="space-y-2">
-                      <p className="text-sm text-destructive font-semibold">
-                        Attenzione: numero già occupato.
+                    {isOriginalValue && (
+                      <p className="text-sm text-muted-foreground">
+                        Questo è il numero attualmente salvato per questo cliente.
                       </p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {customer?.name ? (
-                          <>
-                            Questo numero appartiene già a <strong>{customer.name}</strong>.
-                          </>
-                        ) : (
-                          "Questo numero è già associato a un cliente registrato."
-                        )}{" "}
-                        Se confermi, l'ordine più recente verrà importato nel suo profilo, mentre i
-                        restanti dati del cliente attuale saranno rimossi definitivamente.
+                    )}
+
+                    {showSpinner && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        Verifica in corso...
+                      </div>
+                    )}
+
+                    {exists && (
+                      <div className="space-y-2">
+                        <p className="text-sm text-destructive font-semibold">
+                          Attenzione: numero già occupato.
+                        </p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {customer?.name ? (
+                            <>
+                              Questo numero appartiene già a <strong>{customer.name}</strong>.
+                            </>
+                          ) : (
+                            "Questo numero è già associato a un cliente registrato."
+                          )}{" "}
+                          Se confermi, l'ordine più recente verrà importato nel suo profilo, mentre
+                          i restanti dati del cliente attuale saranno rimossi definitivamente.
+                        </p>
+                      </div>
+                    )}
+
+                    {available && (
+                      <p className="text-sm text-green-600">
+                        Il numero è valido e può essere assegnato.
                       </p>
-                    </div>
-                  )}
+                    )}
 
-                  {available && (
-                    <p className="text-sm text-green-600">
-                      Il numero è valido e può essere assegnato.
-                    </p>
-                  )}
-
-                  {!isOriginalValue && !showSpinner && !exists && !available && (
-                    <p className="text-sm text-muted-foreground">
-                      Inserisci almeno 5 cifre per verificare...
-                    </p>
-                  )}
-                </div>
-              </HoverCardContent>
-            </HoverCard>
-          </InputGroupAddon>
+                    {!isOriginalValue && !showSpinner && !exists && !available && (
+                      <p className="text-sm text-muted-foreground">
+                        Inserisci almeno 5 cifre per verificare...
+                      </p>
+                    )}
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </InputGroupAddon>
+          )}
         </InputGroup>
       </ButtonGroup>
     </div>
