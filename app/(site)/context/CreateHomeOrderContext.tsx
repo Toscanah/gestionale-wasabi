@@ -36,6 +36,7 @@ type CreateHomeOrderType = {
   permAddresses: AddressType[];
   tempAddress: AddressType | undefined;
   possibleCustomers: ComprehensiveCustomer[];
+  toggleCustomerAddress: (addressId: number, active: boolean) => Promise<void>;
 };
 
 type CreateHomeOrderProps = {
@@ -66,17 +67,10 @@ export const CreateHomeOrderProvider = ({
   };
 
   const { updateGlobalState } = useWasabiContext();
-  const {
-    customer,
-    addresses,
-    phone,
-    doorbell,
-    setPhone,
-    setDoorbell,
-    possibleCustomers,
-  } = useCustomerLookup({ initialPhone, initialDoorbell, onReset: handleResetState });
+  const { customer, addresses, phone, doorbell, setPhone, setDoorbell, possibleCustomers } =
+    useCustomerLookup({ initialPhone, initialDoorbell, onReset: handleResetState });
 
-  const { onSubmit } = useCustomerManager({
+  const { onSubmit, toggleCustomerAddress } = useCustomerManager({
     phone,
     customer,
     selectedAddress,
@@ -135,6 +129,7 @@ export const CreateHomeOrderProvider = ({
         addresses,
         setPhone,
         permAddresses,
+        toggleCustomerAddress,
       }}
     >
       {children}

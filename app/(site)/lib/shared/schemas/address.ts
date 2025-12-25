@@ -8,8 +8,19 @@ export namespace AddressContracts {
     export type Entity = z.infer<typeof Entity>;
   }
 
+  export namespace Toggle {
+    export const Input = z.object({
+      id: z.number(),
+      active: z.boolean(),
+    });
+    export type Input = z.infer<typeof Input>;
+
+    export const Output = Common.Entity;
+    export type Output = z.infer<typeof Output>;
+  }
+
   export namespace Create {
-    export const Input = wrapSchema("address", createInputSchema(AddressSchema));
+    export const Input = wrapSchema("address", createInputSchema(Common.Entity));
     export type Input = z.infer<typeof Input>;
 
     export const Output = Common.Entity;
@@ -17,7 +28,9 @@ export namespace AddressContracts {
   }
 
   export namespace Update {
-    export const Input = wrapSchema("address", updateInputSchema(AddressSchema));
+    export const Input = z.object({
+      address: Common.Entity.partial(),
+    });
     export type Input = z.infer<typeof Input>;
 
     export const Output = Common.Entity;

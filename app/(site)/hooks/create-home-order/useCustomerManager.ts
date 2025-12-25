@@ -38,6 +38,15 @@ export default function useCustomerManager({
   const createAddressMutation = trpc.addresses.create.useMutation();
   const updateAddressMutation = trpc.addresses.update.useMutation();
 
+  const toggleCustomerAddress = async (addressId: number, active: boolean) => {
+    await updateAddressMutation.mutateAsync({
+      address: {
+        id: addressId,
+        active,
+      },
+    });
+  };
+
   const { customers, setCustomers } = useCachedDataContext();
 
   const utils = trpc.useUtils();
@@ -177,5 +186,5 @@ export default function useCustomerManager({
     }
   }
 
-  return { onSubmit };
+  return { onSubmit, toggleCustomerAddress };
 }

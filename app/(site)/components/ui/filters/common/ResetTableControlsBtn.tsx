@@ -85,7 +85,7 @@ export default function ResetTableControlsBtn<T>({
       className={cn("ml-auto border-dashed flex items-center gap-2", className)}
     >
       <ArrowCounterClockwiseIcon className="h-4 w-4 " />
-      {label}
+      {/* {label} */}
     </Button>
   );
 }

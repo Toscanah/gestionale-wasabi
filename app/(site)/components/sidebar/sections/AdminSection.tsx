@@ -1,3 +1,4 @@
+import { KeyIcon } from "@phosphor-icons/react";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
 import { UserCircleGear } from "@phosphor-icons/react/dist/ssr";
 
@@ -12,7 +13,7 @@ export default function AdminSection() {
   return (
     <SidebarMenuGroup
       label="Admin"
-      icon={<UserCircleGear className="w-4 h-4" />}
+      icon={<KeyIcon className="w-4 h-4" />}
       items={adminItems}
     />
   );

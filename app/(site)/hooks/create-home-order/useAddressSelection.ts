@@ -44,15 +44,46 @@ export default function useAddressSelection({
   }, [lastAddressId, addresses]);
 
   useEffect(() => {
-    if (selectedAddress) {
-      setSelectedOption(selectedAddress.temporary ? "temp" : selectedAddress.id.toString());
-    } else {
-      setSelectedOption(
-        lastAddressId?.toString() ??
-          (permAddresses.find((addr) => addr.active)?.id.toString() || "new")
-      );
+    // 1. Check if ANY permanent address is active
+    const hasActiveAddresses = permAddresses.some((addr) => addr.active);
+
+    // 2. Determine if the current selection is still valid
+    const currentSelectionIsActive = permAddresses.find(
+      (addr) => addr.id.toString() === selectedOption
+    )?.active;
+
+    // EDGE CASE: If nothing is active, OR the current selection just got toggled OFF
+    if (
+      !hasActiveAddresses ||
+      (selectedOption !== "new" && selectedOption !== "temp" && !currentSelectionIsActive)
+    ) {
+      // Fallback logic
+      if (hasActiveAddresses) {
+        // If there are other active addresses, pick the last used or the first available
+        const isLastValid = permAddresses.find((a) => a.id === lastAddressId && a.active);
+        const firstActive = permAddresses.find((a) => a.active);
+
+        const fallback = isLastValid ? lastAddressId?.toString() : firstActive?.id.toString();
+        if (fallback && selectedOption !== fallback) {
+          setSelectedOption(fallback);
+        }
+      } else {
+        // If absolutely NOTHING is active, force "new"
+        if (selectedOption !== "new" && selectedOption !== "temp") {
+          setSelectedOption("new");
+        }
+      }
+      return;
     }
-  }, [permAddresses]);
+
+    // 3. Initial Load logic (if no option is selected yet)
+    if (!selectedOption && lastAddressId) {
+      const isLastValid = permAddresses.some((addr) => addr.id === lastAddressId && addr.active);
+      if (isLastValid) {
+        setSelectedOption(lastAddressId.toString());
+      }
+    }
+  }, [permAddresses, lastAddressId, selectedOption]);
 
   useEffect(() => {
     const address =
@@ -60,7 +91,7 @@ export default function useAddressSelection({
         ? tempAddress
         : selectedOption === "new"
           ? undefined
-          : addresses.find((addr) => selectedOption === addr.id.toString());
+          : addresses.find((addr) => selectedOption === addr.id.toString() && addr.active);
 
     setSelectedAddress(address);
   }, [selectedOption]);

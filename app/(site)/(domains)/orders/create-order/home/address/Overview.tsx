@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
 import { debounce } from "lodash";
 import { PowerIcon, PowerOff } from "lucide-react";
+import { trpc } from "@/lib/server/client";
 
 interface OverviewProps {
   phoneRef: RefObject<HTMLInputElement | null>;
@@ -38,6 +39,7 @@ export default function Overview({
     permAddresses,
     setSelectedOption,
     tempAddress,
+    toggleCustomerAddress,
   } = useCreateHomeOrder();
 
   useEffect(
@@ -68,6 +70,8 @@ export default function Overview({
     }, 300),
     []
   );
+
+  const utils = trpc.useUtils();
 
   return (
     <div className="h-full flex flex-col w-[30%] max-w-[30%]  min-w-[30%] justify-between">
@@ -116,7 +120,11 @@ export default function Overview({
           {permAddresses.map((address, index) => (
             <div key={index} className="flex gap-2 w-full items-center">
               <Button
-                onClick={() => (window.location.href = `/backend/customers?initialQuery=${phone}`)}
+                onClick={async () => {
+                  await toggleCustomerAddress(address.id, !address.active);
+                  await utils.customers.getByPhone.refetch({ phone });
+                  await utils.addresses.getByCustomer.refetch({ customerId: address.customer_id });
+                }}
                 variant="ghost"
                 className={cn(address.active ? "text-destructive" : "text-green-600")}
               >

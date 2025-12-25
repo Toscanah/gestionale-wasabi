@@ -89,7 +89,7 @@ export default function RiceDefaultValues() {
       autoFocus={false}
       trigger={
         <SidebarMenuSubButton className="hover:cursor-pointer ">
-          Valori di default
+          Valori di base
         </SidebarMenuSubButton>
       }
     >
