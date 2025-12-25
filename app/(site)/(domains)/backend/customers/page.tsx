@@ -26,6 +26,14 @@ const toFormData = (c: ComprehensiveCustomer): CustomerFormData => {
   };
 };
 
+const fromFormData = (c: CustomerFormData): Partial<ComprehensiveCustomer> => ({
+  ...c,
+  phone: {
+    phone: c.phone || "",
+    id: -1,
+  },
+});
+
 export default function CustomersDashboard() {
   const { page, pageSize, setPage, setPageSize } = useTablePagination();
 
@@ -34,7 +42,7 @@ export default function CustomersDashboard() {
     { fields: ["surname", "email"] },
     { fields: ["preferences", "order_notes"] },
     { fields: ["origin"] },
-    // { fields: ["addresses"] },
+    { fields: ["addresses"] },
   ];
 
   const Fields = ({ handleSubmit, object, submitLabel }: FormFieldsProps<CustomerFormData>) => (
@@ -59,6 +67,7 @@ export default function CustomersDashboard() {
         singular: "Cliente",
         plural: "Clienti",
       }}
+      mapFromForm={fromFormData}
       mapToForm={toFormData}
       columns={columns}
       FormFields={Fields}

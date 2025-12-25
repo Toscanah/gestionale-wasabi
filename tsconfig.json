@@ -41,7 +41,8 @@
     ".next/types/**/*.ts",
     "build/types/**/*.ts",
     "app/(site)/lib/shared/types/**/*.d.ts",
-    "build\\dev/types/**/*.ts"
+    "build\\dev/types/**/*.ts",
+    "build/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

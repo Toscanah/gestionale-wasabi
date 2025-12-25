@@ -378,7 +378,7 @@ model Promotion {
     expires_at       DateTime?        @db.Timestamptz(3)
     never_expires    Boolean          @default(false)
     reusable         Boolean          @default(false)
-    max_usages       Int? // for % discounts
+    max_usages       Int?
     usages           PromotionUsage[]
 }
 

@@ -6,13 +6,14 @@ import CustomerOriginSelection from "./CustomerOriginSelection";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import CustomerAddresses from "./addresses/CustomerAddresses";
 import { AddressSchema } from "@/prisma/generated/schemas";
+import PhoneChangeField from "./PhoneChangeField";
 
 export const customerFormSchema = z.object({
   name: z.string().default("").optional(),
   surname: z.string().default("").optional(),
   phone: z
     .string({ error: "Il numero di telefono è obbligatorio" })
-    .min(6, { error: "Il numero di telefono deve contenere almeno 6 caratteri" })
+    // .min(6, { error: "Il numero di telefono deve contenere almeno 6 caratteri" })
     .default(""),
   email: z.string().default("").optional(),
   preferences: z.string().default("").optional(),
@@ -28,7 +29,7 @@ export function getCustomerFields(): FormFieldType<z.input<typeof customerFormSc
     {
       name: "phone",
       label: "Numero di telefono",
-      type: "text",
+      render: (field: ControllerRenderProps) => <PhoneChangeField field={field} />,
     },
     {
       name: "name",
@@ -61,12 +62,12 @@ export function getCustomerFields(): FormFieldType<z.input<typeof customerFormSc
         // </div>
       ),
     },
-    // {
-    //   name: "addresses",
-    //   label: "Indirizzi",
-    //   render: (field) => {
-    //     return <CustomerAddresses field={field} />;
-    //   },
-    // },
+    {
+      name: "addresses",
+      label: "Indirizzi",
+      render: (field) => {
+        return <CustomerAddresses field={field} />;
+      },
+    },
   ];
 }

@@ -6,6 +6,7 @@ import {
   ComprehensiveCustomerSchema,
   CustomerWithPhoneSchema,
   CustomerStats,
+  CustomerWithAddresses,
 } from "../models/Customer";
 import { createInputSchema, wrapSchema } from "./common/utils";
 import { PaginationSchema, PaginationResponseSchema } from "./common/pagination";
@@ -83,7 +84,7 @@ export namespace CustomerContracts {
   }
 
   export namespace UpdateFromAdmin {
-    export const Input = z.object({ customer: CustomerWithPhoneSchema });
+    export const Input = z.object({ customer: CustomerWithAddresses });
     export type Input = z.infer<typeof Input>;
 
     export const Output = Common.WithEngagement;

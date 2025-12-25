@@ -1,10 +1,11 @@
+"use client";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useState, Dispatch, SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,119 +13,85 @@ import parseAddress from "@/app/(site)/lib/utils/domains/address/parseAddress";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import { toastError, toastSuccess } from "@/app/(site)/lib/utils/global/toast";
-import { trpc } from "@/lib/server/client";
 import { AddressType } from "@/prisma/generated/schemas";
 import { ControllerRenderProps } from "react-hook-form";
-import z from "zod";
-import { customerFormSchema } from "../form";
+import { Plus, Power, PowerOff } from "lucide-react";
 
 interface CustomerAddressesProps {
-  field: ControllerRenderProps<z.input<typeof customerFormSchema>, "addresses">;
+  field: ControllerRenderProps;
 }
 
 export default function CustomerAddresses({ field }: CustomerAddressesProps) {
-  return <></>;
-  const [currentAddresses, setCurrentAddresses] = useState<AddressType[]>(
-    (field.value as any) ?? []
-  );
+  const addresses: AddressType[] = field.value ?? [];
 
-  const utils = trpc.useUtils();
-
-  const updateAddresses = trpc.customers.updateAddresses.useMutation({
-    onSuccess: (updatedCustomer) => {
-      setCurrentAddresses(updatedCustomer.addresses);
-      utils.customers.getAllComprehensive.invalidate();
-      toastSuccess("Indirizzi aggiornati con successo");
-    },
-  });
-
-  const saveAddresses = () => {
-    if (currentAddresses.some((address) => !address.civic?.trim())) {
-      return toastError("Tutti gli indirizzi devono avere almeno un civico e via validi");
-    }
-    // updateAddresses.mutate({ addresses: currentAddresses, customerId });
+  const updateForm = (newAddresses: AddressType[]) => {
+    field.onChange(newAddresses);
   };
 
-  const addAddress = () =>
-    setCurrentAddresses((prevAddresses) => [
-      {
-        civic: "",
-        customer_id: 0,
-        doorbell: "",
-        floor: "",
-        stair: "",
-        street: "",
-        street_info: "",
-        temporary: false,
-        id: -1 * prevAddresses.length,
-        active: true,
-      },
-      ...prevAddresses,
-    ]);
+  const addAddress = () => {
+    const newAddress: AddressType = {
+      id: Math.min(0, ...addresses.map((a) => a.id)) - 1,
+      street: "",
+      civic: "",
+      doorbell: "",
+      floor: "",
+      stair: "",
+      street_info: "",
+      active: true,
+      temporary: false,
+      customer_id: addresses[0]?.customer_id ?? 0,
+    };
+    updateForm([newAddress, ...addresses]);
+  };
 
-  const toggleAddress = (addressToToggle: AddressType) =>
-    setCurrentAddresses((prevAddresses) =>
-      prevAddresses.map((address) =>
-        address.id === addressToToggle.id ? { ...address, active: !address.active } : address
-      )
-    );
+  const toggleAddress = (id: number) => {
+    updateForm(addresses.map((a) => (a.id === id ? { ...a, active: !a.active } : a)));
+  };
 
   const updateField = (addressId: number, key: keyof AddressType, value: any) => {
-    const newAddresses = currentAddresses.map((address) => {
+    const updated = addresses.map((address) => {
       if (address.id === addressId) {
         if (key === "street") {
           const { street, civic } = parseAddress(value);
           return { ...address, street, civic };
-        } else {
-          return { ...address, [key]: value };
         }
+        return { ...address, [key]: value };
       }
       return address;
     });
-
-    setCurrentAddresses(newAddresses);
+    updateForm(updated);
   };
 
   return (
     <div className="space-y-4">
-      <Button className="w-full" onClick={() => addAddress()}>
-        Aggiungi indirizzo
-      </Button>
-
-      {/* <div className="text-muted-foreground text-sm">
-        NB: Gli indirizzi non attivi non potranno venir utilizzati negli ordini
+      {/* <div className="flex items-center justify-between">
+        <Button type="button" size="sm" variant="outline" onClick={addAddress} className="gap-2">
+          <Plus className="h-4 w-4" /> Aggiungi
+        </Button>
       </div> */}
 
-      <Accordion
-        type="single"
-        collapsible
-        className="max-h-[450px] overflow-y-auto overflow-x-hidden pr-4"
-      >
-        {currentAddresses.length > 0 ? (
-          currentAddresses.map((address, index) => (
-            <div className="w-full flex gap-4 items-center">
-              <AccordionItem value={address.id.toString()} key={address.id} className={cn("grow")}>
-                <AccordionTrigger className="text-xl ">
+      <Accordion type="single" collapsible className="max-h-[500px] overflow-y-auto">
+        {addresses.length > 0 ? (
+          addresses.map((address, index) => (
+            <div className="w-full flex gap-4 items-center" key={address.id}>
+              <AccordionItem value={address.id.toString()} className="grow">
+                <AccordionTrigger className="hover:no-underline text-xl">
                   <div className="flex gap-4 items-center">
-                    {address.id < 0 ? (
-                      `Nuovo indirizzo #${index + 1}`
-                    ) : (
-                      <>
-                        <Badge variant={address.active ? "default" : "destructive"}>
-                          {address.active ? "Attivo" : "Non attivo"}
-                        </Badge>
-                        {address.street + " " + address.civic}
-                      </>
-                    )}
+                    <Badge variant={address.active ? "default" : "destructive"}>
+                      {address.active ? "Attivo" : "Disattivato"}
+                    </Badge>
+                    <span className={cn("text-sm")}>
+                      {address.street ? `${address.street} ${address.civic}` : ""}
+                    </span>
                   </div>
                 </AccordionTrigger>
+
                 <AccordionContent className="space-y-8 mx-2">
                   <div className="space-y-2">
-                    <Label>Indirizzo</Label>
+                    <Label>Via e civico</Label>
                     <Input
-                      defaultValue={address.street + " " + address.civic}
+                      placeholder="Via Roma 10"
+                      value={address.street + (address.civic ? " " + address.civic : "")}
                       onChange={(e) => updateField(address.id, "street", e.target.value)}
                     />
                   </div>
@@ -133,56 +100,70 @@ export default function CustomerAddresses({ field }: CustomerAddressesProps) {
                     <div className="space-y-2 w-full">
                       <Label>Campanello</Label>
                       <Input
-                        defaultValue={address.doorbell?.toString()}
+                        value={address.doorbell ?? ""}
                         onChange={(e) => updateField(address.id, "doorbell", e.target.value)}
                       />
                     </div>
-
                     <div className="space-y-2 w-full">
                       <Label>Piano</Label>
                       <Input
-                        defaultValue={address.floor?.toString()}
+                        value={address.floor ?? ""}
                         onChange={(e) => updateField(address.id, "floor", e.target.value)}
                       />
                     </div>
-
                     <div className="space-y-2 w-full">
                       <Label>Scala</Label>
                       <Input
-                        defaultValue={address.stair?.toString()}
+                        value={address.stair ?? ""}
                         onChange={(e) => updateField(address.id, "stair", e.target.value)}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2 w-full">
-                    <Label>Informazioni stradali</Label>
+                    <Label>Note / Info stradali</Label>
                     <Textarea
-                      defaultValue={address.street_info?.toString()}
+                      placeholder="Arrivare da... campanello non funziona..."
+                      value={address.street_info ?? ""}
                       onChange={(e) => updateField(address.id, "street_info", e.target.value)}
+                      className="resize-none"
                     />
                   </div>
                 </AccordionContent>
               </AccordionItem>
 
-              <Button type="button" variant="link" onClick={() => toggleAddress(address)}>
-                {address.active ? "Disattiva" : "Attiva"}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "flex items-center justify-center",
+                  address.active
+                    ? "text-destructive hover:text-destructive/80"
+                    : "text-green-600 hover:text-green-700"
+                )}
+                onClick={() => toggleAddress(address.id)}
+              >
+                {address.active ? (
+                  <>
+                    <PowerOff className="h-4 w-4" />
+                    {/* <span className="text-xs font-semibold uppercase">Disattiva</span> */}
+                  </>
+                ) : (
+                  <>
+                    <Power className="h-4 w-4" />
+                    {/* <span className="text-xs font-semibold uppercase">Attiva</span> */}
+                  </>
+                )}
               </Button>
             </div>
           ))
         ) : (
-          <AccordionItem value={"no"}>
-            <AccordionTrigger>Nessun indirizzo!</AccordionTrigger>
-            <AccordionContent>
-              Questo cliente per ora non possiede nessun indirizzo
-            </AccordionContent>
-          </AccordionItem>
+          <div className="py-10 text-center text-muted-foreground text-sm italic">
+            Nessun indirizzo associato. Clicca su aggiungi per iniziare.
+          </div>
         )}
       </Accordion>
-
-      <div className="flex justify-end">
-        <Button onClick={() => saveAddresses()}>Salva modifiche</Button>
-      </div>
     </div>
   );
 }
