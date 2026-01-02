@@ -32,25 +32,12 @@ export default function useProductExtras({ order }: UseProductExtrasParams) {
     let extraUpdates: Partial<Record<ExtraItems, number | null>> = {};
 
     if (locked) {
+      // FIX: Removed the check (newValues < order.values) which was forcing a reset
+      // when manual items were higher than product-generated items.
       const newValues: Partial<Record<ExtraItems, number | null>> = {
-        soups:
-          order.soups !== null
-            ? newSoups < order.soups!
-              ? null
-              : order.soups! + deltaSoups // 👉 fallback to auto if smaller
-            : null,
-        salads:
-          order.salads !== null
-            ? newSalads < order.salads!
-              ? null
-              : order.salads! + deltaSalads
-            : null,
-        rices:
-          order.rices !== null
-            ? newRices < order.rices!
-              ? null
-              : order.rices! + deltaRices
-            : null,
+        soups: order.soups !== null ? Math.max(0, order.soups! + deltaSoups) : null,
+        salads: order.salads !== null ? Math.max(0, order.salads! + deltaSalads) : null,
+        rices: order.rices !== null ? Math.max(0, order.rices! + deltaRices) : null,
       };
 
       (Object.entries(newValues) as [ExtraItems, number | null][])
@@ -59,7 +46,7 @@ export default function useProductExtras({ order }: UseProductExtrasParams) {
           updateExtraMutation.mutate({
             orderId: order.id,
             items: key,
-            value, // can be null -> unlocks auto mode
+            value,
           });
           extraUpdates[key] = value;
         });

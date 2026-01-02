@@ -68,7 +68,7 @@ export default function AllProductsDialog({ allProducts, owner }: AllProductsDia
     columns: tableColumns,
     query: debouncedQuery,
     setQuery: setInputQuery,
-    pagination: { mode: "client" },
+    pagination: { mode: "client", pageSize: tableData.length,  },
   });
 
   return (
@@ -98,7 +98,7 @@ export default function AllProductsDialog({ allProducts, owner }: AllProductsDia
             table={table}
           />
         </div>
-        <Table table={table} />
+        <Table table={table}  maxRows={10}/>
       </div>
     </WasabiDialog>
   );

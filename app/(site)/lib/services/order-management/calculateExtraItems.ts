@@ -1,5 +1,4 @@
-import { OrderByType, ProductInOrder } from "@/app/(site)/lib/shared"
-;
+import { OrderByType, ProductInOrder } from "@/app/(site)/lib/shared";
 import { ExtraItems } from "../../../(domains)/orders/single-order/overview/ExtraItems";
 
 const computeItemsByKey = (key: ExtraItems, products: ProductInOrder[]) =>
@@ -16,9 +15,12 @@ export default function calculateExtraItems(order: OrderByType) {
   const saladsFromOrder = order.salads ?? 0;
   const ricesFromOrder = order.rices ?? 0;
 
-  const soupsFinal = order.soups !== null && order.soups !== undefined ? order.soups : soupsFromProducts;
-  const saladsFinal = order.salads !== null && order.salads !== undefined ? order.salads : saladsFromProducts;
-  const ricesFinal = order.rices !== null && order.rices !== undefined ? order.rices : ricesFromProducts;
+  const soupsFinal =
+    order.soups !== null && order.soups !== undefined ? order.soups : soupsFromProducts;
+  const saladsFinal =
+    order.salads !== null && order.salads !== undefined ? order.salads : saladsFromProducts;
+  const ricesFinal =
+    order.rices !== null && order.rices !== undefined ? order.rices : ricesFromProducts;
 
   return {
     soupsFromProducts,

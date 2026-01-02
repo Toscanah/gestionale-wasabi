@@ -77,7 +77,6 @@ export default function OrderTable() {
     if (payingAction === "paidFull") toggleDialog(false);
   }, [payingAction]);
 
-  // Auto-print
   useEffect(() => {
     const rec = async () => {
       const updated = await updatePrintedProducts();

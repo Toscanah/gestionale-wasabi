@@ -91,7 +91,6 @@ export default function ExtraItems() {
   } = calculateExtraItems(order);
 
   useFocusOnClick(["Zuppe", "Insalate", "Riso"]);
-  // useLocalExtraItems();
 
   const [manualExtras, setManualExtras] = useState<ManualExtras>({
     soups: 0,
@@ -119,6 +118,7 @@ export default function ExtraItems() {
         salads: extras.salads === saladsFromProducts ? null : extras.salads,
         rices: extras.rices === ricesFromProducts ? null : extras.rices,
       };
+
 
       for (const [key, value] of Object.entries(updates)) {
         updateExtraMutation.mutate({
