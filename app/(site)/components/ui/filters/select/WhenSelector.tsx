@@ -1,6 +1,14 @@
 import { ComponentRef, ElementRef, forwardRef, KeyboardEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, Clock, Moon, PuzzlePiece, RocketLaunchIcon, Sun, WineIcon } from "@phosphor-icons/react";
+import {
+  Check,
+  Clock,
+  Moon,
+  PuzzlePiece,
+  RocketLaunchIcon,
+  Sun,
+  WineIcon,
+} from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import generateTimeSlots from "@/app/(site)/lib/utils/global/time/generateTimeSlots";
 import {
@@ -9,10 +17,7 @@ import {
 } from "@/app/(site)/lib/shared/constants/default-when";
 import { ShiftBoundaries } from "@/app/(site)/lib/shared";
 import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import WasabiSelect, {
-  CommandGroupType,
-  CommandOption,
-} from "../../wasabi/WasabiSelect";
+import WasabiSelect, { CommandGroupType, CommandOption } from "../../wasabi/WasabiSelect";
 
 interface WhenSelectorProps {
   className?: string;
@@ -149,9 +154,17 @@ const WhenSelector = forwardRef<ComponentRef<typeof WasabiSelect>, WhenSelectorP
         appearance="form"
         groups={groups}
         searchPlaceholder="Cerca un orario..."
-        onChange={(value) => {
-          if (onValueChange) onValueChange(value);
-          setOneTimeValue(value);
+        onChange={(val) => {
+          // 1. Normalize the input to lowercase and trim spaces
+          const cleanVal = val.toLowerCase().trim();
+
+          // 2. Check if the user typed "subito" (or similar) manually
+          const finalValue =
+            cleanVal === DEFAULT_WHEN_LABEL.toLowerCase() ? DEFAULT_WHEN_VALUE : val;
+
+          // 3. Pass the corrected value
+          if (onValueChange) onValueChange(finalValue);
+          setOneTimeValue(finalValue);
           setOpen(false);
         }}
         filterFn={whenSelectorFilter}

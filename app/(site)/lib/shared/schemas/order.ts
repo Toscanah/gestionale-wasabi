@@ -239,6 +239,7 @@ export namespace OrderContracts {
     export const Input = z.object({
       orderId: z.number(),
       cooked: z.boolean().optional().default(false),
+      hardCancel: z.boolean().optional().default(false),
     });
     export type Input = z.infer<typeof Input>;
 

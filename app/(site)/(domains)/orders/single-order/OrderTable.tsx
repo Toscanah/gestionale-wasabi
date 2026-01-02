@@ -32,6 +32,7 @@ export default function OrderTable() {
     toggleDialog,
     dialogOpen,
     updatePrintedProducts,
+    cancelOrder,
   } = useOrderContext();
 
   const { printKitchen } = usePrinter();
@@ -84,6 +85,12 @@ export default function OrderTable() {
         await printKitchen({ order: { ...order, products: updated } });
       }
     };
+
+    const realProduct = order.products.filter((p) => p.product_id !== -1);
+
+    if (!dialogOpen && realProduct.length === 0 && order.status !== OrderStatus.CANCELLED) {
+      cancelOrder(false, true);
+    }
 
     if (!dialogOpen && !order.suborder_of && order.status !== OrderStatus.CANCELLED) {
       payingAction === "payPart" ? setTimeout(rec, 500) : rec();

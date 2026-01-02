@@ -57,8 +57,8 @@ export function useOrderManager(
 
   const updatePrintedFlag = () => printedFlagMutation.mutateAsync({ orderId });
 
-  const cancelOrder = async (cooked = false) => {
-    const deletedOrder = await trpcClient.orders.cancel.mutate({ orderId, cooked });
+  const cancelOrder = async (cooked = false, hardCancel = false) => {
+    const deletedOrder = await trpcClient.orders.cancel.mutate({ orderId, cooked, hardCancel });
     updateRemainingRice();
     updateGlobalState(deletedOrder, "delete");
   };
