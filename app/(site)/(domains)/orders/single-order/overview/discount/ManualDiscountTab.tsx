@@ -43,6 +43,15 @@ export default function ManualDiscountTab({ activeTab }: ManualDiscountTabProps)
 
   useFocusOnClick(["manual-discount-input"]);
 
+  useEffect(() => {
+    if (activeTab === "manual-discount") {
+      setTimeout(() => {
+        const input = document.getElementById("manual-discount-input");
+        input?.focus();
+      }, 300);
+    }
+  }, [activeTab]);
+
   return (
     <WasabiAnimatedTab
       value="manual-discount"

@@ -67,6 +67,15 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
   });
 
   useEffect(() => {
+    if (activeTab === "promotions-discounts") {
+      setTimeout(() => {
+        const input = document.getElementById("promo-code-input");
+        input?.focus();
+      }, 300);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
     setPromoCode("");
     setFoundPromo(null);
     setIsSearching(false);
