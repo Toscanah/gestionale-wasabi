@@ -77,6 +77,7 @@ export const CreateHomeOrderProvider = ({
     setExtraInfo,
     selectedOption,
     setSelectedAddress,
+    setSelectedOption,
   });
 
   const { permAddresses, tempAddress } = useAddressSelection({

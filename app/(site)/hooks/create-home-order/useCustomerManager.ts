@@ -20,6 +20,7 @@ interface UseCustomerManageParams {
   setExtraInfo: Dispatch<SetStateAction<ExtraInfo>>;
   selectedOption: string;
   setSelectedAddress: Dispatch<SetStateAction<AddressType | undefined>>;
+  setSelectedOption: (option: string) => void;
 }
 
 type CreateCustomerInput = CustomerContracts.Create.Input["customer"];
@@ -32,6 +33,7 @@ export default function useCustomerManager({
   setExtraInfo,
   selectedOption,
   setSelectedAddress,
+  setSelectedOption,
 }: UseCustomerManageParams) {
   const createCustomerMutation = trpc.customers.create.useMutation();
   const updateCustomerMutation = trpc.customers.updateFromOrder.useMutation();
@@ -177,6 +179,11 @@ export default function useCustomerManager({
         })
       );
 
+      setSelectedOption(updatedAddress.id.toString());
+
+      // 👇 2. UPDATE THE OBJECT (The Data State)
+      // Note: This is technically redundant if useAddressSelection is working perfectly,
+      // but it makes the UI update feel instant without waiting for the effect cycle.
       setSelectedAddress(updatedAddress);
 
       toastSuccess("Il cliente e i suoi indirizzi sono stati correttamente aggiornati");
