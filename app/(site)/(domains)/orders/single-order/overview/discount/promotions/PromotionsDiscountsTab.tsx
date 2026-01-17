@@ -90,15 +90,35 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
 
     setIsSearching(true);
     const performSearch = debounce((code: string) => {
-      setPromoAmount("");
       const match = promotions.find((p) => p.code.toLowerCase() === code.trim().toLowerCase());
+
+      // Calculate default amount for gift cards
+      if (match && PromotionGuards.isGiftCard(match)) {
+        // Calculate current order total with all existing discounts/promotions applied
+        const currentTotal = getOrderTotal({
+          order: order,
+          applyDiscounts: true,
+        });
+
+        // Clamp to available gift card amount
+        const availableAmount = Math.max(
+          (match.fixed_amount ?? 0) - match.usages.reduce((sum, u) => sum + u.amount, 0),
+          0
+        );
+
+        const defaultAmount = Math.min(currentTotal, availableAmount);
+        setPromoAmount(defaultAmount);
+      } else {
+        setPromoAmount("");
+      }
+
       setFoundPromo(match ?? null);
       setIsSearching(false);
     }, 500);
 
     performSearch(promoCode);
     return () => performSearch.cancel();
-  }, [promoCode, promotions]);
+  }, [promoCode, promotions, order]);
 
   const utils = trpc.useUtils();
 
@@ -115,7 +135,6 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
 
     if (foundPromo.type === PromotionType.GIFT_CARD) {
       const amount = Number(promoAmount) || 0;
-      console.log("Applying gift card with amount:", amount);
       applyPromotionToOrder(foundPromo.code, amount);
     } else {
       applyPromotionToOrder(foundPromo.code);

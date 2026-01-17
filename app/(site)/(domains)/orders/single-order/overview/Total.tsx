@@ -10,7 +10,7 @@ export default function Total() {
 
   // Build dynamic labels
   const labels = [];
-  if (hasManualDiscount) labels.push("Sconto");
+  if (hasManualDiscount) labels.push("sconto");
   if (hasPromotions) labels.push("promo");
 
   // Compute totals
