@@ -10,7 +10,7 @@ import { uniqueId } from "lodash";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
 import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import splitOptionsInLines from "@/app/(site)/lib/utils/domains/printing/splitOptionsIntoLines";
-import PromotionSection from "../PromotionSection";
+import DiscountsSection from "../DiscountsSection";
 
 const TOTAL_ROW_WIDTH = 48;
 

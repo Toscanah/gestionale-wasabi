@@ -16,7 +16,7 @@ import { BIG_PRINT } from "../../../lib/shared/constants/printing";
 import SingleEngagement from "../common/SingleEngagement";
 import { Fragment } from "react";
 import TotalSection from "../common/TotalSection";
-import PromotionSection from "../common/PromotionSection";
+import DiscountsSection from "../common/DiscountsSection";
 
 export interface OrderReceiptProps {
   order: OrderByType;
@@ -82,7 +82,7 @@ export default function OrderReceipt<T extends OrderByType>({
 
       {ProductsListSection({ products, orderType: type, discount, recipient: "customer" })}
 
-      {PromotionSection({ order })}
+      {DiscountsSection({ order })}
 
       {TotalSection({ products, discount, orderType: type })}
       <Br />

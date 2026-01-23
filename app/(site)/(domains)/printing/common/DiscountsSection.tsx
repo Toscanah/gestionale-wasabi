@@ -20,7 +20,7 @@ const wrapLabel = (label: string | null | undefined) => {
   return fitReceiptText(sanitazeReceiptText(label), 30);
 };
 
-export default function PromotionSection({ order }: PromotionSectionProps) {
+export default function DiscountsSection({ order }: PromotionSectionProps) {
   const { discount, products: originalProducts, promotion_usages } = order;
 
   const hasPromotionUsage = promotion_usages && promotion_usages.length > 0;
