@@ -74,7 +74,7 @@ const replacements = new Map<string, string>([
   ["…", "..."],
 ]);
 
-export default function sanitizeReceiptText(input: string | undefined): string {
+export default function sanitizeReceiptText(input: string | undefined | null): string {
   return !input
     ? ""
     : input

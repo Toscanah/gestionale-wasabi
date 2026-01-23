@@ -4,6 +4,8 @@ import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
 import { ProductInOrder } from "@/app/(site)/lib/shared";
 import getDiscountedTotal from "@/app/(site)/lib/services/order-management/getDiscountedTotal";
 import { PromotionType } from "@/prisma/generated/client/enums";
+import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
+import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
 
 interface PromotionSectionProps {
   order: OrderByType;
@@ -12,6 +14,10 @@ interface PromotionSectionProps {
 const calculateDiscountAmount = (products: ProductInOrder[], discount: number) => {
   const total = products.reduce((acc, product) => acc + product.quantity * product.frozen_price, 0);
   return total - getDiscountedTotal({ orderTotal: total, discountPercentage: discount });
+};
+
+const wrapLabel = (label: string | null | undefined) => {
+  return fitReceiptText(sanitazeReceiptText(label), 30);
 };
 
 export default function PromotionSection({ order }: PromotionSectionProps) {
@@ -31,7 +37,7 @@ export default function PromotionSection({ order }: PromotionSectionProps) {
   const fixedDiscounts = promotion_usages.filter(
     (usage) => usage.promotion.type === PromotionType.FIXED_DISCOUNT,
   );
-  
+
   const percentageDiscounts = promotion_usages.filter(
     (usage) => usage.promotion.type === PromotionType.PERCENTAGE_DISCOUNT,
   );
@@ -50,7 +56,7 @@ export default function PromotionSection({ order }: PromotionSectionProps) {
       {giftCards.map((usage) => (
         <Row
           key={usage.id}
-          left={<Text>{usage.promotion.label}</Text>}
+          left={<Text>{wrapLabel(usage.promotion.label)}</Text>}
           right={<Text>- {roundToTwo(usage.amount)}</Text>}
         />
       ))}
@@ -58,7 +64,7 @@ export default function PromotionSection({ order }: PromotionSectionProps) {
       {fixedDiscounts.map((usage) => (
         <Row
           key={usage.id}
-          left={<Text>{usage.promotion.label}</Text>}
+          left={<Text>{wrapLabel(usage.promotion.label)}</Text>}
           right={<Text>- {roundToTwo(usage.amount)}</Text>}
         />
       ))}
@@ -66,7 +72,7 @@ export default function PromotionSection({ order }: PromotionSectionProps) {
       {percentageDiscounts.map((usage) => (
         <Row
           key={usage.id}
-          left={<Text>{usage.promotion.label}</Text>}
+          left={<Text>{wrapLabel(usage.promotion.label)}</Text>}
           right={<Text>- {roundToTwo(usage.amount)}</Text>}
         />
       ))}
