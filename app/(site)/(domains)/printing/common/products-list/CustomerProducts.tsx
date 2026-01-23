@@ -10,6 +10,7 @@ import { uniqueId } from "lodash";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
 import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
 import splitOptionsInLines from "@/app/(site)/lib/utils/domains/printing/splitOptionsIntoLines";
+import PromotionSection from "../PromotionSection";
 
 const TOTAL_ROW_WIDTH = 48;
 
@@ -76,11 +77,6 @@ const HEAD_PRODUCT_PADDING =
 /* --- ALTRO --- */
 const OPTIONS_START_PADDING = 4;
 
-const calculateDiscountAmount = (products: ProductInOrder[], discount: number) => {
-  const total = products.reduce((acc, product) => acc + product.quantity * product.frozen_price, 0);
-  return total - getDiscountedTotal({ orderTotal: total, discountPercentage: discount });
-};
-
 interface CustomerProductsProps {
   discount: number;
   groupedProducts: GroupedProductsByOptions;
@@ -105,7 +101,7 @@ export default function CustomerProducts({
           {fitReceiptText(
             sanitazeReceiptText(product.product.code.toUpperCase()),
             MAX_CODE_WIDTH,
-            CODE_PADDING
+            CODE_PADDING,
           )}
         </Text>
 
@@ -113,7 +109,7 @@ export default function CustomerProducts({
           {fitReceiptText(
             sanitazeReceiptText(product.product.desc),
             MAX_DESCRIPTION_WIDTH,
-            DESCRIPTION_PADDING
+            DESCRIPTION_PADDING,
           )}
         </Text>
 
@@ -125,7 +121,7 @@ export default function CustomerProducts({
           {fitReceiptText(
             String(roundToTwo(product.quantity * product.frozen_price)),
             MAX_TOTAL_WIDTH,
-            0
+            0,
           )}
         </Text>
 
@@ -154,7 +150,7 @@ export default function CustomerProducts({
             {splitOptionsInLines(optionsKey, TOTAL_ROW_WIDTH, OPTIONS_START_PADDING).map(
               (line, lineIdx) => (
                 <Text key={`options-${idx}-${lineIdx}`}>{line}</Text>
-              )
+              ),
             )}
 
             {idx < arr.length - 1 && arr.length > 1 && <Text align="center">---</Text>}
@@ -168,15 +164,6 @@ export default function CustomerProducts({
       {groupedProducts["no_options"]?.map((product) => ProductLine({ product }))}
 
       {groupedProducts["no_options"]?.length > 0 && <Text align="center">---</Text>}
-
-      {discount > 0 && (
-        <Row
-          left={<Text>- {discount}%</Text>}
-          right={<Text>- {roundToTwo(calculateDiscountAmount(originalProducts, discount))}</Text>}
-        />
-      )}
-
-      {TotalSection({ products: originalProducts, discount, orderType })}
       <Br />
     </>
   );

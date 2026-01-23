@@ -15,6 +15,8 @@ import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeRec
 import { BIG_PRINT } from "../../../lib/shared/constants/printing";
 import SingleEngagement from "../common/SingleEngagement";
 import { Fragment } from "react";
+import TotalSection from "../common/TotalSection";
+import PromotionSection from "../common/PromotionSection";
 
 export interface OrderReceiptProps {
   order: OrderByType;
@@ -64,7 +66,7 @@ export default function OrderReceipt<T extends OrderByType>({
                   ? pickupOrder.customer.name
                   : pickupOrder.customer?.phone.phone
                     ? pickupOrder.customer.phone.phone
-                    : ""
+                    : "",
             )}
           </Text>
           <Text align="right" size={BIG_PRINT}>
@@ -79,6 +81,12 @@ export default function OrderReceipt<T extends OrderByType>({
       <Br />
 
       {ProductsListSection({ products, orderType: type, discount, recipient: "customer" })}
+
+      {PromotionSection({ order })}
+
+      {TotalSection({ products, discount, orderType: type })}
+      <Br />
+
       <Line />
 
       {(homeOrder || pickupOrder) && putInfo && (

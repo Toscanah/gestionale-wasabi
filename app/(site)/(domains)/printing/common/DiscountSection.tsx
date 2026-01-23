@@ -1,1 +1,0 @@
-// export default function DiscountSection({ discount }: { discount: number }) {
