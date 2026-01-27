@@ -11,7 +11,7 @@ export default async function cancelOrdersInBulk({
 
     await Promise.all(
       orderIds.map(async (orderId) => {
-        const { id, type } = await cancelOrder({ orderId, cooked: productsCooked });
+        const { id, type } = await cancelOrder({ orderId, cooked: productsCooked, hardCancel: false });
         results.push({ orderId: id, type });
       })
     );

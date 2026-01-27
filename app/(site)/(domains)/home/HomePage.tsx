@@ -21,6 +21,7 @@ const RandomSpinner = dynamic(() => import("../../components/ui/misc/loader/Rand
   ssr: false,
 });
 
+
 interface HomePageProps {
   orders: BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>;
   loadings: BuildOrderState<boolean, boolean, boolean>;
@@ -40,17 +41,17 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
     setActiveOrders((prev) =>
       Object.keys(prev).filter((key) => prev[key as OrderType]).length === 1 && prev[type]
         ? prev
-        : { ...prev, [type]: !prev[type] }
+        : { ...prev, [type]: !prev[type] },
     );
 
   const allOrdersFlat: OrderByType[] = useMemo(
     () => [...orders.TABLE, ...orders.HOME, ...orders.PICKUP],
-    [orders]
+    [orders],
   );
 
   const overdrawnOrderIds = useMemo(
     () => getOverdrawnOrderIds(allOrdersFlat, rice.total),
-    [allOrdersFlat, rice]
+    [allOrdersFlat, rice],
   );
 
   const activeOrderTypes = Object.values(OrderType).filter((type) => activeOrders[type]);
@@ -99,7 +100,7 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
                       triggerClassName={cn(
                         "rounded-none",
                         index === 0 && "rounded-tl-md",
-                        index === totalTypes - 1 && "rounded-tr-md"
+                        index === totalTypes - 1 && "rounded-tr-md",
                       )}
                     >
                       {orders[type].length !== 0 && "(" + orders[type].length + ")"}
@@ -110,7 +111,7 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
                     isLoading={isLoading || isLoadingCachedData}
                     overdrawnOrderIds={overdrawnOrderIds}
                     data={orders[type].sort(
-                      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
                     )}
                     type={type}
                   />
