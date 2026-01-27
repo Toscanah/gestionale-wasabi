@@ -1,25 +1,25 @@
 import { ColumnDef } from "@tanstack/react-table";
-import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
 import { Button } from "@/components/ui/button";
-import OrderHistory from "../../../components/order-history/OrderHistory";
+import OrderHistory from "../../../../../components/order-history/OrderHistory";
 import {
   ActionColumn,
   FieldColumn,
   JoinColumn,
   ValueColumn,
-} from "@/app/(site)/components/table/TableColumns";
-import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
+} from "@/components/table/TableColumns";
+import FullNameColumn from "@/components/table/common/FullNameColumn";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import { CustomerStatsTableMeta } from "./page";
 import chroma from "chroma-js";
-import { CUSTOMER_ORIGIN_LABELS, CustomerWithStats } from "@/app/(site)/lib/shared";
+import { CUSTOMER_ORIGIN_LABELS, CustomerWithStats } from "@/lib/shared";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
 import { differenceInCalendarDays, format } from "date-fns";
-import { DARK_SCALE_3, LIGHT_SCALE_3 } from "@/app/(site)/lib/shared/constants/colors";
+import { DARK_SCALE_3, LIGHT_SCALE_3 } from "@/lib/shared/constants/colors";
 import { Separator } from "@/components/ui/separator";
-import { EnDash } from "@/app/(site)/components/ui/misc/Placeholders";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { EnDash } from "@/components/shared/misc/Placeholders";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 
 const QuickTooltip = ({ title, label }: { title: string; label: string }) => (
   <Tooltip delayDuration={0}>

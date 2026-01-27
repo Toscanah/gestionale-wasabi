@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import formatRice from "../../../lib/utils/domains/rice/formatRice";
-import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
+import formatRice from "../../../../../lib/shared/utils/domains/rice/formatRice";
+import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
 import TopOptions from "./dialogs/TopOptions";
 import TopCustomers from "./dialogs/TopCustomers";
 import {
@@ -8,13 +8,13 @@ import {
   FieldColumn,
   IndexColumn,
   ValueColumn,
-} from "@/app/(site)/components/table/TableColumns";
-import { ProductWithStats } from "@/app/(site)/lib/shared";
+} from "@/components/table/TableColumns";
+import { ProductWithStats } from "@/lib/shared";
 import { ProductStatsTableMeta } from "./page";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { NA } from "@/app/(site)/components/ui/misc/Placeholders";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { NA } from "@/components/shared/misc/Placeholders";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 const columns: ColumnDef<ProductWithStats>[] = [
   IndexColumn({}),

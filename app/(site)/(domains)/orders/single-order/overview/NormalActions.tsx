@@ -1,19 +1,19 @@
-import { OrderByType, HomeOrder, OrderGuards } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder, OrderGuards } from "@/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { PayingAction } from "../OrderTable";
-import print from "@/app/(site)/(domains)/printing/print";
-import OrderReceipt from "@/app/(site)/(domains)/printing/receipts/OrderReceipt";
+import print from "@/domains/printing/print";
+import OrderReceipt from "@/domains/printing/receipts/OrderReceipt";
 import { OrderType, PaymentScope, PlannedPayment } from "@/prisma/generated/client/enums";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
-import useMetaTemplates from "@/app/(site)/hooks/meta/useMetaTemplates";
-import { useTemplatesParams } from "@/app/(site)/hooks/meta/useTemplatesParams";
-import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/app/(site)/lib/integrations/meta/constants";
-import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import usePrintingActions from "@/app/(site)/hooks/printing/usePrintingActions";
+import { ProductInOrder } from "@/lib/shared";
+import { useOrderContext } from "@/context/OrderContext";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
+import useMetaTemplates from "@/hooks/meta/useMetaTemplates";
+import { useTemplatesParams } from "@/hooks/meta/useTemplatesParams";
+import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/lib/integrations/meta/constants";
+import { useWasabiContext } from "@/context/WasabiContext";
+import usePrintingActions from "@/hooks/printing/usePrintingActions";
 
 interface NormalActionsProps {
   plannedPayment: PlannedPayment;

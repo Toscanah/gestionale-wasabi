@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { PaymentType } from "@/prisma/generated/client/enums";
-import { OrderByType } from "@/app/(site)/lib/shared";
-import useOrderPayment from "../hooks/order/useOrderPayment";
-import roundToTwo from "../lib/utils/global/number/roundToTwo";
+import { OrderByType } from "@/lib/shared";
+import useOrderPayment from "../../../hooks/order/useOrderPayment";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import { useOrderContext } from "./OrderContext";
-import { getOrderTotal } from "../lib/services/order-management/getOrderTotal";
+import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 import { OrderPaymentProps } from "../(domains)/payments/order/OrderPayment";
-import roundToCents from "../lib/utils/global/number/roundToCents";
+import roundToCents from "@/lib/shared/utils/global/number/roundToCents";
 
 interface OrderPaymentContextProps {
   payment: Payment;

@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
-import Table from "../../../components/table/Table";
-import useTable from "../../../hooks/table/useTable";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import Table from "../../../../../components/table/Table";
+import useTable from "../../../../../hooks/table/useTable";
+import { ProductInOrder } from "@/lib/shared";
 import getColumns from "./getColumns";
 import { OrderType } from "@/prisma/generated/client/enums";
-import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
+import { getOrderTotal } from "../../../../../lib/services/order-management/getOrderTotal";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 interface DivideTableProps {
   products: ProductInOrder[];

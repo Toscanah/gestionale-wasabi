@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HomeOrder } from "@/app/(site)/lib/shared";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import calculateETA from "@/app/(site)/lib/services/order-management/calculateETA";
+import { HomeOrder } from "@/lib/shared";
+import { useOrderContext } from "@/context/OrderContext";
+import { useWasabiContext } from "@/context/WasabiContext";
+import calculateETA from "@/lib/services/order-management/calculateETA";
 
 export default function ETA() {
   return <></>

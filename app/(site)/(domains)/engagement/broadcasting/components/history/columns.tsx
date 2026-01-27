@@ -1,5 +1,5 @@
-import { ActionColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import { EngagementLedgerWithDetails } from "@/app/(site)/lib/shared";
+import { ActionColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
+import { EngagementLedgerWithDetails } from "@/lib/shared";
 import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
 import { ColumnDef } from "@tanstack/react-table";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,7 @@ import { ArrowCounterClockwise, Check } from "@phosphor-icons/react";
 import {
   ENG_LEDGER_COLORS,
   ENG_LEDGER_LABELS,
-} from "@/app/(site)/lib/shared/constants/engagement-ledger-labels";
+} from "@/lib/shared/constants/engagement-ledger-labels";
 
 const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
   IndexColumn({}),

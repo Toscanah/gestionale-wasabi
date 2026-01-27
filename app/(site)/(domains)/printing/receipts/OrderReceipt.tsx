@@ -5,14 +5,14 @@ import {
   PickupOrder,
   TableOrder,
   OrderGuards,
-} from "@/app/(site)/lib/shared";
+} from "@/lib/shared";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/info/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
 import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
-import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
-import { BIG_PRINT } from "../../../lib/shared/constants/printing";
+import sanitazeReceiptText from "../../../../../lib/shared/utils/domains/printing/sanitazeReceiptText";
+import { BIG_PRINT } from "@/lib/shared/constants/printing";
 import SingleEngagement from "../common/SingleEngagement";
 import { Fragment } from "react";
 import TotalSection from "../common/TotalSection";

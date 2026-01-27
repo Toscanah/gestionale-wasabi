@@ -1,10 +1,10 @@
 import { Br, Text } from "react-thermal-printer";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
-import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
+import { ProductInOrder } from "@/lib/shared";
+import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
 import { OrderType } from "@/prisma/generated/client/enums";
-import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
-import { BIG_PRINT } from "../../../lib/shared/constants/printing";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { getOrderTotal } from "../../../../../lib/services/order-management/getOrderTotal";
+import { BIG_PRINT } from "@/lib/shared/constants/printing";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 interface TotalSectionProps {
   products: ProductInOrder[];

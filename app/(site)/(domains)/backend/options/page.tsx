@@ -1,10 +1,10 @@
 "use client";
 
 import Manager, { FormFieldsProps } from "../manager/Manager";
-import { OptionWithCategories } from "@/app/(site)/lib/shared";
+import { OptionWithCategories } from "@/lib/shared";
 import columns from "./columns";
 import { getOptionFields, OptionFormData, optionFormSchema } from "./form";
-import useOptionsManager from "@/app/(site)/hooks/backend/base/useOptionsManager";
+import useOptionsManager from "@/hooks/backend/base/useOptionsManager";
 import { FormFields } from "../manager/FormFields";
 
 export default function OptionsDashboard() {

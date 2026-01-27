@@ -1,6 +1,6 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import OrderDeletionDialog from "@/app/(site)/(domains)/orders/single-order/overview/OrderDeletionDialog";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import OrderDeletionDialog from "@/domains/orders/single-order/overview/OrderDeletionDialog";
+import { useOrderContext } from "@/context/OrderContext";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";

@@ -1,16 +1,16 @@
 import { KeyboardEvent, RefCallback, RefObject, useEffect } from "react";
 import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
+import { useCreateHomeOrder } from "@/context/CreateHomeOrderContext";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import { FormField as RawFormField } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
+import { CUSTOMER_ORIGIN_LABELS } from "@/lib/shared";
 import { addressFormSchema } from "./form";
-import { WasabiFormField } from "@/app/(site)/components/ui/wasabi/WasabiFormField";
-import { useZodForm } from "@/app/(site)/hooks/useZodForm";
+import { WasabiFormField } from "@/components/shared/wasabi/WasabiFormField";
+import { useZodForm } from "@/hooks/useZodForm";
 
 interface AddressFormProps {
   formRef: RefObject<HTMLFormElement | null>;

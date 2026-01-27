@@ -1,23 +1,23 @@
 "use client";
 
-import useTable from "../../../hooks/table/useTable";
-import Table from "../../../components/table/Table";
+import useTable from "../../../../../hooks/table/useTable";
+import Table from "../../../../../components/table/Table";
 import columns from "./columns";
-import GoBack from "../../../components/ui/misc/GoBack";
-import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
-import { RFMConfig, RFMRankRule, RFMRules } from "@/app/(site)/lib/shared/types/RFM";
+import GoBack from "@/components/shared/misc/GoBack";
+import { RFMConfig, RFMRankRule, RFMRules } from "@/lib/shared/types/RFM";
 import { useTheme } from "next-themes";
-import useCustomersStats from "@/app/(site)/hooks/statistics/useCustomersStats";
-import TablePagination from "@/app/(site)/components/table/TablePagination";
-import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
+import useCustomersStats from "@/hooks/statistics/useCustomersStats";
+import TablePagination from "@/components/table/TablePagination";
+import useTablePagination from "@/hooks/table/useTablePagination";
 import React, { useEffect } from "react";
-import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
-import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
-import RanksFilter from "@/app/(site)/components/ui/filters/select/RanksFilter";
-import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
-import CustomerOriginsFilter from "@/app/(site)/components/ui/filters/select/CustomerOriginsFilter";
+import useSkeletonTable from "@/hooks/table/useSkeletonTable";
+import SearchBar from "@/components/shared/filters/common/SearchBar";
+import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
+import RanksFilter from "@/components/shared/filters/select/RanksFilter";
+import SortingMenu from "@/components/shared/sorting/SortingMenu";
+import CustomerOriginsFilter from "@/components/shared/filters/select/CustomerOriginsFilter";
 import { Separator } from "@/components/ui/separator";
+import CalendarFilter from "@/components/shared/filters/calendar/CalendarFilter";
 
 export type CustomerStatsTableMeta = {
   ranks: RFMRankRule[];

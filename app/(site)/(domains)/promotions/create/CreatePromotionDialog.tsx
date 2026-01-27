@@ -1,5 +1,5 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import { useZodForm } from "@/app/(site)/hooks/useZodForm";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import { useZodForm } from "@/hooks/useZodForm";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusIcon } from "@phosphor-icons/react";
@@ -13,7 +13,7 @@ import {
 import { CreatePromotionFormSchema, CreatePromotionFormSchemaType } from "./CreatePromotionForm";
 import usePromotionsCreation, {
   createEmptyPromotion,
-} from "@/app/(site)/hooks/promotions/usePromotionsCreation";
+} from "@/hooks/promotions/usePromotionsCreation";
 
 interface CreatePromotionDialogProps {
   disabled?: boolean;

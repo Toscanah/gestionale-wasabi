@@ -1,0 +1,23 @@
+import { RiceLogType } from "@/prisma/generated/client/enums";
+import prisma from "../prisma";
+import { RiceContracts } from "@/lib/shared";
+
+export default async function addRiceLog({
+  riceBatchId,
+  manualValue,
+  type,
+}: RiceContracts.AddLog.Input): Promise<RiceContracts.AddLog.Output> {
+  return await prisma.riceLog.create({
+    data: {
+      rice_batch_id: riceBatchId,
+      manual_value: manualValue,
+      type: type
+        ? type
+        : riceBatchId
+          ? RiceLogType.BATCH
+          : manualValue
+            ? RiceLogType.MANUAL
+            : RiceLogType.RESET,
+    },
+  });
+}

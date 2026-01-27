@@ -4,22 +4,22 @@ import {
   FieldColumn,
   IndexColumn,
   ValueColumn,
-} from "../../components/table/TableColumns";
+} from "@/components/table/TableColumns";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   PROMOTION_TYPES_COLORS,
   PROMOTION_TYPES_LABELS,
-} from "../../lib/shared/constants/promotion-labels";
+} from "@/lib/shared/constants/promotion-labels";
 import { Badge } from "@/components/ui/badge";
-import { PromotionByType, PromotionGuards } from "../../lib/shared";
-import roundToTwo from "../../lib/utils/global/number/roundToTwo";
+import { PromotionByType, PromotionGuards } from "@/lib/shared";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import UsagesDialog from "./usages/UsagesDialog";
-import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { TrashIcon } from "@phosphor-icons/react";
 import { PromotionTableMeta } from "./page";
 import { differenceInDays } from "date-fns";
-import { EnDash, NA } from "../../components/ui/misc/Placeholders";
-import toEuro from "../../lib/utils/global/string/toEuro";
+import { EnDash, NA } from "@/components/shared/misc/Placeholders";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 function calcDiscountRaw(promotion: PromotionByType): number | null {
   if (PromotionGuards.isPercentageDiscount(promotion)) {

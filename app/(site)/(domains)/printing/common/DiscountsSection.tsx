@@ -1,11 +1,11 @@
 import { Row, Text } from "react-thermal-printer";
-import { OrderByType } from "../../../lib/shared/models/Order";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
-import getDiscountedTotal from "@/app/(site)/lib/services/order-management/getDiscountedTotal";
+import { OrderByType } from "@/lib/shared";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
+import { ProductInOrder } from "@/lib/shared";
+import getDiscountedTotal from "@/lib/services/order-management/getDiscountedTotal";
 import { PromotionType } from "@/prisma/generated/client/enums";
-import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
-import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
+import sanitazeReceiptText from "@/lib/shared/utils/domains/printing/sanitazeReceiptText";
+import fitReceiptText from "@/lib/shared/utils/domains/printing/fitReceiptText";
 
 interface PromotionSectionProps {
   order: OrderByType;

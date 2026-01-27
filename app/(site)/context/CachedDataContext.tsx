@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode } from "react";
-import { ComprehensiveCustomer, Product } from "../lib/shared";
-import { trpc } from "@/lib/server/client";
-import { customersAPI, productsAPI } from "@/lib/server/api";
+import { ComprehensiveCustomer, Product } from "@/lib/shared";
+import { trpc } from "@/lib/trpc/client";
+import { customersAPI, productsAPI } from "@/lib/trpc/api";
 
 interface CachedDataContextType {
   products: Product[];

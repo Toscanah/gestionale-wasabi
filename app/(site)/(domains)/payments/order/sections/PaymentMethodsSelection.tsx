@@ -4,11 +4,11 @@ import { Coins, CreditCard, ForkKnife, Money } from "@phosphor-icons/react";
 import {
   DEFAULT_CALCULATIONS,
   useOrderPaymentContext,
-} from "@/app/(site)/context/OrderPaymentContext";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
+} from "@/context/OrderPaymentContext";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 const paymentMethods: PaymentMethod[] = [
   { type: PaymentType.VOUCH, label: "Buoni pasto 饭票", icon: ForkKnife },

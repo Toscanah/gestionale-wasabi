@@ -1,15 +1,15 @@
-import { EnDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import useRfmRanks from "@/app/(site)/hooks/rfm/useRfmRanks";
-import useRfmRules from "@/app/(site)/hooks/rfm/useRfmRules";
-import extractCustomerOrders from "@/app/(site)/lib/services/customer-management/extractCustomerOrders";
-import calculateRFM from "@/app/(site)/lib/services/rfm/calculateRFM";
-import calculateRfmRank from "@/app/(site)/lib/services/rfm/calculateRfmRank";
-import calculateRfmScore from "@/app/(site)/lib/services/rfm/calculateRfmScore";
-import { prepareRFMInputs } from "@/app/(site)/lib/services/rfm/prepareRFMInputs";
-import { ComprehensiveCustomer, CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
-import { OrderGuards } from "@/app/(site)/lib/shared/types/_index";
-import { trpc } from "@/lib/server/client";
+import { EnDash, NA } from "@/components/shared/misc/Placeholders";
+import { useOrderContext } from "@/context/OrderContext";
+import useRfmRanks from "@/hooks/rfm/useRfmRanks";
+import useRfmRules from "@/hooks/rfm/useRfmRules";
+import extractCustomerOrders from "@/lib/services/customer-management/extractCustomerOrders";
+import calculateRFM from "@/lib/services/rfm/calculateRFM";
+import calculateRfmRank from "@/lib/services/rfm/calculateRfmRank";
+import calculateRfmScore from "@/lib/services/rfm/calculateRfmScore";
+import { prepareRFMInputs } from "@/lib/services/rfm/prepareRFMInputs";
+import { ComprehensiveCustomer, CUSTOMER_ORIGIN_LABELS } from "@/lib/shared";
+import { OrderGuards } from "@/lib/shared/types/_index";
+import { trpc } from "@/lib/trpc/client";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
 
 export default function CustomerLookup() {

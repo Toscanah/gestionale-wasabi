@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductInOrder } from "@/lib/shared";
 import { OrderType } from "@/prisma/generated/client/enums";
-import { FieldColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { FieldColumn, JoinColumn, ValueColumn } from "@/components/table/TableColumns";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 export default function getColumns(type: OrderType): ColumnDef<ProductInOrder>[] {
   return [

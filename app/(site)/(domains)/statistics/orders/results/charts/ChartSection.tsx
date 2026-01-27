@@ -1,11 +1,11 @@
-import { OrderContracts, OrdersStats, Weekday, WEEKDAY_LABELS } from "@/app/(site)/lib/shared";
+import { OrderContracts, OrdersStats, Weekday, WEEKDAY_LABELS } from "@/lib/shared";
 import { useState, useEffect } from "react";
 import DailyChart from "./DailyChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
+import WasabiSelect from "@/components/shared/wasabi/WasabiSelect";
 import { Skeleton } from "@/components/ui/skeleton";
 import { OrderType } from "@/prisma/generated/client/enums";
 import {

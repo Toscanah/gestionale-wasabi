@@ -1,5 +1,5 @@
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { Gear } from "@phosphor-icons/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RestaurantSettings from "./restaurant/RestaurantSettings";

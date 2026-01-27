@@ -1,17 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
-  ActionColumn,
   FieldColumn,
   JoinColumn,
   ValueColumn,
-} from "../../../components/table/TableColumns";
-import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
-import { Button } from "@/components/ui/button";
-import CustomerAddresses from "./addresses/CustomerAddresses";
-import { Dispatch, SetStateAction } from "react";
-import OrderHistory from "../../../components/order-history/OrderHistory";
-import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
+} from "../../../../../components/table/TableColumns";
+import { ComprehensiveCustomer } from "@/lib/shared";
+import { CUSTOMER_ORIGIN_LABELS } from "@/lib/shared";
 
 const columns: ColumnDef<ComprehensiveCustomer>[] = [
   FieldColumn({

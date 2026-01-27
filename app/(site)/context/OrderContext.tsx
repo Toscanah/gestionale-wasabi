@@ -1,8 +1,8 @@
 import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useState } from "react";
-import { OrderByType } from "@/app/(site)/lib/shared";
-import { useProductsManager } from "../hooks/order/useProductsManager";
-import generateDummyProduct from "../lib/services/product-management/generateDummyProduct";
-import { useOrderManager } from "../hooks/order/useOrderManager";
+import { OrderByType } from "@/lib/shared";
+import { useProductsManager } from "../../../hooks/order/useProductsManager";
+import generateDummyProduct from "@/lib/services/product-management/generateDummyProduct";
+import { useOrderManager } from "../../../hooks/order/useOrderManager";
 
 type OrderProviderProps = {
   order: OrderByType;

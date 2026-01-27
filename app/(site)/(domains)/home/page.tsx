@@ -2,10 +2,10 @@
 
 import { WasabiProvider } from "../../context/WasabiContext";
 import { OrderType } from "@/prisma/generated/client/enums";
-import { TableOrder, HomeOrder, PickupOrder, OrderByType } from "@/app/(site)/lib/shared";
+import { TableOrder, HomeOrder, PickupOrder, OrderByType } from "@/lib/shared";
 import HomePage from "./HomePage";
-import { trpc } from "@/lib/server/client";
-import { ordersAPI } from "@/lib/server/api";
+import { trpc } from "@/lib/trpc/client";
+import { ordersAPI } from "@/lib/trpc/api";
 import { CachedDataProvider } from "../../context/CachedDataContext";
 
 export type BuildOrderState<TTable, THome, TPickup> = {

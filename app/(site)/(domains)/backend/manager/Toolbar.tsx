@@ -1,13 +1,12 @@
-import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
-import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
-import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
+import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
 import React, { Fragment } from "react";
 import { AdditionalFilters } from "./Manager";
-import { Switch } from "@/components/ui/switch";
 import { Table } from "@tanstack/react-table";
-import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
+import TableColumnsVisibility from "@/components/table/TableColumnsVisibility";
+import SearchBar from "@/components/shared/filters/common/SearchBar";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface ToolbarProps {
   title: string;

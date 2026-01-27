@@ -1,4 +1,4 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import {
   Accordion,
   AccordionContent,
@@ -6,9 +6,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
-import { RFMRules } from "@/app/(site)/lib/shared/types/RFM";
+import { RFMRules } from "@/lib/shared/types/RFM";
 import RFMDimensionEditor from "./RFMDimensionEditor";
-import useRfmRules from "@/app/(site)/hooks/rfm/useRfmRules";
+import useRfmRules from "@/hooks/rfm/useRfmRules";
 
 export const RFM_DIM_LABELS: { key: keyof RFMRules; label: string }[] = [
   { key: "recency", label: "Recenza" },

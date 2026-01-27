@@ -1,5 +1,5 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import useRfmRanks from "@/app/(site)/hooks/rfm/useRfmRanks";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import useRfmRanks from "@/hooks/rfm/useRfmRanks";
 import {
   Accordion,
   AccordionContent,
@@ -9,13 +9,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RFMRankForm from "./RFMRankForm";
-import { RFMRankRule } from "@/app/(site)/lib/shared/types/RFM";
+import { RFMRankRule } from "@/lib/shared/types/RFM";
 import { useEffect, useRef, useState } from "react";
-import { DEFAULT_RANK_RULE } from "@/app/(site)/lib/shared/constants/default-rfm-config";
+import { DEFAULT_RANK_RULE } from "@/lib/shared/constants/default-rfm-config";
 import { Trash } from "@phosphor-icons/react";
-import { toastError, toastSuccess } from "@/app/(site)/lib/utils/global/toast";
+import { toastError, toastSuccess } from "@/lib/shared/utils/global/toast";
 import clsx from "clsx";
-import useHasOverflow from "@/app/(site)/hooks/useHasOverflow";
+import useHasOverflow from "@/hooks/useHasOverflow";
 
 export default function RFMRanksDialog() {
   const { ranks, updateRankRule, addRankRule, removeRankRule, resetRanks } = useRfmRanks();

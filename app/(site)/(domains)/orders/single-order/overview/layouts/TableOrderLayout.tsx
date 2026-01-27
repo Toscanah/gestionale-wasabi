@@ -1,4 +1,4 @@
-import { TableOrder } from "@/app/(site)/lib/shared";
+import { TableOrder } from "@/lib/shared";
 import Engagement from "../Engagement";
 import NormalActions from "../NormalActions";
 import Rice from "../Rice";

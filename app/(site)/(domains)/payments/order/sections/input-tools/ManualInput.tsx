@@ -1,4 +1,4 @@
-import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
+import { useOrderPaymentContext } from "@/context/OrderPaymentContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Backspace, BackspaceIcon } from "@phosphor-icons/react";

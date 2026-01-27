@@ -3,13 +3,13 @@
 import getColumns from "./getColumns";
 import { OrderType } from "@/prisma/generated/client/enums";
 import { Cell } from "@tanstack/react-table";
-import { OrderByType } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/lib/shared";
 import Order from "./single-order/Order";
-import useTable from "../../hooks/table/useTable";
-import Table from "../../components/table/Table";
+import useTable from "../../../../hooks/table/useTable";
+import Table from "@/components/table/Table";
 import { cn } from "@/lib/utils";
 import { useWasabiContext } from "../../context/WasabiContext";
-import useSkeletonTable from "../../hooks/table/useSkeletonTable";
+import useSkeletonTable from "../../../../hooks/table/useSkeletonTable";
 
 export interface OrdersTableProps {
   data: OrderByType[];

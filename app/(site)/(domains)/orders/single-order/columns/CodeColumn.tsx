@@ -1,9 +1,9 @@
-import { ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ValueColumn } from "@/components/table/TableColumns";
+import { ProductInOrder } from "@/lib/shared";
 import { OrderTableMeta } from "../OrderTable";
 import { Input } from "@/components/ui/input";
 import { CommonColumnProps } from "./orderColumns";
-import { isArrows, isArrowsNotSubmit, isSubmit } from "@/app/(site)/lib/utils/global/keyboard";
+import { isArrows, isArrowsNotSubmit, isSubmit } from "@/lib/shared/utils/global/keyboard";
 
 export default function CodeColumn({
   addInputRef,

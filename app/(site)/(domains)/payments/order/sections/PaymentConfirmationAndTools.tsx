@@ -1,7 +1,7 @@
 import Tools from "./Tools";
-import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
+import { useOrderPaymentContext } from "@/context/OrderPaymentContext";
 import PaymentConfirmation from "./PaymentConfirmation";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 
 export default function PaymentConfirmationAndTools() {
   const { payment } = useOrderPaymentContext();

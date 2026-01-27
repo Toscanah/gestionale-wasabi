@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { cn } from "@/lib/utils";
-import formatRice from "../../lib/utils/domains/rice/formatRice";
+import formatRice from "@/lib/shared/utils/domains/rice/formatRice";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { SHIFT_LABELS, ShiftFilterValue } from "../../lib/shared";
+import { SHIFT_LABELS, ShiftFilterValue } from "@/lib/shared";
 
 const STORAGE_KEY = "rice-summary-filter";
 

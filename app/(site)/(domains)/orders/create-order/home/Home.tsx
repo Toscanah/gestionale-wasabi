@@ -2,9 +2,9 @@ import { Separator } from "@/components/ui/separator";
 import Overview from "./address/Overview";
 import AddressForm from "./address/AddressForm";
 import { useEffect, useRef } from "react";
-import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
+import useFocusCycle from "@/hooks/focus/useFocusCycle";
 import PossibleCustomers from "./possible-customers/PossibleCustomers";
-import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
+import { useCreateHomeOrder } from "@/context/CreateHomeOrderContext";
 
 export default function Home() {
   const { handleKeyDown, addRefs } = useFocusCycle();

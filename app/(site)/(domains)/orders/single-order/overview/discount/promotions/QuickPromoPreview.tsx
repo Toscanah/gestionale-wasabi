@@ -4,8 +4,8 @@ import {
   PromotionGuards,
   PromotionUsageWithPromotion,
   PromotionWithUsages,
-} from "@/app/(site)/lib/shared";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+} from "@/lib/shared";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import { Separator } from "@/components/ui/separator";
 import { PromotionType } from "@/prisma/generated/client/enums";
 

@@ -1,5 +1,5 @@
-import WasabiAnimatedTab from "@/app/(site)/components/ui/wasabi/WasabiAnimatedTab";
-import { useZodForm } from "@/app/(site)/hooks/useZodForm";
+import WasabiAnimatedTab from "@/components/shared/wasabi/WasabiAnimatedTab";
+import { useZodForm } from "@/hooks/useZodForm";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { PromotionType } from "@/prisma/generated/client/enums";

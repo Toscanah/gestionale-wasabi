@@ -1,14 +1,14 @@
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import calculateExtraItems from "@/app/(site)/lib/services/order-management/calculateExtraItems";
-import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
-import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
-import { OrderByType } from "@/app/(site)/lib/shared";
+import { useOrderContext } from "@/context/OrderContext";
+import calculateExtraItems from "@/lib/services/order-management/calculateExtraItems";
+import { toastSuccess } from "@/lib/shared/utils/global/toast";
+import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
+import { OrderByType } from "@/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useState } from "react";
-import { trpc } from "@/lib/server/client";
+import { trpc } from "@/lib/trpc/client";
 
 interface ExtraItemProps {
   label: string;

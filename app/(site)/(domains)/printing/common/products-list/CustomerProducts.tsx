@@ -1,15 +1,15 @@
-import { ProductInOrder } from "@/app/(site)/lib/shared";
-import getDiscountedTotal from "@/app/(site)/lib/services/order-management/getDiscountedTotal";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
-import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
+import { ProductInOrder } from "@/lib/shared";
+import getDiscountedTotal from "@/lib/services/order-management/getDiscountedTotal";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
+import fitReceiptText from "@/lib/shared/utils/domains/printing/fitReceiptText";
 import { Br, Row, Text } from "react-thermal-printer";
 import TotalSection from "../TotalSection";
 import { Fragment } from "react";
 import { OrderType } from "@/prisma/generated/client/enums";
 import { uniqueId } from "lodash";
 import { GroupedProductsByOptions, ProductLineProps } from "./ProductsListSection";
-import sanitazeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
-import splitOptionsInLines from "@/app/(site)/lib/utils/domains/printing/splitOptionsIntoLines";
+import sanitazeReceiptText from "@/lib/shared/utils/domains/printing/sanitazeReceiptText";
+import splitOptionsInLines from "@/lib/shared/utils/domains/printing/splitOptionsIntoLines";
 import DiscountsSection from "../DiscountsSection";
 
 const TOTAL_ROW_WIDTH = 48;

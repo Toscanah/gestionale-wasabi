@@ -1,15 +1,15 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
-import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/lib/shared";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
-import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
-import { GlobalSettings } from "../../../lib/shared/types/Settings";
-import { BIG_PRINT, SMALL_PRINT } from "../../../lib/shared/constants/printing";
+import sanitazeReceiptText from "../../../../../lib/shared/utils/domains/printing/sanitazeReceiptText";
+import { GlobalSettings } from "@/lib/shared/types/Settings";
+import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared/constants/printing";
 import {
   DEFAULT_WHEN_LABEL,
   DEFAULT_WHEN_VALUE,
-} from "@/app/(site)/lib/shared/constants/default-when";
-import formatWhenLabel from "@/app/(site)/lib/utils/domains/order/formatWhenLabel";
+} from "@/lib/shared/constants/default-when";
+import formatWhenLabel from "@/lib/shared/utils/domains/order/formatWhenLabel";
 import { KitchenType } from "@/prisma/generated/client/enums";
 
 const calculateAdjustedTime = (originalTime: string) => {

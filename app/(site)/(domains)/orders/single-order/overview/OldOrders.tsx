@@ -1,9 +1,9 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import OrderHistory from "@/app/(site)/components/order-history/OrderHistory";
-import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import OrderHistory from "@/components/order-history/OrderHistory";
+import { HomeOrder, OrderGuards, PickupOrder } from "@/lib/shared";
 import { Button } from "@/components/ui/button";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { trpc } from "@/lib/server/client";
+import { useOrderContext } from "@/context/OrderContext";
+import { trpc } from "@/lib/trpc/client";
 
 export default function OldOrders() {
   const { order, addProducts} = useOrderContext();

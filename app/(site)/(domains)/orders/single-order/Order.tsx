@@ -1,8 +1,6 @@
-import { TableCell } from "@/components/ui/table";
 import { Cell, flexRender } from "@tanstack/react-table";
 import OrderTable from "./OrderTable";
-import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
-import { OrderByType, OrderGuards } from "@/app/(site)/lib/shared";
+import { OrderByType, OrderGuards } from "@/lib/shared";
 import { FormEvent, useState } from "react";
 import { OrderProvider } from "../../../context/OrderContext";
 import { cn } from "@/lib/utils";
@@ -11,6 +9,8 @@ import { useWasabiContext } from "../../../context/WasabiContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
 import { OrderType } from "@/prisma/generated/client/enums";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import { TableCell } from "@/components/ui/table";
 
 interface OrderProps {
   cell: Cell<OrderByType, unknown>;

@@ -1,14 +1,14 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import ImageViewer from "@/app/(site)/components/ui/misc/ImageViewer";
-import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
-import getTemplateName from "@/app/(site)/lib/utils/domains/engagement/getTemplateName";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import ImageViewer from "@/components/shared/misc/ImageViewer";
+import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
+import getTemplateName from "@/lib/shared/utils/domains/engagement/getTemplateName";
 import {
   CommonPayload,
   EngagementWithDetails,
   ImagePayload,
   MessagePayload,
   QrPayload,
-} from "@/app/(site)/lib/shared";
+} from "@/lib/shared";
 import {
   Accordion,
   AccordionContent,

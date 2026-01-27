@@ -1,4 +1,4 @@
-import { ENGAGEMENT_TYPES_LABELS } from "@/app/(site)/lib/shared";
+import { ENGAGEMENT_TYPES_LABELS } from "@/lib/shared";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { EngagementType } from "@/prisma/generated/client/enums";

@@ -1,15 +1,15 @@
 "use client";
 
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
-import { OrderByType } from "@/app/(site)/lib/shared";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
+import { OrderByType } from "@/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useMemo } from "react";
 import ManualDiscountTab from "./ManualDiscountTab";
 import PromotionsDiscountsTab from "./promotions/PromotionsDiscountsTab";
 import { Badge } from "@/components/ui/badge";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import { useOrderContext } from "../../../../../context/OrderContext";
 
 interface OrderPromotionDialogProps {

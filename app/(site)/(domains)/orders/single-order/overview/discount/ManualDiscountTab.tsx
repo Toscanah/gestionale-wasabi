@@ -1,4 +1,4 @@
-import WasabiAnimatedTab from "@/app/(site)/components/ui/wasabi/WasabiAnimatedTab";
+import WasabiAnimatedTab from "@/components/shared/wasabi/WasabiAnimatedTab";
 import { DiscountsSummary, DiscountTabs } from "./DiscountsDialog";
 import { Label } from "@/components/ui/label";
 import {
@@ -9,16 +9,14 @@ import {
 } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
 import { useMemo, useState, useEffect } from "react";
-import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
+import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 import { Button } from "@/components/ui/button";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { PromotionType } from "@/prisma/generated/client/enums";
-import { PromotionByType, PromotionGuards } from "@/app/(site)/lib/shared";
+import { useOrderContext } from "@/context/OrderContext";
 import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRightIcon } from "@phosphor-icons/react";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
-import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
+import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
 
 interface ManualDiscountTabProps {
   activeTab: DiscountTabs;

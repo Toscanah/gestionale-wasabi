@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import WasabiDialog from "../../../../components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ReactNode, useState } from "react";

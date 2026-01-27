@@ -1,14 +1,14 @@
 import { DateRange } from "react-day-picker";
-import useOrdersStats from "../../../hooks/statistics/useOrdersStats";
-import { INITIAL_STATE, ReducerActions } from "../../../hooks/statistics/sectionReducer";
-import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
-import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
-import WeekdaysFilter from "../../../components/ui/filters/select/WeekdaysFilter";
-import OrderTypesFilter from "../../../components/ui/filters/select/OrderTypesFilter";
-import TimeWindowFilter from "@/app/(site)/components/ui/filters/time/TimeWindowFilter";
+import useOrdersStats from "../../../../../hooks/statistics/useOrdersStats";
+import { INITIAL_STATE, ReducerActions } from "../../../../../hooks/statistics/sectionReducer";
+import CalendarFilter from "@/components/shared/filters/calendar/CalendarFilter";
+import ShiftFilter from "@/components/shared/filters/select/ShiftFilter";
+import WeekdaysFilter from "@/components/shared/filters/select/WeekdaysFilter";
+import OrderTypesFilter from "@/components/shared/filters/select/OrderTypesFilter";
+import TimeWindowFilter from "@/components/shared/filters/time/TimeWindowFilter";
 import SectionResults from "./results/SectionResults";
-import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
-import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
+import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
+import TODAY_PERIOD from "@/lib/shared/constants/today-period";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import ChartsDashboard from "./results/charts/ChartsDashboard";
@@ -16,8 +16,8 @@ import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusCircleIcon } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import formatCsvFilters from "@/app/(site)/hooks/csv-export/useCsvExport";
-import { EmDash } from "@/app/(site)/components/ui/misc/Placeholders";
+import formatCsvFilters from "@/hooks/csv-export/useCsvExport";
+import { EmDash } from "@/components/shared/misc/Placeholders";
 
 interface SectionProps {
   id: string;

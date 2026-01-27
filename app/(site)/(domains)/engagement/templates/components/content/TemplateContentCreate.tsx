@@ -3,7 +3,7 @@ import TemplateTypeSelector from "../TemplateTypeSelector";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import TemplateWrapper from "../TemplateWrapper";
-import { EngagementContracts, ParsedEngagementPayload } from "@/app/(site)/lib/shared";
+import { EngagementContracts, ParsedEngagementPayload } from "@/lib/shared";
 import renderByType from "../../types/renderByType";
 import { EngagementType } from "@/prisma/generated/client/enums";
 

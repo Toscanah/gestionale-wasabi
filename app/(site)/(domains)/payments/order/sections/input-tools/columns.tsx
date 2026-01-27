@@ -1,12 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { ColumnDef } from "@tanstack/react-table";
-import useGridFocus from "@/app/(site)/hooks/focus/useGridFocus";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
-import { PaymentCalculation } from "@/app/(site)/context/OrderPaymentContext";
+import useGridFocus from "@/hooks/focus/useGridFocus";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
+import { PaymentCalculation } from "@/context/OrderPaymentContext";
 import { XIcon } from "@phosphor-icons/react";
 import { Dispatch, SetStateAction } from "react";
-import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { ActionColumn, ValueColumn } from "@/components/table/TableColumns";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 export default function getColumns(
   handleFieldChange: (key: keyof PaymentCalculation, value: number, rowIndex: number) => void,

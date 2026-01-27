@@ -1,27 +1,27 @@
 "use client";
 
-import Table from "../../../components/table/Table";
-import GoBack from "../../../components/ui/misc/GoBack";
-import useTable from "../../../hooks/table/useTable";
+import Table from "../../../../../components/table/Table";
+import GoBack from "@/components/shared/misc/GoBack";
+import useTable from "../../../../../hooks/table/useTable";
 import columns from "./columns";
-import CalendarFilter from "../../../components/ui/filters/calendar/CalendarFilter";
-import CategoryFilter from "@/app/(site)/components/ui/filters/select/CategoryFilter";
-import useProductsStats from "@/app/(site)/hooks/statistics/useProductsStats";
-import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
-import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
-import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import TODAY_PERIOD from "@/app/(site)/lib/shared/constants/today-period";
-import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
-import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
-import { CustomerContracts, ShiftFilterValue } from "@/app/(site)/lib/shared";
+import CalendarFilter from "@/components/shared/filters/calendar/CalendarFilter";
+import CategoryFilter from "@/components/shared/filters/select/CategoryFilter";
+import useProductsStats from "@/hooks/statistics/useProductsStats";
+import ShiftFilter from "@/components/shared/filters/select/ShiftFilter";
+import SearchBar from "@/components/shared/filters/common/SearchBar";
+import useSkeletonTable from "@/hooks/table/useSkeletonTable";
+import TODAY_PERIOD from "@/lib/shared/constants/today-period";
+import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
+import SortingMenu from "@/components/shared/sorting/SortingMenu";
+import { CustomerContracts, ShiftFilterValue } from "@/lib/shared";
 import { TableMeta } from "@tanstack/react-table";
-import TablePagination from "@/app/(site)/components/table/TablePagination";
-import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
-import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
-import CsvExportButton from "@/app/(site)/components/ui/misc/CsvExportButton";
-import useCsvExport from "@/app/(site)/hooks/csv-export/useCsvExport";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import TablePagination from "@/components/table/TablePagination";
+import useTablePagination from "@/hooks/table/useTablePagination";
+import TableColumnsVisibility from "@/components/table/TableColumnsVisibility";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
+import CsvExportButton from "@/components/shared/misc/CsvExportButton";
+import useCsvExport from "@/hooks/csv-export/useCsvExport";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 export type ProductStatsTableMeta = TableMeta<any> & {
   filters?: NonNullable<CustomerContracts.GetAllComprehensive.Input>["filters"];

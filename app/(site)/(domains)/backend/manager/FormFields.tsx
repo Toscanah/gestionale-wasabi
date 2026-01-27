@@ -14,8 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { DialogFooter } from "@/components/ui/dialog";
-import { WasabiFormField } from "../../../components/ui/wasabi/WasabiFormField";
-import { useZodForm } from "../../../hooks/useZodForm";
+import { WasabiFormField } from "@/components/shared/wasabi/WasabiFormField";
+import { useZodForm } from "../../../../../hooks/useZodForm";
 
 export interface FieldRender<T extends FieldValues, K extends Path<T>> {
   (

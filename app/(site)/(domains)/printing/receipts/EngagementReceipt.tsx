@@ -1,4 +1,4 @@
-import { EngagementWithDetails } from "@/app/(site)/lib/shared";
+import { EngagementWithDetails } from "@/lib/shared";
 import { Fragment } from "react";
 import SingleEngagement from "../common/SingleEngagement";
 import { Cut } from "react-thermal-printer";

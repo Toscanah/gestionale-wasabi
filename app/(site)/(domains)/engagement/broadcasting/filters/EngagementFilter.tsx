@@ -1,5 +1,5 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import { ENGAGEMENT_TYPES_LABELS } from "@/app/(site)/lib/shared";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import { ENGAGEMENT_TYPES_LABELS } from "@/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";

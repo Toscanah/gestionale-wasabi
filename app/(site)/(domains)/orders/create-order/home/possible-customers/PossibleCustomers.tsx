@@ -1,8 +1,8 @@
-import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
+import { ComprehensiveCustomer } from "@/lib/shared";
 import columns from "./columns";
-import useTable from "@/app/(site)/hooks/table/useTable";
-import Table from "@/app/(site)/components/table/Table";
-import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
+import useTable from "@/hooks/table/useTable";
+import Table from "@/components/table/Table";
+import { useCreateHomeOrder } from "@/context/CreateHomeOrderContext";
 
 export default function PossibleCustomers() {
   const { setPhone, possibleCustomers } = useCreateHomeOrder();

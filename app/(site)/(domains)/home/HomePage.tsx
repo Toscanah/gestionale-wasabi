@@ -10,14 +10,14 @@ import { Separator } from "@/components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Header from "./Header";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import WasabiSidebar from "../../components/sidebar/Sidebar";
-import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/app/(site)/lib/shared";
-import getOverdrawnOrderIds from "../../lib/services/order-management/getOverdrawnOrderIds";
+import WasabiSidebar from "@/components/sidebar/Sidebar";
+import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/lib/shared";
+import getOverdrawnOrderIds from "@/lib/services/order-management/getOverdrawnOrderIds";
 import { BuildOrderState } from "./page";
 import dynamic from "next/dynamic";
 import { useCachedDataContext } from "../../context/CachedDataContext";
 
-const RandomSpinner = dynamic(() => import("../../components/ui/misc/loader/RandomSpinner"), {
+const RandomSpinner = dynamic(() => import("@/components/shared/misc/loader/RandomSpinner"), {
   ssr: false,
 });
 

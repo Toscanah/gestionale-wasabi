@@ -3,15 +3,14 @@
 import { CustomerFormData, customerFormSchema, getCustomerFields } from "./form";
 import Manager, { FormFieldsProps } from "../manager/Manager";
 import columns from "./columns";
-import GoBack from "../../../components/ui/misc/GoBack";
-import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import { trpc } from "@/lib/server/client";
-import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
-import useCustomersManager from "@/app/(site)/hooks/backend/base/useCustomersManager";
-import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
+import { ComprehensiveCustomer } from "@/lib/shared";
+import { trpc } from "@/lib/trpc/client";
+import Loader from "@/components/shared/misc/loader/Loader";
+import useCustomersManager from "@/hooks/backend/base/useCustomersManager";
+import useTablePagination from "@/hooks/table/useTablePagination";
 import { FormFields } from "../manager/FormFields";
 import { useState } from "react";
-import { SortField } from "@/app/(site)/components/ui/sorting/SortingMenu";
+import { SortField } from "@/components/shared/sorting/SortingMenu";
 import { Path } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 

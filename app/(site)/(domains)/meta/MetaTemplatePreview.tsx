@@ -1,12 +1,12 @@
 import React from "react";
-import { MetaTemplate, TemplateComponent } from "../../lib/shared";
+import { MetaTemplate, TemplateComponent } from "@/lib/shared";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import extractVariableIndexes from "../../lib/utils/domains/meta/extractVariableIndexes";
-import getExampleParams from "../../lib/utils/domains/meta/getExampleParams";
-import renderTextWithVariables from "../../lib/services/meta/ui/renderTextWithVariables";
-import { ParamType } from "../../hooks/meta/useTemplatesParams";
-import getStaticHeaderDescription from "../../lib/utils/domains/meta/getStaticHeaderDescription";
+import extractVariableIndexes from "@/lib/shared/utils/domains/meta/extractVariableIndexes";
+import getExampleParams from "@/lib/shared/utils/domains/meta/getExampleParams";
+import renderTextWithVariables from "@/lib/services/meta/ui/renderTextWithVariables";
+import { ParamType } from "../../../../hooks/meta/useTemplatesParams";
+import getStaticHeaderDescription from "@/lib/shared/utils/domains/meta/getStaticHeaderDescription";
 
 type MetaTemplatePreviewProps = {
   template: MetaTemplate;

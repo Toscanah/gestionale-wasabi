@@ -1,19 +1,19 @@
 "use client";
 
-import Table from "../../components/table/Table";
-import TableColumnsVisibility from "../../components/table/TableColumnsVisibility";
-import TablePagination from "../../components/table/TablePagination";
-import ResetTableControlsBtn from "../../components/ui/filters/common/ResetTableControlsBtn";
-import SearchBar from "../../components/ui/filters/common/SearchBar";
-import PromotionPeriodsMenu from "../../components/ui/filters/PromotionPeriodsMenu";
-import PromotionTypesFilter from "../../components/ui/filters/select/PromotionTypesFilter";
-import GoBack from "../../components/ui/misc/GoBack";
-import usePromotionsFetcher from "../../hooks/promotions/usePromotionsFetcher";
-import useQueryFilter from "../../hooks/table/useQueryFilter";
-import useSkeletonTable from "../../hooks/table/useSkeletonTable";
-import useTable from "../../hooks/table/useTable";
+import Table from "@/components/table/Table";
+import TableColumnsVisibility from "@/components/table/TableColumnsVisibility";
+import TablePagination from "@/components/table/TablePagination";
+import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
+import SearchBar from "@/components/shared/filters/common/SearchBar";
+import PromotionPeriodsMenu from "@/components/shared/filters/PromotionPeriodsMenu";
+import PromotionTypesFilter from "@/components/shared/filters/select/PromotionTypesFilter";
+import usePromotionsFetcher from "../../../../hooks/promotions/usePromotionsFetcher";
+import useQueryFilter from "../../../../hooks/table/useQueryFilter";
+import useSkeletonTable from "../../../../hooks/table/useSkeletonTable";
+import useTable from "../../../../hooks/table/useTable";
 import CreatePromotionDialog from "./create/CreatePromotionDialog";
 import promotionColumns from "./promotionColumns";
+import GoBack from "@/components/shared/misc/GoBack";
 
 export type PromotionTableMeta = {
   deletePromotionById: (promotionId: number) => Promise<void>;

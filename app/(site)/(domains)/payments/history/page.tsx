@@ -1,23 +1,23 @@
 "use client";
 
 import { endOfDay, startOfDay } from "date-fns";
-import useTable from "../../../hooks/table/useTable";
-import Table from "../../../components/table/Table";
-import GoBack from "../../../components/ui/misc/GoBack";
+import useTable from "../../../../../hooks/table/useTable";
+import Table from "../../../../../components/table/Table";
+import GoBack from "@/components/shared/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
 import columns from "./columns";
-import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
-import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import usePaymentsHistory from "@/app/(site)/hooks/payments/usePaymentsHistory";
-import TablePagination from "@/app/(site)/components/table/TablePagination";
-import ShiftFilter from "@/app/(site)/components/ui/filters/select/ShiftFilter";
-import SearchBar from "@/app/(site)/components/ui/filters/common/SearchBar";
-import OrderTypesFilter from "@/app/(site)/components/ui/filters/select/OrderTypesFilter";
-import CalendarFilter from "@/app/(site)/components/ui/filters/calendar/CalendarFilter";
-import ResetTableControlsBtn from "@/app/(site)/components/ui/filters/common/ResetTableControlsBtn";
+import useTablePagination from "@/hooks/table/useTablePagination";
+import useSkeletonTable from "@/hooks/table/useSkeletonTable";
+import usePaymentsHistory from "@/hooks/payments/usePaymentsHistory";
+import TablePagination from "@/components/table/TablePagination";
+import ShiftFilter from "@/components/shared/filters/select/ShiftFilter";
+import SearchBar from "@/components/shared/filters/common/SearchBar";
+import OrderTypesFilter from "@/components/shared/filters/select/OrderTypesFilter";
+import CalendarFilter from "@/components/shared/filters/calendar/CalendarFilter";
+import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
 import { Button } from "@/components/ui/button";
-import TableColumnsVisibility from "@/app/(site)/components/table/TableColumnsVisibility";
+import TableColumnsVisibility from "@/components/table/TableColumnsVisibility";
 
 export default function PaymentsTable() {
   const { page, pageSize, setPage, setPageSize } = useTablePagination();

@@ -1,4 +1,4 @@
-import { CUSTOMER_ORIGIN_LABELS } from "@/app/(site)/lib/shared";
+import { CUSTOMER_ORIGIN_LABELS } from "@/lib/shared";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ControllerRenderProps } from "react-hook-form";

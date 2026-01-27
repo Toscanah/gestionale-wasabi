@@ -1,9 +1,9 @@
-import Table from "@/app/(site)/components/table/Table";
-import { FieldColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import useTable from "@/app/(site)/hooks/table/useTable";
-import { ProductWithStats } from "@/app/(site)/lib/shared";
+import Table from "@/components/table/Table";
+import { FieldColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import useSkeletonTable from "@/hooks/table/useSkeletonTable";
+import useTable from "@/hooks/table/useTable";
+import { ProductWithStats } from "@/lib/shared";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 

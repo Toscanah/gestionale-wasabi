@@ -2,12 +2,12 @@ import {
   EngagementContracts,
   ParsedEngagementPayload,
   ParsedEngagementTemplate,
-} from "@/app/(site)/lib/shared";
+} from "@/lib/shared";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import TemplateWrapper from "../TemplateWrapper";
-import getTemplateName from "@/app/(site)/lib/utils/domains/engagement/getTemplateName";
+import getTemplateName from "@/lib/shared/utils/domains/engagement/getTemplateName";
 import { Button } from "@/components/ui/button";
 import { Trash } from "@phosphor-icons/react";
 import renderByType from "../../types/renderByType";

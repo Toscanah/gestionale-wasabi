@@ -19,18 +19,54 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./*"
       ],
+      "@app/*": [
+        "app/*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@ui/*": [
+        "components/ui/*"
+      ],
       "@shared/*": [
-        "app/(site)/lib/shared/*"
+        "components/shared/*"
+      ],
+      "@lib/*": [
+        "lib/*"
+      ],
+      "@db/*": [
+        "lib/db/*"
+      ],
+      "@api/*": [
+        "lib/trpc/*"
+      ],
+      "@contracts/*": [
+        "app/(site)/lib/shared/contracts/*"
+      ],
+      "@entities/*": [
+        "lib/shared/entities/*"
+      ],
+      "@hooks/*": [
+        "hooks/*"
+      ],
+      "@utils/*": [
+        "lib/shared/utils/*"
+      ],
+      "@/context/*": [
+        "app/(site)/context/*"
+      ],
+      "@/domains/*": [
+        "app/(site)/(domains)/*"
       ]
     }
   },
@@ -39,9 +75,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "build/types/**/*.ts",
     "app/(site)/lib/shared/types/**/*.d.ts",
-    "build\\dev/types/**/*.ts",
+    "build/types/**/*.ts",
     "build/dev/types/**/*.ts"
   ],
   "exclude": [

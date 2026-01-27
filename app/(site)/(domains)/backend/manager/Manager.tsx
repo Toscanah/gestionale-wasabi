@@ -1,22 +1,22 @@
 "use client";
 
 import { ComponentType, useMemo, ReactElement } from "react";
-import Table from "../../../components/table/Table";
+import Table from "../../../../../components/table/Table";
 import { ColumnDef, TableMeta } from "@tanstack/react-table";
-import useTable from "../../../hooks/table/useTable";
-import TablePagination from "../../../components/table/TablePagination";
-import { BaseEntity, useManager } from "../../../hooks/backend/useManager";
-import useSkeletonTable from "../../../hooks/table/useSkeletonTable";
-import useTablePagination from "../../../hooks/table/useTablePagination";
+import useTable from "../../../../../hooks/table/useTable";
+import TablePagination from "../../../../../components/table/TablePagination";
+import { BaseEntity, useManager } from "../../../../../hooks/backend/useManager";
+import useSkeletonTable from "../../../../../hooks/table/useSkeletonTable";
+import useTablePagination from "../../../../../hooks/table/useTablePagination";
 import { FieldValues } from "react-hook-form";
-import GoBack from "../../../components/ui/misc/GoBack";
+import GoBack from "@/components/shared/misc/GoBack";
 import EditAction from "./actions/EditAction";
 import ToggleAction from "./actions/ToggleAction";
 import DeleteAction from "./actions/DeleteAction";
 import AddAction from "./actions/AddAction";
 import Toolbar from "./Toolbar";
 import managerColumns from "./managerColumns";
-import SortingMenu from "@/app/(site)/components/ui/sorting/SortingMenu";
+import SortingMenu from "@/components/shared/sorting/SortingMenu";
 
 export interface FormFieldsProps<T> {
   handleSubmit: (values: T) => void;

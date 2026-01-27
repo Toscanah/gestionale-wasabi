@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import { FieldColumn, JoinColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
-import AddressesColumn from "@/app/(site)/components/table/common/AddressesColumn";
+import { ComprehensiveCustomer } from "@/lib/shared";
+import { FieldColumn, JoinColumn, ValueColumn } from "@/components/table/TableColumns";
+import FullNameColumn from "@/components/table/common/FullNameColumn";
+import AddressesColumn from "@/components/table/common/AddressesColumn";
 
 const columns: ColumnDef<ComprehensiveCustomer>[] = [
   FullNameColumn({

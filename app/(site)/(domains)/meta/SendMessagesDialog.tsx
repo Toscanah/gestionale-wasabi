@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { useState } from "react";
 import {
   Accordion,
@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import MetaTemplatePreview from "./MetaTemplatePreview";
-import useMetaTemplates from "../../hooks/meta/useMetaTemplates";
-import { useTemplatesParams } from "../../hooks/meta/useTemplatesParams";
+import useMetaTemplates from "../../../../hooks/meta/useMetaTemplates";
+import { useTemplatesParams } from "../../../../hooks/meta/useTemplatesParams";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { MetaTemplate, TemplateStatus } from "../../lib/shared";
-import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "../../lib/integrations/meta/constants";
+import { MetaTemplate, TemplateStatus } from "@/lib/shared";
+import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/lib/integrations/meta/constants";
 
 export default function SendMessagesDialog() {
   const [open, setOpen] = useState(false);

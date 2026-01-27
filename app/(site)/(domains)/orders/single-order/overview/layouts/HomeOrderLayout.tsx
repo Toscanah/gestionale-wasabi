@@ -8,7 +8,7 @@ import Rice from "../Rice";
 import Total from "../Total";
 import CustomerLookup from "../CustomerLookup";
 import NormalActions from "../NormalActions";
-import { HomeOrder } from "@/app/(site)/lib/shared";
+import { HomeOrder } from "@/lib/shared";
 import { PayingAction } from "../../OrderTable";
 import DiscountsDialog from "../discount/DiscountsDialog";
 

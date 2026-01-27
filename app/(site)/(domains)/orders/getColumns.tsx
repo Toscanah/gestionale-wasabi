@@ -2,16 +2,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { OrderType } from "@/prisma/generated/client/enums";
-import { OrderByType, TableOrder, HomeOrder, PickupOrder } from "@/app/(site)/lib/shared";
-import { ActionColumn, FieldColumn, ValueColumn } from "../../components/table/TableColumns";
-import roundToTwo from "../../lib/utils/global/number/roundToTwo";
+import { OrderByType, TableOrder, HomeOrder, PickupOrder } from "@/lib/shared";
+import { ActionColumn, FieldColumn, ValueColumn } from "@/components/table/TableColumns";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OrdersTableProps } from "./OrdersTable";
-import { getOrderTotal } from "../../lib/services/order-management/getOrderTotal";
+import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 import MetaLogs from "../meta/MetaLogs";
-import formatWhenLabel from "../../lib/utils/domains/order/formatWhenLabel";
-import toEuro from "../../lib/utils/global/string/toEuro";
+import formatWhenLabel from "@/lib/shared/utils/domains/order/formatWhenLabel";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 export default function getColumns(
   type: OrderType,

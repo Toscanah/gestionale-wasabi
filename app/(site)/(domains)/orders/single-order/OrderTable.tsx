@@ -1,7 +1,7 @@
-import { OrderGuards, ProductInOrder } from "@/app/(site)/lib/shared";
+import { OrderGuards, ProductInOrder } from "@/lib/shared";
 import { useEffect, useState } from "react";
-import Table from "../../../components/table/Table";
-import useTable from "../../../hooks/table/useTable";
+import Table from "../../../../../components/table/Table";
+import useTable from "../../../../../hooks/table/useTable";
 import OrderOverview from "./overview/OrderOverview";
 import OrderPayment from "../../payments/order/OrderPayment";
 import DivideOrder from "../divide-order/DivideOrder";
@@ -11,8 +11,8 @@ import { useOrderContext } from "../../../context/OrderContext";
 import Notes from "./overview/Notes";
 import ExtraItems from "./overview/ExtraItems";
 import { OrderStatus, PaymentScope } from "@/prisma/generated/client/enums";
-import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
-import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
+import { getOrderTotal } from "../../../../../lib/services/order-management/getOrderTotal";
+import usePrinter from "@/hooks/printing/usePrinter";
 import orderColumns from "./columns/orderColumns";
 
 export type PayingAction = "none" | "payFull" | "payPart" | "paidFull" | "paidPart" | "payRoman";

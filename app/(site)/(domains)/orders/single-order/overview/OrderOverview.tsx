@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { PayingAction } from "../OrderTable";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { OrderGuards } from "@/app/(site)/lib/shared";
+import { useOrderContext } from "@/context/OrderContext";
+import { OrderGuards } from "@/lib/shared";
 import TableOrderLayout from "./layouts/TableOrderLayout";
 import HomeOrderLayout from "./layouts/HomeOrderLayout";
 import PickupOrderLayout from "./layouts/PickupOrderLayout";

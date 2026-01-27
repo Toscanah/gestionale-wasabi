@@ -1,6 +1,6 @@
 "use client";
 
-import { ActionColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
+import { ActionColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash } from "@phosphor-icons/react";

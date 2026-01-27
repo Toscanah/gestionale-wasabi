@@ -1,9 +1,9 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { useCallback } from "react";
 import { ActionProps } from "../Manager";
 import { Button } from "@/components/ui/button";
-import { BaseEntity } from "@/app/(site)/hooks/backend/useManager";
-import { MANAGER_LABELS } from "@/app/(site)/lib/shared/constants/manager-labels";
+import { BaseEntity } from "@/hooks/backend/useManager";
+import { MANAGER_LABELS } from "@/lib/shared/constants/manager-labels";
 import { PowerIcon } from "@phosphor-icons/react";
 import { PowerOff } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -1,10 +1,10 @@
-import WhenSelector from "@/app/(site)/components/ui/filters/select/WhenSelector";
+import WhenSelector from "@/components/shared/filters/select/WhenSelector";
 import { OrderType } from "@/prisma/generated/client/enums";
-import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
-import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
+import { HomeOrder, OrderGuards, PickupOrder } from "@/lib/shared";
+import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import { useState } from "react";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { trpc } from "@/lib/server/client";
+import { useOrderContext } from "@/context/OrderContext";
+import { trpc } from "@/lib/trpc/client";
 
 export default function When() {
   const { order, updateOrder } = useOrderContext();

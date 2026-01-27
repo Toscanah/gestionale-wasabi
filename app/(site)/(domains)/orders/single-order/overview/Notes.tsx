@@ -1,12 +1,12 @@
 import { useCallback, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
-import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
+import { useOrderContext } from "@/context/OrderContext";
+import { toastSuccess } from "@/lib/shared/utils/global/toast";
+import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
 import { OrderType } from "@/prisma/generated/client/enums";
-import { HomeOrder, OrderGuards, PickupOrder } from "@/app/(site)/lib/shared";
-import { trpc } from "@/lib/server/client";
+import { HomeOrder, OrderGuards, PickupOrder } from "@/lib/shared";
+import { trpc } from "@/lib/trpc/client";
 
 export default function Notes() {
   const { order, updateOrder } = useOrderContext();

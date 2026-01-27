@@ -2,8 +2,8 @@ import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { ActionColumn, IndexColumn, ValueColumn } from "../../../components/table/TableColumns";
-import { BaseEntity } from "../../../hooks/backend/useManager";
+import { ActionColumn, IndexColumn, ValueColumn } from "../../../../../components/table/TableColumns";
+import { BaseEntity } from "../../../../../hooks/backend/useManager";
 import { ManagerTableMeta } from "./Manager";
 
 const managerColumns = {

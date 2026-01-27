@@ -3,8 +3,8 @@
 import { ReactNode, useEffect, useState } from "react";
 import { OrderType } from "@/prisma/generated/client/enums";
 import Table from "./table/Table";
-import { OrderByType } from "@/app/(site)/lib/shared";
-import generateEmptyOrder from "../../../lib/services/order-management/generateEmptyOrder";
+import { OrderByType } from "@/lib/shared";
+import generateEmptyOrder from "../../../../../lib/services/order-management/generateEmptyOrder";
 import Pickup from "./pickup/Pickup";
 import SearchHome from "./home/SearchHome";
 

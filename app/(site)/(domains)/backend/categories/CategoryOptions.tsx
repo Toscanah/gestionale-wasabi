@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
+import WasabiSelect from "@/components/shared/wasabi/WasabiSelect";
 import { Option } from "@/prisma/generated/client/browser";
 
 interface CategoryOptionsProps {

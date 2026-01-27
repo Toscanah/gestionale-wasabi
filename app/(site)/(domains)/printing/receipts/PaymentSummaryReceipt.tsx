@@ -1,10 +1,10 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
-import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import sanitazeReceiptText from "../../../lib/utils/domains/printing/sanitazeReceiptText";
-import { SMALL_PRINT } from "../../../lib/shared/constants/printing";
-import fitReceiptText from "@/app/(site)/lib/utils/domains/printing/fitReceiptText";
-import { PaymentContracts } from "@/app/(site)/lib/shared";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
+import sanitazeReceiptText from "../../../../../lib/shared/utils/domains/printing/sanitazeReceiptText";
+import { SMALL_PRINT } from "@/lib/shared/constants/printing";
+import fitReceiptText from "@/lib/shared/utils/domains/printing/fitReceiptText";
+import { PaymentContracts } from "@/lib/shared";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 export interface PaymentSummaryReceiptProps {
   summaryData: PaymentContracts.GetSummary.Output;

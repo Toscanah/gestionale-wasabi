@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
-import formatRice from "../../../../lib/utils/domains/rice/formatRice";
+import formatRice from "../../../../../../lib/shared/utils/domains/rice/formatRice";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import { useEffect, useState } from "react";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import getPioRice from "@/app/(site)/lib/services/product-management/getPioRice";
+import { useOrderContext } from "@/context/OrderContext";
+import getPioRice from "@/lib/services/product-management/getPioRice";
 
 export default function Rice() {
   const { order } = useOrderContext();

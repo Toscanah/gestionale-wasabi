@@ -1,16 +1,16 @@
-import sanitizeReceiptText from "@/app/(site)/lib/utils/domains/printing/sanitazeReceiptText";
+import sanitizeReceiptText from "@/lib/shared/utils/domains/printing/sanitazeReceiptText";
 import {
   CommonPayload,
   EngagementWithDetails,
   ImagePayload,
   MessagePayload,
   QrPayload,
-} from "@/app/(site)/lib/shared";
+} from "@/lib/shared";
 import { Fragment } from "react";
 import { Br, Cut, Image, QRCode, Text } from "react-thermal-printer";
-import { BIG_PRINT, SMALL_PRINT } from "../../../lib/shared/constants/printing";
+import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared/constants/printing";
 import { EngagementType } from "@/prisma/generated/client/enums";
-import wrapTextCentered from "@/app/(site)/lib/utils/domains/printing/wrapTextCentered";
+import wrapTextCentered from "@/lib/shared/utils/domains/printing/wrapTextCentered";
 
 export interface EngagementPrintProps {
   engagement: EngagementWithDetails;

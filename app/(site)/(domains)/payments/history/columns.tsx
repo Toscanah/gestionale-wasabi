@@ -1,23 +1,23 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { HomeOrder, ORDER_TYPE_COLORS, OrderWithSummedPayments } from "@/app/(site)/lib/shared";
+import { HomeOrder, ORDER_TYPE_COLORS, OrderWithSummedPayments } from "@/lib/shared";
 import { Badge } from "@/components/ui/badge";
 import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
 import { Button } from "@/components/ui/button";
-import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
-import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
-import { ActionColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import { trpcClient } from "@/lib/server/client";
-import { OrderGuards } from "@/app/(site)/lib/shared/types/order-guards";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
+import { getOrderTotal } from "../../../../../lib/services/order-management/getOrderTotal";
+import usePrinter from "@/hooks/printing/usePrinter";
+import { ActionColumn, ValueColumn } from "@/components/table/TableColumns";
+import { trpcClient } from "@/lib/trpc/client";
+import { OrderGuards } from "@/lib/shared/types/order-guards";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import { MinusIcon } from "@phosphor-icons/react";
-import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
-import { EmDash, EnDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";
-import WasabiPopover from "@/app/(site)/components/ui/wasabi/WasabiPopover";
+import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
+import { EmDash, EnDash, NA } from "@/components/shared/misc/Placeholders";
+import WasabiPopover from "@/components/shared/wasabi/WasabiPopover";
 import {
   PROMOTION_TYPES_COLORS,
   PROMOTION_TYPES_LABELS,
-} from "@/app/(site)/lib/shared/constants/promotion-labels";
+} from "@/lib/shared/constants/promotion-labels";
 import { Separator } from "@/components/ui/separator";
 
 const columns: ColumnDef<OrderWithSummedPayments>[] = [

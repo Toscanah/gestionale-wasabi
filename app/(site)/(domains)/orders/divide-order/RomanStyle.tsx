@@ -3,15 +3,15 @@ import { OrderType, PaymentScope } from "@/prisma/generated/client/enums";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import OrderPayment from "@/app/(site)/(domains)/payments/order/OrderPayment";
-import { TableOrder } from "@/app/(site)/lib/shared";
+import OrderPayment from "@/domains/payments/order/OrderPayment";
+import { TableOrder } from "@/lib/shared";
 import { useOrderContext } from "../../../context/OrderContext";
-import { getOrderTotal } from "../../../lib/services/order-management/getOrderTotal";
-import roundToCents from "../../../lib/utils/global/number/roundToCents";
+import { getOrderTotal } from "../../../../../lib/services/order-management/getOrderTotal";
+import roundToCents from "../../../../../lib/shared/utils/global/number/roundToCents";
 import { debounce } from "lodash";
-import { toastSuccess } from "../../../lib/utils/global/toast";
-import useFocusOnClick from "../../../hooks/focus/useFocusOnClick";
-import { trpc } from "@/lib/server/client";
+import { toastSuccess } from "../../../../../lib/shared/utils/global/toast";
+import useFocusOnClick from "../../../../../hooks/focus/useFocusOnClick";
+import { trpc } from "@/lib/trpc/client";
 import { Payment } from "@/prisma/generated/schemas";
 
 interface RomanStyleProps {

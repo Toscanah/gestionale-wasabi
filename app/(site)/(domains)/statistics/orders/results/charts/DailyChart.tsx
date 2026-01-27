@@ -1,4 +1,4 @@
-import { OrderContracts, OrdersStats } from "@/app/(site)/lib/shared";
+import { OrderContracts, OrdersStats } from "@/lib/shared";
 import { ChartMode, ChartType, Metric } from "./ChartSection";
 import {
   ChartConfig,
@@ -26,12 +26,12 @@ import {
   Cell,
   Label,
 } from "recharts";
-import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
+import formatRice from "@/lib/shared/utils/domains/rice/formatRice";
 import { TrendDownIcon, TrendUpIcon } from "@phosphor-icons/react/dist/ssr";
 import { EqualIcon } from "lucide-react";
 import { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 // ----------------- TYPES -----------------
 type DailyChartProps = {

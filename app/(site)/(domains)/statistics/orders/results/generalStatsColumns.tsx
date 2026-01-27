@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { GeneralResultRecord } from "./SectionResults";
-import { FieldColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
-import formatRice from "@/app/(site)/lib/utils/domains/rice/formatRice";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { FieldColumn, ValueColumn } from "@/components/table/TableColumns";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
+import formatRice from "@/lib/shared/utils/domains/rice/formatRice";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 const generalStatsColumns: ColumnDef<GeneralResultRecord>[] = [
   FieldColumn({

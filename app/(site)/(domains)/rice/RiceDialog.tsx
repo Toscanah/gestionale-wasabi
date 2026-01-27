@@ -4,12 +4,12 @@ import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { useEffect, useState } from "react";
-import WasabiDialog from "../../components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
-import useFocusOnClick from "../../hooks/focus/useFocusOnClick";
-import { trpc } from "@/lib/server/client";
-import WasabiSelect from "../../components/ui/wasabi/WasabiSelect";
+import useFocusOnClick from "../../../../hooks/focus/useFocusOnClick";
+import { trpc } from "@/lib/trpc/client";
+import WasabiSelect from "@/components/shared/wasabi/WasabiSelect";
 
 interface RiceDialogProps {
   variant: "header" | "sidebar";

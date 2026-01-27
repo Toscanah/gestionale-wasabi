@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
+import usePrinter from "@/hooks/printing/usePrinter";
 import { DateRange } from "react-day-picker";
-import formatDateFilter from "@/app/(site)/lib/utils/global/date/formatDateFilter";
-import { PaymentContracts } from "@/app/(site)/lib/shared";
+import formatDateFilter from "@/lib/shared/utils/global/date/formatDateFilter";
+import { PaymentContracts } from "@/lib/shared";
 
 interface PrintSummaryProps {
   summaryData: PaymentContracts.GetSummary.Output;

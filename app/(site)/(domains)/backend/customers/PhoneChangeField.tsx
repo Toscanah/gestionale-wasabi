@@ -13,7 +13,7 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Loader2, CheckCircle2, AlertCircle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/lib/server/client";
+import { trpc } from "@/lib/trpc/client";
 import { Separator } from "@/components/ui/separator";
 
 export default function PhoneChangeField({ field }: { field: ControllerRenderProps }) {

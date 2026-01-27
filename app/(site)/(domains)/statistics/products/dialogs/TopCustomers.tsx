@@ -1,18 +1,18 @@
-import FullNameColumn from "@/app/(site)/components/table/common/FullNameColumn";
-import Table from "@/app/(site)/components/table/Table";
-import { FieldColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import { CustomerContracts, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import useTable from "@/app/(site)/hooks/table/useTable";
+import FullNameColumn from "@/components/table/common/FullNameColumn";
+import Table from "@/components/table/Table";
+import { FieldColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import { CustomerContracts, ComprehensiveCustomer } from "@/lib/shared";
+import useTable from "@/hooks/table/useTable";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
-import { customersAPI } from "@/lib/server/api";
-import AddressesColumn from "@/app/(site)/components/table/common/AddressesColumn";
-import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import RandomSpinner from "@/app/(site)/components/ui/misc/loader/RandomSpinner";
+import Loader from "@/components/shared/misc/loader/Loader";
+import { customersAPI } from "@/lib/trpc/api";
+import AddressesColumn from "@/components/table/common/AddressesColumn";
+import useSkeletonTable from "@/hooks/table/useSkeletonTable";
+import RandomSpinner from "@/components/shared/misc/loader/RandomSpinner";
 import React from "react";
-import { EnDash } from "@/app/(site)/components/ui/misc/Placeholders";
+import { EnDash } from "@/components/shared/misc/Placeholders";
 
 export interface TopCustomersProps {
   product: { id: number; name: string; hasTopCustomers: boolean };

@@ -1,7 +1,7 @@
-import roundToTwo from "../../../lib/utils/global/number/roundToTwo";
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import { PaymentContracts } from "@/app/(site)/lib/shared";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import { PaymentContracts } from "@/lib/shared";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 

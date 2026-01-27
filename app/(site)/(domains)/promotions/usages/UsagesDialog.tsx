@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { promotionsAPI } from "@/lib/server/api";
+import { promotionsAPI } from "@/lib/trpc/api";
 import { useState } from "react";
-import { ActionColumn, IndexColumn, ValueColumn } from "@/app/(site)/components/table/TableColumns";
-import useSkeletonTable from "@/app/(site)/hooks/table/useSkeletonTable";
-import useTable from "@/app/(site)/hooks/table/useTable";
+import { ActionColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
+import useSkeletonTable from "@/hooks/table/useSkeletonTable";
+import useTable from "@/hooks/table/useTable";
 import {
   ComprehensivePromotionUsage,
   ORDER_TYPE_COLORS,
@@ -14,19 +14,19 @@ import {
   PromotionUsageWithOrder,
   PromotionWithUsages,
   SHIFT_LABELS,
-} from "@/app/(site)/lib/shared";
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import Table from "@/app/(site)/components/table/Table";
+} from "@/lib/shared";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import Table from "@/components/table/Table";
 import { Badge } from "@/components/ui/badge";
-import WasabiPopover from "@/app/(site)/components/ui/wasabi/WasabiPopover";
+import WasabiPopover from "@/components/shared/wasabi/WasabiPopover";
 import { Separator } from "@/components/ui/separator";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
-import capitalizeFirstLetter from "@/app/(site)/lib/utils/global/string/capitalizeFirstLetter";
-import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
+import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
+import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 import { OrderStatus, WorkingShift } from "@/prisma/generated/client/enums";
 import { TrashIcon } from "@phosphor-icons/react";
-import { trpc } from "@/lib/server/client";
-import { EnDash, NA } from "@/app/(site)/components/ui/misc/Placeholders";
+import { trpc } from "@/lib/trpc/client";
+import { EnDash, NA } from "@/components/shared/misc/Placeholders";
 
 function canDeleteUsage(usage: ComprehensivePromotionUsage): boolean {
   const order = usage.order;

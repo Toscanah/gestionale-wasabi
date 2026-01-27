@@ -7,13 +7,13 @@ import React, {
   SetStateAction,
   useEffect,
 } from "react";
-import { OrderByType, ComprehensiveCustomer } from "@/app/(site)/lib/shared";
-import useCustomerLookup from "../hooks/create-home-order/useCustomerLookup";
+import { OrderByType, ComprehensiveCustomer } from "@/lib/shared";
+import useCustomerLookup from "../../../hooks/create-home-order/useCustomerLookup";
 import { useWasabiContext } from "./WasabiContext";
 import { AddressFormValues } from "../(domains)/orders/create-order/home/address/form";
-import useCustomerManager from "../hooks/create-home-order/useCustomerManager";
-import useAddressSelection from "../hooks/create-home-order/useAddressSelection";
-import { trpc } from "@/lib/server/client";
+import useCustomerManager from "../../../hooks/create-home-order/useCustomerManager";
+import useAddressSelection from "../../../hooks/create-home-order/useAddressSelection";
+import { trpc } from "@/lib/trpc/client";
 import { AddressType, CustomerType } from "@/prisma/generated/schemas";
 
 type CreateHomeOrderType = {

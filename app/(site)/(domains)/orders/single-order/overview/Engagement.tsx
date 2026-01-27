@@ -1,8 +1,8 @@
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import OrderEngagementDialog from "@/app/(site)/(domains)/engagement/broadcasting/components/OrderEngagementDialog";
+import { useOrderContext } from "@/context/OrderContext";
+import OrderEngagementDialog from "@/domains/engagement/broadcasting/components/OrderEngagementDialog";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import patchOrderEngagements from "@/app/(site)/lib/services/order-management/patchOrderEngagements";
+import patchOrderEngagements from "@/lib/services/order-management/patchOrderEngagements";
 
 export default function Engagement() {
   const { order, updateOrder } = useOrderContext();

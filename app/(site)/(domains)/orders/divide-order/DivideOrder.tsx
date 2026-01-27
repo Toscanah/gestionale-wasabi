@@ -1,12 +1,12 @@
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductInOrder } from "@/lib/shared";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import OrderPayment from "@/app/(site)/(domains)/payments/order/OrderPayment";
+import OrderPayment from "@/domains/payments/order/OrderPayment";
 import { PayingAction } from "../single-order/OrderTable";
 import { useOrderContext } from "../../../context/OrderContext";
 import DivideTable from "./DivideTable";
-import moveProductsInDivideOrder from "../../../lib/services/order-management/moveProductsInDivideOrder";
-import usePrinter from "@/app/(site)/hooks/printing/usePrinter";
+import moveProductsInDivideOrder from "../../../../../lib/services/order-management/moveProductsInDivideOrder";
+import usePrinter from "@/hooks/printing/usePrinter";
 import { OrderStatus, PaymentScope, PlannedPayment } from "@/prisma/generated/client/enums";
 
 interface DividerOrderProps {

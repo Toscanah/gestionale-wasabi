@@ -1,4 +1,4 @@
-import { OrderByType, HomeOrder, PickupOrder, OrderGuards } from "@/app/(site)/lib/shared";
+import { OrderByType, HomeOrder, PickupOrder, OrderGuards } from "@/lib/shared";
 import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
 import CommonInfo from "./CommonInfo";
 import HomeInfo from "./HomeInfo";

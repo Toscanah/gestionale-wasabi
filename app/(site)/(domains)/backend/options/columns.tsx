@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { OptionWithCategories } from "@/app/(site)/lib/shared";
-import { FieldColumn, JoinColumn } from "@/app/(site)/components/table/TableColumns";
+import { OptionWithCategories } from "@/lib/shared";
+import { FieldColumn, JoinColumn } from "@/components/table/TableColumns";
 
 const columns: ColumnDef<OptionWithCategories>[] = [
   FieldColumn({

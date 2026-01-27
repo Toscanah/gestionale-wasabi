@@ -1,6 +1,6 @@
 "use client";
 
-import WasabiAnimatedTab from "@/app/(site)/components/ui/wasabi/WasabiAnimatedTab";
+import WasabiAnimatedTab from "@/components/shared/wasabi/WasabiAnimatedTab";
 import { DiscountsSummary, DiscountTabs } from "../DiscountsDialog";
 import { Label } from "@/components/ui/label";
 import {
@@ -17,7 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import { useOrderContext } from "@/context/OrderContext";
 import { PromotionType } from "@/prisma/generated/client/enums";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -25,24 +25,24 @@ import {
   PromotionByType,
   PromotionGuards,
   PromotionUsageWithPromotion,
-} from "@/app/(site)/lib/shared";
+} from "@/lib/shared";
 import {
   PROMOTION_TYPES_COLORS,
   PROMOTION_TYPES_LABELS,
-} from "@/app/(site)/lib/shared/constants/promotion-labels";
-import usePromotionsFetcher from "@/app/(site)/hooks/promotions/usePromotionsFetcher";
+} from "@/lib/shared/constants/promotion-labels";
+import usePromotionsFetcher from "@/hooks/promotions/usePromotionsFetcher";
 import { ArrowRightIcon, CheckIcon, XIcon } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { debounce } from "lodash";
 import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import { TrashIcon } from "@phosphor-icons/react/dist/ssr";
-import { trpc } from "@/lib/server/client";
+import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
 import QuickPromoPreview from "./QuickPromoPreview";
 import { Badge } from "@/components/ui/badge";
-import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
-import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
+import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
+import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 
 interface PromotionsDiscountsTabProps {
   activeTab: DiscountTabs;

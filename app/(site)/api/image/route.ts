@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import { UploadImageType } from "../../lib/integrations/images/uploadImage";
+import { UploadImageType } from "@/lib/integrations/images/uploadImage";
 
 const allowedExtensions = ["png", "jpg", "jpeg", "svg", "ico", "bmp"];
 const folders = {

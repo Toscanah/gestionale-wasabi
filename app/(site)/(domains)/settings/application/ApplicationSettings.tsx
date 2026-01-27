@@ -1,9 +1,8 @@
-import { useWasabiContext } from "@/app/(site)/context/WasabiContext";
-import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
+import { useWasabiContext } from "@/context/WasabiContext";
+import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import PrinterChoice from "./PrinterChoice";
-import TimeWindowFilter from "../../../components/ui/filters/time/TimeWindowFilter";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ApplicationSettings() {

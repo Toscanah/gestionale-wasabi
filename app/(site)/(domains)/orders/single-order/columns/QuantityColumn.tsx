@@ -1,11 +1,11 @@
-import { HybridColumn } from "@/app/(site)/components/table/TableColumns";
+import { HybridColumn } from "@/components/table/TableColumns";
 import { CommonColumnProps } from "./orderColumns";
-import { ProductInOrder } from "@/app/(site)/lib/shared";
+import { ProductInOrder } from "@/lib/shared";
 import { OrderTableMeta } from "../OrderTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FocussableInput } from "@/app/(site)/hooks/focus/useGridFocus";
-import { isArrows, isSubmit } from "@/app/(site)/lib/utils/global/keyboard";
+import { FocussableInput } from "@/hooks/focus/useGridFocus";
+import { isArrows, isSubmit } from "@/lib/shared/utils/global/keyboard";
 import { useCallback, useEffect } from "react";
 import { debounce } from "lodash";
 

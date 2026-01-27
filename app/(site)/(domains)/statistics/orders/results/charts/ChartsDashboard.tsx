@@ -1,4 +1,4 @@
-import { OrderContracts, OrdersStats, Weekday } from "@/app/(site)/lib/shared";
+import { OrderContracts, OrdersStats, Weekday } from "@/lib/shared";
 import ChartSection from "./ChartSection";
 import { OrderType } from "@/prisma/generated/client/enums";
 

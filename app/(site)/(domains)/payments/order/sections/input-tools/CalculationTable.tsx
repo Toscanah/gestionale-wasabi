@@ -1,11 +1,11 @@
-import useTable from "@/app/(site)/hooks/table/useTable";
+import useTable from "@/hooks/table/useTable";
 import { useState } from "react";
 import getColumns from "./columns";
-import Table from "@/app/(site)/components/table/Table";
+import Table from "@/components/table/Table";
 import {
   PaymentCalculation,
   useOrderPaymentContext,
-} from "@/app/(site)/context/OrderPaymentContext";
+} from "@/context/OrderPaymentContext";
 
 export default function CalculationTable() {
   const { setPaymentCalculations, paymentCalculations, setActiveTool } = useOrderPaymentContext();

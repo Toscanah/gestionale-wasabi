@@ -1,9 +1,9 @@
-import useEngagementsLedgers from "@/app/(site)/hooks/engagement/history/useEngagementsLedgers";
-import useTable from "@/app/(site)/hooks/table/useTable";
+import useEngagementsLedgers from "@/hooks/engagement/history/useEngagementsLedgers";
+import useTable from "@/hooks/table/useTable";
 import columns from "./columns";
-import Table from "@/app/(site)/components/table/Table";
+import Table from "@/components/table/Table";
 import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
-import Loader from "@/app/(site)/components/ui/misc/loader/Loader";
+import Loader from "@/components/shared/misc/loader/Loader";
 
 interface EngagementHistoryProps {
   customerId: number;

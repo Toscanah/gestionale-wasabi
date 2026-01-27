@@ -4,14 +4,14 @@ import Manager, { FormFieldsProps } from "../manager/Manager";
 import columns from "./columns";
 import { useEffect, useState } from "react";
 import { getProductFields, ProductFormData, productFormSchema } from "./form";
-import useProductsManager from "@/app/(site)/hooks/backend/base/useProductsManager";
+import useProductsManager from "@/hooks/backend/base/useProductsManager";
 import { Path } from "react-hook-form";
-import { categoriesAPI } from "@/lib/server/api";
+import { categoriesAPI } from "@/lib/trpc/api";
 import { FormFields } from "../manager/FormFields";
-import CategoryFilter from "@/app/(site)/components/ui/filters/select/CategoryFilter";
-import { Product, ProductSortField } from "@/app/(site)/lib/shared";
-import useTablePagination from "@/app/(site)/hooks/table/useTablePagination";
-import { SortableField, SortField } from "@/app/(site)/components/ui/sorting/SortingMenu";
+import CategoryFilter from "@/components/shared/filters/select/CategoryFilter";
+import { Product, ProductSortField } from "@/lib/shared";
+import useTablePagination from "@/hooks/table/useTablePagination";
+import { SortableField, SortField } from "@/components/shared/sorting/SortingMenu";
 
 const toFormData = (p: Product): ProductFormData => {
   const { category, ...rest } = p;

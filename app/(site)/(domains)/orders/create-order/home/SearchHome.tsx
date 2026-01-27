@@ -1,16 +1,16 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
-import { OrderProvider } from "@/app/(site)/context/OrderContext";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import useFocusCycle from "@/hooks/focus/useFocusCycle";
+import { OrderProvider } from "@/context/OrderContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react";
 import OrderTable from "../../single-order/OrderTable";
-import { OrderByType } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/lib/shared";
 import Home from "./Home";
-import { toastError } from "@/app/(site)/lib/utils/global/toast";
-import generateEmptyOrder from "@/app/(site)/lib/services/order-management/generateEmptyOrder";
+import { toastError } from "@/lib/shared/utils/global/toast";
+import generateEmptyOrder from "@/lib/services/order-management/generateEmptyOrder";
 import { OrderType } from "@/prisma/generated/client/enums";
-import { CreateHomeOrderProvider } from "@/app/(site)/context/CreateHomeOrderContext";
+import { CreateHomeOrderProvider } from "@/context/CreateHomeOrderContext";
 
 interface SearchHomeProps {
   setOrder: Dispatch<SetStateAction<OrderByType>>;

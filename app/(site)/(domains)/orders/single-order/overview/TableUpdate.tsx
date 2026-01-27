@@ -1,12 +1,12 @@
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { TableOrder } from "@/app/(site)/lib/shared";
-import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
+import { useOrderContext } from "@/context/OrderContext";
+import { TableOrder } from "@/lib/shared";
+import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import { Input } from "@/components/ui/input";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
 import { PaymentScope } from "@/prisma/generated/client/enums";
-import useFocusOnClick from "@/app/(site)/hooks/focus/useFocusOnClick";
-import { trpc } from "@/lib/server/client";
+import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
+import { trpc } from "@/lib/trpc/client";
 
 export default function TableUpdate() {
   const { order: anyOrder, joinTableOrders, updateOrder } = useOrderContext();

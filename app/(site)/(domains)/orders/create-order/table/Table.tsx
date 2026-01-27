@@ -2,15 +2,15 @@ import { useState, Dispatch, SetStateAction, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { OrderByType } from "@/app/(site)/lib/shared";
+import { OrderByType } from "@/lib/shared";
 import { useWasabiContext } from "../../../../context/WasabiContext";
-import { toastError, toastSuccess } from "../../../../lib/utils/global/toast";
-import useFocusCycle from "@/app/(site)/hooks/focus/useFocusCycle";
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
+import { toastError, toastSuccess } from "../../../../../../lib/shared/utils/global/toast";
+import useFocusCycle from "@/hooks/focus/useFocusCycle";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { cn } from "@/lib/utils";
-import { OrderProvider } from "@/app/(site)/context/OrderContext";
+import { OrderProvider } from "@/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
-import { trpc } from "@/lib/server/client";
+import { trpc } from "@/lib/trpc/client";
 
 interface TableProps {
   setOrder: Dispatch<SetStateAction<OrderByType>>;

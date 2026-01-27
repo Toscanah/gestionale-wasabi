@@ -1,19 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import WasabiDialog from "../../../components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
-import { toastSuccess } from "../../../lib/utils/global/toast";
+import { toastSuccess } from "../../../../../lib/shared/utils/global/toast";
 import { debounce } from "lodash";
-import useTable from "@/app/(site)/hooks/table/useTable";
+import useTable from "@/hooks/table/useTable";
 import columns from "./columns";
-import Table from "@/app/(site)/components/table/Table";
+import Table from "@/components/table/Table";
 import { Label } from "@/components/ui/label";
-import { trpc } from "@/lib/server/client";
+import { trpc } from "@/lib/trpc/client";
 import { RiceBatchType } from "@/prisma/generated/schemas";
 import { TableMeta } from "@tanstack/react-table";
 

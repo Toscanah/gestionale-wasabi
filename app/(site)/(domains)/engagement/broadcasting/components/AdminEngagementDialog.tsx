@@ -1,7 +1,7 @@
-import WasabiDialog, { WasabiDialogProps } from "@/app/(site)/components/ui/wasabi/WasabiDialog";
-import useHandleEngagement from "@/app/(site)/hooks/engagement/useHandleEngagement";
-import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
-import { EngagementWithDetails } from "@/app/(site)/lib/shared";
+import WasabiDialog, { WasabiDialogProps } from "@/components/shared/wasabi/WasabiDialog";
+import useHandleEngagement from "@/hooks/engagement/useHandleEngagement";
+import { toastSuccess } from "@/lib/shared/utils/global/toast";
+import { EngagementWithDetails } from "@/lib/shared";
 import { Button } from "@/components/ui/button";
 import MarketingTemplates from "../../templates/MarketingTemplates";
 import { useState } from "react";

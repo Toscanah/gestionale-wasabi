@@ -1,6 +1,6 @@
-import { useOrderPaymentContext } from "@/app/(site)/context/OrderPaymentContext";
-import roundToTwo from "@/app/(site)/lib/utils/global/number/roundToTwo";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { useOrderPaymentContext } from "@/context/OrderPaymentContext";
+import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import { Button } from "@/components/ui/button";
 import { debounce } from "lodash";
 import { useRef, useState } from "react";

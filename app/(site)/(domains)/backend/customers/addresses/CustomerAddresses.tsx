@@ -9,14 +9,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import parseAddress from "@/app/(site)/lib/utils/domains/address/parseAddress";
+import parseAddress from "@/lib/shared/utils/domains/address/parseAddress";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { AddressType } from "@/prisma/generated/schemas";
 import { ControllerRenderProps } from "react-hook-form";
 import { Plus, Power, PowerOff } from "lucide-react";
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 
 interface CustomerAddressesProps {
   field: ControllerRenderProps;

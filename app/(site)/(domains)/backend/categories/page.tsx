@@ -2,11 +2,11 @@
 
 import columns from "./columns";
 import Manager, { FormFieldsProps } from "../manager/Manager";
-import { CategoryWithOptions } from "@/app/(site)/lib/shared";
+import { CategoryWithOptions } from "@/lib/shared";
 import { FormFields } from "../manager/FormFields";
 import { CategoryFormData, categoryFormSchema, getCategoryFields } from "./form";
-import useCategoriesManager from "@/app/(site)/hooks/backend/base/useCategoriesManager";
-import { optionsAPI } from "@/lib/server/api";
+import useCategoriesManager from "@/hooks/backend/base/useCategoriesManager";
+import { optionsAPI } from "@/lib/trpc/api";
 
 const toFormData = (p: CategoryWithOptions): CategoryFormData => ({
   ...p,

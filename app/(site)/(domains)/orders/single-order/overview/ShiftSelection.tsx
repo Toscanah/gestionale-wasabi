@@ -1,4 +1,4 @@
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
+import { useOrderContext } from "@/context/OrderContext";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { WorkingShift } from "@/prisma/generated/client/enums";
 

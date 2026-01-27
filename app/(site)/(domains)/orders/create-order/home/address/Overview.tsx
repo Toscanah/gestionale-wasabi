@@ -7,10 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
-import { useCreateHomeOrder } from "@/app/(site)/context/CreateHomeOrderContext";
+import { useCreateHomeOrder } from "@/context/CreateHomeOrderContext";
 import { debounce } from "lodash";
 import { PowerIcon, PowerOff } from "lucide-react";
-import { trpc } from "@/lib/server/client";
+import { trpc } from "@/lib/trpc/client";
 
 interface OverviewProps {
   phoneRef: RefObject<HTMLInputElement | null>;

@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
-import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/app/(site)/lib/shared/types/RFM";
+import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/lib/shared/types/RFM";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "@phosphor-icons/react";
-import useTable from "@/app/(site)/hooks/table/useTable";
+import useTable from "@/hooks/table/useTable";
 import columns from "./columns";
-import Table from "@/app/(site)/components/table/Table";
+import Table from "@/components/table/Table";
 import { Label } from "@/components/ui/label";
-import { toastError } from "@/app/(site)/lib/utils/global/toast";
+import { toastError } from "@/lib/shared/utils/global/toast";
 
 export type RFMTableMeta = {
   updateCell: (rowIndex: number, columnId: keyof RFMRangeRule, value: number | "") => void;

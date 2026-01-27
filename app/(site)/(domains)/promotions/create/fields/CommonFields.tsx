@@ -1,7 +1,7 @@
-import { useZodForm } from "@/app/(site)/hooks/useZodForm";
+import { useZodForm } from "@/hooks/useZodForm";
 import { CreatePromotionFormSchema } from "../CreatePromotionForm";
 import { useEffect, useRef } from "react";
-import { WasabiFormField } from "@/app/(site)/components/ui/wasabi/WasabiFormField";
+import { WasabiFormField } from "@/components/shared/wasabi/WasabiFormField";
 import {
   FormControl,
   FormItem,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import WasabiDatePicker from "@/app/(site)/components/ui/wasabi/WasabiDatePicker";
+import WasabiDatePicker from "@/components/shared/wasabi/WasabiDatePicker";
 
 interface CommonFieldsProps {
   form: ReturnType<typeof useZodForm<typeof CreatePromotionFormSchema>>;

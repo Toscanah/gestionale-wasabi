@@ -1,6 +1,6 @@
-import { KITCHEN_TYPE_LABELS } from "@/app/(site)/lib/shared/constants/kitchen-type-labels";
+import { KITCHEN_TYPE_LABELS } from "@/lib/shared/constants/kitchen-type-labels";
 import { ControllerRenderProps } from "react-hook-form";
-import WasabiSelect from "@/app/(site)/components/ui/wasabi/WasabiSelect";
+import WasabiSelect from "@/components/shared/wasabi/WasabiSelect";
 
 export default function KitchenType({ field }: { field: ControllerRenderProps<any> }) {
   const options = Object.entries(KITCHEN_TYPE_LABELS).map(([value, label]) => ({

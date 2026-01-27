@@ -1,9 +1,9 @@
-import WasabiDialog from "@/app/(site)/components/ui/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
 import { ComponentType, useCallback } from "react";
 import { ActionProps, FormFieldsProps } from "../Manager";
 import { Button } from "@/components/ui/button";
 import { PencilIcon } from "@phosphor-icons/react";
-import { BaseEntity } from "@/app/(site)/hooks/backend/useManager";
+import { BaseEntity } from "@/hooks/backend/useManager";
 
 export default function EditAction<TDomain extends BaseEntity>({
   handleUpdate,

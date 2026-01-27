@@ -3,20 +3,17 @@ import { useOrderContext } from "../../../../context/OrderContext";
 import {
   OrderByType,
   EngagementWithDetails,
-  HomeOrder,
   ParsedEngagementTemplate,
-  PickupOrder,
   OrderGuards,
-} from "../../../../lib/shared";
-import { OrderType } from "@/prisma/generated/client/enums";
+} from "@/lib/shared";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import MarketingTemplates from "../../templates/MarketingTemplates";
 import { Button } from "@/components/ui/button";
-import patchOrderEngagements from "../../../../lib/services/order-management/patchOrderEngagements";
+import patchOrderEngagements from "../../../../../../lib/services/order-management/patchOrderEngagements";
 import { Checkbox } from "@/components/ui/checkbox";
 import TemplateContentView from "../../templates/components/content/TemplateContentView";
-import { toastSuccess } from "@/app/(site)/lib/utils/global/toast";
+import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import { Trash } from "@phosphor-icons/react";
 import EngagementHistory from "./history/EngagementHistory";
 

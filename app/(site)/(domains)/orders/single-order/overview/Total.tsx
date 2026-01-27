@@ -1,6 +1,6 @@
-import { useOrderContext } from "@/app/(site)/context/OrderContext";
-import { getOrderTotal } from "@/app/(site)/lib/services/order-management/getOrderTotal";
-import toEuro from "@/app/(site)/lib/utils/global/string/toEuro";
+import { useOrderContext } from "@/context/OrderContext";
+import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
+import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 export default function Total() {
   const { order } = useOrderContext();
