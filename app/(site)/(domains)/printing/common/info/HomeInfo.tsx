@@ -3,6 +3,7 @@ import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared/constants/printing";
 import sanitazeReceiptText from "@/lib/shared/utils/domains/printing/sanitazeReceiptText";
 import splitIntoLines from "@/lib/shared/utils/global/string/splitIntoLines";
 import { AddressType } from "@/prisma/generated/schemas";
+import InvertedText from "@/components/shared/InvertedText";
 
 interface HomeInfoProps {
   address: AddressType;
@@ -23,7 +24,7 @@ export default function HomeInfo({
   const splittedDoorbell = splitIntoLines(
     sanitazeReceiptText(doorbell ?? "").split(/\s+/),
     24,
-    " "
+    " ",
   );
 
   const streetInfoLabel = "Informazioni strad: ";
@@ -102,7 +103,7 @@ export default function HomeInfo({
       {putWhen && (
         <>
           <Line />
-          <Text size={BIG_PRINT}>{whenValue !== "immediate" ? whenValue : "PRIMA POSSIBILE"}</Text>
+            <Text invert size={BIG_PRINT}>{whenValue !== "immediate" ? whenValue : "PRIMA POSSIBILE"}</Text>
         </>
       )}
     </>

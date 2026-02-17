@@ -121,8 +121,6 @@ export default async function computeOrdersStats(
   // 🟢 revenuePerOrder
   total.revenuePerOrder = total.orders > 0 ? total.revenue / total.orders : 0;
 
-  console.log(total)
-
   return {
     ...results,
     tutti: total,

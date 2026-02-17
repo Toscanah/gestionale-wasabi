@@ -3,21 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Cut, Raw } from "react-thermal-printer";
 import print from "../printing/print";
-
-const rawCache = new Map<string, Uint8Array>();
+import { useRef } from "react";
+import { toPng } from "html-to-image";
 
 export async function imageToRaw(src: string, width: number): Promise<Uint8Array> {
-  const cacheKey = `${src}-${width}`;
-
-  // CACHE HIT
-  const cached = rawCache.get(cacheKey);
-  if (cached) {
-    console.log("[imageToRaw] Cache hit:", cacheKey);
-    return cached;
-  }
-
-  console.log("[imageToRaw] Processing:", cacheKey);
-
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -106,8 +95,6 @@ export async function imageToRaw(src: string, width: number): Promise<Uint8Array
         // Image data
         result.set(raster, 8);
 
-        // CACHE SAVE
-        rawCache.set(cacheKey, result);
         resolve(result);
       } catch (err) {
         reject(err);
@@ -121,13 +108,26 @@ export async function imageToRaw(src: string, width: number): Promise<Uint8Array
 }
 
 export default function TestingPage() {
+  // A ref to the hidden div we want to "photograph"
+  const receiptRef = useRef<HTMLDivElement>(null);
+
   const handlePrint = async () => {
     try {
-      const logoData = await imageToRaw("/next.svg", 300);
+      if (!receiptRef.current) return;
+
+      // 1. Convert the HTML/Tailwind element to a PNG Data URL
+      const dataUrl = await toPng(receiptRef.current, {
+        pixelRatio: 1, // Keep it 1:1 for thermal printer density
+        backgroundColor: "#ffffff",
+      });
+
+      // 2. Convert that PNG to the raw bytes your printer expects
+      // We use the printer's max width (usually 384 or 576px)
+      const receiptData = await imageToRaw(dataUrl, 384);
 
       await print(() => (
         <>
-          <Raw data={logoData} />
+          <Raw data={receiptData} />
           <Cut />
         </>
       ));
@@ -137,17 +137,26 @@ export default function TestingPage() {
   };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center">
+    <div className="h-screen w-screen flex flex-col items-center justify-center gap-8">
+      <div className="absolute top-0">
+        <div
+          ref={receiptRef}
+          // Add w-[384px] to match your printer width (handlePrint uses 384)
+          // This prevents the text from running off-screen and getting clipped
+          className="flex-row w-[384px] bg-white p-2 flex items-center justify-center text-black text-6xl font-[900] tracking-tighter leading-none italic"
+        >
+          {/* <span className="text-6xl font-[900] tracking-tighter leading-none italic"> */}
+            5% SCONTO
+          {/* </span> */}
+        </div>
+      </div>
+
       <Button
         className="flex-col w-96 h-96 text-2xl font-bold border-4 border-black"
         variant="outline"
         onClick={handlePrint}
       >
-        TEST FAST PRINT
-        <br />
-        <span className="text-sm font-normal mt-2 text-gray-500">
-          (Check console for cache logs)
-        </span>
+        PRINT CUSTOM HTML
       </Button>
     </div>
   );
