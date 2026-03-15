@@ -1,4 +1,4 @@
-import { RFMRangeRule, RFMScore, RFMRules } from "@/lib/shared/types/RFM";
+import { RFMRangeRule, RFMScore, RFMRules } from "@/lib/shared/types/rfm";
 
 function normalizeRules(rules: RFMRangeRule[]): RFMRangeRule[] {
   if (!Array.isArray(rules)) return [];
@@ -49,7 +49,7 @@ function getPointsFromRules(value: number, rawRules: RFMRangeRule[]): number {
 
 export default function calculateRfmScore(
   rfm: Omit<RFMScore, "finalScore">,
-  configs: RFMRules
+  configs: RFMRules,
 ): RFMScore {
   const safeWeight = (w: number | undefined) => (typeof w === "number" && !isNaN(w) ? w : 0);
 

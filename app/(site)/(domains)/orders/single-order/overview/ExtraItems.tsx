@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useState } from "react";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 interface ExtraItemProps {
   label: string;
@@ -32,7 +32,7 @@ const ExtraItem = ({ label, computedValue, stateValue, onValueChange }: ExtraIte
     <table className="w-full text-left">
       <tbody>
         <tr className="">
-          <td className="py-2">Calcolato:</td>
+          <td className="py-2">Calcolato</td>
           <td className="py-2 pl-4">
             <Input
               id={"computed-" + label}
@@ -44,7 +44,7 @@ const ExtraItem = ({ label, computedValue, stateValue, onValueChange }: ExtraIte
         </tr>
 
         <tr>
-          <td className="py-2">Manuale:</td>
+          <td className="py-2">Manuale</td>
           <td className="py-2 pl-4">
             <div className="flex items-center gap-2">
               <Button

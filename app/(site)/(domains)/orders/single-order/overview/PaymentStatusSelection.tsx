@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useOrderContext } from "@/context/OrderContext";
 import { PlannedPayment } from "@/prisma/generated/client/enums";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 type PaymentStatus = {
   prepaid: boolean;

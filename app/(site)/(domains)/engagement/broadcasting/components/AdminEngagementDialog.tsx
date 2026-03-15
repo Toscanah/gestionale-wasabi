@@ -1,4 +1,4 @@
-import WasabiDialog, { WasabiDialogProps } from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog, { WasabiDialogProps } from "@/components/ui/shared/wasabi/WasabiDialog";
 import useHandleEngagement from "@/hooks/engagement/useHandleEngagement";
 import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import { EngagementWithDetails } from "@/lib/shared";

@@ -1,4 +1,4 @@
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import useRfmRanks from "@/hooks/rfm/useRfmRanks";
 import {
   Accordion,
@@ -9,9 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RFMRankForm from "./RFMRankForm";
-import { RFMRankRule } from "@/lib/shared/types/RFM";
+import { RFMRankRule } from "@/lib/shared/types/rfm";
 import { useEffect, useRef, useState } from "react";
-import { DEFAULT_RANK_RULE } from "@/lib/shared/constants/default-rfm-config";
+import { DEFAULT_RANK_RULE } from "@/lib/shared";
 import { Trash } from "@phosphor-icons/react";
 import { toastError, toastSuccess } from "@/lib/shared/utils/global/toast";
 import clsx from "clsx";

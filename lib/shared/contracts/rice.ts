@@ -1,14 +1,14 @@
 import { z } from "zod";
 import { RiceBatchSchema, RiceLogSchema } from "@/prisma/generated/schemas";
 import { RiceLogType } from "@/prisma/generated/client/enums";
-import { ShiftFilterValue } from "../enums/Shift";
+import { ShiftFilterValue } from "../enums/shift";
 import { NoContentRequestSchema } from "./common/no-content";
 import {
   ToggleDeleteEntityRequestSchema,
   ToggleEntityResponseSchema,
 } from "./common/toggle-delete-entity";
 import { wrapSchema } from "./common/utils";
-import { RiceBatchLogWithBatchSchema } from "../entities/Rice";
+import { RiceBatchLogWithBatchSchema } from "../models/rice";
 
 export namespace RiceContracts {
   export namespace Common {

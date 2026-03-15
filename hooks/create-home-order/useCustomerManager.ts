@@ -4,7 +4,7 @@ import { ExtraInfo } from "@/context/CreateHomeOrderContext";
 import { toastError, toastSuccess } from "@/lib/shared/utils/global/toast";
 import { Dispatch, SetStateAction } from "react";
 import { AddressContracts, ComprehensiveCustomer, CustomerContracts } from "@/lib/shared";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { AddressType, CustomerType } from "@/prisma/generated/schemas";
 import { useCachedDataContext } from "@/context/CachedDataContext";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
@@ -179,7 +179,7 @@ export default function useCustomerManager({
         }),
       );
 
-      setSelectedOption(updatedAddress.id.toString());
+      setSelectedOption(updatedAddress.temporary ? "temp" : updatedAddress.id.toString());
 
       // 👇 2. UPDATE THE OBJECT (The Data State)
       // Note: This is technically redundant if useAddressSelection is working perfectly,

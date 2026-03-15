@@ -1,23 +1,21 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { HomeOrder, ORDER_TYPE_COLORS, OrderWithSummedPayments } from "@/lib/shared";
+import { ORDER_TYPE_COLORS, OrderWithSummedPayments } from "@/lib/shared";
 import { Badge } from "@/components/ui/badge";
-import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
+import { PlannedPayment } from "@/prisma/generated/client/enums";
 import { Button } from "@/components/ui/button";
-import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
 import { getOrderTotal } from "../../../../../lib/services/order-management/getOrderTotal";
 import usePrinter from "@/hooks/printing/usePrinter";
 import { ActionColumn, ValueColumn } from "@/components/table/TableColumns";
-import { trpcClient } from "@/lib/trpc/client";
-import { OrderGuards } from "@/lib/shared/types/order-guards";
+import { trpcClient } from "@/lib/api/client";
+import { OrderGuards } from "@/lib/shared";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
-import { MinusIcon } from "@phosphor-icons/react";
 import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
-import { EmDash, EnDash, NA } from "@/components/shared/misc/Placeholders";
-import WasabiPopover from "@/components/shared/wasabi/WasabiPopover";
+import { NA } from "@/components/ui/shared/misc/Placeholders";
+import WasabiPopover from "@/components/ui/shared/wasabi/WasabiPopover";
 import {
   PROMOTION_TYPES_COLORS,
   PROMOTION_TYPES_LABELS,
-} from "@/lib/shared/constants/promotion-labels";
+} from "@/lib/shared/constants/enum-labels/promotion-types";
 import { Separator } from "@/components/ui/separator";
 
 const columns: ColumnDef<OrderWithSummedPayments>[] = [

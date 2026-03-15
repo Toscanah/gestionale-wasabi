@@ -1,5 +1,4 @@
-import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { PaymentContracts } from "@/lib/shared";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import { Button } from "@/components/ui/button";

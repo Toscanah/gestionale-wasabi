@@ -3,7 +3,7 @@ import useTable from "@/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/components/table/Table";
 import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
-import Loader from "@/components/shared/misc/loader/Loader";
+import Loader from "@/components/ui/shared/misc/loader/Loader";
 
 interface EngagementHistoryProps {
   customerId: number;

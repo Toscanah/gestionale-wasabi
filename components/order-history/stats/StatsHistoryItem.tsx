@@ -1,12 +1,11 @@
-import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import { useState, useMemo, useEffect } from "react";
 import useHistoryStats, {
   UseHistoryStatsParams,
 } from "../../../hooks/order/history/useHistoryStats";
 import { Separator } from "@/components/ui/separator";
 import AllProductsDialog from "./AllProductsDialog";
-import WasabiSelect from "../../shared/wasabi/WasabiSelect";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
+import WasabiSelect from "@/components/ui/shared/wasabi/WasabiSelect";
 
 type HistoryStatsProps = UseHistoryStatsParams & {
   owner: string;
@@ -91,7 +90,7 @@ export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps
             .slice(0, 3) // top 3
             .map(
               ({ day, count }, index) =>
-                `${index + 1}. ${day.slice(0, 3)} (${formatCountLabel(count)})`
+                `${index + 1}. ${day.slice(0, 3)} (${formatCountLabel(count)})`,
             )
             .join(" | ")
         : "Nessun giorno comune",
@@ -119,7 +118,7 @@ export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps
       label: "Prodotto meno acquistato",
       value: stats.leastBoughtProduct
         ? `${stats.leastBoughtProduct.desc} (${formatCountLabel(
-            stats.leastBoughtProduct.quantity
+            stats.leastBoughtProduct.quantity,
           )})`
         : "Nessun prodotto",
     },
@@ -127,7 +126,6 @@ export default function StatsHistoryItem({ allOrders, owner }: HistoryStatsProps
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Filters */}
       <div className="flex gap-4 items-center w-full">
         <WasabiSelect
           appearance="filter"

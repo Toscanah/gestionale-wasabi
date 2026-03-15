@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import { getProductFields, ProductFormData, productFormSchema } from "./form";
 import useProductsManager from "@/hooks/backend/base/useProductsManager";
 import { Path } from "react-hook-form";
-import { categoriesAPI } from "@/lib/trpc/api";
+import { categoriesAPI } from "@/lib/api/api";
 import { FormFields } from "../manager/FormFields";
-import CategoryFilter from "@/components/shared/filters/select/CategoryFilter";
+import CategoryFilter from "@/components/ui/shared/filters/select/CategoryFilter";
 import { Product, ProductSortField } from "@/lib/shared";
 import useTablePagination from "@/hooks/table/useTablePagination";
-import { SortableField, SortField } from "@/components/shared/sorting/SortingMenu";
+import { SortableField, SortField } from "@/components/ui/shared/sorting/SortingMenu";
 
 const toFormData = (p: Product): ProductFormData => {
   const { category, ...rest } = p;

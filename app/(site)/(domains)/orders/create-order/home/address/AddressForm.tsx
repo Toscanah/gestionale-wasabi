@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CUSTOMER_ORIGIN_LABELS } from "@/lib/shared";
 import { addressFormSchema } from "./form";
-import { WasabiFormField } from "@/components/shared/wasabi/WasabiFormField";
+import { WasabiFormField } from "@/components/ui/shared/wasabi/WasabiFormField";
 import { useZodForm } from "@/hooks/useZodForm";
 
 interface AddressFormProps {

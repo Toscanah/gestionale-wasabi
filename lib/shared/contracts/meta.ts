@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { NoContentRequestSchema } from "./common/no-content";
-import { MetaTemplateSchema } from "../entities/Meta";
-import { OrderByTypeSchema } from "../entities/Order";
+import { MetaTemplateSchema } from "../models/meta";
+import { OrderByTypeSchema } from "../models/order";
 
 export namespace MetaContracts {
   export namespace GetTemplates {

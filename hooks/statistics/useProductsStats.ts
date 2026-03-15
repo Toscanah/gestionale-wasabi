@@ -5,10 +5,10 @@ import {
   ProductStatsSortField,
   ProductWithStats,
   ShiftFilterValue,
+  TODAY_PERIOD,
 } from "@/lib/shared"; // same enum used elsewhere
-import TODAY_PERIOD from "@/lib/shared/constants/today-period";
-import { trpc } from "@/lib/trpc/client";
-import { SortableField, SortField } from "@/components/shared/sorting/SortingMenu";
+import { trpc } from "@/lib/api/client";
+import { SortableField, SortField } from "@/components/ui/shared/sorting/SortingMenu";
 import useQueryFilter from "../table/useQueryFilter";
 
 export const PRODUCT_STATS_SORT_MAP: Record<
@@ -97,7 +97,7 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
           })
           .filter(Boolean) as ProductWithStats[];
       },
-    }
+    },
   );
 
   const handleReset = () => {
@@ -132,6 +132,6 @@ export default function useProductsStats({ page, pageSize }: { page: number; pag
     activeSorts,
     setActiveSorts,
     parsedFilters: filters,
-    resetQuery
+    resetQuery,
   };
 }

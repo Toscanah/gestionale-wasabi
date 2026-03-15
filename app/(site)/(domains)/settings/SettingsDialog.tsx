@@ -1,9 +1,10 @@
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { Gear } from "@phosphor-icons/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RestaurantSettings from "./restaurant/RestaurantSettings";
 import ApplicationSettings from "./application/ApplicationSettings";
+import OperationalSettings from "./operational/OperationalSettings";
 
 export default function SettingsDialog() {
   const tabs = [
@@ -11,6 +12,11 @@ export default function SettingsDialog() {
       value: "application",
       label: "Applicazione",
       component: <ApplicationSettings />,
+    },
+    {
+      value: "operational",
+      label: "Operatività",
+      component: <OperationalSettings />,
     },
     {
       value: "restaurant",

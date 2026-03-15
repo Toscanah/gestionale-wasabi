@@ -1,8 +1,10 @@
+"use client";
+
 import { createContext, useContext, useState, ReactNode } from "react";
 import { OrderByType } from "@/lib/shared";
 import useRice, { UpdateRiceInput } from "../../../hooks/rice/useRice";
 import useSettings from "../../../hooks/useSettings";
-import { GlobalSettings } from "@/lib/shared/types/Settings";
+import { GlobalSettings } from "@/lib/shared/types/settings/global";
 import { OrderType } from "@/prisma/generated/client/enums";
 import { Rice } from "../../../hooks/rice/useRiceState";
 
@@ -15,7 +17,7 @@ export interface WasabiContextProps {
   toggleOrderSelection: (order: SelectedOrders) => void;
   updateRemainingRice: (total?: number) => void;
   settings: GlobalSettings;
-  updateSettings: (key: keyof GlobalSettings, value: any) => void;
+  updateSettings: (key: string, value: any) => void;
 }
 
 const WasabiContext = createContext<WasabiContextProps | undefined>(undefined);

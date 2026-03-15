@@ -1,10 +1,10 @@
-import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
+import ResetTableControlsBtn from "@/components/ui/shared/filters/common/ResetTableControlsBtn";
 import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
 import React, { Fragment } from "react";
 import { AdditionalFilters } from "./Manager";
 import { Table } from "@tanstack/react-table";
 import TableColumnsVisibility from "@/components/table/TableColumnsVisibility";
-import SearchBar from "@/components/shared/filters/common/SearchBar";
+import SearchBar from "@/components/ui/shared/filters/common/SearchBar";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 

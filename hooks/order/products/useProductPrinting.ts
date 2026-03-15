@@ -1,6 +1,6 @@
 import { OrderByType, ProductInOrder } from "@/lib/shared";
 import { UpdateProductsListFunction } from "../useProductsManager";
-import { productsAPI } from "@/lib/trpc/api";
+import { productsAPI } from "@/lib/api/api";
 
 type UseProductPrintingParams = {
   order: OrderByType;

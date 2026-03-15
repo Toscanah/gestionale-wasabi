@@ -4,12 +4,12 @@ import { Label } from "@/components/ui/label";
 import { Gear } from "@phosphor-icons/react";
 import { useWasabiContext } from "../../context/WasabiContext";
 import { useEffect, useState } from "react";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import RiceHistory from "./RiceHistory";
 import useFocusOnClick from "../../../../hooks/focus/useFocusOnClick";
-import { trpc } from "@/lib/trpc/client";
-import WasabiSelect from "@/components/shared/wasabi/WasabiSelect";
+import { trpc } from "@/lib/api/client";
+import WasabiSelect from "@/components/ui/shared/wasabi/WasabiSelect";
 
 interface RiceDialogProps {
   variant: "header" | "sidebar";
@@ -99,7 +99,7 @@ export default function RiceDialog({ variant }: RiceDialogProps) {
           <SidebarMenuSubButton className="hover:cursor-pointer">Quantità</SidebarMenuSubButton>
         ) : (
           <Button variant="outline" className="w-full">
-            <Gear className="mr-2 h-4 w-4" />
+            <Gear className="h-4 w-4" />
             Riso
           </Button>
         )

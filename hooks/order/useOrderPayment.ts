@@ -6,7 +6,7 @@ import { useOrderContext } from "@/context/OrderContext";
 import scaleProducts from "@/lib/services/product-management/scaleProducts";
 import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 import { OrderPaymentProps } from "@/domains/payments/order/OrderPayment";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 interface UseOrderPaymentParams extends Omit<OrderPaymentProps, "onBackButton" | "partialOrder"> {
   payment: Payment;

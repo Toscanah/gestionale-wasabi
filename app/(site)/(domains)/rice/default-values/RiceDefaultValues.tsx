@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import useTable from "@/hooks/table/useTable";
 import columns from "./columns";
 import Table from "@/components/table/Table";
 import { Label } from "@/components/ui/label";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { RiceBatchType } from "@/prisma/generated/schemas";
 import { TableMeta } from "@tanstack/react-table";
 

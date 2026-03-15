@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import useQueryFilter from "../table/useQueryFilter";
 import { toastError, toastSuccess } from "@/lib/shared/utils/global/toast";
 import { ToggleEntityResponse } from "@/lib/shared";
-import { MANAGER_LABELS } from "@/lib/shared/constants/manager-labels";
+import { MANAGER_LABELS } from "@/lib/shared";
 
 export type BaseEntity = { id: number; active?: boolean };
 

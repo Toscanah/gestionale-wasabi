@@ -82,13 +82,13 @@ export default function RiceSummary() {
         ))}
       </RadioGroup>
 
-      <table className="w-[28rem] text-2xl border-collapse">
+      <table className="self-end text-2xl border-collapse">
         <tbody>
           {summaryRows.map(({ label, value, condition, shouldStrike = false }, index) => (
             <tr key={index}>
               <td
                 className={cn(
-                  "text-right text-2xl w-[60%]",
+                  "text-right text-2xl whitespace-nowrap",
                   shouldStrike && "line-through text-muted-foreground"
                 )}
               >
@@ -96,7 +96,7 @@ export default function RiceSummary() {
               </td>
               <td
                 className={cn(
-                  "text-right font-bold pl-3 whitespace-pre",
+                  "text-right font-bold pl-6 whitespace-nowrap",
                   condition && "text-red-600",
                   shouldStrike && "line-through text-muted-foreground"
                 )}

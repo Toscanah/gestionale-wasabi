@@ -7,11 +7,11 @@ import OrderReceipt from "@/domains/printing/receipts/OrderReceipt";
 import { OrderType, PaymentScope, PlannedPayment } from "@/prisma/generated/client/enums";
 import { ProductInOrder } from "@/lib/shared";
 import { useOrderContext } from "@/context/OrderContext";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 import useMetaTemplates from "@/hooks/meta/useMetaTemplates";
 import { useTemplatesParams } from "@/hooks/meta/useTemplatesParams";
-import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/lib/integrations/meta/constants";
+import { ORDER_CONFIRMATION_TEMPLATE_NAME } from "@/lib/shared/constants/config/meta";
 import { useWasabiContext } from "@/context/WasabiContext";
 import usePrintingActions from "@/hooks/printing/usePrintingActions";
 
@@ -30,14 +30,14 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
     return (
       OrderGuards.isHome(order) &&
       order.home_order?.messages.some(
-        (mess) => mess.template_name === ORDER_CONFIRMATION_TEMPLATE_NAME
+        (mess) => mess.template_name === ORDER_CONFIRMATION_TEMPLATE_NAME,
       )
     );
   }, [order]);
 
   const { settings } = useWasabiContext();
   const { paramsMap, setParam } = useTemplatesParams();
-  const shouldLoadTemplates = settings.whatsapp.active && dialogOpen;
+  const shouldLoadTemplates = settings.application.whatsapp.active && dialogOpen;
 
   const { templates, sendMessages, isMetaError } = useMetaTemplates({
     open: shouldLoadTemplates,
@@ -91,7 +91,11 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
   }, [order, hasConfirmationSent, templates]);
 
   const maybeSendConfirmation = async (order: OrderByType) => {
-    if (!hasConfirmationSent() && settings.whatsapp.active && settings.whatsapp.sendOrderConf) {
+    if (
+      !hasConfirmationSent() &&
+      settings.application.whatsapp.active &&
+      settings.application.whatsapp.sendOrderConf
+    ) {
       await sendMessages({
         templateName: ORDER_CONFIRMATION_TEMPLATE_NAME,
         order,
@@ -124,7 +128,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
     if (!order.is_receipt_printed) {
       await updatePrintedFlag();
       await print(() =>
-        OrderReceipt<typeof order>({ order, plannedPayment, putInfo: false, forceCut: true })
+        OrderReceipt<typeof order>({ order, plannedPayment, putInfo: false, forceCut: true }),
       );
     }
 
@@ -202,7 +206,7 @@ export default function NormalActions({ setAction, plannedPayment }: NormalActio
       <div className="flex gap-6">
         <Button
           className="flex-1 text-3xl h-36"
-          disabled={!hasProducts || (settings.whatsapp && !paramsReady)}
+          disabled={!hasProducts || (settings.application.whatsapp.active && !paramsReady)}
           onClick={() => handlePrint(order, plannedPayment)}
         >
           STAMPA 打印

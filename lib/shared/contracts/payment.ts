@@ -1,14 +1,9 @@
-import { OrderSchema, PaymentSchema } from "@/prisma/generated/schemas";
+import { PaymentSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
-import { ProductInOrderWithOptionsSchema } from "../entities/Product";
-import { OrderByTypeSchema } from "../entities/Order";
+import { ProductInOrderWithOptionsSchema } from "../models/product";
+import { OrderByTypeSchema } from "../models/order";
 import { PaymentType } from "@/prisma/generated/client/enums";
 import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
-import {
-  FixedDiscountPromotionSchema,
-  GiftCardPromotionSchema,
-  PercentageDiscountPromotionSchema,
-} from "../entities/Promotion";
 
 export namespace PaymentContracts {
   export namespace GetSummary {
@@ -59,7 +54,7 @@ export namespace PaymentContracts {
           id: true,
           created_at: true,
           payment_group_code: true,
-        })
+        }),
       ),
       productsToPay: z.array(ProductInOrderWithOptionsSchema),
     });
@@ -81,7 +76,7 @@ export namespace PaymentContracts {
           id: z.number(),
           amount: z.number(),
           payment_group_code: z.string().nullable(),
-        })
+        }),
       ),
     });
     export type Output = z.infer<typeof Output>;

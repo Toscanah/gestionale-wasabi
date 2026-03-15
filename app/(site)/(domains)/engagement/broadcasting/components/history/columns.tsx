@@ -1,5 +1,5 @@
 import { ActionColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
-import { EngagementLedgerWithDetails } from "@/lib/shared";
+import { ENG_LEDGER_COLORS, ENG_LEDGER_LABELS, EngagementLedgerWithDetails } from "@/lib/shared";
 import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
 import { ColumnDef } from "@tanstack/react-table";
 import { Label } from "@/components/ui/label";
@@ -9,10 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ArrowCounterClockwise, Check } from "@phosphor-icons/react";
-import {
-  ENG_LEDGER_COLORS,
-  ENG_LEDGER_LABELS,
-} from "@/lib/shared/constants/engagement-ledger-labels";
 
 const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
   IndexColumn({}),
@@ -59,7 +55,7 @@ const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
             setIsLoading(true);
             (meta as EngagementHistoryTableMeta).updateLedgerStatus(
               ledger.id,
-              newStatus as EngagementLedgerStatus
+              newStatus as EngagementLedgerStatus,
             );
             setIsLoading(false);
             setJustUpdated(true);
@@ -77,7 +73,7 @@ const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
                   <Badge
                     className={cn(
                       "transition-colors px-3 py-1",
-                      isSelected ? ENG_LEDGER_COLORS[value as EngagementLedgerStatus] : ""
+                      isSelected ? ENG_LEDGER_COLORS[value as EngagementLedgerStatus] : "",
                     )}
                   >
                     {label +
@@ -94,7 +90,7 @@ const columns: ColumnDef<EngagementLedgerWithDetails>[] = [
             <Check
               className={cn(
                 "w-4 h-4 text-green-500 transition-opacity duration-700",
-                justUpdated ? "opacity-100" : "opacity-0"
+                justUpdated ? "opacity-100" : "opacity-0",
               )}
             />
           </div>

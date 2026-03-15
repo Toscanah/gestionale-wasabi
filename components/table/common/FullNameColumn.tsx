@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { BaseColumnProps, ValueColumn } from "../TableColumns";
-import { EnDash } from "../../shared/misc/Placeholders";
+import { EnDash } from "../../ui/shared/misc/Placeholders";
 
 type NameInfo = { name?: string | null; surname?: string | null };
 

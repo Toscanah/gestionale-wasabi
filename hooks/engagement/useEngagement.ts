@@ -1,17 +1,20 @@
 import { useMemo, useState } from "react";
-import { ComprehensiveCustomer, CustomerContracts } from "@/lib/shared";
+import {
+  ComprehensiveCustomer,
+  CustomerContracts,
+  ENGAGEMENT_TYPES_LABELS,
+  TODAY_PERIOD,
+} from "@/lib/shared";
 import { EngagementType } from "@/prisma/generated/client/enums";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { DateRange } from "react-day-picker";
-import TODAY_PERIOD from "@/lib/shared/constants/today-period";
-import { ENGAGEMENT_TYPES_LABELS } from "@/lib/shared/constants/engagement-types-labels";
 import useQueryFilter from "../table/useQueryFilter";
 
 function filterRightCustomers(customers: ComprehensiveCustomer[], activeTypes: EngagementType[]) {
   return customers.filter((c) =>
     c.engagements.length === 0
       ? activeTypes.length === Object.keys(ENGAGEMENT_TYPES_LABELS).length
-      : c.engagements.some((e) => activeTypes.includes(e.template.type))
+      : c.engagements.some((e) => activeTypes.includes(e.template.type)),
   );
 }
 
@@ -55,7 +58,7 @@ export default function useEngagement({ page, pageSize }: UseEngagementParams) {
     },
     {
       placeholderData: (prev) => prev,
-    }
+    },
   );
 
   const leftCustomers = data?.customers ?? [];
@@ -63,7 +66,7 @@ export default function useEngagement({ page, pageSize }: UseEngagementParams) {
   // ✅ Right customers = only the ones explicitly selected
   const rightCustomers = useMemo(
     () => filterRightCustomers(selectedCustomers, activeTypes),
-    [selectedCustomers, activeTypes]
+    [selectedCustomers, activeTypes],
   );
 
   const onLeftTableRowClick = (customer: ComprehensiveCustomer) => {

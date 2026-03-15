@@ -1,15 +1,18 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
-import { OrderByType, HomeOrder, PickupOrder, TableOrder } from "@/lib/shared";
+import {
+  OrderByType,
+  HomeOrder,
+  PickupOrder,
+  TableOrder,
+  DEFAULT_WHEN_VALUE,
+  DEFAULT_WHEN_LABEL,
+} from "@/lib/shared";
 import TimeSection from "../common/TimeSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import sanitazeReceiptText from "../../../../../lib/shared/utils/domains/printing/sanitazeReceiptText";
-import { GlobalSettings } from "@/lib/shared/types/Settings";
-import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared/constants/printing";
-import {
-  DEFAULT_WHEN_LABEL,
-  DEFAULT_WHEN_VALUE,
-} from "@/lib/shared/constants/default-when";
-import formatWhenLabel from "@/lib/shared/utils/domains/order/formatWhenLabel";
+import { GlobalSettings } from "@/lib/shared/types/settings/global";
+import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared";
+
 import { KitchenType } from "@/prisma/generated/client/enums";
 
 const calculateAdjustedTime = (originalTime: string) => {
@@ -24,7 +27,7 @@ const calculateAdjustedTime = (originalTime: string) => {
 
   if (settings) {
     const parsedSettings: GlobalSettings = JSON.parse(settings);
-    offset = parsedSettings.kitchenOffset;
+    offset = parsedSettings.operational.kitchen.offset;
   }
 
   const now = new Date();
@@ -33,7 +36,7 @@ const calculateAdjustedTime = (originalTime: string) => {
     now.getMonth(),
     now.getDate(),
     Number(timeParts[0]),
-    Number(timeParts[1])
+    Number(timeParts[1]),
   );
 
   date.setMinutes(date.getMinutes() - offset);
@@ -56,17 +59,17 @@ export default function KitchenReceipt({ order }: KitchenReceiptProps) {
   const hotProducts = order.products.filter(
     (product) =>
       product.product.kitchen === KitchenType.HOT ||
-      product.product.kitchen === KitchenType.HOT_AND_COLD
+      product.product.kitchen === KitchenType.HOT_AND_COLD,
   );
 
   const coldProducts = order.products.filter(
     (product) =>
       product.product.kitchen === KitchenType.COLD ||
-      product.product.kitchen === KitchenType.HOT_AND_COLD
+      product.product.kitchen === KitchenType.HOT_AND_COLD,
   );
 
   const otherProducts = order.products.filter(
-    (product) => product.product.kitchen === KitchenType.OTHER
+    (product) => product.product.kitchen === KitchenType.OTHER,
   );
 
   const { type, discount } = order;

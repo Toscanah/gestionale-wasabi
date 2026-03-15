@@ -2,7 +2,7 @@ import { OrderByType } from "@/lib/shared";
 import { PlannedPayment } from "@/prisma/generated/client/enums";
 import ExtraItemsSection from "../ExtraItemsSection";
 import { Line, Text } from "react-thermal-printer";
-import { SMALL_PRINT } from "@/lib/shared/constants/printing";
+import { SMALL_PRINT } from "@/lib/shared";
 import sanitazeReceiptText from "@/lib/shared/utils/domains/printing/sanitazeReceiptText";
 import PaymentNotesSection from "../PaymentNotesSection";
 

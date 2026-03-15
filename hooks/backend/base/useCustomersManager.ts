@@ -1,7 +1,7 @@
 import { CustomerContracts, PaginationRequest } from "@/lib/shared";
-import { customersAPI } from "@/lib/trpc/api";
+import { customersAPI } from "@/lib/api/api";
 import { useManager } from "../useManager";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { useMemo, useState } from "react";
 import useQueryFilter from "../../table/useQueryFilter";
 

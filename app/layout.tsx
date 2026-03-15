@@ -6,10 +6,10 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { type ThemeProviderProps } from "next-themes";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import ReactQueryProvider from "./query-provider";
-import { TRPCProvider } from "@/lib/trpc/provider";
+import { TRPCProvider } from "@/lib/api/provider";
 import { StrictMode } from "react";
 import { cookies } from "next/headers";
-import { ChangeTheme } from "@/components/shared/misc/ChangeTheme";
+import { ChangeTheme } from "@/components/ui/shared/misc/ChangeTheme";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -2,8 +2,8 @@ import { Megaphone } from "@phosphor-icons/react";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { SidebarMenuGroup, SidebarMenuGroupItem } from "../SidebarMenuGroup";
 import MarketingTemplates from "@/app/(site)/(domains)/engagement/templates/MarketingTemplates";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
-import { trpc } from "@/lib/trpc/client";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
+import { trpc } from "@/lib/api/client";
 
 export default function EngagementSection() {
   const utils = trpc.useUtils();

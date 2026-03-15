@@ -3,7 +3,7 @@
 import { endOfDay, startOfDay } from "date-fns";
 import useTable from "../../../../../hooks/table/useTable";
 import Table from "../../../../../components/table/Table";
-import GoBack from "@/components/shared/misc/GoBack";
+import GoBack from "@/components/ui/shared/misc/GoBack";
 import PaymentsSummary from "./PaymentsSummary";
 import PrintSummary from "./PrintSummary";
 import columns from "./columns";
@@ -11,11 +11,11 @@ import useTablePagination from "@/hooks/table/useTablePagination";
 import useSkeletonTable from "@/hooks/table/useSkeletonTable";
 import usePaymentsHistory from "@/hooks/payments/usePaymentsHistory";
 import TablePagination from "@/components/table/TablePagination";
-import ShiftFilter from "@/components/shared/filters/select/ShiftFilter";
-import SearchBar from "@/components/shared/filters/common/SearchBar";
-import OrderTypesFilter from "@/components/shared/filters/select/OrderTypesFilter";
-import CalendarFilter from "@/components/shared/filters/calendar/CalendarFilter";
-import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
+import ShiftFilter from "@/components/ui/shared/filters/select/ShiftFilter";
+import SearchBar from "@/components/ui/shared/filters/common/SearchBar";
+import OrderTypesFilter from "@/components/ui/shared/filters/select/OrderTypesFilter";
+import CalendarFilter from "@/components/ui/shared/filters/calendar/CalendarFilter";
+import ResetTableControlsBtn from "@/components/ui/shared/filters/common/ResetTableControlsBtn";
 import { Button } from "@/components/ui/button";
 import TableColumnsVisibility from "@/components/table/TableColumnsVisibility";
 
@@ -43,7 +43,7 @@ export default function PaymentsTable() {
   const { tableData, tableColumns } = useSkeletonTable({
     isLoading,
     data: filteredOrders.sort(
-      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     ),
     columns,
     pageSize,
@@ -96,6 +96,11 @@ export default function PaymentsTable() {
             selectedTypes={orderTypes}
             onTypesChange={setOrderTypes}
             disabled={isLoading}
+            orderCounts={{
+              HOME: summaryData.homeOrdersCount,
+              TABLE: summaryData.tableOrdersCount,
+              PICKUP: summaryData.pickupOrdersCount,
+            }}
           />
 
           <div className="ml-auto flex items-center gap-4">

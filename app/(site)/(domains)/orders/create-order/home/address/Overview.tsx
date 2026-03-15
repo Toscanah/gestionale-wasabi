@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCreateHomeOrder } from "@/context/CreateHomeOrderContext";
 import { debounce } from "lodash";
 import { PowerIcon, PowerOff } from "lucide-react";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 interface OverviewProps {
   phoneRef: RefObject<HTMLInputElement | null>;

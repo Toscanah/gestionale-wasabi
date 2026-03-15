@@ -3,8 +3,8 @@ import { useState } from "react";
 import { PromotionContracts } from "@/lib/shared";
 import { addMonths } from "date-fns";
 import { CreatePromotionFormSchemaType } from "@/domains/promotions/create/CreatePromotionForm";
-import { promotionsAPI } from "@/lib/trpc/api";
-import { trpc } from "@/lib/trpc/client";
+import { promotionsAPI } from "@/lib/api/api";
+import { trpc } from "@/lib/api/client";
 
 type PromotionCreateSchema = PromotionContracts.Common.PromotionCreateSchema;
 const {

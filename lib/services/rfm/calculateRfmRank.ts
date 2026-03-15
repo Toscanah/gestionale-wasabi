@@ -1,18 +1,18 @@
-import { RFMRankRule, RFMScore } from "../../shared/types/RFM";
+import { RFMRankRule, RFMScore } from "../../shared/types/rfm";
 
 /**
  * Calculates the RFM (Recency, Frequency, Monetary) rank for a given score based on ranking rules.
- * 
+ *
  * This function takes an RFM score and a set of ranking rules, then determines which rank
  * the score falls into based on the defined thresholds. Rules are processed in priority
  * order (highest priority first) and the first matching rule's rank is returned.
- * 
+ *
  * @param score - The RFM score object containing recency, frequency, and monetary values
  * @param rawRules - Array of RFM ranking rules defining ranges and associated ranks
- * 
+ *
  * @returns The rank string from the first matching rule, or undefined if no rules match
  *          or if the input parameters are invalid
- * 
+ *
  * @remarks
  * - Rules are automatically normalized to ensure valid numeric ranges (min >= 0, max >= min)
  * - Rules with invalid or empty rank strings are filtered out
@@ -22,7 +22,7 @@ import { RFMRankRule, RFMScore } from "../../shared/types/RFM";
  */
 export default function calculateRfmRank(
   score: RFMScore,
-  rawRules: RFMRankRule[]
+  rawRules: RFMRankRule[],
 ): RFMRankRule["rank"] | undefined {
   if (!score || typeof score !== "object") return undefined;
 

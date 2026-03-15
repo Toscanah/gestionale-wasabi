@@ -6,7 +6,7 @@ import { debounce } from "lodash";
 import { useState, useCallback } from "react";
 import { PaymentScope } from "@/prisma/generated/client/enums";
 import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 export default function TableUpdate() {
   const { order: anyOrder, joinTableOrders, updateOrder } = useOrderContext();

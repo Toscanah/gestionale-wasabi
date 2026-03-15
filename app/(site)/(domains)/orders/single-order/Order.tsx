@@ -9,7 +9,7 @@ import { useWasabiContext } from "../../../context/WasabiContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
 import { OrderType } from "@/prisma/generated/client/enums";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { TableCell } from "@/components/ui/table";
 
 interface OrderProps {

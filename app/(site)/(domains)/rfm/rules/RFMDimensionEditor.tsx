@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
-import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/lib/shared/types/RFM";
+import { RFMDimensionConfig, RFMRangeRule, RFMDimension } from "@/lib/shared/types/rfm";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "@phosphor-icons/react";

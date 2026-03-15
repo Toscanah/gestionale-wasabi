@@ -1,7 +1,7 @@
-import { optionsAPI } from "@/lib/trpc/api";
+import { optionsAPI } from "@/lib/api/api";
 import { useManager } from "../useManager";
 import { OptionContracts } from "@/lib/shared";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 export default function useOptionsManager() {
   const query = optionsAPI.getAllWithCategories.useQuery();

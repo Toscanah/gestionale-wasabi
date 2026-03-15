@@ -1,18 +1,12 @@
 import { Br, Cut, Line, Text } from "react-thermal-printer";
-import {
-  OrderByType,
-  HomeOrder,
-  PickupOrder,
-  TableOrder,
-  OrderGuards,
-} from "@/lib/shared";
+import { OrderByType, HomeOrder, PickupOrder, TableOrder, OrderGuards } from "@/lib/shared";
 import HeaderSection from "../common/HeaderSection";
 import ProductsListSection from "../common/products-list/ProductsListSection";
 import OrderInfoSection from "../common/info/OrderInfoSection";
 import FooterSection from "../common/FooterSection";
 import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
 import sanitazeReceiptText from "../../../../../lib/shared/utils/domains/printing/sanitazeReceiptText";
-import { BIG_PRINT } from "@/lib/shared/constants/printing";
+import { BIG_PRINT } from "@/lib/shared";
 import SingleEngagement from "../common/SingleEngagement";
 import { Fragment } from "react";
 import TotalSection from "../common/TotalSection";
@@ -35,7 +29,7 @@ export default function OrderReceipt<T extends OrderByType>({
   const homeOrder = (order as HomeOrder).home_order;
   const pickupOrder = (order as PickupOrder).pickup_order;
 
-  const { products, type, discount, engagements } = order;
+  const { products, type, discount, engagements, promotion_usages: promotionsUsages } = order;
 
   const unredemableEngagements = engagements.filter((e) => !e.template.redeemable);
 
@@ -84,7 +78,7 @@ export default function OrderReceipt<T extends OrderByType>({
 
       {DiscountsSection({ order })}
 
-      {TotalSection({ products, discount, orderType: type })}
+      {TotalSection({ products, discount, orderType: type, promotionsUsages })}
       <Br />
 
       <Line />

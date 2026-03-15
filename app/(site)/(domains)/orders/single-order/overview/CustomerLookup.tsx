@@ -1,4 +1,4 @@
-import { EnDash, NA } from "@/components/shared/misc/Placeholders";
+import { EnDash, NA } from "@/components/ui/shared/misc/Placeholders";
 import { useOrderContext } from "@/context/OrderContext";
 import useRfmRanks from "@/hooks/rfm/useRfmRanks";
 import useRfmRules from "@/hooks/rfm/useRfmRules";
@@ -6,11 +6,9 @@ import extractCustomerOrders from "@/lib/services/customer-management/extractCus
 import calculateRFM from "@/lib/services/rfm/calculateRFM";
 import calculateRfmRank from "@/lib/services/rfm/calculateRfmRank";
 import calculateRfmScore from "@/lib/services/rfm/calculateRfmScore";
-import { prepareRFMInputs } from "@/lib/services/rfm/prepareRFMInputs";
-import { ComprehensiveCustomer, CUSTOMER_ORIGIN_LABELS } from "@/lib/shared";
-import { OrderGuards } from "@/lib/shared/types/_index";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
+import { ComprehensiveCustomer, CUSTOMER_ORIGIN_LABELS, OrderGuards } from "@/lib/shared";
 
 export default function CustomerLookup() {
   const { order } = useOrderContext();
@@ -48,7 +46,7 @@ export default function CustomerLookup() {
       enabled: !!customerId,
       staleTime: Infinity,
       select: (c) => (c ? filterOutCurrentOrder(c) : undefined),
-    }
+    },
   );
 
   if (!customer) return null;

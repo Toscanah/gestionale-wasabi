@@ -1,6 +1,6 @@
 import { AddressSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
-import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
+import { createInputSchema, wrapSchema } from "./common/utils";
 
 export namespace AddressContracts {
   export namespace Common {

@@ -6,19 +6,16 @@ import {
   ValueColumn,
 } from "@/components/table/TableColumns";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  PROMOTION_TYPES_COLORS,
-  PROMOTION_TYPES_LABELS,
-} from "@/lib/shared/constants/promotion-labels";
+import { PROMOTION_TYPES_COLORS, PROMOTION_TYPES_LABELS } from "@/lib/shared";
 import { Badge } from "@/components/ui/badge";
 import { PromotionByType, PromotionGuards } from "@/lib/shared";
 import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import UsagesDialog from "./usages/UsagesDialog";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { TrashIcon } from "@phosphor-icons/react";
 import { PromotionTableMeta } from "./page";
 import { differenceInDays } from "date-fns";
-import { EnDash, NA } from "@/components/shared/misc/Placeholders";
+import { EnDash, NA } from "@/components/ui/shared/misc/Placeholders";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 function calcDiscountRaw(promotion: PromotionByType): number | null {
@@ -57,7 +54,7 @@ function calcAvgTimeBetweenUsagesRaw(promotion: PromotionByType): number | null 
   if (usages.length < 2) return null;
 
   const sorted = [...usages].sort(
-    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
   );
 
   const totalDiffMs = sorted.slice(1).reduce((sum, u, i) => {
@@ -100,7 +97,7 @@ function calcProjectedDepletionDateRaw(promotion: PromotionByType): number | nul
   if (usages.length < 2 || fixedAmount <= 0) return null;
 
   const sorted = [...usages].sort(
-    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
   );
 
   const firstTs = new Date(sorted[0].created_at).getTime();
@@ -257,7 +254,7 @@ const promotionColumns: ColumnDef<PromotionByType>[] = [
       if (never_expires) return "Nessuna scadenza";
       if (diff == null) return <NA />;
 
-      const isExpired = diff < 0;
+      const isExpired = diff <= 0;
       const isSoon = diff <= 5;
 
       const variant = isExpired || isSoon ? "destructive" : "secondary";

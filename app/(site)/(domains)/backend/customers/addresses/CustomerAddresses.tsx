@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { AddressType } from "@/prisma/generated/schemas";
 import { ControllerRenderProps } from "react-hook-form";
 import { Plus, Power, PowerOff } from "lucide-react";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 
 interface CustomerAddressesProps {
   field: ControllerRenderProps;

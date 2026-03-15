@@ -1,6 +1,6 @@
 "use client";
 
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 import { OrderByType } from "@/lib/shared";
 import { Button } from "@/components/ui/button";

@@ -1,16 +1,15 @@
 import { ProductInOrder } from "@/lib/shared";
-import WasabiDialog from "../../shared/wasabi/WasabiDialog";
 import { Button } from "@/components/ui/button";
 import useTable from "@/hooks/table/useTable";
 import productColumns from "../common/productColumns";
 import Table from "../../table/Table";
-import SearchBar from "../../shared/filters/common/SearchBar";
 import useQueryFilter from "@/hooks/table/useQueryFilter";
-import ResetTableControlsBtn from "../../shared/filters/common/ResetTableControlsBtn";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { useEffect, useState } from "react";
 import useSkeletonTable from "@/hooks/table/useSkeletonTable";
-import CategoryFilter from "../../shared/filters/select/CategoryFilter";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
+import SearchBar from "@/components/ui/shared/filters/common/SearchBar";
+import ResetTableControlsBtn from "@/components/ui/shared/filters/common/ResetTableControlsBtn";
 
 interface AllProductsDialogProps {
   allProducts: ProductInOrder[];
@@ -55,8 +54,8 @@ export default function AllProductsDialog({ allProducts, owner }: AllProductsDia
         allProducts.filter(
           (p) =>
             typeof p.product.category_id === "number" &&
-            selectedCategories.includes(p.product.category_id)
-        )
+            selectedCategories.includes(p.product.category_id),
+        ),
       );
     } else {
       setFilteredProducts(allProducts);
@@ -68,7 +67,7 @@ export default function AllProductsDialog({ allProducts, owner }: AllProductsDia
     columns: tableColumns,
     query: debouncedQuery,
     setQuery: setInputQuery,
-    pagination: { mode: "client", pageSize: tableData.length,  },
+    pagination: { mode: "client", pageSize: tableData.length },
   });
 
   return (
@@ -98,7 +97,7 @@ export default function AllProductsDialog({ allProducts, owner }: AllProductsDia
             table={table}
           />
         </div>
-        <Table table={table}  maxRows={10}/>
+        <Table table={table} maxRows={10} />
       </div>
     </WasabiDialog>
   );

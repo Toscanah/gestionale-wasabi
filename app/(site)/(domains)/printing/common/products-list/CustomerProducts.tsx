@@ -1,9 +1,7 @@
 import { ProductInOrder } from "@/lib/shared";
-import getDiscountedTotal from "@/lib/services/order-management/getDiscountedTotal";
 import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import fitReceiptText from "@/lib/shared/utils/domains/printing/fitReceiptText";
-import { Br, Row, Text } from "react-thermal-printer";
-import TotalSection from "../TotalSection";
+import { Br, Text } from "react-thermal-printer";
 import { Fragment } from "react";
 import { OrderType } from "@/prisma/generated/client/enums";
 import { uniqueId } from "lodash";

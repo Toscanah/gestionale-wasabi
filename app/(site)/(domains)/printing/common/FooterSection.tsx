@@ -1,6 +1,6 @@
 import { Br, Text } from "react-thermal-printer";
 import capitalizeFirstLetter from "../../../../../lib/shared/utils/global/string/capitalizeFirstLetter";
-import { PRINTING_DATE_FORMAT } from "@/lib/shared/constants/printing";
+import { PRINTING_DATE_FORMAT } from "@/lib/shared";
 
 interface FooterSection {
   orderId: number;

@@ -1,4 +1,4 @@
-import WasabiAnimatedTab from "@/components/shared/wasabi/WasabiAnimatedTab";
+import WasabiAnimatedTab from "@/components/ui/shared/wasabi/WasabiAnimatedTab";
 import { DiscountsSummary, DiscountTabs } from "./DiscountsDialog";
 import { Label } from "@/components/ui/label";
 import {

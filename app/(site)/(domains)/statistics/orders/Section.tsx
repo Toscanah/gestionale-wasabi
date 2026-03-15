@@ -1,14 +1,13 @@
 import { DateRange } from "react-day-picker";
 import useOrdersStats from "../../../../../hooks/statistics/useOrdersStats";
 import { INITIAL_STATE, ReducerActions } from "../../../../../hooks/statistics/sectionReducer";
-import CalendarFilter from "@/components/shared/filters/calendar/CalendarFilter";
-import ShiftFilter from "@/components/shared/filters/select/ShiftFilter";
-import WeekdaysFilter from "@/components/shared/filters/select/WeekdaysFilter";
-import OrderTypesFilter from "@/components/shared/filters/select/OrderTypesFilter";
-import TimeWindowFilter from "@/components/shared/filters/time/TimeWindowFilter";
+import CalendarFilter from "@/components/ui/shared/filters/calendar/CalendarFilter";
+import ShiftFilter from "@/components/ui/shared/filters/select/ShiftFilter";
+import WeekdaysFilter from "@/components/ui/shared/filters/select/WeekdaysFilter";
+import OrderTypesFilter from "@/components/ui/shared/filters/select/OrderTypesFilter";
+import TimeWindowFilter from "@/components/ui/shared/filters/time/TimeWindowFilter";
 import SectionResults from "./results/SectionResults";
-import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
-import TODAY_PERIOD from "@/lib/shared/constants/today-period";
+import ResetTableControlsBtn from "@/components/ui/shared/filters/common/ResetTableControlsBtn";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import ChartsDashboard from "./results/charts/ChartsDashboard";
@@ -17,7 +16,8 @@ import { MinusIcon, PlusCircleIcon } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import formatCsvFilters from "@/hooks/csv-export/useCsvExport";
-import { EmDash } from "@/components/shared/misc/Placeholders";
+import { EmDash } from "@/components/ui/shared/misc/Placeholders";
+import { TODAY_PERIOD } from "@/lib/shared";
 
 interface SectionProps {
   id: string;
@@ -43,8 +43,8 @@ export default function Section({}: SectionProps) {
     dailyStats &&
     Object.values(dailyStats).some((statsArray) =>
       statsArray.some((s) =>
-        Object.entries(s).some(([_, value]) => typeof value === "number" && value > 0)
-      )
+        Object.entries(s).some(([_, value]) => typeof value === "number" && value > 0),
+      ),
     );
 
   const hasNormal =
@@ -76,6 +76,11 @@ export default function Section({}: SectionProps) {
             dispatch({ type: "SET_ORDER_TYPES", payload: updatedTypes })
           }
           disabled={disabledFlags.orderTypes}
+          orderCounts={{
+            HOME: dailyStats?.home.reduce((sum, item) => sum + item.orders, 0) || 0,
+            PICKUP: dailyStats?.pickup.reduce((sum, item) => sum + item.orders, 0) || 0,
+            TABLE: dailyStats?.table.reduce((sum, item) => sum + item.orders, 0) || 0,
+          }}
         />
 
         <EmDash />

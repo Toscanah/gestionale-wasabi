@@ -4,8 +4,8 @@ import { RiceLogType } from "@/prisma/generated/client/enums";
 import useRiceState from "./useRiceState";
 import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import { RiceLog, ShiftFilterValue } from "@/lib/shared";
-import { riceAPI } from "@/lib/trpc/api";
-import { trpc, trpcClient } from "@/lib/trpc/client";
+import { riceAPI } from "@/lib/api/api";
+import { trpc, trpcClient } from "@/lib/api/client";
 
 export type UpdateRiceInput =
   | {

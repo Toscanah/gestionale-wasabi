@@ -1,13 +1,13 @@
 import { AddressSchema, CustomerSchema } from "@/prisma/generated/schemas";
 import { z } from "zod";
-import { RFMConfigSchema } from "../entities/RFM";
+import { RFMConfigSchema } from "../models/rfm";
 import {
   CustomerStatsOnlySchema,
   ComprehensiveCustomerSchema,
   CustomerWithPhoneSchema,
   CustomerStats,
   CustomerWithAddresses,
-} from "../entities/Customer";
+} from "../models/customer";
 import { createInputSchema, wrapSchema } from "./common/utils";
 import { PaginationSchema, PaginationResponseSchema } from "./common/pagination";
 import {
@@ -17,8 +17,8 @@ import {
 } from "./common/toggle-delete-entity";
 import { NoContentRequestSchema } from "./common/no-content";
 import SortingSchema from "./common/sorting";
-import { HomeOrderInOrderSchema, PickupOrderInOrderSchema } from "../entities/Order";
-import { DottedKeys } from "../types/DottedKeys";
+import { HomeOrderInOrderSchema, PickupOrderInOrderSchema } from "../models/order";
+import { DottedKeys } from "../types/dotted-keys";
 import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 
 export const CUSTOMER_STATS_SORT_FIELDS = [

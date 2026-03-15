@@ -7,7 +7,7 @@ import {
   PickupOrderInOrderSchema,
   ProductInOrderWithOptionsSchema,
   TableOrderInOrderSchema,
-} from "../entities/_index";
+} from "../models";
 import { NoContentRequestSchema } from "./common/no-content";
 import { wrapSchema } from "./common/utils";
 import { PaginationSchema, PaginationResponseSchema } from "./common/pagination";
@@ -258,7 +258,7 @@ export namespace OrderContracts {
       z.object({
         orderId: z.number(),
         type: z.enum(OrderType),
-      })
+      }),
     );
     export type Output = z.infer<typeof Output>;
   }
@@ -290,7 +290,7 @@ export namespace OrderContracts {
       z.object({
         orderId: z.number(),
         updatedShift: z.enum(WorkingShift),
-      })
+      }),
     );
     export type Output = z.infer<typeof Output>;
   }

@@ -9,7 +9,7 @@ import useProductMods from "./products/useProductMods";
 import useProductPrinting from "./products/useProductPrinting";
 import useProductExtras from "./products/useProductExtras";
 import { useCachedDataContext } from "@/context/CachedDataContext";
-import { promotionsAPI } from "@/lib/trpc/api";
+import { promotionsAPI } from "@/lib/api/api";
 
 export type UpdateProductsListFunction = (params: {
   addedProducts?: ProductInOrder[];

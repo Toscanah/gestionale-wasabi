@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { SidebarFooter, SidebarMenu } from "@/components/ui/sidebar";
-import WasabiDialog from "../shared/wasabi/WasabiDialog";
-import { trpc } from "@/lib/trpc/client";
+import WasabiDialog from "../ui/shared/wasabi/WasabiDialog";
+import { trpc } from "@/lib/api/client";
 import { useEffect, useState } from "react";
 import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
-import { EmDash } from "../shared/misc/Placeholders";
+import { EmDash } from "../ui/shared/misc/Placeholders";
 
 export default function Footer() {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);

@@ -6,7 +6,7 @@ import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
 import { OrderType } from "@/prisma/generated/client/enums";
 import { HomeOrder, OrderGuards, PickupOrder } from "@/lib/shared";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 export default function Notes() {
   const { order, updateOrder } = useOrderContext();

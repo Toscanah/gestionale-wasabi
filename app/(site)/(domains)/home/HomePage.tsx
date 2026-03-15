@@ -16,11 +16,11 @@ import getOverdrawnOrderIds from "@/lib/services/order-management/getOverdrawnOr
 import { BuildOrderState } from "./page";
 import dynamic from "next/dynamic";
 import { useCachedDataContext } from "../../context/CachedDataContext";
+import OrdersTimelineGrid from "../orders/components/timeline/OrdersTimelineGrid";
 
-const RandomSpinner = dynamic(() => import("@/components/shared/misc/loader/RandomSpinner"), {
+const RandomSpinner = dynamic(() => import("@/components/ui/shared/misc/loader/RandomSpinner"), {
   ssr: false,
 });
-
 
 interface HomePageProps {
   orders: BuildOrderState<TableOrder[], HomeOrder[], PickupOrder[]>;
@@ -62,7 +62,7 @@ export default function HomePage({ orders, loadings }: HomePageProps) {
       <div className="h-screen overflow-hidden w-full overflow-x-hidden p-4 flex flex-col gap-4">
         <div className="w-full flex justify-between items-center">
           <div className="flex items-center gap-4 text-2xl w-[28rem]">
-            <SidebarTrigger /> Wasabi Sushi
+            <SidebarTrigger  /> <OrdersTimelineGrid /> Wasabi Sushi
           </div>
 
           <Header toggleOrdersByType={toggleOrdersByType} activeOrders={activeOrders} />

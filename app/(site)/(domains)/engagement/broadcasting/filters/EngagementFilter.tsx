@@ -1,4 +1,4 @@
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { ENGAGEMENT_TYPES_LABELS } from "@/lib/shared";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";

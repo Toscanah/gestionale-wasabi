@@ -6,7 +6,7 @@ import { CategoryWithOptions } from "@/lib/shared";
 import { FormFields } from "../manager/FormFields";
 import { CategoryFormData, categoryFormSchema, getCategoryFields } from "./form";
 import useCategoriesManager from "@/hooks/backend/base/useCategoriesManager";
-import { optionsAPI } from "@/lib/trpc/api";
+import { optionsAPI } from "@/lib/api/api";
 
 const toFormData = (p: CategoryWithOptions): CategoryFormData => ({
   ...p,

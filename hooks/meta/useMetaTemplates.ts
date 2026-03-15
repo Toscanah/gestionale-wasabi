@@ -3,7 +3,7 @@ import { OrderByType } from "@/lib/shared";
 import { useWasabiContext } from "@/context/WasabiContext";
 import { toastError, toastSuccess } from "@/lib/shared/utils/global/toast";
 import { TemplateParamsMap } from "./useTemplatesParams";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 type UseMetaTemplatesParams = {
   open: boolean;

@@ -1,10 +1,10 @@
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { useCallback } from "react";
 import { ActionProps } from "../Manager";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "@phosphor-icons/react";
 import { BaseEntity } from "@/hooks/backend/useManager";
-import { MANAGER_LABELS } from "@/lib/shared/constants/manager-labels";
+import { MANAGER_LABELS } from "@/lib/shared";
 
 export default function DeleteAction<TDomain extends BaseEntity>({
   handleDelete,
@@ -28,6 +28,6 @@ export default function DeleteAction<TDomain extends BaseEntity>({
           {MANAGER_LABELS.confirmDeleteMsg}
         </WasabiDialog>
       ) : null,
-    [handleDelete]
+    [handleDelete],
   );
 }

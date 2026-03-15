@@ -1,10 +1,10 @@
 import { OrderType, WorkingShift } from "@/prisma/generated/client/enums";
-import { ShiftBoundaries } from "@/lib/shared/enums/Shift";
+import { DEFAULT_WHEN_VALUE, ShiftBoundaries } from "@/lib/shared";
 import timeToDecimal from "../../../shared/utils/global/time/timeToDecimal";
 import { ShiftEvaluableOrder } from "../../../shared";
 
-function normalizeWhen(when?: string): string | "immediate" {
-  return when?.toLowerCase() ?? "immediate";
+function normalizeWhen(when?: string): string | string {
+  return when?.toLowerCase() ?? DEFAULT_WHEN_VALUE;
 }
 
 export function parseOrderTime(order: ShiftEvaluableOrder): number {
@@ -20,7 +20,7 @@ export function parseOrderTime(order: ShiftEvaluableOrder): number {
 
   const normalizedWhen = normalizeWhen(when);
   const date =
-    normalizedWhen === "immediate"
+    normalizedWhen === DEFAULT_WHEN_VALUE
       ? new Date(order.created_at)
       : new Date(`1970-01-01T${normalizedWhen}`);
 
@@ -41,7 +41,7 @@ function inferShift(time: number): WorkingShift {
 
 export function getEffectiveOrderShift(
   order: ShiftEvaluableOrder,
-  forceInfer = false
+  forceInfer = false,
 ): {
   effectiveShift: WorkingShift;
 } {

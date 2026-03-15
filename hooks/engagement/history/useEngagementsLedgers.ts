@@ -1,4 +1,4 @@
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { EngagementLedgerStatus } from "@/prisma/generated/client/enums";
 
 interface UseEngagementsLedgersParams {

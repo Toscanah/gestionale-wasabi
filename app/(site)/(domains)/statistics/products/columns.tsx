@@ -13,7 +13,7 @@ import { ProductWithStats } from "@/lib/shared";
 import { ProductStatsTableMeta } from "./page";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { NA } from "@/components/shared/misc/Placeholders";
+import { NA } from "@/components/ui/shared/misc/Placeholders";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 const columns: ColumnDef<ProductWithStats>[] = [

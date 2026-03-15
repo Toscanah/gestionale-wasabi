@@ -7,14 +7,14 @@ import { useWasabiContext } from "@/context/WasabiContext";
 import calculateETA from "@/lib/services/order-management/calculateETA";
 
 export default function ETA() {
-  return <></>
+  return <></>;
   const { order } = useOrderContext();
   const { settings } = useWasabiContext();
   const [etaText, setEtaText] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAndCalculateETA = async () => {
-      if (!order || !settings.riders) return;
+      if (!order || !settings.operational.riders) return;
 
       // const homeOrders = await <HomeOrder[]>("GET", "/api/orders/", "getOrdersByType", {
       //   type: OrderType.HOME,
@@ -30,7 +30,7 @@ export default function ETA() {
       const result = calculateETA({
         order: order as HomeOrder,
         homeOrders: todayOrders,
-        riders: settings.riders,
+        riders: settings.operational.riders,
       });
 
       const format = (date: Date) =>
@@ -43,9 +43,13 @@ export default function ETA() {
     };
 
     fetchAndCalculateETA();
-  }, [order, settings.riders]);
+  }, [order, settings.operational.riders]);
 
   if (!etaText) return null;
 
-  return <p className="h-12 rounded-lg border w-full flex justify-center text-2xl items-center">{etaText}</p>;
+  return (
+    <p className="h-12 rounded-lg border w-full flex justify-center text-2xl items-center">
+      {etaText}
+    </p>
+  );
 }

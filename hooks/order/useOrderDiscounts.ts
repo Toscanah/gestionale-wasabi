@@ -1,4 +1,4 @@
-import { ordersAPI, promotionsAPI } from "@/lib/trpc/api";
+import { ordersAPI, promotionsAPI } from "@/lib/api/api";
 import { OrderByType } from "@/lib/shared";
 import { toastSuccess, toastError } from "@/lib/shared/utils/global/toast";
 import { RecursivePartial } from "./useOrderManager";

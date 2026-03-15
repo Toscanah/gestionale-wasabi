@@ -1,9 +1,9 @@
 import { Br, Text } from "react-thermal-printer";
 import TimeSection from "./TimeSection";
-import { GlobalSettings } from "@/lib/shared/types/Settings";
-import { DEFAULT_SETTINGS } from "../../../../../hooks/useSettings";
+import { GlobalSettings } from "@/lib/shared/types/settings/global";
+import { DEFAULT_SETTINGS } from "@/lib/shared/constants/config/settings";
 import sanitazeReceiptText from "../../../../../lib/shared/utils/domains/printing/sanitazeReceiptText";
-import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared/constants/printing";
+import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared";
 
 // import logo from "../../../../public/logo.png";
 
@@ -23,35 +23,35 @@ export default function HeaderSection({ orderDate }: HeaderSectionProps) {
       {/* <Image src={logo.src} width={200} height={200} align="center" /> */}
 
       <Text size={BIG_PRINT} bold align="center">
-        {truncate(sanitazeReceiptText(settings.name), 20)}
+        {truncate(sanitazeReceiptText(settings.profile.name), 20)}
       </Text>
 
-      {settings.slogan && (
+      {settings.profile.slogan && (
         <Text size={SMALL_PRINT} align="center">
-          {truncate(sanitazeReceiptText(settings.slogan), 40)}
+          {truncate(sanitazeReceiptText(settings.profile.slogan), 40)}
         </Text>
       )}
 
       <Br />
 
       <Text size={SMALL_PRINT} align="center">
-        {truncate(sanitazeReceiptText(settings.address.street + " " + settings.address.civic), 40)}
+        {truncate(sanitazeReceiptText(settings.profile.address.street + " " + settings.profile.address.civic), 40)}
       </Text>
 
       <Text size={SMALL_PRINT} align="center">
-        {truncate(sanitazeReceiptText(settings.address.cap + " " + settings.address.city), 40)}
+        {truncate(sanitazeReceiptText(settings.profile.address.cap + " " + settings.profile.address.city), 40)}
       </Text>
 
       <Text size={SMALL_PRINT} align="center">
-        {truncate(sanitazeReceiptText(`Tel: ${settings.telNumber}`), 40)}
+        {truncate(sanitazeReceiptText(`Tel: ${settings.profile.telNumber}`), 40)}
       </Text>
 
       <Text size={SMALL_PRINT} align="center">
-        {truncate(sanitazeReceiptText(`Cell: ${settings.cellNumber}`), 40)}
+        {truncate(sanitazeReceiptText(`Cell: ${settings.profile.cellNumber}`), 40)}
       </Text>
 
       <Text size={SMALL_PRINT} align="center">
-        {truncate(sanitazeReceiptText(`P.iva ${settings.pIva}`), 40)}
+        {truncate(sanitazeReceiptText(`P.iva ${settings.profile.pIva}`), 40)}
       </Text>
 
       <Br />

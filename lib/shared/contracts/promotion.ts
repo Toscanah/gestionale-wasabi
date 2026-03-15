@@ -7,11 +7,10 @@ import {
   PercentageDiscountPromotionSchema,
   PromotionByTypeSchema,
   PromotionUsageWithOrderSchema,
-} from "../entities/Promotion";
-import { DeleteEntityResponseSchema, NoContentRequestSchema } from "./_index";
+} from "../models/promotion";
 import { PromotionType } from "@/prisma/generated/client/enums";
-import { PromotionUsageSchema } from "@/prisma/generated/schemas";
-import { OrderByTypeSchema } from "../entities/Order";
+import { OrderByTypeSchema } from "../models/order";
+import { DeleteEntityResponseSchema, NoContentRequestSchema } from "./common";
 
 export namespace PromotionContracts {
   export namespace Common {

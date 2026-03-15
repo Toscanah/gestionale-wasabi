@@ -1,6 +1,6 @@
 import { useWasabiContext } from "@/context/WasabiContext";
 import { Label } from "@/components/ui/label";
-import WasabiSelect from "@/components/shared/wasabi/WasabiSelect";
+import WasabiSelect from "@/components/ui/shared/wasabi/WasabiSelect";
 
 export type Printer = {
   name: "Stampante bianca" | "Stampante nera";
@@ -26,13 +26,13 @@ export default function PrinterChoice() {
         mode="single"
         id="printer"
         triggerClassName="h-10"
-        selectedValue={settings.selectedPrinter.name}
+        selectedValue={settings.application.selectedPrinter.name}
         onChange={(printerName) => {
           const selectedPrinter = PREDEFINED_PRINTERS.find(
             (printer) => printer.name === printerName
           );
           if (selectedPrinter) {
-            updateSettings("selectedPrinter", selectedPrinter);
+            updateSettings("application.selectedPrinter", selectedPrinter);
           }
         }}
         groups={[

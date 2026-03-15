@@ -1,6 +1,6 @@
 import Table from "@/components/table/Table";
 import { FieldColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import useSkeletonTable from "@/hooks/table/useSkeletonTable";
 import useTable from "@/hooks/table/useTable";
 import { ProductWithStats } from "@/lib/shared";

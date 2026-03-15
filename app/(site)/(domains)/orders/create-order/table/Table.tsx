@@ -6,11 +6,11 @@ import { OrderByType } from "@/lib/shared";
 import { useWasabiContext } from "../../../../context/WasabiContext";
 import { toastError, toastSuccess } from "../../../../../../lib/shared/utils/global/toast";
 import useFocusCycle from "@/hooks/focus/useFocusCycle";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { cn } from "@/lib/utils";
 import { OrderProvider } from "@/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 interface TableProps {
   setOrder: Dispatch<SetStateAction<OrderByType>>;

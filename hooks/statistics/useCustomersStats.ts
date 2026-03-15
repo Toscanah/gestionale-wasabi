@@ -5,9 +5,9 @@ import { useMemo, useState } from "react";
 import { CustomerContracts, CustomerStatsSortField, CustomerWithStats } from "@/lib/shared";
 import useQueryFilter from "../table/useQueryFilter";
 // import { SortableField, SortField } from "@/components/ui/sorting/SortingMenu";
-import { SortableField, SortField } from "@/components/shared/sorting/SortingMenu";
-import { trpc } from "@/lib/trpc/client";
-import { customersAPI } from "@/lib/trpc/api";
+import { SortableField, SortField } from "@/components/ui/shared/sorting/SortingMenu";
+import { trpc } from "@/lib/api/client";
+import { customersAPI } from "@/lib/api/api";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
 
 const DEFAULT_DATE: DateRange = {

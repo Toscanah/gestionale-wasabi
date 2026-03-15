@@ -6,15 +6,15 @@ import {
   ProductStats,
   ProductStatsOnlySchema,
   ProductWithCategorySchema,
-} from "../entities/Product";
+} from "../models/product";
 import { createInputSchema, updateInputSchema, wrapSchema } from "./common/utils";
 import {
   ToggleDeleteEntityRequestSchema,
   ToggleEntityResponseSchema,
 } from "./common/toggle-delete-entity";
-import { OptionInProductOrderWithOptionSchema } from "../entities/Option";
+import { OptionInProductOrderWithOptionSchema } from "../models/option";
 import SortingSchema from "./common/sorting";
-import { DottedKeys } from "../types/DottedKeys";
+import { DottedKeys } from "../types/dotted-keys";
 import { APIFiltersSchema, wrapAsFilters } from "./common/filters/filters";
 import { PaginationResponseSchema, PaginationSchema } from "./common/pagination";
 

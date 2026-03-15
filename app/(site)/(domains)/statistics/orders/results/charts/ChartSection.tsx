@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import WasabiSelect from "@/components/shared/wasabi/WasabiSelect";
+import WasabiSelect from "@/components/ui/shared/wasabi/WasabiSelect";
 import { Skeleton } from "@/components/ui/skeleton";
 import { OrderType } from "@/prisma/generated/client/enums";
 import {

@@ -3,7 +3,7 @@
 import React from "react";
 import type { Table } from "@tanstack/react-table";
 import { EyeIcon, SlidersHorizontalIcon } from "@phosphor-icons/react";
-import WasabiSelect, { CommandGroupType } from "../shared/wasabi/WasabiSelect";
+import WasabiSelect, { CommandGroupType } from "../ui/shared/wasabi/WasabiSelect";
 
 interface TableVisibilityProps<TData> {
   table: Table<TData>;

@@ -4,7 +4,7 @@ import { KitchenType } from "@/prisma/generated/client/enums";
 import { FieldColumn, ValueColumn } from "@/components/table/TableColumns";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import formatRice from "@/lib/shared/utils/domains/rice/formatRice";
-import { NA } from "@/components/shared/misc/Placeholders";
+import { NA } from "@/components/ui/shared/misc/Placeholders";
 
 const columns: ColumnDef<Product>[] = [
   FieldColumn({

@@ -1,9 +1,9 @@
 import axios from "axios";
-import prisma from "../../db/prisma";
+import prisma from "../../database/prisma";
 import { MetaContracts } from "@/lib/shared";
 import { MessageDirection } from "@/prisma/generated/client/enums";
 import getMetaSecrets from "../../services/meta/getMetaSecrets";
-import { getOrderById } from "../../db/orders/getOrderById";
+import { getOrderById } from "../../database/orders/getOrderById";
 
 export default async function sendMetaMessage({
   template,

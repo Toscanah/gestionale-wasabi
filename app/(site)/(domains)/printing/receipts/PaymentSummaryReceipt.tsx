@@ -1,7 +1,7 @@
 import { Br, Cut, Line, Row, Text } from "react-thermal-printer";
 import roundToTwo from "../../../../../lib/shared/utils/global/number/roundToTwo";
 import sanitazeReceiptText from "../../../../../lib/shared/utils/domains/printing/sanitazeReceiptText";
-import { SMALL_PRINT } from "@/lib/shared/constants/printing";
+import { SMALL_PRINT } from "@/lib/shared";
 import fitReceiptText from "@/lib/shared/utils/domains/printing/fitReceiptText";
 import { PaymentContracts } from "@/lib/shared";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";

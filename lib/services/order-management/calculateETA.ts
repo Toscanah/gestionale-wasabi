@@ -1,8 +1,7 @@
-import { OrderType } from "@/prisma/generated/client/enums";
-import { OrderByType, HomeOrder, PickupOrder, Riders } from "../../shared";
+import { DEFAULT_WHEN_VALUE, HomeOrder, RidersSettings } from "@/lib/shared";
 
 type CalculateETAParams = {
-  riders: Riders;
+  riders: RidersSettings;
   order: HomeOrder;
   homeOrders: HomeOrder[];
 };
@@ -10,11 +9,11 @@ type CalculateETAParams = {
 function getEarliestArrival(order: HomeOrder): Date {
   const EARLIEST_ARRIVAL_MINUTES = 35;
   const earliestArrival = new Date(
-    new Date(order.created_at).getTime() + EARLIEST_ARRIVAL_MINUTES * 60 * 1000
+    new Date(order.created_at).getTime() + EARLIEST_ARRIVAL_MINUTES * 60 * 1000,
   );
 
   if (!order.home_order) throw new Error("Home order not defined");
-  if (order.home_order.when === "immediate") return earliestArrival;
+  if (order.home_order.when === DEFAULT_WHEN_VALUE) return earliestArrival;
 
   const scheduled = new Date(`1970-01-01T${order.home_order.when}:00`);
   return scheduled < earliestArrival ? earliestArrival : scheduled;

@@ -1,5 +1,5 @@
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
-import ImageViewer from "@/components/shared/misc/ImageViewer";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
+import ImageViewer from "@/components/ui/shared/misc/ImageViewer";
 import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
 import getTemplateName from "@/lib/shared/utils/domains/engagement/getTemplateName";
 import {

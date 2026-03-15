@@ -1,7 +1,7 @@
   import generateDummyProduct from "@/lib/services/product-management/generateDummyProduct";
   import { OrderByType, ProductInOrder } from "@/lib/shared";
   import { toastError } from "@/lib/shared/utils/global/toast";
-  import { productsAPI } from "@/lib/trpc/api";
+  import { productsAPI } from "@/lib/api/api";
   import { Table } from "@tanstack/react-table";
   import { UpdateProductsListFunction } from "../useProductsManager";
   import { useRef, useState } from "react";

@@ -11,7 +11,7 @@ export interface RiderReceiptProps {
 }
 
 export default function RiderReceipt({ order, plannedPayment }: RiderReceiptProps) {
-  const { products, discount, type } = order;
+  const { products, discount, type, promotion_usages: promotionsUsages } = order;
   
   return (
     <>
@@ -23,7 +23,7 @@ export default function RiderReceipt({ order, plannedPayment }: RiderReceiptProp
       {OrderInfoSection({ order, plannedPayment, options: { putExtraItems: false } })}
       <Line />
 
-      {TotalSection({ products, discount, orderType: type })}
+      {TotalSection({ products, discount, orderType: type, promotionsUsages })}
       <Cut />
     </>
   );

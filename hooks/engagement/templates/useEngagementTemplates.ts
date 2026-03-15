@@ -3,7 +3,7 @@ import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import { ParsedEngagementPayload, EngagementContracts } from "@/lib/shared";
 import { EngagementType } from "@/prisma/generated/client/enums";
 import { useState } from "react";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 export const EMPTY_PAYLOADS: Record<EngagementType, ParsedEngagementPayload> = {
   QR_CODE: { url: "", textAbove: "", textBelow: "" },

@@ -4,7 +4,7 @@ import {
   EngagementLedgerWithDetailsSchema,
   EngagementWithDetailsSchema,
   ParsedEngagementTemplateSchema,
-} from "../entities/Engagement";
+} from "../models/engagement";
 import { wrapSchema } from "./common/utils";
 import { NoContentRequestSchema } from "./common/no-content";
 import {

@@ -11,7 +11,7 @@ import roundToCents from "../../../../../lib/shared/utils/global/number/roundToC
 import { debounce } from "lodash";
 import { toastSuccess } from "../../../../../lib/shared/utils/global/toast";
 import useFocusOnClick from "../../../../../hooks/focus/useFocusOnClick";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { Payment } from "@/prisma/generated/schemas";
 
 interface RomanStyleProps {

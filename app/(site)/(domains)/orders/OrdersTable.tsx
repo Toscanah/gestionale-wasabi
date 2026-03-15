@@ -31,7 +31,7 @@ export default function OrdersTable({
 }: OrdersTableProps) {
   const { settings } = useWasabiContext();
 
-  const columns = getColumns(type, settings.whatsapp.active);
+  const columns = getColumns(type, settings.application.whatsapp.active);
   const { tableColumns, tableData } = useSkeletonTable({
     data,
     columns,
@@ -59,7 +59,7 @@ export default function OrdersTable({
         rowClassName={(row) => {
           const isOverdrawn = overdrawnOrderIds.has(row.original.id);
           return cn(
-            "hover:cursor-pointer w-full h-16 max-h-16 text-xl"
+            "hover:cursor-pointer w-full h-16 max-h-16 text-xl",
             // isOverdrawn && "!border !border-2 !border-red-500"
           );
         }}

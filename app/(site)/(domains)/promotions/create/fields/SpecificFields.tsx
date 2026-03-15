@@ -1,4 +1,4 @@
-import { WasabiFormField } from "@/components/shared/wasabi/WasabiFormField";
+import { WasabiFormField } from "@/components/ui/shared/wasabi/WasabiFormField";
 import { PromotionFormProp } from "../CreatePromotionTab";
 import {
   FormControl,

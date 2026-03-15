@@ -32,7 +32,7 @@ export namespace OrdersStats {
 
   // --- ORDER TYPES ENUM ---
   const lowerOrderTypes = Object.values(OrderType).map(
-    (t) => t.toLowerCase() as Lowercase<typeof t>
+    (t) => t.toLowerCase() as Lowercase<typeof t>,
   );
   export const LowerOrderTypeEnum = z.enum(lowerOrderTypes);
   export type LowerOrderTypeEnum = z.infer<typeof LowerOrderTypeEnum>;

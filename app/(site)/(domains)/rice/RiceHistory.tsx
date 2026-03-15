@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { format, isToday } from "date-fns";
 import formatRice from "@/lib/shared/utils/domains/rice/formatRice";
 import { RiceLogType } from "@/prisma/generated/client/enums";
 import { Separator } from "@/components/ui/separator";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { RiceLog } from "@/lib/shared";
 
 export default function RiceHistory() {

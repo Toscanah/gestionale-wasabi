@@ -1,18 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { CustomerOrdersStats } from "../../../hooks/order/history/useHistoryStats";
-import {
-  ActionColumn,
-  FieldColumn,
-  IndexColumn,
-  JoinColumn,
-  ValueColumn,
-} from "../../table/TableColumns";
-import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
+import { ActionColumn, FieldColumn, JoinColumn, ValueColumn } from "../../table/TableColumns";
 import { ProductInOrder } from "@/lib/shared";
-import joinItemsWithComma from "@/lib/shared/utils/global/string/joinItemsWithComma";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OrderDetailTableMeta } from "../detail/OrderDetail";
-import { EnDash } from "../../shared/misc/Placeholders";
+import { EnDash } from "@/components/ui/shared/misc/Placeholders";
 
 export default function productColumns(selectable = false): ColumnDef<ProductInOrder>[] {
   const columns: ColumnDef<ProductInOrder>[] = [
@@ -69,7 +60,7 @@ export default function productColumns(selectable = false): ColumnDef<ProductInO
             </div>
           );
         },
-      })
+      }),
     );
   }
 

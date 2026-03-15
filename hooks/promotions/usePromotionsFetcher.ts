@@ -1,10 +1,10 @@
-import { promotionsAPI } from "@/lib/trpc/api";
+import { promotionsAPI } from "@/lib/api/api";
 import { PromotionType } from "@/prisma/generated/schemas";
 import { useMemo, useState } from "react";
-import { ALL_PROMOTION_TYPES } from "@/components/shared/filters/select/PromotionTypesFilter";
+import { ALL_PROMOTION_TYPES } from "@/components/ui/shared/filters/select/PromotionTypesFilter";
 import { PromotionContracts } from "@/lib/shared";
 import { PromotionPeriodCondition } from "@/lib/shared/contracts/common/filters/promotion-periods";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 export default function usePromotionsFetcher() {
   const [selectedPromotionTypes, setSelectedPromotionTypes] =

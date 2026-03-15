@@ -3,7 +3,7 @@ import { FormFieldType } from "../manager/FormFields";
 import { CategoryContracts, CategoryWithOptions } from "@/lib/shared";
 import { KitchenTypeSchema } from "@/prisma/generated/schemas";
 import KitchenType from "./KitchenType";
-import WasabiSelect from "@/components/shared/wasabi/WasabiSelect";
+import WasabiSelect from "@/components/ui/shared/wasabi/WasabiSelect";
 
 export const productFormSchema = z.object({
   code: z

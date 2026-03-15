@@ -8,7 +8,7 @@ import {
 } from "@/lib/shared";
 import { Fragment } from "react";
 import { Br, Cut, Image, QRCode, Text } from "react-thermal-printer";
-import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared/constants/printing";
+import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared";
 import { EngagementType } from "@/prisma/generated/client/enums";
 import wrapTextCentered from "@/lib/shared/utils/domains/printing/wrapTextCentered";
 

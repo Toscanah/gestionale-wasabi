@@ -1,6 +1,6 @@
 "use client";
 
-import WasabiAnimatedTab from "@/components/shared/wasabi/WasabiAnimatedTab";
+import WasabiAnimatedTab from "@/components/ui/shared/wasabi/WasabiAnimatedTab";
 import { DiscountsSummary, DiscountTabs } from "../DiscountsDialog";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,15 +21,11 @@ import { useOrderContext } from "@/context/OrderContext";
 import { PromotionType } from "@/prisma/generated/client/enums";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  PromotionByType,
-  PromotionGuards,
-  PromotionUsageWithPromotion,
-} from "@/lib/shared";
+import { PromotionByType, PromotionGuards, PromotionUsageWithPromotion } from "@/lib/shared";
 import {
   PROMOTION_TYPES_COLORS,
   PROMOTION_TYPES_LABELS,
-} from "@/lib/shared/constants/promotion-labels";
+} from "@/lib/shared/constants/enum-labels/promotion-types";
 import usePromotionsFetcher from "@/hooks/promotions/usePromotionsFetcher";
 import { ArrowRightIcon, CheckIcon, XIcon } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,7 +33,7 @@ import { debounce } from "lodash";
 import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import { TrashIcon } from "@phosphor-icons/react/dist/ssr";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 import QuickPromoPreview from "./QuickPromoPreview";
 import { Badge } from "@/components/ui/badge";
@@ -103,7 +99,7 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
         // Clamp to available gift card amount
         const availableAmount = Math.max(
           (match.fixed_amount ?? 0) - match.usages.reduce((sum, u) => sum + u.amount, 0),
-          0
+          0,
         );
 
         const defaultAmount = Math.min(currentTotal, availableAmount);
@@ -231,7 +227,7 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
                       ? Math.max(
                           (foundPromo.fixed_amount ?? 0) -
                             foundPromo.usages.reduce((sum, u) => sum + u.amount, 0),
-                          0
+                          0,
                         )
                       : undefined
                   }
@@ -307,7 +303,7 @@ export default function PromotionsDiscountsTab({ activeTab }: PromotionsDiscount
               (() => {
                 // ✅ Check if the promotion is already applied
                 const alreadyUsed = order.promotion_usages.some(
-                  (u) => u.promotion_id === foundPromo.id
+                  (u) => u.promotion_id === foundPromo.id,
                 );
 
                 if (alreadyUsed) {

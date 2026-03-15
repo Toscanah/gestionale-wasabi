@@ -1,7 +1,7 @@
 import { ExtraItems } from "@/domains/orders/single-order/overview/ExtraItems";
 import calculateExtraItems from "@/lib/services/order-management/calculateExtraItems";
 import { OrderByType, ProductInOrder } from "@/lib/shared";
-import { ordersAPI } from "@/lib/trpc/api";
+import { ordersAPI } from "@/lib/api/api";
 
 type UseProductExtrasParams = {
   order: OrderByType;

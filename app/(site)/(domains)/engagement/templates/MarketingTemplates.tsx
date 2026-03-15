@@ -5,8 +5,8 @@ import { EngagementContracts, ParsedEngagementTemplate } from "@/lib/shared";
 import TemplateContentCreate from "./components/content/TemplateContentCreate";
 import TemplateContentEdit from "./components/content/TemplateContentEdit";
 import TemplateContentView from "./components/content/TemplateContentView";
-import Loader from "@/components/shared/misc/loader/Loader";
-import { trpc } from "@/lib/trpc/client";
+import Loader from "@/components/ui/shared/misc/loader/Loader";
+import { trpc } from "@/lib/api/client";
 
 interface MarketingTemplatesProps {
   selection?: boolean;

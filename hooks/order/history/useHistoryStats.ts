@@ -7,7 +7,7 @@ import {
   PickupOrderWithOrder,
   ShiftEvaluableOrder,
 } from "@/lib/shared";
-import { ShiftBoundaries } from "@/lib/shared/enums/Shift";
+import { ShiftBoundaries } from "@/lib/shared";
 import decimalToTime from "@/lib/shared/utils/global/time/decimalToTime";
 import { OrderType } from "@/prisma/generated/client/enums";
 import { useEffect, useState } from "react";

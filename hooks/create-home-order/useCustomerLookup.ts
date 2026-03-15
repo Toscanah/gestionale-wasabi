@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 import { useCachedDataContext } from "@/context/CachedDataContext";
 
 interface UseCustomerLookupParams {

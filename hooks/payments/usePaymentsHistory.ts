@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { OrderContracts, PaymentContracts, ShiftFilterValue } from "@/lib/shared";
+import { OrderContracts, PaymentContracts, ShiftFilterValue, TODAY_PERIOD } from "@/lib/shared";
 import { OrderType, PaymentType } from "@/prisma/generated/client/enums";
 import useQueryFilter from "../table/useQueryFilter";
-import TODAY_PERIOD from "@/lib/shared/constants/today-period";
-import { ordersAPI, paymentsAPI } from "@/lib/trpc/api";
+import { ordersAPI, paymentsAPI } from "@/lib/api/api";
 
 type UsePaymentsHistoryParams = {
   page: number;
@@ -73,7 +72,7 @@ export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistor
     },
     {
       placeholderData: (prev) => prev,
-    }
+    },
   );
 
   const {
@@ -88,7 +87,7 @@ export default function usePaymentsHistory({ page, pageSize }: UsePaymentsHistor
     },
     {
       placeholderData: (prev) => prev,
-    }
+    },
   );
 
   const handleReset = () => {

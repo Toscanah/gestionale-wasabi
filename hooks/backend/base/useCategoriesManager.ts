@@ -1,5 +1,5 @@
-import { categoriesAPI } from "@/lib/trpc/api";
-import { trpc } from "@/lib/trpc/client";
+import { categoriesAPI } from "@/lib/api/api";
+import { trpc } from "@/lib/api/client";
 import { useManager } from "../useManager";
 import { CategoryContracts } from "@/lib/shared";
 

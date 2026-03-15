@@ -13,8 +13,8 @@ import { Separator } from "@/components/ui/separator";
 import TableColumnsVisibility from "@/components/table/TableColumnsVisibility";
 import useCsvExport from "@/hooks/csv-export/useCsvExport";
 import { MinusIcon } from "@phosphor-icons/react";
-import CsvExportButton from "@/components/shared/misc/CsvExportButton";
-import { EmDash } from "@/components/shared/misc/Placeholders";
+import CsvExportButton from "@/components/ui/shared/misc/CsvExportButton";
+import { EmDash } from "@/components/ui/shared/misc/Placeholders";
 import { isSameDay, startOfDay } from "date-fns";
 
 type MetricsResult = OrdersStats.Metrics;

@@ -1,18 +1,18 @@
 import FullNameColumn from "@/components/table/common/FullNameColumn";
 import Table from "@/components/table/Table";
 import { FieldColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { CustomerContracts, ComprehensiveCustomer } from "@/lib/shared";
 import useTable from "@/hooks/table/useTable";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import Loader from "@/components/shared/misc/loader/Loader";
-import { customersAPI } from "@/lib/trpc/api";
+import Loader from "@/components/ui/shared/misc/loader/Loader";
+import { customersAPI } from "@/lib/api/api";
 import AddressesColumn from "@/components/table/common/AddressesColumn";
 import useSkeletonTable from "@/hooks/table/useSkeletonTable";
-import RandomSpinner from "@/components/shared/misc/loader/RandomSpinner";
+import RandomSpinner from "@/components/ui/shared/misc/loader/RandomSpinner";
 import React from "react";
-import { EnDash } from "@/components/shared/misc/Placeholders";
+import { EnDash } from "@/components/ui/shared/misc/Placeholders";
 
 export interface TopCustomersProps {
   product: { id: number; name: string; hasTopCustomers: boolean };

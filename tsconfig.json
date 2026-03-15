@@ -1,15 +1,11 @@
 {
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "ES2023",
     "strict": true,
     "esModuleInterop": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "checkJs": true,
@@ -26,48 +22,24 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@app/*": [
-        "app/*"
-      ],
-      "@components/*": [
-        "components/*"
-      ],
-      "@ui/*": [
-        "components/ui/*"
-      ],
-      "@shared/*": [
-        "components/shared/*"
-      ],
-      "@lib/*": [
-        "lib/*"
-      ],
-      "@db/*": [
-        "lib/db/*"
-      ],
-      "@api/*": [
-        "lib/trpc/*"
-      ],
-      "@contracts/*": [
-        "app/(site)/lib/shared/contracts/*"
-      ],
-      "@entities/*": [
-        "lib/shared/entities/*"
-      ],
-      "@hooks/*": [
-        "hooks/*"
-      ],
-      "@utils/*": [
-        "lib/shared/utils/*"
-      ],
-      "@/context/*": [
-        "app/(site)/context/*"
-      ],
-      "@/domains/*": [
-        "app/(site)/(domains)/*"
-      ]
+      "@/*": ["./*"],
+      "@app/*": ["app/*"],
+      "@components/*": ["components/*"],
+      "@ui/*": ["components/ui/*"],
+      "@shared/*": ["components/shared/*"],
+      "@lib/*": ["lib/*"],
+      "@db/*": ["lib/database/*"],
+      "@api/*": ["lib/api/*"],
+      "@constants/*": ["lib/shared/constants/*"],
+      "@enums/*": ["lib/shared/enums/*"],
+      "@contracts/*": ["lib/shared/contracts/*"],
+      "@models/*": ["lib/shared/models/*"],
+      "@entities/*": ["lib/shared/models/*"],
+      "@types/*": ["lib/shared/types/*"],
+      "@hooks/*": ["hooks/*"],
+      "@utils/*": ["lib/shared/utils/*"],
+      "@/context/*": ["app/(site)/context/*"],
+      "@/domains/*": ["app/(site)/(domains)/*"]
     }
   },
   "include": [
@@ -75,11 +47,11 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/(site)/lib/shared/types/**/*.d.ts",
+    "lib/shared/types/**/*.d.ts",
+    "lib/shared/types/declarations/**/*.d.ts",
     "build/types/**/*.ts",
-    "build/dev/types/**/*.ts"
+    "build/dev/types/**/*.ts",
+    "lib/shared/index.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

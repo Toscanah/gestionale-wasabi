@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useWasabiContext } from "@/context/WasabiContext";
 import useFocusOnClick from "@/hooks/focus/useFocusOnClick";
 import { Input } from "@/components/ui/input";
@@ -67,8 +67,8 @@ export default function RestaurantSettings() {
           <Input
             type="text"
             id="name"
-            value={settings.name}
-            onChange={(e) => updateSettings("name", e.target.value)}
+            value={settings.profile.name}
+            onChange={(e) => updateSettings("profile.name", e.target.value)}
           />
         </div>
         <div className="space-y-2 w-full">
@@ -76,8 +76,8 @@ export default function RestaurantSettings() {
           <Input
             type="text"
             id="slogan"
-            value={settings.slogan}
-            onChange={(e) => updateSettings("slogan", e.target.value)}
+            value={settings.profile.slogan}
+            onChange={(e) => updateSettings("profile.slogan", e.target.value)}
           />
         </div>
       </div>
@@ -88,9 +88,9 @@ export default function RestaurantSettings() {
           <Input
             type="text"
             id="street"
-            value={settings.address.street}
+            value={settings.profile.address.street}
             onChange={(e) =>
-              updateSettings("address", { ...settings.address, street: e.target.value })
+              updateSettings("profile.address", { ...settings.profile.address, street: e.target.value })
             }
           />
         </div>
@@ -99,9 +99,9 @@ export default function RestaurantSettings() {
           <Input
             type="text"
             id="civic"
-            value={settings.address.civic}
+            value={settings.profile.address.civic}
             onChange={(e) =>
-              updateSettings("address", { ...settings.address, civic: e.target.value })
+              updateSettings("profile.address", { ...settings.profile.address, civic: e.target.value })
             }
           />
         </div>
@@ -110,9 +110,9 @@ export default function RestaurantSettings() {
           <Input
             type="text"
             id="cap"
-            value={settings.address.cap}
+            value={settings.profile.address.cap}
             onChange={(e) =>
-              updateSettings("address", { ...settings.address, cap: e.target.value })
+              updateSettings("profile.address", { ...settings.profile.address, cap: e.target.value })
             }
           />
         </div>
@@ -121,9 +121,9 @@ export default function RestaurantSettings() {
           <Input
             type="text"
             id="city"
-            value={settings.address.city}
+            value={settings.profile.address.city}
             onChange={(e) =>
-              updateSettings("address", { ...settings.address, city: e.target.value })
+              updateSettings("profile.address", { ...settings.profile.address, city: e.target.value })
             }
           />
         </div>
@@ -135,8 +135,8 @@ export default function RestaurantSettings() {
           <Input
             type="text"
             id="tel"
-            value={settings.telNumber}
-            onChange={(e) => updateSettings("telNumber", e.target.value)}
+            value={settings.profile.telNumber}
+            onChange={(e) => updateSettings("profile.telNumber", e.target.value)}
           />
         </div>
         <div className="space-y-2 w-full">
@@ -144,8 +144,8 @@ export default function RestaurantSettings() {
           <Input
             type="text"
             id="cell"
-            value={settings.cellNumber}
-            onChange={(e) => updateSettings("cellNumber", e.target.value)}
+            value={settings.profile.cellNumber}
+            onChange={(e) => updateSettings("profile.cellNumber", e.target.value)}
           />
         </div>
       </div>

@@ -2,8 +2,8 @@ import {
   OrderByType,
   EngagementWithDetails,
   ParsedEngagementTemplate,
+  OrderGuards,
 } from "../../shared";
-import { OrderGuards } from "../../shared/types/order-guards";
 
 interface PatchEngagementsParams {
   order: OrderByType;
@@ -23,7 +23,7 @@ export default function patchOrderEngagements({
   replaceEngagements,
 }: PatchEngagementsParams): OrderByType {
   const patchEngagementList = (
-    existing: EngagementWithDetails[] | undefined
+    existing: EngagementWithDetails[] | undefined,
   ): EngagementWithDetails[] => {
     if (replaceEngagements) return replaceEngagements;
 

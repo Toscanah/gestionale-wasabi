@@ -1,10 +1,10 @@
-import WhenSelector from "@/components/shared/filters/select/WhenSelector";
+import WhenSelector from "@/components/ui/shared/filters/select/WhenSelector";
 import { OrderType } from "@/prisma/generated/client/enums";
 import { HomeOrder, OrderGuards, PickupOrder } from "@/lib/shared";
 import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import { useState } from "react";
 import { useOrderContext } from "@/context/OrderContext";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 export default function When() {
   const { order, updateOrder } = useOrderContext();
@@ -20,7 +20,7 @@ export default function When() {
   const updateOrderTimeMutation = trpc.orders.updateTime.useMutation({
     onSuccess: (updatedOrder) => {
       updateOrder(updatedOrder);
-      toastSuccess("Orario dell'ordine correttamente aggiornato");
+      toastSuccess("Orario dell'ordine aggiornato correttamente");
     },
   });
 

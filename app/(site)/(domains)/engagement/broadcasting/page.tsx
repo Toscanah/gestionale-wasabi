@@ -7,16 +7,16 @@ import EngagementFilter from "./filters/EngagementFilter";
 import useEngagement from "../../../../../hooks/engagement/useEngagement";
 import useTable from "../../../../../hooks/table/useTable";
 import Table from "../../../../../components/table/Table";
-import GoBack from "@/components/shared/misc/GoBack";
+import GoBack from "@/components/ui/shared/misc/GoBack";
 import AdminEngagementDialog from "./components/AdminEngagementDialog";
 import useSkeletonTable from "@/hooks/table/useSkeletonTable";
 import TablePagination from "@/components/table/TablePagination";
 import useTablePagination from "@/hooks/table/useTablePagination";
-import CalendarFilter from "@/components/shared/filters/calendar/CalendarFilter";
-import TODAY_PERIOD from "@/lib/shared/constants/today-period";
-import SearchBar from "@/components/shared/filters/common/SearchBar";
-import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
+import CalendarFilter from "@/components/ui/shared/filters/calendar/CalendarFilter";
+import SearchBar from "@/components/ui/shared/filters/common/SearchBar";
+import ResetTableControlsBtn from "@/components/ui/shared/filters/common/ResetTableControlsBtn";
 import { toastSuccess } from "@/lib/shared/utils/global/toast";
+import { TODAY_PERIOD } from "@/lib/shared";
 
 export default function EngagementPage() {
   const { page, pageSize, setPage, setPageSize } = useTablePagination({ initialPageSize: 50 });

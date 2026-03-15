@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useWasabiContext } from "../../../context/WasabiContext";
 import OrderDeletionDialog from "../single-order/overview/OrderDeletionDialog";
-import { ordersAPI } from "@/lib/trpc/api";
+import { ordersAPI } from "@/lib/api/api";
 
 export default function DeleteOrdersBulk() {
   const { selectedOrders, updateGlobalState, toggleOrderSelection, updateRemainingRice } =

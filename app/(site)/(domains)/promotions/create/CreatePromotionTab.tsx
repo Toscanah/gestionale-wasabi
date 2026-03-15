@@ -1,4 +1,4 @@
-import WasabiAnimatedTab from "@/components/shared/wasabi/WasabiAnimatedTab";
+import WasabiAnimatedTab from "@/components/ui/shared/wasabi/WasabiAnimatedTab";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";

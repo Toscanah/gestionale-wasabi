@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { promotionsAPI } from "@/lib/trpc/api";
+import { promotionsAPI } from "@/lib/api/api";
 import { useState } from "react";
 import { ActionColumn, IndexColumn, ValueColumn } from "@/components/table/TableColumns";
 import useSkeletonTable from "@/hooks/table/useSkeletonTable";
@@ -15,18 +15,18 @@ import {
   PromotionWithUsages,
   SHIFT_LABELS,
 } from "@/lib/shared";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import Table from "@/components/table/Table";
 import { Badge } from "@/components/ui/badge";
-import WasabiPopover from "@/components/shared/wasabi/WasabiPopover";
+import WasabiPopover from "@/components/ui/shared/wasabi/WasabiPopover";
 import { Separator } from "@/components/ui/separator";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
 import capitalizeFirstLetter from "@/lib/shared/utils/global/string/capitalizeFirstLetter";
 import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
 import { OrderStatus, WorkingShift } from "@/prisma/generated/client/enums";
 import { TrashIcon } from "@phosphor-icons/react";
-import { trpc } from "@/lib/trpc/client";
-import { EnDash, NA } from "@/components/shared/misc/Placeholders";
+import { trpc } from "@/lib/api/client";
+import { EnDash, NA } from "@/components/ui/shared/misc/Placeholders";
 
 function canDeleteUsage(usage: ComprehensivePromotionUsage): boolean {
   const order = usage.order;

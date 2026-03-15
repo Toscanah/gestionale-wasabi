@@ -1,11 +1,11 @@
 import { DateRange } from "react-day-picker";
-import { ShiftFilterValue } from "@/lib/shared/enums/Shift";
+import { ShiftFilterValue } from "@/lib/shared";
 import { OrderType } from "@/prisma/generated/client/enums";
-import { FULL_DAY_RANGE, TimeWindow } from "@/components/shared/filters/time/TimeWindowFilter";
-import TODAY_PERIOD from "@/lib/shared/constants/today-period";
+import { FULL_DAY_RANGE, TimeWindow } from "@/components/ui/shared/filters/time/TimeWindowFilter";
+import { TODAY_PERIOD } from "@/lib/shared";
 import { Weekday } from "@/lib/shared";
-import { ALL_WEEKDAYS } from "@/components/shared/filters/select/WeekdaysFilter";
-import { ALL_ORDER_TYPES } from "@/components/shared/filters/select/OrderTypesFilter";
+import { ALL_WEEKDAYS } from "@/components/ui/shared/filters/select/WeekdaysFilter";
+import { ALL_ORDER_TYPES } from "@/components/ui/shared/filters/select/OrderTypesFilter";
 
 export interface OrderFilters {
   // date selection

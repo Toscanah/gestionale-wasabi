@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { CharacterSet, Printer, PrinterType, render } from "react-thermal-printer";
 import { Printer as SelectedPrinter } from "../settings/application/PrinterChoice";
-import { DEFAULT_SETTINGS } from "../../../../hooks/useSettings";
-import { GlobalSettings } from "@/lib/shared/types/Settings";
+import { DEFAULT_SETTINGS } from "@/lib/shared/constants/config/settings";
+import { GlobalSettings } from "@/lib/shared/types/settings/global";
 
 // interface SerialPort {
 //   open(options: { baudRate: number }): Promise<void>;
@@ -72,7 +72,7 @@ export default async function print(...content: PrintContent[]): Promise<boolean
     JSON.parse(
       localStorage.getItem("settings") || JSON.stringify(DEFAULT_SETTINGS)
     ) as GlobalSettings
-  ).selectedPrinter;
+  ).application.selectedPrinter;
 
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
 

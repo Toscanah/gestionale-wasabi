@@ -1,4 +1,0 @@
-const DEFAULT_WHEN_VALUE = "immediate";
-const DEFAULT_WHEN_LABEL = "Subito";
-
-export { DEFAULT_WHEN_VALUE, DEFAULT_WHEN_LABEL };

@@ -1,25 +1,22 @@
 "use client";
 
 import Table from "../../../../../components/table/Table";
-import GoBack from "@/components/shared/misc/GoBack";
+import GoBack from "@/components/ui/shared/misc/GoBack";
 import useTable from "../../../../../hooks/table/useTable";
 import columns from "./columns";
-import CalendarFilter from "@/components/shared/filters/calendar/CalendarFilter";
-import CategoryFilter from "@/components/shared/filters/select/CategoryFilter";
+import CalendarFilter from "@/components/ui/shared/filters/calendar/CalendarFilter";
+import CategoryFilter from "@/components/ui/shared/filters/select/CategoryFilter";
 import useProductsStats from "@/hooks/statistics/useProductsStats";
-import ShiftFilter from "@/components/shared/filters/select/ShiftFilter";
-import SearchBar from "@/components/shared/filters/common/SearchBar";
+import ShiftFilter from "@/components/ui/shared/filters/select/ShiftFilter";
+import SearchBar from "@/components/ui/shared/filters/common/SearchBar";
 import useSkeletonTable from "@/hooks/table/useSkeletonTable";
-import TODAY_PERIOD from "@/lib/shared/constants/today-period";
-import ResetTableControlsBtn from "@/components/shared/filters/common/ResetTableControlsBtn";
-import SortingMenu from "@/components/shared/sorting/SortingMenu";
-import { CustomerContracts, ShiftFilterValue } from "@/lib/shared";
+import ResetTableControlsBtn from "@/components/ui/shared/filters/common/ResetTableControlsBtn";
+import SortingMenu from "@/components/ui/shared/sorting/SortingMenu";
+import { CustomerContracts, ShiftFilterValue, TODAY_PERIOD } from "@/lib/shared";
 import { TableMeta } from "@tanstack/react-table";
 import TablePagination from "@/components/table/TablePagination";
 import useTablePagination from "@/hooks/table/useTablePagination";
 import TableColumnsVisibility from "@/components/table/TableColumnsVisibility";
-import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
-import CsvExportButton from "@/components/shared/misc/CsvExportButton";
 import useCsvExport from "@/hooks/csv-export/useCsvExport";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
@@ -163,7 +160,7 @@ export default function ProductsStats() {
                 toEuro(
                   table
                     .getPrePaginationRowModel()
-                    .rows.reduce((sum, row) => sum + row.original.stats.revenue, 0)
+                    .rows.reduce((sum, row) => sum + row.original.stats.revenue, 0),
                 )}
             </span>
           )}

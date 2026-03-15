@@ -1,4 +1,4 @@
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import { ComponentType, useCallback } from "react";
 import { ActionProps, FormFieldsProps } from "../Manager";
 import { Button } from "@/components/ui/button";

@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useReducer } from "react";
 import sectionReducer, { INITIAL_STATE, SectionState } from "./sectionReducer";
 import { isSameDay } from "date-fns";
-import { ALL_WEEKDAYS } from "@/components/shared/filters/select/WeekdaysFilter";
-import { FULL_DAY_RANGE } from "@/components/shared/filters/time/TimeWindowFilter";
-import { trpc } from "@/lib/trpc/client";
+import { ALL_WEEKDAYS } from "@/components/ui/shared/filters/select/WeekdaysFilter";
+import { FULL_DAY_RANGE } from "@/components/ui/shared/filters/time/TimeWindowFilter";
+import { trpc } from "@/lib/api/client";
 import { OrderContracts } from "@/lib/shared";
 import { OrderType } from "@/prisma/generated/client/enums";
 

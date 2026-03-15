@@ -1,5 +1,5 @@
 import { OrderByType } from "@/lib/shared";
-import { productsAPI } from "@/lib/trpc/api";
+import { productsAPI } from "@/lib/api/api";
 import { UpdateProductsListFunction } from "../useProductsManager";
 
 type UseProductModsParans = {

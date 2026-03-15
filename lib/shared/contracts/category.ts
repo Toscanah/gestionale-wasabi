@@ -1,4 +1,4 @@
-import { CategoryWithOptionsSchema } from "../entities/_index";
+import { CategoryWithOptionsSchema } from "../models";
 import { NoContentRequestSchema } from "./common/no-content";
 import {
   ToggleDeleteEntityRequestSchema,
@@ -21,7 +21,7 @@ export namespace CategoryContracts {
       z.object({
         categoryId: z.number(),
         productCount: z.number(),
-      })
+      }),
     );
     export type Output = z.infer<typeof Output>;
   }

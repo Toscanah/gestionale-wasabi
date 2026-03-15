@@ -7,7 +7,7 @@ import {
   PickupOrder,
   OrderGuards,
 } from "@/lib/shared";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/api/client";
 
 export type UseHandleEngagementParams =
   | { order: OrderByType; customerIds?: number[] }

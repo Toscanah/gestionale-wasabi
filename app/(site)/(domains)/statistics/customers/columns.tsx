@@ -11,15 +11,19 @@ import FullNameColumn from "@/components/table/common/FullNameColumn";
 import roundToTwo from "@/lib/shared/utils/global/number/roundToTwo";
 import { CustomerStatsTableMeta } from "./page";
 import chroma from "chroma-js";
-import { CUSTOMER_ORIGIN_LABELS, CustomerWithStats } from "@/lib/shared";
+import {
+  CUSTOMER_ORIGIN_LABELS,
+  CustomerWithStats,
+  DARK_SCALE_3,
+  LIGHT_SCALE_3,
+} from "@/lib/shared";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Warning } from "@phosphor-icons/react";
 import { differenceInCalendarDays, format } from "date-fns";
-import { DARK_SCALE_3, LIGHT_SCALE_3 } from "@/lib/shared/constants/colors";
 import { Separator } from "@/components/ui/separator";
-import { EnDash } from "@/components/shared/misc/Placeholders";
+import { EnDash } from "@/components/ui/shared/misc/Placeholders";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 
 const QuickTooltip = ({ title, label }: { title: string; label: string }) => (
   <Tooltip delayDuration={0}>
@@ -123,7 +127,7 @@ const columns: ColumnDef<CustomerWithStats>[] = [
 
       const currentRank = row.original.stats?.rfm.rank;
       const index = sorted.findIndex(
-        (r) => r.rank.trim().toLowerCase() === currentRank?.trim().toLowerCase()
+        (r) => r.rank.trim().toLowerCase() === currentRank?.trim().toLowerCase(),
       );
 
       if (index === -1) return <EnDash />;

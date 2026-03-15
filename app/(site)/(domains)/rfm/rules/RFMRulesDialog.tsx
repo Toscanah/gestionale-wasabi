@@ -1,4 +1,4 @@
-import WasabiDialog from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";
 import {
   Accordion,
   AccordionContent,
@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { SidebarMenuSubButton } from "@/components/ui/sidebar";
-import { RFMRules } from "@/lib/shared/types/RFM";
+import { RFMRules } from "@/lib/shared/types/rfm";
 import RFMDimensionEditor from "./RFMDimensionEditor";
 import useRfmRules from "@/hooks/rfm/useRfmRules";
 

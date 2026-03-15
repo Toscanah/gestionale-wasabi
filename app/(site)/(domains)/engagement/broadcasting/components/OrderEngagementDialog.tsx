@@ -1,7 +1,7 @@
 import { EngagementWithDetails } from "@/lib/shared";
 import { OrderEngagementTabs } from "./EngagementTabs";
 import { OrderByType } from "@/lib/shared";
-import WasabiDialog, { WasabiDialogProps } from "@/components/shared/wasabi/WasabiDialog";
+import WasabiDialog, { WasabiDialogProps } from "@/components/ui/shared/wasabi/WasabiDialog";
 import useHandleEngagement from "@/hooks/engagement/useHandleEngagement";
 import { toastSuccess } from "@/lib/shared/utils/global/toast";
 import { Dispatch, SetStateAction } from "react";
