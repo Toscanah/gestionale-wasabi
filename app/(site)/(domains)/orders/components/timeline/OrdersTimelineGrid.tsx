@@ -38,7 +38,7 @@ export default function OrdersTimelineGrid() {
       const prodTime = getProductionTime(
         order.created_at,
         settings.operational.timings.standardPrepTime,
-        settings.operational.timings.standardPromiseTime,
+        settings.operational.timings.standardDeliveryTime,
         undefined,
         true,
       );
@@ -57,7 +57,7 @@ export default function OrdersTimelineGrid() {
       const prodTime = getProductionTime(
         order.created_at,
         settings.operational.timings.standardPrepTime,
-        settings.operational.timings.standardPromiseTime,
+        settings.operational.timings.standardDeliveryTime,
         whenStr,
         isImmediate,
       );
@@ -77,7 +77,7 @@ export default function OrdersTimelineGrid() {
       const prodTime = getProductionTime(
         order.created_at,
         settings.operational.timings.standardPrepTime,
-        settings.operational.timings.standardPromiseTime,
+        settings.operational.timings.standardDeliveryTime,
         whenStr,
         isImmediate,
       );

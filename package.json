@@ -24,7 +24,7 @@
     }
   },
   "scripts": {
-    "dev": "prisma db push && npx prisma generate --sql && next dev --hostname localhost",
+    "dev": "prisma db push && npx prisma generate --sql && next dev",
     "lint": "next lint",
     "build": "next build",
     "start": "next start --hostname localhost",

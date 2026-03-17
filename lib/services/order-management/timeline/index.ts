@@ -1,5 +1,6 @@
 import { getHours, getMinutes } from "date-fns";
 import { DEFAULT_WHEN_VALUE } from "@/lib/shared";
+import { OrderType } from "@/prisma/generated/client/enums";
 
 export type TimeBlock = {
   label: string;
@@ -13,6 +14,7 @@ export type TimeBlock = {
 
 export function parseWhenToSlot(when?: string): { hour: number; minute: number } | null {
   if (!when || when === DEFAULT_WHEN_VALUE) return null;
+  if (typeof when !== "string") return null;
 
   const match = when.match(/^(\d{1,2}):(\d{2})$/);
   if (!match) return null;
@@ -26,28 +28,43 @@ export function parseWhenToSlot(when?: string): { hour: number; minute: number }
 
 export function getProductionTime(
   createdAt: string | Date,
+  type: OrderType,
   prepTimeMinutes: number,
-  standardPromiseMinutes: number,
+  deliveryTimeMinutes: number,
   whenStr?: string,
   isImmediate: boolean = false,
 ): Date {
-  if (isImmediate || !whenStr || whenStr === DEFAULT_WHEN_VALUE) {
-    const prodDate = new Date(createdAt);
-    prodDate.setMinutes(prodDate.getMinutes() + standardPromiseMinutes - prepTimeMinutes);
-    return prodDate;
+  const createdDate = new Date(createdAt);
+  const isImm = isImmediate || !whenStr || whenStr === DEFAULT_WHEN_VALUE;
+
+  // 1. ALL TAVOLI & IMMEDIATE ORDERS
+  // If they are sitting at a table, or want it ASAP, production starts NOW.
+  if (type === OrderType.TABLE || isImm) {
+    return createdDate;
   }
 
+  // PROGRAMMED ORDERS (We must back-calculate the Fire Time)
   const whenSlot = parseWhenToSlot(whenStr);
-  if (!whenSlot) {
-    const prodDate = new Date(createdAt);
-    prodDate.setMinutes(prodDate.getMinutes() + standardPromiseMinutes - prepTimeMinutes);
-    return prodDate;
+  if (!whenSlot) return createdDate; // Safety fallback
+
+  const prodDate = new Date(createdDate);
+  prodDate.setHours(whenSlot.hour);
+
+  // 2. ASPORTO PROGRAMMATO
+  if (type === OrderType.PICKUP) {
+    // Subtract only cooking time
+    prodDate.setMinutes(whenSlot.minute - prepTimeMinutes);
+    return prodDate < createdDate ? createdDate : prodDate;
   }
 
-  const prodDate = new Date(createdAt);
-  prodDate.setHours(whenSlot.hour);
-  prodDate.setMinutes(whenSlot.minute - prepTimeMinutes);
-  return prodDate;
+  // 3. DOMICILIO PROGRAMMATO
+  if (type === OrderType.HOME) {
+    // Subtract rider travel time AND cooking time
+    prodDate.setMinutes(whenSlot.minute - deliveryTimeMinutes - prepTimeMinutes);
+    return prodDate < createdDate ? createdDate : prodDate;
+  }
+
+  return createdDate;
 }
 
 export function getTimeSlot(date: Date): { hour: number; minute: number } {

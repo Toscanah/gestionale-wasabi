@@ -18,7 +18,7 @@ export type KitchenSettings = {
 
 export type TimingsSettings = {
   standardPrepTime: number;
-  standardPromiseTime: number;
+  standardDeliveryTime: number;
 };
 
 export type RidersSettings = {

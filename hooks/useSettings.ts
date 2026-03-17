@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GlobalSettings } from "@/lib/shared/types/settings/global";
 import { DEFAULT_SETTINGS } from "@/lib/shared/constants/config/settings";
+import { DottedKeys } from "@/lib/shared";
 
 export default function useSettings() {
   const [settings, setSettings] = useState<GlobalSettings>(DEFAULT_SETTINGS);
@@ -23,7 +24,7 @@ export default function useSettings() {
   };
 
   // Allows updating nested attributes dynamically via path segments: "profile.name"
-  const updateSettings = (key: string, value: any) => {
+  const updateSettings = (key: DottedKeys<GlobalSettings>, value: any) => {
     let newValue = value;
 
     if (key === "application.whenSelectorGap" && (value === null || isNaN(Number(value)))) {

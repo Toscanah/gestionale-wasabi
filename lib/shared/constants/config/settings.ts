@@ -18,7 +18,7 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
     },
     timings: {
       standardPrepTime: 20,
-      standardPromiseTime: 35,
+      standardDeliveryTime: 15,
     },
     riders: {
       avgPerHour: 3,

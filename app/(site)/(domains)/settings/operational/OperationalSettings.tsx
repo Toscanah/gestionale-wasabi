@@ -113,17 +113,17 @@ export default function OperationalSettings() {
           />
         </div>
         <div className="space-y-2 w-full">
-          <Label htmlFor="promise-time" className="cursor-pointer">
-            Tempo medio consegna ordine
+          <Label htmlFor="delivery-time" className="cursor-pointer">
+            Tempo medio di consegna
           </Label>
           <Input
             type="number"
-            id="promise-time"
-            value={settings.operational.timings.standardPromiseTime}
+            id="delivery-time"
+            value={settings.operational.timings.standardDeliveryTime}
             onChange={(e) =>
               updateSettings("operational.timings", {
                 ...settings.operational.timings,
-                standardPromiseTime: e.target.valueAsNumber,
+                standardDeliveryTime: e.target.valueAsNumber,
               })
             }
           />
