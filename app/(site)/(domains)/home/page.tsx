@@ -46,9 +46,9 @@ export default function HomeWrapper() {
   };
 
   const loadings = {
-    [OrderType.HOME]: homeLoading || homeFetching,
-    [OrderType.PICKUP]: pickupLoading || pickupFetching,
-    [OrderType.TABLE]: tableLoading || tableFetching,
+    [OrderType.HOME]: homeLoading,
+    [OrderType.PICKUP]: pickupLoading,
+    [OrderType.TABLE]: tableLoading,
   };
 
   const updateGlobalState = (order: OrderByType, action: UpdateStateAction) => {

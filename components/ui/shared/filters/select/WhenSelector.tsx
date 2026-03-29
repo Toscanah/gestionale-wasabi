@@ -1,4 +1,4 @@
-import { ComponentRef, forwardRef, KeyboardEvent, useState } from "react";
+import { ComponentRef, forwardRef, KeyboardEvent, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Check,
@@ -10,20 +10,28 @@ import {
   WineIcon,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
-import {
-  DEFAULT_WHEN_LABEL,
-  DEFAULT_WHEN_VALUE,
-} from "@/lib/shared";
+import { DEFAULT_WHEN_LABEL, DEFAULT_WHEN_VALUE } from "@/lib/shared";
 import { ShiftBoundaries } from "@/lib/shared";
 import { useWasabiContext } from "@/context/WasabiContext";
 import WasabiSelect, { CommandGroupType, CommandOption } from "../../wasabi/WasabiSelect";
 import generateTimeSlots from "@/lib/shared/utils/global/time/generateTimeSlots";
+import { OrderType } from "@/prisma/generated/client/enums";
+import { CapacityBlock } from "@/lib/services/order-management/capacity";
+import {
+  parseCustomerTimeToKitchenTime,
+  getCapacityAtKitchenTime,
+  getCapacityDotColor,
+} from "@/lib/services/order-management/capacity/getCapacityForCustomerTime";
 
 interface WhenSelectorProps {
   className?: string;
   value?: string;
   onValueChange?: (value: string) => void;
   onKeyDown?: (e: KeyboardEvent<any>) => void;
+  // Optional capacity tracking props
+  orderType?: OrderType;
+  allCapacityBlocks?: CapacityBlock[];
+  maxCapacity?: number;
 }
 
 // For WhenSelector: prioritizes exact and normalized time matches
@@ -56,12 +64,18 @@ function floatToHourMinute(value: number, minuteOffset = 0): [number, number] {
 }
 
 const WhenSelector = forwardRef<ComponentRef<typeof WasabiSelect>, WhenSelectorProps>(
-  ({ className, value, onValueChange, onKeyDown }, ref) => {
+  (
+    { className, value, onValueChange, onKeyDown, orderType, allCapacityBlocks, maxCapacity },
+    ref,
+  ) => {
     const [open, setOpen] = useState<boolean>(false);
     const [oneTimeValue, setOneTimeValue] = useState<string>("");
 
     const { settings } = useWasabiContext();
     const GAP = settings.application.whenSelectorGap || 1;
+    const prepTime = settings.operational.timings.standardPrepTime;
+    const deliveryTime = settings.operational.timings.standardDeliveryTime;
+    const capacity = maxCapacity ?? settings.operational.kitchen.maxCapacity;
 
     const now = new Date();
     const currentHour = now.getHours();
@@ -83,7 +97,7 @@ const WhenSelector = forwardRef<ComponentRef<typeof WasabiSelect>, WhenSelectorP
       lunchToMinute,
       currentHour,
       currentMinute,
-      GAP
+      GAP,
     );
 
     const dinnerTimes = generateTimeSlots(
@@ -93,11 +107,48 @@ const WhenSelector = forwardRef<ComponentRef<typeof WasabiSelect>, WhenSelectorP
       dinnerToMinute,
       currentHour,
       currentMinute,
-      GAP
+      GAP,
     );
 
     const allTimeSlots = [...lunchTimes, ...dinnerTimes];
     const isValuePresent = value && allTimeSlots.includes(value);
+
+    // Memoize capacity calculation to avoid unnecessary recalculations
+    const capacityByTime = useMemo(() => {
+      if (!orderType || !allCapacityBlocks) return {};
+
+      const map: Record<string, { count: number; block: CapacityBlock | null }> = {};
+
+      const allTimes = [...lunchTimes, ...dinnerTimes];
+      allTimes.forEach((time) => {
+        const kitchenSlot = parseCustomerTimeToKitchenTime(time, orderType, prepTime, deliveryTime);
+        const capacityBlock = getCapacityAtKitchenTime(kitchenSlot, allCapacityBlocks);
+        map[time] = {
+          count: capacityBlock?.total ?? 0,
+          block: capacityBlock,
+        };
+      });
+
+      return map;
+    }, [orderType, allCapacityBlocks, prepTime, deliveryTime, lunchTimes, dinnerTimes]);
+
+    // Helper function to create a capacity indicator label
+    const createCapacityLabel = (time: string): React.ReactNode => {
+      if (!orderType || !allCapacityBlocks) return undefined;
+
+      const capacityInfo = capacityByTime[time];
+      if (!capacityInfo) return undefined;
+
+      const { count } = capacityInfo;
+      const color = getCapacityDotColor(count, capacity);
+
+      return (
+        <div className="flex items-center gap-2">
+          <div className={cn("w-2 h-2 rounded-full", color)} />
+          <span className="text-sm text-muted-foreground">{time}</span>
+        </div>
+      );
+    };
 
     const additionalOption: CommandOption | null =
       value && !isValuePresent && value !== DEFAULT_WHEN_VALUE ? { label: value, value } : null;
@@ -122,7 +173,12 @@ const WhenSelector = forwardRef<ComponentRef<typeof WasabiSelect>, WhenSelectorP
       groups.push({
         label: "Pranzo",
         icon: Sun,
-        options: lunchTimes.map((time) => ({ label: time, value: time })),
+        options: lunchTimes.map((time) => ({
+          label: time,
+          value: time,
+          count: capacityByTime[time]?.count ?? 0,
+          customLabel: createCapacityLabel(time),
+        })),
       });
     }
 
@@ -130,7 +186,12 @@ const WhenSelector = forwardRef<ComponentRef<typeof WasabiSelect>, WhenSelectorP
       groups.push({
         label: "Cena",
         icon: WineIcon,
-        options: dinnerTimes.map((time) => ({ label: time, value: time })),
+        options: dinnerTimes.map((time) => ({
+          label: time,
+          value: time,
+          count: capacityByTime[time]?.count ?? 0,
+          customLabel: createCapacityLabel(time),
+        })),
       });
     }
 
@@ -184,7 +245,7 @@ const WhenSelector = forwardRef<ComponentRef<typeof WasabiSelect>, WhenSelectorP
         onOpenChange={handleOpenChange}
       />
     );
-  }
+  },
 );
 
 WhenSelector.displayName = "WhenSelector";

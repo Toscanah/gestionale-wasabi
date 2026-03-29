@@ -261,8 +261,6 @@ const WasabiSelect = forwardRef<ComponentRef<typeof WasabiPopover>, WasabiSelect
       );
     }
 
-    /* --------------------------------- Render --------------------------------- */
-
     return (
       <WasabiPopover
         ref={ref}

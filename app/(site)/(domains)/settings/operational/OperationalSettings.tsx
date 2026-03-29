@@ -12,7 +12,7 @@ export default function OperationalSettings() {
       <div className="flex gap-6">
         <div className="space-y-2 w-full">
           <Label htmlFor="kitchen-offset" className="cursor-pointer">
-            Anticipo cucina (minuti)
+            Anticipo cucina
           </Label>
           <Input
             type="number"
@@ -28,7 +28,7 @@ export default function OperationalSettings() {
         </div>
         <div className="space-y-2 w-full">
           <Label htmlFor="safe-capacity" className="cursor-pointer">
-            Capacità cucine base
+            Capacità cucina base
           </Label>
           <Input
             type="number"
@@ -44,7 +44,7 @@ export default function OperationalSettings() {
         </div>
         <div className="space-y-2 w-full">
           <Label htmlFor="max-capacity" className="cursor-pointer">
-            Capacità cucine massima
+            Capacità cucina massima
           </Label>
           <Input
             type="number"

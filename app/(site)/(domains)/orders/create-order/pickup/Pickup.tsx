@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useState, useMemo } from "react";
 import { OrderByType } from "@/lib/shared";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import { OrderProvider } from "@/context/OrderContext";
 import OrderTable from "../../single-order/OrderTable";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/api/client";
+import useCapacityTracker from "@/hooks/order/useCapacityTracker";
+import { OrderType } from "@/prisma/generated/client/enums";
 
 interface PickupProps {
   setOrder: Dispatch<SetStateAction<OrderByType>>;
@@ -27,10 +29,17 @@ interface PickupProps {
 export default function Pickup({ children, setOrder, order, open, setOpen }: PickupProps) {
   const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
+  const { lunchCapacityBlocks, dinnerCapacityBlocks } = useCapacityTracker();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [when, setWhen] = useState("immediate");
+
+  // Combine all capacity blocks
+  const allCapacityBlocks = useMemo(
+    () => [...lunchCapacityBlocks, ...dinnerCapacityBlocks],
+    [lunchCapacityBlocks, dinnerCapacityBlocks],
+  );
 
   const createPickupMutation = trpc.orders.createPickup.useMutation({
     onSuccess: (pickupOrder) => {
@@ -76,7 +85,7 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
       }}
       contentClassName={cn(
         "flex flex-col gap-6 items-center max-w-screen max-h-screen",
-        order.id !== -1 && "h-[95vh]"
+        order.id !== -1 && "h-[95vh]",
       )}
     >
       {order.id == -1 ? (
@@ -106,6 +115,8 @@ export default function Pickup({ children, setOrder, order, open, setOpen }: Pic
               value={when}
               onValueChange={(value) => setWhen(value)}
               onKeyDown={handleKeyDown}
+              orderType={OrderType.PICKUP}
+              allCapacityBlocks={allCapacityBlocks}
             />
           </div>
 

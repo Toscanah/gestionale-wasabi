@@ -1,8 +1,7 @@
-import { getHours, getMinutes } from "date-fns";
 import { DEFAULT_WHEN_VALUE } from "@/lib/shared";
 import { OrderType } from "@/prisma/generated/client/enums";
 
-export type TimeBlock = {
+export type CapacityBlock = {
   label: string;
   hour: number;
   minute: number;
@@ -10,6 +9,10 @@ export type TimeBlock = {
   homeCount: number;
   pickupCount: number;
   total: number;
+  pickupImmediateCount: number;
+  pickupScheduledCount: number;
+  homeImmediateCount: number;
+  homeScheduledCount: number;
 };
 
 export function parseWhenToSlot(when?: string): { hour: number; minute: number } | null {
@@ -67,36 +70,64 @@ export function getProductionTime(
   return createdDate;
 }
 
-export function getTimeSlot(date: Date): { hour: number; minute: number } {
-  const hours = getHours(date);
-  const minutes = getMinutes(date);
+export function getTimeSlot(
+  fireDate: Date,
+  prepTimeMinutes: number,
+): { hour: number; minute: number } {
+  // We find the "Center of Stress" by adding half the prep time
+  const midpointDate = new Date(fireDate);
+  midpointDate.setMinutes(midpointDate.getMinutes() + prepTimeMinutes / 2);
+
+  const hours = midpointDate.getHours();
+  const minutes = midpointDate.getMinutes();
+
+  // Now we floor the midpoint to the nearest 30m slot
   const slotMinutes = minutes < 30 ? 0 : 30;
+
   return { hour: hours, minute: slotMinutes };
 }
 
-export function generateTimeBlocks(): Omit<
-  TimeBlock,
-  "tableCount" | "homeCount" | "pickupCount" | "total"
->[] {
-  const blocks: Array<Omit<TimeBlock, "tableCount" | "homeCount" | "pickupCount" | "total">> = [];
+export type BaseCapacityBlock = Omit<
+  CapacityBlock,
+  | "tableCount"
+  | "homeCount"
+  | "pickupCount"
+  | "total"
+  | "pickupImmediateCount"
+  | "pickupScheduledCount"
+  | "homeImmediateCount"
+  | "homeScheduledCount"
+>;
+
+export function generateCapacityBlocks(): {
+  lunch: BaseCapacityBlock[];
+  dinner: BaseCapacityBlock[];
+} {
   const fmt = (n: number) => n.toString().padStart(2, "0");
 
-  let current = new Date(0, 0, 0, 17, 30);
-  const lastStart = new Date(0, 0, 0, 22, 0);
+  const buildBlocks = (startH: number, startM: number, endH: number, endM: number) => {
+    const arr: Array<BaseCapacityBlock> = [];
+    let current = new Date(0, 0, 0, startH, startM);
+    const lastStart = new Date(0, 0, 0, endH, endM);
 
-  while (current <= lastStart) {
-    const startHour = current.getHours();
-    const startMinute = current.getMinutes();
-    const next = new Date(current);
-    next.setMinutes(startMinute + 30);
+    while (current <= lastStart) {
+      const startHour = current.getHours();
+      const startMinute = current.getMinutes();
+      const next = new Date(current);
+      next.setMinutes(startMinute + 30);
 
-    const label = `${fmt(startHour)}:${fmt(startMinute)} - ${fmt(
-      next.getHours(),
-    )}:${fmt(next.getMinutes())}`;
+      const label = `${fmt(startHour)}:${fmt(startMinute)} - ${fmt(
+        next.getHours(),
+      )}:${fmt(next.getMinutes())}`;
 
-    blocks.push({ label, hour: startHour, minute: startMinute });
-    current = next;
-  }
+      arr.push({ label, hour: startHour, minute: startMinute });
+      current = next;
+    }
+    return arr;
+  };
 
-  return blocks;
+  return {
+    lunch: buildBlocks(11, 30, 14, 30),
+    dinner: buildBlocks(18, 0o0, 22, 30),
+  };
 }
