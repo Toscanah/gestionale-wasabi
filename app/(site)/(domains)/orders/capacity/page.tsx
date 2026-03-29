@@ -45,22 +45,15 @@ export default function CapacityDashboard() {
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="text-muted-foreground">
-              &lt; {settings.operational.kitchen.safeCapacity} ordini
-            </span>
+            <span className="text-muted-foreground">≤ 70% capacità</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-yellow-500" />
-            <span className="text-muted-foreground">
-              {settings.operational.kitchen.safeCapacity} -{" "}
-              {settings.operational.kitchen.maxCapacity} ordini
-            </span>
+            <span className="text-muted-foreground">70% - 100% capacità</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500" />
-            <span className="text-muted-foreground">
-              &gt; {settings.operational.kitchen.maxCapacity} ordini
-            </span>
+            <span className="text-muted-foreground">&gt; 100% capacità</span>
           </div>
         </div>
       </div>
