@@ -36,7 +36,7 @@
     "dev": "npx prisma db push && npx prisma generate --sql && next dev",
     "lint": "next lint",
     "build": "next build",
-    "start": "next start",
+    "start": "node .next/standalone/server.js",
     "stop": "pkill --signal SIGINT myApp",
     "electron": "electron .",
     "dist": "electron-builder",

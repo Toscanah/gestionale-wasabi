@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import useSettings from "@/hooks/useSettings";
 import { calculateCapacityBlocks } from "@/lib/services/order-management/capacity/calculateCapacityBlocks";
 
-const REFETCH_INTERVAL = 3000;
+const REFETCH_INTERVAL = 30000;
 
 export default function useCapacityTracker() {
   const { settings } = useSettings();

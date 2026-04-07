@@ -62,11 +62,12 @@ model Order {
 }
 
 model TableOrder {
-    table    String
-    res_name String?
-    people   Int
-    id       Int     @id
-    order    Order   @relation(fields: [id], references: [id], onDelete: Cascade)
+    table           String
+    res_name        String?
+    people          Int
+    exclude_coperto Boolean @default(false)
+    id              Int     @id
+    order           Order   @relation(fields: [id], references: [id], onDelete: Cascade)
 
     @@index([table])
     @@index([res_name])
@@ -182,21 +183,23 @@ model EngagementLedger {
 }
 
 model Customer {
-    id            Int            @id @default(autoincrement())
-    name          String?
-    surname       String?
-    email         String?
-    preferences   String?
-    active        Boolean        @default(true)
-    phone_id      Int            @unique
-    order_notes   String?
-    origin        CustomerOrigin @default(UNKNOWN)
-    addresses     Address[]
-    phone         Phone          @relation(fields: [phone_id], references: [id], onDelete: Cascade)
-    engagements   Engagement[]
-    home_orders   HomeOrder[]
-    pickup_orders PickupOrder[]
-    stats         CustomerStats?
+    id             Int            @id @default(autoincrement())
+    name           String?
+    surname        String?
+    email          String?
+    preferences    String?
+    /// [CustomerDiscount]
+    fixed_discount Json?          @default("{}")
+    active         Boolean        @default(true)
+    phone_id       Int            @unique
+    order_notes    String?
+    origin         CustomerOrigin @default(UNKNOWN)
+    addresses      Address[]
+    phone          Phone          @relation(fields: [phone_id], references: [id], onDelete: Cascade)
+    engagements    Engagement[]
+    home_orders    HomeOrder[]
+    pickup_orders  PickupOrder[]
+    stats          CustomerStats?
 
     @@index([active])
     @@index([origin])

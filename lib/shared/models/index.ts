@@ -8,3 +8,4 @@ export * from "./product";
 export * from "./promotion";
 export * from "./rfm";
 export * from "./rice";
+export * from "./customer-discount"

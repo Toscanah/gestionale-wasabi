@@ -150,6 +150,10 @@ export default async function updateCustomerFromAdmin({
         preferences: customerData.preferences,
         order_notes: customerData.order_notes,
         origin: customerData.origin,
+        fixed_discount: {
+          type: customerData.fixed_discount.type,
+          value: customerData.fixed_discount.value,
+        }
       },
       include: {
         phone: true,

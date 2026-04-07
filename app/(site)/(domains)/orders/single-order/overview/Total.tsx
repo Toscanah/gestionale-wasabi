@@ -1,5 +1,6 @@
 import { useOrderContext } from "@/context/OrderContext";
 import { getOrderTotal } from "@/lib/services/order-management/getOrderTotal";
+import { OrderGuards } from "@/lib/shared";
 import toEuro from "@/lib/shared/utils/global/string/toEuro";
 
 export default function Total() {
@@ -20,10 +21,16 @@ export default function Total() {
   // Combined euro discount
   const totalDiscountEuro = totalWithoutDiscounts - totalWithDiscounts;
 
+  const isAffiliate = OrderGuards.isTable(order)
+    ? false
+    : OrderGuards.isHome(order)
+      ? order.home_order?.customer?.fixed_discount.type !== "NONE"
+      : order.pickup_order?.customer?.fixed_discount.type !== "NONE";
+
   return (
     <div className="w-full flex flex-col overflow-hidden border-foreground justify-center">
-      <div className="w-full text-center text-2xl border rounded-t-lg bg-foreground text-primary-foreground h-12 flex flex-col justify-center">
-        TOTALE
+      <div className="w-full items-center text-center text-2xl border rounded-t-lg bg-foreground text-primary-foreground h-12 flex justify-center">
+        TOTALE<span className="font-bold">{" "}{isAffiliate && "(AFFILIATO)"}</span>
       </div>
 
       <div className="w-full h-12 font-bold border-x border-b rounded-b-lg grid grid-cols-3 items-center">

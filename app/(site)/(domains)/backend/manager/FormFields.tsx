@@ -20,8 +20,9 @@ import { useZodForm } from "../../../../../hooks/useZodForm";
 export interface FieldRender<T extends FieldValues, K extends Path<T>> {
   (
     field: ControllerRenderProps<T, K>,
+    control: Control<T, any, any>,
     ref?: React.Ref<HTMLInputElement>,
-    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void,
   ): React.ReactElement;
 }
 
@@ -90,7 +91,13 @@ export function FormFields<TSchema extends z.ZodObject<Record<string, ZodType>>>
                     description={def.description}
                     placeholder={def.placeholder}
                     className=""
-                    render={def.render}
+                    {...(def.render
+                      ? {
+                          render: (
+                            field: ControllerRenderProps<z.input<TSchema>, Path<z.input<TSchema>>>,
+                          ) => def.render!(field, form.control),
+                        }
+                      : {})}
                   />
                 );
               })}

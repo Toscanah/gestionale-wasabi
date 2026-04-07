@@ -76,8 +76,12 @@ export default function CustomerLookup() {
       </span>
 
       <span>
-        <strong>Rank RFM:</strong> {rfmRank ? rfmRank : <EnDash />}
+        <strong>Rank:</strong> {rfmRank ? rfmRank : <EnDash />}
       </span>
+
+      {/* <span>
+        <strong>Convenzione?</strong> {customer.fixed_discount?.type !== "NONE" ? "Sì" : "No"}
+      </span> */}
     </div>
   );
 }

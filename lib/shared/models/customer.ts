@@ -4,8 +4,13 @@ import { HomeOrderWithOrderSchema, LiteOrderSchema, PickupOrderWithOrderSchema }
 import { EngagementWithDetailsSchema } from "./engagement";
 import { RFMCustomerSegmentSchema } from "./rfm";
 import { GetCustomersStatsSchema } from "../contracts/results/customer-stats";
+import { CustomerDiscountSchema } from "./customer-discount";
 
-export const CustomerWithPhoneSchema = CustomerSchema.extend({
+const ParsedCustomerSchema = CustomerSchema.extend({
+  fixed_discount: CustomerDiscountSchema,
+});
+
+export const CustomerWithPhoneSchema = ParsedCustomerSchema.extend({
   phone: PhoneSchema,
 });
 
@@ -24,6 +29,7 @@ export const CustomerWithAddressesAndOrdersSchema = CustomerWithAddresses.extend
 
 export const ComprehensiveCustomerSchema = CustomerWithAddressesAndOrdersSchema.extend({
   engagements: z.array(EngagementWithDetailsSchema),
+  fixed_discount: CustomerDiscountSchema,
 });
 
 export const CustomerStatsOnlySchema = GetCustomersStatsSchema.omit({
@@ -47,7 +53,7 @@ export const CustomerWithOrdersSchema = CustomerSchema.extend({
       order: true,
     }).extend({
       order: LiteOrderSchema,
-    })
+    }),
   ),
   pickup_orders: z.array(
     PickupOrderWithOrderSchema.pick({
@@ -55,7 +61,7 @@ export const CustomerWithOrdersSchema = CustomerSchema.extend({
       order: true,
     }).extend({
       order: LiteOrderSchema,
-    })
+    }),
   ),
 }).pick({
   id: true,

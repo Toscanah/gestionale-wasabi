@@ -23,6 +23,8 @@ const toFormData = (c: ComprehensiveCustomer): CustomerFormData => {
     preferences: c.preferences || "",
     order_notes: c.order_notes || "",
     phone: c.phone?.phone || "",
+    fixed_discount_type: c.fixed_discount?.type || "NONE",
+    fixed_discount_value: c.fixed_discount?.value || 0,
   };
 };
 
@@ -31,6 +33,10 @@ const fromFormData = (c: CustomerFormData): Partial<ComprehensiveCustomer> => ({
   phone: {
     phone: c.phone || "",
     id: -1,
+  },
+  fixed_discount: {
+    type: c.fixed_discount_type,
+    value: c.fixed_discount_value,
   },
 });
 
@@ -43,7 +49,7 @@ export default function CustomersDashboard() {
     { fields: ["name", "phone"] },
     { fields: ["surname", "email"] },
     { fields: ["preferences", "order_notes"] },
-    { fields: ["origin"] },
+    { fields: ["origin", "fixed_discount_type", "fixed_discount_value"] },
     { fields: ["addresses"] },
   ];
 
