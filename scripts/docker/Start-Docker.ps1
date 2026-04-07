@@ -85,7 +85,7 @@ function Open-WorkerTerminal {
         "-ExecutionPolicy",
         "Bypass",
         "-Command",
-        "`$Host.UI.RawUI.WindowTitle = '$WindowTitle'; & '$scriptPath' -Action '$WorkerAction' -TargetDir '$TargetDir'"
+        "`$Host.UI.RawUI.WindowTitle = '$WindowTitle'; try { & '$scriptPath' -Action '$WorkerAction' -TargetDir '$TargetDir' } finally { Write-Host ''; Write-Host 'Terminal will close in 10 seconds...' -ForegroundColor Gray; Start-Sleep -Seconds 10; exit }"
     )
 
     Start-Process -FilePath "powershell.exe" -ArgumentList $arguments | Out-Null
@@ -234,7 +234,7 @@ function Invoke-RestoreWorkflow {
     Write-Host "[OK] Manual restore completed" -ForegroundColor Green
 }
 
-function Run-Worker {
+function Start-Worker {
     param([scriptblock]$Workflow)
 
     try {
@@ -251,15 +251,15 @@ function Run-Worker {
 
 switch ($Action) {
     "worker-start" {
-        Run-Worker -Workflow ${function:Invoke-StartWorkflow}
+        Start-Worker -Workflow ${function:Invoke-StartWorkflow}
         return
     }
     "worker-backup" {
-        Run-Worker -Workflow ${function:Invoke-BackupWorkflow}
+        Start-Worker -Workflow ${function:Invoke-BackupWorkflow}
         return
     }
     "worker-restore" {
-        Run-Worker -Workflow ${function:Invoke-RestoreWorkflow}
+        Start-Worker -Workflow ${function:Invoke-RestoreWorkflow}
         return
     }
     "start" {

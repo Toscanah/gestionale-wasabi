@@ -61,13 +61,13 @@ For deployment machines, keep only the runtime essentials:
 
 ```powershell
 # Open worker terminal and run start flow
-.\scripts\docker\Start-Docker.ps1 -Action start
+.\scripts\docker\start\Start.ps1
 
 # Open worker terminal and run manual backup
-.\scripts\docker\Start-Docker.ps1 -Action backup
+.\scripts\docker\backup\Backup.ps1
 
 # Open worker terminal and run manual restore
-.\scripts\docker\Start-Docker.ps1 -Action restore
+.\scripts\docker\restore\Restore.ps1
 ```
 
 ### Prisma Schema Sync

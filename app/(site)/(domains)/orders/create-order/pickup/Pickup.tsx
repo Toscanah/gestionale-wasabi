@@ -29,7 +29,10 @@ interface PickupProps {
 export default function Pickup({ children, setOrder, order, open, setOpen }: PickupProps) {
   const { updateGlobalState } = useWasabiContext();
   const { handleKeyDown, addRefs } = useFocusCycle();
-  const { lunchCapacityBlocks, dinnerCapacityBlocks } = useCapacityTracker();
+  // const { lunchCapacityBlocks, dinnerCapacityBlocks } = useCapacityTracker();
+
+  const lunchCapacityBlocks = [] as any[];
+  const dinnerCapacityBlocks = [] as any[];
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");

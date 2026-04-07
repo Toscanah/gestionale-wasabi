@@ -18,7 +18,7 @@
 # testing
 /coverage
 
-# prisma generated types
+# prisma
 /prisma/generated
 
 # next.js
