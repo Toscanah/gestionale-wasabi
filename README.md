@@ -70,6 +70,30 @@ For deployment machines, keep only the runtime essentials:
 .\scripts\docker\Start-Docker.ps1 -Action restore
 ```
 
+### Prisma Schema Sync
+
+Docker startup no longer uses `prisma db push`.
+
+- `schema-sync` now runs `/app/scripts/container/migrate-db.sh`
+- The script runs `prisma migrate deploy`
+- If a restored database has tables but no `_prisma_migrations` history (legacy dumps), it auto-baselines the first migration with `prisma migrate resolve --applied ...` before deploy
+
+This removes silent `|| true` schema drift behavior and fails startup only on real migration errors.
+
+### Developer Migration Workflow
+
+When changing `prisma/schema.prisma`:
+
+```powershell
+# create and apply a new migration locally
+npx prisma migrate dev --name your_change_name
+
+# optional: regenerate client artifacts
+npx prisma generate --sql
+```
+
+`npm run dev` now applies committed migrations with `prisma migrate deploy` instead of `prisma db push`.
+
 ### Backup Modes
 
 1. Sidecar backup (default)

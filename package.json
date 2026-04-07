@@ -33,7 +33,7 @@
     }
   },
   "scripts": {
-    "dev": "prisma db push && npx prisma generate --sql && next dev",
+    "dev": "prisma migrate deploy && npx prisma generate --sql && next dev",
     "lint": "next lint",
     "build": "next build",
     "start": "next start",
