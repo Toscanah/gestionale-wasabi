@@ -7,7 +7,7 @@
 
 $ErrorActionPreference = "Stop"
 
-$TargetDir = "C:\Users\alego\Desktop\Ale\Dev\gestionale-wasabi"
+$TargetDir = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 if (-not (Test-Path $TargetDir)) { 
     Write-Host "[!] Directory $TargetDir not found" -ForegroundColor Red
     Read-Host "Press Enter to close"
