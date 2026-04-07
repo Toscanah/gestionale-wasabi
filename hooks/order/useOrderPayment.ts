@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { OrderByType } from "@/lib/shared";
-import { OrderStatus, PaymentScope, PaymentType } from "@/prisma/generated/client/enums";
+import { OrderStatus, PaymentType } from "@/prisma/generated/client/enums";
 import { DEFAULT_PAYMENT, Payment } from "@/context/OrderPaymentContext";
 import { useOrderContext } from "@/context/OrderContext";
 import scaleProducts from "@/lib/services/product-management/scaleProducts";
@@ -63,7 +63,12 @@ export default function useOrderPayment({
         updatedOrder.payments[0].amount === 0 &&
         updatedOrder.payments[0].type === PaymentType.PROMOTION;
 
-      onOrderPaid([...updatedOrder.payments]);
+      onOrderPaid(
+        updatedOrder.payments.map((payment) => ({
+          ...payment,
+          payment_group_code: payment.payment_group_code ?? null,
+        }))
+      );
 
       if (isPromoPaid || stage === "FINAL") {
         updateOrder({ status: OrderStatus.PAID });

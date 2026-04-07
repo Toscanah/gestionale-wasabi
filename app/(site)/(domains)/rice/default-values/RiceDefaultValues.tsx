@@ -14,7 +14,7 @@ import columns from "./columns";
 import Table from "@/components/table/Table";
 import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/api/client";
-import { RiceBatchType } from "@/prisma/generated/schemas";
+import { RiceBatchType } from "@/prisma/generated/zod/schemas";
 import { TableMeta } from "@tanstack/react-table";
 
 const DEFAULT_NEW_BATCH: RiceBatchType = { id: -1, amount: 0, label: "" };

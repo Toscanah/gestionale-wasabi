@@ -1,4 +1,4 @@
-import { AddressSchema, CustomerSchema } from "@/prisma/generated/schemas";
+import { AddressSchema, CustomerSchema } from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 import { RFMConfigSchema } from "../models/rfm";
 import {

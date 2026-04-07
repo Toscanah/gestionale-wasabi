@@ -2,7 +2,7 @@ import { OrderByType, HomeOrder, PickupOrder, OrderGuards } from "@/lib/shared";
 import { OrderType, PlannedPayment } from "@/prisma/generated/client/enums";
 import CommonInfo from "./CommonInfo";
 import HomeInfo from "./HomeInfo";
-import { AddressType } from "@/prisma/generated/schemas";
+import { AddressType } from "@/prisma/generated/zod/schemas";
 
 interface OrderInfoSectionProps {
   order: OrderByType;

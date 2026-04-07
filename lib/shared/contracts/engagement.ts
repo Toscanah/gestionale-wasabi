@@ -11,7 +11,7 @@ import {
   EngagementLedgerSchema,
   EngagementSchema,
   EngagementTemplateSchema,
-} from "@/prisma/generated/schemas";
+} from "@/prisma/generated/zod/schemas";
 
 export namespace EngagementContracts {
   export namespace Common {

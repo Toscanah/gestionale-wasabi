@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { BaseColumnProps, JoinColumn } from "../TableColumns";
-import { AddressType } from "@/prisma/generated/schemas";
+import { AddressType } from "@/prisma/generated/zod/schemas";
 
 type AddressesColumnProps = Partial<BaseColumnProps> & {
   wrapper?: React.ComponentType<{ children: React.ReactNode }>;

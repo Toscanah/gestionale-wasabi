@@ -1,4 +1,4 @@
-import { ProductInOrderSchema, ProductSchema } from "@/prisma/generated/schemas";
+import { ProductInOrderSchema, ProductSchema } from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 import { CategoryWithOptionsSchema } from "./category";
 import { OptionInProductOrderWithOptionSchema, OptionStatsOnlySchema } from "./option";

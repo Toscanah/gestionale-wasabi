@@ -1,4 +1,4 @@
-import { PaymentSchema } from "@/prisma/generated/schemas";
+import { PaymentSchema } from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 import { ProductInOrderWithOptionsSchema } from "../models/product";
 import { OrderByTypeSchema } from "../models/order";

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { AnyFieldDef, FormFieldType } from "../manager/FormFields";
 import CategoryOptions from "./CategoryOptions";
 import { Option } from "@/prisma/generated/client/browser";
-import { OptionSchema } from "@/prisma/generated/schemas";
+import { OptionSchema } from "@/prisma/generated/zod/schemas";
 
 export const categoryFormSchema = z.object({
   category: z.string().min(1, "Il nome è obbligatorio").default(""),

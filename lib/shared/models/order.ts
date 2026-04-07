@@ -7,7 +7,7 @@ import {
   PickupOrderSchema,
   PromotionUsageSchema,
   TableOrderSchema,
-} from "@/prisma/generated/schemas";
+} from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 import { MinimalProductInOrderSchema, ProductInOrderWithOptionsSchema } from "./product";
 import { CustomerWithPhoneAndEngagementSchema } from "./customer";

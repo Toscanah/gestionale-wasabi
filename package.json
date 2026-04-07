@@ -116,6 +116,9 @@
     "node-addon-api": "^8.5.0",
     "node-fetch": "^3.3.2",
     "node-gyp-build": "^4.8.4",
+    "prisma": "^7.6.0",
+    "prisma-json-types-generator": "^4.1.0",
+    "prisma-zod-generator": "^2.1.4",
     "punycode": "^2.3.1",
     "radix-ui": "^1.4.3",
     "re-resizable": "^6.11.2",
@@ -151,10 +154,7 @@
     "vaul": "^1.1.2",
     "xml2js": "^0.6.2",
     "zod": "^4.1.12",
-    "zod-prisma-types": "^3.3.5",
-    "prisma": "^7.6.0",
-    "prisma-json-types-generator": "^4.1.0",
-    "prisma-zod-generator": "^1.27.3"
+    "zod-prisma-types": "^3.3.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",
@@ -166,7 +166,7 @@
     "@typescript-eslint/parser": "^8.54.0",
     "app-builder-bin": "^5.0.0-alpha.10",
     "baseline-browser-mapping": "^2.9.6",
-    "electron": "^38.2.2",
+    "electron": "^41.1.1",
     "electron-builder": "^26.0.12",
     "eslint": "^9.39.2",
     "eslint-import-resolver-typescript": "^4.4.4",

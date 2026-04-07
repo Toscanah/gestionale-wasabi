@@ -13,7 +13,7 @@ import parseAddress from "@/lib/shared/utils/domains/address/parseAddress";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { AddressType } from "@/prisma/generated/schemas";
+import { AddressType } from "@/prisma/generated/zod/schemas";
 import { ControllerRenderProps } from "react-hook-form";
 import { Plus, Power, PowerOff } from "lucide-react";
 import WasabiDialog from "@/components/ui/shared/wasabi/WasabiDialog";

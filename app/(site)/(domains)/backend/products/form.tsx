@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { FormFieldType } from "../manager/FormFields";
 import { CategoryContracts, CategoryWithOptions } from "@/lib/shared";
-import { KitchenTypeSchema } from "@/prisma/generated/schemas";
+import { KitchenTypeSchema } from "@/prisma/generated/zod/schemas";
 import KitchenType from "./KitchenType";
 import WasabiSelect from "@/components/ui/shared/wasabi/WasabiSelect";
 

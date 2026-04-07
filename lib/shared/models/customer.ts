@@ -1,4 +1,4 @@
-import { AddressSchema, CustomerSchema, PhoneSchema } from "@/prisma/generated/schemas";
+import { AddressSchema, CustomerSchema, PhoneSchema } from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 import { HomeOrderWithOrderSchema, LiteOrderSchema, PickupOrderWithOrderSchema } from "./order";
 import { EngagementWithDetailsSchema } from "./engagement";

@@ -1,4 +1,4 @@
-import { AddressSchema } from "@/prisma/generated/schemas";
+import { AddressSchema } from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 import { createInputSchema, wrapSchema } from "./common/utils";
 

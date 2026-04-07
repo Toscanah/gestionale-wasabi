@@ -1,4 +1,4 @@
-import { CategorySchema, OptionSchema } from "@/prisma/generated/schemas";
+import { CategorySchema, OptionSchema } from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 
 export const CategoryWithOptionsSchema = CategorySchema.extend({

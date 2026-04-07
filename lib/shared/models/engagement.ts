@@ -1,4 +1,4 @@
-import { EngagementLedgerSchema, EngagementSchema, EngagementTemplateSchema } from "@/prisma/generated/schemas";
+import { EngagementLedgerSchema, EngagementSchema, EngagementTemplateSchema } from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 
 const CommonPayloadSchema = z.object({

@@ -12,7 +12,7 @@ import { debounce } from "lodash";
 import { toastSuccess } from "../../../../../lib/shared/utils/global/toast";
 import useFocusOnClick from "../../../../../hooks/focus/useFocusOnClick";
 import { trpc } from "@/lib/api/client";
-import { Payment } from "@/prisma/generated/schemas";
+import { Payment } from "@/prisma/generated/client/client";
 
 interface RomanStyleProps {
   handleBackButton: () => void;

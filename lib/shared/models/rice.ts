@@ -1,4 +1,4 @@
-import { RiceLogSchema, RiceBatchSchema } from "@/prisma/generated/schemas";
+import { RiceLogSchema, RiceBatchSchema } from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 
 export const RiceBatchLogWithBatchSchema = RiceLogSchema.extend({

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Trash } from "@phosphor-icons/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { RiceDefaultValuesTableMeta } from "./RiceDefaultValues";
-import { RiceBatchType } from "@/prisma/generated/schemas";
+import { RiceBatchType } from "@/prisma/generated/zod/schemas";
 
 const columns: ColumnDef<RiceBatchType>[] = [
   IndexColumn({}),

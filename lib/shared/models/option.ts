@@ -2,7 +2,7 @@ import {
   CategorySchema,
   OptionInProductOrderSchema,
   OptionSchema,
-} from "@/prisma/generated/schemas";
+} from "@/prisma/generated/zod/schemas";
 import { z } from "zod";
 
 export const OptionWithCategoriesSchema = OptionSchema.extend({

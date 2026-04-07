@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { OrderSchema, ProductSchema } from "@/prisma/generated/schemas";
+import { OrderSchema, ProductSchema } from "@/prisma/generated/zod/schemas";
 import {
   Product,
   ProductInOrderWithOptionsSchema,

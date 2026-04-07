@@ -11,7 +11,7 @@ import PaymentConfirmationAndTools from "./sections/PaymentConfirmationAndTools"
 import { useOrderContext } from "../../../context/OrderContext";
 import { useEffect } from "react";
 import ResetPayment from "./ResetPayment";
-import { Payment } from "@/prisma/generated/schemas";
+import { Payment } from "@/prisma/generated/client/client";
 
 export type PaymentMethod = {
   type: PaymentType;

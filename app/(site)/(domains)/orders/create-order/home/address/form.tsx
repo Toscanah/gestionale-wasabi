@@ -1,5 +1,5 @@
 import { AddressContracts, CustomerContracts } from "@/lib/shared";
-import { HomeOrderSchema } from "@/prisma/generated/schemas";
+import { HomeOrderSchema } from "@/prisma/generated/zod/schemas";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import { z } from "zod";
 

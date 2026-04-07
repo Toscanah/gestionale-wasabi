@@ -4,9 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { UploadImageType } from "@/lib/integrations/images/uploadImage";
 
 const allowedExtensions = ["png", "jpg", "jpeg", "svg", "ico", "bmp"];
+const UPLOADS_DIST = path.join(process.cwd(), "public", "uploads");
+
 const folders = {
-  receipt: path.join(process.cwd(), "public", "uploads", "logo"),
-  engagements: path.join(process.cwd(), "public", "uploads", "engagements"),
+  // Use the scoped base to prevent Turbopack from tracing the root
+  receipt: path.join(UPLOADS_DIST, "logo"),
+  engagements: path.join(UPLOADS_DIST, "engagements"),
 };
 
 export async function POST(request: NextRequest) {

@@ -1,5 +1,5 @@
 import { promotionsAPI } from "@/lib/api/api";
-import { PromotionType } from "@/prisma/generated/schemas";
+import { PromotionType } from "@/prisma/generated/zod/schemas";
 import { useMemo, useState } from "react";
 import { ALL_PROMOTION_TYPES } from "@/components/ui/shared/filters/select/PromotionTypesFilter";
 import { PromotionContracts } from "@/lib/shared";

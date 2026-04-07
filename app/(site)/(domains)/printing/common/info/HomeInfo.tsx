@@ -2,7 +2,7 @@ import { Br, Line, Text } from "react-thermal-printer";
 import { BIG_PRINT, SMALL_PRINT } from "@/lib/shared";
 import sanitazeReceiptText from "@/lib/shared/utils/domains/printing/sanitazeReceiptText";
 import splitIntoLines from "@/lib/shared/utils/global/string/splitIntoLines";
-import { AddressType } from "@/prisma/generated/schemas";
+import { AddressType } from "@/prisma/generated/zod/schemas";
 import InvertedText from "@/components/ui/shared/InvertedText";
 
 interface HomeInfoProps {

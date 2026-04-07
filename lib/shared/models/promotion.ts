@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PromotionSchema, PromotionUsageSchema, OrderSchema } from "@/prisma/generated/schemas";
+import { PromotionSchema, PromotionUsageSchema, OrderSchema } from "@/prisma/generated/zod/schemas";
 import { PromotionType } from "@/prisma/generated/client/enums";
 import { OrderByTypeSchema } from "./order";
 

@@ -14,7 +14,7 @@ import { AddressFormValues } from "../(domains)/orders/create-order/home/address
 import useCustomerManager from "../../../hooks/create-home-order/useCustomerManager";
 import useAddressSelection from "../../../hooks/create-home-order/useAddressSelection";
 import { trpc } from "@/lib/api/client";
-import { AddressType, CustomerType } from "@/prisma/generated/schemas";
+import { AddressType, CustomerType } from "@/prisma/generated/zod/schemas";
 
 type CreateHomeOrderType = {
   phone: string;

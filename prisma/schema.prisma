@@ -3,7 +3,7 @@ generator client {
     output                 = "../prisma/generated/client"
     moduleFormat           = "esm"
     generatedFileExtension = "ts"
-    importFileExtension    = "ts"
+    importFileExtension    = ""
     previewFeatures        = ["typedSql"]
 }
 
@@ -14,6 +14,7 @@ generator json {
 generator zod {
     provider = "prisma-zod-generator"
     config   = "./zod-gen-config.json"
+    output   = "./generated/zod"
 }
 
 datasource db {

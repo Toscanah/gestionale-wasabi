@@ -5,7 +5,7 @@ import { ControllerRenderProps } from "react-hook-form";
 import CustomerOriginSelection from "./CustomerOriginSelection";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
 import CustomerAddresses from "./addresses/CustomerAddresses";
-import { AddressSchema } from "@/prisma/generated/schemas";
+import { AddressSchema } from "@/prisma/generated/zod/schemas";
 import PhoneChangeField from "./PhoneChangeField";
 
 export const customerFormSchema = z.object({

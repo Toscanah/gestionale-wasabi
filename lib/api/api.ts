@@ -27,6 +27,8 @@ export const ordersAPI: Hooks<typeof trpc.orders> = {
   joinTables: trpc.orders.joinTables,
   updateOrdersShift: trpc.orders.updateOrdersShift,
   computeStats: trpc.orders.computeStats,
+  computeKitchenCapacity: trpc.orders.computeKitchenCapacity,
+  exportToday: trpc.orders.exportToday,
 };
 
 export const addressesAPI: Hooks<typeof trpc.addresses> = {

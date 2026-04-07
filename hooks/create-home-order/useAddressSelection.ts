@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { trpc } from "@/lib/api/client";
-import { AddressType } from "@/prisma/generated/schemas";
+import { AddressType } from "@/prisma/generated/zod/schemas";
 
 interface UseAddressSelectionParams {
   addresses: AddressType[];

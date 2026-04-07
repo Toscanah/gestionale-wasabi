@@ -5,7 +5,7 @@ import { toastError, toastSuccess } from "@/lib/shared/utils/global/toast";
 import { Dispatch, SetStateAction } from "react";
 import { AddressContracts, ComprehensiveCustomer, CustomerContracts } from "@/lib/shared";
 import { trpc } from "@/lib/api/client";
-import { AddressType, CustomerType } from "@/prisma/generated/schemas";
+import { AddressType, CustomerType } from "@/prisma/generated/zod/schemas";
 import { useCachedDataContext } from "@/context/CachedDataContext";
 import { CustomerOrigin } from "@/prisma/generated/client/enums";
 

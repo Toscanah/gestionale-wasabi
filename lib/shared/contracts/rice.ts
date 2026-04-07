@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { RiceBatchSchema, RiceLogSchema } from "@/prisma/generated/schemas";
+import { RiceBatchSchema, RiceLogSchema } from "@/prisma/generated/zod/schemas";
 import { RiceLogType } from "@/prisma/generated/client/enums";
 import { ShiftFilterValue } from "../enums/shift";
 import { NoContentRequestSchema } from "./common/no-content";
