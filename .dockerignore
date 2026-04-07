@@ -1,0 +1,44 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build artifacts
+.next
+build
+dist
+
+# Development
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+dev.bat
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Electron
+electron-dist
+out
+
+# Other
+README.md
+backup
+sql
+scripts/legacy
+scripts/other
+scripts/docker
+*.md
+.dockerignore
+Dockerfile
+docker-compose.yml
+Commit.ps1

@@ -98,10 +98,3 @@ $env:PGPASSWORD = ""
 Initialize-Environment
 New-Backup-Folder
 Backup-Database
-
-# for ($i = 5; $i -ge 0; $i--) {
-#     Write-Host "`rQuesta schermata si chiudera' fra $i secondi" -NoNewline -ForegroundColor Magenta
-#     Start-Sleep 1
-# }
-
-exit 0

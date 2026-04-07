@@ -1,0 +1,91 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: gestionale-wasabi-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  schema-sync:
+    image: toscanah/gestionale-wasabi:latest
+    container_name: gestionale-wasabi-schema-sync
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB} npx --yes prisma db push --accept-data-loss"
+
+  app:
+    image: toscanah/gestionale-wasabi:latest
+    container_name: gestionale-wasabi-app
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      NODE_ENV: ${NODE_ENV}
+      BACKUP_DIR: /backups
+      BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-gestionale-wasabi.dump}
+      ENABLE_BACKUP_ON_STOP: ${ENABLE_BACKUP_ON_STOP:-0}
+      RUN_BACKUP_ON_NORMAL_EXIT: ${RUN_BACKUP_ON_NORMAL_EXIT:-0}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backup:/backups
+    stop_grace_period: 2m
+    depends_on:
+      db:
+        condition: service_healthy
+      schema-sync:
+        condition: service_completed_successfully
+
+  backup:
+    image: toscanah/gestionale-wasabi:latest
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      BACKUP_DIR: /backups
+      BACKUP_FILE_NAME: ${BACKUP_FILE_NAME:-gestionale-wasabi.dump}
+    volumes:
+      - ./backup:/backups
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["/app/scripts/container/backup-db.sh"]
+
+  restore:
+    image: toscanah/gestionale-wasabi:latest
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      BACKUP_DIR: /backups
+    volumes:
+      - ./backup:/backups
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["/app/scripts/container/restore-db.sh"]
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: gestionale-wasabi-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+  pgadmin_data:

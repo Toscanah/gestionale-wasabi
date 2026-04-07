@@ -4,6 +4,8 @@
   "private": true,
   "build": {
     "appId": "com.test",
+    "productName": "Gestionale Wasabi",
+    "artifactName": "gestionale-wasabi-desktop.${ext}",
     "files": [
       "build/**/*",
       "main.js",
@@ -11,10 +13,17 @@
     ],
     "directories": {
       "buildResources": "assets",
-      "output": "dist"
+      "output": "electron-dist"
     },
     "win": {
-      "target": "nsis"
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     },
     "mac": {
       "target": "dmg"
@@ -27,10 +36,11 @@
     "dev": "prisma db push && npx prisma generate --sql && next dev",
     "lint": "next lint",
     "build": "next build",
-    "start": "next start --hostname localhost",
+    "start": "next start",
     "stop": "pkill --signal SIGINT myApp",
     "electron": "electron .",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win portable --x64"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -71,6 +81,7 @@
     "@tanstack/react-query-devtools": "^5.90.2",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",
+    "@tanstack/table-core": "^8.21.3",
     "@trpc/client": "^11.6.0",
     "@trpc/react-query": "^11.6.0",
     "@trpc/server": "^11.6.0",
@@ -135,13 +146,15 @@
     "tailwind-variants": "^3.1.1",
     "tailwindcss-animate": "^1.0.7",
     "tough-cookie": "^6.0.0",
-    "usb": "^2.16.0",
     "use-context-selector": "^2.0.0",
     "uuid": "^13.0.0",
     "vaul": "^1.1.2",
     "xml2js": "^0.6.2",
     "zod": "^4.1.12",
-    "zod-prisma-types": "^3.3.5"
+    "zod-prisma-types": "^3.3.5",
+    "prisma": "^7.6.0",
+    "prisma-json-types-generator": "^4.1.0",
+    "prisma-zod-generator": "^1.27.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",
@@ -160,9 +173,6 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-no-relative-parent-require": "^0.0.5",
     "postcss": "^8.5.6",
-    "prisma": "^7.5.0",
-    "prisma-json-types-generator": "^4.1.0",
-    "prisma-zod-generator": "^1.27.3",
     "tailwindcss": "^4.1.14",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",

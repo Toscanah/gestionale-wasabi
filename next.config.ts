@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       ignore: [/^\/api\/trpc/],
     },
   },
-  distDir: "build",
+  output: "standalone",
 };
 
 export default nextConfig;

@@ -74,7 +74,7 @@ export default async function print(...content: PrintContent[]): Promise<boolean
     ) as GlobalSettings
   ).application.selectedPrinter;
 
-  const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
+  const isDevMode = process.env.NODE_ENV === "development";
 
   let ports: SerialPort[] = [];
 
